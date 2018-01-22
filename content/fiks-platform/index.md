@@ -26,3 +26,5 @@ Spesifikasjonen vil bli publisert ved OpenAPI spec. Da finnes det mange verktøy
 ### Inlogging og autorisasjon
 Tjenestene vil være beskyttet ved OAuth2. Access_token må være utstedt fra idporten. For tjenester som bruker av innbygger eller personer vil vi benytte OpenID Connect fra idporten.
 Program integrasjoner kan benytte OAuth2 fra idporten. 
+
+Vi støtter i første omgang kun jwt access_tokens, dette må konfigureres hos idporten.
