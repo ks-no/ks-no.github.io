@@ -2,11 +2,17 @@
 
 echo -e "\033[0;32mDeploying updates to GitHub...\033[0m"
 
+cd public
+git checkout master
+git pull
+cd ..
+
 # Build the project.
 hugo -t hugo-material-docs  # if using a theme, replace with `hugo -t <YOURTHEME>`
 
-# Go To Public folder
+# Go To Public 
 cd public
+
 # Add changes to git.
 git add .
 
