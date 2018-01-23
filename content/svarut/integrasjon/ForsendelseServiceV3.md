@@ -1,7 +1,6 @@
 ---
 title: ForsendelseServiceV3
 ---
-# ForsendelseServiceV3
 
 Her beskrives funksjonalitet for ForsendelseServiceV3
 

@@ -1,7 +1,6 @@
 ---
 title: ForsendelseServiceV4
 ---
-# ForsendelseServiceV4
 
 Her beskrives funksjonalitet for ForsendelseServiceV4
 

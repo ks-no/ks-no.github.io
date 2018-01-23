@@ -2,8 +2,6 @@
 title: MottakService v1
 ---
 
-# Mottaksservice V1
-
 Her beskrives funksjonalitet for Mottaksservice V1\. For å sikre bakoverkompatibilitet for klientene så vil denne versjonen ikke endres.
 
 ### Tilgang

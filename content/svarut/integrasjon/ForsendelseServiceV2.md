@@ -1,7 +1,6 @@
 ---
 title: ForsendelseServiceV2
 ---
-# ForsendelseServiceV2
 
 Her beskrives funksjonalitet for ForsendelseServiceV2\. For å sikre bakoverkompatibilitet for klientene så vil denne versjonen ikke endres.
 

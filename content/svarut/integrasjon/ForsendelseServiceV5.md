@@ -1,7 +1,6 @@
 ---
 title: ForsendelseServiceV5
 ---
-# ForsendelseServiceV5
 
 Her beskrives funksjonalitet for ForsendelseServiceV5
 
