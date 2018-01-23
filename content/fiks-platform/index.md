@@ -15,16 +15,3 @@ Hver applikasjon og api kan enten være utviklet og laget as KS, eller av en ann
 Hver bruker skal kunne legge til og fjerne tjenester de vil benytte via konfigurasjonen. Målet er at løsningen skal være selvbetjent.
 
 
-## Integrasjon mot api.fiks.ks.no
-
-Apiene vil i hovedsak benytte følgende tenknologi:
-
-### Rest
-Vi benytter REST lignenede grensesnitt på alle api så lenge det er gunstig. Kun ved spesielle behov vil det bli benyttet annen teknologi.
-Spesifikasjonen vil bli publisert ved OpenAPI spec. Da finnes det mange verktøy for å lage klienter i forskjellige språk og teknologier.
-
-### Inlogging og autorisasjon
-Tjenestene vil være beskyttet ved OAuth2. Access_token må være utstedt fra idporten. For tjenester som bruker av innbygger eller personer vil vi benytte OpenID Connect fra idporten.
-Program integrasjoner kan benytte OAuth2 fra idporten. 
-
-Vi støtter i første omgang kun jwt access_tokens, dette må konfigureres hos idporten.
