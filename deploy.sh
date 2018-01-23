@@ -8,7 +8,7 @@ git pull
 cd ..
 
 # Build the project.
-hugo -t hugo-material-docs  # if using a theme, replace with `hugo -t <YOURTHEME>`
+hugo 
 
 # Go To Public 
 cd public
