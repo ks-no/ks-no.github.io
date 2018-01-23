@@ -4,8 +4,6 @@ description: Description
 weight: 5
 ---
 
-## Integrasjon mot api.fiks.ks.no
-
 Apiene vil i hovedsak benytte følgende tenknologi:
 
 ### Rest
