@@ -1,5 +1,6 @@
 ---
 title: KS FIKS platform
+description: Description
 ---
 
 En liten oversikt over fiks plattformen, tjenester og applikasjoner under er et utvalg av fremtidige og nåværende applikasjoner.
