@@ -22,3 +22,11 @@ Vi støtter i første omgang kun jwt access_tokens, dette må konfigureres hos i
 På alle requester må OnBehalfOf header være satt til org eller fnr. Som regel vil dette være samme orgnr/fnr som i access_token et fra idporten.
 Hvis det ikke er det sjekker vi om du har lov til å utføre på vegne av en annen person/organisasjon.
 
+### Huskeliste
+
+* access_token fra idporten
+* access_token må ha scope ks
+* OnBehalfOf må være satt til orgnr eller fnr
+* readtiemout 30s
+* charset utf-8
+
