@@ -1,8 +1,7 @@
 ---
 title: KS Fiks dokumentasjon
-description: KS Fiks dokumentasjon
 ---
 
-###KS Fiks  
+# KS Fiks dokumentasjon
 
-Dokumentasjon om ks-fiks
+Her finner du informasjon laget for de som skal lage integrasjoner mot Fiks og SvarUt.
