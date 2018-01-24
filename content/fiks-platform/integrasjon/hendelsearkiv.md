@@ -1,6 +1,5 @@
 ---
 title: Hendelsearkiv
-weight: 5
 ---
 
 Meldingsboks er søkemotoren for minside.
