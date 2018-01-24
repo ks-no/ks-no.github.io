@@ -19,6 +19,8 @@ Dette er typen for forsendelser i SvarUt. Disse blir gruppert i en tråd basert 
 ## Indeksering
 API
 
+[apispec](https://editor.swagger.io/?url=https://ks-no.github.io/api/hendelse-indexer-api.json)
+
 ## Søk
 
 Med søk kan en søke i alle felt. Vi anbefaler å la søkeresultatet komme tilbake i relevans rekkefølge. 
