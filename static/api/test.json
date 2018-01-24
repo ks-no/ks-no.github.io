@@ -1,0 +1,354 @@
+{
+  "swagger" : "2.0",
+  "info" : {
+    "version" : "v1",
+    "title" : "KS Fiks: Hendelse Søk Service",
+    "contact" : {
+      "name" : "Fiks brukerstøtte",
+      "url" : "http://www.ks.no/fagomrader/utvikling/digitalisering/digitaliseringsstrategien/fiks/",
+      "email" : "fiks@ks.no"
+    }
+  },
+  "basePath" : "/api",
+  "tags" : [ {
+    "name" : "Search"
+  } ],
+  "schemes" : [ "http", "https" ],
+  "paths" : {
+    "/hendelsesok/api/search" : {
+      "post" : {
+        "tags" : [ "Search" ],
+        "summary" : "Search",
+        "description" : "",
+        "operationId" : "findPaginated",
+        "parameters" : [ {
+          "name" : "term",
+          "in" : "query",
+          "description" : "Search term",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "page",
+          "in" : "query",
+          "description" : "Index of first result element",
+          "required" : false,
+          "type" : "integer",
+          "format" : "int32"
+        }, {
+          "name" : "size",
+          "in" : "query",
+          "description" : "Number of elements requested",
+          "required" : false,
+          "type" : "integer",
+          "format" : "int32"
+        }, {
+          "name" : "sortByDate",
+          "in" : "query",
+          "description" : "Indicates that the result should be sorted by date rather than by relevance",
+          "required" : false,
+          "type" : "string",
+          "enum" : [ "ASC", "DESC" ]
+        }, {
+          "in" : "body",
+          "name" : "body",
+          "description" : "Filters limiting the result set",
+          "required" : false,
+          "schema" : {
+            "$ref" : "#/definitions/Filter"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "$ref" : "#/definitions/Result"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions" : {
+    "AnsvarligOrgHits" : {
+      "type" : "object",
+      "properties" : {
+        "id" : {
+          "type" : "string"
+        },
+        "visningsnavn" : {
+          "type" : "string"
+        },
+        "gruppeHits" : {
+          "type" : "integer",
+          "format" : "int64"
+        },
+        "selected" : {
+          "type" : "boolean"
+        }
+      }
+    },
+    "AnsvarligOrganisasjon" : {
+      "type" : "object",
+      "properties" : {
+        "id" : {
+          "type" : "string"
+        },
+        "visningsnavn" : {
+          "type" : "string"
+        }
+      }
+    },
+    "DateRange" : {
+      "type" : "object",
+      "properties" : {
+        "fromDate" : {
+          "type" : "string",
+          "format" : "date-time"
+        },
+        "toDate" : {
+          "type" : "string",
+          "format" : "date-time"
+        }
+      }
+    },
+    "Dokument" : {
+      "type" : "object",
+      "properties" : {
+        "id" : {
+          "type" : "string"
+        },
+        "tittel" : {
+          "type" : "string"
+        },
+        "size" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "nedlastingslenke" : {
+          "type" : "string"
+        }
+      }
+    },
+    "Enhet" : {
+      "type" : "object",
+      "properties" : {
+        "id" : {
+          "type" : "string"
+        },
+        "visningsnavn" : {
+          "type" : "string"
+        }
+      }
+    },
+    "EnhetHits" : {
+      "type" : "object",
+      "properties" : {
+        "id" : {
+          "type" : "string"
+        },
+        "visningsnavn" : {
+          "type" : "string"
+        },
+        "gruppeHits" : {
+          "type" : "integer",
+          "format" : "int64"
+        },
+        "selected" : {
+          "type" : "boolean"
+        }
+      }
+    },
+    "Filter" : {
+      "type" : "object",
+      "properties" : {
+        "fromDate" : {
+          "type" : "string",
+          "format" : "date-time"
+        },
+        "toDate" : {
+          "type" : "string",
+          "format" : "date-time"
+        },
+        "ansvarligOrganisasjon" : {
+          "type" : "array",
+          "uniqueItems" : true,
+          "items" : {
+            "type" : "string"
+          }
+        },
+        "enhet" : {
+          "type" : "array",
+          "uniqueItems" : true,
+          "items" : {
+            "type" : "string"
+          }
+        },
+        "gruppeTyper" : {
+          "type" : "array",
+          "uniqueItems" : true,
+          "items" : {
+            "type" : "string",
+            "enum" : [ "FORSENDELSE" ]
+          }
+        },
+        "hendelseTyper" : {
+          "type" : "array",
+          "uniqueItems" : true,
+          "items" : {
+            "type" : "string",
+            "enum" : [ "FORSENDELSE" ]
+          }
+        }
+      }
+    },
+    "Gruppe" : {
+      "type" : "object",
+      "required" : [ "innloggingsniva" ],
+      "properties" : {
+        "id" : {
+          "type" : "string"
+        },
+        "innloggingsniva" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "ansvarligOrganisasjon" : {
+          "$ref" : "#/definitions/AnsvarligOrganisasjon"
+        },
+        "dato" : {
+          "type" : "string",
+          "format" : "date-time"
+        },
+        "gruppeType" : {
+          "type" : "string"
+        },
+        "sisteHendelse" : {
+          "type" : "string",
+          "format" : "date-time"
+        },
+        "score" : {
+          "type" : "number",
+          "format" : "float"
+        },
+        "kilde" : {
+          "type" : "string"
+        },
+        "tittel" : {
+          "type" : "string"
+        },
+        "beskrivelse" : {
+          "type" : "string"
+        },
+        "enhet" : {
+          "$ref" : "#/definitions/Enhet"
+        },
+        "hendelser" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/Hendelse"
+          }
+        }
+      }
+    },
+    "Hendelse" : {
+      "type" : "object",
+      "properties" : {
+        "identifikator" : {
+          "type" : "string"
+        },
+        "hendelseType" : {
+          "type" : "string"
+        },
+        "dato" : {
+          "type" : "string",
+          "format" : "date-time"
+        },
+        "avsender" : {
+          "type" : "string"
+        },
+        "mottaker" : {
+          "type" : "string"
+        },
+        "tittel" : {
+          "type" : "string"
+        },
+        "beskrivelse" : {
+          "type" : "string"
+        },
+        "eksternLenke" : {
+          "type" : "string"
+        },
+        "eksternLenkeTekst" : {
+          "type" : "string"
+        },
+        "svarLenke" : {
+          "type" : "string"
+        },
+        "lest" : {
+          "type" : "boolean"
+        },
+        "dokumenter" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/Dokument"
+          }
+        },
+        "hit" : {
+          "type" : "boolean"
+        },
+        "score" : {
+          "type" : "number",
+          "format" : "float"
+        }
+      }
+    },
+    "Result" : {
+      "type" : "object",
+      "required" : [ "additionalHitsWithHigherLoginLevel" ],
+      "properties" : {
+        "totalHits" : {
+          "type" : "integer",
+          "format" : "int64"
+        },
+        "additionalHitsWithHigherLoginLevel" : {
+          "type" : "integer",
+          "format" : "int64"
+        },
+        "from" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "size" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "ansvarligOrg" : {
+          "type" : "array",
+          "uniqueItems" : true,
+          "items" : {
+            "$ref" : "#/definitions/AnsvarligOrgHits"
+          }
+        },
+        "enhet" : {
+          "type" : "array",
+          "uniqueItems" : true,
+          "items" : {
+            "$ref" : "#/definitions/EnhetHits"
+          }
+        },
+        "globalDateRange" : {
+          "$ref" : "#/definitions/DateRange"
+        },
+        "dateRange" : {
+          "$ref" : "#/definitions/DateRange"
+        },
+        "grupper" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/Gruppe"
+          }
+        }
+      }
+    }
+  }
+}
