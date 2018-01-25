@@ -8,7 +8,7 @@ For å sikre bakoverkompabilitet versjoneres servicen. Når grensesnittet endres
 
 Kall mot svarut, timer ut hvis de tar meir enn 15 minutt. Derfor kan det være lurt å ha timeout på tilkoplingen som er lenger enn dette. Da får avsender ikke timeout uten at den er initiert av SvarUt. Ellers kan avsender risikere å ikke få forsendelse id på forsendelser som har gått ok.
 
-| Versjon | WSDL | Status | Endringer |
+| Versjon | WSDL | Status | Endringer | 
 | --- | --- | --- | --- | 
 | [forsendelseServiceV1](ForsendelseServiceV1) | [WSDL](https://svarut.ks.no/tjenester/forsendelseservice/ForsendelsesServiceV1?wsdl) | Deprecated | NA | 
 | [forsendelseServiceV2](ForsendelseServiceV2) | [WSDL](https://svarut.ks.no/tjenester/forsendelseservice/ForsendelsesServiceV2?wsdl) | Deprecated | <ul><li>Støtte for mottakeradresse ihht NOARK5 (inkl. Land)</li><li>Ny metode for å hente historikk for en spesifikk forsendelse</li><li>Kun digital levering (dvs. dokumenter som ikke skal til print)</li><li>Støtte for giroark i forsendelse</li><li>Ny metode for å sette status lest fra eksternt system</li></ul> | 
@@ -18,7 +18,7 @@ Kall mot svarut, timer ut hvis de tar meir enn 15 minutt. Derfor kan det være l
 | [forsendelseServiceV6](ForsendelseServiceV6) | [WSDL](https://svarut.ks.no/tjenester/forsendelseservice/ForsendelsesServiceV6?wsdl) | Stabil | <ul><li>Kan legge med svar på forsendelse link, slik at mottaker kan svare på forsendelsen.</li><li>Søke opp forsendelseid basert på eksternref</li></ul> |
 | [forsendelseServiceV7](ForsendelseServiceV7) | [WSDL](https://svarut.ks.no/tjenester/forsendelseservice/ForsendelsesServiceV7?wsdl) | Stabil | <ul><li>dokumentType heter nå forsendelsetype</li><li>Støtte for difi sin signeringstjeneste. Beskrivelse av [Signeringstjeneste](Signeringstjeneste)</li></ul> | 
 | [forsendelseServiceV8](ForsendelseServiceV8) | [WSDL](https://svarut.ks.no/tjenester/forsendelseservice/ForsendelsesServiceV8?wsdl) | Stabil | <ul><li>dokumentType lagt til på hver fil. Denne er tilgjengelig i Svarinn. </li><li>Kan hente liste med mottakersystem for et orgnr</li><li>Kan hente forsendelseTyper som kan brukes i SvarUt</li></ul> | 
-| [forsendelseServiceV9](ForsendelseServiceV9) | [WSDL](https://svarut.ks.no/tjenester/forsendelseservice/ForsendelsesServiceV9?wsdl) | Under utvikling | <ul><li>Dokument har fått ekskluderesFraPrint, da er ikke filen med i print av forsendelsen. Brukes typisk til filer som kun er interesange om forsendelsen lastes ned digitalt. Xml, lyd, video filer osv.</li></ul> | 
+| [forsendelseServiceV9](ForsendelseServiceV9) | [WSDL](https://svarut.ks.no/tjenester/forsendelseservice/ForsendelsesServiceV9?wsdl) | Under utvikling | <ul><li>Hente ut signeringshistorikk på en forsendelse</li><li>Dokument har fått ekskluderesFraPrint, da er ikke filen med i print av forsendelsen. Brukes typisk til filer som kun er interesange om forsendelsen lastes ned digitalt. Xml, lyd, video filer osv.</li></ul> | 
 
 # Nedlasting av forsendelser direkte til sakssystem
 
@@ -26,6 +26,8 @@ Sakssystemer kan kalle Svarut for å laste ned forsendelser direkte ved å bruke
 
 For å sikre bakoverkompabilitet versjoneres servicen. Når grensesnittet endres deployes en ny versjon slik at eksisterende klienter selv kan velge når de ønsker å ta i bruk ny versjon. Se tabell under for hvilke versjoner som til enhver tid er støttet. Hver versjon dokumenteres separat.
 
-| Dokumentasjon | Status | Endringer |
+| Dokumentasjon | Status | Endringer | 
 | --- | --- | --- | 
 | [MottaksService V1 REST](mottaksservice-REST) | Stabil | NA | 
+
+
