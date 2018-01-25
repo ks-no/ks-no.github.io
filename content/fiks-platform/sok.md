@@ -1,5 +1,5 @@
 ---
-MinSide: Søk
+title: MinSide: Søk
 ---
 
 ![minside_sok](images/sok.png "Minside Søk")
