@@ -9,7 +9,8 @@ være spesifisert i hver tjeneste.
 
 ### Sikring av kommunikasjon
 
-All kommunikasjon med FIKS utenfra er kryptert med TLS. Innlogging og autentisering er løst av idporten. 
+All kommunikasjon med FIKS utenfra er kryptert med TLS. 
+Innlogging og autentisering er løst av idporten, hvor vi benytter OpenID connect og OAuth2. 
 
 ### Sikring av data
 
@@ -34,6 +35,6 @@ om hvilke data. Det må også være en lovhjemel for å kunne gjør dette.
 
 ### Sletting av data
 
-Dataeiger vil kunne slette data som han har lastet opp i løsningen vår. 
+Dataeier (kommunen) vil kunne slette data som han har lastet opp i løsningen vår. 
 Det vil også bli laget en løsning for Innbygger/Organisasjon å slette sine data
 om de ikke ønsker at de skal være tilgjengelig i løsningen. Per 25.01.2017 er ikke dette på plass enda.
