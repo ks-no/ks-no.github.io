@@ -1,5 +1,5 @@
 ---
-title: MinSide: Søk
+title: 'MinSide: Søk'
 ---
 
 Søk er en modul i min-side som består av en webapplikasjon, en søketjeneste, og en indekseringstjeneste. 
