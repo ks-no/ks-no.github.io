@@ -1,27 +1,24 @@
 ---
-title: Hendelsearkiv
+title: MinSide: Søk
 ---
 
-Meldingsboks er søkemotoren for minside.
-Her kan en indexservere data som skal vises på minside.
+Søk er en modul i min-side som består av en webapplikasjon, en søketjeneste, og en indekseringstjeneste. 
 
-Data som indexeres kan være av forskjellige typer og er gruppert i en samling.
 
-Nå har vi typen forsendelse, og framtidige typer kan være journalpost, digisosJournalPost, faktura, tjenestebeskrivelse osv..
 
-### Forsendelse
+## Webapplikasjon
 
 Dette er typen for forsendelser i SvarUt. Disse blir gruppert i en tråd basert på svarPaForsendelse feltet i SvarUt.
 
 ### 
 
 
-## Indeksering
+## Søketjeneste
 API
 
 [apispec](https://editor.swagger.io/?url=https://ks-no.github.io/api/hendelse-indexer-api.json)
 
-## Søk
+## Indekseringstjeneste
 
 Med søk kan en søke i alle felt. Vi anbefaler å la søkeresultatet komme tilbake i relevans rekkefølge. 
 Hendelsearkivet vil gi viktige saker høgre score. Hva som blir scoret opp og ned vil kunne endres uten varsel.
