@@ -26,8 +26,8 @@ Sakssystemer kan kalle Svarut for å laste ned forsendelser direkte ved å bruke
 
 For å sikre bakoverkompabilitet versjoneres servicen. Når grensesnittet endres deployes en ny versjon slik at eksisterende klienter selv kan velge når de ønsker å ta i bruk ny versjon. Se tabell under for hvilke versjoner som til enhver tid er støttet. Hver versjon dokumenteres separat.
 
-| Dokumentasjon | Status | Endringer | 
-| --- | --- | --- | 
-| [MottaksService V1 REST](mottaksservice-REST) | Stabil | NA | 
+| Dokumentasjon | Status | Endringer |
+| --- | --- | --- |
+| [MottaksService V1 REST](mottaksservice-REST) | Stabil | NA |
 
 
