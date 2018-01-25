@@ -6,7 +6,7 @@ description: Description
 En liten oversikt over fiks plattformen, tjenester og applikasjoner under er et utvalg av fremtidige og nåværende applikasjoner.
 Hver tjeneste og applikasjon vil være beskrevet på disse sidene.
 
-![fiks oversikt](../images/fiks_diagram.png "Fiks oversikt")
+![fiks oversikt](images/fiks_diagram.png "Fiks oversikt")
 
 Fiks plattformen består av et sett med api og en del webapplikasjoner. 
 Alle webapplikasjonene i fiks plattformen benytter seg av apiene som er tilgjengelig.

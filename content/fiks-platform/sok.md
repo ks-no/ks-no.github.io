@@ -3,7 +3,7 @@ title: MinSide Søk
 ---
 
 
-![minside_sok](images/sok.png "Minside Søk")
+![minside_sok](../images/sok.png "Minside Søk")
 
 Søk er en modul i min-side som består av en SPA (single page webapp), en søketjeneste, og en indekseringstjeneste. En integrasjon benytter indekseringsapi'et for å tilgjengeliggjøre meldinger: hendelser, fakturaer, saker, journalposter, forsendelser, osv. En innbygger kan så benytte webapplikasjonen for å søke i disse.  
 
