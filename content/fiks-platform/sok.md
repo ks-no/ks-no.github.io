@@ -3,7 +3,7 @@ title: MinSide Søk
 ---
 
 
-![minside_sok](../images/sok.png "Minside Søk")
+![minside_sok](/images/sok.png "Minside Søk")
 
 Søk er en modul i min-side som består av en SPA (single page webapp), en søketjeneste, og en indekseringstjeneste. En integrasjon benytter indekseringsapi'et for å tilgjengeliggjøre meldinger: hendelser, fakturaer, saker, journalposter, forsendelser, osv. En innbygger kan så benytte webapplikasjonen for å søke i disse.  
 
@@ -23,7 +23,7 @@ Noen viktige punkter:
 * Dato er ikke et obligatorisk felt på gruppe, men det er obligatorisk på hendelser. Hvis ikke gruppen har dato vil dato bli satt til datoen til den første hendelsen i gruppen. Hvis gruppen er opprettet med en dato vil denne benyttes uavhengig av dato på gruppens hendelser. 
 * Hvis man ikke har informasjon for å sette et felt (f.eks. om man ikke har "avsender" for en forsendelse) bør ikke feltet settes (i stede for å sette "null", "mangler" eller lignende).
 * For _fiks organisasjon_ og _enhet_ kan man i tillegg til å sette identifikator også sette visningsnavn. Dette vil bli benyttet i webapplikasjonens grensesnitt og filter. Merk at hvis man endrer dette vil det nye navnet bare benyttes på grupper / hendelser som er indeksert etter endringen ble gjort. For å gjøre en fullstendig operasjon må hendelsene reindekseres.
-* _Eksponert for_ angir hvem som skal kunne se forsendelsen. Dette kan være endten et organisasjonsnummer eller et fødselsnummer. Merk at  
+* _Eksponert for_ angir hvem som skal kunne se gruppen. Dette kan være endten et organisasjonsnummer eller et fødselsnummer. Merk at hver gruppe bare kan eksponeres for en person/org, hvis man ønsker at flere aktører skal kunne se samme informasjonen må gruppen indekseres flere ganger. 
 
 ## Søketjeneste [(api-spec)](https://editor.swagger.io/?url=https://ks-no.github.io/api/hendelse-indexer-api.json)
 Grupper og hendelser som er indeksert gjennom api'et over kan søkes frem gjennom søketjenesten. Søkeresultatet kan filtereres, pagineres, og sorteres, men i hovedsak er løsningen basert på fritekstsøk av all data i en gruppe / hendelse. På dags dato støttes ikke søk i dokumentinnhold, men det vurderes å utvide med denne funksjonaliteten. 
