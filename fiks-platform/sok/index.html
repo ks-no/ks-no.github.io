@@ -288,7 +288,11 @@
 <ul>
 <li>
 <ul>
-<li><a href="#indekseringstjeneste-api-spec-https-editor-swagger-io-url-https-ks-no-github-io-api-hendelse-indexer-api-json">Indekseringstjeneste <a href="https://editor.swagger.io/?url=https://ks-no.github.io/api/hendelse-indexer-api.json">(api-spec)</a></a></li>
+<li><a href="#indekseringstjeneste-api-spec-https-editor-swagger-io-url-https-ks-no-github-io-api-hendelse-indexer-api-json">Indekseringstjeneste <a href="https://editor.swagger.io/?url=https://ks-no.github.io/api/hendelse-indexer-api.json">(api-spec)</a></a>
+<ul>
+<li><a href="#indeksering">Indeksering</a></li>
+<li><a href="#sletting">Sletting</a></li>
+</ul></li>
 <li><a href="#søketjeneste-api-spec-https-editor-swagger-io-url-https-ks-no-github-io-api-hendelse-sok-api-json">Søketjeneste <a href="https://editor.swagger.io/?url=https://ks-no.github.io/api/hendelse-sok-api.json">(api-spec)</a></a></li>
 <li><a href="#webapplikasjon-test-https-minside-fiks-test-ks-no-meldingsboks-sok">Webapplikasjon <a href="https://minside.fiks.test.ks.no/meldingsboks/sok">(test)</a></a></li>
 <li><a href="#svarut-integrasjon">SvarUt Integrasjon</a></li>
@@ -324,13 +328,19 @@
 
 <h2 id="indekseringstjeneste-api-spec-https-editor-swagger-io-url-https-ks-no-github-io-api-hendelse-indexer-api-json">Indekseringstjeneste <a href="https://editor.swagger.io/?url=https://ks-no.github.io/api/hendelse-indexer-api.json">(api-spec)</a></h2>
 
-<p>Integrasjoner gjør hendelser tilgjengelige i søkemotoren ved å benytte indekserings-api&rsquo;et. Det er to primære endepunkt for dette, ett for å indeksere <em>grupper</em>, med eller uten hendelser, og ett for å legge en eller flere hendelser til en eksisterende gruppe.</p>
+<p>Indekseringstjenesten lar integrasjoner opprette grupper / hendelser, eller fjerne grupper / hendelser som alt er opprettet.</p>
+
+<h3 id="indeksering">Indeksering</h3>
+
+<p>Det er to primære endepunkt for dette, ett for å indeksere <em>grupper</em>, med eller uten hendelser, og ett for å legge en eller flere hendelser til en eksisterende gruppe.</p>
 
 <p>For begge endepunkter gjelder fiks-platformens vanlige autentiseringsregler. I tilegg må integrasjonen har rett til å indeksere på vegne av  <em>fiks organisasjonen</em> som er satt som eier den aktuelle hendelsesgruppen. Det samme gjelder for indeksering av hendelser, men her må i tillegg hendelsen være eid av samme <em>fiks organisasjon</em> som det som er oppgitt på hendelsen.</p>
 
-<p>Begge endepunkter støtter batch av opptil 5000 elementer, og integrasjonsutviklere anbefales å benytte denne funksjonaliteten, da det skaper vesentlig mindre trykk på systemet.</p>
+<p>Begge endepunkter støtter batch av opptil 5000 elementer, og integrasjonsutviklere anbefales å benytte denne funksjonaliteten, da det skaper vesentlig mindre trykk på systemet. Merk at indeksering ikke er en atomisk transaksjon: deler av elementene i en batch kan bli indeksert selv om andre feiler. Informasjon om dette finnes i responsen på innlegging av en ny batch.</p>
 
-<p>Noen viktige punkter:</p>
+<p>Gjennomføring av batch-operasjoner skjer synkront fra ståstedet til en bruker av tjenesten: responsen blir ikke sendt før batchen er gjennomført. Dermed vil man kunne vite at en gruppe opprettet i batch 1 eksisterer når batch 2 gjennomføres, så lenge disse utføres sekvensielt.</p>
+
+<p>Noen viktige punkt for integrasjonsutviklere:</p>
 
 <ul>
 <li>Innloggingsnivå er et obligatorisk felt både på gruppe og hendelser, og gruppens innloggingsnivå settes til det høyeste av gruppens nivå og nivået til alle hendelser i gruppen. Dvs. at hvis en gruppe har en hendelse med nivå 4, vil ikke gruppen eller gruppens hendelser fremkomme i et søk gjort med innloggingsnivp 3, selv om noen av disse hendelsene skulle ha nivå 3.</li>
@@ -339,6 +349,12 @@
 <li>For <em>fiks organisasjon</em> og <em>enhet</em> kan man i tillegg til å sette identifikator også sette visningsnavn. Dette vil bli benyttet i webapplikasjonens grensesnitt og filter. Merk at hvis man endrer dette vil det nye navnet bare benyttes på grupper / hendelser som er indeksert etter endringen ble gjort. For å gjøre en fullstendig operasjon må hendelsene reindekseres.</li>
 <li><em>Eksponert for</em> angir hvem som skal kunne se gruppen. Dette kan være endten et organisasjonsnummer eller et fødselsnummer. Merk at hver gruppe bare kan eksponeres for en person/org, hvis man ønsker at flere aktører skal kunne se samme informasjonen må gruppen indekseres flere ganger.</li>
 </ul>
+
+<h3 id="sletting">Sletting</h3>
+
+<p>Indekserte hendelser / grupper kan fjernes ved å benytte endepunkt for sletting. Her gjelder de samme reglene som over: en integrasjon må være autorisert for å handle på vegne av en ansvarlig organisasjon for at sletting kan gjennomføres.</p>
+
+<p>Merk at sletting på samme måte som indeksering ikke gjennomføres i en atomisk transaksjon: deler av gruppene kan bli slettet selv om andre feiler.</p>
 
 <h2 id="søketjeneste-api-spec-https-editor-swagger-io-url-https-ks-no-github-io-api-hendelse-sok-api-json">Søketjeneste <a href="https://editor.swagger.io/?url=https://ks-no.github.io/api/hendelse-sok-api.json">(api-spec)</a></h2>
 
