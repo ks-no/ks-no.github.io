@@ -13,19 +13,29 @@ Det er også mulig å lage direkte integrasjoner mot søketjenesten om man ikke 
 
 ## Indekseringstjeneste [(api-spec)](https://editor.swagger.io/?url=https://ks-no.github.io/api/hendelse-indexer-api.json)
 
-Integrasjoner gjør hendelser tilgjengelige i søkemotoren ved å benytte indekserings-api'et. Det er to primære endepunkt for dette, ett for å indeksere _grupper_, med eller uten hendelser, og ett for å legge en eller flere hendelser til en eksisterende gruppe.
+Indekseringstjenesten lar integrasjoner opprette grupper / hendelser, eller fjerne grupper / hendelser som alt er opprettet. 
 
-For begge endepunkter gjelder fiks-platformens vanlige autentiseringsregler. I tilegg må integrasjonen har rett til å indeksere på vegne av  _fiks organisasjonen_ som er satt som eier den aktuelle hendelsesgruppen. Det samme gjelder for indeksering av hendelser, men her må i tillegg hendelsen være eid av samme _fiks organisasjon_ som det som er oppgitt på hendelsen.   
+### Indeksering
+Det er to primære endepunkt for dette, ett for å indeksere _grupper_, med eller uten hendelser, og ett for å legge en eller flere hendelser til en eksisterende gruppe.   
 
-Begge endepunkter støtter batch av opptil 5000 elementer, og integrasjonsutviklere anbefales å benytte denne funksjonaliteten, da det skaper vesentlig mindre trykk på systemet.
+For begge endepunkter gjelder fiks-platformens vanlige autentiseringsregler. I tilegg må integrasjonen har rett til å indeksere på vegne av  _fiks organisasjonen_ som er satt som eier den aktuelle hendelsesgruppen. Det samme gjelder for indeksering av hendelser, men her må i tillegg hendelsen være eid av samme _fiks organisasjon_ som det som er oppgitt på hendelsen.
 
-Noen viktige punkter:
+Begge endepunkter støtter batch av opptil 5000 elementer, og integrasjonsutviklere anbefales å benytte denne funksjonaliteten, da det skaper vesentlig mindre trykk på systemet. Merk at indeksering ikke er en atomisk transaksjon: deler av elementene i en batch kan bli indeksert selv om andre feiler. Informasjon om dette finnes i responsen på innlegging av en ny batch.
+
+Gjennomføring av batch-operasjoner skjer synkront fra ståstedet til en bruker av tjenesten: responsen blir ikke sendt før batchen er gjennomført. Dermed vil man kunne vite at en gruppe opprettet i batch 1 eksisterer når batch 2 gjennomføres, så lenge disse utføres sekvensielt. 
+
+Noen viktige punkt for integrasjonsutviklere:
 
 * Innloggingsnivå er et obligatorisk felt både på gruppe og hendelser, og gruppens innloggingsnivå settes til det høyeste av gruppens nivå og nivået til alle hendelser i gruppen. Dvs. at hvis en gruppe har en hendelse med nivå 4, vil ikke gruppen eller gruppens hendelser fremkomme i et søk gjort med innloggingsnivp 3, selv om noen av disse hendelsene skulle ha nivå 3.
 * Dato er ikke et obligatorisk felt på gruppe, men det er obligatorisk på hendelser. Hvis ikke gruppen har dato vil dato bli satt til datoen til den første hendelsen i gruppen. Hvis gruppen er opprettet med en dato vil denne benyttes uavhengig av dato på gruppens hendelser. 
 * Hvis man ikke har informasjon for å sette et felt (f.eks. om man ikke har "avsender" for en forsendelse) bør ikke feltet settes (i stede for å sette "null", "mangler" eller lignende).
 * For _fiks organisasjon_ og _enhet_ kan man i tillegg til å sette identifikator også sette visningsnavn. Dette vil bli benyttet i webapplikasjonens grensesnitt og filter. Merk at hvis man endrer dette vil det nye navnet bare benyttes på grupper / hendelser som er indeksert etter endringen ble gjort. For å gjøre en fullstendig operasjon må hendelsene reindekseres.
 * _Eksponert for_ angir hvem som skal kunne se gruppen. Dette kan være endten et organisasjonsnummer eller et fødselsnummer. Merk at hver gruppe bare kan eksponeres for en person/org, hvis man ønsker at flere aktører skal kunne se samme informasjonen må gruppen indekseres flere ganger. 
+
+### Sletting
+Indekserte hendelser / grupper kan fjernes ved å benytte endepunkt for sletting. Her gjelder de samme reglene som over: en integrasjon må være autorisert for å handle på vegne av en ansvarlig organisasjon for at sletting kan gjennomføres. 
+
+Merk at sletting på samme måte som indeksering ikke gjennomføres i en atomisk transaksjon: deler av gruppene kan bli slettet selv om andre feiler. 
 
 ## Søketjeneste [(api-spec)](https://editor.swagger.io/?url=https://ks-no.github.io/api/hendelse-sok-api.json)
 Grupper og hendelser som er indeksert gjennom api'et over kan søkes frem gjennom søketjenesten. Søkeresultatet kan filtereres, pagineres, og sorteres, men i hovedsak er løsningen basert på fritekstsøk av all data i en gruppe / hendelse. På dags dato støttes ikke søk i dokumentinnhold, men det vurderes å utvide med denne funksjonaliteten. 
