@@ -18,25 +18,26 @@
     "/hendelseindexer/api/deleteRequest" : {
       "put" : {
         "tags" : [ "Index" ],
-        "summary" : "Remove all events for this ansvarlig organisasjon and integrasjon from the index",
+        "summary" : "Remove events for the specified fiks-org from the index",
         "description" : "",
         "operationId" : "deleteHendelsesgrupper",
         "parameters" : [ {
-          "name" : "ansvarligOrganisasjonId",
+          "name" : "fiksOrganisasjonId",
           "in" : "query",
-          "description" : "Ansvarlig Organisasjon Id",
+          "description" : "Fiks-organisasjon id",
           "required" : true,
-          "type" : "string"
+          "type" : "string",
+          "format" : "uuid"
         }, {
           "name" : "enhetId",
           "in" : "query",
-          "description" : "Enhet Id",
+          "description" : "Enhet id",
           "required" : false,
           "type" : "string"
         }, {
           "name" : "gruppeId",
           "in" : "query",
-          "description" : "Gruppe Id",
+          "description" : "Gruppe id",
           "required" : false,
           "type" : "string"
         } ],
@@ -144,17 +145,6 @@
     }
   },
   "definitions" : {
-    "AnsvarligOrganisasjon" : {
-      "type" : "object",
-      "properties" : {
-        "id" : {
-          "type" : "string"
-        },
-        "visningsnavn" : {
-          "type" : "string"
-        }
-      }
-    },
     "BulkResponse" : {
       "type" : "object",
       "properties" : {
@@ -249,6 +239,18 @@
         }
       }
     },
+    "FiksOrganisasjon" : {
+      "type" : "object",
+      "properties" : {
+        "id" : {
+          "type" : "string",
+          "format" : "uuid"
+        },
+        "visningsnavn" : {
+          "type" : "string"
+        }
+      }
+    },
     "ForsendelseGruppe" : {
       "allOf" : [ {
         "$ref" : "#/definitions/GruppeIndexRequest"
@@ -301,14 +303,17 @@
     },
     "GruppeIndexRequest" : {
       "type" : "object",
-      "required" : [ "ansvarligOrganisasjon", "eksponertFor", "identifikator", "innloggingsniva", "type" ],
+      "required" : [ "eksponertFor", "fiksOrganisasjon", "identifikator", "innloggingsniva", "type" ],
       "discriminator" : "type",
       "properties" : {
+        "fiksOrganisasjon" : {
+          "$ref" : "#/definitions/FiksOrganisasjon"
+        },
         "identifikator" : {
           "type" : "string"
         },
-        "ansvarligOrganisasjon" : {
-          "$ref" : "#/definitions/AnsvarligOrganisasjon"
+        "enhet" : {
+          "$ref" : "#/definitions/Enhet"
         },
         "eksponertFor" : {
           "type" : "string"
@@ -328,9 +333,6 @@
           "items" : {
             "$ref" : "#/definitions/Hendelse"
           }
-        },
-        "enhet" : {
-          "$ref" : "#/definitions/Enhet"
         },
         "innloggingsniva" : {
           "type" : "integer",
@@ -374,16 +376,18 @@
     },
     "HendelseIndexRequest" : {
       "type" : "object",
-      "required" : [ "ansvarligOrganisasjonId", "gruppeId", "hendelse" ],
+      "required" : [ "fiksOrganisasjonId", "gruppeId", "hendelse" ],
       "properties" : {
         "gruppeId" : {
           "type" : "string"
         },
-        "ansvarligOrganisasjonId" : {
-          "type" : "string"
+        "fiksOrganisasjonId" : {
+          "type" : "string",
+          "format" : "uuid"
         },
         "enhetId" : {
-          "type" : "string"
+          "type" : "string",
+          "format" : "uuid"
         },
         "hendelse" : {
           "$ref" : "#/definitions/Hendelse"
