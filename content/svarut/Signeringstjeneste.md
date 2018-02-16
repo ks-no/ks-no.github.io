@@ -37,5 +37,8 @@ Innbygger kan signere elektronisk frem til gyldigheten på signeringsoppdraget u
 
 Innbygger logger på Altinn/SDP og trykker på signeringslenken som er oppgitt i meldingen. Dette er en lenke til Svarut. Svarut vil validere og sjekke at det er et gyldig signeringsoppdrag. 
 
-Innbygger får opp dokumentet og kan velge mellom å signere eller avbryte. Dersom innbygger signerer opprettes det en ny forsendelse til det organisasjonsnummeret som er oppgitt i forsendelsen. Dersom innbygger avbryter er det likevel mulig å signere dersom gyldigheten på signeringsoppdraget ikke er utløpt.
+Innbygger får opp dokumentet og kan velge mellom å signere eller avvise. Dersom innbygger signerer opprettes det en ny forsendelse til det organisasjonsnummeret som er oppgitt i forsendelsen. 
 
+Dersom innbygger avviser oppdraget vil oppdraget ikke være mulig å signere på nytt. Dersom innbygger avbryter (lukker nettleser e.l.) er det likevel mulig å signere gitt at gyldigheten på signeringsoppdraget ikke er utløpt.
+
+Oppdragsgiver vil bare få forsendelse i retur dersom mottaker signerer forsendelsen og kan sjekke status på om oppdraget er avvist.
