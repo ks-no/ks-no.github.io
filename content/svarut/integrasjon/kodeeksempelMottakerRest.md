@@ -1,6 +1,6 @@
 ---
-title: Kodeeksempel - MottaksserviceV1
-
+title: Kodeeksempel MottaksserviceV1
+---
 Last ned komplett [kodeeksempel](../files/121367/kodeeksempel-mottaker-rest.zip)
 
 ### Maven dependencies

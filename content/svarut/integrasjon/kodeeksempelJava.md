@@ -1,6 +1,7 @@
 ---
-title: Kodeeksempel - Java
+title: Kodeeksempel Java
 ---
+
 
 # Kodeeksempel - Java
 

@@ -1,5 +1,5 @@
 ---
-title: Kodeeksempel - .Net
+title: Kodeeksempel .Net
 ---
 # Kodeeksempel - .NET
 

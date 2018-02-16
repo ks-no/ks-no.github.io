@@ -4,6 +4,8 @@ title: MottakService v1
 
 Her beskrives funksjonalitet for Mottaksservice V1\. For å sikre bakoverkompatibilitet for klientene så vil denne versjonen ikke endres.
 
+Bruk av SvarInn til GeoIntegrasjon eksempel kode ligger her: https://github.com/ks-no/svarut-sak-mottak
+
 ### Tilgang
 
 Tjenesten bruker HTTP Basic autentication med brukernavn og generert service-passord. Mottakersystem opprettes av KS-SvarUt administrator og service-passordet genereres av person med tilgang via [mottakersystem](https://svarut.ks.no/mottaker/)-siden. Dersom autentiseringen feiler returneres HTTP-status 401 Unauthorized, og ukjent URL gir HTTP-status 404\. Detaljerte feilmeldinger følger også ved feil.
