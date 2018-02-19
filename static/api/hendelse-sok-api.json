@@ -12,10 +12,64 @@
   },
   "basePath" : "/api",
   "tags" : [ {
+    "name" : "Lookup"
+  }, {
     "name" : "Search"
   } ],
   "schemes" : [ "http", "https" ],
   "paths" : {
+    "/hendelsesok/api/korrelasjon" : {
+      "get" : {
+        "tags" : [ "Lookup" ],
+        "summary" : "korrelasjon",
+        "description" : "",
+        "operationId" : "lookup",
+        "parameters" : [ {
+          "name" : "korrelasjonId",
+          "in" : "query",
+          "description" : "Search term",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "$ref" : "#/definitions/KorrelasjonLookupResult"
+            }
+          }
+        }
+      }
+    },
+    "/hendelsesok/api/parent" : {
+      "get" : {
+        "tags" : [ "Lookup" ],
+        "summary" : "lookupParent",
+        "description" : "",
+        "operationId" : "lookup",
+        "parameters" : [ {
+          "name" : "parentType",
+          "in" : "query",
+          "description" : "The type of the parent document",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "parentId",
+          "in" : "query",
+          "description" : "The id of the parent document",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "$ref" : "#/definitions/ParentLookupResult"
+            }
+          }
+        }
+      }
+    },
     "/hendelsesok/api/search" : {
       "post" : {
         "tags" : [ "Search" ],
@@ -212,26 +266,19 @@
             "type" : "string"
           }
         },
-        "gruppeTyper" : {
+        "typer" : {
           "type" : "array",
           "uniqueItems" : true,
           "items" : {
             "type" : "string",
-            "enum" : [ "ForsendelseGruppe" ]
+            "enum" : [ "Forsendelse" ]
           }
         }
       }
     },
-    "ForsendelseGruppe" : {
+    "Forsendelse" : {
       "allOf" : [ {
-        "$ref" : "#/definitions/GruppeType"
-      }, {
-        "type" : "object"
-      } ]
-    },
-    "ForsendelseHendelse" : {
-      "allOf" : [ {
-        "$ref" : "#/definitions/HendelseType"
+        "$ref" : "#/definitions/HitType"
       }, {
         "type" : "object",
         "properties" : {
@@ -265,7 +312,7 @@
         }
       } ]
     },
-    "Gruppe" : {
+    "Hit" : {
       "type" : "object",
       "required" : [ "innloggingsniva" ],
       "properties" : {
@@ -279,53 +326,21 @@
         "fiksOrganisasjon" : {
           "$ref" : "#/definitions/FiksOrganisasjon"
         },
-        "sisteHendelse" : {
-          "type" : "string",
-          "format" : "date-time"
-        },
-        "type" : {
-          "$ref" : "#/definitions/GruppeType"
-        },
-        "score" : {
-          "type" : "number",
-          "format" : "float"
-        },
         "enhet" : {
           "$ref" : "#/definitions/Enhet"
-        },
-        "hendelser" : {
-          "type" : "array",
-          "items" : {
-            "$ref" : "#/definitions/Hendelse"
-          }
-        }
-      }
-    },
-    "GruppeType" : {
-      "type" : "object",
-      "discriminator" : "type",
-      "properties" : {
-        "type" : {
-          "type" : "string",
-          "enum" : [ "ForsendelseGruppe" ]
-        }
-      }
-    },
-    "Hendelse" : {
-      "type" : "object",
-      "properties" : {
-        "identifikator" : {
-          "type" : "string"
-        },
-        "hendelseType" : {
-          "$ref" : "#/definitions/HendelseType"
         },
         "dato" : {
           "type" : "string",
           "format" : "date-time"
         },
-        "hit" : {
-          "type" : "boolean"
+        "korrelasjonId" : {
+          "type" : "string"
+        },
+        "parent" : {
+          "$ref" : "#/definitions/Parent"
+        },
+        "type" : {
+          "$ref" : "#/definitions/HitType"
         },
         "score" : {
           "type" : "number",
@@ -333,13 +348,61 @@
         }
       }
     },
-    "HendelseType" : {
+    "HitType" : {
       "type" : "object",
       "discriminator" : "type",
       "properties" : {
         "type" : {
           "type" : "string",
-          "enum" : [ "ForsendelseHendelse" ]
+          "enum" : [ "Forsendelse" ]
+        }
+      }
+    },
+    "KorrelasjonLookupResult" : {
+      "type" : "object",
+      "properties" : {
+        "children" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/Hit"
+          }
+        },
+        "childrenAboveInnloggingsniva" : {
+          "type" : "integer",
+          "format" : "int32"
+        }
+      }
+    },
+    "Parent" : {
+      "type" : "object",
+      "properties" : {
+        "type" : {
+          "type" : "string",
+          "enum" : [ "Forsendelse" ]
+        },
+        "id" : {
+          "type" : "string"
+        }
+      }
+    },
+    "ParentLookupResult" : {
+      "type" : "object",
+      "properties" : {
+        "parentHit" : {
+          "$ref" : "#/definitions/Hit"
+        },
+        "children" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/Hit"
+          }
+        },
+        "parentAboveInnloggingsniva" : {
+          "type" : "boolean"
+        },
+        "childrenAboveInnloggingsniva" : {
+          "type" : "integer",
+          "format" : "int32"
         }
       }
     },
@@ -358,7 +421,7 @@
         "hits" : {
           "type" : "array",
           "items" : {
-            "$ref" : "#/definitions/Gruppe"
+            "$ref" : "#/definitions/Hit"
           }
         },
         "from" : {
