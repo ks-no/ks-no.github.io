@@ -58,7 +58,7 @@
         }
       }
     },
-    "/hendelseindexer/api/gruppeIndexRequest" : {
+    "/hendelseindexer/api/indexRequest" : {
       "put" : {
         "tags" : [ "Index" ],
         "summary" : "Add new groups to the index",
@@ -79,7 +79,7 @@
           "schema" : {
             "type" : "array",
             "items" : {
-              "$ref" : "#/definitions/GruppeIndexRequest"
+              "$ref" : "#/definitions/IndexRequest"
             }
           }
         } ],
@@ -98,62 +98,6 @@
                 "$ref" : "#/definitions/Field validation error"
               }
             }
-          },
-          "422" : {
-            "description" : "The bulk request is properly formatted but do not conform to limitations such as max number of elements (5000)"
-          },
-          "500" : {
-            "description" : "The bulk request has has failed. An unknown number of items may still have been indexed, but all should be resubmitted to ensure completion"
-          }
-        }
-      }
-    },
-    "/hendelseindexer/api/hendelseIndexRequest" : {
-      "put" : {
-        "tags" : [ "Index" ],
-        "summary" : "Add new events to the index",
-        "description" : "Submit one or more events to be indexed, up to a maximum of 5000. Note that this operation is not atomic: the response will indicate any events where indexing failed.",
-        "operationId" : "indexHendelse",
-        "parameters" : [ {
-          "name" : "integrasjonId",
-          "in" : "query",
-          "description" : "Id for integrasjonen, som registret i fiks-konfigurasjon",
-          "required" : true,
-          "type" : "string",
-          "format" : "uuid"
-        }, {
-          "in" : "body",
-          "name" : "body",
-          "description" : "The events to be indexed",
-          "required" : false,
-          "schema" : {
-            "type" : "array",
-            "items" : {
-              "$ref" : "#/definitions/HendelseIndexRequest"
-            }
-          }
-        } ],
-        "responses" : {
-          "200" : {
-            "description" : "The bulk request has been completed. Note that individual elements may still have failed, as indicated by the \"hasFailures\" property",
-            "schema" : {
-              "$ref" : "#/definitions/BulkResponse"
-            }
-          },
-          "400" : {
-            "description" : "The request is malformed and will not be processed",
-            "schema" : {
-              "type" : "array",
-              "items" : {
-                "$ref" : "#/definitions/Field validation error"
-              }
-            }
-          },
-          "401" : {
-            "description" : "The supplied authentication credentials could not be validated, or the specified integration has not been registered"
-          },
-          "403" : {
-            "description" : "The client does not have authority to index events on behalf of the data owner"
           },
           "422" : {
             "description" : "The bulk request is properly formatted but do not conform to limitations such as max number of elements (5000)"
@@ -272,17 +216,9 @@
         }
       }
     },
-    "ForsendelseGruppe" : {
+    "Forsendelse" : {
       "allOf" : [ {
-        "$ref" : "#/definitions/GruppeTypeMetadata"
-      }, {
-        "type" : "object",
-        "description" : "A forsendelse group index request"
-      } ]
-    },
-    "ForsendelseHendelse" : {
-      "allOf" : [ {
-        "$ref" : "#/definitions/HendelseTypeMetadata"
+        "$ref" : "#/definitions/TypeMetadata"
       }, {
         "type" : "object",
         "properties" : {
@@ -308,7 +244,6 @@
           "dokumenter" : {
             "type" : "array",
             "description" : "Dokumenter som inngår i denne forsendelsen",
-            "uniqueItems" : true,
             "items" : {
               "$ref" : "#/definitions/Dokument"
             }
@@ -317,9 +252,9 @@
         "description" : "Hendelse som beskriver en forsendelse"
       } ]
     },
-    "GruppeIndexRequest" : {
+    "IndexRequest" : {
       "type" : "object",
-      "required" : [ "eksponertFor", "fiksOrganisasjon", "id", "innloggingsniva", "typeMetadata" ],
+      "required" : [ "dato", "eksponertFor", "fiksOrganisasjon", "id", "innloggingsniva", "typeMetadata" ],
       "properties" : {
         "id" : {
           "type" : "string"
@@ -328,103 +263,31 @@
           "type" : "integer",
           "format" : "int32",
           "minimum" : 0
-        },
-        "fiksOrganisasjon" : {
-          "$ref" : "#/definitions/FiksOrganisasjon"
         },
         "eksponertFor" : {
           "type" : "string"
         },
+        "fiksOrganisasjon" : {
+          "$ref" : "#/definitions/FiksOrganisasjon"
+        },
+        "korrelasjonId" : {
+          "type" : "string"
+        },
+        "parent" : {
+          "$ref" : "#/definitions/Parent"
+        },
         "enhet" : {
           "$ref" : "#/definitions/Enhet"
         },
-        "typeMetadata" : {
-          "$ref" : "#/definitions/GruppeTypeMetadata"
+        "dato" : {
+          "type" : "integer",
+          "format" : "int64"
         },
-        "hendelser" : {
-          "type" : "array",
-          "items" : {
-            "$ref" : "#/definitions/Hendelse"
-          }
+        "typeMetadata" : {
+          "$ref" : "#/definitions/TypeMetadata"
         }
       },
       "description" : "En forespørsel om å opprette en ny gruppe, eller å oppdatere en eksisterende gruppe"
-    },
-    "GruppeTypeMetadata" : {
-      "type" : "object",
-      "required" : [ "type" ],
-      "discriminator" : "type",
-      "properties" : {
-        "type" : {
-          "type" : "string",
-          "enum" : [ "ForsendelseGruppe" ]
-        }
-      }
-    },
-    "Hendelse" : {
-      "type" : "object",
-      "required" : [ "dato", "id", "innloggingsniva", "typeMetadata" ],
-      "properties" : {
-        "id" : {
-          "type" : "string"
-        },
-        "typeMetadata" : {
-          "$ref" : "#/definitions/HendelseTypeMetadata"
-        },
-        "innloggingsniva" : {
-          "type" : "integer",
-          "format" : "int32",
-          "minimum" : 0
-        },
-        "dato" : {
-          "type" : "integer",
-          "format" : "int64"
-        }
-      },
-      "description" : "En hendelse i en gruppe"
-    },
-    "HendelseIndexRequest" : {
-      "type" : "object",
-      "required" : [ "dato", "fiksOrganisasjonId", "gruppeId", "id", "innloggingsniva", "typeMetadata" ],
-      "properties" : {
-        "id" : {
-          "type" : "string"
-        },
-        "typeMetadata" : {
-          "$ref" : "#/definitions/HendelseTypeMetadata"
-        },
-        "innloggingsniva" : {
-          "type" : "integer",
-          "format" : "int32",
-          "minimum" : 0
-        },
-        "dato" : {
-          "type" : "integer",
-          "format" : "int64"
-        },
-        "gruppeId" : {
-          "type" : "string"
-        },
-        "fiksOrganisasjonId" : {
-          "type" : "string",
-          "format" : "uuid"
-        },
-        "enhetId" : {
-          "type" : "string"
-        }
-      },
-      "description" : "En forespørsel om å opprette en hendelse på en eksisterende gruppe, eller å oppdatere en eksisterende hendelse"
-    },
-    "HendelseTypeMetadata" : {
-      "type" : "object",
-      "required" : [ "type" ],
-      "discriminator" : "type",
-      "properties" : {
-        "type" : {
-          "type" : "string",
-          "enum" : [ "ForsendelseHendelse" ]
-        }
-      }
     },
     "IndexResponse" : {
       "type" : "object",
@@ -437,6 +300,29 @@
         },
         "failureMessage" : {
           "type" : "string"
+        }
+      }
+    },
+    "Parent" : {
+      "type" : "object",
+      "properties" : {
+        "id" : {
+          "type" : "string"
+        },
+        "type" : {
+          "type" : "string",
+          "enum" : [ "Forsendelse" ]
+        }
+      }
+    },
+    "TypeMetadata" : {
+      "type" : "object",
+      "required" : [ "type" ],
+      "discriminator" : "type",
+      "properties" : {
+        "type" : {
+          "type" : "string",
+          "enum" : [ "Forsendelse" ]
         }
       }
     }
