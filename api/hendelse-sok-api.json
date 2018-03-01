@@ -23,7 +23,7 @@
         "tags" : [ "Lookup" ],
         "summary" : "korrelasjon",
         "description" : "",
-        "operationId" : "lookup",
+        "operationId" : "lookupKorrelasjon",
         "parameters" : [ {
           "name" : "korrelasjonId",
           "in" : "query",
@@ -46,13 +46,21 @@
         "tags" : [ "Lookup" ],
         "summary" : "lookupParent",
         "description" : "",
-        "operationId" : "lookup",
+        "operationId" : "lookupParent",
         "parameters" : [ {
+          "name" : "fiksOrganisasjonId",
+          "in" : "query",
+          "description" : "Id for organisasjonen som eier dokumentet",
+          "required" : true,
+          "type" : "string",
+          "format" : "uuid"
+        }, {
           "name" : "parentType",
           "in" : "query",
           "description" : "The type of the parent document",
           "required" : true,
-          "type" : "string"
+          "type" : "string",
+          "enum" : [ "faktura", "sakmappe", "forsendelse" ]
         }, {
           "name" : "parentId",
           "in" : "query",
@@ -209,35 +217,6 @@
         }
       }
     },
-    "Faktura" : {
-      "allOf" : [ {
-        "$ref" : "#/definitions/HitType"
-      }, {
-        "type" : "object",
-        "properties" : {
-          "tittel" : {
-            "type" : "string"
-          },
-          "fakturaDato" : {
-            "type" : "string",
-            "format" : "date-time"
-          },
-          "forfallDato" : {
-            "type" : "string",
-            "format" : "date-time"
-          },
-          "fakturaMottaker" : {
-            "type" : "string"
-          },
-          "betalesTil" : {
-            "type" : "string"
-          },
-          "belop" : {
-            "type" : "string"
-          }
-        }
-      } ]
-    },
     "FiksOrganisasjon" : {
       "type" : "object",
       "properties" : {
@@ -300,50 +279,10 @@
           "uniqueItems" : true,
           "items" : {
             "type" : "string",
-            "enum" : [ "Faktura", "SakMappe", "Forsendelse" ]
+            "enum" : [ "faktura", "sakmappe", "forsendelse" ]
           }
         }
       }
-    },
-    "Forsendelse" : {
-      "allOf" : [ {
-        "$ref" : "#/definitions/HitType"
-      }, {
-        "type" : "object",
-        "properties" : {
-          "tittel" : {
-            "type" : "string"
-          },
-          "avsender" : {
-            "type" : "string"
-          },
-          "mottaker" : {
-            "type" : "string"
-          },
-          "eksternLenke" : {
-            "type" : "string"
-          },
-          "eksternLenkeTekst" : {
-            "type" : "string"
-          },
-          "svarLenke" : {
-            "type" : "string"
-          },
-          "sendtDato" : {
-            "type" : "string",
-            "format" : "date-time"
-          },
-          "lest" : {
-            "type" : "boolean"
-          },
-          "dokumenter" : {
-            "type" : "array",
-            "items" : {
-              "$ref" : "#/definitions/Dokument"
-            }
-          }
-        }
-      } ]
     },
     "Hit" : {
       "type" : "object",
@@ -387,7 +326,7 @@
       "properties" : {
         "type" : {
           "type" : "string",
-          "enum" : [ "Faktura", "SakMappe", "Forsendelse" ]
+          "enum" : [ "faktura", "sakmappe", "forsendelse" ]
         }
       }
     },
@@ -411,7 +350,7 @@
       "properties" : {
         "type" : {
           "type" : "string",
-          "enum" : [ "Faktura", "SakMappe", "Forsendelse" ]
+          "enum" : [ "faktura", "sakmappe", "forsendelse" ]
         },
         "id" : {
           "type" : "string"
@@ -421,6 +360,12 @@
     "ParentLookupResult" : {
       "type" : "object",
       "properties" : {
+        "parentIkkeEksponertForBruker" : {
+          "type" : "boolean"
+        },
+        "parentDoesNotExist" : {
+          "type" : "boolean"
+        },
         "parentHit" : {
           "$ref" : "#/definitions/Hit"
         },
@@ -470,7 +415,78 @@
         }
       }
     },
-    "SakMappe" : {
+    "faktura" : {
+      "allOf" : [ {
+        "$ref" : "#/definitions/HitType"
+      }, {
+        "type" : "object",
+        "properties" : {
+          "tittel" : {
+            "type" : "string"
+          },
+          "fakturaDato" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "forfallDato" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "fakturaMottaker" : {
+            "type" : "string"
+          },
+          "betalesTil" : {
+            "type" : "string"
+          },
+          "belop" : {
+            "type" : "string"
+          }
+        },
+        "description" : "Faktura"
+      } ]
+    },
+    "forsendelse" : {
+      "allOf" : [ {
+        "$ref" : "#/definitions/HitType"
+      }, {
+        "type" : "object",
+        "properties" : {
+          "tittel" : {
+            "type" : "string"
+          },
+          "avsender" : {
+            "type" : "string"
+          },
+          "mottaker" : {
+            "type" : "string"
+          },
+          "eksternLenke" : {
+            "type" : "string"
+          },
+          "eksternLenkeTekst" : {
+            "type" : "string"
+          },
+          "svarLenke" : {
+            "type" : "string"
+          },
+          "sendtDato" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "lest" : {
+            "type" : "boolean"
+          },
+          "dokumenter" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/definitions/Dokument"
+            }
+          }
+        },
+        "description" : "Forsendelse"
+      } ]
+    },
+    "sakmappe" : {
       "allOf" : [ {
         "$ref" : "#/definitions/HitType"
       }, {
@@ -493,7 +509,8 @@
             "type" : "string",
             "format" : "date-time"
           }
-        }
+        },
+        "description" : "Sakmappe"
       } ]
     }
   }

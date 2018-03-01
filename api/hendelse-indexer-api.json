@@ -158,7 +158,7 @@
     },
     "Dokument" : {
       "type" : "object",
-      "required" : [ "id" ],
+      "required" : [ "id", "nedlastingLenke", "tittel" ],
       "properties" : {
         "id" : {
           "type" : "string"
@@ -178,6 +178,7 @@
     },
     "Enhet" : {
       "type" : "object",
+      "required" : [ "id", "visningsnavn" ],
       "properties" : {
         "id" : {
           "type" : "string"
@@ -186,43 +187,6 @@
           "type" : "string"
         }
       }
-    },
-    "Faktura" : {
-      "allOf" : [ {
-        "$ref" : "#/definitions/ParentType"
-      }, {
-        "type" : "object",
-        "required" : [ "fakturaDato", "forfallDato", "parent", "tittel" ],
-        "properties" : {
-          "tittel" : {
-            "type" : "string"
-          },
-          "fakturaDato" : {
-            "type" : "integer",
-            "format" : "int64"
-          },
-          "forfallDato" : {
-            "type" : "integer",
-            "format" : "int64"
-          },
-          "fakturaMottaker" : {
-            "type" : "string"
-          },
-          "betalesTil" : {
-            "type" : "string"
-          },
-          "korrelasjonId" : {
-            "type" : "string"
-          },
-          "parent" : {
-            "$ref" : "#/definitions/Parent"
-          },
-          "belop" : {
-            "type" : "string"
-          }
-        },
-        "description" : "Hendelse som beskriver en forsendelse"
-      } ]
     },
     "Field validation error" : {
       "type" : "object",
@@ -243,6 +207,7 @@
     },
     "FiksOrganisasjon" : {
       "type" : "object",
+      "required" : [ "id", "visningsnavn" ],
       "properties" : {
         "id" : {
           "type" : "string",
@@ -252,55 +217,6 @@
           "type" : "string"
         }
       }
-    },
-    "Forsendelse" : {
-      "allOf" : [ {
-        "$ref" : "#/definitions/ParentType"
-      }, {
-        "type" : "object",
-        "required" : [ "lest", "parent", "sendtDato" ],
-        "properties" : {
-          "tittel" : {
-            "type" : "string"
-          },
-          "sendtDato" : {
-            "type" : "integer",
-            "format" : "int64"
-          },
-          "avsender" : {
-            "type" : "string",
-            "description" : "Navn på person eller orgnr / navn på organisasjon som er kilde for forsendelsen."
-          },
-          "mottaker" : {
-            "type" : "string",
-            "description" : "Navn på person eller orgnr / navn på organisasjon som er mottaker for forsendelsen"
-          },
-          "lest" : {
-            "type" : "boolean",
-            "description" : "Indikerer om forsendelsen er lest eller ikke"
-          },
-          "svarLenke" : {
-            "type" : "string",
-            "description" : "Url som skal benyttes for å svare på denne forsendelsen"
-          },
-          "korrelasjonId" : {
-            "type" : "string"
-          },
-          "parent" : {
-            "$ref" : "#/definitions/Parent"
-          },
-          "dokumenter" : {
-            "type" : "array",
-            "description" : "Dokumenter som inngår i denne forsendelsen",
-            "items" : {
-              "$ref" : "#/definitions/Dokument"
-            },
-            "maxItems" : 2147483647,
-            "minItems" : 1
-          }
-        },
-        "description" : "Hendelse som beskriver en forsendelse"
-      } ]
     },
     "IndexRequest" : {
       "type" : "object",
@@ -345,15 +261,17 @@
     },
     "Parent" : {
       "type" : "object",
+      "required" : [ "id", "type" ],
       "properties" : {
         "id" : {
           "type" : "string"
         },
         "type" : {
           "type" : "string",
-          "enum" : [ "Faktura", "SakMappe", "Forsendelse" ]
+          "enum" : [ "faktura", "sakmappe", "forsendelse" ]
         }
-      }
+      },
+      "description" : "Spesifiser et foreldre-dokument."
     },
     "ParentType" : {
       "type" : "object",
@@ -362,11 +280,94 @@
       "properties" : {
         "type" : {
           "type" : "string",
-          "enum" : [ "Faktura", "SakMappe", "Forsendelse" ]
+          "enum" : [ "faktura", "sakmappe", "forsendelse" ]
         }
       }
     },
-    "SakMappe" : {
+    "faktura" : {
+      "allOf" : [ {
+        "$ref" : "#/definitions/ParentType"
+      }, {
+        "type" : "object",
+        "required" : [ "fakturaDato", "forfallDato", "parent", "tittel" ],
+        "properties" : {
+          "tittel" : {
+            "type" : "string"
+          },
+          "fakturaDato" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "forfallDato" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "fakturaMottaker" : {
+            "type" : "string"
+          },
+          "betalesTil" : {
+            "type" : "string"
+          },
+          "korrelasjonId" : {
+            "type" : "string"
+          },
+          "parent" : {
+            "$ref" : "#/definitions/Parent"
+          },
+          "belop" : {
+            "type" : "string"
+          }
+        },
+        "description" : "Hendelse som beskriver en forsendelse"
+      } ]
+    },
+    "forsendelse" : {
+      "allOf" : [ {
+        "$ref" : "#/definitions/ParentType"
+      }, {
+        "type" : "object",
+        "required" : [ "avsender", "dokumenter", "lest", "mottaker", "parent", "sendtDato", "tittel" ],
+        "properties" : {
+          "tittel" : {
+            "type" : "string"
+          },
+          "sendtDato" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "avsender" : {
+            "type" : "string"
+          },
+          "mottaker" : {
+            "type" : "string"
+          },
+          "lest" : {
+            "type" : "boolean",
+            "description" : "Indikerer om forsendelsen er lest eller ikke"
+          },
+          "svarLenke" : {
+            "type" : "string",
+            "description" : "Url som skal benyttes for å svare på denne forsendelsen"
+          },
+          "korrelasjonId" : {
+            "type" : "string"
+          },
+          "parent" : {
+            "$ref" : "#/definitions/Parent"
+          },
+          "dokumenter" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/definitions/Dokument"
+            },
+            "maxItems" : 2147483647,
+            "minItems" : 1
+          }
+        },
+        "description" : "Hendelse som beskriver en forsendelse"
+      } ]
+    },
+    "sakmappe" : {
       "allOf" : [ {
         "$ref" : "#/definitions/ParentType"
       }, {
@@ -384,16 +385,14 @@
           },
           "sakStatus" : {
             "type" : "string",
-            "description" : "Navn på person eller orgnr / navn på organisasjon som er kilde for forsendelsen.",
             "enum" : [ "UNDER_BEHANDLING", "AVSLUTTET", "UTGAR" ]
           },
           "sakDato" : {
             "type" : "integer",
-            "format" : "int64",
-            "description" : "Navn på person eller orgnr / navn på organisasjon som er mottaker for forsendelsen"
+            "format" : "int64"
           }
         },
-        "description" : "Saksmappe"
+        "description" : "Sakmappe"
       } ]
     }
   }
