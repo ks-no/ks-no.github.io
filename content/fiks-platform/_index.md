@@ -1,5 +1,5 @@
 ---
-title: KS FIKS platform
+title: KS FIKS plattform
 description: Description
 ---
 
