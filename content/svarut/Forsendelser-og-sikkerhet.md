@@ -16,4 +16,3 @@ Det er nå mulig å sende forsendelser som inneholder sensitive persondata via S
 
 * En nivå 4-forsendelse må krypteres hos avgivende system før den sendes til SvarUt. Forsendelsen behandles på samme måte som alle andre forsendelser og forsendelsesfilen vil lagres kryptert på disk. 
 * Ingen andre enn mottaker har tilgang til forsendelsesfilen (heller ikke superadministratorer eller lokale administratorer hos avsender). 
-* Det er foreløpig ikke mulig å sende forsendelser på nivå 4 med manuell innsending.
