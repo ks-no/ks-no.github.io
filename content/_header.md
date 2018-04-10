@@ -1,3 +1,3 @@
 
 
-<img src="/images/ks-logo.svg" width="30%"> FIKS
+<img src="/images/ks-logo.svg" width="30%">

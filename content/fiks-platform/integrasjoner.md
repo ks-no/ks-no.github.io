@@ -1,7 +1,5 @@
 ---
-title: Integrasjon
-description: Description
-weight: 5
+title: Integrasjonsutvikling
 ---
 
 ### Integrasjoner

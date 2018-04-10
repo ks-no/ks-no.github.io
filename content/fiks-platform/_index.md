@@ -3,16 +3,12 @@ title: KS FIKS plattform
 description: Description
 ---
 
-En liten oversikt over fiks plattformen, tjenester og applikasjoner under er et utvalg av fremtidige og nåværende applikasjoner.
-Hver tjeneste og applikasjon vil være beskrevet på disse sidene.
+KS-Fiks er en felles tjenesteplattform for norske kommuner. Tjenester retter seg direkte mot innbyggere (som Edialog eller MinSide), mot kommnalt ansatte (for eksempel register-oppslag og SMS utsending), eller eksisterer for å fasilitere integrasjon mellom fagsystemer (som SvarInn og DokumentArkiv).   
 
 ![fiks oversikt](images/fiks_diagram.png "Fiks oversikt")
 
-Fiks plattformen består av et sett med api og en del webapplikasjoner. 
-Alle webapplikasjonene i fiks plattformen benytter seg av apiene som er tilgjengelig.
+Tjenestene deler et autorisasjonslag basert på Altinn og ID-Porten, og kan konfigureres gjennom et felles webgrensesnitt hvor målet er selvbetjening: hver enklet kommune skal kunne aktivere og tilpasse tjenester uten ytterligere bistand.
 
-Hver applikasjon og api kan enten være utviklet og laget av KS, eller av en annen kommune/leverandør. Alt skal være tilgjengelig på fiks.ks.no for alle som bruker plattformen.
 
-Hver bruker skal kunne legge til og fjerne tjenester de vil benytte via konfigurasjonen. Målet er at løsningen skal være selvbetjent.
 
 
