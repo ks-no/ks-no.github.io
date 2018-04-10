@@ -2,7 +2,7 @@
 title: Sikkerhet og personvern
 ---
 
-# Sikkerhet i løsningen
+## Sikkerhet i løsningen
 
 Under kommer generelle retningslinjer for hvordan vi har sikret applikasjonene, skulle noe avvike fra dette vil det 
 være spesifisert i hver tjeneste.
@@ -26,7 +26,7 @@ Alle komponenter/micro servicer i kubernetes er ansvarlig for å sjekke autentis
 direkte tilgang til disse tjenestene må en fortsatt ha et gyldig access_token fra idporten.
 
 
-# Personvern
+## Personvern
 
 Løsningen er i utgangspunktet laget for å gi tilgang til tjenester og data for Innbyggere og Organisasjoner. Det er ikke mulig
 å hente ut annen informasjon enn den som er lagt inn til deg. Tjenester som skal gjør tilgjengelig data for flere
