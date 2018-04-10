@@ -12,13 +12,13 @@ Søkemotoren inneholder utelukkende metadata. Om meldingen skal peke til et doku
 
 Når plattformen lanseres er Fiks SvarUt den første integrasjonen som leverer meldinger til meldingsboksen - hvis kommunen ønsker dette kan alle meldinger som noen sinne har blitt sendt gjennom svarut gjøres tilgjengelig for mottakerene. Dette styres gjennom fiks-konfigurasjon. 
 
-# Integrasjonsutvikling
+## Integrasjonsutvikling
 
-## Indekseringstjeneste [(api-spec)](https://editor.swagger.io/?url=https://ks-no.github.io/api/hendelse-indexer-api.json)
+### Indekseringstjeneste [(api-spec)](https://editor.swagger.io/?url=https://ks-no.github.io/api/hendelse-indexer-api.json)
 
 Indekseringstjenesten lar integrasjoner opprette meldinger, eller fjerne / endre meldinger som alt er opprettet. 
 
-### Indeksering
+#### Indeksering
 De vanlige autentiseringsreglene for Fiks-plattformen gjelder for denne tjenesten, men i tilegg må integrasjonen har rett til å indeksere på vegne av  _fiks organisasjonen_ som er satt som eier den aktuelle meldingen.
 
 Endepunktet støtter batch av opptil 5000 elementer, og integrasjonsutviklere anbefales å benytte denne funksjonaliteten, da det skaper vesentlig mindre trykk på systemet. Merk at indeksering ikke er en atomisk transaksjon: deler av elementene i en batch kan bli indeksert selv om andre feiler. Informasjon om dette finnes i responsen.
@@ -31,10 +31,10 @@ Noen viktige punkt for integrasjonsutviklere:
 * For _fiks organisasjon_ og _enhet_ kan man i tillegg til å sette identifikator også sette visningsnavn. Dette vil bli benyttet i webapplikasjonens grensesnitt og filter. Merk at hvis man endrer dette vil det nye navnet bare benyttes på grupper / hendelser som er indeksert etter endringen ble gjort. For å gjøre en fullstendig operasjon må hendelsene reindekseres.
 * _Eksponert for_ angir hvem som skal kunne se meldingen. Dette kan være endten et organisasjonsnummer eller et fødselsnummer. Merk at hver melding bare kan eksponeres for en person/org, hvis man ønsker at flere aktører skal kunne se samme informasjonen må gruppen indekseres flere ganger. 
 
-### Sletting
+#### Sletting
 Indekserte meldinger kan fjernes ved å benytte endepunkt for sletting. Her gjelder de samme reglene som over: en integrasjon må være autorisert for å handle på vegne av en ansvarlig organisasjon for at sletting kan gjennomføres. 
 
 Merk at sletting på samme måte som indeksering ikke gjennomføres i en atomisk transaksjon: deler av meldingene i batchen kan bli slettet selv om andre feiler. 
 
-## Søketjeneste [(api-spec)](https://editor.swagger.io/?url=https://ks-no.github.io/api/hendelse-sok-api.json)
+### Søketjeneste [(api-spec)](https://editor.swagger.io/?url=https://ks-no.github.io/api/hendelse-sok-api.json)
 Hvis kommunen har en eksisterende løsning for innloggede innbyggertjenester kan det være aktuelt å benytte meldingssøket som en tjeneste fremfor en webapplikasjon. Merk at kommunene da tar ansvar for å fremskaffe Open Id Connect innloggingstoken fra ID-porten, og for å sørge for at dette tokenet er gyldig. Meldingssøk tjenesten vil fortsatt utføre nødvendig autorisering.
