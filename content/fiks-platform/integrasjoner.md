@@ -26,19 +26,27 @@ forskjellige språk og teknologier. Vi vil benytte UTF-8 charset på alt om ikke
 Readtimeout på 30 sekund er fint som default. De operasjoenen som trenger noe annet vil spesifisere det.
 
 ### Innlogging og autorisasjon
-Tjenestene vil være beskyttet ved OAuth2. Access_token må være utstedt fra idporten. For tjenester som bruker av 
-innbygger eller personer vil vi benytte OpenID Connect fra idporten. Programintegrasjoner kan benytte OAuth2 fra idporten. 
+ntegrasjoner autentiseres ved at organisasjonen henter et OAuth 2.0 access token fra ID-Porten, identifisert ved hjelp av organisasjonens virksomhetssertifikat. Dokumentasjon for dette finnes [her](https://difi.github.io/idporten-oidc-dokumentasjon/oidc_auth_server-to-server-oauth2.html). Vi støtter i første omgang kun JWT access_tokens, dette må konfigureres hos idporten.
 
-Vi støtter i første omgang kun JWT access_tokens, dette må konfigureres hos idporten.
+Følgende må gjøres i fiks konfigurasjon for å opprette en integrasjon:
 
-På alle requester må OnBehalfOf header være satt til org eller fnr. Som regel vil dette være samme orgnr/fnr som i 
-access_token et fra idporten. Hvis det ikke er det sjekker vi om du har lov til å utføre på vegne av en annen 
-person/organisasjon.
+* _Sett autorisert organisasjon_. Dette vil som regel være organisasjonen som eier systemet som skal integrere seg mot Fiks, for eksempel hvis et fagsystem installert hos Bergen Kommune skal integreres mot meldingsboksen. 
+* _Genererer servicepassord_.
+* _Tildel navn_. Et visningsnavn for integrasjonen.
+* _Sett beskrivelse_. En beskrivelse av hva integrasjonen er og hvilke oppgaver den løsner. 
+* _Sett tjenester_. Hvilke tjenester er denne integrasjonen aktuell for?
+
+I tillegg må integrasjonen autoriseres for tilgang til en spesifikk tjeneste. Hvis fagsystemet skal kunne laste opp meldinger til Meldingsboksen må en administrator i kommunen benytte Fiks-Konfigurasjon for å legge til denne tilgangen hos den relvante kommunen.
+
+Kallet mot Fiks-platform tjenesten trenger dermed følgende HTTP headere:
+
+* _Authorization_: OAuth-2.0 Jwt Access token som bekrefter organisasjonens identitet, signert av ID-Porten.
+* _IntegrasjonId_: Id for integrasjonen, generert i Fiks-Konfigurasjon. Orgnr i Jwt'en i _Authorization_ header må være konfigurert som autorisert organisasjon for integrasjonen.
+* _IntegrasjonPassord_: Passord for integrasjonen, generert i Fiks-Konfigurasjon
 
 ### Huskeliste
 * access_token fra idporten
 * access_token må ha scope ks
-* OnBehalfOf-header må være satt til orgnr eller fnr
 * Read timeout: 30 sekunder
 * Charset UTF-8
 

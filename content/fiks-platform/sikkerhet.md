@@ -17,14 +17,22 @@ Innlogging og autentisering er løst av idporten, hvor vi benytter OpenID connec
 Alle filer med data er kryptert på disk. All backup er kryptert. Vi har laget egne servere for dekryptering av data.
 Disse er spesielt godt sikret, nettverks og tilgangs kontroll. 
 
-### Kubernetes
+### Autentisering og autorisering
+Aktører som bruker Fiks-platformen havner i tre kategorier:
 
-Løsningen kjører på et kubernetes cluster, all kommunikasjon som går ut fra dette til f.eks databaser og andre eksterne tjenester
-er sikret med TLS.
+* Personer som bruker tjenester på vegne av seg selv, for eksempel en innbygger som søker barnehagesøknaden sin i meldingsboksen.
+* Personer som bruker tjenester på vegne av en bedrift hvor de har en rolle, for eksempel en innbygger som henter ned en forsendelse til bedriften fra svarut.
+* Systemer som er installert i en organisasjon som integrerer seg mot en tjeneste på fiks-platformen.  
 
-Alle komponenter/micro servicer i kubernetes er ansvarlig for å sjekke autentisering og autorisasjon. Skulle en klare å få
-direkte tilgang til disse tjenestene må en fortsatt ha et gyldig access_token fra idporten.
+#### Personer
+Personer autentiseres ved hjelp av Open-Id Connect løsningen til ID-Porten. Dette vil si at de (om de ikke allerede er innlogget) dirigeres til ID-Porten for innlogging ved hjelp av for eksempel MinId eller BankId. ID-Porten og Fiks utveksler så informasjon for å bekrefte brukerens identitet og hvilket innloggingsnivå som er benyttet. Utgåtte innlogginger vil automatisk bli fornyet.
 
+En person har mulighet til å agere på vegne av en organisasjon, for eksempel en bedrift hvor personen har en rolle. Se avsnittet om [fullmakter]{{< relref "fullmakt.md" >}} for mer informasjon om dette.
+
+#### Integrasjoner
+Flere tjenester på fiks-platformen vil ha mulighet for maskin-til-maskin kommunikasjon, for eksempel ved at et saksystem laster opp meldinger til meldingsboksen. Dette gjøres gjennom å opprette  _integrasjoner_, som autentiseres ved hjelp av et access token utstedt av ID-Porten i kombinasjon med integrasjonsid og passord generert av Fiks-Konfigurasjon. Se [integrasjoner]{{< relref "integrasjoner.md" >}} for mer informasjon om oppsett av dette.
+
+En integrasjon vil ofte kunne jobbe på vegne av flere fiks-organisasjoner, for eksempel vil integrasjonen mellom SvarUt og Meldingsboksen kunne indeksere meldinger som tilhører mange kommuner. Dermed må integrasjoner autorisereres av fiks-organisasjonen som skal benytte den. Dette gjøres gjennom Fiks-Konfigurasjon. 
 
 ## Personvern
 
