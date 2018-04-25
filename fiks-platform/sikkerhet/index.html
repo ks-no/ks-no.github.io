@@ -315,18 +315,19 @@
         <div class="wrapper">
     <nav id="TableOfContents">
 <ul>
-<li><a href="#sikkerhet-i-løsningen">Sikkerhet i løsningen</a>
-<ul>
 <li>
+<ul>
+<li><a href="#sikkerhet-i-løsningen">Sikkerhet i løsningen</a>
 <ul>
 <li><a href="#sikring-av-kommunikasjon">Sikring av kommunikasjon</a></li>
 <li><a href="#sikring-av-data">Sikring av data</a></li>
-<li><a href="#kubernetes">Kubernetes</a></li>
+<li><a href="#autentisering-og-autorisering">Autentisering og autorisering</a>
+<ul>
+<li><a href="#personer">Personer</a></li>
+<li><a href="#integrasjoner">Integrasjoner</a></li>
 </ul></li>
 </ul></li>
 <li><a href="#personvern">Personvern</a>
-<ul>
-<li>
 <ul>
 <li><a href="#sletting-av-data">Sletting av data</a></li>
 </ul></li>
@@ -352,7 +353,7 @@
     
     
 
-<h1 id="sikkerhet-i-løsningen">Sikkerhet i løsningen</h1>
+<h2 id="sikkerhet-i-løsningen">Sikkerhet i løsningen</h2>
 
 <p>Under kommer generelle retningslinjer for hvordan vi har sikret applikasjonene, skulle noe avvike fra dette vil det
 være spesifisert i hver tjeneste.</p>
@@ -367,15 +368,29 @@ Innlogging og autentisering er løst av idporten, hvor vi benytter OpenID connec
 <p>Alle filer med data er kryptert på disk. All backup er kryptert. Vi har laget egne servere for dekryptering av data.
 Disse er spesielt godt sikret, nettverks og tilgangs kontroll.</p>
 
-<h3 id="kubernetes">Kubernetes</h3>
+<h3 id="autentisering-og-autorisering">Autentisering og autorisering</h3>
 
-<p>Løsningen kjører på et kubernetes cluster, all kommunikasjon som går ut fra dette til f.eks databaser og andre eksterne tjenester
-er sikret med TLS.</p>
+<p>Aktører som bruker Fiks-platformen havner i tre kategorier:</p>
 
-<p>Alle komponenter/micro servicer i kubernetes er ansvarlig for å sjekke autentisering og autorisasjon. Skulle en klare å få
-direkte tilgang til disse tjenestene må en fortsatt ha et gyldig access_token fra idporten.</p>
+<ul>
+<li>Personer som bruker tjenester på vegne av seg selv, for eksempel en innbygger som søker barnehagesøknaden sin i meldingsboksen.</li>
+<li>Personer som bruker tjenester på vegne av en bedrift hvor de har en rolle, for eksempel en innbygger som henter ned en forsendelse til bedriften fra svarut.</li>
+<li>Systemer som er installert i en organisasjon som integrerer seg mot en tjeneste på fiks-platformen.<br /></li>
+</ul>
 
-<h1 id="personvern">Personvern</h1>
+<h4 id="personer">Personer</h4>
+
+<p>Personer autentiseres ved hjelp av Open-Id Connect løsningen til ID-Porten. Dette vil si at de (om de ikke allerede er innlogget) dirigeres til ID-Porten for innlogging ved hjelp av for eksempel MinId eller BankId. ID-Porten og Fiks utveksler så informasjon for å bekrefte brukerens identitet og hvilket innloggingsnivå som er benyttet. Utgåtte innlogginger vil automatisk bli fornyet.</p>
+
+<p>En person har mulighet til å agere på vegne av en organisasjon, for eksempel en bedrift hvor personen har en rolle. Se avsnittet om [fullmakter]/fiks-platform/fullmakt/ for mer informasjon om dette.</p>
+
+<h4 id="integrasjoner">Integrasjoner</h4>
+
+<p>Flere tjenester på fiks-platformen vil ha mulighet for maskin-til-maskin kommunikasjon, for eksempel ved at et saksystem laster opp meldinger til meldingsboksen. Dette gjøres gjennom å opprette  <em>integrasjoner</em>, som autentiseres ved hjelp av et access token utstedt av ID-Porten i kombinasjon med integrasjonsid og passord generert av Fiks-Konfigurasjon. Se [integrasjoner]/fiks-platform/integrasjoner/ for mer informasjon om oppsett av dette.</p>
+
+<p>En integrasjon vil ofte kunne jobbe på vegne av flere fiks-organisasjoner, for eksempel vil integrasjonen mellom SvarUt og Meldingsboksen kunne indeksere meldinger som tilhører mange kommuner. Dermed må integrasjoner autorisereres av fiks-organisasjonen som skal benytte den. Dette gjøres gjennom Fiks-Konfigurasjon.</p>
+
+<h2 id="personvern">Personvern</h2>
 
 <p>Løsningen er i utgangspunktet laget for å gi tilgang til tjenester og data for Innbyggere og Organisasjoner. Det er ikke mulig
 å hente ut annen informasjon enn den som er lagt inn til deg. Tjenester som skal gjør tilgjengelig data for flere

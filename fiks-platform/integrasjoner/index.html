@@ -376,21 +376,33 @@ forskjellige språk og teknologier. Vi vil benytte UTF-8 charset på alt om ikke
 
 <h3 id="innlogging-og-autorisasjon">Innlogging og autorisasjon</h3>
 
-<p>Tjenestene vil være beskyttet ved OAuth2. Access_token må være utstedt fra idporten. For tjenester som bruker av
-innbygger eller personer vil vi benytte OpenID Connect fra idporten. Programintegrasjoner kan benytte OAuth2 fra idporten.</p>
+<p>ntegrasjoner autentiseres ved at organisasjonen henter et OAuth 2.0 access token fra ID-Porten, identifisert ved hjelp av organisasjonens virksomhetssertifikat. Dokumentasjon for dette finnes <a href="https://difi.github.io/idporten-oidc-dokumentasjon/oidc_auth_server-to-server-oauth2.html">her</a>. Vi støtter i første omgang kun JWT access_tokens, dette må konfigureres hos idporten.</p>
 
-<p>Vi støtter i første omgang kun JWT access_tokens, dette må konfigureres hos idporten.</p>
+<p>Følgende må gjøres i fiks konfigurasjon for å opprette en integrasjon:</p>
 
-<p>På alle requester må OnBehalfOf header være satt til org eller fnr. Som regel vil dette være samme orgnr/fnr som i
-access_token et fra idporten. Hvis det ikke er det sjekker vi om du har lov til å utføre på vegne av en annen
-person/organisasjon.</p>
+<ul>
+<li><em>Sett autorisert organisasjon</em>. Dette vil som regel være organisasjonen som eier systemet som skal integrere seg mot Fiks, for eksempel hvis et fagsystem installert hos Bergen Kommune skal integreres mot meldingsboksen.</li>
+<li><em>Genererer servicepassord</em>.</li>
+<li><em>Tildel navn</em>. Et visningsnavn for integrasjonen.</li>
+<li><em>Sett beskrivelse</em>. En beskrivelse av hva integrasjonen er og hvilke oppgaver den løsner.</li>
+<li><em>Sett tjenester</em>. Hvilke tjenester er denne integrasjonen aktuell for?</li>
+</ul>
+
+<p>I tillegg må integrasjonen autoriseres for tilgang til en spesifikk tjeneste. Hvis fagsystemet skal kunne laste opp meldinger til Meldingsboksen må en administrator i kommunen benytte Fiks-Konfigurasjon for å legge til denne tilgangen hos den relvante kommunen.</p>
+
+<p>Kallet mot Fiks-platform tjenesten trenger dermed følgende HTTP headere:</p>
+
+<ul>
+<li><em>Authorization</em>: OAuth-2.0 Jwt Access token som bekrefter organisasjonens identitet, signert av ID-Porten.</li>
+<li><em>IntegrasjonId</em>: Id for integrasjonen, generert i Fiks-Konfigurasjon. Orgnr i Jwt&rsquo;en i <em>Authorization</em> header må være konfigurert som autorisert organisasjon for integrasjonen.</li>
+<li><em>IntegrasjonPassord</em>: Passord for integrasjonen, generert i Fiks-Konfigurasjon</li>
+</ul>
 
 <h3 id="huskeliste">Huskeliste</h3>
 
 <ul>
 <li>access_token fra idporten</li>
 <li>access_token må ha scope ks</li>
-<li>OnBehalfOf-header må være satt til orgnr eller fnr</li>
 <li>Read timeout: 30 sekunder</li>
 <li>Charset UTF-8</li>
 </ul>
