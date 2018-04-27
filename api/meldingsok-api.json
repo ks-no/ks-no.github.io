@@ -1,0 +1,567 @@
+{
+  "swagger" : "2.0",
+  "info" : {
+    "description" : "Api for indeksering av meldinger til KS-Fiks MinSide Søk.",
+    "version" : "v1",
+    "title" : "KS Fiks: Hendelse Søk Service",
+    "contact" : {
+      "name" : "Fiks Utvikling",
+      "url" : "https://ks-no.github.io/",
+      "email" : "fiks-utvikling@ks.no"
+    }
+  },
+  "basePath" : "/api",
+  "tags" : [ {
+    "name" : "Lookup"
+  }, {
+    "name" : "Search"
+  } ],
+  "schemes" : [ "http", "https" ],
+  "paths" : {
+    "/meldingsok/api/korrelasjon" : {
+      "get" : {
+        "tags" : [ "Lookup" ],
+        "summary" : "korrelasjon",
+        "description" : "",
+        "operationId" : "lookupKorrelasjon",
+        "parameters" : [ {
+          "name" : "korrelasjonId",
+          "in" : "query",
+          "description" : "Search term",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "$ref" : "#/definitions/KorrelasjonLookupResult"
+            }
+          }
+        }
+      }
+    },
+    "/meldingsok/api/parent" : {
+      "get" : {
+        "tags" : [ "Lookup" ],
+        "summary" : "lookupParent",
+        "description" : "",
+        "operationId" : "lookupParent",
+        "parameters" : [ {
+          "name" : "fiksOrganisasjonId",
+          "in" : "query",
+          "description" : "Id for organisasjonen som eier dokumentet",
+          "required" : true,
+          "type" : "string",
+          "format" : "uuid"
+        }, {
+          "name" : "parentType",
+          "in" : "query",
+          "description" : "The type of the parent document",
+          "required" : true,
+          "type" : "string",
+          "enum" : [ "faktura", "sakmappe", "journalpost", "forsendelse" ]
+        }, {
+          "name" : "parentId",
+          "in" : "query",
+          "description" : "The id of the parent document",
+          "required" : true,
+          "type" : "string",
+          "format" : "uuid"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "$ref" : "#/definitions/ParentLookupResult"
+            }
+          }
+        }
+      }
+    },
+    "/meldingsok/api/search" : {
+      "post" : {
+        "tags" : [ "Search" ],
+        "summary" : "Search",
+        "description" : "",
+        "operationId" : "findPaginated",
+        "parameters" : [ {
+          "name" : "term",
+          "in" : "query",
+          "description" : "Search term",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "from",
+          "in" : "query",
+          "description" : "Index of first result element",
+          "required" : false,
+          "type" : "integer",
+          "format" : "int32"
+        }, {
+          "name" : "size",
+          "in" : "query",
+          "description" : "Number of elements requested",
+          "required" : false,
+          "type" : "integer",
+          "format" : "int32"
+        }, {
+          "name" : "sortByDate",
+          "in" : "query",
+          "description" : "Indicates that the result should be sorted by date rather than by relevance",
+          "required" : false,
+          "type" : "string",
+          "enum" : [ "ASC", "DESC" ]
+        }, {
+          "in" : "body",
+          "name" : "body",
+          "description" : "Filters limiting the result set",
+          "required" : false,
+          "schema" : {
+            "$ref" : "#/definitions/Filter"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "$ref" : "#/definitions/Result"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions" : {
+    "Aggregations" : {
+      "type" : "object",
+      "properties" : {
+        "fiksOrganisasjon" : {
+          "type" : "array",
+          "uniqueItems" : true,
+          "items" : {
+            "$ref" : "#/definitions/FiksOrganisasjonAggregation"
+          }
+        },
+        "enhet" : {
+          "type" : "array",
+          "uniqueItems" : true,
+          "items" : {
+            "$ref" : "#/definitions/EnhetAggregation"
+          }
+        },
+        "dateRange" : {
+          "$ref" : "#/definitions/DateRange"
+        }
+      }
+    },
+    "DateRange" : {
+      "type" : "object",
+      "properties" : {
+        "fromDate" : {
+          "type" : "string",
+          "format" : "date-time"
+        },
+        "toDate" : {
+          "type" : "string",
+          "format" : "date-time"
+        }
+      }
+    },
+    "Dokument" : {
+      "type" : "object",
+      "properties" : {
+        "tittel" : {
+          "type" : "string"
+        },
+        "size" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "nedlastingslenke" : {
+          "type" : "string"
+        }
+      }
+    },
+    "Enhet" : {
+      "type" : "object",
+      "properties" : {
+        "id" : {
+          "type" : "string"
+        },
+        "visningsnavn" : {
+          "type" : "string"
+        }
+      }
+    },
+    "EnhetAggregation" : {
+      "type" : "object",
+      "properties" : {
+        "id" : {
+          "type" : "string"
+        },
+        "visningsnavn" : {
+          "type" : "string"
+        },
+        "numberOfHits" : {
+          "type" : "integer",
+          "format" : "int64"
+        },
+        "selected" : {
+          "type" : "boolean"
+        }
+      }
+    },
+    "FiksOrganisasjon" : {
+      "type" : "object",
+      "properties" : {
+        "id" : {
+          "type" : "string",
+          "format" : "uuid"
+        },
+        "visningsnavn" : {
+          "type" : "string"
+        }
+      }
+    },
+    "FiksOrganisasjonAggregation" : {
+      "type" : "object",
+      "properties" : {
+        "id" : {
+          "type" : "string",
+          "format" : "uuid"
+        },
+        "visningsnavn" : {
+          "type" : "string"
+        },
+        "numberOfHits" : {
+          "type" : "integer",
+          "format" : "int64"
+        },
+        "selected" : {
+          "type" : "boolean"
+        }
+      }
+    },
+    "Filter" : {
+      "type" : "object",
+      "properties" : {
+        "fromDate" : {
+          "type" : "string",
+          "format" : "date-time"
+        },
+        "toDate" : {
+          "type" : "string",
+          "format" : "date-time"
+        },
+        "fiksOrganisasjon" : {
+          "type" : "array",
+          "uniqueItems" : true,
+          "items" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        },
+        "enhet" : {
+          "type" : "array",
+          "uniqueItems" : true,
+          "items" : {
+            "type" : "string"
+          }
+        },
+        "typer" : {
+          "type" : "array",
+          "uniqueItems" : true,
+          "items" : {
+            "type" : "string",
+            "enum" : [ "faktura", "sakmappe", "journalpost", "forsendelse" ]
+          }
+        }
+      }
+    },
+    "Hit" : {
+      "type" : "object",
+      "required" : [ "innloggingsniva" ],
+      "properties" : {
+        "id" : {
+          "type" : "string",
+          "format" : "uuid"
+        },
+        "innloggingsniva" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "fiksOrganisasjon" : {
+          "$ref" : "#/definitions/FiksOrganisasjon"
+        },
+        "enhet" : {
+          "$ref" : "#/definitions/Enhet"
+        },
+        "sorteringDato" : {
+          "type" : "string",
+          "format" : "date-time"
+        },
+        "korrelasjonId" : {
+          "type" : "string"
+        },
+        "parent" : {
+          "$ref" : "#/definitions/Parent"
+        },
+        "type" : {
+          "$ref" : "#/definitions/HitType"
+        },
+        "score" : {
+          "type" : "number",
+          "format" : "float"
+        }
+      }
+    },
+    "HitType" : {
+      "type" : "object",
+      "discriminator" : "type",
+      "properties" : {
+        "type" : {
+          "type" : "string",
+          "enum" : [ "faktura", "sakmappe", "journalpost", "forsendelse" ]
+        }
+      }
+    },
+    "JournalpostDokumentbeskrivelse" : {
+      "type" : "object",
+      "properties" : {
+        "tittel" : {
+          "type" : "string"
+        },
+        "filstoerrelse" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "variantformat" : {
+          "type" : "string"
+        },
+        "nedlastingLenke" : {
+          "type" : "string"
+        }
+      }
+    },
+    "KorrelasjonLookupResult" : {
+      "type" : "object",
+      "properties" : {
+        "children" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/Hit"
+          }
+        },
+        "childrenAboveInnloggingsniva" : {
+          "type" : "integer",
+          "format" : "int32"
+        }
+      }
+    },
+    "Parent" : {
+      "type" : "object",
+      "properties" : {
+        "type" : {
+          "type" : "string",
+          "enum" : [ "faktura", "sakmappe", "journalpost", "forsendelse" ]
+        },
+        "id" : {
+          "type" : "string",
+          "format" : "uuid"
+        }
+      }
+    },
+    "ParentLookupResult" : {
+      "type" : "object",
+      "properties" : {
+        "parentIkkeEksponertForBruker" : {
+          "type" : "boolean"
+        },
+        "parentDoesNotExist" : {
+          "type" : "boolean"
+        },
+        "parentHit" : {
+          "$ref" : "#/definitions/Hit"
+        },
+        "children" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/Hit"
+          }
+        },
+        "parentAboveInnloggingsniva" : {
+          "type" : "boolean"
+        },
+        "childrenAboveInnloggingsniva" : {
+          "type" : "integer",
+          "format" : "int32"
+        }
+      }
+    },
+    "Result" : {
+      "type" : "object",
+      "required" : [ "additionalHitsWithHigherLoginLevel", "aggregations" ],
+      "properties" : {
+        "numberOfHits" : {
+          "type" : "integer",
+          "format" : "int64"
+        },
+        "additionalHitsWithHigherLoginLevel" : {
+          "type" : "integer",
+          "format" : "int64"
+        },
+        "hits" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/Hit"
+          }
+        },
+        "from" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "size" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "aggregations" : {
+          "$ref" : "#/definitions/Aggregations"
+        }
+      }
+    },
+    "faktura" : {
+      "allOf" : [ {
+        "$ref" : "#/definitions/HitType"
+      }, {
+        "type" : "object",
+        "properties" : {
+          "tittel" : {
+            "type" : "string"
+          },
+          "fakturaDato" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "forfallDato" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "fakturaMottaker" : {
+            "type" : "string"
+          },
+          "betalesTil" : {
+            "type" : "string"
+          },
+          "belop" : {
+            "type" : "string"
+          }
+        },
+        "description" : "Faktura"
+      } ]
+    },
+    "forsendelse" : {
+      "allOf" : [ {
+        "$ref" : "#/definitions/HitType"
+      }, {
+        "type" : "object",
+        "properties" : {
+          "tittel" : {
+            "type" : "string"
+          },
+          "avsender" : {
+            "type" : "string"
+          },
+          "mottaker" : {
+            "type" : "string"
+          },
+          "eksternLenke" : {
+            "type" : "string"
+          },
+          "eksternLenkeTekst" : {
+            "type" : "string"
+          },
+          "svarLenke" : {
+            "type" : "string"
+          },
+          "sendtDato" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "lest" : {
+            "type" : "boolean"
+          },
+          "dokumenter" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/definitions/Dokument"
+            }
+          }
+        },
+        "description" : "Forsendelse"
+      } ]
+    },
+    "journalpost" : {
+      "allOf" : [ {
+        "$ref" : "#/definitions/HitType"
+      }, {
+        "type" : "object",
+        "required" : [ "journaldato" ],
+        "properties" : {
+          "registreringsId" : {
+            "type" : "string"
+          },
+          "tittel" : {
+            "type" : "string"
+          },
+          "beskrivelse" : {
+            "type" : "string"
+          },
+          "journaldato" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "dokumentbeskrivelser" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/definitions/JournalpostDokumentbeskrivelse"
+            }
+          }
+        }
+      } ]
+    },
+    "sakmappe" : {
+      "allOf" : [ {
+        "$ref" : "#/definitions/HitType"
+      }, {
+        "type" : "object",
+        "properties" : {
+          "mappeId" : {
+            "type" : "string"
+          },
+          "tittel" : {
+            "type" : "string"
+          },
+          "beskrivelse" : {
+            "type" : "string"
+          },
+          "saksstatus" : {
+            "type" : "string",
+            "enum" : [ "UNDER_BEHANDLING", "AVSLUTTET", "UTGAR" ]
+          },
+          "saksdato" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "saksansvarlig" : {
+            "type" : "string"
+          },
+          "administrativEnhet" : {
+            "type" : "string"
+          }
+        },
+        "description" : "Sakmappe"
+      } ]
+    }
+  }
+}
