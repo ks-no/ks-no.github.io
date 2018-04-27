@@ -1,0 +1,471 @@
+{
+  "swagger" : "2.0",
+  "info" : {
+    "version" : "v1",
+    "title" : "KS Fiks: Hendelse Indexer Service",
+    "contact" : {
+      "name" : "Fiks Utvikling",
+      "url" : "https://ks-no.github.io/",
+      "email" : "fiks-utvikling@ks.no"
+    }
+  },
+  "basePath" : "/api",
+  "tags" : [ {
+    "name" : "Index"
+  } ],
+  "schemes" : [ "http", "https" ],
+  "paths" : {
+    "/meldingindexer/api/deleteMeRequest" : {
+      "delete" : {
+        "tags" : [ "Index" ],
+        "summary" : "Fjern alle meldinger eksponert for den autentiserte brukeren fra meldingsboksen. Kan bare benyttes av privatpersoner",
+        "description" : "",
+        "operationId" : "deleteMe",
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "$ref" : "#/definitions/DeletionResponse"
+            }
+          }
+        }
+      }
+    },
+    "/meldingindexer/api/deleteRequest" : {
+      "delete" : {
+        "tags" : [ "Index" ],
+        "summary" : "Fjerner meldinger for den spesifiserte integrasjon/fiks-org. Enhet eller meldingsid kan legges til for ytterligere filtrering.",
+        "description" : "",
+        "operationId" : "delete",
+        "parameters" : [ {
+          "name" : "fiksOrganisasjonId",
+          "in" : "query",
+          "description" : "Fiks-organisasjon id",
+          "required" : true,
+          "type" : "string",
+          "format" : "uuid"
+        }, {
+          "name" : "enhetId",
+          "in" : "query",
+          "description" : "Enhet id",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "meldingId",
+          "in" : "query",
+          "description" : "Gruppe id",
+          "required" : false,
+          "type" : "string",
+          "format" : "uuid"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "$ref" : "#/definitions/DeletionResponse"
+            }
+          }
+        }
+      }
+    },
+    "/meldingindexer/api/indexRequest" : {
+      "put" : {
+        "tags" : [ "Index" ],
+        "summary" : "Indekser nye meldinger, eller oppdater eksisterende meldinger",
+        "description" : "Batch av en eller flere meldinger, opp til et maksimum av 5000. Merk at operasjonen ikke er atomisk: responsen vil indikere om en eller flere indekseringsoperasjoner feilet.",
+        "operationId" : "index",
+        "parameters" : [ {
+          "in" : "body",
+          "name" : "body",
+          "description" : "Meldingene som skal indekseres",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/definitions/IndexRequest"
+            }
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Indekseringsoperasjonen er gjennomført. Merk at indekseringen av en eller flere meldinger kan ha feilet, se de individuelle respons-kodene.",
+            "schema" : {
+              "$ref" : "#/definitions/BulkResponse"
+            }
+          },
+          "400" : {
+            "description" : "Forespørselen er ikke korrekt formatert",
+            "schema" : {
+              "type" : "array",
+              "items" : {
+                "$ref" : "#/definitions/Valdieringsfeil"
+              }
+            }
+          },
+          "422" : {
+            "description" : "Antall meldinger i operasjonen overgår øvre begrensning (5000)"
+          },
+          "500" : {
+            "description" : "Indekseringsoperasjonen har feilet. Et ukjent antall meldinger kan likevel ha blitt indeksert, men alle bør sendes inn på nytt"
+          }
+        }
+      }
+    }
+  },
+  "definitions" : {
+    "BulkResponse" : {
+      "type" : "object",
+      "properties" : {
+        "results" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/IndexResponse"
+          }
+        },
+        "failed" : {
+          "type" : "boolean"
+        },
+        "error" : {
+          "type" : "string"
+        }
+      },
+      "description" : "Result of a bulk request"
+    },
+    "DeletionResponse" : {
+      "type" : "object",
+      "properties" : {
+        "deletedMessages" : {
+          "type" : "integer",
+          "format" : "int64"
+        },
+        "failureId" : {
+          "type" : "string"
+        },
+        "operationFailed" : {
+          "type" : "boolean"
+        },
+        "deletionsFailed" : {
+          "type" : "boolean"
+        },
+        "failedDeletionMessageId" : {
+          "type" : "array",
+          "uniqueItems" : true,
+          "items" : {
+            "type" : "string"
+          }
+        }
+      }
+    },
+    "Dokument" : {
+      "type" : "object",
+      "required" : [ "nedlastingLenke", "tittel" ],
+      "properties" : {
+        "tittel" : {
+          "type" : "string"
+        },
+        "size" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "nedlastingLenke" : {
+          "type" : "string"
+        }
+      },
+      "description" : "Et dokument for en forsendelse"
+    },
+    "Enhet" : {
+      "type" : "object",
+      "required" : [ "id", "visningsnavn" ],
+      "properties" : {
+        "id" : {
+          "type" : "string",
+          "pattern" : "^[0-9A-Z_.]+$"
+        },
+        "visningsnavn" : {
+          "type" : "string",
+          "pattern" : "^[A-Za-zæøåÆØÅ0-9_.,/\\-_ ]+$"
+        }
+      }
+    },
+    "FiksOrganisasjon" : {
+      "type" : "object",
+      "required" : [ "id", "visningsnavn" ],
+      "properties" : {
+        "id" : {
+          "type" : "string",
+          "format" : "uuid"
+        },
+        "visningsnavn" : {
+          "type" : "string",
+          "pattern" : "^[A-Za-zæøåÆØÅ0-9_.,/\\-_ ]+$"
+        }
+      }
+    },
+    "IndexRequest" : {
+      "type" : "object",
+      "required" : [ "eksponertFor", "enhet", "fiksOrganisasjon", "id", "innloggingsniva", "typeMetadata" ],
+      "properties" : {
+        "id" : {
+          "type" : "string",
+          "format" : "uuid"
+        },
+        "innloggingsniva" : {
+          "type" : "integer",
+          "format" : "int32",
+          "minimum" : 0
+        },
+        "eksponertFor" : {
+          "type" : "string",
+          "pattern" : "^[0-9]{11}$|^[0-9]{9}$"
+        },
+        "fiksOrganisasjon" : {
+          "$ref" : "#/definitions/FiksOrganisasjon"
+        },
+        "enhet" : {
+          "$ref" : "#/definitions/Enhet"
+        },
+        "typeMetadata" : {
+          "$ref" : "#/definitions/ParentType"
+        }
+      },
+      "description" : "En forespørsel om å opprette en ny melding eller å oppdatere en eksisterende melding"
+    },
+    "IndexResponse" : {
+      "type" : "object",
+      "properties" : {
+        "id" : {
+          "type" : "string",
+          "format" : "uuid"
+        },
+        "indexed" : {
+          "type" : "boolean"
+        },
+        "responseCode" : {
+          "type" : "string",
+          "enum" : [ "OK", "FAILED", "GDPR_RESERVED" ]
+        },
+        "message" : {
+          "type" : "string"
+        }
+      }
+    },
+    "JournalpostDockumentbeskrivelse" : {
+      "type" : "object",
+      "required" : [ "filstorrelse", "nedlastingLenke", "tittel", "variantformat" ],
+      "properties" : {
+        "tittel" : {
+          "type" : "string"
+        },
+        "filstorrelse" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "variantformat" : {
+          "type" : "string"
+        },
+        "nedlastingLenke" : {
+          "type" : "string"
+        }
+      },
+      "description" : "Et dokument for en forsendelse"
+    },
+    "Parent" : {
+      "type" : "object",
+      "required" : [ "id", "type" ],
+      "properties" : {
+        "id" : {
+          "type" : "string",
+          "format" : "uuid"
+        },
+        "type" : {
+          "type" : "string",
+          "enum" : [ "faktura", "sakmappe", "journalpost", "forsendelse" ]
+        }
+      },
+      "description" : "Spesifiser et foreldre-dokument."
+    },
+    "ParentType" : {
+      "type" : "object",
+      "required" : [ "type" ],
+      "discriminator" : "type",
+      "properties" : {
+        "type" : {
+          "type" : "string",
+          "enum" : [ "faktura", "sakmappe", "journalpost", "forsendelse" ]
+        }
+      }
+    },
+    "Valdieringsfeil" : {
+      "type" : "object",
+      "properties" : {
+        "meldingId" : {
+          "type" : "string",
+          "format" : "uuid",
+          "description" : "Id for meldingen som ikke kunne valideres"
+        },
+        "felt" : {
+          "type" : "string",
+          "description" : "Feltet som feiler"
+        },
+        "feilmelding" : {
+          "type" : "string",
+          "description" : "Beskrivelse av feilen som oppstod"
+        }
+      }
+    },
+    "faktura" : {
+      "allOf" : [ {
+        "$ref" : "#/definitions/ParentType"
+      }, {
+        "type" : "object",
+        "required" : [ "fakturaDato", "forfallDato", "parent", "tittel" ],
+        "properties" : {
+          "tittel" : {
+            "type" : "string"
+          },
+          "fakturaDato" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "forfallDato" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "fakturaMottaker" : {
+            "type" : "string"
+          },
+          "betalesTil" : {
+            "type" : "string"
+          },
+          "korrelasjonId" : {
+            "type" : "string"
+          },
+          "parent" : {
+            "$ref" : "#/definitions/Parent"
+          },
+          "belop" : {
+            "type" : "string"
+          }
+        },
+        "description" : "Hendelse som beskriver en forsendelse"
+      } ]
+    },
+    "forsendelse" : {
+      "allOf" : [ {
+        "$ref" : "#/definitions/ParentType"
+      }, {
+        "type" : "object",
+        "required" : [ "avsender", "dokumenter", "lest", "mottaker", "parent", "sendtDato", "tittel" ],
+        "properties" : {
+          "tittel" : {
+            "type" : "string"
+          },
+          "sendtDato" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "avsender" : {
+            "type" : "string"
+          },
+          "mottaker" : {
+            "type" : "string"
+          },
+          "lest" : {
+            "type" : "boolean",
+            "description" : "Indikerer om forsendelsen er lest eller ikke"
+          },
+          "svarLenke" : {
+            "type" : "string",
+            "description" : "Url som skal benyttes for å svare på denne forsendelsen"
+          },
+          "korrelasjonId" : {
+            "type" : "string"
+          },
+          "parent" : {
+            "$ref" : "#/definitions/Parent"
+          },
+          "dokumenter" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/definitions/Dokument"
+            },
+            "maxItems" : 2147483647,
+            "minItems" : 1
+          }
+        },
+        "description" : "Hendelse som beskriver en forsendelse"
+      } ]
+    },
+    "journalpost" : {
+      "allOf" : [ {
+        "$ref" : "#/definitions/ParentType"
+      }, {
+        "type" : "object",
+        "required" : [ "beskrivelse", "dokumentbeskrivelser", "journaldato", "parent", "registreringsId", "tittel" ],
+        "properties" : {
+          "registreringsId" : {
+            "type" : "string"
+          },
+          "tittel" : {
+            "type" : "string"
+          },
+          "beskrivelse" : {
+            "type" : "string"
+          },
+          "journaldato" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "korrelasjonId" : {
+            "type" : "string"
+          },
+          "parent" : {
+            "$ref" : "#/definitions/Parent"
+          },
+          "dokumentbeskrivelser" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/definitions/JournalpostDockumentbeskrivelse"
+            },
+            "maxItems" : 2147483647,
+            "minItems" : 1
+          }
+        }
+      } ]
+    },
+    "sakmappe" : {
+      "allOf" : [ {
+        "$ref" : "#/definitions/ParentType"
+      }, {
+        "type" : "object",
+        "required" : [ "administrativEnhet", "mappeId", "saksansvarlig", "saksdato", "saksstatus", "tittel" ],
+        "properties" : {
+          "mappeId" : {
+            "type" : "string"
+          },
+          "tittel" : {
+            "type" : "string"
+          },
+          "beskrivelse" : {
+            "type" : "string"
+          },
+          "saksstatus" : {
+            "type" : "string",
+            "enum" : [ "UNDER_BEHANDLING", "AVSLUTTET", "UTGAR" ]
+          },
+          "saksdato" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "saksansvarlig" : {
+            "type" : "string"
+          },
+          "administrativEnhet" : {
+            "type" : "string"
+          }
+        },
+        "description" : "Sakmappe"
+      } ]
+    }
+  }
+}
