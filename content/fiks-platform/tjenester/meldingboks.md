@@ -1,10 +1,14 @@
 ---
-title: Tjeneste - Meldingsboks
+title: Meldingsboks
 ---
 
-![minside_sok](/images/sok.png "Minside Søk")
+![minside_sok](/images/fiks_meldingboks.png "Minside Søk")
 
-Søk er en modul i min-side som består av en SPA (single page webapp), meldingsboksen, som kommuniserer med en søkemotor, meldingssøk, og en indekseringstjeneste, meldingsindexer. En integrasjon benytter meldingsindexeren for å laste opp meldinger: hendelser, fakturaer, saker, journalposter, forsendelser, osv. Disse blir da tilgjengelige for søkemotoren, og innbyggere kan benytte webapplikasjonen for å utføre søk.  
+Søk er en modul i min-side som består av tre hovedkomponenter:
+ 
+ * _Meldingsboksen_, en single page webapp (SPA) som tilbyr et grensesnitt mot søkemotoren for å finne meldinger basert på søkekriterier og filtre. 
+ * _Meldingssøk_, en søkemotor som støtter fritekstsøk og score-rangerte resultater. 
+ * _Meldingsindexer_, en indekseringstjeneste som integrasjoner kan benytte for å laste opp meldinger: hendelser, fakturaer, saker, journalposter, forsendelser, osv.  
 
 Søkeresultatet scores på relevans: nye meldinger scores høyere enn gamle, uleste dokumenter høyere enn de du har lest, ubetalte faktura høyere enn de du har betalt, og så videre. Den tilbyr flere filtre: dato, organisasjon, enhet, og mulighet for å søke på ord som fremkommer i meldingen. Den kompanserer for stavefeil, bøyeform eller orddeling. Alle søk er også filtrert på innloggingsnivå. Et søk gjort med innlogging på nivå tre vil ikke returnere grupper som er satt til nivå fire, uavhengig av om disse gruppene traff på søket.
 
