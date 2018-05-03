@@ -1,9 +1,9 @@
 {
   "swagger" : "2.0",
   "info" : {
-    "description" : "Api for indeksering av meldinger til KS-Fiks MinSide Søk.",
+    "description" : "Api for søk i meldinger",
     "version" : "v1",
-    "title" : "KS Fiks: Hendelse Søk Service",
+    "title" : "KS Fiks: Meldingsøk",
     "contact" : {
       "name" : "Fiks Utvikling",
       "url" : "https://ks-no.github.io/",
@@ -14,7 +14,7 @@
   "tags" : [ {
     "name" : "Lookup"
   }, {
-    "name" : "Search"
+    "name" : "Sok"
   } ],
   "schemes" : [ "http", "https" ],
   "paths" : {
@@ -79,43 +79,43 @@
         }
       }
     },
-    "/meldingsok/api/search" : {
+    "/meldingsok/api/sok" : {
       "post" : {
-        "tags" : [ "Search" ],
-        "summary" : "Search",
+        "tags" : [ "Sok" ],
+        "summary" : "Søk",
         "description" : "",
-        "operationId" : "findPaginated",
+        "operationId" : "sok",
         "parameters" : [ {
           "name" : "term",
           "in" : "query",
-          "description" : "Search term",
+          "description" : "Søkeord",
           "required" : false,
           "type" : "string"
         }, {
-          "name" : "from",
+          "name" : "fra",
           "in" : "query",
-          "description" : "Index of first result element",
+          "description" : "Index for det første søketreffet som skal returneres",
           "required" : false,
           "type" : "integer",
           "format" : "int32"
         }, {
-          "name" : "size",
+          "name" : "antall",
           "in" : "query",
-          "description" : "Number of elements requested",
+          "description" : "Antall søketreff som skal returneres",
           "required" : false,
           "type" : "integer",
           "format" : "int32"
         }, {
-          "name" : "sortByDate",
+          "name" : "datoSortering",
           "in" : "query",
-          "description" : "Indicates that the result should be sorted by date rather than by relevance",
+          "description" : "Skal søkeresultatet sorteres på dato heller enn relevans?",
           "required" : false,
           "type" : "string",
           "enum" : [ "ASC", "DESC" ]
         }, {
           "in" : "body",
           "name" : "body",
-          "description" : "Filters limiting the result set",
+          "description" : "Filtere som begrenser resultatsettet",
           "required" : false,
           "schema" : {
             "$ref" : "#/definitions/Filter"
@@ -125,7 +125,7 @@
           "200" : {
             "description" : "successful operation",
             "schema" : {
-              "$ref" : "#/definitions/Result"
+              "$ref" : "#/definitions/Sokeresultat"
             }
           }
         }
@@ -133,7 +133,7 @@
     }
   },
   "definitions" : {
-    "Aggregations" : {
+    "Aggregeringer" : {
       "type" : "object",
       "properties" : {
         "fiksOrganisasjon" : {
@@ -203,11 +203,11 @@
         "visningsnavn" : {
           "type" : "string"
         },
-        "numberOfHits" : {
+        "antallTreff" : {
           "type" : "integer",
           "format" : "int64"
         },
-        "selected" : {
+        "valgt" : {
           "type" : "boolean"
         }
       }
@@ -234,11 +234,11 @@
         "visningsnavn" : {
           "type" : "string"
         },
-        "numberOfHits" : {
+        "antallTreff" : {
           "type" : "integer",
           "format" : "int64"
         },
-        "selected" : {
+        "valgt" : {
           "type" : "boolean"
         }
       }
@@ -246,11 +246,11 @@
     "Filter" : {
       "type" : "object",
       "properties" : {
-        "fromDate" : {
+        "fraDato" : {
           "type" : "string",
           "format" : "date-time"
         },
-        "toDate" : {
+        "tilDato" : {
           "type" : "string",
           "format" : "date-time"
         },
@@ -279,50 +279,16 @@
         }
       }
     },
-    "Hit" : {
+    "Forelder" : {
       "type" : "object",
-      "required" : [ "innloggingsniva" ],
-      "properties" : {
-        "id" : {
-          "type" : "string",
-          "format" : "uuid"
-        },
-        "innloggingsniva" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
-        "fiksOrganisasjon" : {
-          "$ref" : "#/definitions/FiksOrganisasjon"
-        },
-        "enhet" : {
-          "$ref" : "#/definitions/Enhet"
-        },
-        "sorteringDato" : {
-          "type" : "string",
-          "format" : "date-time"
-        },
-        "korrelasjonId" : {
-          "type" : "string"
-        },
-        "parent" : {
-          "$ref" : "#/definitions/Parent"
-        },
-        "type" : {
-          "$ref" : "#/definitions/HitType"
-        },
-        "score" : {
-          "type" : "number",
-          "format" : "float"
-        }
-      }
-    },
-    "HitType" : {
-      "type" : "object",
-      "discriminator" : "type",
       "properties" : {
         "type" : {
           "type" : "string",
           "enum" : [ "faktura", "sakmappe", "journalpost", "forsendelse" ]
+        },
+        "id" : {
+          "type" : "string",
+          "format" : "uuid"
         }
       }
     },
@@ -350,25 +316,12 @@
         "children" : {
           "type" : "array",
           "items" : {
-            "$ref" : "#/definitions/Hit"
+            "$ref" : "#/definitions/Treff"
           }
         },
         "childrenAboveInnloggingsniva" : {
           "type" : "integer",
           "format" : "int32"
-        }
-      }
-    },
-    "Parent" : {
-      "type" : "object",
-      "properties" : {
-        "type" : {
-          "type" : "string",
-          "enum" : [ "faktura", "sakmappe", "journalpost", "forsendelse" ]
-        },
-        "id" : {
-          "type" : "string",
-          "format" : "uuid"
         }
       }
     },
@@ -382,12 +335,12 @@
           "type" : "boolean"
         },
         "parentHit" : {
-          "$ref" : "#/definitions/Hit"
+          "$ref" : "#/definitions/Treff"
         },
         "children" : {
           "type" : "array",
           "items" : {
-            "$ref" : "#/definitions/Hit"
+            "$ref" : "#/definitions/Treff"
           }
         },
         "parentAboveInnloggingsniva" : {
@@ -399,40 +352,87 @@
         }
       }
     },
-    "Result" : {
+    "Sokeresultat" : {
       "type" : "object",
-      "required" : [ "additionalHitsWithHigherLoginLevel", "aggregations" ],
+      "required" : [ "aggregeringer", "treffMedHoyereInnloggingsniva" ],
       "properties" : {
-        "numberOfHits" : {
+        "antallTreff" : {
           "type" : "integer",
           "format" : "int64"
         },
-        "additionalHitsWithHigherLoginLevel" : {
+        "treffMedHoyereInnloggingsniva" : {
           "type" : "integer",
           "format" : "int64"
         },
-        "hits" : {
+        "treff" : {
           "type" : "array",
           "items" : {
-            "$ref" : "#/definitions/Hit"
+            "$ref" : "#/definitions/Treff"
           }
         },
-        "from" : {
+        "forespurtFra" : {
           "type" : "integer",
           "format" : "int32"
         },
-        "size" : {
+        "forespurtAntall" : {
           "type" : "integer",
           "format" : "int32"
         },
-        "aggregations" : {
-          "$ref" : "#/definitions/Aggregations"
+        "aggregeringer" : {
+          "$ref" : "#/definitions/Aggregeringer"
+        }
+      }
+    },
+    "Treff" : {
+      "type" : "object",
+      "required" : [ "innloggingsniva" ],
+      "properties" : {
+        "id" : {
+          "type" : "string",
+          "format" : "uuid"
+        },
+        "innloggingsniva" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "fiksOrganisasjon" : {
+          "$ref" : "#/definitions/FiksOrganisasjon"
+        },
+        "enhet" : {
+          "$ref" : "#/definitions/Enhet"
+        },
+        "sorteringDato" : {
+          "type" : "string",
+          "format" : "date-time"
+        },
+        "korrelasjonId" : {
+          "type" : "string"
+        },
+        "parent" : {
+          "$ref" : "#/definitions/Forelder"
+        },
+        "type" : {
+          "$ref" : "#/definitions/TreffType"
+        },
+        "score" : {
+          "type" : "number",
+          "format" : "float"
+        }
+      }
+    },
+    "TreffType" : {
+      "type" : "object",
+      "discriminator" : "type",
+      "properties" : {
+        "type" : {
+          "type" : "string",
+          "enum" : [ "faktura", "sakmappe", "journalpost", "forsendelse" ]
         }
       }
     },
     "faktura" : {
       "allOf" : [ {
-        "$ref" : "#/definitions/HitType"
+        "$ref" : "#/definitions/TreffType"
       }, {
         "type" : "object",
         "properties" : {
@@ -462,7 +462,7 @@
     },
     "forsendelse" : {
       "allOf" : [ {
-        "$ref" : "#/definitions/HitType"
+        "$ref" : "#/definitions/TreffType"
       }, {
         "type" : "object",
         "properties" : {
@@ -503,7 +503,7 @@
     },
     "journalpost" : {
       "allOf" : [ {
-        "$ref" : "#/definitions/HitType"
+        "$ref" : "#/definitions/TreffType"
       }, {
         "type" : "object",
         "required" : [ "journaldato" ],
@@ -532,7 +532,7 @@
     },
     "sakmappe" : {
       "allOf" : [ {
-        "$ref" : "#/definitions/HitType"
+        "$ref" : "#/definitions/TreffType"
       }, {
         "type" : "object",
         "properties" : {
