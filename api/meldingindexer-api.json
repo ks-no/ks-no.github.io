@@ -2,7 +2,7 @@
   "swagger" : "2.0",
   "info" : {
     "version" : "v1",
-    "title" : "KS Fiks: Hendelse Indexer Service",
+    "title" : "KS Fiks: Meldingindexer",
     "contact" : {
       "name" : "Fiks Utvikling",
       "url" : "https://ks-no.github.io/",
@@ -15,28 +15,55 @@
   } ],
   "schemes" : [ "http", "https" ],
   "paths" : {
-    "/meldingindexer/api/deleteMeRequest" : {
-      "delete" : {
+    "/meldingindexer/api/indexRequest" : {
+      "put" : {
         "tags" : [ "Index" ],
-        "summary" : "Fjern alle meldinger eksponert for den autentiserte brukeren fra meldingsboksen. Kan bare benyttes av privatpersoner",
-        "description" : "",
-        "operationId" : "deleteMe",
+        "summary" : "Indekser nye meldinger, eller oppdater eksisterende meldinger",
+        "description" : "Batch av en eller flere meldinger, opp til et maksimum av 5000. Merk at operasjonen ikke er atomisk: responsen vil indikere om en eller flere indekseringsoperasjoner feilet.",
+        "operationId" : "index",
+        "parameters" : [ {
+          "in" : "body",
+          "name" : "body",
+          "description" : "Meldingene som skal indekseres",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/definitions/IndexMelding"
+            }
+          }
+        } ],
         "responses" : {
           "200" : {
-            "description" : "successful operation",
+            "description" : "Indekseringsoperasjonen er gjennomført. Merk at indekseringen av en eller flere meldinger kan ha feilet, se de individuelle respons-kodene.",
             "schema" : {
-              "$ref" : "#/definitions/DeletionResponse"
+              "$ref" : "#/definitions/IndexRespons"
             }
+          },
+          "400" : {
+            "description" : "Forespørselen er ikke korrekt formatert",
+            "schema" : {
+              "type" : "array",
+              "items" : {
+                "$ref" : "#/definitions/Valdieringsfeil"
+              }
+            }
+          },
+          "422" : {
+            "description" : "Antall meldinger i operasjonen overgår øvre begrensning (5000)"
+          },
+          "500" : {
+            "description" : "Indekseringsoperasjonen har feilet. Et ukjent antall meldinger kan likevel ha blitt indeksert, men alle bør sendes inn på nytt"
           }
         }
       }
     },
-    "/meldingindexer/api/deleteRequest" : {
+    "/meldingindexer/api/slett" : {
       "delete" : {
         "tags" : [ "Index" ],
         "summary" : "Fjerner meldinger for den spesifiserte integrasjon/fiks-org. Enhet eller meldingsid kan legges til for ytterligere filtrering.",
         "description" : "",
-        "operationId" : "delete",
+        "operationId" : "slett",
         "parameters" : [ {
           "name" : "fiksOrganisasjonId",
           "in" : "query",
@@ -62,100 +89,30 @@
           "200" : {
             "description" : "successful operation",
             "schema" : {
-              "$ref" : "#/definitions/DeletionResponse"
+              "$ref" : "#/definitions/SlettRespons"
             }
           }
         }
       }
     },
-    "/meldingindexer/api/indexRequest" : {
-      "put" : {
+    "/meldingindexer/api/slettMeg" : {
+      "delete" : {
         "tags" : [ "Index" ],
-        "summary" : "Indekser nye meldinger, eller oppdater eksisterende meldinger",
-        "description" : "Batch av en eller flere meldinger, opp til et maksimum av 5000. Merk at operasjonen ikke er atomisk: responsen vil indikere om en eller flere indekseringsoperasjoner feilet.",
-        "operationId" : "index",
-        "parameters" : [ {
-          "in" : "body",
-          "name" : "body",
-          "description" : "Meldingene som skal indekseres",
-          "required" : false,
-          "schema" : {
-            "type" : "array",
-            "items" : {
-              "$ref" : "#/definitions/IndexRequest"
-            }
-          }
-        } ],
+        "summary" : "Fjern alle meldinger eksponert for den autentiserte brukeren fra meldingsboksen. Kan bare benyttes av privatpersoner",
+        "description" : "",
+        "operationId" : "slettMeg",
         "responses" : {
           "200" : {
-            "description" : "Indekseringsoperasjonen er gjennomført. Merk at indekseringen av en eller flere meldinger kan ha feilet, se de individuelle respons-kodene.",
+            "description" : "successful operation",
             "schema" : {
-              "$ref" : "#/definitions/BulkResponse"
+              "$ref" : "#/definitions/SlettRespons"
             }
-          },
-          "400" : {
-            "description" : "Forespørselen er ikke korrekt formatert",
-            "schema" : {
-              "type" : "array",
-              "items" : {
-                "$ref" : "#/definitions/Valdieringsfeil"
-              }
-            }
-          },
-          "422" : {
-            "description" : "Antall meldinger i operasjonen overgår øvre begrensning (5000)"
-          },
-          "500" : {
-            "description" : "Indekseringsoperasjonen har feilet. Et ukjent antall meldinger kan likevel ha blitt indeksert, men alle bør sendes inn på nytt"
           }
         }
       }
     }
   },
   "definitions" : {
-    "BulkResponse" : {
-      "type" : "object",
-      "properties" : {
-        "results" : {
-          "type" : "array",
-          "items" : {
-            "$ref" : "#/definitions/IndexResponse"
-          }
-        },
-        "failed" : {
-          "type" : "boolean"
-        },
-        "error" : {
-          "type" : "string"
-        }
-      },
-      "description" : "Result of a bulk request"
-    },
-    "DeletionResponse" : {
-      "type" : "object",
-      "properties" : {
-        "deletedMessages" : {
-          "type" : "integer",
-          "format" : "int64"
-        },
-        "failureId" : {
-          "type" : "string"
-        },
-        "operationFailed" : {
-          "type" : "boolean"
-        },
-        "deletionsFailed" : {
-          "type" : "boolean"
-        },
-        "failedDeletionMessageId" : {
-          "type" : "array",
-          "uniqueItems" : true,
-          "items" : {
-            "type" : "string"
-          }
-        }
-      }
-    },
     "Dokument" : {
       "type" : "object",
       "required" : [ "nedlastingLenke", "tittel" ],
@@ -201,7 +158,7 @@
         }
       }
     },
-    "IndexRequest" : {
+    "IndexMelding" : {
       "type" : "object",
       "required" : [ "eksponertFor", "enhet", "fiksOrganisasjon", "id", "innloggingsniva", "typeMetadata" ],
       "properties" : {
@@ -228,26 +185,25 @@
           "$ref" : "#/definitions/ParentType"
         }
       },
-      "description" : "En forespørsel om å opprette en ny melding eller å oppdatere en eksisterende melding"
+      "description" : "En forespørsel om å opprette en ny eller oppdatere eksisterende melding"
     },
-    "IndexResponse" : {
+    "IndexRespons" : {
       "type" : "object",
       "properties" : {
-        "id" : {
-          "type" : "string",
-          "format" : "uuid"
+        "resultat" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/MeldingIndexResponse"
+          }
         },
-        "indexed" : {
+        "feilet" : {
           "type" : "boolean"
         },
-        "responseCode" : {
-          "type" : "string",
-          "enum" : [ "OK", "FAILED", "GDPR_RESERVED" ]
-        },
-        "message" : {
+        "feilmelding" : {
           "type" : "string"
         }
-      }
+      },
+      "description" : "Result of a bulk request"
     },
     "JournalpostDockumentbeskrivelse" : {
       "type" : "object",
@@ -268,6 +224,30 @@
         }
       },
       "description" : "Et dokument for en forsendelse"
+    },
+    "MeldingIndexResponse" : {
+      "type" : "object",
+      "properties" : {
+        "id" : {
+          "type" : "string",
+          "format" : "uuid",
+          "description" : "Korresponderer med id fra indekseringsforespørselen"
+        },
+        "indeksert" : {
+          "type" : "boolean",
+          "description" : "Ble meldingen indeksert?"
+        },
+        "resultatKode" : {
+          "type" : "string",
+          "description" : "Kode som beskriver resultatet av indekseringsoperasjonen",
+          "enum" : [ "OK", "FAILED", "GDPR_RESERVED" ]
+        },
+        "resultatMelding" : {
+          "type" : "string",
+          "description" : "Eventuell melding med ytterligere detaljer for resultat av indekseringsoperasjonen"
+        }
+      },
+      "description" : "Indekseringsresultat for en enkeltmelding"
     },
     "Parent" : {
       "type" : "object",
@@ -292,6 +272,36 @@
         "type" : {
           "type" : "string",
           "enum" : [ "faktura", "sakmappe", "journalpost", "forsendelse" ]
+        }
+      }
+    },
+    "SlettRespons" : {
+      "type" : "object",
+      "properties" : {
+        "antallSlettet" : {
+          "type" : "integer",
+          "format" : "int64",
+          "description" : "Antall meldinger som ble slettet i operasjonen."
+        },
+        "feilet" : {
+          "type" : "boolean",
+          "description" : "Indikerer at operasjonen feilet i sin helhet. En eller flere meldinger kan fortsatt være slettet"
+        },
+        "feilId" : {
+          "type" : "string",
+          "description" : "Id for feilen som oppstod. Legg denne ved evt. kontakt med kundeservice"
+        },
+        "slettingFeilet" : {
+          "type" : "boolean",
+          "description" : "Indikerer at operasjonen ble gjennomført ok, men at feil oppstod ved sletting av en eller flere enkeltmeldinger"
+        },
+        "slettingFeiletMeldingId" : {
+          "type" : "array",
+          "description" : "Meldingid for meldingene hvor feil oppstod under sletting",
+          "uniqueItems" : true,
+          "items" : {
+            "type" : "string"
+          }
         }
       }
     },
