@@ -1,5 +1,6 @@
 ---
 title: Kodeeksempel .Net
+date: 2017-01-01
 ---
 # Kodeeksempel - .NET
 

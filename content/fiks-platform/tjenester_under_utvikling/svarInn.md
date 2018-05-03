@@ -1,5 +1,6 @@
 ---
 title: SvarInn 2.0
+date: 2018-05-02
 ---
 SvarInn 2.0 er en ny versjon av den gamle SvarInn tjenesten, som nå er flyttet over på fiks-plattformen.
 

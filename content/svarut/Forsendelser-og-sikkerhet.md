@@ -1,5 +1,6 @@
 ---
 title: Sikkerhet
+date: 2017-01-01
 ---
 
 ### Generelt om forsendelser 

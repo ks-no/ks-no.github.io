@@ -1,5 +1,6 @@
 ---
 title: Meldingsboks
+date: 2018-03-02
 ---
 
 ![minside_sok](/images/fiks_meldingboks.png "Minside Søk")

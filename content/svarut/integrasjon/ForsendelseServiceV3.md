@@ -1,5 +1,6 @@
 ---
 title: ForsendelseServiceV3
+date: 2017-01-01
 ---
 
 Her beskrives funksjonalitet for ForsendelseServiceV3

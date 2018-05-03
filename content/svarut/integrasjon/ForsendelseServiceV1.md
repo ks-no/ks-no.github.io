@@ -1,5 +1,6 @@
 ---
 title: ForsendelseServiceV1
+date: 2017-01-01
 ---
 
 Her beskrives funksjonalitet for ForsendelseServiceV1\. For å sikre bakoverkompatibilitet for klientene så vil denne versjonen ikke endres.

@@ -1,5 +1,6 @@
 ---
 title: SvarInn - Mottaksservice
+date: 2017-01-01
 ---
 
 Mottaksservice gjør det mulig å laste ned og kvittere ut forsendelser før de varsles gjennom Altinn og sendes til eventuell printing.

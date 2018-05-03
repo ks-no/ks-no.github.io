@@ -1,5 +1,6 @@
 ---
 title: Sikkerhet og personvern
+date: 2018-01-02
 ---
 
 ## Sikkerhet i løsningen

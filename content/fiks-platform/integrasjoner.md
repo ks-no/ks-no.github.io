@@ -1,5 +1,6 @@
 ---
 title: Integrasjonsutvikling
+date: 2018-01-02
 ---
 
 ### Integrasjoner

@@ -1,5 +1,6 @@
 ---
 title: Dokumentlager
+date: 2018-05-02
 ---
 
 Vi lanserer snart en tjeneste for å lagrefiler og eksponere disse.

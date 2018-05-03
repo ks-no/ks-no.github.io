@@ -1,5 +1,6 @@
 ---
 title: Digisos
+date: 2018-05-02 
 ---
 
 Fiks-digisos er et knutepunkt for overføringer av søknader om sosialstønad fra Nav til den enkelte kommune som skal utføre saksbehandling. Tjenesten er tett integrert med fiks-platformen, og tilbyr:

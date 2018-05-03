@@ -1,5 +1,6 @@
 ---
 title: Edialog
+date: 2017-01-01
 ---
 
 Sikker innsending av brev via SvarUt til mottakersystem i SvarUt. For å starte å bruke eDialog må du benytte SvarInn.
