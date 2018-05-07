@@ -1,7 +1,8 @@
 #!/bin/bash
 set -e
 echo -e "\033[0;32mDeploying updates to GitHub...\033[0m"
-
+rm -rf public
+git clone https://github.com/ks-no/ks-no.github.io.git public
 
 cd public
 git checkout master
@@ -9,7 +10,7 @@ git pull
 cd ..
 
 # Build the project.
-hugo --cleanDestinationDir  
+hugo --cleanDestinationDir 
 
 # Go To Public 
 cd public
