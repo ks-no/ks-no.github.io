@@ -4,13 +4,12 @@ echo -e "\033[0;32mDeploying updates to GitHub...\033[0m"
 
 
 cd public
-git clean -fdx
 git checkout master
 git pull
 cd ..
 
 # Build the project.
-hugo 
+hugo --cleanDestinationDir  
 
 # Go To Public 
 cd public
