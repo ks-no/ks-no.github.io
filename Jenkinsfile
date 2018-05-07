@@ -19,7 +19,7 @@ pipeline {
       }
       steps {
 	    sh "cd public && git remote set-url origin git@github-ks-no.github.io:ks-no/ks-no.github.io.git"
-        sh "./deploy.sh"
+        sh "sh -x ./deploy.sh"
       }
     }
   }
