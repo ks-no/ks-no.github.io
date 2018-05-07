@@ -8,7 +8,7 @@ git pull
 cd ..
 
 # Build the project.
-hugo 
+hugo --cleanDestinationDir 
 
 # Go To Public 
 cd public
