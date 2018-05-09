@@ -2,48 +2,32 @@
 title: Sikkerhet og personvern
 date: 2018-01-02
 ---
-
-## Sikkerhet i løsningen
-
 Under kommer generelle retningslinjer for hvordan vi har sikret applikasjonene, skulle noe avvike fra dette vil det 
 være spesifisert i hver tjeneste.
 
-### Sikring av kommunikasjon
-
+## Kryptering
 All kommunikasjon med FIKS utenfra er kryptert med TLS. 
-Innlogging og autentisering er løst av idporten, hvor vi benytter OpenID connect og OAuth2. 
 
-### Sikring av data
+Fiks-plattformen lagrer data i [fiks-dokumentlager]({{< ref "dokumentlager.md" >}}), og alt krypteres før det lagres. All backup er også kryptert. Nøkler oppbevares på egne servere som er satt opp spesielt for dette formålet.  
 
-Alle filer med data er kryptert på disk. All backup er kryptert. Vi har laget egne servere for dekryptering av data.
-Disse er spesielt godt sikret, nettverks og tilgangs kontroll. 
-
-### Autentisering og autorisering
-Aktører som bruker Fiks-platformen havner i tre kategorier:
-
-* Personer som bruker tjenester på vegne av seg selv, for eksempel en innbygger som søker barnehagesøknaden sin i meldingsboksen.
-* Personer som bruker tjenester på vegne av en bedrift hvor de har en rolle, for eksempel en innbygger som henter ned en forsendelse til bedriften fra svarut.
-* Systemer som er installert i en organisasjon som integrerer seg mot en tjeneste på fiks-platformen.  
-
-#### Personer
+## Autentisering
 Personer autentiseres ved hjelp av Open-Id Connect løsningen til ID-Porten. Dette vil si at de (om de ikke allerede er innlogget) dirigeres til ID-Porten for innlogging ved hjelp av for eksempel MinId eller BankId. ID-Porten og Fiks utveksler så informasjon for å bekrefte brukerens identitet og hvilket innloggingsnivå som er benyttet. Utgåtte innlogginger vil automatisk bli fornyet.
 
-En person har mulighet til å agere på vegne av en organisasjon, for eksempel en bedrift hvor personen har en rolle. Se avsnittet om [fullmakter]{{< relref "fullmakt.md" >}} for mer informasjon om dette.
+Flere tjenester på fiks-platformen har også mulighet for maskin-til-maskin kommunikasjon, for eksempel når et saksystem laster opp meldinger til meldingsboksen. Dette gjøres gjennom å opprette  _integrasjoner_, som autentiseres ved hjelp av et virksomhetsertifikat-basert access token utstedt av ID-Porten i kombinasjon med integrasjonsid og passord generert av fiks-konfigurasjon. Se [integrasjoner]{{< relref "integrasjoner.md" >}} for mer informasjon om oppsett av dette.
 
-#### Integrasjoner
-Flere tjenester på fiks-platformen vil ha mulighet for maskin-til-maskin kommunikasjon, for eksempel ved at et saksystem laster opp meldinger til meldingsboksen. Dette gjøres gjennom å opprette  _integrasjoner_, som autentiseres ved hjelp av et access token utstedt av ID-Porten i kombinasjon med integrasjonsid og passord generert av Fiks-Konfigurasjon. Se [integrasjoner]{{< relref "integrasjoner.md" >}} for mer informasjon om oppsett av dette.
+## Autorisering
+Hvordan en aktør autoriseres på fiks-plattformen avhenger av hvem aktøren er og hvordan han bruker systemet: 
 
-En integrasjon vil ofte kunne jobbe på vegne av flere fiks-organisasjoner, for eksempel vil integrasjonen mellom SvarUt og Meldingsboksen kunne indeksere meldinger som tilhører mange kommuner. Dermed må integrasjoner autorisereres av fiks-organisasjonen som skal benytte den. Dette gjøres gjennom Fiks-Konfigurasjon. 
+1. _Personer som bruker tjenester på vegne av seg selv, for eksempel en innbygger som søker barnehagesøknaden sin i meldingsboksen._ Disse krever som regel ikke videre autorisering.
+2. _Personer som bruker tjenester på vegne av en bedrift hvor de har en rolle, for eksempel en innbygger som henter ned en forsendelse til bedriften fra svarut._ Disse autoriseres for tilgang til bedriftens data og tjenester basert på roller de innehar i Altinn.
+3. _Personer som forvalter en tjeneste på fiks-plattformen på vegne av en fiks-organisasjon, for eksempel en kommuneansatt som konfigurerer meldingsboksen._ Disse autorisereres for hver enkelt tjeneste og funksjon gjennom fiks-konfigurasjon.
+4. Systemer som er installert i en organisasjon som integrerer seg mot en tjeneste på fiks-platformen. Fiks-konfigurasjon tilbyr grensesnitt hvor hver enkelt kommune kan autorisere integrasjoner for tilgang til sine tjenester (og fjerne slik tilgang hvis det ikke lengre skulle være ønskelig). 
 
 ## Personvern
+Utgangspunktet er at det er innbyggeren som eier sine data, og tilgang begrenses i så stor grad som mulig. Dette vil si at:
 
-Løsningen er i utgangspunktet laget for å gi tilgang til tjenester og data for Innbyggere og Organisasjoner. Det er ikke mulig
-å hente ut annen informasjon enn den som er lagt inn til deg. Tjenester som skal gjør tilgjengelig data for flere
-personer/organisasjoner vil være beskrevet under tjenesten. Disse vil også måtte ha en audit log på hvem som har bedt 
-om hvilke data. Det må også være en lovhjemel for å kunne gjør dette.
+* Innbyggeren kan slette sine data om han ikke ønsker fiks-tjenesten skal oppbevare dem.
+* Innbyggeren kan gi beskjed om at han ikke lengre ønsker at hans data skal lagres på plattformen.
+* Tilgang er begrenset i så stor grad som mulig. Dette vil for eksempel si at det utelukkende er innbyggeren som kan lese meldinger i [fiks-meldingsboks]({{< ref "meldingboks.md" >}}) - disse er skjult også for integrasjonen som i utgangspunktet lastet de opp, og for kommunen som er ansvarlig for meldingene
 
-### Sletting av data
-
-Dataeier (kommunen) vil kunne slette data som han har lastet opp i løsningen vår. 
-Det vil også bli laget en løsning for Innbygger/Organisasjon å slette sine data
-om de ikke ønsker at de skal være tilgjengelig i løsningen. Per 25.01.2017 er ikke dette på plass enda.
+Noen tjenester gjør data om en person tilgjengelig for tredjepart. I slike tilfeller vil dette bli dokumentert i tjenstebeskrivelsen, autorisert eksplisitt i fiks-konfigurasjon, og underlagt audit-logging, slik at det blir mulig å hente ut informasjon om hvem som har hatt tilgang til hvilke data når, og under hvilken lovhjemmel tilgangen ble oppnådd.
