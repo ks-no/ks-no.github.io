@@ -21,6 +21,8 @@ Forsendelsesservicet tilbyr følgende funksjonalitet:
 | setForsendelseLestAvEksterntSystem | forsendelsesid,<br/> lestAvFodselsnummer,<br/> navnPaEksterntSystem, <br />datoLest | (Ingen retur) | Benyttes for å sette status til lest når dokumentet har blitt lest utenfor vårt system.
 | retreiveForsendelseTyper | | List\<String\> | Henter alle forsendelseTyper som kan brukes i SvarInn.
 | retrieveMottakerSystemForOrgnr | organisasjonsnr | Liste med <br/> orgnr, <br/> forsendelseType, <br/> nivå, <br/> mottakersystem, <br/> mottakersystemid  | Henter alle konfigurerte mottakersystem for orgnr
+| retrieveSigneringshistorikk | forsendelsesid | Signeringshistorikk | Henter signeringshistorikk (logg) på en forsendelse som er markert for signering.
+| retrieveSigneringshistorikkForFlereForsendelser | List\<forsendelsesid\> | List\<Signeringshistorikk\> | Henter signeringshistorikk for opp til 10 forsendelser.
 
 Definisjonsfil (WSDL) for tjenesten finnes her https://svarut.ks.no/tjenester/forsendelseservice/ForsendelsesServiceV9?wsdl
 
@@ -899,3 +901,75 @@ Du vil få tilbake en liste med:, orgnr, forsendelseType, nivå, mottakersystem,
 #### retreiveForsendelseTyper
 
 Henter alle forsnedelseTyper som Svarinn mottakersystem kan konfigureres til å bruke.
+
+#### retrieveSigneringshistorikk
+
+Henter signeringshistorikk for en gitt forsendelse.
+##### Inndata
+<table class="table table-condensed">
+    <thead>
+        <tr>
+            <th>Felt</th>
+            <th>Type</th>
+            <th>Beskrivelse</th>
+            <th>Validering</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td class="bold">forsendelseid</td>
+            <td class="bold">String</td>
+            <td>Identifikator som unikt identifiserer en forsendelse.</td>
+            <td>Må være utfylt</td>
+        </tr>
+    </tbody>
+</table>
+
+##### Utdata
+<table class="table table-condensed">
+    <thead>
+        <tr>
+            <th>Felt</th>
+            <th>Type</th>
+            <th colspan="2">Beskrivelse</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td class="bold">forsendelseid</td>
+            <td class="bold">String</td>
+            <td colspan="2" >Identifikator som unikt identifiserer en forsendelse.</td>
+        </tr>
+        <tr>
+            <td class="bold">logg</td>
+            <td class="bold">List&lt;Signeringslogg&gt;
+            <table>
+            <caption>Signeringslogg</caption>
+                <thead>
+                    <tr>
+                        <th>Felt</th>
+                        <th>Type</th>
+                    </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>tidspunkt</td>
+                    <td>String</td>
+                </tr>
+                <tr>
+                    <td>type</td>
+                    <td>String</td>
+                </tr>
+                <tr>
+                    <td>hendelse</td>
+                    <td>String</td>
+                </tr>
+             </table></tbody></td>
+            <td>Liste med logg-elementer</td>
+        </tr>
+    </tbody>
+</table>
+
+#### retrieveSigneringshistorikkForFlereForsendelser
+
+Samme som retrieveSigneringshistorikk bare for flere forsendelser i samme kall, opp til 10 forsendelser. Returnerer liste med signeringshistorikk.
