@@ -158,6 +158,21 @@
         }
       }
     },
+    "Forelder" : {
+      "type" : "object",
+      "required" : [ "id", "type" ],
+      "properties" : {
+        "id" : {
+          "type" : "string",
+          "format" : "uuid"
+        },
+        "type" : {
+          "type" : "string",
+          "enum" : [ "faktura", "sakmappe", "journalpost", "forsendelse" ]
+        }
+      },
+      "description" : "Spesifiser et foreldre-dokument."
+    },
     "IndexMelding" : {
       "type" : "object",
       "required" : [ "eksponertFor", "enhet", "fiksOrganisasjon", "id", "innloggingsniva", "typeMetadata" ],
@@ -182,7 +197,7 @@
           "$ref" : "#/definitions/Enhet"
         },
         "typeMetadata" : {
-          "$ref" : "#/definitions/ParentType"
+          "$ref" : "#/definitions/MeldingType"
         }
       },
       "description" : "En forespørsel om å opprette en ny eller oppdatere eksisterende melding"
@@ -205,7 +220,7 @@
       },
       "description" : "Result of a bulk request"
     },
-    "JournalpostDockumentbeskrivelse" : {
+    "JournalpostDokumentbeskrivelse" : {
       "type" : "object",
       "required" : [ "filstorrelse", "nedlastingLenke", "tittel", "variantformat" ],
       "properties" : {
@@ -249,22 +264,7 @@
       },
       "description" : "Indekseringsresultat for en enkeltmelding"
     },
-    "Parent" : {
-      "type" : "object",
-      "required" : [ "id", "type" ],
-      "properties" : {
-        "id" : {
-          "type" : "string",
-          "format" : "uuid"
-        },
-        "type" : {
-          "type" : "string",
-          "enum" : [ "faktura", "sakmappe", "journalpost", "forsendelse" ]
-        }
-      },
-      "description" : "Spesifiser et foreldre-dokument."
-    },
-    "ParentType" : {
+    "MeldingType" : {
       "type" : "object",
       "required" : [ "type" ],
       "discriminator" : "type",
@@ -325,10 +325,10 @@
     },
     "faktura" : {
       "allOf" : [ {
-        "$ref" : "#/definitions/ParentType"
+        "$ref" : "#/definitions/MeldingType"
       }, {
         "type" : "object",
-        "required" : [ "fakturaDato", "forfallDato", "parent", "tittel" ],
+        "required" : [ "fakturaDato", "forelder", "forfallDato", "tittel" ],
         "properties" : {
           "tittel" : {
             "type" : "string"
@@ -350,8 +350,8 @@
           "korrelasjonId" : {
             "type" : "string"
           },
-          "parent" : {
-            "$ref" : "#/definitions/Parent"
+          "forelder" : {
+            "$ref" : "#/definitions/Forelder"
           },
           "belop" : {
             "type" : "string"
@@ -362,10 +362,10 @@
     },
     "forsendelse" : {
       "allOf" : [ {
-        "$ref" : "#/definitions/ParentType"
+        "$ref" : "#/definitions/MeldingType"
       }, {
         "type" : "object",
-        "required" : [ "avsender", "dokumenter", "lest", "mottaker", "parent", "sendtDato", "tittel" ],
+        "required" : [ "avsender", "dokumenter", "forelder", "lest", "mottaker", "sendtDato", "tittel" ],
         "properties" : {
           "tittel" : {
             "type" : "string"
@@ -391,8 +391,8 @@
           "korrelasjonId" : {
             "type" : "string"
           },
-          "parent" : {
-            "$ref" : "#/definitions/Parent"
+          "forelder" : {
+            "$ref" : "#/definitions/Forelder"
           },
           "dokumenter" : {
             "type" : "array",
@@ -408,10 +408,10 @@
     },
     "journalpost" : {
       "allOf" : [ {
-        "$ref" : "#/definitions/ParentType"
+        "$ref" : "#/definitions/MeldingType"
       }, {
         "type" : "object",
-        "required" : [ "beskrivelse", "dokumentbeskrivelser", "journaldato", "parent", "registreringsId", "tittel" ],
+        "required" : [ "beskrivelse", "dokumentbeskrivelser", "forelder", "journaldato", "registreringsId", "tittel" ],
         "properties" : {
           "registreringsId" : {
             "type" : "string"
@@ -429,13 +429,13 @@
           "korrelasjonId" : {
             "type" : "string"
           },
-          "parent" : {
-            "$ref" : "#/definitions/Parent"
+          "forelder" : {
+            "$ref" : "#/definitions/Forelder"
           },
           "dokumentbeskrivelser" : {
             "type" : "array",
             "items" : {
-              "$ref" : "#/definitions/JournalpostDockumentbeskrivelse"
+              "$ref" : "#/definitions/JournalpostDokumentbeskrivelse"
             },
             "maxItems" : 2147483647,
             "minItems" : 1
@@ -445,7 +445,7 @@
     },
     "sakmappe" : {
       "allOf" : [ {
-        "$ref" : "#/definitions/ParentType"
+        "$ref" : "#/definitions/MeldingType"
       }, {
         "type" : "object",
         "required" : [ "administrativEnhet", "mappeId", "saksansvarlig", "saksdato", "saksstatus", "tittel" ],
