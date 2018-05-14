@@ -5,6 +5,9 @@ date: 2018-03-02
 
 ![minside_sok](/images/fiks_meldingboks.png "Minside Søk")
 
+Meldingsboksen gjør det lett å finne informasjon om forholdet mellom en fiks-organisasjon og innbyggeren: forsendelser, pågående saker, regninger og så videre. Andre tjenester på fiks-plattformen, som [fiks-digisos]({{< ref "digisos.md" >}}) og svarut leverer oppdateringer hit, men det er lagt til rett for at andre systemer, som for eksempel et fagystem i kommunen, skal kunne levere informasjon. 
+
+## Oversikt
 Søk er en modul i min-side som består av tre hovedkomponenter:
  
  * _Meldingsboksen_, en single page webapp (SPA) som tilbyr et grensesnitt mot søkemotoren for å finne meldinger basert på søkekriterier og filtre. 
@@ -24,7 +27,7 @@ Når plattformen lanseres er Fiks SvarUt den første integrasjonen som leverer m
 Indekseringstjenesten lar integrasjoner opprette meldinger, eller fjerne / endre meldinger som alt er opprettet. 
 
 #### Indeksering
-De vanlige autentiseringsreglene for Fiks-plattformen gjelder for denne tjenesten, men i tilegg må integrasjonen har rett til å indeksere på vegne av  _fiks organisasjonen_ som er satt som eier den aktuelle meldingen.
+De vanlige [autentiseringsreglene ]({{< ref "sikkerhet.md" >}}) for Fiks-plattformen gjelder for denne tjenesten, men i tilegg må integrasjonen har rett til å indeksere på vegne av  _fiks organisasjonen_ som er satt som eier den aktuelle meldingen.
 
 Endepunktet støtter batch av opptil 5000 elementer, og integrasjonsutviklere anbefales å benytte denne funksjonaliteten, da det skaper vesentlig mindre trykk på systemet. Merk at indeksering ikke er en atomisk transaksjon: deler av elementene i en batch kan bli indeksert selv om andre feiler. Informasjon om dette finnes i responsen.
 
