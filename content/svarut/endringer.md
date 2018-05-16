@@ -1,10 +1,13 @@
 ---
 title: SvarUt endringer
 date: 2018-05-03
+lastmod: 2018-05-18
 ---
 Her er en liste over de viktigste endringene i SvarUt, startet i 2015.
 
 ## Liste over endringer i SvarUt.
+* 18.05.2018
+  * Lagt ut ForsendelseServiceV10, se [ForsendelseServiceV10](forsendelseservicev10).
 * 03.05.2018
   * Fiks mottakerkonfigurasjon, viste feil data om en ikke hadde tilgang til alle mottaker med samme orgnr.
   * Validerer om orgnr er utfylt ved signeringsoppdrag
@@ -15,7 +18,7 @@ Her er en liste over de viktigste endringene i SvarUt, startet i 2015.
   * Viser hash av filene vi har mottat i søket
   * Sende tilgang gjør at en kan endre og lage maler i import pdf, manuell forsendelse.
 * 22.03.2018
-  * FosendelseServiceV10 lagt ut for testing
+  * ForsendelseServiceV10 lagt ut for testing
 * 14.03.2018
   * Støtte for å linke organisasjon i SvarUt til org i Fiks plattform
 * 23.02.2018
