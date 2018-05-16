@@ -7,7 +7,7 @@ Her er en liste over de viktigste endringene i SvarUt, startet i 2015.
 
 ## Liste over endringer i SvarUt.
 * 18.05.2018
-  * Lagt ut ForsendelseServiceV10, se [ForsendelsesServiceV10](integrasjon/forsendelsesservicev10).
+  * Lagt ut ForsendelseServiceV10, se [ForsendelsesServiceV10](/svarut/integrasjon/forsendelsesservicev10).
 * 03.05.2018
   * Fiks mottakerkonfigurasjon, viste feil data om en ikke hadde tilgang til alle mottaker med samme orgnr.
   * Validerer om orgnr er utfylt ved signeringsoppdrag
