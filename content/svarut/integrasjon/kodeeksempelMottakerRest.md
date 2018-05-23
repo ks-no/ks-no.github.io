@@ -2,7 +2,7 @@
 title: Kodeeksempel MottaksserviceV1
 date: 2017-01-01
 ---
-Last ned komplett [kodeeksempel](../files/121367/kodeeksempel-mottaker-rest.zip)
+Last ned komplett [kodeeksempel](https://svarut.ks.no/releases/kodeeksempel-dot-net.zip)
 
 ### Maven dependencies
 

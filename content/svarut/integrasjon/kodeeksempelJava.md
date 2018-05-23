@@ -6,7 +6,7 @@ date: 2017-01-01
 
 # Kodeeksempel - Java
 
-Last ned komplett [kodeeksempel](../files/121358/java-eksempel.zip)
+Last ned komplett [kodeeksempel](https://svarut.ks.no/releases/java-eksempel.zip)
 
 Dersom forsendelser skal krypteres, trenger du Unlimited Strength Jurisdiction files for Java (en Java Cryptography Extension). I tillegg trengs [den offentlige nøkkelen](/forsendelse/publickey/hent) til SvarUt. Dersom forsendelser ikke skal krypteres trengs ikke Bouncy Castle-avhengighetene.
 

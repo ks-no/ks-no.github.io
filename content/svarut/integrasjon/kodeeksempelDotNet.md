@@ -4,7 +4,7 @@ date: 2017-01-01
 ---
 # Kodeeksempel - .NET
 
-Last ned komplett [kodeeksempel](../files/121363/dot-net-eksempel.zip)
+Last ned komplett [kodeeksempel](https://svarut.ks.no/releases/dot-net-eksempel.zip)
 
 ### Generelt
 
