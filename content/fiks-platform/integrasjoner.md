@@ -7,9 +7,9 @@ En _integrasjon_ på fiks-plattformen er en maskin-til-maskin klient som benytte
 
 Når en fiks-organisasjon tar i bruk plattformen vil man se at det allerede finnes en del forhåndsdefinerte integrasjoner, for eksempel en SvarUt integrasjon mot meldingsboksen. Dette er "globale integrasjoner" som blir tilgjengelig for alle fiks-organisasjoner uten at hver organisasjon trenger å opprette dem. Ta kontakt med fiks-kundeservice om du ønsker å opprette en global integrasjon.
 
-Hver fiks-organisasjon kan også opprette sine egne integrasjoner - dette gjøres gjennom [fiks-konfigurasjon]({{< ref "konfigurasjon.md" >}}). Her opprettes integrajonen, og man definerer hvilken organisasjon som skal ha rett til å gjøre kall med integrasjonen. Dette kan være fiks-organisasjonen selv, eller en tredjepart som drifter løsningen på vegne av organisasjonen. Se under for detaljer om opprettelse av integrasjoner.
+Hver fiks-organisasjon kan også opprette sine egne integrasjoner - dette gjøres gjennom [fiks-konfigurasjon]({{< ref "konfigurasjon.md" >}}). Her opprettes integrasjonen, og man definerer hvilken organisasjon som skal ha rett til å sende forespørseler til fiks-plattformen på vegne av denne. Organisasjonen kan være fiks-organisasjonen selv, eller en tredjepart som har driftsansvar. Se under for detaljer om opprettelse av integrasjoner.
 
-Etter organisasjonen er opprettet må den autoriseres for å kunne handle på vegne av en fiks-organisasjon. Om man for eksempel ønsker å autorisere en integrasjon for å indeksere meldinger [fiks-meldingsboks]({{< ref "meldingsboks.md" >}}) må det relevante privilegiet tildeles på konfigurasjonssiden for denne tjenesten.
+Etter organisasjonen er opprettet må den autoriseres for å kunne handle på vegne av en fiks-organisasjon. Om man for eksempel ønsker å autorisere en integrasjon for å indeksere meldinger [fiks-meldingsboks]({{< ref "meldingsboks.md" >}}) må det relevante privilegiet tildeles på konfigurasjonssiden for denne tjenesten. Dette gjelder også for globale integrasjoner.
 
 ## Grensesnitt
 Tjenestene på fiks-plattformen vil som hovedregel benytte REST/json.
