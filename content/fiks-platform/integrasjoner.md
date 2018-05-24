@@ -3,39 +3,29 @@ title: Integrasjonsutvikling
 date: 2018-01-02
 ---
 
-### Integrasjoner
-Før eksterne systemer kan integreres med plattformen må det opprettes en integrasjon inne i konfigurasjonsgrensesnittet.
-Integrasjonen bør gis et beskrivende navn, i tillegg til at organisasjonsnummeret som ligger i virksomhetssertifikatet som
-skal brukes til å kalle tjenesten må skrives inn. Etter at integrasjonen er opprettet vil den være tilgjengelig for alle 
-tjenester tilhørende organisasjonen den ble opprettet for.
+En _integrasjon_ på fiks-plattformen er en maskin-til-maskin klient som benytter tjenestelaget for å utføre oppgaver på vegne av en fiks-organisasjon. Dette kan for eksempel være et arkivsystem som sender saker gjennom [fiks-svarinn]({{< ref "svarInn.md" >}}), eller et fagsystem som oppdaterer meldinger i [fiks-meldingsboks]({{< ref "meldingsboks.md" >}}).
 
-En integrasjon må autoriseres for å bruke tjenester i plattformen. Om man for eksempel ønsker å aktivere en integrasjon
-som skal kunne indeksere meldinger for MinSide Søk må dette gjøres på konfigurasjonssiden. Dette vil sørge for at 
-nødvendige rettigheter blir tildelt.
+Når en fiks-organisasjon tar i bruk plattformen vil man se at det allerede finnes en del forhåndsdefinerte integrasjoner, for eksempel en SvarUt integrasjon mot meldingsboksen. Dette er "globale integrasjoner" som blir tilgjengelig for alle fiks-organisasjoner uten at hver organisasjon trenger å opprette dem. Ta kontakt med fiks-kundeservice om du ønsker å opprette en global integrasjon.
 
-Plattformen har også noen integrasjoner som kalles "globale integrasjoner". Dette er integrasjoner som er tilgjengelig for
-alle organisasjoner. Dette kan for eksempel være integrasjonen som henter meldinger fra SvarUt og gjør disse tilgjengelig 
-i MinSide Søk.
+Hver fiks-organisasjon kan også opprette sine egne integrasjoner - dette gjøres gjennom [fiks-konfigurasjon]({{< ref "konfigurasjon.md" >}}). Her opprettes integrajonen, og man definerer hvilken organisasjon som skal ha rett til å gjøre kall med integrasjonen. Dette kan være fiks-organisasjonen selv, eller en tredjepart som drifter løsningen på vegne av organisasjonen. Se under for detaljer om opprettelse av integrasjoner.
 
-## Teknologier
+Etter organisasjonen er opprettet må den autoriseres for å kunne handle på vegne av en fiks-organisasjon. Om man for eksempel ønsker å autorisere en integrasjon for å indeksere meldinger [fiks-meldingsboks]({{< ref "meldingsboks.md" >}}) må det relevante privilegiet tildeles på konfigurasjonssiden for denne tjenesten.
 
-### REST
-Vi benytter REST lignenede grensesnitt på alle api så lenge det er gunstig. Kun ved spesielle behov vil det bli benyttet 
-annen teknologi. Spesifikasjonen vil bli publisert ved OpenAPI spec. Da finnes det mange verktøy for å lage klienter i 
-forskjellige språk og teknologier. Vi vil benytte UTF-8 charset på alt om ikke annet er spesifisert.
+## Grensesnitt
+Tjenestene på fiks-plattformen vil som hovedregel benytte REST/json.
 
-Readtimeout på 30 sekund er fint som default. De operasjoenen som trenger noe annet vil spesifisere det.
+Vi publiserer [OpenAPI-Specification](https://github.com/OAI/OpenAPI-Specification) basert dokumentasjon for alle api'er. I dag benyttes 2.0, med plan om migrering til 3.0 når denne får videre støtte. Disse spesifikasjonene er nyttige både som dokumentasjon for rest-grensesnittet, men kan også brukes for å automatisk generere klienter og modell-objekter, for eksempel ved bruk av [Swagger Codegen](https://swagger.io/swagger-codegen/). 
 
 ## Konfigurasjon
-Følgende må gjøres i fiks konfigurasjon for å opprette og konfigurere en integrasjon:
+En fiks-organisasjon kan opprette egen integrasjoner gjennom [fiks-konfigurasjon]({{< ref "konfigurasjon.md" >}}).
 
-* _Sett autorisert organisasjon_. Dette vil som regel være organisasjonen som eier systemet som skal integrere seg mot Fiks, for eksempel hvis et fagsystem installert hos Bergen Kommune skal integreres mot meldingsboksen. 
-* _Genererer servicepassord_.
+* _Sett autorisert organisasjon_. Dette vil som regel være organisasjonen som drifter systemet som skal integreres, enten fiks-organisasjonen selv eller en tredjepart.
+* _Genererer servicepassord_. Dette må opplyses for å autentisere integrasjonen, se under for detaljer.
 * _Tildel navn_. Et visningsnavn for integrasjonen.
 * _Sett beskrivelse_. En beskrivelse av hva integrasjonen er og hvilke oppgaver den løsner. 
 * _Sett tjenester_. Hvilke tjenester er denne integrasjonen aktuell for?
 
-### Autentisering
+## Autentisering
 Integrasjoner autentiseres ved hjelp av to mekanismer:
 
  Organisasjonen henter et OAuth 2.0 access token fra ID-Porten, basert på organisasjonens virksomhetssertifikat. Dokumentasjon for dette finnes [her](https://difi.github.io/idporten-oidc-dokumentasjon/oidc_auth_server-to-server-oauth2.html). Vi støtter i første omgang kun JWT access_tokens, dette må konfigureres hos idporten.  I tillegg trengs en brukernavn/passord header: integrasjonens id plasseres i en IntegrasjonId header på requesten, sammen med et ServicePassword. Disse generereres under oppretting av en integrasjon på [fiks-konfigurasjon]({{< ref "konfigurasjon.md" >}}). 
@@ -46,15 +36,13 @@ Kallet mot Fiks-platform tjenesten trenger dermed følgende HTTP headere:
 * _IntegrasjonId_: Id for integrasjonen, generert i Fiks-Konfigurasjon. Orgnr i Jwt'en i _Authorization_ header må være konfigurert som autorisert organisasjon for integrasjonen.
 * _ServicePassword_: Passord for integrasjonen, generert i Fiks-Konfigurasjon
 
-### Autorisering
+## Autorisering
 I tillegg må integrasjonen autoriseres for tilgang til en spesifikk tjeneste. Hvis for eksempel et fagsystem skal kunne laste opp meldinger til Meldingsboksen må en administrator i kommunen benytte Fiks-Konfigurasjon for å legge til denne tilgangen hos den relvante kommunen.
 
 Dette gjelder også for integrasjoner som leveres som en del av fiks-plattformen. Skal SvarUt kunne indeksere forsendelse i meldingsboksen må også her kommunen eksplisitt autorisere dette.
 
-### Huskeliste
+## Huskeliste
 * access_token fra idporten
 * access_token må ha scope ks
 * Read timeout: 30 sekunder
 * Charset UTF-8
-
-ls

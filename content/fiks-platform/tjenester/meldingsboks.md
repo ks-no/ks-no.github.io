@@ -5,20 +5,20 @@ date: 2018-03-02
 
 ![minside_sok](/images/fiks_meldingboks.png "Minside Søk")
 
-Meldingsboksen gjør det lett å finne informasjon om forholdet mellom en fiks-organisasjon og innbyggeren: forsendelser, pågående saker, regninger og så videre. Andre tjenester på fiks-plattformen, som [fiks-digisos]({{< ref "digisos.md" >}}) og svarut leverer oppdateringer hit, men det er lagt til rett for at andre systemer, som for eksempel et fagystem i kommunen, skal kunne levere informasjon. 
+Meldingsboksen gjør det lett å finne informasjon om forholdet mellom en fiks-organisasjon og innbyggeren: metadata om forsendelser, pågående saker, regninger, arkivmatriale og annet lastes opp og blir så gjort tilgjengelig av en kraftig søkemotor. Andre tjenester på fiks-plattformen, som [fiks-digisos]({{< ref "digisos.md" >}}) og SvarUt leverer oppdateringer hit, og det er lagt vekt på at det skal være lett å utvide antall integrasjoner videre.
 
 ## Oversikt
-Søk er en modul i min-side som består av tre hovedkomponenter:
+Tjenesten består av tre hovedkomponenter:
  
- * _Meldingsboksen_, en single page webapp (SPA) som tilbyr et grensesnitt mot søkemotoren for å finne meldinger basert på søkekriterier og filtre. 
+ * _Meldingsboksen_, en single page webapp (SPA) hvor man kan søke og filtere. 
  * _Meldingssøk_, en søkemotor som støtter fritekstsøk og score-rangerte resultater. 
  * _Meldingsindexer_, en indekseringstjeneste som integrasjoner kan benytte for å laste opp meldinger: hendelser, fakturaer, saker, journalposter, forsendelser, osv.  
 
 Søkeresultatet scores på relevans: nye meldinger scores høyere enn gamle, uleste dokumenter høyere enn de du har lest, ubetalte faktura høyere enn de du har betalt, og så videre. Den tilbyr flere filtre: dato, organisasjon, enhet, og mulighet for å søke på ord som fremkommer i meldingen. Den kompanserer for stavefeil, bøyeform eller orddeling. Alle søk er også filtrert på innloggingsnivå. Et søk gjort med innlogging på nivå tre vil ikke returnere grupper som er satt til nivå fire, uavhengig av om disse gruppene traff på søket.
 
-Søkemotoren inneholder utelukkende metadata. Om meldingen skal peke til et dokument, bilde eller annen fil gjøres dette i form av en lenke: integrasjonen kan da benytte Fiks-plattformens filarkiv eller en egen løsning for å tilgjengeligjøre filen.
+Søkemotoren inneholder utelukkende metadata. Om meldingen skal peke til et dokument, bilde eller annen fil gjøres dette i form av en lenke: denne kan for eksempel peke til en fil i [fiks-dokumentlager]({{< ref "dokumentlager.md" >}}), men fiks-organisasjoner står fritt til å benytte andre tjenester. Så lenge disse støtter innlogging gjennom ID-Porten vil dette også oppleves som sømløst av innbygger. 
 
-Når plattformen lanseres er Fiks SvarUt den første integrasjonen som leverer meldinger til meldingsboksen - hvis kommunen ønsker dette kan alle meldinger som noen sinne har blitt sendt gjennom svarut gjøres tilgjengelig for mottakerene. Dette styres gjennom fiks-konfigurasjon. 
+Når plattformen lanseres er Fiks SvarUt den første integrasjonen som leverer meldinger til meldingsboksen - hvis kommunen ønsker dette kan alle meldinger som har har blitt sendt gjennom svarut gjøres tilgjengelig for mottakerene. Dette styres gjennom [fiks-konfigurasjon]({{< ref "digisos.md" >}}). 
 
 ## Integrasjonsutvikling
 
