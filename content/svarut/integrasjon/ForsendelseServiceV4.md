@@ -171,7 +171,7 @@ Hovedtjeneste som sender inn forsendelse til ekspedering av KS-SvarUt. Følgende
 
 <td class="bold">kryptert</td>
 
-<td colspan="2">Settes til true dersom fil(ene) som sendes er kryptert. Dersom kryptering ikke er brukt må denne være satt til false. Se kodeeksempler for eksempel på kryptering. Det må være kryptert med CMS med svarut sin publickey. [Den offentlige nøkkelen](https://svarut.ks.no/forsendelse/publickey/hent) [Den offentlige nøkkelen for TEST](https://test.svarut.ks.no/forsendelse/publickey/hent)</td>
+<td colspan="2">Settes til true dersom fil(ene) som sendes er kryptert. Dersom kryptering ikke er brukt må denne være satt til false. Se kodeeksempler for eksempel på kryptering. Det må være kryptert med CMS med svarut sin publickey. [Den offentlige nøkkelen PROD](https://svarut.ks.no/forsendelse/publickey/hent), [Den offentlige nøkkelen for TEST](https://test.svarut.ks.no/forsendelse/publickey/hent)</td>
 
 </tr>
 

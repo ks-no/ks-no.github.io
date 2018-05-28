@@ -8,7 +8,7 @@ date: 2017-01-01
 
 Last ned komplett [kodeeksempel](https://svarut.ks.no/releases/java-eksempel.zip)
 
-Dersom forsendelser skal krypteres, trenger du Unlimited Strength Jurisdiction files for Java (en Java Cryptography Extension). I tillegg trengs [Den offentlige nøkkelen](https://svarut.ks.no/forsendelse/publickey/hent) [Den offentlige nøkkelen for TEST](https://test.svarut.ks.no/forsendelse/publickey/hent) til SvarUt. Dersom forsendelser ikke skal krypteres trengs ikke Bouncy Castle-avhengighetene.
+Dersom forsendelser skal krypteres, trenger du Unlimited Strength Jurisdiction files for Java (en Java Cryptography Extension). I tillegg trengs [Den offentlige nøkkelen PROD](https://svarut.ks.no/forsendelse/publickey/hent), [Den offentlige nøkkelen for TEST](https://test.svarut.ks.no/forsendelse/publickey/hent) til SvarUt. Dersom forsendelser ikke skal krypteres trengs ikke Bouncy Castle-avhengighetene.
 
 ### Maven dependencies
 
