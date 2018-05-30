@@ -1,0 +1,176 @@
+{
+  "swagger" : "2.0",
+  "info" : {
+    "version" : "v1",
+    "title" : "KS Fiks: Autorisasjon Update Service",
+    "contact" : {
+      "name" : "Fiks brukerstøtte",
+      "url" : "http://www.ks.no/fagomrader/utvikling/digitalisering/digitaliseringsstrategien/fiks/",
+      "email" : "fiks@ks.no"
+    }
+  },
+  "basePath" : "/api",
+  "tags" : [ {
+    "name" : "ressurs"
+  } ],
+  "schemes" : [ "https" ],
+  "paths" : {
+    "/autorisasjon-update/api/v1/ressurs" : {
+      "post" : {
+        "tags" : [ "ressurs" ],
+        "summary" : "Oppretter en ressurs",
+        "description" : "",
+        "operationId" : "opprettRessurs",
+        "parameters" : [ {
+          "in" : "body",
+          "name" : "body",
+          "required" : false,
+          "schema" : {
+            "$ref" : "#/definitions/OpprettRessursRequest"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "$ref" : "#/definitions/Ressurs"
+            }
+          }
+        }
+      }
+    },
+    "/autorisasjon-update/api/v1/ressurs/{ressurs}/tilganger" : {
+      "post" : {
+        "tags" : [ "ressurs" ],
+        "summary" : "Gir en aktør et spesifisert privilegium på ressursen",
+        "description" : "",
+        "operationId" : "tildelTilgang",
+        "parameters" : [ {
+          "name" : "ressurs",
+          "in" : "path",
+          "required" : true,
+          "type" : "string",
+          "format" : "uuid"
+        }, {
+          "in" : "body",
+          "name" : "body",
+          "required" : false,
+          "schema" : {
+            "$ref" : "#/definitions/TilgangRequest"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "$ref" : "#/definitions/Tilgang"
+            }
+          }
+        }
+      },
+      "delete" : {
+        "tags" : [ "ressurs" ],
+        "summary" : "Fjerner aktørens privilegium på ressursen",
+        "description" : "",
+        "operationId" : "fjernTilgang",
+        "parameters" : [ {
+          "name" : "ressurs",
+          "in" : "path",
+          "required" : true,
+          "type" : "string",
+          "format" : "uuid"
+        }, {
+          "name" : "aktor",
+          "in" : "query",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "privilegium",
+          "in" : "query",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "type" : "object"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions" : {
+    "OpprettRessursRequest" : {
+      "type" : "object",
+      "required" : [ "forelderRessurs", "type" ],
+      "properties" : {
+        "forelderRessurs" : {
+          "type" : "string",
+          "format" : "uuid",
+          "description" : "The UUID of the parent of this ressurs, or null if root"
+        },
+        "type" : {
+          "type" : "string",
+          "description" : "The UUID of the parent of this ressurs, or null if root",
+          "pattern" : "^[A-Za-zæøåÆØÅ0-9_.,/\\-_ ]+$"
+        }
+      },
+      "description" : "A request to create a ressurs"
+    },
+    "Ressurs" : {
+      "type" : "object",
+      "required" : [ "forelder", "id", "type" ],
+      "properties" : {
+        "id" : {
+          "type" : "string",
+          "format" : "uuid",
+          "description" : "The UUID of the ressurs"
+        },
+        "forelder" : {
+          "type" : "string",
+          "format" : "uuid",
+          "description" : "The UUID of the parent of this ressurs."
+        },
+        "type" : {
+          "type" : "string",
+          "description" : "The type of the ressurs"
+        }
+      },
+      "description" : "Represents a ressurs, which is an entity to which privilegier may be assigned. Ressurser are organized in a hierarchy where any privilegium given to an aktør on a ressurs will also apply for that aktør to all descendants of that ressurs."
+    },
+    "Tilgang" : {
+      "type" : "object",
+      "properties" : {
+        "aktor" : {
+          "type" : "string"
+        },
+        "privilegium" : {
+          "type" : "string"
+        },
+        "ressurs" : {
+          "type" : "string",
+          "format" : "uuid"
+        }
+      }
+    },
+    "TilgangRequest" : {
+      "type" : "object",
+      "required" : [ "aktor", "privilegium" ],
+      "properties" : {
+        "aktor" : {
+          "type" : "string",
+          "description" : "The aktør that this autorisasjon concerns",
+          "pattern" : "^[A-Za-zæøåÆØÅ0-9_.,/\\-_ ]+$"
+        },
+        "privilegium" : {
+          "type" : "string",
+          "description" : "The navn of the privilegium that the aktør has or is requesting for the given ressurs",
+          "pattern" : "^[0-9A-Z_.]+$"
+        }
+      },
+      "description" : "Represents an autorisasjon, which describes a ressurs and privilegium that a given aktør has or is requesting"
+    }
+  }
+}
