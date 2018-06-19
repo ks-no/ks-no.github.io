@@ -22,7 +22,7 @@ Når plattformen lanseres er Fiks SvarUt den første integrasjonen som leverer m
 
 ## Integrasjonsutvikling
 
-### Indekseringstjeneste [(api-spec)](https://editor.swagger.io/?url=https://ks-no.github.io/api/meldingindexer-api.json)
+### Indekseringstjeneste [(api-spec)](https://editor.swagger.io/?url=https://ks-no.github.io/api/meldingindexer-api-v1.json)
 
 Indekseringstjenesten lar integrasjoner opprette meldinger, eller fjerne / endre meldinger som alt er opprettet. 
 
