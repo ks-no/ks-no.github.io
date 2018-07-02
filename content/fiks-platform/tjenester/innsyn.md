@@ -22,7 +22,7 @@ Når plattformen lanseres er Fiks SvarUt den første integrasjonen som leverer m
 
 ## Integrasjonsutvikling
 
-### Indekseringstjeneste [(api-spec)](https://editor.swagger.io/?url=https://ks-no.github.io/api/meldingindexer-api-v1.json)
+### Indekseringstjeneste [(api-spec)](https://editor.swagger.io/?url=https://ks-no.github.io/api/innsyn-index-api-v1.json)
 
 Indekseringstjenesten lar integrasjoner opprette meldinger, eller fjerne / endre meldinger som alt er opprettet. 
 
@@ -44,5 +44,5 @@ Indekserte meldinger kan fjernes ved å benytte endepunkt for sletting. Her gjel
 
 Merk at sletting på samme måte som indeksering ikke gjennomføres i en atomisk transaksjon: deler av meldingene i batchen kan bli slettet selv om andre feiler. 
 
-## Søketjeneste [(api-spec)](https://editor.swagger.io/?url=https://ks-no.github.io/api/meldingsok-api-v1.json)
+## Søketjeneste [(api-spec)](https://editor.swagger.io/?url=https://ks-no.github.io/api/innsyn-sok-api-v1.json)
 Hvis kommunen har en eksisterende løsning for innloggede innbyggertjenester kan det være aktuelt å benytte innsynsøket som en tjeneste fremfor en webapplikasjon. Merk at kommunene da tar ansvar for å fremskaffe Open Id Connect innloggingstoken fra ID-porten, og for å sørge for at dette tokenet er gyldig. Innsynsøk-tjenesten vil fortsatt utføre nødvendig autorisering.
