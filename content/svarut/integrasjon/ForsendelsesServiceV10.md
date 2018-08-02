@@ -2,7 +2,7 @@
 title: ForsendelsesServiceV10
 date: 2018-05-11
 ---
-
+### Denne versjonen er under utvikling - nyeste offisielle versjon er V9
 ### Tilgang
 
 For å benytte web-tjenesten må en bruke HTTP Basic autentication med brukernavn(avsendernavn) og service-passord. Avsender opprettes av KS-SvarUt administrator/organisasjons administrator. Service-passordet genereres av avsender-ansvarlig via [konfigurasjon](https://svarut.ks.no/konfigurasjon/)-siden.

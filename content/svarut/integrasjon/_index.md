@@ -19,7 +19,7 @@ Kall mot svarut, timer ut hvis de tar meir enn 15 minutt. Derfor kan det være l
 | [ForsendelseServiceV7](forsendelseservicev7) | [WSDL](https://svarut.ks.no/tjenester/forsendelseservice/ForsendelsesServiceV7?wsdl) | Deprecated | <ul><li>dokumentType heter nå forsendelsetype</li><li>Støtte for difi sin signeringstjeneste. Beskrivelse av [Signeringstjeneste](Signeringstjeneste)</li></ul> |
 | [ForsendelseServiceV8](forsendelseservicev8) | [WSDL](https://svarut.ks.no/tjenester/forsendelseservice/ForsendelsesServiceV8?wsdl) | Stabil | <ul><li>dokumentType lagt til på hver fil. Denne er tilgjengelig i Svarinn. </li><li>Kan hente liste med mottakersystem for et orgnr</li><li>Kan hente forsendelseTyper som kan brukes i SvarUt</li></ul> |
 | [ForsendelseServiceV9](forsendelseservicev9) | [WSDL](https://svarut.ks.no/tjenester/forsendelseservice/ForsendelsesServiceV9?wsdl) | Stabil | <ul><li>Hente ut signeringshistorikk på en forsendelse</li><li>Dokument har fått ekskluderesFraPrint, da er ikke filen med i print av forsendelsen. Brukes typisk til filer som kun er interesange om forsendelsen lastes ned digitalt. Xml, lyd, video filer osv.</li></ul> |
-| [ForsendelsesServiceV10](forsendelsesservicev10) | [WSDL](https://svarut.ks.no/tjenester/forsendelseservice/ForsendelsesServiceV10?wsdl) | Test | <ul></ul> |
+| [ForsendelsesServiceV10](forsendelsesservicev10) | [WSDL](https://svarut.ks.no/tjenester/forsendelseservice/ForsendelsesServiceV10?wsdl) | Under utvikling | <ul></ul> |
 
 # Nedlasting av forsendelser direkte til sakssystem
 
