@@ -12,6 +12,7 @@ Dokumentlageret vil bli benyttet av flere fiks-tjenester: SvarUt, SvarInn, Digis
 De vanlige [autentiseringsreglene]({{< ref "sikkerhet.md" >}}) for Fiks-plattformen gjelder for denne tjenesten, men i tilegg må integrasjonen har rett til å laste opp filer på en dokumentlager konto.
 
 Dokumentlager fungerer i denne rekkefølgen:
+
 1. En laster opp metadata om dokumentet.
 2. En laster opp fildata
 3. Mottaker laster ned fil
