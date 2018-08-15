@@ -14,7 +14,8 @@ For å benytte web-tjenesten må en bruke HTTP Basic autentication med brukernav
 * Endret operasjoner: retrieveForsendelsesStatus og retrieveForsendelsesStatuser, begge returnerer nå samme modell-objekt (ForsendelsesStatus). Sistnevnte operasjon har pakket resultatet i en liste.
 * Forsendelsesid og organisasjonsnummer er kapslet inn i egne typer.
 * Modell-objektet StatusResult heter nå ForsendelsesStatus. Gamle ForsendelseStatus heter nå Status og blir returnert som en del av ForsendelsesStatus.
-* Modell-objektet "Brevpost" er ikke lenger i bruk og er fjernet.
+* Modell-objektet Brevpost er ikke lenger i bruk og er fjernet.
+* Modell-objektet PrintKonfigurasjon heter nå UtskriftsKonfigurasjon.
 * Alle modell-objektene er oppdatert til å bruke camelCase på felt og attributter.
 
 ## Tjenester
@@ -98,7 +99,7 @@ Henter liste med informasjon om dokumentene til en forsendelse.
 | konteringsKode               | String                                | Kode som beskriver faktureringskonto for forsendelsen. Kan benyttes for å gruppere meldingsstatistikk gjennom forvaltningsløsningen, og sendes videre til print-leverandør. | ^[a-zA-Z0-9\-\.øæåØÆÅ]{0,20}$ |
 | kunDigitalLevering           | boolean                               | Vi leverer kun digitalt, ingen print og postlegging. Hvis dokumentet ikke kan leveres digital blir det ikke levert. Hvis KunDigitalLevering er valgt må fødselsnr eller orgnr være utfylt. |            |
 | kryptert                     | boolean                               | Settes til true dersom fil(ene) som sendes er kryptert. Dersom kryptering ikke er brukt må denne være satt til false. Se kodeeksempler for eksempel på kryptering. Det må være kryptert med CMS med svarut sin publickey. [Den offentlige nøkkelen PROD](https://svarut.ks.no/forsendelse/publickey/hent), [Den offentlige nøkkelen for TEST](https://test.svarut.ks.no/forsendelse/publickey/hent) |            |
-| printKonfigurasjon           | PrintKonfigurasjon                    | Konfigurasjon for hvordan dokumentet skal printes, dobbeltsidig, fargeprint                        |            |
+| utskriftsKonfigurasjon       | UtskriftsKonfigurasjon                | Konfigurasjon for hvordan dokumentet skal printes, dobbeltsidig, fargeprint                        |            |
 | krevNiva4Innlogging          | boolean                               | Forsendelsen krever nivå 4-innlogging for å kunne lastes ned eller signeres. Disse forsendelsene må være kryptert. |            |
 | metadataFraAvleverendeSystem | NoarkMetadataFraAvleverendeSaksSystem | Noark5 metadata fra avleverende system                                                             |            |
 | metadataForImport            | NoarkMetadataForImport                | Noark5 metadata som stemmer med mottakende system. Kan brukes til å legge dokumentet på rett sak.  |            |
@@ -106,7 +107,7 @@ Henter liste med informasjon om dokumentene til en forsendelse.
 | svarPaForsendelse            | ForsendelsesId                        | Forsendelsesid til forsendelse dette er et svar på.                                                |            |
 | dokumenter                   | List<Dokument>                        | Rekkefølgen er rekkefølgen de kommer i brevet. Total filstørrelse inntil 350MB er støttet når det skal printes. Ellers er det ikke begrensning. |            |
 | lenker                       | List<Lenke>                           | Rekkefølgen er samme som de vil komme i brevet. Kan være tom.                                      |            |
-| forsendelseType              | String                                | Fritekst felt for å kunne identifisere forsendelse type.                                           |            |
+| forsendelsesType             | String                                | Fritekst felt for å kunne identifisere forsendelse type.                                           |            |
 | eksternReferanse             | String                                | Ekstern id for forsendelsen, ingen sjekk på innhold i SvarUt. Det vil komme mulighet for å hente ut forsendelser i søk og via api på eksternref. |            |
 | svarPaForsendelseLink        | boolean                               | Mottaker kan svare på forsendelse. Orgnr i svar sendes til må matche et orgnr i edialog mottakere. |            |
 | signeringUtloper             | Date                                  | Angi hvor lenge signeringsoppdraget er gyldig, minimum 1 dag.                                      | Må angis ved signeringsforsendelser |
@@ -221,15 +222,15 @@ Se OrganisasjonDigitalAdresse og PersonDigitalAdresse
 | organisasjonsNummer | OrganisasjonsNummer | Må være utfylt for å kunne levere til altinn. |                |
 
 #### PersonDigitalAdresse
-| Felt | Type   | Beskrivelse                                   | Validering                                         |
-| ---- | -------| --------------------------------------------- | -------------------------------------------------- |
-| fnr  | String | Må være utfylt for å kunne levere til altinn. | Ved signeringsoppdrag må dette feltet være utfylt. |
+| Felt          | Type   | Beskrivelse                                   | Validering                                         |
+| ------------- | -------| --------------------------------------------- | -------------------------------------------------- |
+| fodselsNummer | String | Må være utfylt for å kunne levere til altinn. | Ved signeringsoppdrag må dette feltet være utfylt. |
 
-#### PrintKonfigurasjon
-| Felt       | Type    | Beskrivelse | Validering |
-| ---------- | --------| ----------- | ---------- |
-| fargePrint | boolean |             |            |
-| tosidig    | boolean |             |            |
+#### UtskriftsKonfigurasjon
+| Felt              | Type    | Beskrivelse | Validering |
+| ----------------- | --------| ----------- | ---------- |
+| utskriftMedFarger | boolean |             |            |
+| tosidig           | boolean |             |            |
 
 #### NoarkMetadataFraAvleverendeSaksSystem
 | Felt                 | Type          | Beskrivelse | Validering |
@@ -244,7 +245,7 @@ Se OrganisasjonDigitalAdresse og PersonDigitalAdresse
 | journalDato          | Date          |             |            |
 | dokumentetsDato      | Date          |             |            |
 | tittel               | String        |             |            |
-| saksbehandler        | String        |             |            |
+| saksBehandler        | String        |             |            |
 | ekstraMetadata       | List\<Entry\> |             |            |
 
 #### NoarkMetadataForImport
@@ -258,22 +259,22 @@ Se OrganisasjonDigitalAdresse og PersonDigitalAdresse
 | tittel               | String        |             |            |
 
 #### Dokument
-| Felt                | Type           | Beskrivelse                                   | Validering                                         |
-| ------------------- | ---------------| --------------------------------------------- | -------------------------------------------------- |
-| filnavn             | String         | Filnavn er for intern bruk, må være unikt i en forsendelse. | Max 226 tegn. Må ikke inneholde mappe, kun filnavn. (ingen / eller \) Disse tegnene er også ugyldige " < > ? * &#124; : De har andre funksjoner i windows og kan ikke brukes i filnavn på windows. Skiller ikke mellom store og små bokstaver i filnavnet. |
-| mimetype            | String         | Mimetype på være application/pdf hvis den skal til print. Kun digital levering er valgt kan vi ta imot annet. | Kun application/pdf hvis den skal til print |
-| skalSigneres        | Boolean        | Angir om dokumentet skal signeres | Bare et dokument kan signeres og må være av type PDF | 
-| dokumentType        | String         | Fritekstfelt som kan brukes til å fortelle noe om dokumentTypen til feltet. Kan brukes til noark4 dokumenttyper |  |
-| data                | DataHandler    | Fildata |  |
-| giroarkSider        | Set<\Integer\> | Liste med sidetall som skal printes på gult giroark. Digital versjon vil få grått giroark. Første side er 1. |  |
-| ekskluderesFraPrint | Boolean        | Dette dokumentet blir ikke med i print av forsendelsen. Brukes til filer som kun er interesange ved digital levering. F.eks xml, video eller lyd filer |  |
+| Felt                   | Type           | Beskrivelse                                   | Validering                                         |
+| ---------------------- | ---------------| --------------------------------------------- | -------------------------------------------------- |
+| filnavn                | String         | Filnavn er for intern bruk, må være unikt i en forsendelse. | Max 226 tegn. Må ikke inneholde mappe, kun filnavn. (ingen / eller \) Disse tegnene er også ugyldige " < > ? * &#124; : De har andre funksjoner i windows og kan ikke brukes i filnavn på windows. Skiller ikke mellom store og små bokstaver i filnavnet. |
+| mimeType               | String         | Mimetype på være application/pdf hvis den skal til print. Kun digital levering er valgt kan vi ta imot annet. | Kun application/pdf hvis den skal til print |
+| skalSigneres           | Boolean        | Angir om dokumentet skal signeres | Bare et dokument kan signeres og må være av type PDF | 
+| dokumentType           | String         | Fritekstfelt som kan brukes til å fortelle noe om dokumentTypen til feltet. Kan brukes til noark4 dokumenttyper |  |
+| data                   | DataHandler    | Fildata |  |
+| giroarkSider           | Set<\Integer\> | Liste med sidetall som skal printes på gult giroark. Digital versjon vil få grått giroark. Første side er 1. |  |
+| ekskluderesFraUtskrift | Boolean        | Dette dokumentet blir ikke med i utskrift av forsendelsen. Brukes til filer som kun er interessant for digital levering. F.eks xml, video eller lyd filer |  |
 
 #### Lenke
 | Felt      | Type   | Beskrivelse                            | Validering                                                                                      |
 | --------- | ------ | -------------------------------------- | ----------------------------------------------------------------------------------------------- |
 | urlLenke  | String | Selve lenken til dokument/nettside     | Må være utfylt og være i gyldig lenke format, altså (http/https/ftp)://(nettside).(com/no/ etc) |
 | urlTekst  | String |                                        | Må være utfylt                                                                                  |
-| ledetekst | String | Teksten som kommer før lenken i brevet |                                                                                                 |
+| ledeTekst | String | Teksten som kommer før lenken i brevet |                                                                                                 |
 
 #### SignaturType
 | Verdi                | Beskrivelse |
