@@ -3,9 +3,9 @@ title: Digisos
 date: 2018-08-30 
 ---
 
-Fiks Digisos er et knutepunkt for overføringer av søknader om sosialstønad fra Nav til den enkelte kommune, som så utfører saksbehandling og sender statusoppdateringer tilbake til Fiks og Nav.
+Fiks Digisos er en tjeneste for å tilrettelegge for kommunal saksbehandling med tjenester på nav.no Søknad og sak blir tilgjengelig på nav.no for bruker/innbygger. Saksbehandling foregår i kommunalt fagsystem. Fiks fasiliterer kommunikasjonen mellom nav.no og kommunalt fagsystem.
 
-Tjenesten er tett integrert med andre tjenester på Fiks plattformen, og tilbyr:
+Tjenesten benytter flere komponeneter i fiks-plattformen(SvarInn 2, dokumentlager, SvarUt, konfigurasjon, autorisasjon, audit logging, ...):
 
 * Enkelt oppsett for den enkelte kommune gjennom [Fiks Konfigurasjon]({{< ref "konfigurasjon.md" >}}) 
 * Søknader om sosialhjelp fra nav.no blir levert til kommunenes fagsystem via SvarInn, eller kommunen kan manuelt hente disse via SvarInn manuelt grensesnitt.
