@@ -35,4 +35,4 @@ Dokument og melding i fiks-innsyn er utelukkende tilgjengelig for innbygger. Fik
     3. Saken er tilgengelig som nav.no og nav ansatte/brukerstøtte.
 6. Om fagsystemet avviser eller unnlater å bekrefte mottak av saken vil SvarUt benyttes som alternativ kanal. I praksis betyr dette at meldingen blir sendt til kommunens Altinn-konto, evt. sendt til print og postlagt.     
     
-![fiks_digisos](/images/Fiks-digisos.png "Fiks Digisos")
+![fiks_digisos](/images/fiks_digisos.png "Fiks Digisos")
