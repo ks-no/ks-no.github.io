@@ -1,6 +1,6 @@
 ---
 title: Dokumentlager
-date: 2018-08-13 
+date: 2018-09-10
 ---
 
 Dokumentlager-tjenesten lar kommunen og andre Fiks-organisasjoner laste opp dokumenter. Ved opplasting autoriseres en eller 
@@ -34,6 +34,7 @@ Dokumentlager fungerer på følgende måte:
 3. Mottaker laster ned dokument
 
 Det er tre forskjellige måter et dokument kan bli slettet på:
+
 - Manuelt gjennom webgrensesnitt eller API
 - Ved at TTL utløper
 - Dersom kontoen dokumentet hører til blir slettet

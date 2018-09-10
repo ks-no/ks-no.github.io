@@ -21,9 +21,9 @@ Minside i test kan fylles med data fra SvarUt test. Aktiver avsender i fiks konf
 Alle testbrukere dere får fra oss har minid innlogging. Her anbefaler vi at dere setter tlfnr og epost slik at brukeren kan låses opp om noen skulle sperre den med feilede innloggingsforsøk.
 
 ### Integrasjon innlogging.
-For å kunne teste integrasjoner mot FIKS i test må dere har en idporten konto. For å få dette må en henvende seg til idporten@difi.no og sende med orgnr i testvirksomhetssertifikat.
+For å kunne teste integrasjoner mot Fiks i test må dere har en idporten konto. For å få dette må en henvende seg til idporten@difi.no og sende med orgnr i testvirksomhetssertifikat.
 Idporten tar seg av opprettelsen av disse.
 Etter at konto er registrert hos idporten kan integrasjons tilgang lages i fiks konfigurasjon.
 
-## Tilgang til Fiks test
+## Tilgang til Fiks-test
 Vil dere ha tilgang til Fiks test, send mail til fiks-utvikling@ks.no. Har dere eksisterende test brukere i idporten send gjerne disse til oss slik at vi kan gjenbruke dei.
