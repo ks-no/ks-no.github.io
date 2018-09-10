@@ -5,10 +5,11 @@ date: 2018-09-10
 
 Dokumentlager-tjenesten lar kommunen og andre Fiks-organisasjoner laste opp dokumenter. Ved opplasting autoriseres en eller 
 flere personer og/eller organisasjoner for tilgang til dokumentet. Det er også mulig å laste opp dokumenter med en begrenset
-levetid, slik at det blir gjort uttilgjengelig når denne tiden utløper.
+levetid, slik at det blir gjort utilgjengelig når denne tiden utløper.
 
 En Fiks-organisasjon kan organisere sine dokumenter ved bruk av det som kalles kontoer. Alle dokumenter som lastes opp 
-vil tilhøre en konto. Om man vil bruke en eller flere kontoer er helt opp til hver organisasjon.
+vil tilhøre en konto. Om man vil bruke en eller flere kontoer er helt opp til hver organisasjon. Kontoer administreres 
+gjennom konfigurasjonsgrensesnittet, hvor man også finner statistikk for diskbruk, metadata for dokumenter, med mer.
 
 Dokumentlageret vil bli benyttet av flere Fiks-tjenester: SvarUt, SvarInn, Digisos og Innsyn, men det kan også benyttes av 
 en Fiks-organisasjons egne integrasjoner.
@@ -40,7 +41,7 @@ gjennom konfigurasjonsgrensesnittet, men må gis på kontonivå. Dersom man har 
 tilgang til flere av disse må tilgang gis på hver enkelt konto.
 
 Ved opplasting av metadata kan man spesifisere en valgfri TTL (time-to-live), som spesifiserer et tidspunkt hvor dokumentet 
-vil bli gjort uttilgjengelig, og til slutt slettet. En negativ verdi betyr at dokumentet aldri utløper. Formatet er UNIX
+vil bli gjort utilgjengelig, og til slutt slettet. En negativ verdi betyr at dokumentet aldri utløper. Formatet er UNIX
 epoch millisekunder.
 
 
