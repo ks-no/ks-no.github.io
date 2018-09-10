@@ -31,9 +31,9 @@ Når et dokument slettes vil metadata fortsette å eksistere, men selve dokument
 
 ### Integrasjonsutvikling [(api-spec)](https://editor.swagger.io/?url=https://ks-no.github.io/api/dokumentlager-upload-api-v1.json)
 
-Alle operasjoner i dokumentlageret utføres på en konto, som er en ressurs som hører til en Fiks-organisasjon. Hvordan disse 
-organiseres er opp til hver organisasjon. Man kan ha én konto for alt, eller dele det opp over mange, slik at man for 
-eksempel kan gi forskjellige tilganger for hver konto.
+Alle operasjoner i dokumentlageret utføres på en konto, som er en ressurs som hører til dokumentlager-tjenesten til en 
+Fiks-organisasjon. Hvordan disse organiseres er opp til hver organisasjon. Man kan ha én konto for alt, eller dele det 
+opp over mange, slik at man for eksempel kan gi forskjellige tilganger for hver konto.
 
 De vanlige [autentiseringsreglene]({{< ref "sikkerhet.md" >}}) for Fiks-plattformen gjelder for denne tjenesten, men i 
 tillegg må integrasjonen ha rett til å laste opp dokumenter på en dokumentlager konto. Disse tilgangene tildeles som vanlig 
