@@ -1,5 +1,5 @@
 ---
-title: KS-Fiks-plattform
+title: Fiks-plattformen
 description: Description
 ---
 
