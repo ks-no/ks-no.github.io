@@ -5,19 +5,20 @@ date: 2018-09-10
 
 Dokumentlager-tjenesten lar kommunen og andre Fiks-organisasjoner laste opp dokumenter. Ved opplasting autoriseres en eller 
 flere personer og/eller organisasjoner for tilgang til dokumentet. Det er også mulig å laste opp dokumenter med en begrenset
-levetid, slik at det blir gjort gjort uttilgjengelig når denne tiden utløper.
+levetid, slik at det blir gjort uttilgjengelig når denne tiden utløper.
 
-En Fiks-organisasjon kan organisere sine dokumenter ved bruk av det som kalles kontoer. Om man vil bruke en eller flere 
-kontoer er helt opp til hver organisasjon.
+En Fiks-organisasjon kan organisere sine dokumenter ved bruk av det som kalles kontoer. Alle dokumenter som lastes opp 
+vil tilhøre en konto. Om man vil bruke en eller flere kontoer er helt opp til hver organisasjon.
 
 Dokumentlageret vil bli benyttet av flere Fiks-tjenester: SvarUt, SvarInn, Digisos og Innsyn, men det kan også benyttes av 
 en Fiks-organisasjons egne integrasjoner.
 
-Dokumentlager fungerer på følgende måte:
+Dokumentlageret fungerer på følgende måte:
 
 1. En laster opp metadata om dokumentet. Her spesifiseres blant annet hvem dokumentet skal eksponeres for, dokumentets levetid, osv.
 2. En laster opp dokumentdata
-3. Mottaker laster ned dokument
+3. Dokumentet blir tilgjengelig for alle som er autorisert til å se det
+4. Dokumentet kan bli utilgjengeliggjort og slettet av en av grunnene spesifisert under
 
 Det er tre forskjellige måter et dokument kan bli slettet på:
 
