@@ -284,7 +284,7 @@
           "200" : {
             "description" : "successful operation",
             "schema" : {
-              "$ref" : "#/definitions/OffentligNokkelApiModel"
+              "$ref" : "#/definitions/OffentligNokkel"
             }
           }
         }
@@ -359,18 +359,23 @@
         "description" : "",
         "operationId" : "lookup",
         "parameters" : [ {
-          "name" : "orgNo",
+          "name" : "identifikatorType",
           "in" : "query",
           "required" : true,
           "type" : "string",
-          "pattern" : "^[0-9]{9}$"
+          "enum" : [ "ORGNO", "NAVKONTORID" ]
+        }, {
+          "name" : "identifikator",
+          "in" : "query",
+          "required" : true,
+          "type" : "string"
         }, {
           "name" : "dokumentType",
           "in" : "query",
           "required" : true,
           "type" : "string"
         }, {
-          "name" : "niva",
+          "name" : "sikkerhetsniva",
           "in" : "query",
           "required" : true,
           "type" : "integer",
@@ -387,39 +392,18 @@
       }
     },
     "/svarinn2/katalog/api/v1/matchendeAdresser" : {
-      "get" : {
+      "post" : {
         "tags" : [ "SvarInnKatalog" ],
         "summary" : "Hent eksisterende adresser som samsvarer med spesifiserte parametere. Tjenesten kan benyttes for å verifisere at en adresse ikke overlapper med en annen",
         "description" : "",
         "operationId" : "matchendeAdresser",
         "parameters" : [ {
-          "name" : "orgNo",
-          "in" : "query",
-          "required" : true,
-          "type" : "array",
-          "items" : {
-            "type" : "string"
-          },
-          "collectionFormat" : "multi"
-        }, {
-          "name" : "dokumentType",
-          "in" : "query",
-          "required" : true,
-          "type" : "array",
-          "items" : {
-            "type" : "string"
-          },
-          "collectionFormat" : "multi"
-        }, {
-          "name" : "nivaer",
-          "in" : "query",
-          "required" : true,
-          "type" : "array",
-          "items" : {
-            "type" : "integer",
-            "format" : "int32"
-          },
-          "collectionFormat" : "multi"
+          "in" : "body",
+          "name" : "body",
+          "required" : false,
+          "schema" : {
+            "$ref" : "#/definitions/AdresseMatchSpesifikasjon"
+          }
         } ],
         "responses" : {
           "200" : {
@@ -428,7 +412,7 @@
               "type" : "array",
               "uniqueItems" : true,
               "items" : {
-                "$ref" : "#/definitions/AdresseMatchApiModel"
+                "$ref" : "#/definitions/AdresseMatch"
               }
             }
           }
@@ -472,11 +456,11 @@
           "type" : "string",
           "format" : "uuid"
         },
-        "orgNo" : {
+        "identifikator" : {
           "type" : "array",
           "uniqueItems" : true,
           "items" : {
-            "type" : "string"
+            "$ref" : "#/definitions/Identifikator"
           }
         },
         "meldingType" : {
@@ -486,7 +470,7 @@
             "type" : "string"
           }
         },
-        "nivaer" : {
+        "sikkerhetsnivaer" : {
           "type" : "array",
           "uniqueItems" : true,
           "items" : {
@@ -499,7 +483,7 @@
         }
       }
     },
-    "AdresseMatchApiModel" : {
+    "AdresseMatch" : {
       "type" : "object",
       "properties" : {
         "fiksOrgId" : {
@@ -514,11 +498,11 @@
           "type" : "string",
           "format" : "uuid"
         },
-        "orgNoMatch" : {
+        "identifikatorMatch" : {
           "type" : "array",
           "uniqueItems" : true,
           "items" : {
-            "type" : "string"
+            "$ref" : "#/definitions/Identifikator"
           }
         },
         "meldingTypeMatch" : {
@@ -538,14 +522,41 @@
         }
       }
     },
-    "AdresseSpesifikasjon" : {
+    "AdresseMatchSpesifikasjon" : {
       "type" : "object",
       "properties" : {
-        "orgNo" : {
+        "identifikator" : {
+          "type" : "array",
+          "uniqueItems" : true,
+          "items" : {
+            "$ref" : "#/definitions/Identifikator"
+          }
+        },
+        "dokumentType" : {
           "type" : "array",
           "uniqueItems" : true,
           "items" : {
             "type" : "string"
+          }
+        },
+        "sikkerhetsnivaer" : {
+          "type" : "array",
+          "uniqueItems" : true,
+          "items" : {
+            "type" : "integer",
+            "format" : "int32"
+          }
+        }
+      }
+    },
+    "AdresseSpesifikasjon" : {
+      "type" : "object",
+      "properties" : {
+        "identifikator" : {
+          "type" : "array",
+          "uniqueItems" : true,
+          "items" : {
+            "$ref" : "#/definitions/Identifikator"
           }
         },
         "meldingType" : {
@@ -555,7 +566,7 @@
             "type" : "string"
           }
         },
-        "nivaer" : {
+        "sikkerhetsnivaer" : {
           "type" : "array",
           "uniqueItems" : true,
           "items" : {
@@ -564,6 +575,18 @@
           }
         },
         "beskrivelse" : {
+          "type" : "string"
+        }
+      }
+    },
+    "Identifikator" : {
+      "type" : "object",
+      "properties" : {
+        "identifikatorType" : {
+          "type" : "string",
+          "enum" : [ "ORGNO", "NAVKONTORID" ]
+        },
+        "identifikator" : {
           "type" : "string"
         }
       }
@@ -612,7 +635,7 @@
         }
       }
     },
-    "OffentligNokkelApiModel" : {
+    "OffentligNokkel" : {
       "type" : "object",
       "properties" : {
         "nokkel" : {
