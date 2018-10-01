@@ -28,13 +28,13 @@ For å sende en SvarInn melding må man vite konto-identifikatoren til kontoen m
 ### Sending og mottak
 Meldinger sendes gjennom et REST api på Fiks Plattformen. Integrasjoner mot dette api'et følger de samme reglene for autentisering og autorisering som andre integrasjoner på Fiks: integrasjonId, integrasjonPassord og et virksomhetsertifikat-basert Oauth2 token fra ID-Porten settes som headere på forespørselen, og den aktuelle integrasjonen må være autorisert for å sende meldinger fra den spesifiserte avsenderkontoen i Fiks Konfigurasjon.
 
-På mottakssiden har man nå to alternativer. Man kan endten benytte det samme REST api'et som man har brukt for å hente SvarInn 1 meldinger, eller man kan integrere via [(AMQP)](https://en.wikipedia.org/wiki/Advanced_Message_Queuing_Protocol) mot Fiks Plattformens [(RabbitMQ)](https://www.rabbitmq.com/RabbitMQ) baserte køsystem. Den siste løsningen er anbefalt, hovedsakelig på grunn av ytelsesforbedringen bruk av push teknologi vil gi.    
+På mottakssiden har man nå to alternativer. Man kan endten benytte det samme REST api'et som man har brukt for å hente SvarInn 1 meldinger, eller man kan integrere via [AMQP](https://en.wikipedia.org/wiki/Advanced_Message_Queuing_Protocol) mot Fiks Plattformens [RabbitMQ](https://www.rabbitmq.com/RabbitMQ) baserte køsystem. Den siste løsningen er anbefalt, hovedsakelig på grunn av ytelsesforbedringen bruk av push teknologi vil gi.    
 
 ### Sikkerhet
-I utgangspunktet legger ikke SvarInn2 føringer på hvordan (eller om) en melding sendt over plattformen sikres, men alle klienter som utvikles av KS, og alle meldingstyper som Fiks spesifiserer, vil benytte signerte, ende-til-ende krypterte meldinger gjennom [(ASIC-E)](https://github.com/difi/asic) containere. Denne standarden benyttes også av DIFI i forbindelse med integrasjonspunktet.  
+I utgangspunktet legger ikke SvarInn2 føringer på hvordan (eller om) en melding sendt over plattformen sikres, men alle klienter som utvikles av KS, og alle meldingstyper som Fiks spesifiserer, vil benytte signerte, ende-til-ende krypterte meldinger gjennom [ASIC-E](https://github.com/difi/asic) containere. Denne standarden benyttes også av DIFI i forbindelse med integrasjonspunktet.  
 
 ### Klienter
-For å gjøre integrasjon lettere vil KS utvikle klienter som benyttes for både sending og mottak av meldinger fra Fiks SvarInn. Først ut er en [(java-klient)](https://github.com/ks-no/fiks-svarinn2-klient-java), men det er også planlagt en .net implentasjon av denne. Andre språk vil vurderes, og vi vil gjerne høre fra deg om det blir jobbet med selvstendig utvikling av klienter. 
+For å gjøre integrasjon lettere vil KS utvikle klienter som benyttes for både sending og mottak av meldinger fra Fiks SvarInn. Først ut er en [java-klient](https://github.com/ks-no/fiks-svarinn2-klient-java), men det er også planlagt en .net implentasjon av denne. Andre språk vil vurderes, og vi vil gjerne høre fra deg om det blir jobbet med selvstendig utvikling av klienter. 
 
 
   
