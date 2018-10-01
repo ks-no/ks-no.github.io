@@ -37,7 +37,7 @@ I utgangspunktet legger ikke SvarInn2 føringer på hvordan (eller om) en meldin
 For å gjøre integrasjon lettere vil KS utvikle klienter som benyttes for både sending og mottak av meldinger fra Fiks SvarInn. Først ut er en [java-klient](https://github.com/ks-no/fiks-svarinn2-klient-java), men det er også planlagt en .net implentasjon av denne. Andre språk vil vurderes, og vi vil gjerne høre fra deg om det blir jobbet med selvstendig utvikling av klienter. 
 
 
-  
+![fiks_svarinn](/images/fiks_svarinn.png "Fiks SvarInn")
 
 
 
