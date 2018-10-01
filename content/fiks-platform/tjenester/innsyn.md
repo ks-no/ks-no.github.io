@@ -10,7 +10,7 @@ Fiks Innsyn gjør det lett å finne informasjon om forholdet mellom en fiks-orga
 ## Oversikt
 Tjenesten består av tre hovedkomponenter:
  
- * _Innsyn_, en single page webapp (SPA) hvor man kan søke og filtere. 
+ * _Innsyn webapplikasjoner_, et sett med SPA (Single Page Application) grensesnitt som innbyggere benytter for å søke i innsynsdatabasen. Fiks vil utvikle egne applikasjoner for "post fra kommunen", "saker", "faktura", osv. 
  * _Innsyn-søk_, en søkemotor som støtter fritekstsøk og score-rangerte resultater. 
  * _Innsyn-indexer_, en indekseringstjeneste som integrasjoner kan benytte for å laste opp meldinger: hendelser, fakturaer, saker, journalposter, forsendelser, osv.  
 
