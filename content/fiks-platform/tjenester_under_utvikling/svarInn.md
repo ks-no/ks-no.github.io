@@ -1,11 +1,11 @@
 ---
 title: SvarInn 2
-date: 2018-05-02
+date: 2018-10-02
 ---
 
 SvarInn er en kanal for sikker maskin-til-maskin integrasjon. Denne kommer nå i ny versjon: vi har flyttet den eksistende SvarInn tjenesten over på Fiks Plattformen, og frikoblet den fra SvarUt. Det er nå mulig å sende direkte til SvarInn. Dette åpner mange muligheter:
 
-* _Rask leveranse_: ved hjelp av meldingskø-basert arkitektur kan SvarInn nå levere meldinger mye raskere, ned mot ett sekund. Dette oppnås ved at meldinger nå sendes til det mottakende fagystemet i det øyeblikket de ankommer, i stede for at fagsystemet må hente meldingen.
+* _Rask leveranse_: ved hjelp av meldingskø-basert arkitektur kan SvarInn nå levere meldinger mye raskere, under ett sekund plus eventuelt overføring av data. Dette oppnås ved at meldinger nå sendes til det mottakende fagystemet i det øyeblikket de ankommer, i stede for at fagsystemet må hente meldingen.
 * _Kvitteringer_: avsender vil motta kvitteringer fra mottaker, slik at man vet om meldingen man sendte faktisk ble behandlet. Mottaker kan også sende et utvidet svar på en mottatt melding.
 * _Sikker kommunikasjon med ende-til-ende kryptering_: SvarInn2 meldinger vil som default være ende-til-ende kryptert med mottakers offentlige nøkkel.
 * _Sikker identifisering av avsender_: Standard for kryptografisk signatur på meldinger gjør at man kan være sikker på identiteten til avsender.
@@ -38,6 +38,3 @@ For å gjøre integrasjon lettere vil KS utvikle klienter som benyttes for både
 
 
 ![fiks_svarinn](/images/fiks_svarinn.png "Fiks SvarInn")
-
-
-
