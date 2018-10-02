@@ -7,6 +7,7 @@ git clone https://github.com/ks-no/ks-no.github.io.git public
 cd public
 git checkout master
 git pull
+rm -rf *
 cd ..
 
 # Build the project.
