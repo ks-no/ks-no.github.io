@@ -2,11 +2,11 @@
 title: Fullmakt
 date: 2018-10-03
 ---
-# Fullmaktstjeneste [(api-spec)](https://editor.swagger.io/?url=https://ks-no.github.io/api/fullmakt-api-v1.json)
+# Fullmaktstjeneste
 
 Tjenesten gjør det foreløpig mulig å hente fullmakter for organisasjoner, samt navn for autentisert bruker.
 
-## Endepunkter
+## Endepunkter [(api-spec)](https://editor.swagger.io/?url=https://ks-no.github.io/api/fullmakt-api-v1.json)
 
 For alle endepunktene hentes autentisert bruker fra access token i "Authorization"-headeren på requesten. Dette tokenet 
 må være utstedt av ID-porten.
