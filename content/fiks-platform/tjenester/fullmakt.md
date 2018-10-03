@@ -2,8 +2,6 @@
 title: Fullmakt
 date: 2018-10-03
 ---
-# Fullmaktstjeneste
-
 Tjenesten gjør det foreløpig mulig å hente fullmakter for organisasjoner, samt navn for autentisert bruker.
 
 ## Endepunkter [(api-spec)](https://editor.swagger.io/?url=https://ks-no.github.io/api/fullmakt-api-v1.json)
