@@ -406,7 +406,11 @@
 <ul>
 <li><a href="#grensesnitt">Grensesnitt</a></li>
 <li><a href="#konfigurasjon">Konfigurasjon</a></li>
-<li><a href="#autentisering">Autentisering</a></li>
+<li><a href="#autentisering">Autentisering</a>
+<ul>
+<li><a href="#server-to-server">Server-to-server</a></li>
+<li><a href="#server-to-server-m-oidc">Server-to-server m. OIDC</a></li>
+</ul></li>
 <li><a href="#autorisering">Autorisering</a></li>
 <li><a href="#greit-å-vite">Greit å vite</a></li>
 </ul></li>
@@ -433,7 +437,7 @@
 
 <p>En <em>integrasjon</em> på fiks-plattformen er en maskin-til-maskin klient som benytter tjenestelaget for å utføre oppgaver på vegne av en fiks-organisasjon. Dette kan for eksempel være et arkivsystem som sender saker gjennom <a href="/fiks-platform/tjenester_under_utvikling/svarinn/">Fiks SvarInn</a>, eller et fagsystem som oppdaterer meldinger i <a href="/fiks-platform/tjenester/innsyn/">Fiks Innsyn</a>.</p>
 
-<p>Når en fiks-organisasjon tar i bruk plattformen vil man se at det allerede finnes en del forhåndsdefinerte integrasjoner, for eksempel en SvarUt integrasjon mot Fiks Innsyn. Dette er &ldquo;globale integrasjoner&rdquo; som blir tilgjengelig for alle fiks-organisasjoner uten at hver organisasjon trenger å opprette dem. Ta kontakt med fiks-kundeservice om du ønsker å opprette en global integrasjon.</p>
+<p>Når en fiks-organisasjon tar i bruk plattformen vil man se at det allerede finnes en del forhåndsdefinerte integrasjoner, for eksempel en SvarUt integrasjon mot Fiks Innsyn. Dette er &ldquo;globale integrasjoner&rdquo; som blir tilgjengelig for alle fiks-organisasjoner uten at hver organisasjon trenger å opprette dem. Ta kontakt med fiks-kundeservice om du ønsker å opprette en global integrasjon, dette er for det meste relevant for leverandører av skyløsninger for flere kommuner.</p>
 
 <p>Hver fiks-organisasjon kan også opprette sine egne integrasjoner - dette gjøres gjennom <a href="/fiks-platform/konfigurasjon/">Fiks Konfigurasjon</a>. Her opprettes integrasjonen, og man definerer hvilken organisasjon som skal ha rett til å sende forespørseler til fiks-plattformen på vegne av denne. Organisasjonen kan være fiks-organisasjonen selv, eller en tredjepart som har driftsansvar. Se under for detaljer om opprettelse av integrasjoner.</p>
 
@@ -459,16 +463,30 @@
 
 <h2 id="autentisering">Autentisering</h2>
 
-<p>Integrasjoner autentiseres ved hjelp av to mekanismer:</p>
+<p>Integrasjoner autentiseres på to ulike måter: server-til-server oAuth 2.0, eller server-til-server m. Open Id Connect (OIDC).</p>
 
-<p>Organisasjonen henter et OAuth 2.0 access token fra ID-Porten, basert på organisasjonens virksomhetssertifikat. Dokumentasjon for dette finnes <a href="https://difi.github.io/idporten-oidc-dokumentasjon/oidc_auth_server-to-server-oauth2.html">her</a>. Vi støtter i første omgang kun JWT access_tokens, dette må konfigureres hos ID-Porten.  I tillegg til dette tokenet må man ha en header for integrasjonId og en for service-passord.</p>
+<h3 id="server-to-server">Server-to-server</h3>
+
+<p>Denne metoden benyttes for ren server til server integrasjon, for eksempel når et fagsystem skal laste opp meldinger til  <a href="/fiks-platform/tjenester/innsyn/">Fiks Innsyn</a>. Organisasjonen henter et OAuth 2.0 access token fra ID-Porten, basert på organisasjonens virksomhetssertifikat. Dokumentasjon for dette finnes <a href="https://difi.github.io/idporten-oidc-dokumentasjon/oidc_auth_server-to-server-oauth2.html">her</a>. Vi støtter i første omgang kun JWT access_tokens, dette må konfigureres hos ID-Porten.  I tillegg til dette tokenet må man ha en header for integrasjonId og en for integrasjonPassord.</p>
 
 <p>Kallet mot Fiks-platform tjenesten trenger dermed følgende HTTP headere:</p>
 
 <ul>
 <li><em>Authorization</em>: OAuth-2.0 Jwt Access token som bekrefter organisasjonens identitet, signert av ID-Porten. Scope skal være &ldquo;ks&rdquo;.</li>
 <li><em>IntegrasjonId</em>: Id for integrasjonen, generert i Fiks-konfigurasjon. Orgnr i Jwt&rsquo;en i <em>Authorization</em> header må være konfigurert som autorisert organisasjon for integrasjonen.</li>
-<li><em>ServicePassword</em>: Passord for integrasjonen (fra fiks-konfigurasjon)</li>
+<li><em>IntegrasjonPassord</em>: Passord for integrasjonen (fra fiks-konfigurasjon)</li>
+</ul>
+
+<h3 id="server-to-server-m-oidc">Server-to-server m. OIDC</h3>
+
+<p>Denne metoden benyttes hvis en innbygger er logget inn på en server i en kommune, og man ønsker å gjøre en forespørsel på vegne av denne inbyggeren. Man trenger fortsatt integrasjonid og integrasjonpassord, men i stede for virksomhetens access token sender man brukerens, innhentet via OIDC fra ID-Porten.</p>
+
+<p>Kallet mot Fiks-platform tjenesten trenger dermed følgende HTTP headere:</p>
+
+<ul>
+<li><em>Authorization</em>: OAuth-2.0 Jwt Access token som bekrefter inbyggerens identitet, signert av ID-Porten. Scope skal være &ldquo;ks&rdquo;.</li>
+<li><em>IntegrasjonId</em>: Id for integrasjonen, generert i Fiks-konfigurasjon. Orgnr i Jwt&rsquo;en i <em>Authorization</em> header må være konfigurert som autorisert organisasjon for integrasjonen.</li>
+<li><em>IntegrasjonPassord</em>: Passord for integrasjonen (fra fiks-konfigurasjon)</li>
 </ul>
 
 <h2 id="autorisering">Autorisering</h2>
