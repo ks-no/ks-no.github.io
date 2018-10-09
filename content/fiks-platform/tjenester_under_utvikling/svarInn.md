@@ -15,6 +15,18 @@ Alle ekisterende grensesnitt for å hente meldinger blir videreført, men merk a
 
 Grunnleggende prinsipper fra den eksisterende SvarUt baserte plattformen blir heller ikke forandret: en organisasjon oppretter en _konto_, og legger til en eller flere _adresser_, som hver består av en identifikator-meldingtype-sikkerhetsnivå kombinasjon. Disse adressene blir benyttet når andre organisasjoner gjør oppslag i konto-katalogen. Identifikatoren i adressen kan være av forskjellige typer, hittil støttes organisajonsnummer og nav-enhet-id.
 
+### Forhold til SvarUt
+SvarInn er nå en selvstendig kanal, men den vil fortsatt benyttes som meldingskanal i SvarUt, basert på samme prinsipper som tidligere: hvis identifikator (organisasjonsnummer), meldingstype og nivå gir treff i SvarInns adressekatalog vil den aktuelle SvarInn kontoen brukes for å levere meldingen. 
+
+En viktig endring fra den tidligere flyten er at meldinger i SvarInn nå har en levetid: de ligger ikke på kontoen til evig tid, slik tilfellet er i dag. Når en meldings levetid er utgått, det vil si at den har ligget i kø uten å bli hentet i en viss periode, vil SvarUt sende meldingen via alternativ kanal: for eksempel Altinn eller post. 
+
+Dette leder oss inn på et viktig spørsmål: skal man bruke SvarInn eller SvarUt for å integrere to systemer? Tabellen under forsøker å svare på dette:
+
+*_Ønsker man å unngå at meldingen kan bli sendt i post?_ Benytt SvarInn, denne leverer utelukkende til spesifisert mottakerkonto og benytter ingen alternative kanaler.
+*_Skal meldingen sikres gjennom ende-til-ende kryptering?_ Benytt SvarInn, SvarUt meldinger kan bare krypteres med Fiks plattformens nøkkel, ikke mottakers.
+*_Trenger man rask levering?_ Benytt SvarInn for å få leveranse på sekunder, ved bruk av SvarUt kan det ta flere dager å levere en melding, siden SvarUt prøver ulike kanaler etter tur.
+*_Vil man at fiks-plattformen skal garantere at meldingen blir levert?_ Benytt SvarUt, ved SvarInn forsendelser risikerer man at meldingen ikke blir håndtert eller avvist av mottaker. 
+
 ### Konfigurasjon og adresser
 SvarInn settes nå opp gjennom Fiks Konfigurasjon, det er også her man konfigurerer kontoer, spesifiserer adresser, og styrer autorisasjoner. Både personer og integrasjoner må autoriseres før de kan sende meldinger fra en konto.
 
@@ -35,6 +47,5 @@ I utgangspunktet legger ikke SvarInn2 føringer på hvordan (eller om) en meldin
 
 ### Klienter
 For å gjøre integrasjon lettere vil KS utvikle klienter som benyttes for både sending og mottak av meldinger fra Fiks SvarInn. Først ut er en [java-klient](https://github.com/ks-no/fiks-svarinn2-klient-java), men det er også planlagt en .net implentasjon av denne. Andre språk vil vurderes, og vi vil gjerne høre fra deg om det blir jobbet med selvstendig utvikling av klienter. 
-
 
 ![fiks_svarinn](/images/fiks_svarinn.png "Fiks SvarInn")
