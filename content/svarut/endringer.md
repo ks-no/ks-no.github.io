@@ -1,11 +1,18 @@
 ---
 title: SvarUt endringer
 date: 2018-05-03
-lastmod: 2018-05-18
+lastmod: 2018-10-10
 ---
 Her er en liste over de viktigste endringene i SvarUt, startet i 2015.
 
 ## Liste over endringer i SvarUt.
+* 30.08.2018
+  * Rapportuttrekket tar nå med felter for svar på forsendelse og ekstern referanse
+  * Endret maksimal størrelse på manuell opplastning til 350MB
+* 02.08.2018
+  * Endepunktet for importFeilet rapporeterer nå http status kode 4xx i stedet for 500 ved brukerfeil
+* 21.06.2018
+  * Lagt inn sjekker på at forsendelsesid er UUID og at det ikke finnes duplikater
 * 18.05.2018
   * Lagt ut ForsendelseServiceV10, se [ForsendelsesServiceV10]({{< ref "/svarut/integrasjon/ForsendelsesServiceV10.md" >}}).
 * 03.05.2018
