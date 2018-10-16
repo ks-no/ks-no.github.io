@@ -3,7 +3,7 @@ title: Innsyn
 date: 2018-03-02
 ---
 
-![minside_sok](/images/fiks_meldingboks.png "Minside Søk")
+![minside_sok](/images/innsyn.png "Innsyn")
 
 Fiks Innsyn gjør det lett å finne informasjon om forholdet mellom en fiks-organisasjon og innbyggeren: metadata om forsendelser, pågående saker, regninger, arkivmatriale og annet lastes opp og blir så gjort tilgjengelig av en kraftig søkemotor. Andre tjenester på fiks-plattformen, som [fiks-digisos]({{< ref "digisos.md" >}}) og SvarUt leverer oppdateringer hit, og det er lagt vekt på at det skal være lett å utvide antall integrasjoner videre.
 
