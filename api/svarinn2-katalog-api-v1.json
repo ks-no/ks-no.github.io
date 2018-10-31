@@ -17,15 +17,15 @@
   } ],
   "schemes" : [ "https" ],
   "paths" : {
-    "/svarinn2/katalog/api/v1/erAktiv" : {
+    "/svarinn2/katalog/api/v1/katalog/kontoer/{kontoId}" : {
       "get" : {
         "tags" : [ "SvarInnKatalog" ],
-        "summary" : "Sjekk om en konto er aktiv",
+        "summary" : "Hent en spesifisert konto basert på konto-id",
         "description" : "",
-        "operationId" : "erAktiv",
+        "operationId" : "getKonto",
         "parameters" : [ {
           "name" : "kontoId",
-          "in" : "query",
+          "in" : "path",
           "required" : true,
           "type" : "string",
           "format" : "uuid"
@@ -34,7 +34,97 @@
           "200" : {
             "description" : "successful operation",
             "schema" : {
-              "type" : "boolean"
+              "$ref" : "#/definitions/KatalogKonto"
+            }
+          }
+        }
+      }
+    },
+    "/svarinn2/katalog/api/v1/katalog/kontoer/{kontoId}/offentligNokkel" : {
+      "get" : {
+        "tags" : [ "SvarInnKatalog" ],
+        "summary" : "Hent offentlig nokkel for en konto",
+        "description" : "",
+        "operationId" : "getOffentligNokkel",
+        "parameters" : [ {
+          "name" : "kontoId",
+          "in" : "path",
+          "required" : true,
+          "type" : "string",
+          "format" : "uuid"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "$ref" : "#/definitions/OffentligNokkel"
+            }
+          }
+        }
+      }
+    },
+    "/svarinn2/katalog/api/v1/katalog/lookup" : {
+      "get" : {
+        "tags" : [ "SvarInnKatalog" ],
+        "summary" : "Finner en aktiv konto-id basert på parametere.",
+        "description" : "",
+        "operationId" : "lookup",
+        "parameters" : [ {
+          "name" : "identifikatorType",
+          "in" : "query",
+          "required" : true,
+          "type" : "string",
+          "enum" : [ "ORG_NO", "NAV_ENHET_ID" ]
+        }, {
+          "name" : "identifikator",
+          "in" : "query",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "dokumentType",
+          "in" : "query",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "sikkerhetsniva",
+          "in" : "query",
+          "required" : true,
+          "type" : "integer",
+          "format" : "int32"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "$ref" : "#/definitions/KatalogKonto"
+            }
+          }
+        }
+      }
+    },
+    "/svarinn2/katalog/api/v1/katalog/matchendeAdresser" : {
+      "post" : {
+        "tags" : [ "SvarInnKatalog" ],
+        "summary" : "Hent eksisterende adresser som samsvarer med spesifiserte parametere. Tjenesten kan benyttes for å verifisere at en adresse ikke overlapper med en annen",
+        "description" : "",
+        "operationId" : "matchendeAdresser",
+        "parameters" : [ {
+          "in" : "body",
+          "name" : "body",
+          "required" : false,
+          "schema" : {
+            "$ref" : "#/definitions/AdresseMatchSpesifikasjon"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "type" : "array",
+              "uniqueItems" : true,
+              "items" : {
+                "$ref" : "#/definitions/AdresseMatch"
+              }
             }
           }
         }
@@ -422,96 +512,6 @@
           }
         }
       }
-    },
-    "/svarinn2/katalog/api/v1/lookup" : {
-      "get" : {
-        "tags" : [ "SvarInnKatalog" ],
-        "summary" : "Finner en aktiv konto-id basert på parametere.",
-        "description" : "",
-        "operationId" : "lookup",
-        "parameters" : [ {
-          "name" : "identifikatorType",
-          "in" : "query",
-          "required" : true,
-          "type" : "string",
-          "enum" : [ "ORG_NO", "NAV_ENHET_ID" ]
-        }, {
-          "name" : "identifikator",
-          "in" : "query",
-          "required" : true,
-          "type" : "string"
-        }, {
-          "name" : "dokumentType",
-          "in" : "query",
-          "required" : true,
-          "type" : "string"
-        }, {
-          "name" : "sikkerhetsniva",
-          "in" : "query",
-          "required" : true,
-          "type" : "integer",
-          "format" : "int32"
-        } ],
-        "responses" : {
-          "200" : {
-            "description" : "successful operation",
-            "schema" : {
-              "$ref" : "#/definitions/Konto"
-            }
-          }
-        }
-      }
-    },
-    "/svarinn2/katalog/api/v1/matchendeAdresser" : {
-      "post" : {
-        "tags" : [ "SvarInnKatalog" ],
-        "summary" : "Hent eksisterende adresser som samsvarer med spesifiserte parametere. Tjenesten kan benyttes for å verifisere at en adresse ikke overlapper med en annen",
-        "description" : "",
-        "operationId" : "matchendeAdresser",
-        "parameters" : [ {
-          "in" : "body",
-          "name" : "body",
-          "required" : false,
-          "schema" : {
-            "$ref" : "#/definitions/AdresseMatchSpesifikasjon"
-          }
-        } ],
-        "responses" : {
-          "200" : {
-            "description" : "successful operation",
-            "schema" : {
-              "type" : "array",
-              "uniqueItems" : true,
-              "items" : {
-                "$ref" : "#/definitions/AdresseMatch"
-              }
-            }
-          }
-        }
-      }
-    },
-    "/svarinn2/katalog/api/v1/offentligNokkel" : {
-      "get" : {
-        "tags" : [ "SvarInnKatalog" ],
-        "summary" : "Hent offentlig nokkel for en konto",
-        "description" : "",
-        "operationId" : "getOffentligNokkelPem",
-        "parameters" : [ {
-          "name" : "kontoId",
-          "in" : "query",
-          "required" : true,
-          "type" : "string",
-          "format" : "uuid"
-        } ],
-        "responses" : {
-          "200" : {
-            "description" : "successful operation",
-            "schema" : {
-              "$ref" : "#/definitions/OffentligNokkel"
-            }
-          }
-        }
-      }
     }
   },
   "definitions" : {
@@ -661,6 +661,28 @@
         }
       }
     },
+    "KatalogKonto" : {
+      "type" : "object",
+      "properties" : {
+        "fiksOrgId" : {
+          "type" : "string",
+          "format" : "uuid"
+        },
+        "fiksOrgNavn" : {
+          "type" : "string"
+        },
+        "kontoId" : {
+          "type" : "string",
+          "format" : "uuid"
+        },
+        "kontoNavn" : {
+          "type" : "string"
+        },
+        "status" : {
+          "$ref" : "#/definitions/KontoStatusApiModel"
+        }
+      }
+    },
     "Konto" : {
       "type" : "object",
       "properties" : {
@@ -680,6 +702,12 @@
         },
         "aktiv" : {
           "type" : "boolean"
+        },
+        "svarInn1ModusAktivert" : {
+          "type" : "boolean"
+        },
+        "status" : {
+          "$ref" : "#/definitions/KontoStatusApiModel"
         }
       }
     },
@@ -701,6 +729,20 @@
           "format" : "uuid"
         },
         "navn" : {
+          "type" : "string"
+        }
+      }
+    },
+    "KontoStatusApiModel" : {
+      "type" : "object",
+      "properties" : {
+        "gyldigAvsender" : {
+          "type" : "boolean"
+        },
+        "gyldigMottaker" : {
+          "type" : "boolean"
+        },
+        "melding" : {
           "type" : "string"
         }
       }
