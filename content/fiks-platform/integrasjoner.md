@@ -29,7 +29,7 @@ En fiks-organisasjon kan opprette egen integrasjoner gjennom [fiks-konfigurasjon
 Integrasjoner autentiseres på to ulike måter: som "integrasjon" med oAuth 2.0, eller "integrasjon-person" m. Open Id Connect (OIDC). 
 
 ### Integrasjon
-Denne metoden benyttes for ren server til server integrasjon, for eksempel når et fagsystem skal laste opp meldinger til  [Fiks Innsyn]({{< ref "innsyn.md" >}}). Organisasjonen henter et OAuth 2.0 access token med scope "ks" fra ID-Porten, basert på organisasjonens virksomhetssertifikat. Dokumentasjon for dette finnes [her](https://difi.github.io/idporten-oidc-dokumentasjon/oidc_auth_server-to-server-oauth2.html). Vi støtter i første omgang kun JWT access_tokens, dette må konfigureres hos ID-Porten.  I tillegg til dette tokenet må man ha en header for integrasjonId og en for integrasjonPassord. 
+Denne metoden benyttes for ren server til server integrasjon, for eksempel når et fagsystem skal laste opp meldinger til  [Fiks Innsyn]({{< ref "innsyn.md" >}}). Organisasjonen henter et OAuth 2.0 access token med scope "ks" fra ID-Porten, basert på organisasjonens virksomhetssertifikat. Dokumentasjon for dette finnes [her](https://difi.github.io/idporten-oidc-dokumentasjon/oidc_auth_server-to-server-oauth2.html). Vi støtter i første omgang kun JWT access_tokens, dette må konfigureres hos ID-Porten.  I tillegg til dette tokenet må man ha en header for integrasjonId og for integrasjonPassord. 
    
 Kallet mot Fiks-platform tjenesten trenger dermed følgende HTTP headere:
  
@@ -50,10 +50,4 @@ Kallet mot Fiks-platform tjenesten trenger dermed følgende HTTP headere:
 I tillegg må integrasjonen autoriseres for tilgang til en spesifikk tjeneste. Hvis for eksempel et fagsystem skal kunne laste opp meldinger til Fiks Innsyn må en administrator i kommunen benytte Fiks-Konfigurasjon for å legge til denne tilgangen hos den relvante kommunen.
 
 Dette gjelder også for integrasjoner som leveres som en del av fiks-plattformen. Skal SvarUt kunne indeksere forsendelse i Fiks Innsyn må også her kommunen eksplisitt autorisere dette.
-
-## Greit å vite
-* Hvis ikke annet er spesifisert er 30 sekunder en grei read time out på forespørsler mot fiks-platformens tjenester.
-* Husk charset-UTF8
-* De fleste api'er vil returnere detaljerte feilmeldinger hvis ikke forespørselen validerer OK (BAD_REQUEST). 
-* Ved 500 feil vil feilmeldingen inneholde en referanse. Ta gjerne kontakt med kundeservice (og inkluder denne referansen) for videre feilsøking.
 
