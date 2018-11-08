@@ -50,7 +50,7 @@ Kallet mot Fiks-platform tjenesten trenger dermed følgende HTTP headere:
 http POST https://api.fiks.test.ks.no/innsyn-sok/api/v1/sok \
 "IntegrasjonId: <din integrasjon id>" \
 "IntegrasjonPassord: <ditt integrasjon passord" \
-"Authorization: Bearer <gyldig access token jwt fra id-porten>"
+"Authorization: Bearer <gyldig innbygger access token jwt fra id-porten>"
 {{< / highlight >}}
 
 ## Autorisering
