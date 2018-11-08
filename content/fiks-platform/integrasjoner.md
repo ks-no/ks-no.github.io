@@ -46,7 +46,7 @@ Kallet mot Fiks-platform tjenesten trenger dermed følgende HTTP headere:
 * _IntegrasjonId_: Id for integrasjonen, generert i Fiks-konfigurasjon. Orgnr i Jwt'en i _Authorization_ header må være konfigurert som autorisert organisasjon for integrasjonen.
 * _IntegrasjonPassord_: Passord for integrasjonen (fra fiks-konfigurasjon)
 
-{{< highlight sh>}}
+{{< highlight bash>}}
 http POST https://api.fiks.test.ks.no/innsyn-sok/api/v1/sok \
 "IntegrasjonId: <din integrasjon id>" \
 "IntegrasjonPassord: <ditt integrasjon passord" \
