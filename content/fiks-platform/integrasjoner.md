@@ -46,6 +46,13 @@ Kallet mot Fiks-platform tjenesten trenger dermed følgende HTTP headere:
 * _IntegrasjonId_: Id for integrasjonen, generert i Fiks-konfigurasjon. Orgnr i Jwt'en i _Authorization_ header må være konfigurert som autorisert organisasjon for integrasjonen.
 * _IntegrasjonPassord_: Passord for integrasjonen (fra fiks-konfigurasjon)
 
+{{< highlight sh}}
+http POST https://api.fiks.test.ks.no/innsyn-sok/api/v1/sok \
+"IntegrasjonId: <din integrasjon id>" \
+"IntegrasjonPassord: <ditt integrasjon passord" \
+"Authorization: Bearer <gyldig access token jwt fra id-porten>"
+{{< / highlight >}}
+
 ## Autorisering
 I tillegg må integrasjonen autoriseres for tilgang til en spesifikk tjeneste. Hvis for eksempel et fagsystem skal kunne laste opp meldinger til Fiks Innsyn må en administrator i kommunen benytte Fiks-Konfigurasjon for å legge til denne tilgangen hos den relvante kommunen.
 
