@@ -1,0 +1,528 @@
+{
+  "swagger" : "2.0",
+  "info" : {
+    "version" : "v1",
+    "title" : "KS Fiks: Digisos Service",
+    "contact" : {
+      "name" : "Fiks brukerstøtte",
+      "url" : "http://www.ks.no/fagomrader/utvikling/digitalisering/digitaliseringsstrategien/fiks/",
+      "email" : "fiks@ks.no"
+    }
+  },
+  "basePath" : "/api",
+  "tags" : [ {
+    "name" : "DigisosKonfigurasjon"
+  }, {
+    "name" : "DigisosSaksoppdatering"
+  }, {
+    "name" : "DigisosSoknad"
+  } ],
+  "schemes" : [ "https" ],
+  "paths" : {
+    "/digisos/api/v1/konfigurasjon" : {
+      "post" : {
+        "tags" : [ "DigisosKonfigurasjon" ],
+        "operationId" : "leggTilNyeNavKontorer",
+        "parameters" : [ {
+          "in" : "body",
+          "name" : "body",
+          "description" : "Kommuner som skal opprettes",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/definitions/KommuneKonfigurasjon"
+            }
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "$ref" : "#/definitions/NyKonfigurasjonResponse"
+            }
+          }
+        }
+      }
+    },
+    "/digisos/api/v1/konfigurasjon/{kommuneNummer}" : {
+      "put" : {
+        "tags" : [ "DigisosKonfigurasjon" ],
+        "operationId" : "oppdaterNavKontor",
+        "parameters" : [ {
+          "name" : "kommuneNummer",
+          "in" : "path",
+          "description" : "Nav-enhets-id-er på nav-kontor som skal registreres",
+          "required" : true,
+          "type" : "string",
+          "format" : "uuid"
+        }, {
+          "name" : "svarInn2KontoId",
+          "in" : "query",
+          "description" : "SvarInn2-konto-id som skal brukes",
+          "required" : false,
+          "type" : "string",
+          "format" : "uuid"
+        }, {
+          "name" : "dokumentlagerKontoId",
+          "in" : "query",
+          "description" : "Dokumentlager-konto-id som skal brukes",
+          "required" : false,
+          "type" : "string",
+          "format" : "uuid"
+        }, {
+          "name" : "dokumentVersjoner",
+          "in" : "query",
+          "description" : "Digisos dokument-versjoner som støttes av nav-kontor",
+          "required" : false,
+          "type" : "array",
+          "items" : {
+            "type" : "string"
+          },
+          "collectionFormat" : "multi"
+        }, {
+          "name" : "oppdateringStotte",
+          "in" : "query",
+          "description" : "Om nav-kontorets fagsystem støtter oppdateringer av status mot fiks-digisos",
+          "required" : false,
+          "type" : "boolean"
+        } ],
+        "responses" : {
+          "default" : {
+            "description" : "successful operation"
+          }
+        }
+      },
+      "delete" : {
+        "tags" : [ "DigisosKonfigurasjon" ],
+        "operationId" : "slettNavKontor",
+        "parameters" : [ {
+          "name" : "kommuneNummer",
+          "in" : "path",
+          "description" : "Nav-enhets-id på nav-kontor som skal slettes",
+          "required" : true,
+          "type" : "string",
+          "format" : "uuid"
+        } ],
+        "responses" : {
+          "default" : {
+            "description" : "successful operation"
+          }
+        }
+      }
+    },
+    "/digisos/api/v1/navKontor" : {
+      "get" : {
+        "tags" : [ "DigisosSoknad" ],
+        "operationId" : "getAllNavKontorStatus",
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "type" : "array",
+              "items" : {
+                "$ref" : "#/definitions/NavKontorInfo"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/digisos/api/v1/navKontor/{navKontorId}" : {
+      "get" : {
+        "tags" : [ "DigisosSoknad" ],
+        "operationId" : "getNavKontorStatus",
+        "parameters" : [ {
+          "name" : "navKontorId",
+          "in" : "path",
+          "description" : "Nav-kontor-id på kontor som blir brukt for å vite om det spesifiserte kontoret støtter mottak av digisos søknader og evt. oppdatering av status",
+          "required" : true,
+          "type" : "string",
+          "format" : "uuid"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "$ref" : "#/definitions/NavKontorInfo"
+            }
+          }
+        }
+      }
+    },
+    "/digisos/api/v1/navKontor/{navKontorId}/soknader" : {
+      "post" : {
+        "tags" : [ "DigisosSoknad" ],
+        "operationId" : "sendSoknad",
+        "consumes" : [ "multipart/form-data" ],
+        "parameters" : [ {
+          "name" : "navKontorId",
+          "in" : "path",
+          "required" : true,
+          "type" : "string",
+          "format" : "uuid"
+        }, {
+          "name" : "soknad",
+          "in" : "formData",
+          "required" : false,
+          "type" : "file"
+        }, {
+          "name" : "vedlegg",
+          "in" : "formData",
+          "required" : false,
+          "type" : "array",
+          "items" : {
+            "type" : "file"
+          },
+          "collectionFormat" : "multi"
+        }, {
+          "name" : "metadata",
+          "in" : "formData",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "default" : {
+            "description" : "successful operation"
+          }
+        }
+      }
+    },
+    "/digisos/api/v1/navKontor/{navKontorId}/soknader/{soknadId}" : {
+      "post" : {
+        "tags" : [ "DigisosSoknad" ],
+        "operationId" : "ettersendInfo",
+        "consumes" : [ "multipart/form-data" ],
+        "parameters" : [ {
+          "name" : "navKontorId",
+          "in" : "path",
+          "required" : true,
+          "type" : "string",
+          "format" : "uuid"
+        }, {
+          "name" : "soknadId",
+          "in" : "path",
+          "required" : true,
+          "type" : "string",
+          "format" : "uuid"
+        }, {
+          "name" : "vedlegg",
+          "in" : "formData",
+          "required" : true,
+          "type" : "array",
+          "items" : {
+            "type" : "file"
+          },
+          "collectionFormat" : "multi"
+        }, {
+          "name" : "metadata",
+          "in" : "formData",
+          "required" : false,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "default" : {
+            "description" : "successful operation"
+          }
+        }
+      }
+    },
+    "/digisos/api/v1/saker/{soknadId}" : {
+      "post" : {
+        "tags" : [ "DigisosSaksoppdatering" ],
+        "operationId" : "oppdaterSak",
+        "consumes" : [ "multipart/form-data" ],
+        "parameters" : [ {
+          "name" : "soknadId",
+          "in" : "path",
+          "required" : true,
+          "type" : "string",
+          "format" : "uuid"
+        }, {
+          "name" : "vedlegg",
+          "in" : "formData",
+          "required" : false,
+          "type" : "array",
+          "items" : {
+            "type" : "file"
+          },
+          "collectionFormat" : "multi"
+        }, {
+          "name" : "metadata",
+          "in" : "formData",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "default" : {
+            "description" : "successful operation"
+          }
+        }
+      }
+    },
+    "/digisos/api/v1/soknader/logg" : {
+      "get" : {
+        "tags" : [ "DigisosSoknad" ],
+        "operationId" : "getSoknadLoggById",
+        "parameters" : [ {
+          "name" : "fiksDigisosId",
+          "in" : "query",
+          "required" : false,
+          "type" : "string",
+          "format" : "uuid"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "type" : "array",
+              "items" : {
+                "$ref" : "#/definitions/SoknadState"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/digisos/api/v1/soknader/soknader" : {
+      "get" : {
+        "tags" : [ "DigisosSoknad" ],
+        "operationId" : "getSoknaderForFnr",
+        "parameters" : [ {
+          "name" : "fnr",
+          "in" : "query",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "eksternRef",
+          "in" : "query",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "type" : "array",
+              "items" : {
+                "$ref" : "#/definitions/Soknad"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions" : {
+    "DokumentInfo" : {
+      "type" : "object",
+      "properties" : {
+        "orginalFilnavn" : {
+          "type" : "string"
+        },
+        "dokumentlagerDokumentId" : {
+          "type" : "string",
+          "format" : "uuid"
+        },
+        "storrelse" : {
+          "type" : "integer",
+          "format" : "int64"
+        }
+      }
+    },
+    "EttersendtInfoNAV" : {
+      "type" : "object",
+      "properties" : {
+        "metadata" : {
+          "type" : "string",
+          "format" : "uuid"
+        },
+        "vedlegg" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/DokumentInfo"
+          }
+        }
+      }
+    },
+    "KommuneKonfigurasjon" : {
+      "type" : "object",
+      "properties" : {
+        "fiksOrgId" : {
+          "type" : "string",
+          "format" : "uuid"
+        },
+        "navKommuneNr" : {
+          "type" : "string",
+          "format" : "uuid"
+        },
+        "dokumentlagerKontoId" : {
+          "type" : "string",
+          "format" : "uuid"
+        },
+        "svarInn2KontoId" : {
+          "type" : "string",
+          "format" : "uuid"
+        },
+        "stotterOppdateringer" : {
+          "type" : "boolean"
+        },
+        "stottetDokumentversjoner" : {
+          "type" : "array",
+          "items" : {
+            "type" : "string"
+          }
+        },
+        "svarutMottakerAdresse" : {
+          "$ref" : "#/definitions/SvarutAdresseSpesifikasjon"
+        }
+      }
+    },
+    "NavKontorInfo" : {
+      "type" : "object",
+      "properties" : {
+        "kommuneNummer" : {
+          "type" : "string"
+        },
+        "kanMottaSoknader" : {
+          "type" : "boolean"
+        },
+        "stotterVersjoner" : {
+          "type" : "array",
+          "items" : {
+            "type" : "string"
+          }
+        },
+        "kanOppdatereStatus" : {
+          "type" : "boolean"
+        }
+      }
+    },
+    "NyKonfigurasjonResponse" : {
+      "type" : "object",
+      "properties" : {
+        "antallOpprettet" : {
+          "type" : "integer",
+          "format" : "int32",
+          "description" : "Antall nav-kontor som ble opprettet i operasjonen"
+        }
+      }
+    },
+    "OppdateringFagsystem" : {
+      "type" : "object",
+      "properties" : {
+        "metadata" : {
+          "type" : "string",
+          "format" : "uuid"
+        },
+        "vedlegg" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/DokumentInfo"
+          }
+        }
+      }
+    },
+    "OrginalSoknadNAV" : {
+      "type" : "object",
+      "properties" : {
+        "metadata" : {
+          "type" : "string",
+          "format" : "uuid"
+        },
+        "soknadDokument" : {
+          "$ref" : "#/definitions/DokumentInfo"
+        },
+        "vedlegg" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/DokumentInfo"
+          }
+        }
+      }
+    },
+    "Soknad" : {
+      "type" : "object",
+      "properties" : {
+        "fiksDigisosId" : {
+          "type" : "string",
+          "format" : "uuid"
+        },
+        "navSoknadId" : {
+          "type" : "string",
+          "format" : "uuid"
+        },
+        "sokerFnr" : {
+          "type" : "string"
+        },
+        "fiksOrgId" : {
+          "type" : "string",
+          "format" : "uuid"
+        },
+        "navKontorId" : {
+          "type" : "string",
+          "format" : "uuid"
+        },
+        "svarinn2KontoId" : {
+          "type" : "string",
+          "format" : "uuid"
+        },
+        "soknadStatusLogg" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/SoknadState"
+          }
+        },
+        "sistEndret" : {
+          "type" : "integer",
+          "format" : "int64"
+        },
+        "orginalSoknadNAV" : {
+          "$ref" : "#/definitions/OrginalSoknadNAV"
+        },
+        "ettersendtInfoNAV" : {
+          "$ref" : "#/definitions/EttersendtInfoNAV"
+        },
+        "oppdateringFagsystem" : {
+          "$ref" : "#/definitions/OppdateringFagsystem"
+        }
+      }
+    },
+    "SoknadState" : {
+      "type" : "object",
+      "properties" : {
+        "state" : {
+          "type" : "string",
+          "enum" : [ "SOKNAD_AKSEPTERT", "VEDLEGG_AKSEPTERT", "SOKNAD_STATUS_MOTTAT" ]
+        },
+        "timestamp" : {
+          "type" : "integer",
+          "format" : "int64"
+        }
+      }
+    },
+    "SvarutAdresseSpesifikasjon" : {
+      "type" : "object",
+      "properties" : {
+        "svarutDigitalAdresseOrgNr" : {
+          "type" : "string"
+        },
+        "postAdresseNavn" : {
+          "type" : "string"
+        },
+        "postAdresseAdresse" : {
+          "type" : "string"
+        },
+        "postAdressePostNr" : {
+          "type" : "string"
+        },
+        "postAdressePostSted" : {
+          "type" : "string"
+        },
+        "postAdresseLand" : {
+          "type" : "string"
+        }
+      }
+    }
+  }
+}
