@@ -1,5 +1,5 @@
 ---
-title: Digisos
+title: Digisos (under utvikling)
 date: 2018-08-30 
 ---
 
