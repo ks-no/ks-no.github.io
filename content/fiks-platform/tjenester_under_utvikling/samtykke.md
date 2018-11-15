@@ -1,5 +1,5 @@
 ---
-title: Samtykke
+title: Samtykke (under utvikling)
 date: 2018-08-30 
 ---
 
