@@ -1,7 +1,9 @@
 ---
-title: Dokumentlager (under utvikling)
+title: Dokumentlager
 date: 2018-09-10
 ---
+
+STATUS: tilgjengelig i testmiljø
 
 Dokumentlager-tjenesten lar kommunen og andre Fiks-organisasjoner laste opp dokumenter. Ved opplasting autoriseres en eller 
 flere personer og/eller organisasjoner for tilgang til dokumentet. Det er også mulig å laste opp dokumenter med en begrenset
