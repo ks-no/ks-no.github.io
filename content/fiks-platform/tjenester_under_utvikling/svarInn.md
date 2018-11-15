@@ -3,7 +3,7 @@ title: SvarInn 2
 date: 2018-10-02
 ---
 
-STATUS: under utvikling
+**STATUS: under utvikling**
 
 SvarInn er en kanal for sikker maskin-til-maskin integrasjon. Denne kommer nå i ny versjon: vi har flyttet den eksistende SvarInn tjenesten over på Fiks Plattformen, og frikoblet den fra SvarUt. Det er nå mulig å sende direkte til SvarInn. Dette åpner mange muligheter:
 
