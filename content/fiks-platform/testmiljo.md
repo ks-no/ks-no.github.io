@@ -9,7 +9,7 @@ Fiks test blir brukt til å verifisere endringer før de går i produksjon, og v
 
 Merk at testmiljøet ikke har de samme sikkerhetsgarantiene som produksjon - det er dermed viktig at man ikke benytter sensitive data under test. 
 
-## Tilgang til testmiljøet
+### Tilgang til testmiljøet
 Send mail til fiks@ks.no for tilgang til testmiljøet. Send gjerne med evt. eksisterende test brukere i ID-Porten slik at disse kan gjennbrukes for tilganger på Fiks plattformen.
 
 ### Hvor er testmiljøet
