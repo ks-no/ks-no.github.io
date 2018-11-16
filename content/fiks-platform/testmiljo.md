@@ -12,15 +12,15 @@ Merk at testmiljøet ikke har de samme sikkerhetsgarantiene som produksjon - det
 ### Tilgang til testmiljøet
 Send mail til fiks@ks.no for tilgang til testmiljøet. Send gjerne med evt. eksisterende test brukere i ID-Porten slik at disse kan gjennbrukes for tilganger på Fiks plattformen.
 
-### Hvor er testmiljøet
+### Hvor er testmiljøet?
 Minside kan nås på https://minside.fiks.test.ks.no, konfigurasjon finnes på https://minside.fiks.test.ks.no/fiks-konfigurasjon/. Benytt ID-Porten testbruker for innlogging. 
 
 SvarUt data for "Post fra kommunen" på Minside kommer fra SvarUts testmiljø. Aktiver avsendere i fiks konfigurasjon for å indeksere meldinger.
 
-### Person-innlogging i testmiljøet.
+### Person-innlogging
 Alle testbrukere dere får fra oss har "Min Id" innlogging i ID-Porten. Her anbefaler vi at dere setter tlfnr og epost slik at brukeren kan låses opp om noen skulle sperre den med feilede innloggingsforsøk.
 
-### Integrasjon-innlogging i testmiljøet.
+### Integrasjon-innlogging
 For å kunne teste integrasjoner mot Fiks plattformen i test må organisasjonen ha en ID-Porten konto. For å få dette må en henvende seg til idporten@difi.no og sende med orgnr i fra testvirksomhetssertifikat.
 
 Etter at konto er registrert hos idporten kan integrasjonen opprettes og autoriseres i fiks konfigurasjon.
