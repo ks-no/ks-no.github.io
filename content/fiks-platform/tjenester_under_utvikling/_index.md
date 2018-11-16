@@ -15,7 +15,7 @@ Audit-logg for handlinger på Fiks plattformen gjøres tilgjengelig for tjeneste
 #### [Fiks Digisos]({{< ref "digisos.md" >}})
 Tjeneste for kommunal behandling av sosialsøknader sendt fra nav.no. Statusoppdateringer blir gjort tilgjengelig på minside.kommune.no og på nav.no.
 
-#### [Fiks Dokumentlager]({{< ref "svarinn.md" >}})
+#### [Fiks SvarInn 2]({{< ref "svarInn.md" >}})
 Integrasjonsplattform for maskin-til-maskin kommunikasjon. Erstatter gamle SvarUt-SvarInn, og tilbyr ny funksjonalitet som direkte sending, push-kommunikasjon og ende-til-ende kryptering.
 
 #### [Fiks Samtykke]({{< ref "samtykke.md" >}})
