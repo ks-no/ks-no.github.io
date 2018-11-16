@@ -4,7 +4,7 @@ title: Tjenester under utvikling
 
 Roadmap for fremtidige tjenester på fiks-plattformen. Tidsangivelse må tolkes som en indikasjon på når tjenesten kan være klar, endringer kan forekomme.
 
-## 2018-Q3:
+## 2018-Q4:
 ####  [Fiks Dokumentlager]({{< ref "dokumentlager.md" >}})
 Tjeneste for sikker lagring av dokumenter, og for å tilgjengeliggjøre dokumenter for en innbygger eller organisasjon basert på ID-Porten innlogging.
 
