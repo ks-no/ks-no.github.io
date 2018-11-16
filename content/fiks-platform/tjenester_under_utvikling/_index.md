@@ -5,26 +5,26 @@ title: Tjenester under utvikling
 Roadmap for fremtidige tjenester på fiks-plattformen. Tidsangivelse må tolkes som en indikasjon på når tjenesten kan være klar, endringer kan forekomme.
 
 ## 2018-Q3:
-#### Fiks Dokumentlager
+####  [Fiks Dokumentlager]({{< ref "dokumentlager.md" >}})
 Tjeneste for sikker lagring av dokumenter, og for å tilgjengeliggjøre dokumenter for en innbygger eller organisasjon basert på ID-Porten innlogging.
 
 ## 2019-Q1:
-#### Fiks Audit
+#### [Fiks Audit]({{< ref "audit.md" >}})
 Audit-logg for handlinger på Fiks plattformen gjøres tilgjengelig for tjeneste-administratorer. Det vil være mulig å se hvilke integrasjoner eller personer som har gjort hvilke handlinger, og når det er utført.
 
-#### Fiks Digisos
+#### [Fiks Digisos]({{< ref "digisos.md" >}})
 Tjeneste for kommunal behandling av sosialsøknader sendt fra nav.no. Statusoppdateringer blir gjort tilgjengelig på minside.kommune.no og på nav.no.
 
-#### Fiks SvarInn2
+#### [Fiks Dokumentlager]({{< ref "svarinn.md" >}})
 Integrasjonsplattform for maskin-til-maskin kommunikasjon. Erstatter gamle SvarUt-SvarInn, og tilbyr ny funksjonalitet som direkte sending, push-kommunikasjon og ende-til-ende kryptering.
 
-#### Fiks Samtykke
+#### [Fiks Samtykke]({{< ref "samtykke.md" >}})
 Samtykke-løsningen utviklet for Fiks plattformen blir tilgjengelig som en tjeneste som kan benyttes til kommunens egne formål, hovedsakelig relatert til innhenting og forvaltning av samtykker i GDPR sammenheng.
 
 ## 2019-Q2
 #### Fiks Folkeregister
 Fiks Plattformen tilgjengeliggjør folkeregistrets api for oppslag, støttet av logging, autentisering, autorisasjon og konfigurering på Fiks Plattformen.
-L7cpwrCQIBgN
+
 #### Fiks Innbygger
 Fiks plattformens løsning for spørringer og rapportering på folkeregisterdata. Vil inkludere mulighet for å lage skreddresydde rapporter.
 
