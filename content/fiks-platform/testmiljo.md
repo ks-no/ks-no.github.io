@@ -1,5 +1,5 @@
 ---
-title: Fiks-testmiljø
+title: Testmiljø
 date: 2018-05-29
 ---
 
