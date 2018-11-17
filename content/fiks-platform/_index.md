@@ -6,7 +6,7 @@ description: Description
 KS-Fiks er en felles tjenesteplattform for norske kommuner. Plattformen består av tre hoveddeler:
 
 ### minside.kommune.no
-Dette er hjemmet for innbyggerrettede tjenester på Fiks Plattformen. I dag tilbys i hovedsak én tjeneste: "Post fra din kommune", drevet av søkemotoren [Fiks Innsyn]({{< ref "innsyn.md" >}}). Over tid vil Innsyn også inbefatte andre datatyper (faktura, saker, osv), og andre tjenester vil bli lagt til. Se [tjenester under utvikling]({{< ref "tjenester_under_utviling/" >}}) for å se hva som er på vei. 
+Dette er hjemmet for innbyggerrettede tjenester på Fiks Plattformen. I dag tilbys i hovedsak én tjeneste: "Post fra din kommune", drevet av søkemotoren [Fiks Innsyn]({{< ref "innsyn.md" >}}). Over tid vil Innsyn også inbefatte andre datatyper (faktura, saker, osv), og andre tjenester vil bli lagt til. Se [tjenester under utvikling]({{< ref "tjenester_under_utvikling/" >}}) for å se hva som er på vei. 
 
 ### forvaltning.fiks.ks.no
 Her finnes tjenster som retter seg mot kommuneansatte og andre som skal forvalte eller benytte tjenester på Fiks plattformen. Her finnes [Fiks Konfigurasjon]({{< ref "innsyn.md" >}}), som benyttes for å sette opp og konfigurere Fiks tjenester. Over tid vil man også kunne finne andre tjenester rettet mot ansatte i stat og kommune på denne siden.
