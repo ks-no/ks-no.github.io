@@ -1,229 +1,138 @@
 {
-  "swagger" : "2.0",
-  "info" : {
-    "version" : "v1",
-    "title" : "KS FIKS: Dokumentlager Upload Service",
-    "contact" : {
-      "name" : "Fiks brukerstøtte",
-      "url" : "http://www.ks.no/fagomrader/utvikling/digitalisering/digitaliseringsstrategien/fiks/",
-      "email" : "fiks@ks.no"
+  "openapi": "3.0.0",
+  "info": {
+    "version": "v1",
+    "title": "KS FIKS: Dokumentlager Upload Service",
+    "contact": {
+      "name": "Fiks brukerstøtte",
+      "url": "http://www.ks.no/fagomrader/utvikling/digitalisering/digitaliseringsstrategien/fiks/",
+      "email": "fiks@ks.no"
     }
   },
-  "basePath" : "/api",
-  "tags" : [ {
-    "name" : "DokumentlagerUpload"
-  } ],
-  "schemes" : [ "https" ],
-  "paths" : {
-    "/dokumentlager/api/v1/{fiksOrganisasjonId}/kontoer/{kontoId}/dokumenter" : {
-      "post" : {
-        "tags" : [ "DokumentlagerUpload" ],
-        "summary" : "Laster opp kombinert metadata og fildata for et dokument",
-        "description" : "",
-        "operationId" : "uploadMetadataAndDokument",
-        "consumes" : [ "multipart/form-data" ],
-        "parameters" : [ {
-          "name" : "fiksOrganisasjonId",
-          "in" : "path",
-          "required" : true,
-          "type" : "string",
-          "format" : "uuid"
-        }, {
-          "name" : "kontoId",
-          "in" : "path",
-          "required" : true,
-          "type" : "string",
-          "format" : "uuid"
-        }, {
-          "name" : "kryptert",
-          "in" : "query",
-          "required" : false,
-          "type" : "boolean"
-        }, {
-          "name" : "metadata",
-          "in" : "formData",
-          "required" : true,
-          "type" : "string"
-        }, {
-          "name" : "dokument",
-          "in" : "formData",
-          "required" : true,
-          "type" : "file"
-        } ],
-        "responses" : {
-          "200" : {
-            "description" : "successful operation",
-            "schema" : {
-              "$ref" : "#/definitions/FilMetadataUploadResult"
+  "servers": [
+    {
+      "url": "http://api.fiks.test.ks.no/"
+    }
+  ],
+  "tags": [
+    {
+      "name": "DokumentlagerUpload"
+    }
+  ],
+  "paths": {
+    "/dokumentlager/api/v1/{fiksOrganisasjonId}/kontoer/{kontoId}/dokumenter": {
+      "post": {
+        "tags": [
+          "DokumentlagerUpload"
+        ],
+        "summary": "Laster opp kombinert metadata og fildata for et dokument",
+        "description": "",
+        "operationId": "uploadMetadataAndDokument",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "metadata": {
+                    "type": "object",
+                    "description": "Metadata for dokumentet. Trykk \"Try it out\" for å se forventet format i Swagger UI.",
+                    "properties": {
+                      "dokumentnavn": {
+                        "type": "string",
+                        "description": "Dokumentets filnavn. Blir navnet på filen ved nedlasting."
+                      },
+                      "mimetype": {
+                        "type": "string",
+                        "description": "Dokumentets MIME-type. Blir mimetype til filen når den lastes ned av mottaker."
+                      },
+                      "ttl": {
+                        "type": "integer",
+                        "format": "int64",
+                        "description": "Tidspunkt for når filen blir utilgjengeliggjort automatisk. Oppgis i millisekunder UNIX epoch. En negativ verdi betyr at dokumentet aldri utløper."
+                      },
+                      "eksponertFor": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        },
+                        "description": "En liste av personer og/eller organisasjoner som har lov til å laste ned og lese dokumentet."
+                      },
+                      "sikkerhetsniva": {
+                        "type": "integer",
+                        "format": "int32",
+                        "description": "Innloggingsnivå som kreves ved nedlasting av filen. Gyldige verdier er 3 og 4. Ved nivå 4 må dokumentdata krypteres før opplasting."
+                      }
+                    }
+                  },
+                  "dokument": {
+                    "type": "string",
+                    "format": "binary",
+                    "description": "Dokumentet som skal lastes opp."
+                  }
+                }
+              }
             }
           }
-        }
-      }
-    },
-    "/dokumentlager/api/v1/{fiksOrganisasjonId}/kontoer/{kontoId}/dokumenter/metadata" : {
-      "post" : {
-        "tags" : [ "DokumentlagerUpload" ],
-        "summary" : "Laster opp metadata for et dokument",
-        "description" : "",
-        "operationId" : "uploadMetadata",
-        "parameters" : [ {
-          "name" : "fiksOrganisasjonId",
-          "in" : "path",
-          "required" : true,
-          "type" : "string",
-          "format" : "uuid"
-        }, {
-          "name" : "kontoId",
-          "in" : "path",
-          "required" : true,
-          "type" : "string",
-          "format" : "uuid"
-        }, {
-          "in" : "body",
-          "name" : "body",
-          "required" : false,
-          "schema" : {
-            "$ref" : "#/definitions/FilMetadataUpload"
-          }
-        } ],
-        "responses" : {
-          "200" : {
-            "description" : "successful operation",
-            "schema" : {
-              "$ref" : "#/definitions/FilMetadataUploadResult"
+        },
+        "parameters": [
+          {
+            "name": "fiksOrganisasjonId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "kontoId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "kryptert",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "boolean"
             }
           }
-        }
-      }
-    },
-    "/dokumentlager/api/v1/{fiksOrganisasjonId}/kontoer/{kontoId}/dokumenter/{dokumentId}" : {
-      "delete" : {
-        "tags" : [ "DokumentlagerUpload" ],
-        "summary" : "Sletter dokumentet med gitt id",
-        "description" : "",
-        "operationId" : "deleteDokument",
-        "parameters" : [ {
-          "name" : "fiksOrganisasjonId",
-          "in" : "path",
-          "required" : true,
-          "type" : "string",
-          "format" : "uuid"
-        }, {
-          "name" : "kontoId",
-          "in" : "path",
-          "required" : true,
-          "type" : "string",
-          "format" : "uuid"
-        }, {
-          "name" : "dokumentId",
-          "in" : "path",
-          "required" : true,
-          "type" : "string",
-          "format" : "uuid"
-        } ],
-        "responses" : {
-          "200" : {
-            "description" : "successful operation",
-            "schema" : {
-              "type" : "object"
-            }
-          }
-        }
-      }
-    },
-    "/dokumentlager/api/v1/{fiksOrganisasjonId}/kontoer/{kontoId}/dokumenter/{dokumentId}/data" : {
-      "post" : {
-        "tags" : [ "DokumentlagerUpload" ],
-        "summary" : "Laster opp et dokument for dokumentid",
-        "description" : "",
-        "operationId" : "uploadDokument",
-        "consumes" : [ "multipart/form-data" ],
-        "parameters" : [ {
-          "name" : "fiksOrganisasjonId",
-          "in" : "path",
-          "required" : true,
-          "type" : "string",
-          "format" : "uuid"
-        }, {
-          "name" : "kontoId",
-          "in" : "path",
-          "required" : true,
-          "type" : "string",
-          "format" : "uuid"
-        }, {
-          "name" : "dokumentId",
-          "in" : "path",
-          "required" : true,
-          "type" : "string",
-          "format" : "uuid"
-        }, {
-          "name" : "kryptert",
-          "in" : "query",
-          "required" : false,
-          "type" : "boolean"
-        }, {
-          "name" : "dokument",
-          "in" : "formData",
-          "required" : true,
-          "type" : "file"
-        } ],
-        "responses" : {
-          "200" : {
-            "description" : "successful operation",
-            "schema" : {
-              "type" : "object"
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FilMetadataUploadResult"
+                }
+              }
             }
           }
         }
       }
     }
   },
-  "definitions" : {
-    "FilMetadataUpload" : {
-      "type" : "object",
-      "required" : [ "dokumentnavn", "eksponertFor", "innloggingsniva", "mimetype", "ttl" ],
-      "properties" : {
-        "dokumentnavn" : {
-          "type" : "string",
-          "description" : "Dokumentets filnavn. Blir navnet på filen ved nedlasting."
-        },
-        "mimetype" : {
-          "type" : "string",
-          "description" : "Dokumentets MIME-type. Blir mimetype til filen når den lastes ned av mottaker"
-        },
-        "ttl" : {
-          "type" : "integer",
-          "format" : "int64",
-          "description" : "Tidspunkt for når filen blir utilgjengeliggjort automatisk. Oppgis i millisekunder UNIX epoch. En negativ verdi betyr at dokumentet aldri utløper."
-        },
-        "eksponertFor" : {
-          "type" : "array",
-          "description" : "En liste av personer og/eller organisasjoner som har lov til å laste ned og lese dokumentet",
-          "uniqueItems" : true,
-          "items" : {
-            "type" : "string"
+  "components": {
+    "schemas": {
+      "FilMetadataUploadResult": {
+        "required": [
+          "id"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Id gitt til opplastet metadata, som brukes for å laste opp dokumentet"
           }
         },
-        "innloggingsniva" : {
-          "type" : "integer",
-          "format" : "int32",
-          "description" : "Innloggingsnivå som kreves ved nedlasting av filen. Gyldige verdier er 3 og 4. Ved nivå 4 må dokumentdata krypteres før opplasting.",
-          "minimum" : 3,
-          "maximum" : 4
-        }
-      },
-      "description" : "Metadata for et dokument"
-    },
-    "FilMetadataUploadResult" : {
-      "type" : "object",
-      "properties" : {
-        "id" : {
-          "type" : "string",
-          "format" : "uuid",
-          "description" : "Id gitt til opplastet metadata, som brukes for å laste opp dokumentet"
-        }
-      },
-      "description" : "Informasjon om opplastet metadata for et dokument"
+        "description": "Informasjon om opplastet metadata for et dokument"
+      }
     }
   }
 }
