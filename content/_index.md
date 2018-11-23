@@ -8,4 +8,4 @@ Her finner du dokumentasjon av Fiks Plattformen og SvarUt tjenesten. Dokumentasj
 
 Hvis du finner feil, eller noe som ikke er beskrevet godt nok, setter vi pris på om du sender en epost til [fiks-utvikling@ks.no](mailto:fiks-utvikling@ks.no) eller lager en pull request på https://github.com/ks-no/ks-no.github.io
 
-For å abonnere på endringer i dokumentasjonen <a rel="alternate" type="application/rss+xml" href="index.xml">RSS-feed</a> 
+For å abonnere på endringer i dokumentasjonen kan du benytte vår <a rel="alternate" type="application/rss+xml" href="index.xml">RSS-feed</a>.
