@@ -26,7 +26,7 @@ Integrasjonsplattform for maskin-til-maskin kommunikasjon. Erstatter gamle SvarU
 Samtykke-løsningen utviklet for Fiks plattformen blir tilgjengelig som en tjeneste som kan benyttes til kommunens egne formål, hovedsakelig relatert til innhenting og forvaltning av samtykker i GDPR sammenheng.
 
 #### Minside Søknader
-Innbyggeres innsente søknader og søknad-kladder for disse gjøres tilgjengelig på Minside. Utvikles som modul i Fiks Innsyn i sammarbeid med leverandører av søknadsmotorer og arkivsystem.
+Innbyggeres innsendte søknader og kladder for disse gjøres tilgjengelig på Minside. Utvikles som modul i Fiks Innsyn i sammarbeid med leverandører av søknadsmotorer og arkivsystem.
 
 ## 2019-Q2
 #### Fiks Folkeregister
