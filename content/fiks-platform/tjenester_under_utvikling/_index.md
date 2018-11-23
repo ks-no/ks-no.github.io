@@ -36,6 +36,9 @@ Fiks Plattformen tilgjengeliggjør folkeregistrets api for oppslag, støttet av 
 Fiks plattformens løsning for spørringer og rapportering på folkeregisterdata. Vil inkludere mulighet for å lage skreddresydde rapporter.
 
 ## Under utredning:
+#### Fiks Innsyn: Matrikkel
+Innsyn utvides med informasjon om matrikkel, som gjør det mulig å eksponere meldinger for eieren av en spesifisert eiendom.
+
 #### Minside: Eiendom
 Matrikkel og eiendomsinformasjon gjøres tilgjengelig på Minside. Vil inkludere mulighet for å sende korrigeringer på evt. feilaktig informasjon.
 
