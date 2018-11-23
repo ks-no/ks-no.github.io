@@ -1,5 +1,6 @@
 --- 
 title: Tjenester under utvikling
+date: 2018-11-23
 --- 
 
 Roadmap for fremtidige tjenester på fiks-plattformen. Tidsangivelse må tolkes som en indikasjon på når tjenesten kan være klar, endringer kan forekomme.
@@ -21,6 +22,9 @@ Integrasjonsplattform for maskin-til-maskin kommunikasjon. Erstatter gamle SvarU
 #### [Fiks Samtykke]({{< ref "samtykke.md" >}})
 Samtykke-løsningen utviklet for Fiks plattformen blir tilgjengelig som en tjeneste som kan benyttes til kommunens egne formål, hovedsakelig relatert til innhenting og forvaltning av samtykker i GDPR sammenheng.
 
+#### Minside Søknader
+Innbyggeres innsente søknader og søknad-kladder for disse gjøres tilgjengelig på Minside. Utvikles som modul i Fiks Innsyn i sammarbeid med leverandører av søknadsmotorer og arkivsystem.
+
 ## 2019-Q2
 #### Fiks Folkeregister
 Fiks Plattformen tilgjengeliggjør folkeregistrets api for oppslag, støttet av logging, autentisering, autorisasjon og konfigurering på Fiks Plattformen.
@@ -34,9 +38,6 @@ Matrikkel og eiendomsinformasjon gjøres tilgjengelig på Minside. Vil inkludere
 
 #### Minside Faktura
 Faktura fra kommunen gjøres tilgjengelig på Minside. Utvikles i sammarbeid med Bergen kommune, som står for utvikling av integrasjoner mot fagsystem.
-
-#### Minside Søknader
-Søknader og søknad-kladder gjøres tilgjengelig på Minside.
 
 #### Minside Byggesaker
 Byggesaker, både historiske, pågående søknader og avsluttede gjøres tilgjengelig på Minside, med status og oppdateringer for pågående saker.
