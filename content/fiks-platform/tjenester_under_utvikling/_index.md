@@ -9,6 +9,9 @@ Roadmap for fremtidige tjenester på fiks-plattformen. Tidsangivelse må tolkes 
 ####  [Fiks Dokumentlager]({{< ref "dokumentlager.md" >}})
 Tjeneste for sikker lagring av dokumenter, og for å tilgjengeliggjøre dokumenter for en innbygger eller organisasjon basert på ID-Porten innlogging.
 
+####  Minside Profil Kontakt og Reservasjon Register
+Innbyggerens profil på Minside utvides med gjeldende informasjon fra Kontakt og Reservasjonsregister, og lenker for å endre dette.
+
 ## 2019-Q1:
 #### [Fiks Audit]({{< ref "audit.md" >}})
 Audit-logg for handlinger på Fiks plattformen gjøres tilgjengelig for tjeneste-administratorer. Det vil være mulig å se hvilke integrasjoner eller personer som har gjort hvilke handlinger, og når det er utført.
