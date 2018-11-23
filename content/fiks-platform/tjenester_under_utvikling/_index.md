@@ -9,7 +9,7 @@ Roadmap for fremtidige tjenester på fiks-plattformen. Tidsangivelse må tolkes 
 ####  [Fiks Dokumentlager]({{< ref "dokumentlager.md" >}})
 Tjeneste for sikker lagring av dokumenter, og for å tilgjengeliggjøre dokumenter for en innbygger eller organisasjon basert på ID-Porten innlogging.
 
-####  Minside Profil Kontakt og Reservasjon Register
+####  Minside Profil: Kontakt- og reservasjonsregisteret
 Innbyggerens profil på Minside utvides med gjeldende informasjon fra Kontakt og Reservasjonsregister, og lenker for å endre dette.
 
 ## 2019-Q1:
@@ -25,7 +25,7 @@ Integrasjonsplattform for maskin-til-maskin kommunikasjon. Erstatter gamle SvarU
 #### [Fiks Samtykke]({{< ref "samtykke.md" >}})
 Samtykke-løsningen utviklet for Fiks plattformen blir tilgjengelig som en tjeneste som kan benyttes til kommunens egne formål, hovedsakelig relatert til innhenting og forvaltning av samtykker i GDPR sammenheng.
 
-#### Minside Søknader
+#### Minside: Søknader
 Innbyggeres innsendte søknader og kladder for disse gjøres tilgjengelig på Minside. Utvikles som modul i Fiks Innsyn i sammarbeid med leverandører av søknadsmotorer og arkivsystem.
 
 ## 2019-Q2
@@ -36,11 +36,11 @@ Fiks Plattformen tilgjengeliggjør folkeregistrets api for oppslag, støttet av 
 Fiks plattformens løsning for spørringer og rapportering på folkeregisterdata. Vil inkludere mulighet for å lage skreddresydde rapporter.
 
 ## Under utredning:
-#### Minside Eiendom
+#### Minside: Eiendom
 Matrikkel og eiendomsinformasjon gjøres tilgjengelig på Minside. Vil inkludere mulighet for å sende korrigeringer på evt. feilaktig informasjon.
 
-#### Minside Faktura
+#### Minside: Faktura
 Faktura fra kommunen gjøres tilgjengelig på Minside. Utvikles i sammarbeid med Bergen kommune, som står for utvikling av integrasjoner mot fagsystem.
 
-#### Minside Byggesaker
+#### Minside: Byggesaker
 Byggesaker, både historiske, pågående søknader og avsluttede gjøres tilgjengelig på Minside, med status og oppdateringer for pågående saker.
