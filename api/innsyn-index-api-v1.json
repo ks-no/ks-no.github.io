@@ -29,7 +29,7 @@
           "schema" : {
             "type" : "array",
             "items" : {
-              "$ref" : "#/definitions/IndexMelding"
+              "$ref" : "#/definitions/IndexMeldingV1"
             }
           }
         } ],
@@ -113,23 +113,6 @@
     }
   },
   "definitions" : {
-    "Dokument" : {
-      "type" : "object",
-      "required" : [ "nedlastingLenke", "tittel" ],
-      "properties" : {
-        "tittel" : {
-          "type" : "string"
-        },
-        "size" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
-        "nedlastingLenke" : {
-          "type" : "string"
-        }
-      },
-      "description" : "Et dokument for en forsendelse"
-    },
     "FiksOrganisasjon" : {
       "type" : "object",
       "required" : [ "id", "visningsnavn" ],
@@ -159,16 +142,99 @@
       },
       "description" : "Spesifiser et foreldre-dokument."
     },
-    "IndexMelding" : {
+    "ForsendelseV1Dokument" : {
       "type" : "object",
-      "required" : [ "eksponertFor", "fiksOrganisasjon", "id", "innloggingsniva", "typeMetadata" ],
+      "required" : [ "nedlastingLenke", "tittel" ],
+      "properties" : {
+        "tittel" : {
+          "type" : "string"
+        },
+        "size" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "nedlastingLenke" : {
+          "type" : "string"
+        }
+      },
+      "description" : "Et dokument for en forsendelse"
+    },
+    "ForsendelseV2Adresse" : {
+      "type" : "object",
+      "required" : [ "navn" ],
+      "properties" : {
+        "navn" : {
+          "type" : "string"
+        },
+        "addresselinje1" : {
+          "type" : "string"
+        },
+        "addresselinje2" : {
+          "type" : "string"
+        },
+        "addresselinje3" : {
+          "type" : "string"
+        },
+        "poststed" : {
+          "type" : "string"
+        },
+        "postnummer" : {
+          "type" : "string"
+        },
+        "land" : {
+          "type" : "string"
+        }
+      },
+      "description" : "Representerer en postadresse i en forsendelse"
+    },
+    "ForsendelseV2Dokument" : {
+      "type" : "object",
+      "required" : [ "mimeType", "nedlastingLenke", "tittel" ],
+      "properties" : {
+        "tittel" : {
+          "type" : "string"
+        },
+        "size" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "nedlastingLenke" : {
+          "type" : "string"
+        },
+        "mimeType" : {
+          "type" : "string"
+        }
+      },
+      "description" : "Reprensenterer et dokument i en forsendelse"
+    },
+    "ForsendelseV2Lenke" : {
+      "type" : "object",
+      "properties" : {
+        "url" : {
+          "type" : "string",
+          "description" : "Url for lenken"
+        },
+        "urlTekst" : {
+          "type" : "string",
+          "description" : "Tekst som skal benyttes for url"
+        },
+        "ledetekst" : {
+          "type" : "string",
+          "description" : "Ledetekst for lenken"
+        }
+      },
+      "description" : "Representerer en postadresse i en forsendelse"
+    },
+    "IndexMeldingV1" : {
+      "type" : "object",
+      "required" : [ "eksponertFor", "fiksOrganisasjon", "id", "meldingMetadata", "sikkerhetsniva" ],
       "properties" : {
         "id" : {
           "type" : "string",
           "format" : "uuid",
           "example" : "b8403bc6-4a82-4fee-b06f-8893a539c453"
         },
-        "innloggingsniva" : {
+        "sikkerhetsniva" : {
           "type" : "integer",
           "format" : "int32",
           "example" : 4,
@@ -188,13 +254,13 @@
           "example" : "sakogarkiv.byggesak",
           "pattern" : "^[A-Za-zæøåÆØÅ0-9_.,/\\-_ ]+$"
         },
-        "typeMetadata" : {
-          "$ref" : "#/definitions/MeldingType"
+        "meldingMetadata" : {
+          "$ref" : "#/definitions/MeldingMetadata"
         }
       },
       "description" : "En forespørsel om å opprette en ny eller oppdatere eksisterende melding"
     },
-    "JournalpostDokumentbeskrivelse" : {
+    "JournalpostV1Dokumentbeskrivelse" : {
       "type" : "object",
       "required" : [ "filstorrelse", "nedlastingLenke", "tittel", "variantformat" ],
       "properties" : {
@@ -240,14 +306,14 @@
       },
       "description" : "Resultat av indekseringsforespørselen"
     },
-    "MeldingType" : {
+    "MeldingMetadata" : {
       "type" : "object",
-      "required" : [ "type" ],
-      "discriminator" : "type",
+      "required" : [ "versjon" ],
+      "discriminator" : "versjon",
       "properties" : {
-        "type" : {
+        "versjon" : {
           "type" : "string",
-          "enum" : [ "faktura", "saksmappe", "journalpost", "forsendelse" ]
+          "enum" : [ "fakturaV1", "saksmappeV1", "journalpostV1", "forsendelseV1", "forsendelseV2" ]
         }
       }
     },
@@ -279,9 +345,9 @@
         }
       }
     },
-    "faktura" : {
+    "fakturaV1" : {
       "allOf" : [ {
-        "$ref" : "#/definitions/MeldingType"
+        "$ref" : "#/definitions/MeldingMetadata"
       }, {
         "type" : "object",
         "required" : [ "fakturaDato", "forelder", "forfallDato", "tittel" ],
@@ -318,9 +384,9 @@
         "description" : "Hendelse som beskriver en forsendelse"
       } ]
     },
-    "forsendelse" : {
+    "forsendelseV1" : {
       "allOf" : [ {
-        "$ref" : "#/definitions/MeldingType"
+        "$ref" : "#/definitions/MeldingMetadata"
       }, {
         "type" : "object",
         "required" : [ "avsender", "dokumenter", "forelder", "lest", "mottaker", "sendtDato", "tittel" ],
@@ -355,7 +421,7 @@
           "dokumenter" : {
             "type" : "array",
             "items" : {
-              "$ref" : "#/definitions/Dokument"
+              "$ref" : "#/definitions/ForsendelseV1Dokument"
             },
             "maxItems" : 2147483647,
             "minItems" : 1
@@ -364,9 +430,65 @@
         "description" : "Hendelse som beskriver en forsendelse"
       } ]
     },
-    "journalpost" : {
+    "forsendelseV2" : {
       "allOf" : [ {
-        "$ref" : "#/definitions/MeldingType"
+        "$ref" : "#/definitions/MeldingMetadata"
+      }, {
+        "type" : "object",
+        "required" : [ "avsender", "dokumenter", "forelder", "lenker", "lest", "mottakerAdresse", "returAdresse", "sendtDato", "tittel" ],
+        "properties" : {
+          "tittel" : {
+            "type" : "string"
+          },
+          "sendtDato" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "avsender" : {
+            "type" : "string"
+          },
+          "returAdresse" : {
+            "$ref" : "#/definitions/ForsendelseV2Adresse"
+          },
+          "mottakerAdresse" : {
+            "$ref" : "#/definitions/ForsendelseV2Adresse"
+          },
+          "lest" : {
+            "type" : "boolean",
+            "description" : "Indikerer om forsendelsen er lest eller ikke"
+          },
+          "dokumenter" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/definitions/ForsendelseV2Dokument"
+            },
+            "maxItems" : 2147483647,
+            "minItems" : 1
+          },
+          "lenker" : {
+            "type" : "array",
+            "description" : "Lenker vedlagt forsendelsen",
+            "items" : {
+              "$ref" : "#/definitions/ForsendelseV2Lenke"
+            }
+          },
+          "svarLenke" : {
+            "type" : "string",
+            "description" : "Url som skal benyttes for å svare på denne forsendelsen"
+          },
+          "korrelasjonId" : {
+            "type" : "string"
+          },
+          "forelder" : {
+            "$ref" : "#/definitions/Forelder"
+          }
+        },
+        "description" : "Hendelse som beskriver en forsendelse"
+      } ]
+    },
+    "journalpostV1" : {
+      "allOf" : [ {
+        "$ref" : "#/definitions/MeldingMetadata"
       }, {
         "type" : "object",
         "required" : [ "beskrivelse", "dokumentbeskrivelser", "forelder", "journaldato", "registreringsId", "tittel" ],
@@ -393,7 +515,7 @@
           "dokumentbeskrivelser" : {
             "type" : "array",
             "items" : {
-              "$ref" : "#/definitions/JournalpostDokumentbeskrivelse"
+              "$ref" : "#/definitions/JournalpostV1Dokumentbeskrivelse"
             },
             "maxItems" : 2147483647,
             "minItems" : 1
@@ -401,9 +523,9 @@
         }
       } ]
     },
-    "saksmappe" : {
+    "saksmappeV1" : {
       "allOf" : [ {
-        "$ref" : "#/definitions/MeldingType"
+        "$ref" : "#/definitions/MeldingMetadata"
       }, {
         "type" : "object",
         "required" : [ "administrativEnhet", "mappeId", "saksansvarlig", "saksdato", "saksstatus", "tittel" ],
