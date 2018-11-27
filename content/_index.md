@@ -4,8 +4,10 @@ title: KS Fiks dokumentasjon
 
 # KS Fiks dokumentasjon
 
-Her finner du dokumentasjon av Fiks Plattformen og SvarUt tjenesten. Dokumentasjonen er rettet mot de som skal forvalte tjenestene på vegne av en kommune eller annen organisasjon, og personer som skal utvikle integrasjoner mot tjenestene.
+Her finner du dokumentasjon av Fiks plattformen og SvarUt tjenesten. Den siste er fortsatt ikke flyttet over på Fiks, og kjører derfor som en selvstendig applikasjon med sin egen konfigurasjon og sikkerhetsløsning. Over tid vil også SvarUt migreres over på Fiks plattformen.
 
-Hvis du finner feil, eller noe som ikke er beskrevet godt nok, setter vi pris på om du sender en epost til [fiks-utvikling@ks.no](mailto:fiks-utvikling@ks.no) eller lager en pull request på https://github.com/ks-no/ks-no.github.io
+Dokumentasjonen du finner her er rettet mot deg som skal administrere plattformen på vegne av en kommune eller annen organisasjon, eller utvikle integrasjoner mot api'ene Fiks tilbyr.
+
+Hvis du finner feil, eller noe som ikke er beskrevet godt nok, setter vi pris på om du sender en epost til [fiks-utvikling@ks.no](mailto:fiks-utvikling@ks.no) eller lager en pull request på https://github.com/ks-no/ks-no.github.io.
 
 For å abonnere på endringer i dokumentasjonen kan du benytte vår <a rel="alternate" type="application/rss+xml" href="index.xml">RSS-feed</a>.
