@@ -47,3 +47,6 @@ Faktura fra kommunen gjøres tilgjengelig på Minside. Utvikles i sammarbeid med
 
 #### Minside: Byggesaker
 Byggesaker, både historiske, pågående søknader og avsluttede gjøres tilgjengelig på Minside, med status og oppdateringer for pågående saker.
+
+#### Fiks Statistikk
+Statistikk og oversikt over hvordan en kommunes tjenester på Minside og Fiks-plattformen benyttes. Antall besøkende, dataforbruk osv.  
