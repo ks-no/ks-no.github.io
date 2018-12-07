@@ -2,7 +2,7 @@
   "swagger" : "2.0",
   "info" : {
     "version" : "v1",
-    "title" : "KS Fiks: Digisos sak Service",
+    "title" : "KS Fiks: Digisos Sak Service",
     "contact" : {
       "name" : "Fiks brukerstøtte",
       "url" : "http://www.ks.no/fagomrader/utvikling/digitalisering/digitaliseringsstrategien/fiks/",
@@ -15,19 +15,122 @@
   } ],
   "schemes" : [ "https" ],
   "paths" : {
-    "/digisos/api/v1/saker/{soknadId}" : {
+    "/digisos/api/v1/{fiksOrgId}/saker/{digisosId}" : {
       "post" : {
         "tags" : [ "DigisosSaksoppdatering" ],
-        "operationId" : "oppdaterSak",
-        "consumes" : [ "multipart/form-data" ],
+        "summary" : "Oppdaterer sak",
+        "description" : "",
+        "operationId" : "oppdaterStatus",
         "parameters" : [ {
-          "name" : "soknadId",
+          "in" : "body",
+          "name" : "body",
+          "required" : false,
+          "schema" : {
+            "$ref" : "#/definitions/DigisosSakApiModel"
+          }
+        }, {
+          "name" : "fiksOrgId",
           "in" : "path",
+          "description" : "FiksOrgId tilhørende sak",
           "required" : true,
           "type" : "string",
           "format" : "uuid"
         }, {
-          "name" : "vedlegg",
+          "name" : "digisosId",
+          "in" : "path",
+          "description" : "Unik DigisosId tilhørende sak",
+          "required" : true,
+          "type" : "string",
+          "format" : "uuid"
+        } ],
+        "responses" : {
+          "default" : {
+            "description" : "successful operation"
+          }
+        }
+      },
+      "delete" : {
+        "tags" : [ "DigisosSaksoppdatering" ],
+        "summary" : "Sletter alle saksoppdateringer for angitt Digisos-sak",
+        "description" : "Sletter bare saksoppdateringer, refererte filer fra sak slettes ikke",
+        "operationId" : "slettSaksoppdateringer",
+        "parameters" : [ {
+          "name" : "fiksOrgId",
+          "in" : "path",
+          "description" : "FiksOrgId tilhørende sak",
+          "required" : true,
+          "type" : "string",
+          "format" : "uuid"
+        }, {
+          "name" : "digisosId",
+          "in" : "path",
+          "description" : "Unik DigisosId tilhørende sak",
+          "required" : true,
+          "type" : "string",
+          "format" : "uuid"
+        } ],
+        "responses" : {
+          "default" : {
+            "description" : "successful operation"
+          }
+        }
+      }
+    },
+    "/digisos/api/v1/{fiksOrgId}/saker/{digisosId}/filer" : {
+      "get" : {
+        "tags" : [ "DigisosSaksoppdatering" ],
+        "summary" : "Henter filer for angitt Digisos-sak",
+        "description" : "",
+        "operationId" : "hentFiler",
+        "parameters" : [ {
+          "name" : "fiksOrgId",
+          "in" : "path",
+          "description" : "FiksOrgId tilhørende sak",
+          "required" : true,
+          "type" : "string",
+          "format" : "uuid"
+        }, {
+          "name" : "digisosId",
+          "in" : "path",
+          "description" : "Unik DigisosId tilhørende sak",
+          "required" : true,
+          "type" : "string",
+          "format" : "uuid"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "type" : "array",
+              "items" : {
+                "$ref" : "#/definitions/DokumentInfo"
+              }
+            }
+          }
+        }
+      },
+      "post" : {
+        "tags" : [ "DigisosSaksoppdatering" ],
+        "summary" : "Laster opp filer for angitt Digisos-sak",
+        "description" : "",
+        "operationId" : "lastOppFiler",
+        "consumes" : [ "multipart/form-data" ],
+        "parameters" : [ {
+          "name" : "fiksOrgId",
+          "in" : "path",
+          "description" : "FiksOrgId tilhørende sak",
+          "required" : true,
+          "type" : "string",
+          "format" : "uuid"
+        }, {
+          "name" : "digisosId",
+          "in" : "path",
+          "description" : "Unik DigisosId tilhørende sak",
+          "required" : true,
+          "type" : "string",
+          "format" : "uuid"
+        }, {
+          "name" : "filer",
           "in" : "formData",
           "required" : false,
           "type" : "array",
@@ -35,16 +138,125 @@
             "type" : "file"
           },
           "collectionFormat" : "multi"
-        }, {
-          "name" : "metadata",
-          "in" : "formData",
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "type" : "array",
+              "items" : {
+                "$ref" : "#/definitions/DokumentInfo"
+              }
+            }
+          }
+        }
+      },
+      "delete" : {
+        "tags" : [ "DigisosSaksoppdatering" ],
+        "summary" : "Sletter filer for angitt Digisos-sak",
+        "description" : "",
+        "operationId" : "slettFiler",
+        "parameters" : [ {
+          "name" : "fiksOrgId",
+          "in" : "path",
+          "description" : "FiksOrgId tilhørende sak",
           "required" : true,
-          "type" : "string"
+          "type" : "string",
+          "format" : "uuid"
+        }, {
+          "name" : "digisosId",
+          "in" : "path",
+          "description" : "Unik DigisosId tilhørende sak",
+          "required" : true,
+          "type" : "string",
+          "format" : "uuid"
+        }, {
+          "name" : "filIder",
+          "in" : "query",
+          "description" : "Liste av filer som skal slettes, tilhørende angitt sak",
+          "required" : true,
+          "type" : "array",
+          "items" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "collectionFormat" : "multi"
         } ],
         "responses" : {
           "default" : {
             "description" : "successful operation"
           }
+        }
+      }
+    },
+    "/digisos/api/v1/{fiksOrgId}/saker/{kommunenummer}/ny" : {
+      "post" : {
+        "tags" : [ "DigisosSaksoppdatering" ],
+        "summary" : "Oppretter en ny Digisos-sak og returnerer tilhørende DigisosId (uuid)",
+        "description" : "",
+        "operationId" : "opprettNySak",
+        "parameters" : [ {
+          "name" : "fiksOrgId",
+          "in" : "path",
+          "description" : "FiksOrgId tilhørende sak",
+          "required" : true,
+          "type" : "string",
+          "format" : "uuid"
+        }, {
+          "name" : "kommunenummer",
+          "in" : "path",
+          "description" : "Angir kommunenummer for opprettet sak",
+          "required" : true,
+          "type" : "string",
+          "pattern" : "^\\d{4}$"
+        }, {
+          "name" : "sokerFnr",
+          "in" : "query",
+          "description" : "Angir fødselsnummer for opprettet sak",
+          "required" : true,
+          "type" : "string",
+          "pattern" : "^[0-9]{11}$"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "type" : "string",
+              "format" : "uuid"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions" : {
+    "DigisosSakApiModel" : {
+      "type" : "object",
+      "properties" : {
+        "sak" : {
+          "type" : "string",
+          "description" : "Json-data for saksoppdatering"
+        },
+        "type" : {
+          "type" : "string",
+          "description" : "Type/versjon på Digisos-sak",
+          "enum" : [ "no.nav.digisos.sak.v1" ]
+        }
+      }
+    },
+    "DokumentInfo" : {
+      "type" : "object",
+      "properties" : {
+        "orginalFilnavn" : {
+          "type" : "string"
+        },
+        "dokumentlagerDokumentId" : {
+          "type" : "string",
+          "format" : "uuid"
+        },
+        "storrelse" : {
+          "type" : "integer",
+          "format" : "int64"
         }
       }
     }
