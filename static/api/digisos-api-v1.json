@@ -27,19 +27,19 @@
             "schema" : {
               "type" : "array",
               "items" : {
-                "$ref" : "#/definitions/NavKommuneInfo"
+                "$ref" : "#/definitions/KommuneInfo"
               }
             }
           }
         }
       }
     },
-    "/digisos/api/v1/kommune/{kommuneNummer}" : {
+    "/digisos/api/v1/kommune/{kommunenummer}" : {
       "get" : {
         "tags" : [ "DigisosSoknad" ],
         "operationId" : "getKommuneStatus",
         "parameters" : [ {
-          "name" : "kommuneNummer",
+          "name" : "kommunenummer",
           "in" : "path",
           "description" : "Hent status om oppgitt kommune støtter mottak av digisos søknader og evt. oppdatering av status i Fiks-Digisos",
           "required" : true,
@@ -49,19 +49,19 @@
           "200" : {
             "description" : "successful operation",
             "schema" : {
-              "$ref" : "#/definitions/NavKommuneInfo"
+              "$ref" : "#/definitions/KommuneInfo"
             }
           }
         }
       }
     },
-    "/digisos/api/v1/kommune/{kommuneNummer}/soknader" : {
+    "/digisos/api/v1/kommune/{kommunenummer}/soknader" : {
       "post" : {
         "tags" : [ "DigisosSoknad" ],
         "operationId" : "sendSoknad",
         "consumes" : [ "multipart/form-data" ],
         "parameters" : [ {
-          "name" : "kommuneNummer",
+          "name" : "kommunenummer",
           "in" : "path",
           "required" : true,
           "type" : "string"
@@ -92,13 +92,13 @@
         }
       }
     },
-    "/digisos/api/v1/kommune/{kommuneNummer}/soknader/{soknadId}" : {
+    "/digisos/api/v1/kommune/{kommunenummer}/soknader/{soknadId}" : {
       "post" : {
         "tags" : [ "DigisosSoknad" ],
         "operationId" : "ettersendInfo",
         "consumes" : [ "multipart/form-data" ],
         "parameters" : [ {
-          "name" : "kommuneNummer",
+          "name" : "kommunenummer",
           "in" : "path",
           "required" : true,
           "type" : "string"
@@ -130,20 +130,24 @@
         }
       }
     },
-    "/digisos/api/v1/konfigurasjon" : {
+    "/digisos/api/v1/konfigurasjon/{fiksOrgId}" : {
       "post" : {
         "tags" : [ "DigisosKonfigurasjon" ],
-        "operationId" : "leggTilNyeKommuneKonfigurasjoner",
+        "operationId" : "leggTilNyKommune",
         "parameters" : [ {
+          "name" : "fiksOrgId",
+          "in" : "path",
+          "description" : "FiksOrgId på kommune som skal konfigureres",
+          "required" : true,
+          "type" : "string",
+          "format" : "uuid"
+        }, {
           "in" : "body",
           "name" : "body",
-          "description" : "Kommuner som skal opprettes",
+          "description" : "Kommune som skal opprettes",
           "required" : false,
           "schema" : {
-            "type" : "array",
-            "items" : {
-              "$ref" : "#/definitions/KommuneKonfigurasjon"
-            }
+            "$ref" : "#/definitions/KommuneKonfigurasjon"
           }
         } ],
         "responses" : {
@@ -154,18 +158,17 @@
             }
           }
         }
-      }
-    },
-    "/digisos/api/v1/konfigurasjon/{kommuneNummer}" : {
+      },
       "put" : {
         "tags" : [ "DigisosKonfigurasjon" ],
-        "operationId" : "oppdaterNavKontor",
+        "operationId" : "oppdaterKommune",
         "parameters" : [ {
-          "name" : "kommuneNummer",
+          "name" : "fiksOrgId",
           "in" : "path",
-          "description" : "Kommunenummer som skal registreres",
+          "description" : "FiksOrgId som skal registreres",
           "required" : true,
-          "type" : "string"
+          "type" : "string",
+          "format" : "uuid"
         }, {
           "in" : "body",
           "name" : "body",
@@ -185,11 +188,12 @@
         "tags" : [ "DigisosKonfigurasjon" ],
         "operationId" : "slettKommune",
         "parameters" : [ {
-          "name" : "kommuneNummer",
+          "name" : "fiksOrgId",
           "in" : "path",
-          "description" : "Kommunenummer som skal slettes",
+          "description" : "FiksOrgId på kommune som skal slettes",
           "required" : true,
-          "type" : "string"
+          "type" : "string",
+          "format" : "uuid"
         } ],
         "responses" : {
           "default" : {
@@ -225,6 +229,29 @@
     "/digisos/api/v1/soknader/soknader" : {
       "get" : {
         "tags" : [ "DigisosSoknad" ],
+        "operationId" : "getSoknader",
+        "parameters" : [ {
+          "name" : "eksternRef",
+          "in" : "query",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "type" : "array",
+              "items" : {
+                "$ref" : "#/definitions/DigisosSak"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/digisos/api/v1/soknader/soknaderfnr" : {
+      "get" : {
+        "tags" : [ "DigisosSoknad" ],
         "operationId" : "getSoknaderForFnr",
         "parameters" : [ {
           "name" : "fnr",
@@ -243,7 +270,7 @@
             "schema" : {
               "type" : "array",
               "items" : {
-                "$ref" : "#/definitions/Soknad"
+                "$ref" : "#/definitions/DigisosSak"
               }
             }
           }
@@ -252,6 +279,44 @@
     }
   },
   "definitions" : {
+    "DigisosSak" : {
+      "type" : "object",
+      "properties" : {
+        "fiksDigisosId" : {
+          "type" : "string",
+          "format" : "uuid"
+        },
+        "sokerFnr" : {
+          "type" : "string"
+        },
+        "fiksOrgId" : {
+          "type" : "string",
+          "format" : "uuid"
+        },
+        "kommuneNummer" : {
+          "type" : "string"
+        },
+        "soknadStatusLogg" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/SoknadState"
+          }
+        },
+        "sistEndret" : {
+          "type" : "integer",
+          "format" : "int64"
+        },
+        "orginalSoknadNAV" : {
+          "$ref" : "#/definitions/OrginalSoknadNAV"
+        },
+        "ettersendtInfoNAV" : {
+          "$ref" : "#/definitions/EttersendtInfoNAV"
+        },
+        "sak" : {
+          "$ref" : "#/definitions/Sak"
+        }
+      }
+    },
     "DokumentInfo" : {
       "type" : "object",
       "properties" : {
@@ -283,16 +348,29 @@
         }
       }
     },
+    "KommuneInfo" : {
+      "type" : "object",
+      "properties" : {
+        "kommunenummer" : {
+          "type" : "string"
+        },
+        "kanMottaSoknader" : {
+          "type" : "boolean"
+        },
+        "stotterVersjoner" : {
+          "type" : "array",
+          "items" : {
+            "type" : "string"
+          }
+        },
+        "kanOppdatereStatus" : {
+          "type" : "boolean"
+        }
+      }
+    },
     "KommuneKonfigurasjon" : {
       "type" : "object",
       "properties" : {
-        "fiksOrgId" : {
-          "type" : "string",
-          "format" : "uuid"
-        },
-        "navKommuneNr" : {
-          "type" : "string"
-        },
         "dokumentlagerKontoId" : {
           "type" : "string",
           "format" : "uuid"
@@ -340,26 +418,6 @@
         }
       }
     },
-    "NavKommuneInfo" : {
-      "type" : "object",
-      "properties" : {
-        "kommuneNummer" : {
-          "type" : "string"
-        },
-        "kanMottaSoknader" : {
-          "type" : "boolean"
-        },
-        "stotterVersjoner" : {
-          "type" : "array",
-          "items" : {
-            "type" : "string"
-          }
-        },
-        "kanOppdatereStatus" : {
-          "type" : "boolean"
-        }
-      }
-    },
     "NyKonfigurasjonResponse" : {
       "type" : "object",
       "properties" : {
@@ -367,21 +425,6 @@
           "type" : "integer",
           "format" : "int32",
           "description" : "Antall kommune-konfigurasjoner som ble opprettet i operasjonen"
-        }
-      }
-    },
-    "OppdateringFagsystem" : {
-      "type" : "object",
-      "properties" : {
-        "metadata" : {
-          "type" : "string",
-          "format" : "uuid"
-        },
-        "vedlegg" : {
-          "type" : "array",
-          "items" : {
-            "$ref" : "#/definitions/DokumentInfo"
-          }
         }
       }
     },
@@ -403,45 +446,18 @@
         }
       }
     },
-    "Soknad" : {
+    "Sak" : {
       "type" : "object",
       "properties" : {
-        "fiksDigisosId" : {
+        "metadata" : {
           "type" : "string",
           "format" : "uuid"
         },
-        "sokerFnr" : {
-          "type" : "string"
-        },
-        "fiksOrgId" : {
-          "type" : "string",
-          "format" : "uuid"
-        },
-        "kommuneNummer" : {
-          "type" : "string"
-        },
-        "svarinn2KontoId" : {
-          "type" : "string",
-          "format" : "uuid"
-        },
-        "soknadStatusLogg" : {
+        "vedlegg" : {
           "type" : "array",
           "items" : {
-            "$ref" : "#/definitions/SoknadState"
+            "$ref" : "#/definitions/DokumentInfo"
           }
-        },
-        "sistEndret" : {
-          "type" : "integer",
-          "format" : "int64"
-        },
-        "orginalSoknadNAV" : {
-          "$ref" : "#/definitions/OrginalSoknadNAV"
-        },
-        "ettersendtInfoNAV" : {
-          "$ref" : "#/definitions/EttersendtInfoNAV"
-        },
-        "oppdateringFagsystem" : {
-          "$ref" : "#/definitions/OppdateringFagsystem"
         }
       }
     },
@@ -450,7 +466,7 @@
       "properties" : {
         "state" : {
           "type" : "string",
-          "enum" : [ "SOKNAD_AKSEPTERT", "VEDLEGG_AKSEPTERT", "SOKNAD_STATUS_MOTTAT" ]
+          "enum" : [ "SENDT_NAV", "MOTTAT", "UNDER_BEHANDLING", "FERDIGBEHANDLET_KOMMUNE" ]
         },
         "timestamp" : {
           "type" : "integer",
