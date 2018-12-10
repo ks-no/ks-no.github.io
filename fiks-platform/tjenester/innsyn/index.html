@@ -424,6 +424,7 @@
 <ul>
 <li><a href="#indeksering">Indeksering</a></li>
 <li><a href="#sletting">Sletting</a></li>
+<li><a href="#håndtering-av-filer">Håndtering av filer</a></li>
 </ul></li>
 </ul></li>
 <li><a href="#søketjeneste-api-spec-https-editor-swagger-io-url-https-ks-no-github-io-api-innsyn-sok-api-v1-json">Søketjeneste <a href="https://editor.swagger.io/?url=https://ks-no.github.io/api/innsyn-sok-api-v1.json">(api-spec)</a></a></li>
@@ -451,7 +452,9 @@
 
 <p><img src="/images/innsyn.png" alt="minside_sok" title="Innsyn" /></p>
 
-<p>Fiks Innsyn gjør det lett å finne informasjon om forholdet mellom en fiks-organisasjon og innbyggeren: metadata om forsendelser, pågående saker, regninger, arkivmatriale og annet lastes opp og blir så gjort tilgjengelig av en kraftig søkemotor. Andre tjenester på fiks-plattformen, som <a href="/fiks-platform/tjenester_under_utvikling/digisos/">fiks-digisos</a> og SvarUt leverer oppdateringer hit, og det er lagt vekt på at det skal være lett å utvide antall integrasjoner videre.</p>
+<p>Norske kommuner har mengder av informasjon om sine innbyggere. Denne informasjonen er spredd rundt i arkivsystemer, fagsystemer, dokumentlagre og eksterne skyløsninger. Fiks Innsyn gjør det lett for innbyggeren å finne denne informasjonen.</p>
+
+<p>I tilleg til å akseptere indeksering av data fra eksterne kilder vil også de andre tjenestene på Fiks plattformen levere data til Innsyn, som for eksempel <a href="/fiks-platform/tjenester_under_utvikling/digisos/">fiks-digisos</a> (under utvikling) som leverer kvitteringer og oppdateringer for sosialsøknader, og KS SvarUt som leverer kopier av forsendelser til innbyggeren.</p>
 
 <h2 id="oversikt">Oversikt</h2>
 
@@ -471,9 +474,19 @@
 
 <h2 id="integrasjonsutvikling">Integrasjonsutvikling</h2>
 
+<p>Først noen grunnleggende prinsipper for forvalting av meldinger i innsyn:</p>
+
+<ul>
+<li><em>Alle dokumenter eies av en Fiks Organisasjon.</em></li>
+<li><em>Hver integrasjon må autoriseres for å kunne indeksere dokumenter på vegen av organisasjonen.</em> Dette gjøres gjennom å tildele &ldquo;Innsyn Index&rdquo; privilegiet til integrasjonen i Fiks Konfigurasjon.</li>
+<li><em>Hver integrasjon styrer dokumentene de har lastet opp på vegne av organisasjonen.</em> Dvs. at integrasjon A ikke kan slette eller oppdatere dokumenter lastet opp av integrasjon B. Merk at tjenesteadministrator når som helst kan slette dokumnetene gjennom Fiks Konfigurasjon.</li>
+</ul>
+
 <h3 id="indekseringstjeneste-api-spec-https-editor-swagger-io-url-https-ks-no-github-io-api-innsyn-index-api-v1-json">Indekseringstjeneste <a href="https://editor.swagger.io/?url=https://ks-no.github.io/api/innsyn-index-api-v1.json">(api-spec)</a></h3>
 
 <p>Indekseringstjenesten lar integrasjoner opprette meldinger, eller fjerne / endre meldinger som alt er opprettet.</p>
+
+<p>Når man lager en integrasjon mot indekseringstjenesten er det viktig å være bevisst på at Innsyn bør betraktes som en cache: man bør ikke forvente at meldingene man laster opp vil ligge der til evig tid: en forvalter med admin-privilegier på innsyn-tjenesten kan for eksempel når som helst slette meldinger. Hvis man ønsker en robust løsning er det derfor viktig at man støtter <em>replay</em>: muligheten til å reindexere alle meldinger til Innsyn. Dette er også nytting hvis man ønsker å oppgradere meldingene til en ny versjon.</p>
 
 <h4 id="indeksering">Indeksering</h4>
 
@@ -487,7 +500,7 @@
 
 <ul>
 <li>Hvis man ikke har informasjon for å sette et felt (f.eks. om man ikke har &ldquo;avsender&rdquo; for en forsendelse) bør ikke feltet settes (i stede for å sette &ldquo;null&rdquo;, &ldquo;mangler&rdquo; eller lignende).</li>
-<li>For <em>fiks organisasjon</em> og <em>enhet</em> kan man i tillegg til å sette identifikator også sette visningsnavn. Dette vil bli benyttet i webapplikasjonens grensesnitt og filter. Merk at hvis man endrer dette vil det nye navnet bare benyttes på grupper / hendelser som er indeksert etter endringen ble gjort. For å gjøre en fullstendig operasjon må hendelsene reindekseres.</li>
+<li>For <em>fiks organisasjon</em> kan man i tillegg til å sette identifikator også sette visningsnavn. Dette vil bli benyttet i webapplikasjonens grensesnitt og filter. Merk at hvis man endrer dette vil det nye navnet bare benyttes på grupper / hendelser som er indeksert etter endringen ble gjort. For å gjøre en fullstendig operasjon må hendelsene reindekseres.</li>
 <li><em>Eksponert for</em> angir hvem som skal kunne se meldingen. Dette kan være endten et organisasjonsnummer eller et fødselsnummer. Merk at hver melding bare kan eksponeres for en person/org, hvis man ønsker at flere aktører skal kunne se samme informasjonen må gruppen indekseres flere ganger.</li>
 </ul>
 
@@ -497,9 +510,15 @@
 
 <p>Merk at sletting på samme måte som indeksering ikke gjennomføres i en atomisk transaksjon: deler av meldingene i batchen kan bli slettet selv om andre feiler.</p>
 
+<h4 id="håndtering-av-filer">Håndtering av filer</h4>
+
+<p>Mange meldingstyper vil referere til filer i eksterne systemer, som for eksempel dokumenter i &ldquo;Forsendelse&rdquo; typen. Innsyn har i seg selv ikke noe forhold til binære filer, og betrakter dem utelukkende som en lenke. Hvis filene allerede er tilgjengelig i et ID-Porten kompatibelt filarkiv trenger man ikke å laste disse opp på nytt, hvis man ikke har en slik tjeneste fra før kan man benytte Fiks Dokumentlager til dette.</p>
+
 <h2 id="søketjeneste-api-spec-https-editor-swagger-io-url-https-ks-no-github-io-api-innsyn-sok-api-v1-json">Søketjeneste <a href="https://editor.swagger.io/?url=https://ks-no.github.io/api/innsyn-sok-api-v1.json">(api-spec)</a></h2>
 
-<p>Hvis kommunen har en eksisterende løsning for innloggede innbyggertjenester kan det være aktuelt å benytte innsynsøket som en tjeneste fremfor en webapplikasjon. Merk at kommunene da tar ansvar for å fremskaffe Open Id Connect innloggingstoken fra ID-porten, og for å sørge for at dette tokenet er gyldig. Innsynsøk-tjenesten vil fortsatt utføre nødvendig autorisering.</p>
+<p>Hvis kommunen har en eksisterende løsning for innloggede innbyggertjenester kan det være aktuelt å benytte innsynsøket som en tjeneste fremfor en webapplikasjon. Integrasjonen som skal utføre dette søket trenger da Innsyn Søk privilegiet i Fiks Konfigurasjon. Merk at kommunene da tar ansvar for å fremskaffe Open Id Connect innloggingstoken fra ID-porten, og for å sørge for at dette tokenet er gyldig. Innsynsøk-tjenesten vil fortsatt utføre nødvendig autorisering.</p>
+
+<p>Det er også viktig å merke seg at søk gjennom en integrasjon har en begrensning som &ldquo;vanlige&rdquo; søk fra minside.kommune.no ikke har: man kan bare søke i dokumenter som eies av den aktuelle Fiks organisasjonen.</p>
 
 
     
