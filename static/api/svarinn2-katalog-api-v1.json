@@ -70,12 +70,6 @@
         "description" : "",
         "operationId" : "lookup",
         "parameters" : [ {
-          "name" : "identifikatorType",
-          "in" : "query",
-          "required" : true,
-          "type" : "string",
-          "enum" : [ "ORG_NO", "NAV_ENHET_ID" ]
-        }, {
           "name" : "identifikator",
           "in" : "query",
           "required" : true,
@@ -223,9 +217,9 @@
       },
       "post" : {
         "tags" : [ "SvarInnKonto" ],
-        "summary" : "Legger til en ny addresse for kontoen",
+        "summary" : "Oppretter en ny addresse for kontoen",
         "description" : "",
-        "operationId" : "leggTilAdresse",
+        "operationId" : "opprettAdresse",
         "parameters" : [ {
           "name" : "kontoId",
           "in" : "path",
@@ -251,40 +245,6 @@
       }
     },
     "/svarinn2/katalog/api/v1/kontoer/{kontoId}/adresser/{adresseId}" : {
-      "put" : {
-        "tags" : [ "SvarInnKonto" ],
-        "summary" : "Oppdaterer en eksisterende addresse på kontoen",
-        "description" : "",
-        "operationId" : "oppdaterAdresse",
-        "parameters" : [ {
-          "name" : "kontoId",
-          "in" : "path",
-          "required" : true,
-          "type" : "string",
-          "format" : "uuid"
-        }, {
-          "name" : "adresseId",
-          "in" : "path",
-          "required" : true,
-          "type" : "string",
-          "format" : "uuid"
-        }, {
-          "in" : "body",
-          "name" : "body",
-          "required" : false,
-          "schema" : {
-            "$ref" : "#/definitions/AdresseSpesifikasjon"
-          }
-        } ],
-        "responses" : {
-          "200" : {
-            "description" : "successful operation",
-            "schema" : {
-              "$ref" : "#/definitions/Adresse"
-            }
-          }
-        }
-      },
       "delete" : {
         "tags" : [ "SvarInnKonto" ],
         "summary" : "Slett en eksisterende adresse fra en konto",
@@ -310,10 +270,359 @@
         }
       }
     },
+    "/svarinn2/katalog/api/v1/kontoer/{kontoId}/adresser/{adresseId}/aktiver" : {
+      "put" : {
+        "tags" : [ "SvarInnKonto" ],
+        "summary" : "Aktiverer adressen, og gjør den tilgjengelig for oppslag i katalogen. For å kunne aktivere en adresse må den være gyldig (ha minst en identifikator, meldingstype og sikkerhetsnivå), og ikke ha konflikter med noen andre adresser i SvarInn katalogen",
+        "description" : "",
+        "operationId" : "aktiverAdresse",
+        "parameters" : [ {
+          "name" : "kontoId",
+          "in" : "path",
+          "required" : true,
+          "type" : "string",
+          "format" : "uuid"
+        }, {
+          "name" : "adresseId",
+          "in" : "path",
+          "required" : true,
+          "type" : "string",
+          "format" : "uuid"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "$ref" : "#/definitions/Adresse"
+            }
+          }
+        }
+      }
+    },
+    "/svarinn2/katalog/api/v1/kontoer/{kontoId}/adresser/{adresseId}/beskrivelse" : {
+      "put" : {
+        "tags" : [ "SvarInnKonto" ],
+        "summary" : "Endrer adressebeskrivelsen",
+        "description" : "",
+        "operationId" : "oppdaterAdressebeskrivelse",
+        "parameters" : [ {
+          "name" : "kontoId",
+          "in" : "path",
+          "required" : true,
+          "type" : "string",
+          "format" : "uuid"
+        }, {
+          "name" : "adresseId",
+          "in" : "path",
+          "required" : true,
+          "type" : "string",
+          "format" : "uuid"
+        }, {
+          "in" : "body",
+          "name" : "body",
+          "required" : false,
+          "schema" : {
+            "$ref" : "#/definitions/AdresseBeskrivelseSpesifikasjon"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "$ref" : "#/definitions/Adresse"
+            }
+          }
+        }
+      }
+    },
+    "/svarinn2/katalog/api/v1/kontoer/{kontoId}/adresser/{adresseId}/deaktiver" : {
+      "put" : {
+        "tags" : [ "SvarInnKonto" ],
+        "summary" : "Deaktiverer adressen. En deaktivert adresse er ikke lengre tilgjengelig for oppslag i katalogen",
+        "description" : "",
+        "operationId" : "deaktiverAdresse",
+        "parameters" : [ {
+          "name" : "kontoId",
+          "in" : "path",
+          "required" : true,
+          "type" : "string",
+          "format" : "uuid"
+        }, {
+          "name" : "adresseId",
+          "in" : "path",
+          "required" : true,
+          "type" : "string",
+          "format" : "uuid"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "$ref" : "#/definitions/Adresse"
+            }
+          }
+        }
+      }
+    },
+    "/svarinn2/katalog/api/v1/kontoer/{kontoId}/adresser/{adresseId}/identifikatorer/" : {
+      "post" : {
+        "tags" : [ "SvarInnKonto" ],
+        "summary" : "Legger til en eller flere nye identifikatorer på en konto",
+        "description" : "",
+        "operationId" : "leggTilIdentifikator",
+        "parameters" : [ {
+          "name" : "kontoId",
+          "in" : "path",
+          "required" : true,
+          "type" : "string",
+          "format" : "uuid"
+        }, {
+          "name" : "adresseId",
+          "in" : "path",
+          "required" : true,
+          "type" : "string",
+          "format" : "uuid"
+        }, {
+          "in" : "body",
+          "name" : "body",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/definitions/Identifikator"
+            }
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "$ref" : "#/definitions/Adresse"
+            }
+          },
+          "400" : {
+            "description" : "Oppdateringen har ført til en konflikt mellom to eller flere adresser",
+            "schema" : {
+              "type" : "array",
+              "items" : {
+                "$ref" : "#/definitions/AdresseKonfliktApiModel"
+              }
+            }
+          }
+        }
+      },
+      "delete" : {
+        "tags" : [ "SvarInnKonto" ],
+        "summary" : "Fjerner den spesifiserte identifikatoren fra en adresse",
+        "description" : "",
+        "operationId" : "fjernIdentifikator",
+        "parameters" : [ {
+          "name" : "kontoId",
+          "in" : "path",
+          "required" : true,
+          "type" : "string",
+          "format" : "uuid"
+        }, {
+          "name" : "adresseId",
+          "in" : "path",
+          "required" : true,
+          "type" : "string",
+          "format" : "uuid"
+        }, {
+          "in" : "body",
+          "name" : "body",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/definitions/Identifikator"
+            }
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "$ref" : "#/definitions/Adresse"
+            }
+          }
+        }
+      }
+    },
+    "/svarinn2/katalog/api/v1/kontoer/{kontoId}/adresser/{adresseId}/meldingstyper/" : {
+      "post" : {
+        "tags" : [ "SvarInnKonto" ],
+        "summary" : "Legger til en eller flere nye meldingstyper på en konto",
+        "description" : "",
+        "operationId" : "leggTilMeldingstyper",
+        "parameters" : [ {
+          "name" : "kontoId",
+          "in" : "path",
+          "required" : true,
+          "type" : "string",
+          "format" : "uuid"
+        }, {
+          "name" : "adresseId",
+          "in" : "path",
+          "required" : true,
+          "type" : "string",
+          "format" : "uuid"
+        }, {
+          "in" : "body",
+          "name" : "body",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/definitions/MeldingstypeSpesifikasjon"
+            }
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "$ref" : "#/definitions/Adresse"
+            }
+          },
+          "400" : {
+            "description" : "Oppdateringen har ført til en konflikt mellom to eller flere adresser",
+            "schema" : {
+              "type" : "array",
+              "items" : {
+                "$ref" : "#/definitions/AdresseKonfliktApiModel"
+              }
+            }
+          }
+        }
+      },
+      "delete" : {
+        "tags" : [ "SvarInnKonto" ],
+        "summary" : "Fjerner den spesifiserte meldingstypen fra en adresse",
+        "description" : "",
+        "operationId" : "fjernMeldingstyper",
+        "parameters" : [ {
+          "name" : "kontoId",
+          "in" : "path",
+          "required" : true,
+          "type" : "string",
+          "format" : "uuid"
+        }, {
+          "name" : "adresseId",
+          "in" : "path",
+          "required" : true,
+          "type" : "string",
+          "format" : "uuid"
+        }, {
+          "in" : "body",
+          "name" : "body",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/definitions/MeldingstypeSpesifikasjon"
+            }
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "$ref" : "#/definitions/Adresse"
+            }
+          }
+        }
+      }
+    },
+    "/svarinn2/katalog/api/v1/kontoer/{kontoId}/adresser/{adresseId}/sikkerhetsnivaer/" : {
+      "post" : {
+        "tags" : [ "SvarInnKonto" ],
+        "summary" : "Legger til en eller flere nye sikkerhetnivåer på en konto",
+        "description" : "",
+        "operationId" : "leggTilSikkerhetsnivaer",
+        "parameters" : [ {
+          "name" : "kontoId",
+          "in" : "path",
+          "required" : true,
+          "type" : "string",
+          "format" : "uuid"
+        }, {
+          "name" : "adresseId",
+          "in" : "path",
+          "required" : true,
+          "type" : "string",
+          "format" : "uuid"
+        }, {
+          "in" : "body",
+          "name" : "body",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/definitions/SikkerhetsnivaSpesifikasjon"
+            }
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "$ref" : "#/definitions/Adresse"
+            }
+          },
+          "400" : {
+            "description" : "Oppdateringen har ført til en konflikt mellom to eller flere adresser",
+            "schema" : {
+              "type" : "array",
+              "items" : {
+                "$ref" : "#/definitions/AdresseKonfliktApiModel"
+              }
+            }
+          }
+        }
+      },
+      "delete" : {
+        "tags" : [ "SvarInnKonto" ],
+        "summary" : "Fjerner det spesifiserte sikkerhetsnivået fra en adresse",
+        "description" : "",
+        "operationId" : "fjernSikkerhetsnivaer",
+        "parameters" : [ {
+          "name" : "kontoId",
+          "in" : "path",
+          "required" : true,
+          "type" : "string",
+          "format" : "uuid"
+        }, {
+          "name" : "adresseId",
+          "in" : "path",
+          "required" : true,
+          "type" : "string",
+          "format" : "uuid"
+        }, {
+          "in" : "body",
+          "name" : "body",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/definitions/SikkerhetsnivaSpesifikasjon"
+            }
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "$ref" : "#/definitions/Adresse"
+            }
+          }
+        }
+      }
+    },
     "/svarinn2/katalog/api/v1/kontoer/{kontoId}/aktiverSvarInn1Modus" : {
       "put" : {
         "tags" : [ "SvarInnKonto" ],
-        "summary" : "Deaktiver kontoen",
+        "summary" : "Aktiver SvarInn 1 modus på kontoen",
         "description" : "",
         "operationId" : "aktiverSvarInn1Modus",
         "parameters" : [ {
@@ -324,8 +633,11 @@
           "format" : "uuid"
         } ],
         "responses" : {
-          "default" : {
-            "description" : "successful operation"
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "$ref" : "#/definitions/Konto"
+            }
           }
         }
       }
@@ -344,8 +656,11 @@
           "format" : "uuid"
         } ],
         "responses" : {
-          "default" : {
-            "description" : "successful operation"
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "$ref" : "#/definitions/Konto"
+            }
           }
         }
       }
@@ -353,7 +668,7 @@
     "/svarinn2/katalog/api/v1/kontoer/{kontoId}/deaktiverSvarInn1Modus" : {
       "put" : {
         "tags" : [ "SvarInnKonto" ],
-        "summary" : "Deaktiver kontoen",
+        "summary" : "Deaktiver SvarInn 1 modus på kontoen",
         "description" : "",
         "operationId" : "deaktiverSvarInn1Modus",
         "parameters" : [ {
@@ -364,8 +679,11 @@
           "format" : "uuid"
         } ],
         "responses" : {
-          "default" : {
-            "description" : "successful operation"
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "$ref" : "#/definitions/Konto"
+            }
           }
         }
       }
@@ -476,8 +794,11 @@
           "format" : "uuid"
         } ],
         "responses" : {
-          "default" : {
-            "description" : "successful operation"
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "$ref" : "#/definitions/Konto"
+            }
           }
         }
       }
@@ -524,6 +845,10 @@
     "Adresse" : {
       "type" : "object",
       "properties" : {
+        "fiksOrgId" : {
+          "type" : "string",
+          "format" : "uuid"
+        },
         "kontoId" : {
           "type" : "string",
           "format" : "uuid"
@@ -532,14 +857,20 @@
           "type" : "string",
           "format" : "uuid"
         },
-        "identifikator" : {
+        "aktiv" : {
+          "type" : "boolean"
+        },
+        "gyldig" : {
+          "type" : "boolean"
+        },
+        "identifikatorer" : {
           "type" : "array",
           "uniqueItems" : true,
           "items" : {
-            "$ref" : "#/definitions/Identifikator"
+            "type" : "string"
           }
         },
-        "meldingType" : {
+        "meldingTyper" : {
           "type" : "array",
           "uniqueItems" : true,
           "items" : {
@@ -556,6 +887,62 @@
         },
         "beskrivelse" : {
           "type" : "string"
+        }
+      }
+    },
+    "AdresseBeskrivelseSpesifikasjon" : {
+      "type" : "object",
+      "properties" : {
+        "beskrivelse" : {
+          "type" : "string"
+        }
+      }
+    },
+    "AdresseKonfliktApiModel" : {
+      "type" : "object",
+      "properties" : {
+        "fiksOrgId" : {
+          "type" : "string",
+          "format" : "uuid"
+        },
+        "fiksOrgVisningsnavn" : {
+          "type" : "string"
+        },
+        "kontoId" : {
+          "type" : "string",
+          "format" : "uuid"
+        },
+        "kontoNavn" : {
+          "type" : "string"
+        },
+        "adresseId" : {
+          "type" : "string",
+          "format" : "uuid"
+        },
+        "adresseBeskrivelse" : {
+          "type" : "string"
+        },
+        "identifikatorer" : {
+          "type" : "array",
+          "uniqueItems" : true,
+          "items" : {
+            "type" : "string"
+          }
+        },
+        "meldingTyper" : {
+          "type" : "array",
+          "uniqueItems" : true,
+          "items" : {
+            "type" : "string"
+          }
+        },
+        "sikkerhetsnivaer" : {
+          "type" : "array",
+          "uniqueItems" : true,
+          "items" : {
+            "type" : "integer",
+            "format" : "int32"
+          }
         }
       }
     },
@@ -578,7 +965,7 @@
           "type" : "array",
           "uniqueItems" : true,
           "items" : {
-            "$ref" : "#/definitions/Identifikator"
+            "type" : "string"
           }
         },
         "meldingTypeMatch" : {
@@ -628,28 +1015,6 @@
     "AdresseSpesifikasjon" : {
       "type" : "object",
       "properties" : {
-        "identifikator" : {
-          "type" : "array",
-          "uniqueItems" : true,
-          "items" : {
-            "$ref" : "#/definitions/Identifikator"
-          }
-        },
-        "meldingType" : {
-          "type" : "array",
-          "uniqueItems" : true,
-          "items" : {
-            "type" : "string"
-          }
-        },
-        "sikkerhetsnivaer" : {
-          "type" : "array",
-          "uniqueItems" : true,
-          "items" : {
-            "type" : "integer",
-            "format" : "int32"
-          }
-        },
         "beskrivelse" : {
           "type" : "string"
         }
@@ -657,6 +1022,7 @@
     },
     "Identifikator" : {
       "type" : "object",
+      "required" : [ "identifikatorType" ],
       "properties" : {
         "identifikatorType" : {
           "type" : "string",
@@ -753,6 +1119,14 @@
         }
       }
     },
+    "MeldingstypeSpesifikasjon" : {
+      "type" : "object",
+      "properties" : {
+        "meldingstype" : {
+          "type" : "string"
+        }
+      }
+    },
     "OffentligNokkel" : {
       "type" : "object",
       "properties" : {
@@ -775,6 +1149,18 @@
         },
         "issuerDN" : {
           "type" : "string"
+        }
+      }
+    },
+    "SikkerhetsnivaSpesifikasjon" : {
+      "type" : "object",
+      "required" : [ "sikkerhetsniva" ],
+      "properties" : {
+        "sikkerhetsniva" : {
+          "type" : "integer",
+          "format" : "int32",
+          "minimum" : 1,
+          "maximum" : 9
         }
       }
     }
