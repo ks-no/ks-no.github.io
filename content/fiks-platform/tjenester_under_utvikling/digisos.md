@@ -1,6 +1,6 @@
 ---
 title: Digisos 
-date: 2018-08-30 
+date: 2018-12-13
 ---
 
 **STATUS: under utvikling**
@@ -39,3 +39,16 @@ Dokument og melding i fiks-innsyn er utelukkende tilgjengelig for innbygger, det
 6. Om fagsystemet avviser eller unnlater å bekrefte mottak av saken vil SvarUt benyttes som alternativ kanal. I praksis betyr dette at meldingen blir sendt til kommunens Altinn-konto, evt. sendt til print og postlagt.     
     
 ![fiks_digisos](/images/fiks_digisos.png "Fiks Digisos")
+
+
+## Sak oppdatering fra Fagsystem
+
+Sak oppdaterings api [(api-spec)](https://editor.swagger.io/?url=https://ks-no.github.io/api/digisos-sak-api-v1.json)
+
+* Filer må lastes opp på forhand, filer knyttes til en sak og fagsystem må vedlikeholde liste med filer som skal være tilgjengelig på sak.
+* Når en Sakoppdatering skjer, må saken eksistere i digisos, enten fordi skjema fra nav er sendt via Digisos eller at fagsystem har opprettet en sak.
+
+## Innsending av Søknad (for NAV)
+
+**Under stor endring**
+Soknad api [(api-spec)](https://editor.swagger.io/?url=https://ks-no.github.io/api/digisos-api-v1.json)
