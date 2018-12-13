@@ -102,7 +102,7 @@ Henter liste med informasjon om dokumentene til en forsendelse.
 | krevNiva4Innlogging          | boolean                               | Forsendelsen krever nivå 4-innlogging for å kunne lastes ned eller signeres. Disse forsendelsene må være kryptert. |            |
 | metadataFraAvleverendeSystem | NoarkMetadataFraAvleverendeSaksSystem | Noark5 metadata fra avleverende system                                                             |            |
 | metadataForImport            | NoarkMetadataForImport                | Noark5 metadata som stemmer med mottakende system. Kan brukes til å legge dokumentet på rett sak.  |            |
-| svarSendesTil                | Adresse                               | Addresse, full post adresse må være utfylt. Dette er mottaker som en skal sende til om en vil svare på forsendelsen. Valgfritt å fylle ut |            |
+| svarSendesTil                | Adresse                               | Dette er mottaker som en skal sende til om en vil svare på forsendelsen. Valgfritt å fylle ut. Utfylt adresse blir validert,se PostAdresse. |            |
 | svarPaForsendelse            | ForsendelsesId                        | Forsendelsesid til forsendelse dette er et svar på.                                                |            |
 | dokumenter                   | List<Dokument>                        | Rekkefølgen er rekkefølgen de kommer i brevet. Total filstørrelse inntil 350MB er støttet når det skal printes. Ellers er det ikke begrensning. |            |
 | lenker                       | List<Lenke>                           | Rekkefølgen er samme som de vil komme i brevet. Kan være tom.                                      |            |
@@ -208,9 +208,9 @@ Henter liste med informasjon om dokumentene til en forsendelse.
 | adresse1   | String  | Adresselinje1    |                |
 | adresse2   | String  | Adresselinje2    |                |
 | adresse3   | String  | Adresselinje3    |                |
-| postSted   | String  | Postnummer       | Må være utfylt, 4 tall for norske adresser |
-| postNummer | String  | Poststed         |                |
-| land       | String  | Land             | Må være utfylt |
+| postSted   | String  | Poststed         | Må være utfylt, 4 tall for norske adresser, gjelder ikke ved kun digital forsendelse |
+| postNummer | String  | Postnummer       |                |
+| land       | String  | Land             | Må være utfylt, gjelder ikke ved kun digital forsendelse |
 
 #### DigitalAdresse
 Se OrganisasjonDigitalAdresse og PersonDigitalAdresse
