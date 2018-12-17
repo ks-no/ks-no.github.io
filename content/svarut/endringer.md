@@ -12,7 +12,7 @@ Her er en liste over de viktigste endringene i SvarUt, startet i 2015.
 * 26.11.2018
   * Oppdatert SDP til å vise generisk tittel
 * 05.11.2018
-  * Lagt ut ForsendelseServiceV11, se [ForsendelsesServiceV11]({{< ref "/svarut/integrasjon/ForsendelsesServiceV11.md" >}}).
+  * Lagt ut ForsendelseServiceV11
 * 01.10.2018
   * Oppdatert varslingsmelding (e-postvarsel)
 * 28.09.2018
