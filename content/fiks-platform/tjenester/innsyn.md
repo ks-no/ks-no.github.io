@@ -67,3 +67,5 @@ Mange meldingstyper vil referere til filer i eksterne systemer, som for eksempel
 Hvis kommunen har en eksisterende løsning for innloggede innbyggertjenester kan det være aktuelt å benytte innsynsøket som en tjeneste fremfor en webapplikasjon. Integrasjonen som skal utføre dette søket trenger da Innsyn Søk privilegiet i Fiks Konfigurasjon. Merk at kommunene da tar ansvar for å fremskaffe Open Id Connect innloggingstoken fra ID-porten, og for å sørge for at dette tokenet er gyldig. Innsynsøk-tjenesten vil fortsatt utføre nødvendig autorisering.
 
 Det er også viktig å merke seg at søk gjennom en integrasjon har en begrensning som "vanlige" søk fra minside.kommune.no ikke har: man kan bare søke i dokumenter som eies av den aktuelle Fiks organisasjonen. 
+
+Det er også viktig å merke seg at man når man utfører et søk har mulighet til å spesifisere hvilke versjoner av meldingstyper man støtter. Det anbefales å benyttes seg av dette for å unngå overraskelser: hvis man ikke gjør det vil man få det som til enhver tid er nyeste versjon, med oppgraderinger uten advarsel. Se api-spec for detaljer.
