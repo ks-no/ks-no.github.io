@@ -1,6 +1,6 @@
 --- 
 title: Tjenester under utvikling
-date: 2018-12-04
+date: 2018-12-17
 --- 
 
 Roadmap for fremtidige tjenester på fiks-plattformen. Tidsangivelse må tolkes som en indikasjon på når tjenesten kan være klar, endringer kan forekomme.
@@ -28,6 +28,9 @@ Samtykke-løsningen utviklet for Fiks plattformen blir tilgjengelig som en tjene
 #### Minside: Søknader
 Innbyggeres innsendte søknader og kladder for disse gjøres tilgjengelig på Minside. Utvikles som modul i Fiks Innsyn i sammarbeid med leverandører av søknadsmotorer og arkivsystem.
 
+#### Fiks Statistikk
+Statistikk og oversikt over hvordan en kommunes tjenester på Minside og Fiks-plattformen benyttes. Antall besøkende, dataforbruk osv.  
+
 ## 2019-Q2
 #### Fiks Folkeregister
 Fiks Plattformen tilgjengeliggjør folkeregistrets api for oppslag, støttet av logging, autentisering, autorisasjon og konfigurering på Fiks Plattformen.
@@ -47,6 +50,3 @@ Faktura fra kommunen gjøres tilgjengelig på Minside. Utvikles i sammarbeid med
 
 #### Minside: Byggesaker
 Byggesaker, både historiske, pågående søknader og avsluttede gjøres tilgjengelig på Minside, med status og oppdateringer for pågående saker.
-
-#### Fiks Statistikk
-Statistikk og oversikt over hvordan en kommunes tjenester på Minside og Fiks-plattformen benyttes. Antall besøkende, dataforbruk osv.  
