@@ -1,11 +1,24 @@
 ---
 title: SvarUt endringer
 date: 2018-05-03
-lastmod: 2018-10-10
+lastmod: 2018-12-17
 ---
 Her er en liste over de viktigste endringene i SvarUt, startet i 2015.
 
 ## Liste over endringer i SvarUt.
+* 17.12.2018
+  * Forhåndsvisning av PDF er oppdatert og viser første side pr brev
+  * Støtte for å ha flere navn i poststed
+* 26.11.2018
+  * Oppdatert SDP til å vise generisk tittel
+* 05.11.2018
+  * Lagt ut ForsendelseServiceV11, se [ForsendelsesServiceV11]({{< ref "/svarut/integrasjon/ForsendelsesServiceV11.md" >}}).
+* 01.10.2018
+  * Oppdatert varslingsmelding (e-postvarsel)
+* 28.09.2018
+  * Validering av postnummer/poststed utføres ikke ved kun digital forsendelse
+* 26.09.2018
+  * PDF-import støtter splitting på ulikt antall sider
 * 30.08.2018
   * Rapportuttrekket tar nå med felter for svar på forsendelse og ekstern referanse
   * Endret maksimal størrelse på manuell opplastning til 350MB
