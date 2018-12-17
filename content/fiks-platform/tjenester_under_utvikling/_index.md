@@ -22,9 +22,6 @@ Tjeneste for kommunal behandling av sosialsøknader sendt fra nav.no. Statusoppd
 #### [Fiks SvarInn 2]({{< ref "svarInn.md" >}})
 Integrasjonsplattform for maskin-til-maskin kommunikasjon. Erstatter gamle SvarUt-SvarInn, og tilbyr ny funksjonalitet som direkte sending, push-kommunikasjon og ende-til-ende kryptering.
 
-#### [Fiks Samtykke]({{< ref "samtykke.md" >}})
-Samtykke-løsningen utviklet for Fiks plattformen blir tilgjengelig som en tjeneste som kan benyttes til kommunens egne formål, hovedsakelig relatert til innhenting og forvaltning av samtykker i GDPR sammenheng.
-
 #### Minside: Søknader
 Innbyggeres innsendte søknader og kladder for disse gjøres tilgjengelig på Minside. Utvikles som modul i Fiks Innsyn i sammarbeid med leverandører av søknadsmotorer og arkivsystem.
 
@@ -32,6 +29,9 @@ Innbyggeres innsendte søknader og kladder for disse gjøres tilgjengelig på Mi
 Statistikk og oversikt over hvordan en kommunes tjenester på Minside og Fiks-plattformen benyttes. Antall besøkende, dataforbruk osv.  
 
 ## 2019-Q2
+#### [Fiks Samtykke]({{< ref "samtykke.md" >}})
+Samtykke-løsningen utviklet for Fiks plattformen blir tilgjengelig som en tjeneste som kan benyttes til kommunens egne formål, hovedsakelig relatert til innhenting og forvaltning av samtykker i GDPR sammenheng.
+
 #### Fiks Folkeregister
 Fiks Plattformen tilgjengeliggjør folkeregistrets api for oppslag, støttet av logging, autentisering, autorisasjon og konfigurering på Fiks Plattformen.
 
