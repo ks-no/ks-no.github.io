@@ -37,7 +37,15 @@ Når man lager en integrasjon mot indekseringstjenesten er det viktig å være b
 #### Indeksering
 De vanlige [autentiseringsreglene]({{< ref "sikkerhet.md" >}}) for Fiks-plattformen gjelder for denne tjenesten, men i tilegg må integrasjonen har rett til å indeksere på vegne av  _fiks organisasjonen_ som er satt som eier den aktuelle meldingen.
 
-Endepunktet støtter batch av opptil 5000 elementer, og integrasjonsutviklere anbefales å benytte denne funksjonaliteten, da det skaper vesentlig mindre trykk på systemet. Merk at indeksering ikke er en atomisk transaksjon: deler av elementene i en batch kan bli indeksert selv om andre feiler. Informasjon om dette finnes i responsen.
+Endepunktet støtter batch av opptil 5000 elementer, og integrasjonsutviklere anbefales å benytte denne funksjonaliteten, da det skaper vesentlig mindre trykk på systemet. Merk at indeksering ikke er en atomisk transaksjon: deler av elementene i en batch kan bli indeksert selv om andre feiler.
+
+En indekseringsoperasjon kan ha følgende utfall:
+
+* _200_. Meldingene ble indexert. Merk at det kan ta noe tid før disse blir synlige for et søk.
+* _4XX_. Et problem på klientsiden førte til at meldingene ikke kan behandles. Ved 4XX feil vil ingen av meldingene i batchen bli skrevet til Innsyn.
+  - Hvis deserialisering av json mislykkes får man en ren 400 BAD REQUEST. Dette indikerer som oftest at json modellen i forespørselen ikke stemmer med api-spec.
+  - Hvis deserialisering var vellykket men en eller flere meldinger ikke validerte får man en meldinger som feilet, og en beskrivelse av hvorfor. Dette indikerer som oftest at et påkrevet feil mangeler, eller at det har en ugyldig verdi. Dette bør utbedres, eller meldingene med ugyldige verdier bør fjernes før man prøver igjen.
+* _5XX_. Indeksering av batchen feilet. Dette betyr som oftest at noe gikk galt på server-siden. Noen av meldingene i batchen kan likevel være indeksert. Man bør derfor forsøke å indeksere alle meldingene på nytt.
 
 Gjennomføring av batch-operasjoner skjer synkront fra ståstedet til en bruker av tjenesten: responsen blir ikke sendt før batchen er gjennomført. Dermed vil man kunne vite at en gruppe opprettet i batch 1 eksisterer når batch 2 gjennomføres, så lenge disse utføres sekvensielt. 
 
@@ -48,7 +56,7 @@ Noen viktige punkt for integrasjonsutviklere:
 * _Eksponert for_ angir hvem som skal kunne se meldingen. Dette kan være endten et organisasjonsnummer eller et fødselsnummer. Merk at hver melding bare kan eksponeres for en person/org, hvis man ønsker at flere aktører skal kunne se samme informasjonen må gruppen indekseres flere ganger. 
 
 #### Sletting
-Indekserte meldinger kan fjernes ved å benytte endepunkt for sletting. Her gjelder de samme reglene som over: en integrasjon må være autorisert for å handle på vegne av en ansvarlig organisasjon for at sletting kan gjennomføres. 
+Indekserte meldinger kan fjernes ved å benytte endepunkt for sletting. Her gjelder de samme reglene som over: en integrasjon må være autorisert for å handle på vegne av en ansvarlig organisasjon for at sletting kan gjennomføres, og en integrasjon kan bare slette meldinger den selv har indeksert.
 
 Merk at sletting på samme måte som indeksering ikke gjennomføres i en atomisk transaksjon: deler av meldingene i batchen kan bli slettet selv om andre feiler. 
 
