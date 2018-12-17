@@ -1,6 +1,6 @@
 ---
 title: Innsyn
-date: 2018-12-10
+date: 2018-12-17
 ---
 
 ![minside_sok](/images/innsyn.png "Innsyn")
