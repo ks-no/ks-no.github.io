@@ -45,8 +45,8 @@ Dokument og melding i fiks-innsyn er utelukkende tilgjengelig for innbygger, det
 
 Sak oppdaterings api [(api-spec)](https://editor.swagger.io/?url=https://ks-no.github.io/api/digisos-sak-api-v1.json)
 
-* Filer må lastes opp på forhand
-* Når en sakoppdaring skjer, må alle filer være tilgjenglieg. 
+* Filer må lastes opp på forhånd.
+* Når en sakoppdatering skjer, må alle filer være tilgjenglieg.
 * Filer som ikke lenger skal ligge på sak, kan fjernes etter at sakoppdatering uten filene er lastet opp.
 * Fagsystemet må ha kontroll på listen med filer og sjekke at denne er korrekt.
 * Når en Sakoppdatering skjer, må saken eksistere i digisos, enten fordi skjema fra nav er sendt via Digisos eller at fagsystem har opprettet en sak.
