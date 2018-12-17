@@ -38,6 +38,9 @@ Fiks Plattformen tilgjengeliggjør folkeregistrets api for oppslag, støttet av 
 #### Fiks Innbygger
 Fiks plattformens løsning for spørringer og rapportering på folkeregisterdata. Vil inkludere mulighet for å lage skreddresydde rapporter.
 
+#### Fiks SvarInn 2: SvarUt integrasjon
+SvarUt går over til å benytte Fiks Svarinn 2 for å formidle meldinger til fagsystemer.
+
 ## Under utredning:
 #### Fiks Innsyn: Matrikkel
 Innsyn utvides med informasjon om matrikkel, som gjør det mulig å eksponere meldinger for eieren av en spesifisert eiendom.
