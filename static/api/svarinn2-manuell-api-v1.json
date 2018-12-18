@@ -16,27 +16,6 @@
   } ],
   "schemes" : [ "https" ],
   "paths" : {
-    "/svarinn2/manuell/api/v1/kontoer/{kontoId}/meldinger" : {
-      "get" : {
-        "tags" : [ "SvarInnManuell" ],
-        "operationId" : "peek",
-        "parameters" : [ {
-          "name" : "kontoId",
-          "in" : "path",
-          "required" : true,
-          "type" : "string",
-          "format" : "uuid"
-        } ],
-        "responses" : {
-          "200" : {
-            "description" : "successful operation",
-            "schema" : {
-              "$ref" : "#/definitions/Melding"
-            }
-          }
-        }
-      }
-    },
     "/svarinn2/manuell/api/v1/kontoer/{kontoId}/meldinger/antall" : {
       "get" : {
         "tags" : [ "SvarInnManuell" ],
@@ -59,18 +38,33 @@
         }
       }
     },
-    "/svarinn2/manuell/api/v1/kontoer/{kontoId}/meldinger/{meldingId}/fil" : {
+    "/svarinn2/manuell/api/v1/kontoer/{kontoId}/meldinger/neste/ack" : {
       "get" : {
         "tags" : [ "SvarInnManuell" ],
-        "operationId" : "getFil",
+        "operationId" : "ack",
         "parameters" : [ {
           "name" : "kontoId",
           "in" : "path",
           "required" : true,
           "type" : "string",
           "format" : "uuid"
-        }, {
-          "name" : "meldingId",
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "$ref" : "#/definitions/MottattMeldingMetadata"
+            }
+          }
+        }
+      }
+    },
+    "/svarinn2/manuell/api/v1/kontoer/{kontoId}/meldinger/neste/data" : {
+      "get" : {
+        "tags" : [ "SvarInnManuell" ],
+        "operationId" : "peekMeldingData",
+        "parameters" : [ {
+          "name" : "kontoId",
           "in" : "path",
           "required" : true,
           "type" : "string",
@@ -83,18 +77,12 @@
         }
       }
     },
-    "/svarinn2/manuell/api/v1/kontoer/{kontoId}/meldinger/{meldingId}/kvitterAkseptert" : {
-      "post" : {
+    "/svarinn2/manuell/api/v1/kontoer/{kontoId}/meldinger/neste/metadata" : {
+      "get" : {
         "tags" : [ "SvarInnManuell" ],
-        "operationId" : "kvitterAkseptert",
+        "operationId" : "peekMetadata",
         "parameters" : [ {
           "name" : "kontoId",
-          "in" : "path",
-          "required" : true,
-          "type" : "string",
-          "format" : "uuid"
-        }, {
-          "name" : "meldingId",
           "in" : "path",
           "required" : true,
           "type" : "string",
@@ -104,24 +92,18 @@
           "200" : {
             "description" : "successful operation",
             "schema" : {
-              "$ref" : "#/definitions/SendtMeldingApiModel"
+              "$ref" : "#/definitions/MottattMeldingMetadata"
             }
           }
         }
       }
     },
-    "/svarinn2/manuell/api/v1/kontoer/{kontoId}/meldinger/{meldingId}/kvitterAvvist" : {
-      "post" : {
+    "/svarinn2/manuell/api/v1/kontoer/{kontoId}/meldinger/neste/nac" : {
+      "get" : {
         "tags" : [ "SvarInnManuell" ],
-        "operationId" : "kvitterAvvist",
+        "operationId" : "nac",
         "parameters" : [ {
           "name" : "kontoId",
-          "in" : "path",
-          "required" : true,
-          "type" : "string",
-          "format" : "uuid"
-        }, {
-          "name" : "meldingId",
           "in" : "path",
           "required" : true,
           "type" : "string",
@@ -131,16 +113,16 @@
           "200" : {
             "description" : "successful operation",
             "schema" : {
-              "$ref" : "#/definitions/SendtMeldingApiModel"
+              "$ref" : "#/definitions/MottattMeldingMetadata"
             }
           }
         }
       }
     },
-    "/svarinn2/manuell/api/v1/kontoer/{kontoId}/meldinger/{meldingId}/kvitterFeilet" : {
-      "post" : {
+    "/svarinn2/manuell/api/v1/kontoer/{kontoId}/meldinger/neste/svarOgAck" : {
+      "get" : {
         "tags" : [ "SvarInnManuell" ],
-        "operationId" : "kvitterFeilet",
+        "operationId" : "svarOgAck",
         "parameters" : [ {
           "name" : "kontoId",
           "in" : "path",
@@ -148,17 +130,18 @@
           "type" : "string",
           "format" : "uuid"
         }, {
-          "name" : "meldingId",
-          "in" : "path",
-          "required" : true,
-          "type" : "string",
-          "format" : "uuid"
+          "in" : "body",
+          "name" : "body",
+          "required" : false,
+          "schema" : {
+            "$ref" : "#/definitions/SvarSpesifikasjonApiModel"
+          }
         } ],
         "responses" : {
           "200" : {
             "description" : "successful operation",
             "schema" : {
-              "$ref" : "#/definitions/SendtMeldingApiModel"
+              "$ref" : "#/definitions/MottattMeldingMetadata"
             }
           }
         }
@@ -166,7 +149,7 @@
     }
   },
   "definitions" : {
-    "Melding" : {
+    "MottattMeldingMetadata" : {
       "type" : "object",
       "properties" : {
         "meldingId" : {
@@ -185,6 +168,10 @@
           "format" : "uuid"
         },
         "ttl" : {
+          "type" : "integer",
+          "format" : "int64"
+        },
+        "deliveryTag" : {
           "type" : "integer",
           "format" : "int64"
         },
@@ -194,35 +181,16 @@
         }
       }
     },
-    "SendtMeldingApiModel" : {
+    "SvarSpesifikasjonApiModel" : {
       "type" : "object",
+      "required" : [ "meldingType" ],
       "properties" : {
-        "meldingId" : {
-          "type" : "string",
-          "format" : "uuid"
-        },
         "meldingType" : {
           "type" : "string"
-        },
-        "avsenderKontoId" : {
-          "type" : "string",
-          "format" : "uuid"
-        },
-        "mottakerKontoId" : {
-          "type" : "string",
-          "format" : "uuid"
         },
         "ttl" : {
           "type" : "integer",
           "format" : "int64"
-        },
-        "dokumentlagerId" : {
-          "type" : "string",
-          "format" : "uuid"
-        },
-        "svarPaMelding" : {
-          "type" : "string",
-          "format" : "uuid"
         }
       }
     }
