@@ -3,8 +3,6 @@ title: Dokumentlager
 date: 2018-09-10
 ---
 
-**STATUS: tilgjengelig i testmiljø**
-
 Dokumentlager-tjenesten lar kommunen og andre Fiks-organisasjoner laste opp dokumenter. Ved opplasting autoriseres en eller 
 flere personer og/eller organisasjoner for tilgang til dokumentet. Det er også mulig å laste opp dokumenter med en begrenset
 levetid, slik at det blir gjort utilgjengelig når denne tiden utløper.
@@ -44,7 +42,9 @@ tilgang til flere av disse må tilgang gis på hver enkelt konto.
 
 #### Metadata
 
-Metadata for dokumenter legges i multipart med navn ``metadata`` og defineres i JSON på følgende format:
+Metadata for dokumenter legges i multipart med navn ``metadata`` og defineres i JSON. 
+``Content-Type`` må på multiparten må settes til ``application/json``.
+Et eksempel er vist under:
 
 ```json
 {
@@ -71,12 +71,23 @@ Se https://eid.difi.no/nb/sikkerhet-og-informasjonskapsler/ulike-sikkerhetsniva
     fødselsnummeret vil ha lov til å laste ned dokumentet.
     - Integrasjon - Eksponeres for en UUID som identifiserer en integrasjon. En klient innlogget med integrasjonsid, 
     integrasjonspassord og virksomhetssertifikatet som er autentisert til å bruke integrasjonen vil ha lov til å laste ned dokumentet.
-    - Organisasjon - Eksponeres for et organisasjonsnummer. Personer med post/arkiv rollen i Altinn på dette 
+    - Organisasjon - Eksponeres for et organisasjonsnummer. Personer med ``Post/arkiv``- eller ``Kommunale tjenester``-rollen i Altinn på dette 
     organisasjonsnummeret vil ha lov til å laste ned dokumentet.
     - Autorisasjon - Eksponeres for et "privilegium, ressurs"-par. Personer eller integrasjoner med gitt privilegium på 
     gitt ressurs vil ha lov til å laste ned dokumentet.
 
+#### Dokument
 
+Dokumentdata legges i multipart med navn ``dokument``.
 
+#### Eksempel (cURL)
 
+```
+curl -X POST https://api2.fiks.test.ks.no/dokumentlager/api/v1/<fiksOrganisasjonId>/kontoer/<kontoId>/dokumenter/ \
+-H "Authorization: Bearer <gyldig access token>" \
+-H "IntegrasjonId: <integrasjonsid>" \
+-H "IntegrasjonPassord: <integrasjonspassord>" \
+-F "metadata={\"dokumentnavn\":\"dokument.pdf\",\"mimetype\":\"application/pdf\",\"ttl\":3600,\"eksponertFor\":[{\"type\":\"PERSON\", \"fnr\":\"<fødselsnummer>\"}],\"sikkerhetsniva\":3};type=application/json" \
+-F "dokument=@dokument.pdf"
+```
 
