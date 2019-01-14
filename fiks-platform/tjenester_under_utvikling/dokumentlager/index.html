@@ -419,7 +419,10 @@
 <ul>
 <li>
 <ul>
-<li><a href="#integrasjonsutvikling-api-spec-https-editor-swagger-io-url-https-ks-no-github-io-api-dokumentlager-upload-api-v1-json">Integrasjonsutvikling <a href="https://editor.swagger.io/?url=https://ks-no.github.io/api/dokumentlager-upload-api-v1.json">(api-spec)</a></a></li>
+<li><a href="#integrasjonsutvikling">Integrasjonsutvikling</a>
+<ul>
+<li><a href="#metadata">Metadata</a></li>
+</ul></li>
 </ul></li>
 </ul></li>
 </ul>
@@ -475,7 +478,7 @@ en Fiks-organisasjons egne integrasjoner.</p>
 
 <p>Når et dokument slettes vil metadata fortsette å eksistere, men selve dokumentet vil ikke lenger være tilgjengelig.</p>
 
-<h3 id="integrasjonsutvikling-api-spec-https-editor-swagger-io-url-https-ks-no-github-io-api-dokumentlager-upload-api-v1-json">Integrasjonsutvikling <a href="https://editor.swagger.io/?url=https://ks-no.github.io/api/dokumentlager-upload-api-v1.json">(api-spec)</a></h3>
+<h3 id="integrasjonsutvikling">Integrasjonsutvikling</h3>
 
 <p>Alle operasjoner i dokumentlageret utføres på en konto, som er en ressurs som hører til dokumentlager-tjenesten til en
 Fiks-organisasjon. Hvordan disse organiseres er opp til hver organisasjon. Man kan ha én konto for alt, eller dele det
@@ -486,9 +489,40 @@ tillegg må integrasjonen ha rett til å laste opp dokumenter på en dokumentlag
 gjennom konfigurasjonsgrensesnittet, men må gis på kontonivå. Dersom man har flere kontoer, men ønsker å gi en integrasjon
 tilgang til flere av disse må tilgang gis på hver enkelt konto.</p>
 
-<p>Ved opplasting av metadata kan man spesifisere en valgfri TTL (time-to-live), som spesifiserer et tidspunkt hvor dokumentet
-vil bli gjort utilgjengelig, og til slutt slettet. En negativ verdi betyr at dokumentet aldri utløper. Formatet er UNIX
-epoch millisekunder.</p>
+<h4 id="metadata">Metadata</h4>
+
+<p>Metadata for dokumenter legges i multipart med navn <code>metadata</code> og defineres i JSON på følgende format:</p>
+<div class="highlight"><pre style="color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json"><span style="color:#111">{</span>
+  <span style="color:#f92672">&#34;dokumentnavn&#34;</span><span style="color:#111">:</span> <span style="color:#d88200">&#34;dokument.pdf&#34;</span><span style="color:#111">,</span>
+  <span style="color:#f92672">&#34;mimetype&#34;</span><span style="color:#111">:</span> <span style="color:#d88200">&#34;application/pdf&#34;</span><span style="color:#111">,</span>
+  <span style="color:#f92672">&#34;ttl&#34;</span><span style="color:#111">:</span> <span style="color:#ae81ff">86400</span><span style="color:#111">,</span>
+  <span style="color:#f92672">&#34;sikkerhetsniva&#34;</span><span style="color:#111">:</span> <span style="color:#ae81ff">3</span><span style="color:#111">,</span>
+  <span style="color:#f92672">&#34;eksponertFor&#34;</span><span style="color:#111">:</span> <span style="color:#111">[</span>
+    <span style="color:#111">{</span> <span style="color:#f92672">&#34;type&#34;</span><span style="color:#111">:</span> <span style="color:#d88200">&#34;PERSON&#34;</span><span style="color:#111">,</span> <span style="color:#f92672">&#34;fnr&#34;</span><span style="color:#111">:</span> <span style="color:#d88200">&#34;12345679810&#34;</span> <span style="color:#111">},</span>
+    <span style="color:#111">{</span> <span style="color:#f92672">&#34;type&#34;</span><span style="color:#111">:</span> <span style="color:#d88200">&#34;INTEGRASJON&#34;</span><span style="color:#111">,</span> <span style="color:#f92672">&#34;id&#34;</span><span style="color:#111">:</span> <span style="color:#d88200">&#34;249e3fde-e3d8-435e-835f-16a432598c10&#34;</span> <span style="color:#111">},</span>
+    <span style="color:#111">{</span> <span style="color:#f92672">&#34;type&#34;</span><span style="color:#111">:</span> <span style="color:#d88200">&#34;ORGANISASJON&#34;</span><span style="color:#111">,</span> <span style="color:#f92672">&#34;orgnr&#34;</span><span style="color:#111">:</span> <span style="color:#d88200">&#34;123456789&#34;</span> <span style="color:#111">},</span>
+    <span style="color:#111">{</span> <span style="color:#f92672">&#34;type&#34;</span><span style="color:#111">:</span> <span style="color:#d88200">&#34;AUTORISASJON&#34;</span><span style="color:#111">,</span> <span style="color:#f92672">&#34;privilegium&#34;</span><span style="color:#111">:</span> <span style="color:#d88200">&#34;EN.TILGANG&#34;</span><span style="color:#111">,</span> <span style="color:#f92672">&#34;ressurs&#34;</span><span style="color:#111">:</span> <span style="color:#d88200">&#34;77e0d6b5-f2cd-4f54-80bb-723c598026da&#34;</span> <span style="color:#111">}</span>
+  <span style="color:#111">]</span>
+<span style="color:#111">}</span></code></pre></div>
+<ul>
+<li>Dokumentnavn - Dokumentets navn, ved nedlasting gjennom en browser vil dette bli satt som default navn på filen som lagres på disk</li>
+<li>MIME type - Dokumenttype på gyldig MIME-format. Se <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/MIME_types">https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/MIME_types</a></li>
+<li>TTL - Hvor mange sekunder etter opplasting dokumentet skal være tilgjengelig. Ved utløp blir dokumentet utilgjengeliggjort og slettes.</li>
+<li>Sikkerhetsniva - Sikkerhetsnivå som skal kreves ved nedlasting av dokument. Ved nivå 4 kreves kryptering hos klient før opplasting.
+Se <a href="https://eid.difi.no/nb/sikkerhet-og-informasjonskapsler/ulike-sikkerhetsniva">https://eid.difi.no/nb/sikkerhet-og-informasjonskapsler/ulike-sikkerhetsniva</a></li>
+<li>Eksponert for - Liste over aktører som skal ha tilgang til å laste ned dokumentet. Kan være følgende typer:
+
+<ul>
+<li>Person - Eksponeres for en persons fødselsnummer. En gyldig ID-porten innlogging for en person med dette
+fødselsnummeret vil ha lov til å laste ned dokumentet.</li>
+<li>Integrasjon - Eksponeres for en UUID som identifiserer en integrasjon. En klient innlogget med integrasjonsid,
+integrasjonspassord og virksomhetssertifikatet som er autentisert til å bruke integrasjonen vil ha lov til å laste ned dokumentet.</li>
+<li>Organisasjon - Eksponeres for et organisasjonsnummer. Personer med post/arkiv rollen i Altinn på dette
+organisasjonsnummeret vil ha lov til å laste ned dokumentet.</li>
+<li>Autorisasjon - Eksponeres for et &ldquo;privilegium, ressurs&rdquo;-par. Personer eller integrasjoner med gitt privilegium på
+gitt ressurs vil ha lov til å laste ned dokumentet.</li>
+</ul></li>
+</ul>
 
 
     
