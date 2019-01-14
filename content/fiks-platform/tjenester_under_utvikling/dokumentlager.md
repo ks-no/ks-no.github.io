@@ -31,7 +31,7 @@ Det er tre forskjellige måter et dokument kan bli slettet på:
 
 Når et dokument slettes vil metadata fortsette å eksistere, men selve dokumentet vil ikke lenger være tilgjengelig.
 
-### Integrasjonsutvikling [(api-spec)](https://editor.swagger.io/?url=https://ks-no.github.io/api/dokumentlager-upload-api-v1.json)
+### Integrasjonsutvikling
 
 Alle operasjoner i dokumentlageret utføres på en konto, som er en ressurs som hører til dokumentlager-tjenesten til en 
 Fiks-organisasjon. Hvordan disse organiseres er opp til hver organisasjon. Man kan ha én konto for alt, eller dele det 
@@ -42,9 +42,39 @@ tillegg må integrasjonen ha rett til å laste opp dokumenter på en dokumentlag
 gjennom konfigurasjonsgrensesnittet, men må gis på kontonivå. Dersom man har flere kontoer, men ønsker å gi en integrasjon 
 tilgang til flere av disse må tilgang gis på hver enkelt konto.
 
-Ved opplasting av metadata kan man spesifisere en valgfri TTL (time-to-live), som spesifiserer et tidspunkt hvor dokumentet 
-vil bli gjort utilgjengelig, og til slutt slettet. En negativ verdi betyr at dokumentet aldri utløper. Formatet er UNIX
-epoch millisekunder.
+#### Metadata
+
+Metadata for dokumenter legges i multipart med navn ``metadata`` og defineres i JSON på følgende format:
+
+```json
+{
+  "dokumentnavn": "dokument.pdf",
+  "mimetype": "application/pdf",
+  "ttl": 86400,
+  "sikkerhetsniva": 3,
+  "eksponertFor": [
+    { "type": "PERSON", "fnr": "12345679810" },
+    { "type": "INTEGRASJON", "id": "249e3fde-e3d8-435e-835f-16a432598c10" },
+    { "type": "ORGANISASJON", "orgnr": "123456789" },
+    { "type": "AUTORISASJON", "privilegium": "EN.TILGANG", "ressurs": "77e0d6b5-f2cd-4f54-80bb-723c598026da" }
+  ]
+}
+```
+
+- Dokumentnavn - Dokumentets navn, ved nedlasting gjennom en browser vil dette bli satt som default navn på filen som lagres på disk
+- MIME type - Dokumenttype på gyldig MIME-format. Se https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/MIME_types
+- TTL - Hvor mange sekunder etter opplasting dokumentet skal være tilgjengelig. Ved utløp blir dokumentet utilgjengeliggjort og slettes.
+- Sikkerhetsniva - Sikkerhetsnivå som skal kreves ved nedlasting av dokument. Ved nivå 4 kreves kryptering hos klient før opplasting.
+Se https://eid.difi.no/nb/sikkerhet-og-informasjonskapsler/ulike-sikkerhetsniva
+- Eksponert for - Liste over aktører som skal ha tilgang til å laste ned dokumentet. Kan være følgende typer:
+    - Person - Eksponeres for en persons fødselsnummer. En gyldig ID-porten innlogging for en person med dette 
+    fødselsnummeret vil ha lov til å laste ned dokumentet.
+    - Integrasjon - Eksponeres for en UUID som identifiserer en integrasjon. En klient innlogget med integrasjonsid, 
+    integrasjonspassord og virksomhetssertifikatet som er autentisert til å bruke integrasjonen vil ha lov til å laste ned dokumentet.
+    - Organisasjon - Eksponeres for et organisasjonsnummer. Personer med post/arkiv rollen i Altinn på dette 
+    organisasjonsnummeret vil ha lov til å laste ned dokumentet.
+    - Autorisasjon - Eksponeres for et "privilegium, ressurs"-par. Personer eller integrasjoner med gitt privilegium på 
+    gitt ressurs vil ha lov til å laste ned dokumentet.
 
 
 
