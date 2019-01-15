@@ -43,6 +43,7 @@ tilgang til flere av disse må tilgang gis på hver enkelt konto.
 #### Opplasting
 
 Opplasting gjøres mot følgende URL:
+
 - Test: ``https://api2.fiks.test.ks.no/dokumentlager/api/v1/<fiksOrganisasjonId>/kontoer/<kontoId>/dokumenter/``
 - Prod: ``https://api2.fiks.ks.no/dokumentlager/api/v1/<fiksOrganisasjonId>/kontoer/<kontoId>/dokumenter/``
 
@@ -55,6 +56,7 @@ Ved vellykket opplasting returneres et JSON objekt som inneholder ID for det opp
 ```
 
 URL for nedlasting ligger i Location-header på returnert 201 CREATED respons, eller her:
+
 - Test
     - ``https://minside.fiks.test.ks.no/dokumentlager/nedlasting/<id>``
     - ``https://minside.fiks.test.ks.no/dokumentlager/nedlasting/niva4/<id>`` (Krever nivå 4 innlogging)
