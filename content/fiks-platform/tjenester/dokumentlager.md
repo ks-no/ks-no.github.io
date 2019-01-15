@@ -40,11 +40,7 @@ tillegg må integrasjonen ha rett til å laste opp dokumenter på en dokumentlag
 gjennom konfigurasjonsgrensesnittet, men må gis på kontonivå. Dersom man har flere kontoer, men ønsker å gi en integrasjon 
 tilgang til flere av disse må tilgang gis på hver enkelt konto.
 
-#### API
-
-Kommunikasjon med dokumentlageret gjøres via REST.
-
-##### Opplasting
+#### Opplasting
 
 Opplasting gjøres med en POST-request mot følgende URL:
 
@@ -68,7 +64,7 @@ URL for nedlasting ligger i Location-header på returnert 201 CREATED respons, e
     - ``https://minside.kommune.no/dokumentlager/nedlasting/{id}``
     - ``https://minside.kommune.no/dokumentlager/nedlasting/niva4/{id}`` (Krever nivå 4 innlogging)
 
-###### Metadata
+##### Metadata
 
 Metadata for dokumenter legges i multipart med navn *metadata* og defineres i JSON. 
 Content-Type må på multiparten må settes til application/json.
@@ -104,11 +100,11 @@ Se https://eid.difi.no/nb/sikkerhet-og-informasjonskapsler/ulike-sikkerhetsniva
     - Autorisasjon - Eksponeres for et "privilegium, ressurs"-par. Personer eller integrasjoner med gitt privilegium på 
     gitt ressurs vil ha lov til å laste ned dokumentet.
 
-###### Dokument
+##### Dokument
 
 Dokumentdata legges i multipart med navn *dokument*.
 
-###### Eksempel (cURL)
+##### Eksempel (cURL)
 
 ```bash
 curl -X POST https://api2.fiks.test.ks.no/dokumentlager/api/v1/{fiksOrganisasjonId}/kontoer/{kontoId}/dokumenter/ \
@@ -119,7 +115,7 @@ curl -X POST https://api2.fiks.test.ks.no/dokumentlager/api/v1/{fiksOrganisasjon
 -F "dokument=@dokument.pdf"
 ```
 
-##### Sletting
+#### Sletting
 
 Integrasjoner som er autorisert til å laste opp dokumenter har også lov til å slette. 
 
@@ -128,7 +124,7 @@ Dette gjøres med en DELETE-request mot følgende URL:
 - Test: ``https://api2.fiks.test.ks.no/dokumentlager/api/v1/{fiksOrganisasjonId}/kontoer/{kontoId}/dokumenter/{dokumentId}``
 - Prod: ``https://api2.fiks.ks.no/dokumentlager/api/v1/{fiksOrganisasjonId}/kontoer/{kontoId}/dokumenter/{dokumentId}``
 
-#### Hente public-key for kryptering
+### Hente public-key for kryptering
 
 Public-key som skal brukes ved klient-side kryptering kan hentes med en GET-request mot følgende endepunkt:
 
