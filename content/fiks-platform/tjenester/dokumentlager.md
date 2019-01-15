@@ -66,7 +66,7 @@ URL for nedlasting ligger i Location-header på returnert 201 CREATED respons, e
 
 ##### Metadata
 
-Metadata for dokumenter legges i multipart med navn *metadata* og defineres i JSON. 
+Metadata for dokumenter legges i multipart med navn ``metadata`` og defineres i JSON. 
 Content-Type må på multiparten må settes til application/json.
 Et eksempel er vist under:
 
@@ -102,7 +102,18 @@ Se https://eid.difi.no/nb/sikkerhet-og-informasjonskapsler/ulike-sikkerhetsniva
 
 ##### Dokument
 
-Dokumentdata legges i multipart med navn *dokument*.
+Dokumentdata legges i multipart med navn ``dokument``.
+
+Dersom ikke ``kryptert`` query parameter er satt til true vil dokumentet krypteres av tjenesten før det lagres. Dersom man ønsker 
+å laste opp dokumenter på nivå 4, eller bare ønsker ende-til-ende-kryptering ved opplasting, må dette flagget settes til
+true, og dokumentet må krypteres med dokumentlagerets public-key før opplasting. Uavhengig av hva man velger vil alle
+dokumenter være kryptert etter opplasting, og vil kun dekrypteres når en aktør som er autorisert til å laste ned dokumentet 
+laster det ned.
+
+Public-keyen kan hentes med en GET-request mot følgende endepunkt:
+
+- Test: ``https://api2.fiks.test.ks.no/dokumentlager/api/v1/public-key``
+- Prod: ``https://api2.fiks.ks.no/dokumentlager/api/v1/public-key``
 
 ##### Eksempel (cURL)
 
@@ -124,9 +135,3 @@ Dette gjøres med en DELETE-request mot følgende URL:
 - Test: ``https://api2.fiks.test.ks.no/dokumentlager/api/v1/{fiksOrganisasjonId}/kontoer/{kontoId}/dokumenter/{dokumentId}``
 - Prod: ``https://api2.fiks.ks.no/dokumentlager/api/v1/{fiksOrganisasjonId}/kontoer/{kontoId}/dokumenter/{dokumentId}``
 
-### Hente public-key for kryptering
-
-Public-key som skal brukes ved klient-side kryptering kan hentes med en GET-request mot følgende endepunkt:
-
-- Test: ``https://api2.fiks.test.ks.no/dokumentlager/api/v1/public-key``
-- Prod: ``https://api2.fiks.ks.no/dokumentlager/api/v1/public-key``
