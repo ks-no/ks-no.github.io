@@ -40,12 +40,16 @@ tillegg må integrasjonen ha rett til å laste opp dokumenter på en dokumentlag
 gjennom konfigurasjonsgrensesnittet, men må gis på kontonivå. Dersom man har flere kontoer, men ønsker å gi en integrasjon 
 tilgang til flere av disse må tilgang gis på hver enkelt konto.
 
-#### Opplasting
+#### API
 
-Opplasting gjøres mot følgende URL:
+Kommunikasjon med dokumentlageret gjøres via REST.
 
-- Test: ``https://api2.fiks.test.ks.no/dokumentlager/api/v1/<fiksOrganisasjonId>/kontoer/<kontoId>/dokumenter/``
-- Prod: ``https://api2.fiks.ks.no/dokumentlager/api/v1/<fiksOrganisasjonId>/kontoer/<kontoId>/dokumenter/``
+##### Opplasting
+
+Opplasting gjøres med en POST-request mot følgende URL:
+
+- Test: ``https://api2.fiks.test.ks.no/dokumentlager/api/v1/{fiksOrganisasjonId}/kontoer/{kontoId}/dokumenter/``
+- Prod: ``https://api2.fiks.ks.no/dokumentlager/api/v1/{fiksOrganisasjonId}/kontoer/{kontoId}/dokumenter/``
 
 Ved vellykket opplasting returneres et JSON objekt som inneholder ID for det opplastede dokumentet:
 
@@ -58,13 +62,13 @@ Ved vellykket opplasting returneres et JSON objekt som inneholder ID for det opp
 URL for nedlasting ligger i Location-header på returnert 201 CREATED respons, eller her:
 
 - Test
-    - ``https://minside.fiks.test.ks.no/dokumentlager/nedlasting/<id>``
-    - ``https://minside.fiks.test.ks.no/dokumentlager/nedlasting/niva4/<id>`` (Krever nivå 4 innlogging)
+    - ``https://minside.fiks.test.ks.no/dokumentlager/nedlasting/{id}``
+    - ``https://minside.fiks.test.ks.no/dokumentlager/nedlasting/niva4/{id}`` (Krever nivå 4 innlogging)
 - Prod
-    - ``https://minside.kommune.no/dokumentlager/nedlasting/<id>``
-    - ``https://minside.kommune.no/dokumentlager/nedlasting/niva4/<id>`` (Krever nivå 4 innlogging)
+    - ``https://minside.kommune.no/dokumentlager/nedlasting/{id}``
+    - ``https://minside.kommune.no/dokumentlager/nedlasting/niva4/{id}`` (Krever nivå 4 innlogging)
 
-##### Metadata
+###### Metadata
 
 Metadata for dokumenter legges i multipart med navn *metadata* og defineres i JSON. 
 Content-Type må på multiparten må settes til application/json.
@@ -100,14 +104,14 @@ Se https://eid.difi.no/nb/sikkerhet-og-informasjonskapsler/ulike-sikkerhetsniva
     - Autorisasjon - Eksponeres for et "privilegium, ressurs"-par. Personer eller integrasjoner med gitt privilegium på 
     gitt ressurs vil ha lov til å laste ned dokumentet.
 
-##### Dokument
+###### Dokument
 
 Dokumentdata legges i multipart med navn *dokument*.
 
-#### Eksempel (cURL)
+###### Eksempel (cURL)
 
-```
-curl -X POST https://api2.fiks.test.ks.no/dokumentlager/api/v1/<fiksOrganisasjonId>/kontoer/<kontoId>/dokumenter/ \
+```bash
+curl -X POST https://api2.fiks.test.ks.no/dokumentlager/api/v1/{fiksOrganisasjonId}/kontoer/{kontoId}/dokumenter/ \
 -H "Authorization: Bearer <gyldig access token>" \
 -H "IntegrasjonId: <integrasjonsid>" \
 -H "IntegrasjonPassord: <integrasjonspassord>" \
@@ -115,3 +119,18 @@ curl -X POST https://api2.fiks.test.ks.no/dokumentlager/api/v1/<fiksOrganisasjon
 -F "dokument=@dokument.pdf"
 ```
 
+##### Sletting
+
+Integrasjoner som er autorisert til å laste opp dokumenter har også lov til å slette. 
+
+Dette gjøres med en DELETE-request mot følgende URL:
+
+- Test: ``https://api2.fiks.test.ks.no/dokumentlager/api/v1/{fiksOrganisasjonId}/kontoer/{kontoId}/dokumenter/{dokumentId}``
+- Prod: ``https://api2.fiks.ks.no/dokumentlager/api/v1/{fiksOrganisasjonId}/kontoer/{kontoId}/dokumenter/{dokumentId}``
+
+#### Hente public-key for kryptering
+
+Public-key som skal brukes ved klient-side kryptering kan hentes med en GET-request mot følgende endepunkt:
+
+- Test: ``https://api2.fiks.test.ks.no/dokumentlager/api/v1/public-key``
+- Prod: ``https://api2.fiks.ks.no/dokumentlager/api/v1/public-key``
