@@ -1,5 +1,5 @@
 ---
-title: Slik jobber vi
+title: Utviklingsfilosofi
 desc: Beskrivelse av hvordan vi jobber med videreutvikling av KS FIKS
 ---
 
@@ -17,4 +17,4 @@ Vi følger et utviklingsløp der det å måle effekter og lære av tidligere ite
 
 Alle nye tjenester blir bygget som mikrotjenester som gjør hver enkelt tjeneste lett å bygge, måle effekter fra og redesigne dersom det skulle bli behov for det.
 
-Det er mål for KS å bruke åpne standarder og komponenter basert på åpen kildekode så langt det er mulig. På backend har vi standardisert på Java plattformen som gir oss mulighet til å dra veksler på et stort økosystem av ferdige komponenter. 
+Det er mål for KS å bruke åpne standarder og komponenter basert på åpen kildekode så langt det er mulig. På backend har vi standardisert på Java plattformen som gir oss mulighet til å dra veksler på et stort økosystem av ferdige komponenter.
