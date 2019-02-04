@@ -44,8 +44,8 @@ tilgang til flere av disse må tilgang gis på hver enkelt konto.
 
 Opplasting gjøres med en POST-request mot følgende URL:
 
-- Test: ``https://api2.fiks.test.ks.no/dokumentlager/api/v1/{fiksOrganisasjonId}/kontoer/{kontoId}/dokumenter/``
-- Prod: ``https://api2.fiks.ks.no/dokumentlager/api/v1/{fiksOrganisasjonId}/kontoer/{kontoId}/dokumenter/``
+- Test: ``https://api.fiks.test.ks.no/dokumentlager/api/v1/{fiksOrganisasjonId}/kontoer/{kontoId}/dokumenter/``
+- Prod: ``https://api.fiks.ks.no/dokumentlager/api/v1/{fiksOrganisasjonId}/kontoer/{kontoId}/dokumenter/``
 
 Ved vellykket opplasting returneres et JSON objekt som inneholder ID for det opplastede dokumentet:
 
@@ -112,13 +112,13 @@ laster det ned.
 
 Public-keyen kan hentes med en GET-request mot følgende endepunkt:
 
-- Test: ``https://api2.fiks.test.ks.no/dokumentlager/api/v1/public-key``
-- Prod: ``https://api2.fiks.ks.no/dokumentlager/api/v1/public-key``
+- Test: ``https://api.fiks.test.ks.no/dokumentlager/api/v1/public-key``
+- Prod: ``https://api.fiks.ks.no/dokumentlager/api/v1/public-key``
 
 ##### Eksempel (cURL)
 
 ```bash
-curl -X POST https://api2.fiks.test.ks.no/dokumentlager/api/v1/{fiksOrganisasjonId}/kontoer/{kontoId}/dokumenter/ \
+curl -X POST https://api.fiks.test.ks.no/dokumentlager/api/v1/{fiksOrganisasjonId}/kontoer/{kontoId}/dokumenter/ \
 -H "Authorization: Bearer <gyldig access token>" \
 -H "IntegrasjonId: <integrasjonsid>" \
 -H "IntegrasjonPassord: <integrasjonspassord>" \
@@ -132,6 +132,6 @@ Integrasjoner som er autorisert til å laste opp dokumenter har også lov til å
 
 Dette gjøres med en DELETE-request mot følgende URL:
 
-- Test: ``https://api2.fiks.test.ks.no/dokumentlager/api/v1/{fiksOrganisasjonId}/kontoer/{kontoId}/dokumenter/{dokumentId}``
-- Prod: ``https://api2.fiks.ks.no/dokumentlager/api/v1/{fiksOrganisasjonId}/kontoer/{kontoId}/dokumenter/{dokumentId}``
+- Test: ``https://api.fiks.test.ks.no/dokumentlager/api/v1/{fiksOrganisasjonId}/kontoer/{kontoId}/dokumenter/{dokumentId}``
+- Prod: ``https://api.fiks.ks.no/dokumentlager/api/v1/{fiksOrganisasjonId}/kontoer/{kontoId}/dokumenter/{dokumentId}``
 
