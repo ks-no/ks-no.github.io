@@ -1,6 +1,6 @@
 ---
 title: Digisos 
-date: 2018-12-17
+date: 2019-02-11
 ---
 
 **STATUS: under utvikling**
@@ -50,6 +50,48 @@ Sak oppdaterings api [(api-spec)](https://editor.swagger.io/?url=https://ks-no.g
 * Filer som ikke lenger skal ligge på sak, kan fjernes etter at sakoppdatering uten filene er lastet opp.
 * Fagsystemet må ha kontroll på listen med filer og sjekke at denne er korrekt.
 * Når en Sakoppdatering skjer, må saken eksistere i digisos, enten fordi skjema fra nav er sendt via Digisos eller at fagsystem har opprettet en sak.
+
+**Opplasting av filer**
+
+Før en sakoppdatering, må alle refererte filer være lastet opp på forhånd.
+
+Filer lastes opp til FIKS-Digisos ved bruk av en multipart streaming request, der man spesifiserer HTTP-headeren "Transfer-Encoding" til å sende data i chunks, ```Transfer-Encoding: chunked```. 
+
+FIKS tilbyr en referanseimplementasjon av hvordan en slik request skal defineres, og som kan brukes for filopplasting: https://github.com/ks-no/fiks-digisos-klient.
+
+URL-stien til filopplasting er ```/digisos/api/v1/{fiksOrgId}/{digisosId}/filer```, der ```{fiksOrgId}``` og ```{digososId}``` er FiksOrgId-en og FiksDigisosId-en som filene skal legges til. 
+
+Endepunktet tar inn en liste, der man for hver fil som skal lastes opp legger til en metadata-blokk som inneholder informasjon om filen og en base64-encodet blokk som inneholder selve filen.
+Metadata består av filnavn på filen (*filnavn*), type (*mimetype*) og størrelse på filen i bytes (*storrelse*), der metadata-blokken er av typen "application/json". Alle felter må oppgis.
+
+Eksempel på metadata-blokk:
+```
+{
+    "filnavn": "test",
+    "mimetype": "application/pdf",
+    "storrelse" : 1024
+}   
+```
+
+***Returtype***
+\
+Ved en vellykket opplasting får man tilbake en liste av dokumentmetadata som inneholder filnavn, unik referanse (UUID) til Fiks-Dokumentlager, og størrelse på filen.
+
+Eksempel:
+```
+200 OK
+{
+    [
+        {
+            "filnavn": "test",
+            "dokumentlagerDokumentId": "ab35e9088-bcfa-4096-ba68-f07777ed167c",
+            "storrelse" : 1024
+        }
+    ]
+}
+```
+
+Ved feil ved opplasting får man 400 Bad Request når multipart-requesten ikke er definert med riktige data.
 
 ## Innsending av Søknad (for NAV)
 
