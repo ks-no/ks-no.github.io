@@ -5,7 +5,7 @@
     
       <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-<meta name="revised" content="2019-02-06T14:51:18 CET">
+<meta name="revised" content="2019-02-11T15:03:47 CET">
 <title>Digisos :: KS Fiks</title>
 <link rel="shortcut icon" href="/images/favicon.png" type="image/x-icon" />
 <link href="/css/nucleus.css" rel="stylesheet">
@@ -510,6 +510,48 @@
 <li>Fagsystemet må ha kontroll på listen med filer og sjekke at denne er korrekt.</li>
 <li>Når en Sakoppdatering skjer, må saken eksistere i digisos, enten fordi skjema fra nav er sendt via Digisos eller at fagsystem har opprettet en sak.</li>
 </ul>
+
+<p><strong>Opplasting av filer</strong></p>
+
+<p>Før en sakoppdatering, må alle refererte filer være lastet opp på forhånd.</p>
+
+<p>Filer lastes opp til FIKS-Digisos ved bruk av en multipart streaming request, der man spesifiserer HTTP-headeren &ldquo;Transfer-Encoding&rdquo; til å sende data i chunks, <code>Transfer-Encoding: chunked</code>.</p>
+
+<p>FIKS tilbyr en referanseimplementasjon av hvordan en slik request skal defineres, og som kan brukes for filopplasting: <a href="https://github.com/ks-no/fiks-digisos-klient">https://github.com/ks-no/fiks-digisos-klient</a>.</p>
+
+<p>URL-stien til filopplasting er <code>/digisos/api/v1/{fiksOrgId}/{digisosId}/filer</code>, der <code>{fiksOrgId}</code> og <code>{digososId}</code> er FiksOrgId-en og FiksDigisosId-en som filene skal legges til.</p>
+
+<p>Endepunktet tar inn en liste, der man for hver fil som skal lastes opp legger til en metadata-blokk som inneholder informasjon om filen og en base64-encodet blokk som inneholder selve filen.
+Metadata består av filnavn på filen (<em>filnavn</em>), type (<em>mimetype</em>) og størrelse på filen i bytes (<em>storrelse</em>), der metadata-blokken er av typen &ldquo;application/json&rdquo;. Alle felter må oppgis.</p>
+
+<p>Eksempel på metadata-blokk:</p>
+
+<pre><code>{
+    &quot;filnavn&quot;: &quot;test.pdf&quot;,
+    &quot;mimetype&quot;: &quot;application/pdf&quot;,
+    &quot;storrelse&quot; : 1024
+}   
+</code></pre>
+
+<p><strong><em>Returtype</em></strong>
+<br />
+Ved en vellykket opplasting får man tilbake en liste av dokumentmetadata som inneholder filnavn, unik referanse (UUID) til Fiks-Dokumentlager, og størrelse på filen.</p>
+
+<p>Eksempel:</p>
+
+<pre><code>200 OK
+{
+    [
+        {
+            &quot;filnavn&quot;: &quot;test.pdf&quot;,
+            &quot;dokumentlagerDokumentId&quot;: &quot;ab35e9088-bcfa-4096-ba68-f07777ed167c&quot;,
+            &quot;storrelse&quot; : 1024
+        }
+    ]
+}
+</code></pre>
+
+<p>Ved feil ved opplasting får man 400 Bad Request når multipart-requesten ikke er definert med riktige data.</p>
 
 <h2 id="innsending-av-søknad-for-nav">Innsending av Søknad (for NAV)</h2>
 
