@@ -67,7 +67,7 @@ Metadata består av filnavn på filen (*filnavn*), type (*mimetype*) og størrel
 Eksempel på metadata-blokk:
 ```
 {
-    "filnavn": "test",
+    "filnavn": "test.pdf",
     "mimetype": "application/pdf",
     "storrelse" : 1024
 }   
@@ -83,7 +83,7 @@ Eksempel:
 {
     [
         {
-            "filnavn": "test",
+            "filnavn": "test.pdf",
             "dokumentlagerDokumentId": "ab35e9088-bcfa-4096-ba68-f07777ed167c",
             "storrelse" : 1024
         }
