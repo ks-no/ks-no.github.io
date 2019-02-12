@@ -150,7 +150,7 @@
           "200" : {
             "description" : "successful operation",
             "schema" : {
-              "$ref" : "#/definitions/KontoUpdateResult"
+              "type" : "object"
             }
           }
         }
@@ -320,6 +320,72 @@
           }
         }
       }
+    },
+    "/dokumentlager/api/v1/{fiksOrganisasjonId}/kontoer/{kontoId}/tags/{tag}" : {
+      "put" : {
+        "tags" : [ "KontoConfiguration" ],
+        "summary" : "Legger til tag på konto",
+        "description" : "",
+        "operationId" : "addTagForKonto",
+        "parameters" : [ {
+          "name" : "fiksOrganisasjonId",
+          "in" : "path",
+          "required" : true,
+          "type" : "string",
+          "format" : "uuid"
+        }, {
+          "name" : "kontoId",
+          "in" : "path",
+          "required" : true,
+          "type" : "string",
+          "format" : "uuid"
+        }, {
+          "name" : "tag",
+          "in" : "path",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "type" : "object"
+            }
+          }
+        }
+      },
+      "delete" : {
+        "tags" : [ "KontoConfiguration" ],
+        "summary" : "Fjerner tag fra konto",
+        "description" : "",
+        "operationId" : "deleteTagForKonto",
+        "parameters" : [ {
+          "name" : "fiksOrganisasjonId",
+          "in" : "path",
+          "required" : true,
+          "type" : "string",
+          "format" : "uuid"
+        }, {
+          "name" : "kontoId",
+          "in" : "path",
+          "required" : true,
+          "type" : "string",
+          "format" : "uuid"
+        }, {
+          "name" : "tag",
+          "in" : "path",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "type" : "object"
+            }
+          }
+        }
+      }
     }
   },
   "definitions" : {
@@ -434,6 +500,18 @@
           "type" : "string",
           "format" : "uuid",
           "description" : "Id til organisasjonen som eier kontoen"
+        },
+        "slettet" : {
+          "type" : "boolean",
+          "description" : "Er kontoen slettet?"
+        },
+        "tags" : {
+          "type" : "array",
+          "description" : "Tags knyttet til kontoen",
+          "uniqueItems" : true,
+          "items" : {
+            "type" : "string"
+          }
         }
       },
       "description" : "Enkel informasjon for en konto"
@@ -463,7 +541,7 @@
           "description" : "Visningsnavn for kontoen"
         }
       },
-      "description" : "Informasjon om opprettelsen av en konto"
+      "description" : "Resulatet av en kontoopprettelse"
     },
     "KontoListe" : {
       "type" : "object",
@@ -501,30 +579,16 @@
     },
     "KontoUpdateRequest" : {
       "type" : "object",
-      "required" : [ "navn" ],
       "properties" : {
         "navn" : {
           "type" : "string",
           "description" : "Det nye visningsnavnet for kontoen",
-          "pattern" : "^[A-Za-zæøåÆØÅ0-9_.,/\\-_ ]+$"
+          "minLength" : 2,
+          "maxLength" : 200,
+          "pattern" : "^[A-ZÆØÅa-zæøå0-9ÁáÀàÂâÉéÈèÊêÍíÌìÎîÓóÒòÔôÚúÙùÛûÝýÄäËëÏïÖöÜü,.!?\\-:;/\\\\'()&+*=%§]+[A-ZÆØÅa-zæøå0-9ÁáÀàÂâÉéÈèÊêÍíÌìÎîÓóÒòÔôÚúÙùÛûÝýÄäËëÏïÖöÜü ,.!?\\-:;/\\\\'()&+*=%§]*[A-ZÆØÅa-zæøå0-9ÁáÀàÂâÉéÈèÊêÍíÌìÎîÓóÒòÔôÚúÙùÛûÝýÄäËëÏïÖöÜü,.!?\\-:;/\\\\'()&+*=%§]+$"
         }
       },
       "description" : "En forespørsel om å oppdatere en eksisterende konto"
-    },
-    "KontoUpdateResult" : {
-      "type" : "object",
-      "properties" : {
-        "id" : {
-          "type" : "string",
-          "format" : "uuid",
-          "description" : "Id for kontoen som ble oppdatert"
-        },
-        "navn" : {
-          "type" : "string",
-          "description" : "Kontoens oppdaterte visningsnavn"
-        }
-      },
-      "description" : "Informasjon om oppdateringen av en konto"
     },
     "KontoUtvidet" : {
       "type" : "object",
@@ -543,16 +607,24 @@
           "format" : "uuid",
           "description" : "Id til organisasjonen som eier kontoen"
         },
+        "slettet" : {
+          "type" : "boolean",
+          "description" : "Er kontoen slettet?"
+        },
+        "tags" : {
+          "type" : "array",
+          "description" : "Tags knyttet til kontoen",
+          "uniqueItems" : true,
+          "items" : {
+            "type" : "string"
+          }
+        },
         "hendelser" : {
           "type" : "array",
           "description" : "Liste over alle hendelser som har skjedd på kontoen",
           "items" : {
             "$ref" : "#/definitions/Hendelse"
           }
-        },
-        "slettet" : {
-          "type" : "boolean",
-          "description" : "Er kontoen slettet?"
         }
       },
       "description" : "Utvidet informasjon for en konto"
