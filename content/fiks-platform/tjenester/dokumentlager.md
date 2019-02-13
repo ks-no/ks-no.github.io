@@ -29,6 +29,14 @@ Det er tre forskjellige måter et dokument kan bli slettet på:
 
 Når et dokument slettes vil metadata fortsette å eksistere, men selve dokumentet vil ikke lenger være tilgjengelig.
 
+### Klienter
+
+For å gjøre det enklere å ta i bruk Dokumentlageret har KS utviklet en klient for opplasting og nedlasting. Denne støtter 
+blant annet klient-side kryptering ved opplasting.
+ 
+Per i dag finnes denne klienten kun for Java, med en egen modul for konfigurering via Spring Boot. Kode og dokumentasjon 
+finnes på GitHub: https://github.com/ks-no/fiks-dokumentlager-klient
+
 ### Integrasjonsutvikling
 
 Alle operasjoner i dokumentlageret utføres på en konto, som er en ressurs som hører til dokumentlager-tjenesten til en 
