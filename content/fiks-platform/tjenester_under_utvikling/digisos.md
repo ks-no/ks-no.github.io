@@ -1,6 +1,6 @@
 ---
 title: Digisos 
-date: 2019-02-11
+date: 2019-02-27
 ---
 
 **STATUS: under utvikling**
@@ -95,6 +95,51 @@ Ved feil ved opplasting får man 400 Bad Request når multipart-requesten ikke e
 
 ## Innsending av Søknad (for NAV)
 
-**Under stor endring**
-
 Soknad api [(api-spec)](https://editor.swagger.io/?url=https://ks-no.github.io/api/digisos-api-v1.json)
+
+**Innsending av ny søknad**
+
+Innsending av ny søknad til FIKS-Digisos bruker multipart streaming request, på lik linje som opplasting av filer for fagsystemene, der man spesifiserer HTTP-headeren "Transfer-Encoding" til å sende data i chunks, ```Transfer-Encoding: chunked```. 
+
+URL-stien til ny søknad er ```/digisos/api/v1/soknader/{kommunenummer}/{navEkseternRefId}```, der ```{kommunenummer}``` er kommunenummer søknaden skal sendes til og ```{navEkseternRefId}``` er en unik id fra NAV for søknaden. 
+
+Endepunktet tar inn påkrevde felter for innsending av en ny søknad, som består av metadataene soknad.json (json-encodet String) og vedlegg.json (json-encodet String), samt filen soknad.pdf (metadata + base64-encodet blokk) pluss eventuelle vedlegg (metadata + base64-encodet blokk). Disse dataene må da være definert i denne rekkefølgen i multipart requesten. 
+
+For hver fil som skal lastes opp (soknad.pdf og hvert vedlegg) legger man til en metadata-blokk som inneholder informasjon om filen og en base64-encodet blokk som inneholder selve filen.
+\
+Metadata består av filnavn på filen (*filnavn*), type (*mimetype*) og størrelse på filen i bytes (*storrelse*), der metadata-blokken er av typen "application/json". Alle felter må oppgis.
+
+Eksempel på metadata-blokk, som må defineres for hver fil:
+```
+{
+    "filnavn": "soknad.pdf",
+    "mimetype": "application/pdf",
+    "storrelse" : 1024
+}   
+```
+Innholdet i en request vil da kunne bestå av:
+```
+soknadJson, vedleggJson, metadata + soknad.pdf, metadata + vedlegg1.pdf, metadata + vedlegg2.pdf
+```
+
+***Returtype***
+\
+Ved en vellykket innsending får man tilbake ```202 ACCEPTED``` og en unik Fiks-DigisosId (UUID) som er ID-en til opprettet søknad i Fiks-Digisos.
+
+Ved feil ved opplasting får man 400 Bad Request når multipart-requesten ikke er definert med riktige data.
+
+**Innsending av ny ettersendelse**
+
+Innsending av ny ettersendelse til FIKS-Digisos bruker også multipart streaming request. 
+
+URL-stien til ny ettersendelse er ```/digisos/api/v1/soknader/{kommunenummer}/{soknadId}/{navEkseternRefId}```, der ```{kommunenummer}``` er kommunenummer søknaden tilhører, ```{soknadId}``` er Fiks-DigisosId-en for søknaden det skal ettersendes til og ```{navEkseternRefId}``` er en unik id fra NAV for denne ettersendelsen. 
+
+Endepunktet tar inn påkrevde felter for innsending av en ny ettersendelse, som består av metadataen vedlegg.json (String), samt en liste med vedlegg (metadata + base64-encodet blokk). 
+
+For hvert vedlegg som skal lastes opp legger man til en metadata-blokk som inneholder informasjon om filen (samme som innsending av ny søknad) og en base64-encodet blokk som inneholder selve filen.
+
+***Returtype***
+\
+Det er ingen returtype på dette endepunktet.
+
+Ved feil ved opplasting får man 400 Bad Request når multipart-requesten ikke er definert med riktige data.
