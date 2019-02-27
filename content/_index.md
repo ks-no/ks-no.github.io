@@ -9,11 +9,11 @@ Her finner du dokumentasjon av Fiks plattformen og SvarUt tjenesten. Den siste e
 
 Dokumentasjonen du finner her er rettet mot deg som skal administrere plattformen på vegne av en kommune eller annen organisasjon, eller utvikle integrasjoner mot api'ene Fiks tilbyr.
 
-## Feil
+### Feil
 Hvis du finner feil, eller noe som ikke er beskrevet godt nok, setter vi pris på om du sender en epost til [fiks-utvikling@ks.no](mailto:fiks-utvikling@ks.no) eller lager en pull request på https://github.com/ks-no/ks-no.github.io.
 
-## Abonner på dokumentasjons endringer
+### Abonner på dokumentasjons endringer
 For å abonnere på endringer i dokumentasjonen kan du benytte vår <a rel="alternate" type="application/rss+xml" href="index.xml">RSS-feed</a>.
 
-## Support - Slack
+### Slack
 Vi anbefaler også alle integrasjonutviklere å benytte vår Slack kanal for spørsmål og kommentarer vedrørende fiks-plattformen, send en mail til [fiks-utvikling@ks.no](mailto:fiks-utvikling@ks.no) for invitasjon.
