@@ -1,6 +1,6 @@
 ---
 title: Digisos 
-date: 2019-02-27
+date: 2019-03-06
 ---
 
 **STATUS: under utvikling**
@@ -36,7 +36,7 @@ Dokument og melding i fiks-innsyn er utelukkende tilgjengelig for innbygger, det
     1. Evt. nye filer legges i Fiks Dokumentlager, autorisert for innbygger.
     2. Digisos saken i Fiks Innsyn oppdateres
     3. Saken er tilgengelig som nav.no og nav ansatte/brukerstøtte.
-6. Om fagsystemet avviser eller unnlater å bekrefte mottak av saken vil SvarUt benyttes som alternativ kanal. I praksis betyr dette at meldingen blir sendt til kommunens Altinn-konto, evt. sendt til print og postlagt.     
+6. Om fagsystemet avviser eller unnlater å bekrefte mottak av saken vil SvarUt benyttes som alternativ kanal, der feltet "eksternRef" vil inneholde DigisosId-en for saken. I praksis betyr dette at meldingen blir sendt til kommunens Altinn-konto, evt. sendt til print og postlagt.     
     
 ![fiks_digisos](/images/fiks_digisos.png "Fiks Digisos")
 
