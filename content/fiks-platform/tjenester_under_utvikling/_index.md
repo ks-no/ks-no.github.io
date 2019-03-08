@@ -1,6 +1,6 @@
 --- 
 title: Tjenester under utvikling
-date: 2018-12-17
+date: 2019-03-08
 --- 
 
 Roadmap for fremtidige tjenester på fiks-plattformen. Tidsangivelse må tolkes som en indikasjon på når tjenesten kan være klar, endringer kan forekomme.
