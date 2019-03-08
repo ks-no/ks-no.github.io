@@ -5,17 +5,7 @@ date: 2018-12-17
 
 Roadmap for fremtidige tjenester på fiks-plattformen. Tidsangivelse må tolkes som en indikasjon på når tjenesten kan være klar, endringer kan forekomme.
 
-## 2018-Q4:
-####  [Fiks Dokumentlager]({{< ref "dokumentlager.md" >}})
-Tjeneste for sikker lagring av dokumenter, og for å tilgjengeliggjøre dokumenter for en innbygger eller organisasjon basert på ID-Porten innlogging.
-
-####  Minside Profil: Kontakt- og reservasjonsregisteret
-Innbyggerens profil på Minside utvides med gjeldende informasjon fra Kontakt og Reservasjonsregister, og lenker for å endre dette.
-
 ## 2019-Q1:
-#### [Fiks Audit]({{< ref "audit.md" >}})
-Audit-logg for handlinger på Fiks plattformen gjøres tilgjengelig for tjeneste-administratorer. Det vil være mulig å se hvilke integrasjoner eller personer som har gjort hvilke handlinger, og når det er utført.
-
 #### [Fiks Digisos]({{< ref "digisos.md" >}})
 Tjeneste for kommunal behandling av sosialsøknader sendt fra nav.no. Statusoppdateringer blir gjort tilgjengelig på minside.kommune.no og på nav.no.
 
@@ -25,28 +15,37 @@ Integrasjonsplattform for maskin-til-maskin kommunikasjon. Erstatter gamle SvarU
 #### Minside: Søknader
 Innbyggeres innsendte søknader og kladder for disse gjøres tilgjengelig på Minside. Utvikles som modul i Fiks Innsyn i sammarbeid med leverandører av søknadsmotorer og arkivsystem.
 
+## 2019-Q2
+#### Fiks Innsyn: Matrikkel
+Innsyn utvides med informasjon om matrikkel, som gjør det mulig å eksponere meldinger for eieren av en spesifisert eiendom.
+
+#### Fiks Minside: Matrikkel
+Det vil bli mulig å se eiendomer du eiger på minside, med forskjellig informasjon på eiendomen. Lenker til andre løsninger.
+
 #### Fiks Statistikk
 Statistikk og oversikt over hvordan en kommunes tjenester på Minside og Fiks-plattformen benyttes. Antall besøkende, dataforbruk osv.  
 
-## 2019-Q2
-#### [Fiks Samtykke]({{< ref "samtykke.md" >}})
-Samtykke-løsningen utviklet for Fiks plattformen blir tilgjengelig som en tjeneste som kan benyttes til kommunens egne formål, hovedsakelig relatert til innhenting og forvaltning av samtykker i GDPR sammenheng.
+#### [Fiks Audit]({{< ref "audit.md" >}})
+Audit-logg for handlinger på Fiks plattformen gjøres tilgjengelig for tjeneste-administratorer. Det vil være mulig å se hvilke integrasjoner eller personer som har gjort hvilke handlinger, og når det er utført.
 
+
+#### Fiks SvarInn 2: SvarUt integrasjon
+SvarUt går over til å benytte Fiks Svarinn 2 for å formidle meldinger til fagsystemer.
+
+## 2019-Q3
 #### Fiks Folkeregister
 Fiks Plattformen tilgjengeliggjør folkeregistrets api for oppslag, støttet av logging, autentisering, autorisasjon og konfigurering på Fiks Plattformen.
 
 #### Fiks Innbygger
 Fiks plattformens løsning for spørringer og rapportering på folkeregisterdata. Vil inkludere mulighet for å lage skreddresydde rapporter.
 
-#### Fiks SvarInn 2: SvarUt integrasjon
-SvarUt går over til å benytte Fiks Svarinn 2 for å formidle meldinger til fagsystemer.
-
-## Under utredning:
-#### Fiks Innsyn: Matrikkel
-Innsyn utvides med informasjon om matrikkel, som gjør det mulig å eksponere meldinger for eieren av en spesifisert eiendom.
-
 #### Minside: Eiendom
 Matrikkel og eiendomsinformasjon gjøres tilgjengelig på Minside. Vil inkludere mulighet for å sende korrigeringer på evt. feilaktig informasjon.
+
+#### [Fiks Samtykke]({{< ref "samtykke.md" >}})
+Samtykke-løsningen utviklet for Fiks plattformen blir tilgjengelig som en tjeneste som kan benyttes til kommunens egne formål, hovedsakelig relatert til innhenting og forvaltning av samtykker i GDPR sammenheng.
+
+## Under utredning:
 
 #### Minside: Faktura
 Faktura fra kommunen gjøres tilgjengelig på Minside. Utvikles i sammarbeid med Bergen kommune, som står for utvikling av integrasjoner mot fagsystem.
