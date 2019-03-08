@@ -1,6 +1,6 @@
 ---
 title: Digisos 
-date: 2019-03-06
+date: 2019-03-08
 ---
 
 **STATUS: under utvikling**
@@ -45,8 +45,11 @@ Dokument og melding i fiks-innsyn er utelukkende tilgjengelig for innbygger, det
 
 Sak oppdaterings api [(api-spec)](https://editor.swagger.io/?url=https://ks-no.github.io/api/digisos-sak-api-v1.json)
 
-* Filer må lastes opp på forhånd.
-* Når en sakoppdatering skjer, må alle filer være tilgjenglieg.
+Bruker filformatet for digisos-soker.json, som definert her: [soknadsosialhjelp-filformat
+](https://navikt.github.io/soknadsosialhjelp-filformat/#/data%20fra%20fagsystem/getdigisos_soker_json).
+
+* Filer må lastes opp på forhånd, da digisos-soker.json inneholder referanse-id til dokumentene som kan linkes til søkeren, som gjelder både for filer som lastes opp til Dokumentlager via Digios-api (som beskrevet under) eller som er [sendt via SvarUt](https://ks-no.github.io/svarut/integrasjon/forsendelsesservicev10/).
+* Når en sakoppdatering skjer, må derfor alle filer være tilgjenglige.
 * Filer som ikke lenger skal ligge på sak, kan fjernes etter at sakoppdatering uten filene er lastet opp.
 * Fagsystemet må ha kontroll på listen med filer og sjekke at denne er korrekt.
 * Når en Sakoppdatering skjer, må saken eksistere i digisos, enten fordi skjema fra nav er sendt via Digisos eller at fagsystem har opprettet en sak.
