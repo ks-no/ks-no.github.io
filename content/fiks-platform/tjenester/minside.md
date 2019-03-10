@@ -23,5 +23,5 @@ Dokumentene i innsyn kommer fra to hovedkilder:
 
 Kildene over kan bare tilgjengeliggjøre meldingstyper som allerede er implmentert i Fiks Innsyn (forsendelse, og snart faktura, saksmappe, journalpost, søknad m.m.). Ta kontakt med fiks@ks.no om du ønsker å gjøre ytterligere typer meldinger tilgjenglig for dine innbyggere.
 
-![minside](/images/minside.png "Minside")
+![minside](https://www.lucidchart.com/publicSegments/view/4abb8842-990b-4c2a-81d8-b510b3862a4e/image.png "Minside")
 
