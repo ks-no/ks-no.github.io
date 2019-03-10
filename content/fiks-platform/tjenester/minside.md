@@ -6,7 +6,7 @@ date: 2019-03-08
 
 KS-Minside er en webapplikasjonen du finner på https://minside.kommune.no. Siden inneholder grensesnitt mot de innbyggerrettede tjenestene på Fiks-plattformen, i første omgang gjelder dette hovedsakelig tjenestene som er drevet av søkemotoren Fiks Innsyn, og først i rekke av disse er "Post fra kommunen". Flere tjenester kommer til, som faktura, byggesak, søknader og lignende.
 Ks ønsker at det meste av informasjon som er relevant for innbygger skal finnes tilgjengelig på denne siden, enten som direkte informasjon eller søkbar informasjon som linker til andre sider.
-Operasjoner som er knyttet til disse dataene skal vises sammen med dataene. Dette kan f.eks være utsett betaling på en faktura. Skifte søppelspann ved renovasjon på en eiendom. Bestille ekstra pipeinspeksjon fra feier til bolig. Korrigere feil på arealmål på boligen.
+Operasjoner som er knyttet til disse dataene skal vises sammen med dataene. Dette kan f.eks være utsett betaling på en faktura. Skifte søppelspann ved renovasjon på en eiendom. Bestille ekstra pipeinspeksjon fra feier til bolig. Korrigere feil på areal på boligen.
 
 KS-Minside vil ikke inneholde alle disse tjenestene men vil linke/henvise til eksisterende løsninger som finnes i kommunene. Hvis disse tjenestene også benytter IdPorten vil en ha single sign on, da vil en ikke få noen ekstra innlogging.
 
