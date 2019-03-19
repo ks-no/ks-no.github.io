@@ -8,7 +8,7 @@ date: 2018-05-07
 KS er i gang med å videreutvikle styringsdokumentasjon for å være i samsvar med Personvernforordningen(GDPR) og ISO standardene på informasjonsikkerhet.
 For KS er det svært viktig å ha på plass et godt personvern for innbyggerne og kommunene som benytter vår tjenester.
 
-##Generelle sikkerhets mekanismer
+## Generelle sikkerhets mekanismer
 
 Under kommer generelle retningslinjer for hvordan vi har sikret applikasjonene, skulle noe avvike fra dette vil det 
 være spesifisert i hver tjeneste.
