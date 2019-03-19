@@ -14,11 +14,11 @@ Forsøker å hente informasjon om autentisert bruker fra Altinn. Det eneste som 
 finnes returneres en respons med blankt navn.
 
 ### Alle
-Henter alle organisasjoner som autentisert bruker har "Post/arkiv"- eller "Kommunale tjenester"-rollen for i Altinn. 
+Henter alle organisasjoner som autentisert bruker har rollen "Post/arkiv" eller "Kommunale tjenester" for i Altinn. 
 Listen vil også inneholde en fullmakt for autentisert bruker, med navn satt dersom personen ekisterer i Altinn.
 
 ### Autoriser for organisasjon
-Sjekker om autentisert bruker har "Post/arkiv"- eller "Kommunale tjenester"-rollen i Altinn på organisasjonen med 
+Sjekker om autentisert bruker har rollen "Post/arkiv" eller "Kommunale tjenester" i Altinn på organisasjonen med 
 organisasjonsnummeret som sendes inn.
 
 Organisasjonsnummer kan sendes inn som query parameter "orgno", eller i HTTP-header med navn "OnBehalfOf". Førstnevnte 
