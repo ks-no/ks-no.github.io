@@ -15,11 +15,11 @@ Fiks Digisos tilbyr:
 * Ansatte/brukerstøtte i nav kan se utvalgte deler av saken via nav sine systemer.
 
 ## Sikkerhet
-Systemet er lagt opp slik at Nav ikke trenger å lagre data, disse fjernes fra Navs systemer når søknaden sendes til Fiks. All tilstand lagres dermed på Fiks plattformen og hos kommunen. Innsending av søknad kan utelukkende gjøres med brukerens ID-Porten autentisering.
+Systemet er lagt opp slik at NAV ikke trenger å lagre data, disse fjernes fra Navs systemer når søknaden sendes til Fiks. All tilstand lagres dermed på Fiks plattformen og hos kommunen. Innsending av søknad kan utelukkende gjøres med brukerens ID-Porten autentisering.
 
 Kommunikasjonen mellom aktørene (Nav, Fiks, fagsystem) foregår med SSL kryptering, i tillegg er alle dokumenter kryptert med mottakers nøkkel. Nav krypterer med Fiks sin nøkkel, Fiks krypterer med fagsystemets, og fagsystemet vil igjen bruke fiks-nøkkelen.
 
-Dokument og melding i fiks-innsyn er utelukkende tilgjengelig for innbygger, dette gjelder også bruker-delen av den generelle metadataen som er lagret i Fiks Digisos. Et begrenset utvalg av metadata er også tilgjengelig for Nav ansatte - uthenting av disse krever autentisering med Navs virksomhetssertifikat og integrasjonslogin, og alle slike spørringer logges i Fiks Audit. Ansvaret for den videre autorisering av den enkelte Nav-ansatte ligger hos Nav.
+Dokument og melding i fiks-innsyn er utelukkende tilgjengelig for innbygger, dette gjelder også bruker-delen av den generelle metadataen som er lagret i Fiks Digisos. Et begrenset utvalg av metadata er også tilgjengelig for NAV nsatte. Uthenting av disse krever autentisering med NAVs virksomhetssertifikat og integrasjonslogin, og alle slike spørringer logges i Fiks Audit. Ansvaret for den videre autorisering av den enkelte NAV-ansatte ligger hos NAV.
 
 ## Flyt
 
@@ -29,8 +29,8 @@ Dokument og melding i fiks-innsyn er utelukkende tilgjengelig for innbygger, det
     2. Det gjøres oppslag i fiks-svarinn2-katalog for å se om det finnes en mottaker på nav-enhetsnummeret som er spesifisert, og om denne mottakeren er i stand til å behandle digisos-formatet.
     3. Det gjøres et kall mot fiks-svarinn, hvor filen blir validert og sendt til mottakeren.
     4. Hvis punktene over blir gjennomført ok opprettes en digisos-melding i Fiks Innsyn. Denne autoriseres for innbyggeren.
-    5. Fiks returnerer 202 ACCEPTED på http-kallet fra Nav. Dette markerer ansvarsoverføring fra Nav til Fiks, som fra nå garanterer at saken leveres til kommune for behandling.
-3. Kommunen mottar meldingen gjennom SvarInn2. Den vil være tilgjengelig i køen i en fastsatt periode. Om kommunen ikke bekrefter mottak før denne perioden går ut vil meldingen bli trukket og alternativ kanal benyttes (se punkt 6).
+    5. Fiks returnerer 202 ACCEPTED på http-kallet fra NAV. Dette markerer ansvarsoverføring fra NAV til Fiks, som fra nå garanterer at saken leveres til kommune for behandling.
+3. Kommunen mottar meldingen gjennom Fiks IO (SvarInn 2). Den vil være tilgjengelig i køen i en fastsatt periode. Om kommunen ikke bekrefter mottak før denne perioden går ut vil meldingen bli trukket og alternativ kanal benyttes (se punkt 6).
 4. Søknanded opprettes i kommunalt fagsystem.
 5. Det kommunale fagsystemet bekrefter mottak av søknaden og oppdaterer status i Fiks Digisos. 
     1. Evt. nye filer legges i Fiks Dokumentlager, autorisert for innbygger.
@@ -58,9 +58,9 @@ Bruker filformatet for digisos-soker.json, som definert her: [soknadsosialhjelp-
 
 Før en sakoppdatering, må alle refererte filer være lastet opp på forhånd.
 
-Filer lastes opp til FIKS-Digisos ved bruk av en multipart streaming request, der man spesifiserer HTTP-headeren "Transfer-Encoding" til å sende data i chunks, ```Transfer-Encoding: chunked```. 
+Filer lastes opp til Fiks Digisos ved bruk av en multipart streaming request, der man spesifiserer HTTP-headeren "Transfer-Encoding" til å sende data i chunks, ```Transfer-Encoding: chunked```. 
 
-FIKS tilbyr en referanseimplementasjon av hvordan en slik request skal defineres, og som kan brukes for filopplasting: https://github.com/ks-no/fiks-digisos-klient.
+Fiks tilbyr en referanseimplementasjon av hvordan en slik request skal defineres, og som kan brukes for filopplasting: https://github.com/ks-no/fiks-digisos-klient.
 
 URL-stien til filopplasting er ```/digisos/api/v1/{fiksOrgId}/{digisosId}/filer```, der ```{fiksOrgId}``` og ```{digososId}``` er FiksOrgId-en og FiksDigisosId-en som filene skal legges til. 
 
@@ -127,15 +127,15 @@ soknadJson, vedleggJson, metadata + soknad.pdf, metadata + vedlegg1.pdf, metadat
 
 ***Returtype***
 \
-Ved en vellykket innsending får man tilbake ```202 ACCEPTED``` og en unik Fiks-DigisosId (UUID) som er ID-en til opprettet søknad i Fiks-Digisos.
+Ved en vellykket innsending får man tilbake ```202 ACCEPTED``` og en unik Fiks DigisosId (UUID) som er ID-en til opprettet søknad i Fiks-Digisos.
 
 Ved feil ved opplasting får man 400 Bad Request når multipart-requesten ikke er definert med riktige data.
 
 **Innsending av ny ettersendelse**
 
-Innsending av ny ettersendelse til FIKS-Digisos bruker også multipart streaming request. 
+Innsending av ny ettersendelse til FIKS Digisos bruker også multipart streaming request. 
 
-URL-stien til ny ettersendelse er ```/digisos/api/v1/soknader/{kommunenummer}/{soknadId}/{navEkseternRefId}```, der ```{kommunenummer}``` er kommunenummer søknaden tilhører, ```{soknadId}``` er Fiks-DigisosId-en for søknaden det skal ettersendes til og ```{navEkseternRefId}``` er en unik id fra NAV for denne ettersendelsen. 
+URL-stien til ny ettersendelse er ```/digisos/api/v1/soknader/{kommunenummer}/{soknadId}/{navEkseternRefId}```, der ```{kommunenummer}``` er kommunenummer søknaden tilhører, ```{soknadId}``` er Fiks DigisosId-en for søknaden det skal ettersendes til og ```{navEkseternRefId}``` er en unik id fra NAV for denne ettersendelsen. 
 
 Endepunktet tar inn påkrevde felter for innsending av en ny ettersendelse, som består av metadataen vedlegg.json (String), samt en liste med vedlegg (metadata + base64-encodet blokk). 
 
