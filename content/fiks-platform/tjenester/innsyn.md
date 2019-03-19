@@ -20,7 +20,7 @@ Søkeresultatet scores på relevans: nye meldinger scores høyere enn gamle, ule
 
 Søkemotoren inneholder utelukkende metadata. Om meldingen skal peke til et dokument, bilde eller annen fil gjøres dette i form av en lenke: denne kan for eksempel peke til en fil i [Fiks Dokumentlager]({{< ref "dokumentlager.md" >}}), men fiks-organisasjoner står fritt til å benytte andre tjenester. Så lenge disse støtter innlogging gjennom ID-Porten vil dette også oppleves som sømløst av innbygger. 
 
-Når plattformen lanseres er Fiks SvarUt den første integrasjonen som leverer meldinger til Fiks Innsyn - hvis kommunen ønsker dette kan alle meldinger som har har blitt sendt gjennom svarut gjøres tilgjengelig for mottakerene. Dette styres gjennom [Fiks Konfigurasjon]({{< ref "digisos.md" >}}).    
+Når plattformen lanseres er KS SvarUt den første integrasjonen som leverer meldinger til Fiks Innsyn - hvis kommunen ønsker dette kan alle meldinger som har har blitt sendt gjennom svarut gjøres tilgjengelig for mottakerene. Dette styres gjennom [Fiks Konfigurasjon]({{< ref "digisos.md" >}}).    
 
 ## Integrasjonsutvikling
 Først noen grunnleggende prinsipper for forvalting av meldinger i innsyn:
