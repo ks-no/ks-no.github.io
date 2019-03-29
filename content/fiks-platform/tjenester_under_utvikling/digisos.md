@@ -48,7 +48,7 @@ Sak oppdaterings api [(api-spec)](https://editor.swagger.io/?url=https://ks-no.g
 Bruker filformatet for digisos-soker.json, som definert her: [soknadsosialhjelp-filformat
 ](https://navikt.github.io/soknadsosialhjelp-filformat/#/data%20fra%20fagsystem/getdigisos_soker_json).
 
-For at fagsystemet skal få tilgang til Digisos-api-et for en kommune, må kommunen først konfigurere og aktivere Digisos gjennom [Fiks Konfigurasjon]({{< ref "konfigurasjon.md" >}}), der man også gir fagsystemet sin integrasjon tilgang til Digisos.
+For at fagsystemet skal få tilgang til Digisos-api-et for en kommune, må kommunen først konfigurere og aktivere Digisos gjennom [Fiks Konfigurasjon]({{< ref "konfigurasjon.md" >}}), der man også gir fagsystemet sin integrasjon tilgang til Digisos. For generell integrasjonsutvikling mot Fiks, se [Integrasjonsutvikling]({{< ref "integrasjoner.md" >}})
 
 * Filer må lastes opp på forhånd, da digisos-soker.json inneholder referanse-id til dokumentene som kan linkes til søkeren, som gjelder både for filer som lastes opp til Dokumentlager via Digios-api (som beskrevet under) eller som er [sendt via SvarUt](https://ks-no.github.io/svarut/integrasjon/forsendelsesservicev10/).
 * Når en sakoppdatering skjer, må derfor alle filer være tilgjenglige på saken.
@@ -101,6 +101,8 @@ Ved feil ved opplasting får man 400 Bad Request når multipart-requesten ikke e
 ## Innsending av Søknad (for NAV)
 
 Soknad api [(api-spec)](https://editor.swagger.io/?url=https://ks-no.github.io/api/digisos-api-v1.json)
+
+For generell integrasjonsutvikling mot Fiks, se [Integrasjonsutvikling]({{< ref "integrasjoner.md" >}})
 
 **Innsending av ny søknad**
 
