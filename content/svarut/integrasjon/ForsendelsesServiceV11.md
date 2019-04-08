@@ -8,14 +8,8 @@ For å benytte web-tjenesten må en bruke HTTP Basic autentication med brukernav
 
 ### Nytt i denne versjonen
 
-* Ny operasjon: retrieveDokumentMetadata. Denne er lagt inn for å kunne hente ut informasjon om bl.a. hvor dokumentet kan lastes ned og eventuelt lenke til signeringsoppdrag.
-* Endret operasjon: setForsendelseLestAvEksterntSystem. Denne er oppdatert til å ta imot objekt av type LestAv.
-* Endret operasjoner: retrieveForsendelsesStatus og retrieveForsendelsesStatuser, begge returnerer nå samme modell-objekt (ForsendelsesStatus). Sistnevnte operasjon har pakket resultatet i en liste.
-* Forsendelsesid og organisasjonsnummer er kapslet inn i egne typer.
-* Modell-objektet StatusResult heter nå ForsendelsesStatus. Gamle ForsendelseStatus heter nå Status og blir returnert som en del av ForsendelsesStatus.
-* Modell-objektet Brevpost er ikke lenger i bruk og er fjernet.
-* Modell-objektet PrintKonfigurasjon heter nå UtskriftsKonfigurasjon.
-* Alle modell-objektene er oppdatert til å bruke camelCase på felt og attributter.
+* EksponertFor: Gir tilgang til andre enn mottaker å laste ned filene. 
+
 
 ## Tjenester
 
