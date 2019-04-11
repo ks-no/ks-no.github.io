@@ -22,6 +22,15 @@ Kall mot svarut, timer ut hvis de tar meir enn 15 minutt. Derfor kan det være l
 | [ForsendelsesServiceV10](forsendelsesservicev10) | [WSDL](https://svarut.ks.no/tjenester/forsendelseservice/ForsendelsesServiceV10?wsdl) | Stabil | <ul><li> Ny operasjon: retrieveDokumentMetadata. Denne er lagt inn for å kunne hente ut informasjon om bl.a. hvor dokumentet kan lastes ned og eventuelt lenke til signeringsoppdrag.</li><li> Endret operasjon: setForsendelseLestAvEksterntSystem. Denne er oppdatert til å ta imot objekt av type LestAv.</li><li> Endret operasjoner: retrieveForsendelsesStatus og retrieveForsendelsesStatuser, begge returnerer nå samme modell-objekt (ForsendelsesStatus). Sistnevnte operasjon har pakket resultatet i en liste.</li><li> Forsendelsesid og organisasjonsnummer er kapslet inn i egne typer.</li><li> Modell-objektet StatusResult heter nå ForsendelsesStatus. Gamle ForsendelseStatus heter nå Status og blir returnert som en del av ForsendelsesStatus.</li><li> Modell-objektet Brevpost er ikke lenger i bruk og er fjernet.</li><li> Modell-objektet PrintKonfigurasjon heter nå UtskriftsKonfigurasjon.</li><li> Alle modell-objektene er oppdatert til å bruke camelCase på felt og attributter.</li></ul> |
 | [ForsendelsesServiceV11](forsendelsesservicev11) | [WSDL](https://svarut.ks.no/tjenester/forsendelseservice/ForsendelsesServiceV11?wsdl) | Under utvikling | <ul><li>EksponertFor, kan gjør forsendelse tilgjengelig for andre enn mottaker. Brukes av edialog for å tilate innsender å laste ned filene. </li></ul> |
 
+# Rest versjoner av forsendelseService
+
+Det kommer ikke ny funksjonalitet etter v11 av soap servicen. Nye endringer og features vil komme i Rest servicene.
+Når vi brekker json strukturen vil det komme ny versjon av servicen. Alle implementasjoner må takle json felt som ikke er spesifisert. Det vil komme nye felt og eksisterende ikke obligatoriske felt kan forsvinne.
+
+| Versjon | Status | Endringer |
+| --- | --- | --- |
+| [ForsendelsesRestServiceV1](forsendelsesrestservicev1) | Under utvikling | <ul><li>Funksjonaliteten i V11 flyttet til http/json basert api.</li></ul> |
+
 # Nedlasting av forsendelser direkte til sakssystem
 
 Sakssystemer kan kalle Svarut for å laste ned forsendelser direkte ved å bruke enten en REST-tjeneste eller en SOAP web-service.
