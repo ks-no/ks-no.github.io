@@ -40,4 +40,4 @@ Disse json spec filene kan brukes av alle. De blir løpende oppdatert om vi legg
 
 
 ### VIKTIG!
-/sendForsendelse bør ha Readtimeout på 16min. Da timer SvarUt ut først etter 15 min. Denne er så høg fordi vi skal kunne sende store filer og det kan ta litt tid å sende.
+/sendForsendelse bør ha readtimeout på 16min. SvarUT har Timeout på 15min. SvarUt kan ta i mot ganske store filer, derfor er denne timeouten så høg. 
