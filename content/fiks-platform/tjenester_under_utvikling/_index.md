@@ -28,6 +28,9 @@ Statistikk og oversikt over hvordan en kommunes tjenester på MinSide og Fiks-pl
 #### Forvaltning: [Audit]({{< ref "audit.md" >}})
 Audit-logg for handlinger på Fiks plattformen gjøres tilgjengelig for tjeneste-administratorer. Det vil være mulig å se hvilke integrasjoner eller personer som har gjort hvilke handlinger, og når det er utført.
 
+#### Minside: Lenker til kommunale tjenester
+Lar en kommune legge inn sine eksisterende tjenester, med beskrivelse og lenke. Disse vises på minside.kommune.no for innbyggere i kommunen.
+
 ## 2019-Q4
 #### Minside: Eiendom
 Matrikkel- og eiendomsinformasjon gjøres tilgjengelig på MinSide. Vil inkludere mulighet for å sende korrigeringer på evt. feilaktig informasjon.
