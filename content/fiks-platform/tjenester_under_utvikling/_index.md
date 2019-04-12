@@ -32,9 +32,6 @@ Audit-logg for handlinger på Fiks plattformen gjøres tilgjengelig for tjeneste
 #### Minside: Eiendom
 Matrikkel- og eiendomsinformasjon gjøres tilgjengelig på MinSide. Vil inkludere mulighet for å sende korrigeringer på evt. feilaktig informasjon.
 
-#### [Fiks Samtykke]({{< ref "samtykke.md" >}})
-Samtykke-løsningen utviklet for Fiks-plattformen blir tilgjengelig som en tjeneste som kan benyttes til kommunens egne formål, hovedsakelig relatert til innhenting og forvaltning av samtykker i GDPR sammenheng.
-
 ## 2020
 #### Fiks Folkeregister
 Fiks-plattformen tilgjengeliggjør folkeregistrets api for oppslag, støttet av logging, autentisering, autorisasjon og konfigurering på Fiks-plattformen.
