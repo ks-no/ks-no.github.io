@@ -1,6 +1,6 @@
 ---
 title: Digisos 
-date: 2019-03-29
+date: 2019-04-25
 ---
 
 **STATUS: under utvikling**
@@ -23,8 +23,8 @@ Dokument og melding i fiks-innsyn er utelukkende tilgjengelig for innbygger, det
 
 ## Flyt
 
-1. Innbygger fyller ut søknad om sosialstønad på nav.no, som sender denne til fiks-digisos gjennom et synkront http api.
-2. Fiks-digisos mottar søknaden.
+1. Innbygger fyller ut søknad om sosialstønad på nav.no, som sender denne til Fiks Digisos gjennom et synkront http api.
+2. Fiks Digisos mottar søknaden.
     1. Søknadsfilen legges i fiks-dokumentlager, og innbyggeren autoriseres for tilgang.
     2. Det gjøres oppslag i fiks-svarinn2-katalog for å se om det finnes en mottaker på nav-enhetsnummeret som er spesifisert, og om denne mottakeren er i stand til å behandle digisos-formatet.
     3. Det gjøres et kall mot fiks-svarinn, hvor filen blir validert og sendt til mottakeren.
@@ -62,7 +62,8 @@ Før en sakoppdatering, må alle refererte filer være lastet opp på forhånd.
 
 Filer lastes opp til Fiks Digisos ved bruk av en multipart streaming request, der man spesifiserer HTTP-headeren "Transfer-Encoding" til å sende data i chunks, ```Transfer-Encoding: chunked```. 
 
-Fiks tilbyr en referanseimplementasjon av hvordan en slik request skal defineres, og som kan brukes for filopplasting: https://github.com/ks-no/fiks-digisos-klient.
+Alle filene må krypteres før opplasting, med public-key fra Fiks som kan hentes fra endepunktet ```/digisos/api/v1/dokumentlager-public-key```. 
+Fiks tilbyr en referanseimplementasjon av hvordan en slik request skal defineres, som krypterer alle filene og som kan brukes for filopplasting: https://github.com/ks-no/fiks-digisos-klient.
 
 URL-stien til filopplasting er ```/digisos/api/v1/{fiksOrgId}/{digisosId}/filer```, der ```{fiksOrgId}``` og ```{digososId}``` er FiksOrgId-en og FiksDigisosId-en som filene skal legges til. 
 
@@ -106,7 +107,7 @@ For generell integrasjonsutvikling mot Fiks, se [Integrasjonsutvikling]({{< ref 
 
 **Innsending av ny søknad**
 
-Innsending av ny søknad til FIKS-Digisos bruker multipart streaming request, på lik linje som opplasting av filer for fagsystemene, der man spesifiserer HTTP-headeren "Transfer-Encoding" til å sende data i chunks, ```Transfer-Encoding: chunked```. 
+Innsending av ny søknad til Fiks Digisos bruker multipart streaming request, på lik linje som opplasting av filer for fagsystemene, der man spesifiserer HTTP-headeren "Transfer-Encoding" til å sende data i chunks, ```Transfer-Encoding: chunked```. 
 
 URL-stien til ny søknad er ```/digisos/api/v1/soknader/{kommunenummer}/{navEkseternRefId}```, der ```{kommunenummer}``` er kommunenummer søknaden skal sendes til og ```{navEkseternRefId}``` er en unik id fra NAV for søknaden. 
 
@@ -131,13 +132,13 @@ soknadJson, vedleggJson, metadata + soknad.pdf, metadata + vedlegg1.pdf, metadat
 
 ***Returtype***
 \
-Ved en vellykket innsending får man tilbake ```202 ACCEPTED``` og en unik Fiks DigisosId (UUID) som er ID-en til opprettet søknad i Fiks-Digisos.
+Ved en vellykket innsending får man tilbake ```202 ACCEPTED``` og en unik Fiks DigisosId (UUID) som er ID-en til opprettet søknad i Fiks Digisos.
 
 Ved feil ved opplasting får man 400 Bad Request når multipart-requesten ikke er definert med riktige data.
 
 **Innsending av ny ettersendelse**
 
-Innsending av ny ettersendelse til FIKS Digisos bruker også multipart streaming request. 
+Innsending av ny ettersendelse til Fiks Digisos bruker også multipart streaming request. 
 
 URL-stien til ny ettersendelse er ```/digisos/api/v1/soknader/{kommunenummer}/{soknadId}/{navEkseternRefId}```, der ```{kommunenummer}``` er kommunenummer søknaden tilhører, ```{soknadId}``` er Fiks DigisosId-en for søknaden det skal ettersendes til og ```{navEkseternRefId}``` er en unik id fra NAV for denne ettersendelsen. 
 
