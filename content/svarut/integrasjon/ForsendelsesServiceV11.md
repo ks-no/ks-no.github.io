@@ -1,6 +1,6 @@
 ---
 title: ForsendelsesServiceV11
-date: 2019-04-08
+date: 2019-05-02
 ---
 ### Tilgang
 
@@ -9,6 +9,7 @@ For å benytte web-tjenesten må en bruke HTTP Basic autentication med brukernav
 ### Nytt i denne versjonen
 
 * EksponertFor: Gir tilgang til andre enn mottaker å laste ned filene. 
+* Feltet kunDigitalLevering er fjernet og erstattet med feltet leveringsmetode som er av type Leveringsmetode. Feltet er påkrevd og Leveringsmetode har tre verdier: STANDARD_SVARUT_LEVERANSE, KUN_DIGITAL_UTEN_LEVERANSEGARANTI og KUN_DIGITAL_UTEN_LEVERANSEGARANTI_MASSEUTSENDELSE
 
 
 ## Tjenester
@@ -90,7 +91,7 @@ Henter liste med informasjon om dokumentene til en forsendelse.
 | avgivendeSystem              | String                                | Identifikator som identifiserer systemet som gjør web-service kallet, vil blant annet kunne benyttes for statistikk og feilsøking. Bruk følgende for sak/arkivsystemene: Doculive, Ephorte, ESA, 360 og Websak. For andre fagsystemer avtales dette med KS KommIT på [svarut@ks.no](mailto:svarut@ks.no). Obligatorisk felt.|            |
 | tittel                       | String                                | Tittel på forsendelsen. Tittel blir vist i tittelfeltet på melding til Altinn, og i listen over innkommende meldinger. | Må være utfylt |
 | konteringsKode               | String                                | Kode som beskriver faktureringskonto for forsendelsen. Kan benyttes for å gruppere meldingsstatistikk gjennom forvaltningsløsningen, og sendes videre til print-leverandør. | ^[a-zA-Z0-9\-\.øæåØÆÅ]{0,20}$ |
-| kunDigitalLevering           | boolean                               | Vi leverer kun digitalt, ingen print og postlegging. Hvis dokumentet ikke kan leveres digital blir det ikke levert. Hvis KunDigitalLevering er valgt må fødselsnr eller orgnr være utfylt. |            |
+| leveringsmetode              | Leveringsmetode                       | Vi leverer kun digitalt, ingen print og postlegging. Hvis dokumentet ikke kan leveres digital blir det ikke levert. Hvis KunDigitalLevering er valgt må fødselsnr eller orgnr være utfylt. |     |
 | kryptert                     | boolean                               | Settes til true dersom fil(ene) som sendes er kryptert. Dersom kryptering ikke er brukt må denne være satt til false. Se kodeeksempler for eksempel på kryptering. Det må være kryptert med CMS med svarut sin publickey. [Den offentlige nøkkelen PROD](https://svarut.ks.no/forsendelse/publickey/hent), [Den offentlige nøkkelen for TEST](https://test.svarut.ks.no/forsendelse/publickey/hent) |            |
 | utskriftsKonfigurasjon       | UtskriftsKonfigurasjon                | Konfigurasjon for hvordan dokumentet skal printes, dobbeltsidig, fargeprint                        |            |
 | krevNiva4Innlogging          | boolean                               | Forsendelsen krever nivå 4-innlogging for å kunne lastes ned eller signeres. Disse forsendelsene må være kryptert. |            |
@@ -281,6 +282,14 @@ Se OrganisasjonDigitalAdresse og PersonDigitalAdresse
 | ----- | -------| ----------- | ---------- |
 | key   | String |             |            |
 | value | String |             |            |
+
+
+#### Leveringsmetode
+| Verdi                                             | Beskrivelse |
+| ------------------------------------------------- | ----------- |
+| STANDARD_SVARUT_LEVERANSE                         | Standard leveringsmetode og vil oppføre seg på samme måte som om feltet kunDigitalLevering var satt til usann | 
+| KUN_DIGITAL_UTEN_LEVERANSEGARANTI                 | Vil avvise forsendelser til privatpersoner dersom KRR ikke finner vedkommende eller vedkommende har reservert seg   |
+| KUN_DIGITAL_UTEN_LEVERANSEGARANTI_MASSEUTSENDELSE | Vil oppføre seg på samme måte som om feltet kunDigitalLevering var satt til sann                                         |
 
 
 
