@@ -1,6 +1,6 @@
 ---
 title: ForsendelsesServiceV11
-date: 2019-05-02
+date: 2019-05-07
 ---
 ### Tilgang
 
@@ -10,7 +10,7 @@ For å benytte web-tjenesten må en bruke HTTP Basic autentication med brukernav
 
 * EksponertFor: Gir tilgang til andre enn mottaker å laste ned filene. 
 * Feltet kunDigitalLevering er fjernet og erstattet med feltet leveringsmetode som er av type Leveringsmetode. Feltet er påkrevd og Leveringsmetode har tre verdier: STANDARD_SVARUT_LEVERANSE, KUN_DIGITAL_UTEN_LEVERANSEGARANTI og KUN_DIGITAL_UTEN_LEVERANSEGARANTI_MASSEUTSENDELSE
-
+* SigneringsLogg returnerer nå dato og Signeringsstatus.
 
 ## Tjenester
 
@@ -185,11 +185,11 @@ Henter liste med informasjon om dokumentene til en forsendelse.
 | hendelse  | String |             |            |
 
 #### SigneringsLogg
-| Felt      | Type   | Beskrivelse | Validering |
-| --------- | ------ | ----------- | ---------- |
-| tidspunkt | String |             |            |
-| type      | String |             |            |
-| hendelse  | String |             |            |
+| Felt      | Type             | Beskrivelse | Validering |
+| --------- | ---------------- | ----------- | ---------- |
+| tidspunkt | Date             |             |            |
+| type      | Signeringsstatus |             |            |
+| hendelse  | String           |             |            |
 
 #### Adresse
 | Felt           | Type           | Beskrivelse                                                  | Validering         |
@@ -285,11 +285,17 @@ Se OrganisasjonDigitalAdresse og PersonDigitalAdresse
 
 
 #### Leveringsmetode
-| Verdi                                             | Beskrivelse |
-| ------------------------------------------------- | ----------- |
-| STANDARD_SVARUT_LEVERANSE                         | Standard leveringsmetode og vil oppføre seg på samme måte som om feltet kunDigitalLevering var satt til usann | 
-| KUN_DIGITAL_UTEN_LEVERANSEGARANTI                 | Vil avvise forsendelser til privatpersoner dersom KRR ikke finner vedkommende eller vedkommende har reservert seg   |
-| KUN_DIGITAL_UTEN_LEVERANSEGARANTI_MASSEUTSENDELSE | Vil oppføre seg på samme måte som om feltet kunDigitalLevering var satt til sann                                         |
+| Verdi                                             | Beskrivelse                                                                                                       |
+| ------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------- |
+| STANDARD_SVARUT_LEVERANSE                         | Standard leveringsmetode og vil oppføre seg på samme måte som om feltet kunDigitalLevering var satt til usann     | 
+| KUN_DIGITAL_UTEN_LEVERANSEGARANTI                 | Vil avvise forsendelser til privatpersoner dersom KRR ikke finner vedkommende eller vedkommende har reservert seg |
+| KUN_DIGITAL_UTEN_LEVERANSEGARANTI_MASSEUTSENDELSE | Vil oppføre seg på samme måte som om feltet kunDigitalLevering var satt til sann                                  |
 
-
-
+#### Signeringsstatus
+| Verdi               | Beskrivelse |
+| ------------------- | ----------- |
+| AVVIST_AV_SVARUT    |             | 
+| VENTER_SIGNERING    |             | 
+| SIGNERT_AV_MOTTAKER |             | 
+| AVVIST_AV_MOTTAKER  |             | 
+| UTLOPT              |             |  
