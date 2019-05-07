@@ -1,6 +1,6 @@
 ---
 title: Integrasjonsutvikling
-date: 2018-01-02
+date: 2019-05-07
 ---
 
 En _integrasjon_ på fiks-plattformen er en maskin-til-maskin klient som benytter tjenestelaget for å utføre oppgaver på vegne av en fiks-organisasjon. Dette kan for eksempel være et arkivsystem som sender saker gjennom [Fiks SvarInn]({{< ref "svarInn.md" >}}), eller et fagsystem som oppdaterer meldinger i [Fiks Innsyn]({{< ref "innsyn.md" >}}).
@@ -33,7 +33,7 @@ Denne metoden benyttes for ren server til server integrasjon, for eksempel når 
    
 Kallet mot Fiks-platform tjenesten trenger dermed følgende HTTP headere:
  
-* _Authorization_: OAuth-2.0 Jwt Access token som bekrefter organisasjonens identitet, signert av ID-Porten. Scope skal være "ks".
+* _Authorization_: OAuth-2.0 Jwt Access token som bekrefter organisasjonens identitet, signert av ID-Porten. Scope skal være "ks:fiks".
 * _IntegrasjonId_: Id for integrasjonen, generert i Fiks-konfigurasjon. Orgnr i Jwt'en i _Authorization_ header må være konfigurert som autorisert organisasjon for integrasjonen.
 * _IntegrasjonPassord_: Passord for integrasjonen (fra fiks-konfigurasjon)
 
@@ -58,3 +58,10 @@ I tillegg må integrasjonen autoriseres for tilgang til en spesifikk tjeneste. H
 
 Dette gjelder også for integrasjoner som leveres som en del av fiks-plattformen. Skal SvarUt kunne indeksere forsendelse i Fiks Innsyn må også her kommunen eksplisitt autorisere dette.
 
+# Hvordan komme i gang med utvikling
+
+1. Du må ha maskingporten/openid connect konto hos idporten i ver2 miljøet. Dette bestiller du hos idporten@difi.no
+1. Vi må clientid og orgnr på kontoen hos idporten, slik at vi får gitt dere tilgang til ks:fiks scopet. Sendes til fiks-utvikling@ks.no
+1. Send en epost til fiks-utvikling@ks.no med epsoter som vil ha tilgang til vår slack support kanal. Vi liker best å ta support på chat.
+1. Har dere kontoer i idporten test send en epost med en av disse til oss slik at vi kan sette opp test kommune/organisasjon i test. fiks-utvikling@ks.no
+1. Ta kontakt på slack kanalen når dere står fast, eller ønsker å få tilbakemelding på om dere bruker apiene korrekt.
