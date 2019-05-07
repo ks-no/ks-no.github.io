@@ -60,7 +60,7 @@ Dette gjelder også for integrasjoner som leveres som en del av fiks-plattformen
 
 # Hvordan komme i gang med utvikling
 
-1. Du må ha maskingporten/openid connect konto hos idporten i ver2 miljøet. Dette bestiller du hos idporten@difi.no
+1. Du må ha maskingporten/openid connect konto hos idporten i ver2 miljøet. Dette bestiller du hos idporten@difi.no (Dere må ha virksomhetsertifikat for test fra comfides eller buypass)
 1. Vi må clientid og orgnr på kontoen hos idporten, slik at vi får gitt dere tilgang til ks:fiks scopet. Sendes til fiks-utvikling@ks.no
 1. Send en epost til fiks-utvikling@ks.no med epsoter som vil ha tilgang til vår slack support kanal. Vi liker best å ta support på chat.
 1. Har dere kontoer i idporten test send en epost med en av disse til oss slik at vi kan sette opp test kommune/organisasjon i test. fiks-utvikling@ks.no
