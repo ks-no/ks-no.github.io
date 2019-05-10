@@ -100,7 +100,7 @@ Eksempel:
 
 Ved feil ved opplasting får man 400 Bad Request når multipart-requesten ikke er definert med riktige data.
 
-## Innsending av Søknad (for NAV)
+## Innsending av søknad (for NAV)
 
 Soknad api [(api-spec)](https://editor.swagger.io/?url=https://ks-no.github.io/api/digisos-api-v1.json)
 
