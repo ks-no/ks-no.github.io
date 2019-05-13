@@ -5,7 +5,7 @@
     
       <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-<meta name="revised" content="2019-05-10T16:27:29 CEST">
+<meta name="revised" content="2019-05-13T09:01:24 CEST">
 <title>Fiks IO (SvarInn 2) :: KS Fiks</title>
 <link rel="shortcut icon" href="/images/favicon.png" type="image/x-icon" />
 <link href="/css/nucleus.css" rel="stylesheet">
@@ -27,7 +27,7 @@
 
     
   </head>
-  <body data-url="/fiks-platform/tjenester_under_utvikling/svarinn/">
+  <body data-url="/fiks-platform/tjenester_under_utvikling/fiksio/">
     
       <div id="headermain"></div>
 <nav id="sidebar" class="">
@@ -157,9 +157,9 @@
           </a>
         </div>
     </li>
-      <li data-nav-id="/fiks-platform/tjenester_under_utvikling/svarinn/" class="dd-item active">
+      <li data-nav-id="/fiks-platform/tjenester_under_utvikling/fiksio/" class="dd-item active">
         <div>
-          <a href="/fiks-platform/tjenester_under_utvikling/svarinn/">
+          <a href="/fiks-platform/tjenester_under_utvikling/fiksio/">
             Fiks IO (SvarInn 2)
           </a>
         </div>
@@ -389,7 +389,7 @@
       
       
     <div id="top-github-link">
-      <a class="github-link" href="https://github.com/ks-no/ks-no.github.io/edit/source/content/fiks-platform/tjenester_under_utvikling/svarInn.md" target="blank">
+      <a class="github-link" href="https://github.com/ks-no/ks-no.github.io/edit/source/content/fiks-platform/tjenester_under_utvikling/fiksio.md" target="blank">
         <i class="fa fa-code-fork"></i>
         
       </a>
@@ -433,11 +433,19 @@
 <ul>
 <li>
 <ul>
-<li><a href="#forhold-til-svarut">Forhold til SvarUt</a></li>
-<li><a href="#konfigurasjon-og-adresser">Konfigurasjon og adresser</a></li>
-<li><a href="#adresse-oppslag">Adresse-oppslag</a></li>
-<li><a href="#sending-og-mottak">Sending og mottak</a></li>
+<li><a href="#forhold-til-svarut-og-svarinn">Forhold til SvarUt og SvarInn</a>
+<ul>
+<li><a href="#er-dette-en-maskin-til-maskin-integrasjon">Er dette en maskin-til-maskin integrasjon?</a></li>
+<li><a href="#skal-meldingen-sikres-gjennom-ende-til-ende-kryptering">Skal meldingen sikres gjennom ende-til-ende kryptering?</a></li>
+<li><a href="#trenger-man-rask-levering">Trenger man rask levering?</a></li>
+<li><a href="#vil-man-at-fiks-plattformen-skal-garantere-at-meldingen-blir-levert">Vil man at fiks-plattformen skal garantere at meldingen blir levert?</a></li>
+</ul></li>
+<li><a href="#grunnleggende-prinsipper">Grunnleggende prinsipper</a></li>
+<li><a href="#konfigurasjon-og-forvaltning">Konfigurasjon og forvaltning</a></li>
 <li><a href="#sikkerhet">Sikkerhet</a></li>
+<li><a href="#kontokatalogen">Kontokatalogen</a></li>
+<li><a href="#meldingskatalogen">Meldingskatalogen</a></li>
+<li><a href="#håndtering-av-store-filer">Håndtering av store filer</a></li>
 <li><a href="#klienter">Klienter</a></li>
 </ul></li>
 </ul></li>
@@ -464,58 +472,97 @@
 
 <p><strong>STATUS: under utvikling</strong></p>
 
-<p>SvarInn er en kanal for sikker maskin-til-maskin integrasjon. Denne kommer nå i ny versjon: vi har flyttet den eksistende SvarInn tjenesten over på Fiks-plattformen, og frikoblet den fra SvarUt. Det er nå mulig å sende direkte til SvarInn. Dette åpner mange muligheter:</p>
+<p>Fiks IO er en kanal for sikker maskin-til-maskin integrasjon som tilbyr:</p>
 
 <ul>
-<li><em>Rask leveranse</em>: ved hjelp av meldingskø-basert arkitektur kan SvarInn nå levere meldinger mye raskere, under ett sekund plus eventuelt overføring av data. Dette oppnås ved at meldinger nå sendes til det mottakende fagystemet i det øyeblikket de ankommer, i stede for at fagsystemet må hente meldingen.</li>
-<li><em>Kvitteringer</em>: avsender vil motta kvitteringer fra mottaker, slik at man vet om meldingen man sendte faktisk ble behandlet. Mottaker kan også sende et utvidet svar på en mottatt melding.</li>
-<li><em>Sikker kommunikasjon med ende-til-ende kryptering</em>: SvarInn 2-meldinger vil som default være ende-til-ende kryptert med mottakers offentlige nøkkel.</li>
-<li><em>Sikker identifisering av avsender</em>: Standard for kryptografisk signatur på meldinger gjør at man kan være sikker på identiteten til avsender.</li>
-<li><em>Støtte for ulike typer identifikatorer</em>: I den orginale versjonen av SvarInn bestod en adresse av en organisasjonsnummer-meldingtype-sikkerhetsnivå kombinasjon. Den første bestanddelen kan nå være ulike typer identifikatorer, initielt er organisasjonsnummer og nav-enhet-id støttet.</li>
+<li><em>Rask leveranse</em>: ved hjelp av kø-basert arkitektur (<a href="https://en.wikipedia.org/wiki/Advanced_Message_Queuing_Protocol">AMQP)</a> kan Fiks IO levere meldinger raskt, stort sett på under ett sekund plus eventuelt overføring av data. Dette oppnås ved at meldinger nå sendes til det mottakende fagystemet i det øyeblikket de ankommer (push), i stede for at fagsystemet må hente meldingen (pull).</li>
+<li><em>Svar på melding</em>: Fiks IO lar en mottaker svare på en spesifikk melding, f.eks. for å svare på en spørring eller å bekrefte at en forespurt handling er utført.</li>
+<li><em>Sikker kommunikasjon med ende-til-ende kryptering</em>: Fiks IO meldinger vil som default være ende-til-ende kryptert med mottakers offentlige nøkkel.</li>
+<li><em>Sikker identifisering av avsender</em>: Bruk av standard for kryptografisk signatur <a href="https://github.com/difi/asic">(ASiC-E)</a> for meldinger gjør at man kan være sikker på identiteten til avsender.</li>
+<li><em>Levetid på meldinger</em>: En melding har en brukerdefinert levetid. Avsender vil få beskjed hvis en melding ikke har blitt lest av mottaker innen levetidens utløp.</li>
+<li><em>Sending av store filer</em>: Fiks IO integrerer mot <a href="/fiks-platform/tjenester/dokumentlager/">Fiks Dokumentlager</a> for å støtte sending av store filer. Det hittil ikke satt noen øvre grense, men systemet vil bli designet for å tåle filer på flere gigabyte.</li>
 </ul>
 
-<p>Alle ekisterende grensesnitt for å hente meldinger blir videreført, men merk at disse ikke gir fullt utbytte av sikkerhet- og ytelses-fordelene i SvarInn2.</p>
+<h3 id="forhold-til-svarut-og-svarinn">Forhold til SvarUt og SvarInn</h3>
 
-<p>Grunnleggende prinsipper fra den eksisterende SvarUt baserte plattformen blir heller ikke forandret: en organisasjon oppretter en <em>konto</em>, og legger til en eller flere <em>adresser</em>, som hver består av en identifikator-meldingtype-sikkerhetsnivå kombinasjon. Disse adressene blir benyttet når andre organisasjoner gjør oppslag i konto-katalogen. Identifikatoren i adressen kan være av forskjellige typer, hittil støttes organisajonsnummer og nav-enhet-id.</p>
+<p>Fiks IO er en selvstendig kanal, og er ikke bygget for å være en erstatning for SvarUt/SvarInn, som begge vil bli videreført i sin nåværende form. Dette overappet gjør kan gjøre at man noen ganger kan være i vil om SvarUt/SvarInn eller Fiks IO er riktig verktøy for et problem.</p>
 
-<h3 id="forhold-til-svarut">Forhold til SvarUt</h3>
+<p>Hovedsakelig bør man benytte svarut/svarinn for &ldquo;post&rdquo;: meldinger hvor payload er menneske-lesbar (f.eks. en pdf), hvor automatisk håndtering begrenses til f.eks. opprettelse av sak i et arkivsystem, og hvor sending til Altinn eller som brevpost er gode alternativer hvis den automatiske håndteringen feiler. For mer komplett integrasjon benyttes Fiks-IO:</p>
 
-<p>SvarInn er nå en selvstendig kanal, men den vil fortsatt benyttes som meldingskanal i SvarUt, basert på samme prinsipper som tidligere: hvis identifikator (organisasjonsnummer), meldingstype og nivå gir treff i SvarInns adressekatalog vil den aktuelle SvarInn kontoen brukes for å levere meldingen.</p>
+<h4 id="er-dette-en-maskin-til-maskin-integrasjon">Er dette en maskin-til-maskin integrasjon?</h4>
 
-<p>En viktig endring fra den tidligere flyten er at meldinger i SvarInn nå har en levetid: de ligger ikke på kontoen til evig tid, slik tilfellet er i dag. Når en meldings levetid er utgått, det vil si at den har ligget i kø uten å bli hentet i en viss periode, vil SvarUt sende meldingen via alternativ kanal: for eksempel Altinn eller post.</p>
+<p>Benytt Fiks IO, denne leverer utelukkende til spesifisert mottakerkonto og benytter ingen alternative kanaler, som for eksempel printet post.</p>
 
-<p>Dette leder oss inn på et viktig spørsmål: skal man bruke SvarInn eller SvarUt for å integrere to systemer? Tabellen under forsøker å svare på dette:</p>
+<h4 id="skal-meldingen-sikres-gjennom-ende-til-ende-kryptering">Skal meldingen sikres gjennom ende-til-ende kryptering?</h4>
 
-<p>*<em>Ønsker man å unngå at meldingen kan bli sendt i post?</em> Benytt SvarInn, denne leverer utelukkende til spesifisert mottakerkonto og benytter ingen alternative kanaler.
-*<em>Skal meldingen sikres gjennom ende-til-ende kryptering?</em> Benytt SvarInn, SvarUt meldinger kan bare krypteres med Fiks plattformens nøkkel, ikke mottakers.
-*<em>Trenger man rask levering?</em> Benytt SvarInn for å få leveranse på sekunder, ved bruk av SvarUt kan det ta flere dager å levere en melding, siden SvarUt prøver ulike kanaler etter tur.
-*<em>Vil man at fiks-plattformen skal garantere at meldingen blir levert?</em> Benytt SvarUt, ved SvarInn forsendelser risikerer man at meldingen ikke blir håndtert eller avvist av mottaker.</p>
+<p>Benytt Fiks-IO, SvarUt/SvarInn meldinger kan bare krypteres med Fiks-plattformens nøkkel, ikke mottakers.</p>
 
-<h3 id="konfigurasjon-og-adresser">Konfigurasjon og adresser</h3>
+<h4 id="trenger-man-rask-levering">Trenger man rask levering?</h4>
 
-<p>SvarInn settes nå opp gjennom Fiks Konfigurasjon, det er også her man konfigurerer kontoer, spesifiserer adresser, og styrer autorisasjoner. Både personer og integrasjoner må autoriseres før de kan sende meldinger fra en konto.</p>
+<p>Benytt Fiks IO for å få leveranse på sekunder, ved bruk av SvarUt/SvarInn kan levering ta lang tid, siden SvarUt prøver flere kanaler etter tur og defaulter til print ved leveranseproblemer.</p>
 
-<p>Man kan opprette flere kontoer, og hver konto kan ha en eller flere adresselinjer. En adresselinje består av en identifikator-melding-sikkerhetsnivå kombinasjon. Systemet vil verifisere at ingen kontoer har overlappende adresselinjer, også på tvers av Fiks organisasjoner.</p>
+<h4 id="vil-man-at-fiks-plattformen-skal-garantere-at-meldingen-blir-levert">Vil man at fiks-plattformen skal garantere at meldingen blir levert?</h4>
 
-<p>For hver konto lastes det opp et virksomhetsertifikat. Dette sertifikatet benyttes for å kryptere meldinger sendt til konto, og kan også brukes (sammen med en privat nøkkel) for å signere meldinger sendt fra kontoen.</p>
+<p>Benytt SvarUt, ved Fiks IO forsendelser risikerer man at meldingen ikke blir håndtert eller avvist av mottaker.</p>
 
-<h3 id="adresse-oppslag">Adresse-oppslag</h3>
+<p>Økonomiske aspekter kan også spille inn her, Fiks IO meldinger koster vesentlig mindre pr. stykk enn SvarUt forsendelser.</p>
 
-<p>For å sende en SvarInn-melding må man vite konto-identifikatoren til kontoen man ønsker å sende til. Man kan få denne utlevert direkte fra mottaker, men i de fleste tilfeller vil det være nyttig å gjøre et oppslag mot SvarInn Katalog. Oppslaget består av identifikator-meldingtype-sikkerhetsnivå. Det første kan være et organisasjonsnummer eller nav-enhet-id (flere alternativer kan bli lagt til etter hvert), det andre meldingstypen man ønsker å sende, og det tredje er sikkerhetsnivået man ønsker at mottakeren skal behandle meldingstypen med.</p>
+<h3 id="grunnleggende-prinsipper">Grunnleggende prinsipper</h3>
 
-<h3 id="sending-og-mottak">Sending og mottak</h3>
+<p>En Fiks organisasjon oppretter en Fiks IO <em>konto</em>. Andre kontoer kan nå sende til denne kontoen gjennom Fiks IOs REST api ved å spesifisere kontoens <em>KontoId</em> som mottaker. Mottakeren får meldingen levert ved å etablere en AMQP kobling til io.fiks.ks.no.</p>
 
-<p>Meldinger sendes gjennom et REST api på Fiks-plattformen. Integrasjoner mot dette api-et følger de samme reglene for autentisering og autorisering som andre integrasjoner på Fiks: integrasjonId, integrasjonPassord og et virksomhetsertifikat-basert Oauth2 token fra ID-Porten settes som headere på forespørselen, og den aktuelle integrasjonen må være autorisert for å sende meldinger fra den spesifiserte avsenderkontoen i Fiks Konfigurasjon.</p>
+<p>Fiks IO tar i utgangspunktet ikke stilling til hva som sendes. Metadataformat, filformat, kryptering og lignende er opp til brukeren, men Fiks plattformen tilbyr tjenester og verktøy for å etablere format for integrasjoner:</p>
 
-<p>På mottakssiden har man nå to alternativer. Man kan endten benytte det samme REST api&rsquo;et som man har brukt for å hente SvarInn 1 meldinger, eller man kan integrere via <a href="https://en.wikipedia.org/wiki/Advanced_Message_Queuing_Protocol">AMQP</a> mot Fiks Plattformens <a href="https://www.rabbitmq.com/RabbitMQ">RabbitMQ</a> baserte køsystem. Den siste løsningen er anbefalt, hovedsakelig på grunn av ytelsesforbedringen bruk av push teknologi vil gi.</p>
+<ul>
+<li><em>Fiks-IO Kontokatalog</em>: Gir mulighet for å registrere adresser bestående av organisasjonsnummer, meldingstype og sikkerhetsnivå på en Fiks IO konto, som andre så kan benytte for å finne relevant konto-id å sende til.</li>
+<li><em>Fiks-IO Meldingskatalog</em>: Tilbyr en katalog over registrerte meldingstyper i form av json-schema.</li>
+<li><em>Fiks-IO java klient</em>: Java klient som tilbyr funksjonalitet for å bygge, signere, kryptere, og sende meldinger som ASiC-E pakker, samt mottak og dekryptering på andre siden.</li>
+<li><em>Fiks-IO .net klient</em>: Samme funksjonalitet som java-klienten, implementert i .net core.</li>
+</ul>
+
+<h3 id="konfigurasjon-og-forvaltning">Konfigurasjon og forvaltning</h3>
+
+<p>Fiks IO settes opp gjennom Fiks Konfigurasjon, det er også her man oppretter kontoer, spesifiserer adresser, og styrer autorisasjoner. Både personer og integrasjoner må autoriseres før de kan sende meldinger fra en konto.</p>
+
+<p>Man kan opprette flere kontoer, og for hver konto kan man opprette flere adresser, se Kontokatalogen for informasjonom dette. For hver konto lastes det opp et sertifikat med en offentlig nøkkel. Dette sertifikatet benyttes for å kryptere meldinger sendt til den aktuelle kontoen.</p>
 
 <h3 id="sikkerhet">Sikkerhet</h3>
 
-<p>I utgangspunktet legger ikke SvarInn 2 føringer på hvordan (eller om) en melding sendt over plattformen sikres, men alle klienter som utvikles av KS, og alle meldingstyper som Fiks spesifiserer, vil benytte signerte, ende-til-ende krypterte meldinger gjennom <a href="https://github.com/difi/asic">ASIC-E</a> containere. Denne standarden benyttes også av DIFI i forbindelse med integrasjonspunktet.</p>
+<p>Autentisering av klienter mot REST service for sending av meldinger og AMQP service for leveranse av meldinger skjer gjennom virksomhetssertifikat-basert maskinporten autentisering.</p>
+
+<p>I utgangspunktet legger ikke SvarInn 2 føringer på hvordan (eller om) en melding sendt over plattformen sikres, men alle klienter som utvikles av KS, og alle meldingstyper som Fiks spesifiserer, vil benytte signerte, ende-til-ende krypterte meldinger gjennom <a href="https://github.com/difi/asic">ASIC-E</a> containere. Denne standarden benyttes også av DIFI i forbindelse med integrasjonspunktet. I klientene skjer signering med samme sertifikat som blir benyttet for autentisering mot maskinporten, kryptering skjer med sertifikatet som er publisert i Fiks IO Kontokatalog.</p>
+
+<h3 id="kontokatalogen">Kontokatalogen</h3>
+
+<p>For å sende en melding i Fiks IO må man kjenne konto-id&rsquo;en til mottakeren, men for å støtte mer dynamisk bruk tilbys Fiks IO Kontokatalog. Dette er et register over Fiks IO kontoer og tilknyttede adresser. En adresse består av:</p>
+
+<ul>
+<li><em>Identifikator</em>: Autoriserende identifikator for adressen. Dette vil i første omgang være begrenset til organisasjonsnummer, men kan senere utvides. For organisasjonsnummer benyttes Altinn for autorisering: personen som legger til adressen må ha rollen &ldquo;post/arkiv&rdquo; på den aktuelle organisasjonen.</li>
+<li><em>Meldingstype</em>: Spesifiserer hvilken type meldingen har, som igjen definerer hvilket skjema fra meldingskatalogen meldingen samsvarer med.</li>
+<li><em>Sikkerhetsnivå</em>: Spesifiserer hvilket sikkerhetsnivå meldingen skal ha. Typisk benyttes nivå 3 for ikke sensitive og nivå 4 for sensitive meldinger.</li>
+</ul>
+
+<p>Adresser opprettes og forvaltes gjennom Fiks Konfigrasjon. Katalogen gir også mulighet for å laste opp en offentlig nøkkel i form av et X509 sertifikat. Dette sertifikatet blir benyttet for å kryptere meldinger sendt til kontoen, slik at de kan dekrypteres med den private delen av nøkkelen ved mottak.</p>
+
+<p>Fiks Organisasjoner kan gjøre oppslag i registrerte adresser gjennom <a href="https://editor.swagger.io/?url=https://github.com/ks-no/ks-no.github.io/blob/source/static/api/svarinn2-katalog-api-v1.json">(katalog-api&rsquo;et)</a>).</p>
+
+<h3 id="meldingskatalogen">Meldingskatalogen</h3>
+
+<p>Som nevnt over har Fiks IO i utgangspunktet ingen formening om hva innholdet i en melding er, men det er i mange integrasjon-scenarioer nyttig å ha et felles repository med kontrakter for hvordan meldinger skal bygges opp.</p>
+
+<p>Fiks-IO Meldingskatalog tilbyr kontrakter i form av json-schema, men det er også muligheter for</p>
+
+<h3 id="håndtering-av-store-filer">Håndtering av store filer</h3>
+
+<p>Fiks-IO støtter sending av store filer ved at alle meldinger større enn 5 megabyte lagres i Fiks Dokumentlager, i en dedikert konto som opprettes sammen med Fiks-IO kontoen. En referanse til denne lagrede filen blir så sendt over AMQP.</p>
+
+<p>Klientene utviklet av KS vil i slike tilfeller automatisk strømme filen fra Dokumentlager.</p>
 
 <h3 id="klienter">Klienter</h3>
 
-<p>For å gjøre integrasjon lettere vil KS utvikle klienter som benyttes for både sending og mottak av meldinger fra Fiks SvarInn. Først ut er en <a href="https://github.com/ks-no/fiks-svarinn2-klient-java">java-klient</a>, men det er også planlagt en .net implentasjon av denne. Andre språk vil vurderes, og vi vil gjerne høre fra deg om det blir jobbet med selvstendig utvikling av klienter.</p>
+<p>For å gjøre integrasjon lettere vil KS utvikle klienter som benyttes for både sending og mottak av meldinger fra Fiks-IO.</p>
+
+<p>Klientene er tilgjengelig i <a href="https://github.com/ks-no/fiks-io-klient-java">Java</a>, og <a href="https://github.com/ks-no/fiks-io-client-dotnet">.net core</a>. Andre språk vil vurderes, og vi vil gjerne høre fra deg om du skriver klienter for andre språk.</p>
 
 <p><img src="/images/fiks_svarinn.png" alt="fiks_svarinn" title="Fiks SvarInn" /></p>
 
