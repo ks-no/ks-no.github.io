@@ -9,7 +9,7 @@ Roadmap for fremtidige tjenester på Fiks-plattformen. Tidsangivelse må tolkes 
 #### [Fiks Digisos]({{< ref "digisos.md" >}})
 Tjeneste for kommunal behandling av sosialsøknader sendt fra nav.no. Statusoppdateringer blir gjort tilgjengelig på minside.kommune.no og på nav.no.
 
-#### [Fiks IO (SvarInn 2)]({{< ref "fiks-io.md" >}})
+#### [Fiks IO (SvarInn 2)]({{< ref "fiksio.md" >}})
 Integrasjonsplattform for maskin-til-maskin kommunikasjon. Erstatter gamle KS SvarInn, og tilbyr ny funksjonalitet som direkte sending, push-kommunikasjon og ende-til-ende kryptering.
 
 #### Fiks Innsyn: Matrikkel
