@@ -79,4 +79,4 @@ For å gjøre integrasjon lettere vil KS utvikle klienter som benyttes for både
 
 Klientene er tilgjengelig i [Java](https://github.com/ks-no/fiks-io-klient-java), og [.net core](https://github.com/ks-no/fiks-io-client-dotnet). Andre språk vil vurderes, og vi vil gjerne høre fra deg om du skriver klienter for andre språk. 
 
-![fiks_svarinn](/images/fiks_svarinn.png "Fiks SvarInn")
+![fiks_svarinn](https://www.lucidchart.com/publicSegments/view/57fe8c84-53bd-4a07-a4a0-41896a1da846/image.png)
