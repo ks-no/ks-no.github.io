@@ -63,7 +63,7 @@ For å sende en melding i Fiks IO må man kjenne konto-id'en til mottakeren, men
 
 Adresser opprettes og forvaltes gjennom Fiks Konfigrasjon. Katalogen gir også mulighet for å laste opp en offentlig nøkkel i form av et X509 sertifikat. Dette sertifikatet blir benyttet for å kryptere meldinger sendt til kontoen, slik at de kan dekrypteres med den private delen av nøkkelen ved mottak.
 
-Fiks Organisasjoner kan gjøre oppslag i registrerte adresser gjennom [(katalog-api'et)](https://editor.swagger.io/?url=https://github.com/ks-no/ks-no.github.io/blob/source/static/api/svarinn2-katalog-api-v1.json)). 
+Fiks Organisasjoner kan gjøre oppslag i registrerte adresser gjennom [(katalog-api'et)](https://editor.swagger.io/?url=https://github.com/ks-no/ks-no.github.io/blob/source/static/api/fiksio-katalog-api-v1.json). 
 
 ### Meldingskatalogen
 Som nevnt over har Fiks IO i utgangspunktet ingen formening om hva innholdet i en melding er, men det er i mange integrasjon-scenarioer nyttig å ha et felles repository med kontrakter for hvordan meldinger skal bygges opp. 
