@@ -38,7 +38,7 @@ En Fiks organisasjon oppretter en Fiks IO _konto_. Andre kontoer kan nå sende t
 
 Fiks IO tar i utgangspunktet ikke stilling til hva som sendes. Metadataformat, filformat, kryptering og lignende er opp til brukeren, men Fiks plattformen tilbyr tjenester og verktøy for å etablere format for integrasjoner:
 
-* _Fiks-IO Kontokatalog: Gir mulighet for å registrere adresser bestående av organisasjonsnummer, meldingstype og sikkerhetsnivå på en Fiks IO konto, som andre så kan benytte for å finne relevant konto-id å sende til. 
+* _Fiks-IO Kontokatalog_: Gir mulighet for å registrere adresser bestående av organisasjonsnummer, meldingstype og sikkerhetsnivå på en Fiks IO konto, som andre så kan benytte for å finne relevant konto-id å sende til. 
 * _Fiks-IO Meldingskatalog_: Tilbyr en katalog over registrerte meldingstyper i form av json-schema. 
 * _Fiks-IO java klient_: Java klient som tilbyr funksjonalitet for å bygge, signere, kryptere, og sende meldinger som ASiC-E pakker, samt mottak og dekryptering på andre siden. 
 * _Fiks-IO .net klient_: Samme funksjonalitet som java-klienten, implementert i .net core.
