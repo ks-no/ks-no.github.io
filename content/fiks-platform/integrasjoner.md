@@ -3,7 +3,7 @@ title: Integrasjonsutvikling
 date: 2019-05-07
 ---
 
-En _integrasjon_ på fiks-plattformen er en maskin-til-maskin klient som benytter tjenestelaget for å utføre oppgaver på vegne av en fiks-organisasjon. Dette kan for eksempel være et arkivsystem som sender saker gjennom [Fiks SvarInn]({{< ref "svarInn.md" >}}), eller et fagsystem som oppdaterer meldinger i [Fiks Innsyn]({{< ref "innsyn.md" >}}).
+En _integrasjon_ på fiks-plattformen er en maskin-til-maskin klient som benytter tjenestelaget for å utføre oppgaver på vegne av en fiks-organisasjon. Dette kan for eksempel være et arkivsystem som sender saker gjennom [Fiks SvarInn]({{< ref "fiksio.md" >}}), eller et fagsystem som oppdaterer meldinger i [Fiks Innsyn]({{< ref "innsyn.md" >}}).
 
 Når en fiks-organisasjon tar i bruk plattformen vil man se at det allerede finnes en del forhåndsdefinerte integrasjoner, for eksempel en SvarUt integrasjon mot Fiks Innsyn. Dette er "globale integrasjoner" som blir tilgjengelig for alle fiks-organisasjoner uten at hver organisasjon trenger å opprette dem. Ta kontakt med fiks-kundeservice om du på denne måten ønsker å gjøre en av dine integrasjoner tilgjengelig på hele plattformen. Dette er for det meste relevant for leverandører av skyløsninger for flere kommuner.
 
