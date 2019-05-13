@@ -15,14 +15,21 @@ Fiks IO er en kanal for sikker maskin-til-maskin integrasjon som tilbyr:
 * _Sending av store filer_: Fiks IO integrerer mot [Fiks Dokumentlager]({{< ref "dokumentlager.md" >}}) for å støtte sending av store filer. Det hittil ikke satt noen øvre grense, men systemet vil bli designet for å tåle filer på flere gigabyte. 
 
 ### Forhold til SvarUt og SvarInn
-Fiks IO er en selvstendig kanal, og er ikke bygget for å være en erstatning for SvarUt/SvarInn, som begge vil bli videreført i sin nåværende form.
+Fiks IO er en selvstendig kanal, og er ikke bygget for å være en erstatning for SvarUt/SvarInn, som begge vil bli videreført i sin nåværende form. Dette overappet gjør kan gjøre at man noen ganger kan være i vil om SvarUt/SvarInn eller Fiks IO er riktig verktøy for et problem.
 
-Dette overappet gjør kan gjøre at man noen ganger kan være i vil om SvarUt/SvarInn eller Fiks IO er rigktig verktøy for et problem, i listen under prøver vi å gi noen indikasjoner:
+Hovedsakelig bør man benytte svarut/svarinn for "post": meldinger hvor payload er menneske-lesbar (f.eks. en pdf), hvor automatisk håndtering begrenses til f.eks. opprettelse av sak i et arkivsystem, og hvor sending til Altinn eller som brevpost er gode alternativer hvis den automatiske håndteringen feiler. For mer komplett integrasjon benyttes Fiks-IO:
 
-*_Er dette en maskin-til-maskin integrasjon?_ Benytt Fiks IO, denne leverer utelukkende til spesifisert mottakerkonto og benytter ingen alternative kanaler, som for eksempel printet post.
-*_Skal meldingen sikres gjennom ende-til-ende kryptering?_ Benytt FiksIo, SvarUt/SvarInn meldinger kan bare krypteres med Fiks-plattformens nøkkel, ikke mottakers.
-*_Trenger man rask levering?_ Benytt Fiks IO for å få leveranse på sekunder, ved bruk av SvarUt/SvarInn kan levering ta lang tid, siden SvarUt prøver flere kanaler etter tur og defaulter til print ved leveranseproblemer.
-*_Vil man at fiks-plattformen skal garantere at meldingen blir levert?_ Benytt SvarUt, ved Fiks IO forsendelser risikerer man at meldingen ikke blir håndtert eller avvist av mottaker. 
+#### Er dette en maskin-til-maskin integrasjon? 
+Benytt Fiks IO, denne leverer utelukkende til spesifisert mottakerkonto og benytter ingen alternative kanaler, som for eksempel printet post.
+
+#### Skal meldingen sikres gjennom ende-til-ende kryptering? 
+Benytt Fiks-IO, SvarUt/SvarInn meldinger kan bare krypteres med Fiks-plattformens nøkkel, ikke mottakers.
+
+#### Trenger man rask levering? 
+Benytt Fiks IO for å få leveranse på sekunder, ved bruk av SvarUt/SvarInn kan levering ta lang tid, siden SvarUt prøver flere kanaler etter tur og defaulter til print ved leveranseproblemer.
+
+#### Vil man at fiks-plattformen skal garantere at meldingen blir levert?
+Benytt SvarUt, ved Fiks IO forsendelser risikerer man at meldingen ikke blir håndtert eller avvist av mottaker. 
 
 Økonomiske aspekter kan også spille inn her, Fiks IO meldinger koster vesentlig mindre pr. stykk enn SvarUt forsendelser.
 
