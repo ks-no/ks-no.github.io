@@ -5,7 +5,9 @@ date: 2019-05-13
 
 **STATUS: under utvikling**
 
-Fiks IO er en kanal for sikker maskin-til-maskin integrasjon som tilbyr:
+Fiks IO er en kanal for sikker maskin-til-maskin integrasjon. Denne kanalen kan benyttes for å bygge prosesser på tvers av systemer og organisasjoner, for eksempel når et fagsystem skal arkivere et dokument i et arkivsystem eller spørre om informasjon som er lagret i et annet system.
+
+som tilbyr:
 
 * _Rask leveranse_: ved hjelp av kø-basert arkitektur ([AMQP)](https://en.wikipedia.org/wiki/Advanced_Message_Queuing_Protocol) kan Fiks IO levere meldinger raskt, stort sett på under ett sekund plus eventuelt overføring av data. Dette oppnås ved at meldinger nå sendes til det mottakende fagystemet i det øyeblikket de ankommer (push), i stede for at fagsystemet må hente meldingen (pull).
 * _Svar på melding_: Fiks IO lar en mottaker svare på en spesifikk melding, f.eks. for å svare på en spørring eller å bekrefte at en forespurt handling er utført.
@@ -15,9 +17,9 @@ Fiks IO er en kanal for sikker maskin-til-maskin integrasjon som tilbyr:
 * _Sending av store filer_: Fiks IO integrerer mot [Fiks Dokumentlager]({{< ref "dokumentlager.md" >}}) for å støtte sending av store filer, helt opp til dokumentlagers grense på fem gigabyte. 
 
 ### Forhold til SvarUt og SvarInn
-Fiks IO er en selvstendig kanal, og er ikke bygget for å være en erstatning for SvarUt/SvarInn, som begge vil bli videreført i sin nåværende form. Dette overappet gjør kan gjøre at man noen ganger kan være i vil om SvarUt/SvarInn eller Fiks IO er riktig verktøy for et problem.
+Fiks IO er en selvstendig kanal, og er ikke bygget for å være en erstatning for SvarUt/SvarInn, som begge vil bli videreført i sin nåværende form. Bruksområdene til tjenestene kan overlappe, og dette at detnoen ganger kan være i vil om SvarUt/SvarInn eller Fiks IO er riktig verktøy for et problem.
 
-Hovedsakelig bør man benytte svarut/svarinn for "post": meldinger hvor payload er menneske-lesbar (f.eks. en pdf), hvor automatisk håndtering begrenses til f.eks. opprettelse av sak i et arkivsystem, og hvor sending til Altinn eller som brevpost er gode alternativer hvis den automatiske håndteringen feiler. For mer komplett integrasjon benyttes Fiks-IO:
+Hovedsakelig bør man benytte svarut/svarinn for "post": meldinger hvor payload er menneske-lesbar (f.eks. en pdf), hvor automatisk håndtering begrenses til f.eks. opprettelse av sak i et arkivsystem, og hvor sending til Altinn eller som brevpost er gode alternativer hvis den automatiske håndteringen feiler. Andre faktorer kan være:
 
 #### Er dette en maskin-til-maskin integrasjon? 
 Benytt Fiks IO, denne leverer utelukkende til spesifisert mottakerkonto og benytter ingen alternative kanaler, som for eksempel printet post.
@@ -34,7 +36,7 @@ Benytt SvarUt, ved Fiks IO forsendelser risikerer man at meldingen ikke blir hå
 Økonomiske aspekter kan også spille inn her, Fiks IO meldinger koster vesentlig mindre pr. stykk enn SvarUt forsendelser.
 
 ### Grunnleggende prinsipper
-![fiks_svarinn](https://www.lucidchart.com/publicSegments/view/57fe8c84-53bd-4a07-a4a0-41896a1da846/image.png)
+![fiks_io](https://www.lucidchart.com/publicSegments/view/57fe8c84-53bd-4a07-a4a0-41896a1da846/image.png)
 En Fiks organisasjon oppretter en Fiks IO _konto_. Andre kontoer kan nå sende til denne kontoen gjennom Fiks IOs REST api ved å spesifisere kontoens _KontoId_ som mottaker. Mottakeren får meldingen levert ved å etablere en AMQP kobling til io.fiks.ks.no.
 
 Fiks IO tar i utgangspunktet ikke stilling til hva som sendes. Metadataformat, filformat, kryptering og lignende er opp til brukeren, men Fiks plattformen tilbyr tjenester og verktøy for å etablere format for integrasjoner:
