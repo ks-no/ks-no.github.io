@@ -31,7 +31,7 @@ Benytt Fiks-IO, SvarUt/SvarInn meldinger kan bare krypteres med Fiks-plattformen
 Benytt Fiks IO for å få leveranse på sekunder, ved bruk av SvarUt/SvarInn kan levering ta lang tid, siden SvarUt prøver flere kanaler etter tur og defaulter til print ved leveranseproblemer.
 
 #### Vil man at fiks-plattformen skal garantere at meldingen blir levert?
-Benytt SvarUt, ved Fiks IO forsendelser risikerer man at meldingen ikke blir håndtert eller avvist av mottaker. 
+Benytt SvarUt, ved Fiks IO forsendelser risikerer man at meldingen ikke blir håndtert eller avvist av mottaker. Man vil få melding om dette, men man må håndtere evt. retry eller sending via alternative kanaler selv.
 
 Økonomiske aspekter kan også spille inn her, Fiks IO meldinger koster vesentlig mindre pr. stykk enn SvarUt forsendelser.
 
