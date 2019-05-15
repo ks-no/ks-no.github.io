@@ -12,7 +12,7 @@ Fiks IO er en kanal for sikker maskin-til-maskin integrasjon som tilbyr:
 * _Sikker kommunikasjon med ende-til-ende kryptering_: Fiks IO meldinger vil som default være ende-til-ende kryptert med mottakers offentlige nøkkel.
 * _Sikker identifisering av avsender_: Bruk av standard for kryptografisk signatur [(ASiC-E)](https://github.com/difi/asic) for meldinger gjør at man kan være sikker på identiteten til avsender.
 * _Levetid på meldinger_: En melding har en brukerdefinert levetid. Avsender vil få beskjed hvis en melding ikke har blitt lest av mottaker innen levetidens utløp.
-* _Sending av store filer_: Fiks IO integrerer mot [Fiks Dokumentlager]({{< ref "dokumentlager.md" >}}) for å støtte sending av store filer. Det hittil ikke satt noen øvre grense, men systemet vil bli designet for å tåle filer på flere gigabyte. 
+* _Sending av store filer_: Fiks IO integrerer mot [Fiks Dokumentlager]({{< ref "dokumentlager.md" >}}) for å støtte sending av store filer, helt opp til dokumentlagers grense på fem gigabyte. 
 
 ### Forhold til SvarUt og SvarInn
 Fiks IO er en selvstendig kanal, og er ikke bygget for å være en erstatning for SvarUt/SvarInn, som begge vil bli videreført i sin nåværende form. Dette overappet gjør kan gjøre at man noen ganger kan være i vil om SvarUt/SvarInn eller Fiks IO er riktig verktøy for et problem.
