@@ -36,7 +36,7 @@ Benytt SvarUt, ved Fiks IO forsendelser risikerer man at meldingen ikke blir hå
 Økonomiske aspekter kan også spille inn her, Fiks IO meldinger koster vesentlig mindre pr. stykk enn SvarUt forsendelser.
 
 ### Grunnleggende prinsipper
-![fiks_io](https://www.lucidchart.com/publicSegments/view/a6cabb08-7598-414a-ae1c-534718c05fd6/image.png)
+![fiks_io](https://www.lucidchart.com/publicSegments/view/23b3e542-6059-471f-96d6-70f57da44f17/image.png)
 En Fiks organisasjon oppretter en Fiks IO _konto_. Andre kontoer kan nå sende til denne kontoen gjennom Fiks IOs REST api ved å spesifisere kontoens _KontoId_ som mottaker. Mottakeren får meldingen levert ved å etablere en AMQP kobling til io.fiks.ks.no.
 
 Fiks IO tar i utgangspunktet ikke stilling til hva som sendes. Metadataformat, filformat, kryptering og lignende er opp til brukeren, men Fiks plattformen tilbyr tjenester og verktøy for å etablere format for integrasjoner:
