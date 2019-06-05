@@ -1,6 +1,6 @@
 ---
 title: Digisos 
-date: 2019-05-27
+date: 2019-06-05
 ---
 
 **STATUS: under utvikling**
@@ -47,7 +47,7 @@ For at fagsystemet skal få tilgang til Digisos-api-et for en kommune, må kommu
 
 ### Fiks IO meldingsprotokoll
 
-Ved bruk av Fiks IO som leveringskanal må fagsystemet støtte meldingsprotokollene definert for Digisos-meldinger, som er kontrakter i form av json-schema, som gjelder både for mottak og svar på Fiks IO meldinger. Fagsystemet må derfor støtte mottak og sending av meldinger for både søknader og ettersendelser.
+Ved bruk av Fiks IO som leveringskanal må fagsystemet støtte meldingsprotokollen ```no.nav.digisos.fagsystem.v1```, som er definert for bruk av Digisos-meldinger, som inneholder kontrakter i form av json-schema som gjelder både for mottak og svar på Fiks IO meldinger. Fagsystemet må derfor støtte meldingstypene for denne protokollen, for mottak og sending av meldinger for både søknader og ettersendelser:
 
 #### Til fagsystem - mottak av søknad og ettersendelse
 For ny søknad, ```no.nav.digisos.soknad.v1```, som definert i [json-skjema for søknad](https://github.com/ks-no/fiks-io-meldingstype-katalog/tree/dev/schema/no.nav.digisos.soknad.v1).\
