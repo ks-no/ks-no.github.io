@@ -1,6 +1,6 @@
 ---
 title: Digisos 
-date: 2019-06-05
+date: 2019-06-06
 ---
 
 **STATUS: under utvikling**
@@ -53,9 +53,9 @@ Ved bruk av Fiks IO som leveringskanal må fagsystemet støtte meldingsprotokoll
 For ny søknad, ```no.nav.digisos.soknad.v1```, som definert i [json-skjema for søknad](https://github.com/ks-no/fiks-io-meldingstype-katalog/tree/dev/schema/no.nav.digisos.soknad.v1).\
 For ettersendelse, ```no.nav.digisos.ettersendelse.v1```, som definert i [json-skjema for ettersendelse](https://github.com/ks-no/fiks-io-meldingstype-katalog/tree/dev/schema/no.nav.digisos.ettersendelse.v1).
 
-#### Fra fagsystem - kvittering på mottat søknad og ettersendelse
-For ny søknad, ```no.nav.digisos.soknad.mottat.v1```, med tom body.\
-For ettersendelse, ```no.nav.digisos.ettersendelse.mottat.v1```, med tom body.
+#### Fra fagsystem - kvittering på mottatt søknad og ettersendelse
+For ny søknad, ```no.nav.digisos.soknad.mottatt.v1```, med tom body.\
+For ettersendelse, ```no.nav.digisos.ettersendelse.mottatt.v1```, med tom body.
 
 ### Sak oppdatering fra Fagsystem
 
