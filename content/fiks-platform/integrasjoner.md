@@ -29,7 +29,7 @@ En fiks-organisasjon kan opprette egen integrasjoner gjennom [fiks-konfigurasjon
 Integrasjoner autentiseres på to ulike måter: som "integrasjon" med oAuth 2.0, eller "integrasjon-person" m. Open Id Connect (OIDC). 
 
 ### Integrasjon
-Denne metoden benyttes for ren server til server integrasjon, for eksempel når et fagsystem skal laste opp meldinger til  [Fiks Innsyn]({{< ref "innsyn.md" >}}). Organisasjonen henter et OAuth 2.0 access token med scope "ks" fra ID-Porten, basert på organisasjonens virksomhetssertifikat. Dokumentasjon for dette finnes [her](https://difi.github.io/idporten-oidc-dokumentasjon/oidc_auth_server-to-server-oauth2.html). Vi støtter i første omgang kun JWT access_tokens, dette må konfigureres hos ID-Porten.  I tillegg til dette tokenet må man ha en header for integrasjonId og for integrasjonPassord. 
+Denne metoden benyttes for ren server til server integrasjon, for eksempel når et fagsystem skal laste opp meldinger til  [Fiks Innsyn]({{< ref "innsyn.md" >}}). Organisasjonen henter et OAuth 2.0 access token med scope "ks:fiks" fra ID-Porten, basert på organisasjonens virksomhetssertifikat. Dokumentasjon for dette finnes [her](https://difi.github.io/idporten-oidc-dokumentasjon/oidc_auth_server-to-server-oauth2.html). Vi støtter i første omgang kun JWT access_tokens, dette må konfigureres hos ID-Porten.  I tillegg til dette tokenet må man ha en header for integrasjonId og for integrasjonPassord. 
    
 Kallet mot Fiks-platform tjenesten trenger dermed følgende HTTP headere:
  
@@ -38,11 +38,11 @@ Kallet mot Fiks-platform tjenesten trenger dermed følgende HTTP headere:
 * _IntegrasjonPassord_: Passord for integrasjonen (fra fiks-konfigurasjon)
 
 ### Integrasjon-person
-Denne metoden benyttes hvis en innbygger er logget inn på en server i en kommune, og man ønsker å gjøre en forespørsel på vegne av denne inbyggeren. Man trenger fortsatt integrasjonid og integrasjonpassord, men i stede for virksomhetens access token sender man brukerens, innhentet med "ks" scope via OIDC fra ID-Porten.  
+Denne metoden benyttes hvis en innbygger er logget inn på en server i en kommune, og man ønsker å gjøre en forespørsel på vegne av denne inbyggeren. Man trenger fortsatt integrasjonid og integrasjonpassord, men i stede for virksomhetens access token sender man brukerens, innhentet med "ks:fiks" scope via OIDC fra ID-Porten.  
    
 Kallet mot Fiks-platform tjenesten trenger dermed følgende HTTP headere:
  
-* _Authorization_: OAuth-2.0 Jwt Access token som bekrefter inbyggerens identitet (fnr), signert av ID-Porten. Scope skal være "ks".
+* _Authorization_: OAuth-2.0 Jwt Access token som bekrefter inbyggerens identitet (fnr), signert av ID-Porten. Scope skal være "ks:fiks".
 * _IntegrasjonId_: Id for integrasjonen, generert i Fiks-konfigurasjon. Orgnr i Jwt'en i _Authorization_ header må være konfigurert som autorisert organisasjon for integrasjonen.
 * _IntegrasjonPassord_: Passord for integrasjonen (fra fiks-konfigurasjon)
 
@@ -60,8 +60,8 @@ Dette gjelder også for integrasjoner som leveres som en del av fiks-plattformen
 
 # Hvordan komme i gang med utvikling
 
-1. Du må ha maskingporten/openid connect konto hos idporten i ver2 miljøet. Dette bestiller du hos idporten@difi.no (Dere må ha virksomhetsertifikat for test fra comfides eller buypass)
-1. Vi må clientid og orgnr på kontoen hos idporten, slik at vi får gitt dere tilgang til ks:fiks scopet. Sendes til fiks-utvikling@ks.no
+1. Du må ha maskinporten/openid connect konto hos idporten i ver2 miljøet. Dette bestiller du hos idporten@difi.no (Dere må ha virksomhetsertifikat for test fra Commfides eller Buypass)
+1. Vi må clientid og orgnr på kontoen hos idporten, slik at vi får gitt dere tilgang til "ks:fiks"-scopet. Sendes til fiks-utvikling@ks.no
 1. Send en epost til fiks-utvikling@ks.no med epsoter som vil ha tilgang til vår slack support kanal. Vi liker best å ta support på chat.
 1. Har dere kontoer i idporten test send en epost med en av disse til oss slik at vi kan sette opp test kommune/organisasjon i test. fiks-utvikling@ks.no
 1. Ta kontakt på slack kanalen når dere står fast, eller ønsker å få tilbakemelding på om dere bruker apiene korrekt.
