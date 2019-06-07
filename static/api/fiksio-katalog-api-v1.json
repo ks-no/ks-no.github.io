@@ -1,39 +1,52 @@
 {
-  "swagger" : "2.0",
+  "openapi" : "3.0.1",
   "info" : {
-    "version" : "v1",
-    "title" : "KS Fiks: FIKS IO Katalog Service",
+    "title" : "KS Fiks: Fiks IO Katalog service",
+    "description" : "KS Fiks: FIKS IO Katalog Service",
     "contact" : {
       "name" : "Fiks brukerstøtte",
-      "url" : "http://www.ks.no/fagomrader/utvikling/digitalisering/digitaliseringsstrategien/fiks/",
+      "url" : "https://www.ks.no/fagomrader/digitalisering/utviklingsprosjekter/",
       "email" : "fiks@ks.no"
-    }
+    },
+    "version" : "v1"
   },
-  "host" : "api.fiks.test.ks.no",
-  "basePath" : "/",
-  "tags" : [ {
-    "name" : "FiksIOKatalog"
+  "servers" : [ {
+    "url" : "https://api.fiks.test.ks.no",
+    "description" : "KS Fiks API host",
+    "variables" : { }
   } ],
-  "schemes" : [ "https" ],
+  "tags" : [ {
+    "name" : "FiksIoKatalog",
+    "description" : "API for å slå opp informasjon fra Fiks IO"
+  } ],
   "paths" : {
-    "/fiks-io/katalog/api/v1/kontoer/{kontoId}" : {
-      "get" : {
-        "tags" : [ "FiksIOKatalog" ],
-        "summary" : "Hent en spesifisert konto basert på konto-id",
-        "description" : "",
-        "operationId" : "getKonto",
-        "parameters" : [ {
-          "name" : "kontoId",
-          "in" : "path",
-          "required" : true,
-          "type" : "string",
-          "format" : "uuid"
-        } ],
+    "/fiks-io/katalog/api/v1/matchendeAdresser" : {
+      "post" : {
+        "tags" : [ "FiksIoKatalog" ],
+        "description" : "Hent eksisterende adresser som samsvarer med spesifiserte parametere. Tjenesten kan benyttes for å verifisere at en adresse ikke overlapper med en annen",
+        "operationId" : "matchendeAdresser",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/AdresseMatchSpesifikasjon"
+              }
+            }
+          },
+          "required" : true
+        },
         "responses" : {
           "200" : {
-            "description" : "successful operation",
-            "schema" : {
-              "$ref" : "#/definitions/KatalogKonto"
+            "description" : "viser like adresser",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/AdresseMatch"
+                  }
+                }
+              }
             }
           }
         }
@@ -41,22 +54,58 @@
     },
     "/fiks-io/katalog/api/v1/kontoer/{kontoId}/offentligNokkel" : {
       "get" : {
-        "tags" : [ "FiksIOKatalog" ],
-        "summary" : "Hent offentlig nokkel for en konto",
-        "description" : "",
+        "tags" : [ "FiksIoKatalog" ],
+        "description" : "Hent offentlig nokkel for en konto",
         "operationId" : "getOffentligNokkel",
         "parameters" : [ {
           "name" : "kontoId",
           "in" : "path",
           "required" : true,
-          "type" : "string",
-          "format" : "uuid"
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
         } ],
         "responses" : {
           "200" : {
-            "description" : "successful operation",
-            "schema" : {
-              "$ref" : "#/definitions/OffentligNokkel"
+            "description" : "Offentlig nøkkel for konto",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/OffentligNokkel"
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Offentlig nøkkel er ikke satt eller konto finnes ikke"
+          }
+        }
+      }
+    },
+    "/fiks-io/katalog/api/v1/kontoer/{kontoId}" : {
+      "get" : {
+        "tags" : [ "FiksIoKatalog" ],
+        "description" : "Hent en spesifisert konto basert på konto-id",
+        "operationId" : "getKonto",
+        "parameters" : [ {
+          "name" : "kontoId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Konto",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/KatalogKonto"
+                }
+              }
             }
           }
         }
@@ -64,214 +113,196 @@
     },
     "/fiks-io/katalog/api/v1/lookup" : {
       "get" : {
-        "tags" : [ "FiksIOKatalog" ],
-        "summary" : "Finner en aktiv konto-id basert på parametere.",
-        "description" : "",
+        "tags" : [ "FiksIoKatalog" ],
+        "description" : "Finner en aktiv konto-id basert på parametere.",
         "operationId" : "lookup",
         "parameters" : [ {
           "name" : "identifikator",
           "in" : "query",
           "required" : true,
-          "type" : "string",
-          "pattern" : "^[A-Z_]+\\.[0-9]+$"
+          "schema" : {
+            "type" : "string"
+          }
         }, {
           "name" : "meldingProtokoll",
           "in" : "query",
           "required" : true,
-          "type" : "string",
-          "pattern" : "^[0-9a-zæøåA-ZÆØÅ.]+$"
+          "schema" : {
+            "type" : "string"
+          }
         }, {
           "name" : "sikkerhetsniva",
           "in" : "query",
           "required" : true,
-          "type" : "integer",
-          "maximum" : 4,
-          "minimum" : 1,
-          "format" : "int32"
-        } ],
-        "responses" : {
-          "200" : {
-            "description" : "successful operation",
-            "schema" : {
-              "$ref" : "#/definitions/KatalogKonto"
-            }
-          }
-        }
-      }
-    },
-    "/fiks-io/katalog/api/v1/matchendeAdresser" : {
-      "post" : {
-        "tags" : [ "FiksIOKatalog" ],
-        "summary" : "Hent eksisterende adresser som samsvarer med spesifiserte parametere. Tjenesten kan benyttes for å verifisere at en adresse ikke overlapper med en annen",
-        "description" : "",
-        "operationId" : "matchendeAdresser",
-        "parameters" : [ {
-          "in" : "body",
-          "name" : "body",
-          "required" : false,
           "schema" : {
-            "$ref" : "#/definitions/AdresseMatchSpesifikasjon"
+            "type" : "integer",
+            "format" : "int32"
           }
         } ],
         "responses" : {
           "200" : {
-            "description" : "successful operation",
-            "schema" : {
-              "type" : "array",
-              "items" : {
-                "$ref" : "#/definitions/AdresseMatch"
-              },
-              "uniqueItems" : true
+            "description" : "Konto",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/KatalogKonto"
+                }
+              }
             }
+          },
+          "404" : {
+            "description" : "Fant ingen konto som samsvarte med de oppgitte parametrene"
           }
         }
       }
     }
   },
-  "definitions" : {
-    "AdresseMatch" : {
-      "type" : "object",
-      "properties" : {
-        "fiksOrgId" : {
-          "type" : "string",
-          "format" : "uuid"
-        },
-        "kontoId" : {
-          "type" : "string",
-          "format" : "uuid"
-        },
-        "adresseId" : {
-          "type" : "string",
-          "format" : "uuid"
-        },
-        "identifikatorMatch" : {
-          "type" : "array",
-          "uniqueItems" : true,
-          "items" : {
+  "components" : {
+    "schemas" : {
+      "AdresseMatch" : {
+        "type" : "object",
+        "properties" : {
+          "fiksOrgId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "kontoId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "adresseId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "identifikatorMatch" : {
+            "uniqueItems" : true,
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          },
+          "meldingTypeMatch" : {
+            "uniqueItems" : true,
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          },
+          "nivaMatch" : {
+            "uniqueItems" : true,
+            "type" : "array",
+            "items" : {
+              "type" : "integer",
+              "format" : "int32"
+            }
+          }
+        }
+      },
+      "AdresseMatchSpesifikasjon" : {
+        "required" : [ "adresseId", "identifikator", "meldingType", "sikkerhetsnivaer" ],
+        "type" : "object",
+        "properties" : {
+          "adresseId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "identifikator" : {
+            "uniqueItems" : true,
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Identifikator"
+            }
+          },
+          "meldingType" : {
+            "uniqueItems" : true,
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          },
+          "sikkerhetsnivaer" : {
+            "uniqueItems" : true,
+            "type" : "array",
+            "items" : {
+              "type" : "integer",
+              "format" : "int32"
+            }
+          }
+        }
+      },
+      "Identifikator" : {
+        "required" : [ "identifikator", "identifikatorType" ],
+        "type" : "object",
+        "properties" : {
+          "identifikatorType" : {
+            "type" : "string",
+            "enum" : [ "ORG_NO", "NAVENHET_ID" ]
+          },
+          "identifikator" : {
+            "pattern" : "^\\d+$",
             "type" : "string"
           }
-        },
-        "meldingTypeMatch" : {
-          "type" : "array",
-          "uniqueItems" : true,
-          "items" : {
+        }
+      },
+      "OffentligNokkel" : {
+        "type" : "object",
+        "properties" : {
+          "nokkel" : {
+            "type" : "string"
+          },
+          "validFrom" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "validTo" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "serial" : {
+            "type" : "string"
+          },
+          "subjectDN" : {
+            "type" : "string"
+          },
+          "issuerDN" : {
             "type" : "string"
           }
-        },
-        "nivaMatch" : {
-          "type" : "array",
-          "uniqueItems" : true,
-          "items" : {
-            "type" : "integer",
-            "format" : "int32"
+        }
+      },
+      "KatalogKonto" : {
+        "type" : "object",
+        "properties" : {
+          "fiksOrgId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "fiksOrgNavn" : {
+            "type" : "string"
+          },
+          "kontoId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "kontoNavn" : {
+            "type" : "string"
+          },
+          "status" : {
+            "$ref" : "#/components/schemas/KontoStatusApiModel"
           }
         }
-      }
-    },
-    "AdresseMatchSpesifikasjon" : {
-      "type" : "object",
-      "required" : [ "adresseId" ],
-      "properties" : {
-        "adresseId" : {
-          "type" : "string",
-          "format" : "uuid"
-        },
-        "identifikator" : {
-          "type" : "array",
-          "uniqueItems" : true,
-          "items" : {
-            "$ref" : "#/definitions/Identifikator"
-          }
-        },
-        "meldingType" : {
-          "type" : "array",
-          "uniqueItems" : true,
-          "items" : {
+      },
+      "KontoStatusApiModel" : {
+        "type" : "object",
+        "properties" : {
+          "gyldigAvsender" : {
+            "type" : "boolean"
+          },
+          "gyldigMottaker" : {
+            "type" : "boolean"
+          },
+          "melding" : {
             "type" : "string"
           }
-        },
-        "sikkerhetsnivaer" : {
-          "type" : "array",
-          "uniqueItems" : true,
-          "items" : {
-            "type" : "integer",
-            "format" : "int32"
-          }
-        }
-      }
-    },
-    "Identifikator" : {
-      "type" : "object",
-      "required" : [ "identifikatorType" ],
-      "properties" : {
-        "identifikatorType" : {
-          "type" : "string",
-          "enum" : [ "ORG_NO", "NAVENHET_ID" ]
-        },
-        "identifikator" : {
-          "type" : "string",
-          "pattern" : "^[0-9]."
-        }
-      }
-    },
-    "KatalogKonto" : {
-      "type" : "object",
-      "properties" : {
-        "fiksOrgId" : {
-          "type" : "string",
-          "format" : "uuid"
-        },
-        "fiksOrgNavn" : {
-          "type" : "string"
-        },
-        "kontoId" : {
-          "type" : "string",
-          "format" : "uuid"
-        },
-        "kontoNavn" : {
-          "type" : "string"
-        },
-        "status" : {
-          "$ref" : "#/definitions/KontoStatusApiModel"
-        }
-      }
-    },
-    "KontoStatusApiModel" : {
-      "type" : "object",
-      "properties" : {
-        "gyldigAvsender" : {
-          "type" : "boolean"
-        },
-        "gyldigMottaker" : {
-          "type" : "boolean"
-        },
-        "melding" : {
-          "type" : "string"
-        }
-      }
-    },
-    "OffentligNokkel" : {
-      "type" : "object",
-      "properties" : {
-        "nokkel" : {
-          "type" : "string"
-        },
-        "validFrom" : {
-          "type" : "string",
-          "format" : "date-time"
-        },
-        "validTo" : {
-          "type" : "string",
-          "format" : "date-time"
-        },
-        "serial" : {
-          "type" : "string"
-        },
-        "subjectDN" : {
-          "type" : "string"
-        },
-        "issuerDN" : {
-          "type" : "string"
         }
       }
     }
