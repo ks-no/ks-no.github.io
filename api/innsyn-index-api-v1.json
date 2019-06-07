@@ -120,6 +120,75 @@
     }
   },
   "definitions" : {
+    "ByggesakDokumentTypeV1" : {
+      "type" : "object",
+      "required" : [ "kodebeskrivelse", "kodeverdi" ],
+      "properties" : {
+        "kodeverdi" : {
+          "type" : "string"
+        },
+        "kodebeskrivelse" : {
+          "type" : "string"
+        }
+      }
+    },
+    "ByggesakDokumentV1" : {
+      "type" : "object",
+      "required" : [ "dokumentsdato", "dokumenttype", "erstatterTidligereSystemId", "mimeType", "nedlastingslenke", "size", "systemId", "tittel", "vedtaksdato", "vedtaksstatus", "versjon" ],
+      "properties" : {
+        "tittel" : {
+          "type" : "string"
+        },
+        "dokumenttype" : {
+          "$ref" : "#/definitions/ByggesakDokumentTypeV1"
+        },
+        "nedlastingslenke" : {
+          "type" : "string"
+        },
+        "dokumentsdato" : {
+          "type" : "integer",
+          "format" : "int64"
+        },
+        "vedtaksstatus" : {
+          "type" : "string"
+        },
+        "vedtaksdato" : {
+          "type" : "integer",
+          "format" : "int64"
+        },
+        "versjon" : {
+          "type" : "string"
+        },
+        "systemId" : {
+          "type" : "string"
+        },
+        "erstatterTidligereSystemId" : {
+          "type" : "string"
+        },
+        "size" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "mimeType" : {
+          "type" : "string"
+        }
+      }
+    },
+    "EksponertFor" : {
+      "type" : "object",
+      "properties" : {
+        "identifikatorType" : {
+          "type" : "string",
+          "description" : "Type identifikator",
+          "enum" : [ "ORGANISASJONSNUMMER", "FODSELSNUMMER", "MATRIKKELNUMMER" ]
+        },
+        "verdi" : {
+          "type" : "string",
+          "description" : "Et 11 siffret fødselsnummer, et 9 siffret organisasjonsnummer, eller et matrikkelnummer på format <kommunenr>-<gardsnr>/<bruksnr>/<festenr>/<seksjonsnr>"
+        }
+      },
+      "description" : "Anngir hvem som skal ha tilgang til dokumentet. Dette kan endten være en fysisk person, en organisasjon, eller en matrikkelenhet."
+    },
     "FiksOrganisasjon" : {
       "type" : "object",
       "required" : [ "id", "visningsnavn" ],
@@ -144,7 +213,7 @@
         },
         "type" : {
           "type" : "string",
-          "enum" : [ "faktura", "saksmappe", "journalpost", "forsendelse" ]
+          "enum" : [ "faktura", "saksmappe", "journalpost", "byggesak", "forsendelse", "matrikkelenhet" ]
         }
       },
       "description" : "Spesifiser et foreldre-dokument."
@@ -248,9 +317,8 @@
           "minimum" : 0
         },
         "eksponertFor" : {
-          "type" : "string",
           "example" : "123456789",
-          "pattern" : "^[0-9]{11}$|^[0-9]{9}$"
+          "$ref" : "#/definitions/EksponertFor"
         },
         "fiksOrganisasjon" : {
           "example" : "120b7806-611f-4b76-b2d4-3a1445de5281",
@@ -300,6 +368,32 @@
       },
       "description" : "Et dokument for en forsendelse"
     },
+    "MatrikkelnummerV1" : {
+      "type" : "object",
+      "required" : [ "bruksnummer", "festenummer", "gardsnummer", "kommunenummer", "seksjonsnummer" ],
+      "properties" : {
+        "kommunenummer" : {
+          "type" : "string",
+          "pattern" : "^\\d{4}$"
+        },
+        "gardsnummer" : {
+          "type" : "string",
+          "pattern" : "^[0-9]{1,4}$"
+        },
+        "bruksnummer" : {
+          "type" : "string",
+          "pattern" : "^[0-9]{1,4}$"
+        },
+        "festenummer" : {
+          "type" : "string",
+          "pattern" : "^[0-9]{1,4}$"
+        },
+        "seksjonsnummer" : {
+          "type" : "string",
+          "pattern" : "^[0-9]{1,4}$"
+        }
+      }
+    },
     "MeldingIndexResponse" : {
       "type" : "object",
       "required" : [ "manglerSamtykke", "oppdatert", "opprettet" ],
@@ -333,7 +427,19 @@
       "properties" : {
         "versjon" : {
           "type" : "string",
-          "enum" : [ "fakturaV1", "saksmappeV1", "journalpostV1", "forsendelseV1", "forsendelseV2" ]
+          "enum" : [ "fakturaV1", "saksmappeV1", "journalpostV1", "forsendelseV1", "forsendelseV2", "byggesakV1", "matrikkelenhetV1" ]
+        }
+      }
+    },
+    "SaksnummerV1" : {
+      "type" : "object",
+      "required" : [ "saksaar", "sakssekvensnummer" ],
+      "properties" : {
+        "saksaar" : {
+          "type" : "string"
+        },
+        "sakssekvensnummer" : {
+          "type" : "string"
         }
       }
     },
@@ -344,6 +450,17 @@
           "type" : "integer",
           "format" : "int64",
           "description" : "Antall meldinger som ble slettet i operasjonen."
+        }
+      }
+    },
+    "TiltakstypeV1" : {
+      "type" : "object",
+      "properties" : {
+        "kodeverdi" : {
+          "type" : "string"
+        },
+        "kodebeskrivelse" : {
+          "type" : "string"
         }
       }
     },
@@ -364,6 +481,81 @@
           "description" : "Beskrivelse av feilen som oppstod"
         }
       }
+    },
+    "byggesakV1" : {
+      "allOf" : [ {
+        "$ref" : "#/definitions/MeldingMetadata"
+      }, {
+        "type" : "object",
+        "required" : [ "administrativEnhet", "adresse", "ansvarligSoker", "avsluttetDato", "beskrivelse", "dokumenter", "dokumentlistebeskrivelse", "mappeId", "matrikkelnummer", "saksansvarlig", "saksdato", "saksnummer", "sakstatus", "tiltakshaver", "tiltakstype", "tittel" ],
+        "properties" : {
+          "tittel" : {
+            "type" : "string"
+          },
+          "beskrivelse" : {
+            "type" : "string"
+          },
+          "mappeId" : {
+            "type" : "string"
+          },
+          "sakstatus" : {
+            "type" : "string"
+          },
+          "saksdato" : {
+            "type" : "integer",
+            "format" : "int64",
+            "example" : 1527140551605
+          },
+          "saksansvarlig" : {
+            "type" : "string",
+            "example" : "Ola Normann"
+          },
+          "administrativEnhet" : {
+            "type" : "string"
+          },
+          "adresse" : {
+            "type" : "string",
+            "example" : "Øvre Eksempelveien 35, 5073 BERGEN"
+          },
+          "avsluttetDato" : {
+            "type" : "integer",
+            "format" : "int64",
+            "example" : 1527140551605
+          },
+          "saksnummer" : {
+            "$ref" : "#/definitions/SaksnummerV1"
+          },
+          "tiltakstype" : {
+            "$ref" : "#/definitions/TiltakstypeV1"
+          },
+          "tiltakshaver" : {
+            "type" : "string"
+          },
+          "ansvarligSoker" : {
+            "type" : "string"
+          },
+          "matrikkelnummer" : {
+            "$ref" : "#/definitions/MatrikkelnummerV1"
+          },
+          "dokumentlistebeskrivelse" : {
+            "type" : "string"
+          },
+          "dokumenter" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/definitions/ByggesakDokumentV1"
+            }
+          },
+          "korrelasjonId" : {
+            "type" : "string",
+            "pattern" : "^[A-Za-z0-9\\-]+$"
+          },
+          "forelder" : {
+            "$ref" : "#/definitions/Forelder"
+          }
+        },
+        "description" : "Byggesak"
+      } ]
     },
     "fakturaV1" : {
       "allOf" : [ {
@@ -545,6 +737,31 @@
             "minItems" : 1
           }
         }
+      } ]
+    },
+    "matrikkelenhetV1" : {
+      "allOf" : [ {
+        "$ref" : "#/definitions/MeldingMetadata"
+      }, {
+        "type" : "object",
+        "required" : [ "matrikkelnummer" ],
+        "properties" : {
+          "matrikkelnummer" : {
+            "$ref" : "#/definitions/MatrikkelnummerV1"
+          },
+          "adresse" : {
+            "type" : "string",
+            "example" : "Øvre Testveien 34, 3765 Storevik"
+          },
+          "korrelasjonId" : {
+            "type" : "string",
+            "pattern" : "^[A-Za-z0-9\\-]+$"
+          },
+          "forelder" : {
+            "$ref" : "#/definitions/Forelder"
+          }
+        },
+        "description" : "Matrikkelenhet"
       } ]
     },
     "saksmappeV1" : {
