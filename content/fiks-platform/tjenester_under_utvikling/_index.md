@@ -19,23 +19,24 @@ Innsyn utvides med informasjon om matrikkel, som gjør det mulig å eksponere me
 Det vil bli mulig å se eiendomer du eiger på minside, med forskjellig informasjon på eiendomen. Lenker til andre løsninger.
 
 ## 2019-Q3
-#### MinSide: Søknader
-Innbyggeres innsendte søknader og kladder for disse gjøres tilgjengelig på Minside. Utvikles som modul i Fiks Innsyn i sammarbeid med leverandører av søknadsmotorer og arkivsystem.
+#### Minside: Byggesaker
+Byggesaker, både historiske, pågående søknader og avsluttede gjøres tilgjengelig på MinSide, med status og oppdateringer for pågående saker.
 
 #### Forvaltning: Statistikk
 Statistikk og oversikt over hvordan en kommunes tjenester på MinSide og Fiks-plattformen benyttes. Antall besøkende, dataforbruk osv.  
 
+## 2019-Q4
+
+## 2020
 #### Forvaltning: [Audit]({{< ref "audit.md" >}})
 Audit-logg for handlinger på Fiks plattformen gjøres tilgjengelig for tjeneste-administratorer. Det vil være mulig å se hvilke integrasjoner eller personer som har gjort hvilke handlinger, og når det er utført.
 
 #### Minside: Lenker til kommunale tjenester
 Lar en kommune legge inn sine eksisterende tjenester, med beskrivelse og lenke. Disse vises på minside.kommune.no for innbyggere i kommunen.
 
-## 2019-Q4
 #### Minside: Eiendom
 Matrikkel- og eiendomsinformasjon gjøres tilgjengelig på MinSide. Vil inkludere mulighet for å sende korrigeringer på evt. feilaktig informasjon.
 
-## 2020
 #### Fiks Folkeregister
 Fiks-plattformen tilgjengeliggjør folkeregistrets api for oppslag, støttet av logging, autentisering, autorisasjon og konfigurering på Fiks-plattformen.
 
@@ -44,9 +45,11 @@ Fiks-plattformens løsning for spørringer og rapportering på folkeregisterdata
 
 ## Under utredning:
 
+#### MinSide: Søknader
+Innbyggeres innsendte søknader og kladder for disse gjøres tilgjengelig på Minside. Utvikles som modul i Fiks Innsyn i sammarbeid med leverandører av søknadsmotorer og arkivsystem.
+
+
 #### Minside: Faktura
 Faktura fra kommunen gjøres tilgjengelig på MinSide.
 
-#### Minside: Byggesaker
-Byggesaker, både historiske, pågående søknader og avsluttede gjøres tilgjengelig på MinSide, med status og oppdateringer for pågående saker.
 
