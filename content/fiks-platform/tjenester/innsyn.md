@@ -5,18 +5,18 @@ date: 2018-12-17
 
 ![minside_sok](/images/innsyn.png "Innsyn")
 
-Norske kommuner har mengder av informasjon om sine innbyggere. Denne informasjonen er spredd rundt i arkivsystemer, fagsystemer, dokumentlagre og eksterne skyløsninger. Fiks Innsyn gjør det lett for innbyggeren å finne denne informasjonen.  
+Norske kommuner har mengder av informasjon om sine innbyggere. Denne informasjonen er spredd rundt i arkiver, fagsystemer, dokumentlagre og eksterne skyløsninger. Fiks Innsyn gjør det lett for innbyggeren å finne denne informasjonen.  
 
-I tilleg til å akseptere indeksering av data fra eksterne kilder vil også de andre tjenestene på Fiks plattformen levere data til Innsyn, som for eksempel [fiks-digisos]({{< ref "digisos.md" >}}) (under utvikling) som leverer kvitteringer og oppdateringer for sosialsøknader, og KS SvarUt som leverer kopier av forsendelser til innbyggeren\.
+Innsyn tar typisk i mot data fra kommuner, kommunale virksomheter og leverandører av arkiv og fagsystemer, men også de andre tjenestene på Fiks plattformen levere data til Innsyn, som for eksempel [fiks-digisos]({{< ref "digisos.md" >}}) (under utvikling) som leverer kvitteringer og oppdateringer for sosialsøknader, og KS SvarUt som leverer kopier av forsendelser til innbyggeren.
 
 ## Oversikt
 Tjenesten består av tre hovedkomponenter:
  
- * _Innsyn webapplikasjoner_, et sett med SPA (Single Page Application) grensesnitt som innbyggere benytter for å søke i innsynsdatabasen. Fiks vil utvikle egne applikasjoner for "post fra kommunen", "saker", "faktura", osv. 
- * _Innsyn-søk_, en søkemotor som støtter fritekstsøk og score-rangerte resultater. 
+ * _Innsyn webapplikasjoner_, et sett med SPA (Single Page Application) på minside.kommune.no som innbyggere benytter for å søke i innsynsdatabasen. Eksempler er "Post fra kommunen", "Byggesaker", osv.
+ * _Innsyn-søk_, søkemotoren som utgjør back-end for webappliasjonene. Støtter fritekstsøk og score-rangerte resultater. 
  * _Innsyn-indexer_, en indekseringstjeneste som integrasjoner kan benytte for å laste opp meldinger: hendelser, fakturaer, saker, journalposter, forsendelser, osv.  
 
-Søkeresultatet scores på relevans: nye meldinger scores høyere enn gamle, uleste dokumenter høyere enn de du har lest, ubetalte faktura høyere enn de du har betalt, og så videre. Den tilbyr flere filtre: dato, organisasjon, enhet, og mulighet for å søke på ord som fremkommer i meldingen. Den kompanserer for stavefeil, bøyeform eller orddeling. Alle søk er også filtrert på innloggingsnivå. Et søk gjort med innlogging på nivå tre vil ikke returnere grupper som er satt til nivå fire, uavhengig av om disse gruppene traff på søket.
+Søkeresultatet scores på relevans: nye meldinger scores høyere enn gamle, uleste dokumenter høyere enn de du har lest, ubetalte faktura høyere enn de du har betalt, og så videre. Den kompenserer for stavefeil, bøyeform eller orddeling. Alle søk er også filtrert på innloggingsnivå. Et søk gjort med innlogging på nivå tre vil ikke returnere grupper som er satt til nivå fire, uavhengig av om disse gruppene traff på søket.
 
 Søkemotoren inneholder utelukkende metadata. Om meldingen skal peke til et dokument, bilde eller annen fil gjøres dette i form av en lenke: denne kan for eksempel peke til en fil i [Fiks Dokumentlager]({{< ref "dokumentlager.md" >}}), men fiks-organisasjoner står fritt til å benytte andre tjenester. Så lenge disse støtter innlogging gjennom ID-Porten vil dette også oppleves som sømløst av innbygger. 
 
