@@ -1,48 +1,78 @@
 {
-  "swagger" : "2.0",
+  "openapi" : "3.0.1",
   "info" : {
-    "version" : "v1",
-    "title" : "KS Fiks: Digisos Sak Service",
+    "title" : "KS Fiks: Digisos Service",
+    "description" : "KS Fiks: Digisos Sak Oppdatering Service",
     "contact" : {
       "name" : "Fiks brukerstøtte",
       "url" : "https://ks-no.github.io/",
       "email" : "fiks@ks.no"
-    }
+    },
+    "version" : "v1"
   },
-  "host" : "api.fiks.test.ks.no",
-  "basePath" : "/",
-  "tags" : [ {
-    "name" : "DigisosSaksoppdatering"
+  "servers" : [ {
+    "url" : "https://api.fiks.test.ks.no",
+    "description" : "KS Fiks API host",
+    "variables" : { }
   } ],
-  "schemes" : [ "https" ],
+  "tags" : [ {
+    "name" : "DigisosSaksoppdatering",
+    "description" : "API for KS Fiks Digisos Sak oppdatering"
+  } ],
   "paths" : {
     "/digisos/api/v1/{fiksOrgId}/ny" : {
       "post" : {
         "tags" : [ "DigisosSaksoppdatering" ],
-        "summary" : "Oppretter en ny Digisos-sak og returnerer tilhørende DigisosId",
-        "description" : "",
+        "description" : "Oppretter en ny Digisos-sak og returnerer tilhørende DigisosId",
         "operationId" : "opprettNySak",
         "parameters" : [ {
           "name" : "fiksOrgId",
           "in" : "path",
           "description" : "FiksOrgId tilhørende digisos-soker",
           "required" : true,
-          "type" : "string",
-          "format" : "uuid"
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
         }, {
           "name" : "sokerFnr",
           "in" : "query",
           "description" : "Angir fødselsnummer for opprettet digisos-soker",
           "required" : true,
-          "type" : "string",
-          "pattern" : "^[0-9]{11}$"
+          "schema" : {
+            "type" : "string"
+          }
         } ],
         "responses" : {
           "200" : {
-            "description" : "successful operation",
-            "schema" : {
-              "type" : "string",
-              "format" : "uuid"
+            "description" : "Saken ble oppdatert",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "string",
+                  "format" : "uuid"
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Bruker har ikke tilgang til å oppdatere den oppgitte saken",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Feil i de innsendte data",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
             }
           }
         }
@@ -51,34 +81,60 @@
     "/digisos/api/v1/{fiksOrgId}/{digisosId}" : {
       "post" : {
         "tags" : [ "DigisosSaksoppdatering" ],
-        "summary" : "Oppdaterer digisos-soker",
-        "description" : "",
+        "description" : "Oppdaterer digisos-soker",
         "operationId" : "oppdaterSak",
         "parameters" : [ {
-          "in" : "body",
-          "name" : "body",
-          "required" : false,
-          "schema" : {
-            "$ref" : "#/definitions/DigisosSakApiModel"
-          }
-        }, {
           "name" : "fiksOrgId",
           "in" : "path",
           "description" : "FiksOrgId tilhørende digisos-soker",
           "required" : true,
-          "type" : "string",
-          "format" : "uuid"
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
         }, {
           "name" : "digisosId",
           "in" : "path",
           "description" : "Unik DigisosId tilhørende digisos-soker",
           "required" : true,
-          "type" : "string",
-          "format" : "uuid"
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
         } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/DigisosSakApiModel"
+              }
+            }
+          },
+          "required" : true
+        },
         "responses" : {
-          "default" : {
-            "description" : "successful operation"
+          "202" : {
+            "description" : "Oppdateringen er akseptert"
+          },
+          "403" : {
+            "description" : "Bruker har ikke tilgang til å oppdatere den oppgitte saken",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Feil i de innsendte data",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
           }
         }
       },
@@ -92,19 +148,43 @@
           "in" : "path",
           "description" : "FiksOrgId tilhørende digisos-soker",
           "required" : true,
-          "type" : "string",
-          "format" : "uuid"
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
         }, {
           "name" : "digisosId",
           "in" : "path",
           "description" : "Unik DigisosId tilhørende digisos-soker",
           "required" : true,
-          "type" : "string",
-          "format" : "uuid"
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
         } ],
         "responses" : {
-          "default" : {
-            "description" : "successful operation"
+          "204" : {
+            "description" : "Oppdateringer ble slettet"
+          },
+          "403" : {
+            "description" : "Bruker har ikke tilgang til å oppdatere den oppgitte saken",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Feil i de innsendte data",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
           }
         }
       }
@@ -112,31 +192,38 @@
     "/digisos/api/v1/{fiksOrgId}/{digisosId}/filer" : {
       "get" : {
         "tags" : [ "DigisosSaksoppdatering" ],
-        "summary" : "Henter filmetadata for angitt digisos-soker",
-        "description" : "",
+        "description" : "Henter filmetadata for angitt digisos-soker",
         "operationId" : "hentFiler",
         "parameters" : [ {
           "name" : "fiksOrgId",
           "in" : "path",
           "description" : "FiksOrgId tilhørende digisos-soker",
           "required" : true,
-          "type" : "string",
-          "format" : "uuid"
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
         }, {
           "name" : "digisosId",
           "in" : "path",
           "description" : "Unik DigisosId tilhørende digisos-soker",
           "required" : true,
-          "type" : "string",
-          "format" : "uuid"
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
         } ],
         "responses" : {
           "200" : {
-            "description" : "successful operation",
-            "schema" : {
-              "type" : "array",
-              "items" : {
-                "$ref" : "#/definitions/DokumentInfo"
+            "description" : "Beskrivelse av filer tilhørende sak",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/DokumentInfo"
+                  }
+                }
               }
             }
           }
@@ -144,75 +231,123 @@
       },
       "delete" : {
         "tags" : [ "DigisosSaksoppdatering" ],
-        "summary" : "Sletter filer for angitt Digisos-sak",
-        "description" : "",
+        "description" : "Sletter filer for angitt Digisos-sak",
         "operationId" : "slettFiler",
         "parameters" : [ {
           "name" : "fiksOrgId",
           "in" : "path",
           "description" : "FiksOrgId tilhørende digisos-soker",
           "required" : true,
-          "type" : "string",
-          "format" : "uuid"
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
         }, {
           "name" : "digisosId",
           "in" : "path",
           "description" : "Unik DigisosId tilhørende digisos-soker",
           "required" : true,
-          "type" : "string",
-          "format" : "uuid"
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
         }, {
           "name" : "filIder",
           "in" : "query",
           "description" : "Liste av filer som skal slettes, tilhørende angitt digisos-soker",
           "required" : true,
-          "type" : "array",
-          "items" : {
-            "type" : "string",
-            "format" : "uuid"
-          },
-          "collectionFormat" : "multi"
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "format" : "uuid"
+            }
+          }
         } ],
         "responses" : {
           "default" : {
-            "description" : "successful operation"
+            "description" : "default response",
+            "content" : {
+              "application/json" : { }
+            }
           }
         }
       }
     }
   },
-  "definitions" : {
-    "DigisosSakApiModel" : {
-      "type" : "object",
-      "required" : [ "sak", "type" ],
-      "properties" : {
-        "sak" : {
-          "type" : "object",
-          "example" : "{\"version\": \"1.0.0\",\"avsender\": {\"systemnavn\": \"Testsystemet\",\"systemversjon\": \"1.0.0\"},\"hendelser\": [{\"type\": \"nyStatus\",\"hendelsestidspunkt\": \"2018-10-04T13:37:00.134Z\",\"status\": \"MOTTATT\"}]}",
-          "description" : "Json-data for saksoppdatering, format: https://navikt.github.io/soknadsosialhjelp-filformat/#/data%20fra%20fagsystem/getdigisos_soker_json"
-        },
-        "type" : {
-          "type" : "string",
-          "description" : "Type/versjon på Digisos-sak",
-          "enum" : [ "no.nav.digisos.digisos.soker.v1" ]
+  "components" : {
+    "schemas" : {
+      "ErrorMessage" : {
+        "type" : "object",
+        "properties" : {
+          "timestamp" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "status" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "error" : {
+            "type" : "string"
+          },
+          "errorId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "path" : {
+            "type" : "string"
+          },
+          "originalPath" : {
+            "type" : "string"
+          },
+          "message" : {
+            "type" : "string"
+          },
+          "errorCode" : {
+            "type" : "string"
+          },
+          "errorJson" : {
+            "type" : "string"
+          }
         }
       },
-      "description" : "Saksoppdatering for søkers innsynsfil"
-    },
-    "DokumentInfo" : {
-      "type" : "object",
-      "properties" : {
-        "filnavn" : {
-          "type" : "string"
+      "DigisosSakApiModel" : {
+        "required" : [ "sak", "type" ],
+        "type" : "object",
+        "properties" : {
+          "sak" : {
+            "type" : "string",
+            "description" : "Json-data for saksoppdatering, format: https://navikt.github.io/soknadsosialhjelp-filformat/#/data%20fra%20fagsystem/getdigisos_soker_json\", example = \"{\\\"version\\\": \\\"1.0.0\\\",\\\"avsender\\\": {\\\"systemnavn\\\": \\\"Testsystemet\\\",\\\"systemversjon\\\": \\\"1.0.0\\\"},\\\"hendelser\\\": [{\\\"type\\\": \\\"nyStatus\\\",\\\"hendelsestidspunkt\\\": \\\"2018-10-04T13:37:00.134Z\\\",\\\"status\\\": \\\"MOTTATT\\\"}]}"
+          },
+          "type" : {
+            "type" : "string",
+            "description" : "Type/versjon på Digisos-sak",
+            "enum" : [ "no.nav.digisos.digisos.soker.v1" ]
+          }
         },
-        "dokumentlagerDokumentId" : {
-          "type" : "string",
-          "format" : "uuid"
+        "description" : "Saksoppdatering for søkers innsynsfil"
+      },
+      "DokumentInfo" : {
+        "type" : "object",
+        "properties" : {
+          "filnavn" : {
+            "type" : "string",
+            "description" : "Logisk navn på fil",
+            "example" : "example.pdf"
+          },
+          "dokumentlagerDokumentId" : {
+            "type" : "string",
+            "description" : "ID på filen i KS Fiks Dokumentlager",
+            "format" : "uuid"
+          },
+          "storrelse" : {
+            "type" : "integer",
+            "description" : "Størrelse på filen (i bytes)",
+            "format" : "int64"
+          }
         },
-        "storrelse" : {
-          "type" : "integer",
-          "format" : "int64"
-        }
+        "description" : "Metadata om en fil"
       }
     }
   }
