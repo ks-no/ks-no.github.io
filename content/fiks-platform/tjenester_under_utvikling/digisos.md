@@ -1,6 +1,6 @@
 ---
 title: Digisos 
-date: 2019-06-11
+date: 2019-06-19
 ---
 
 **STATUS: under utvikling**
@@ -121,6 +121,7 @@ For generell integrasjonsutvikling mot Fiks, se [Integrasjonsutvikling]({{< ref 
 ## Innsending av søknad
 
 Soknad api [(api-spec)](https://editor.swagger.io/?url=https://ks-no.github.io/api/digisos-api-v1.json)
+For innsending av søknad/ettersendelse brukes person-integrasjon autentisering med OIDC, se [Integrasjonsutvikling]({{< ref "integrasjoner.md" >}}) for mer detaljer.
 
 **Innsending av ny søknad**
 
@@ -130,7 +131,7 @@ URL-stien til ny søknad er ```/digisos/api/v1/soknader/{kommunenummer}/{navEkse
 
 Endepunktet tar inn påkrevde felter for innsending av en ny søknad, som består av metadataene soknad.json (json-encodet String) og vedlegg.json (json-encodet String), samt filen soknad.pdf (metadata + base64-encodet blokk) pluss eventuelle vedlegg (metadata + base64-encodet blokk). Disse dataene må da være definert i denne rekkefølgen i multipart requesten. 
 
-For hver fil som skal lastes opp (soknad.pdf og hvert vedlegg) legger man til en metadata-blokk som inneholder informasjon om filen og en base64-encodet blokk som inneholder selve filen.
+For hver fil som skal lastes opp (soknad.pdf og hvert vedlegg) legger man til en metadata-blokk som inneholder informasjon om filen og en base64-encodet blokk som inneholder selve filen. Base64-blokkene må også være kryptert med public key til Fiks Dokumentlager, som blir eksponert via endepunktet ```/digisos/api/v1/dokumentlager-public-key```, på lik linje med kryptering av filer for for fagsystemene, som definert i Fiks Digisos klienten.
 \
 Metadata består av filnavn på filen (*filnavn*), type (*mimetype*) og størrelse på filen i bytes (*storrelse*), der metadata-blokken er av typen "application/json". Alle felter må oppgis.
 
@@ -159,7 +160,7 @@ Innsending av ny ettersendelse til Fiks Digisos bruker også multipart streaming
 
 URL-stien til ny ettersendelse er ```/digisos/api/v1/soknader/{kommunenummer}/{soknadId}/{navEkseternRefId}```, der ```{kommunenummer}``` er kommunenummer søknaden tilhører, ```{soknadId}``` er Fiks DigisosId-en for søknaden det skal ettersendes til og ```{navEkseternRefId}``` er en unik id fra NAV for denne ettersendelsen. 
 
-Endepunktet tar inn påkrevde felter for innsending av en ny ettersendelse, som består av metadataen vedlegg.json (String), samt en liste med vedlegg (metadata + base64-encodet blokk). 
+Endepunktet tar inn påkrevde felter for innsending av en ny ettersendelse, som består av metadataen vedlegg.json (String), samt en liste med vedlegg (metadata + base64-encodet blokk). Base64-blokkene for filene må krypteres på lik linje som for ny søknad.
 
 For hvert vedlegg som skal lastes opp legger man til en metadata-blokk som inneholder informasjon om filen (samme som innsending av ny søknad) og en base64-encodet blokk som inneholder selve filen.
 
