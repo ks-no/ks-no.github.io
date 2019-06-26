@@ -13,7 +13,8 @@ Tjenesten bruker HTTP Basic autentication med brukernavn og generert service-pas
 
 ### Tjenester
 
-Forsendelser er tilgjengelig for direkte import til sakssystem i 2 timer. Dersom forsendelsene ikke er lastet ned til sakssystemet innen denne fristen går forsendelsene videre i det normale løpet med varsling i Altinn og til slutt printing.
+Forsendelser er tilgjengelig for direkte import til sakssystem i uendelig tid. Dersom forsendelsene markeres som permanent import feil går forsendelsene videre i det normale løpet med varsling i Altinn og til slutt printing.
+Etter 2 timer vil det bli sendt varsel mail om manglende import 3 ganger om dagen.
 
 Tjenestene er tilgjengelige via https://svarut.ks.no/tjenester/svarinn/
 
