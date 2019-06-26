@@ -20,8 +20,8 @@ Søkeresultatet scores på relevans: nye meldinger scores høyere enn gamle, ule
 
 Søkemotoren inneholder utelukkende metadata, ikke selve dokumentet. Om meldingen skal peke til et dokument, bilde eller annen fil gjøres dette i form av en lenke: denne kan for eksempel peke til en fil i [Fiks Dokumentlager]({{< ref "dokumentlager.md" >}}), en sak i et kommunalt filarkiv, eller en annen tjeneste. Så lenge disse støtter innlogging gjennom ID-Porten vil nedlastingen oppleves sømløst av innbygger. 
 
-## Hvordan bruker en kommune Innsyn?
-En kommune kan ta i bruk Fiks Innsyn på to hovedmåter: ved å eksponere meldinger på minside.kommune.no, eller ved å benytte disse i sin eksisterende minside løsning, endten egenutviklet eller kjøpt fra leverandør. 
+## Hvordan tar man i bruk Fiks Innsyn?
+En kommune kan ta i bruk Fiks Innsyn på to hovedmåter: ved å gjøre meldinger tilgjengelig på minside.kommune.no, eller ved å benytte disse i en eksisterende minside løsning, endten egenutviklet eller kjøpt fra leverandør. 
 
 Uansett er første steg å sørge for at kommunens data finnes i søkemotoren. Dette gjøres ved å legge til integrasjoner i konfigurasjonen av [(innsyntjenesten)](https://forvaltning.fiks.ks.no/fiks-konfigurasjon/tjenester/innsyn) på forvaltning.fiks.ks.no. Hver av disse integrasjonene representerer en datakilde. Disse kan være "nøkkelklare" integrasjoner levert av KS eller tredjepartsleverandører (for eksempel SvarUt), eller integrasjoner kommunen lager selv.
 
