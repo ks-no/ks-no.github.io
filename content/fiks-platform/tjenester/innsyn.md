@@ -5,28 +5,35 @@ date: 2018-12-17
 
 ![minside_sok](/images/innsyn.png "Innsyn")
 
-Norske kommuner har mengder av informasjon om sine innbyggere. Denne informasjonen er spredd rundt i arkiver, fagsystemer, dokumentlagre og eksterne skyløsninger. Fiks Innsyn gjør det lett for innbyggeren å finne denne informasjonen.  
+Norske kommuner har mengder av informasjon om sine innbyggere. Denne informasjonen er spredd rundt i arkiver, fagsystemer, dokumentlagre og eksterne skyløsninger. Fiks Innsyn er en søkemotor som gjør det lett for innbyggeren å finne denne informasjonen.  
 
-Innsyn tar typisk i mot data fra kommuner, kommunale virksomheter og leverandører av arkiv og fagsystemer, men også de andre tjenestene på Fiks plattformen levere data til Innsyn, som for eksempel [fiks-digisos]({{< ref "digisos.md" >}}) (under utvikling) som leverer kvitteringer og oppdateringer for sosialsøknader, og KS SvarUt som leverer kopier av forsendelser til innbyggeren.
+Innsyn tar typisk i mot data fra kommuner, kommunale virksomheter og leverandører av arkiv og fagsystemer, men også de andre tjenestene på Fiks plattformen kan levere data til Innsyn, som for eksempel [fiks-digisos]({{< ref "digisos.md" >}}) (under utvikling) som tilgjengeliggjør kvitteringer og oppdateringer for sosialsøknader, og KS SvarUt som leverer meldinger om forsendelser til innbyggeren.
 
-## Oversikt
+## Hva er Fiks Innsyn?
 Tjenesten består av tre hovedkomponenter:
  
- * _Innsyn webapplikasjoner_, et sett med SPA (Single Page Application) på minside.kommune.no som innbyggere benytter for å søke i innsynsdatabasen. Eksempler er "Post fra kommunen", "Byggesaker", osv.
+ * _Innsyn webapplikasjoner_, et sett med SPA (Single Page Applications) på minside.kommune.no som innbyggere benytter for å søke i innsynsdatabasen. Eksempler er "Post fra kommunen", "Byggesaker", osv.
  * _Innsyn-søk_, søkemotoren som utgjør back-end for webappliasjonene. Støtter fritekstsøk og score-rangerte resultater. 
  * _Innsyn-indexer_, en indekseringstjeneste som integrasjoner kan benytte for å laste opp meldinger: hendelser, fakturaer, saker, journalposter, forsendelser, osv.  
 
 Søkeresultatet scores på relevans: nye meldinger scores høyere enn gamle, uleste dokumenter høyere enn de du har lest, ubetalte faktura høyere enn de du har betalt, og så videre. Den kompenserer for stavefeil, bøyeform eller orddeling. Alle søk er også filtrert på innloggingsnivå. Et søk gjort med innlogging på nivå tre vil ikke returnere grupper som er satt til nivå fire, uavhengig av om disse gruppene traff på søket.
 
-Søkemotoren inneholder utelukkende metadata. Om meldingen skal peke til et dokument, bilde eller annen fil gjøres dette i form av en lenke: denne kan for eksempel peke til en fil i [Fiks Dokumentlager]({{< ref "dokumentlager.md" >}}), men fiks-organisasjoner står fritt til å benytte andre tjenester. Så lenge disse støtter innlogging gjennom ID-Porten vil dette også oppleves som sømløst av innbygger. 
+Søkemotoren inneholder utelukkende metadata, ikke selve dokumentet. Om meldingen skal peke til et dokument, bilde eller annen fil gjøres dette i form av en lenke: denne kan for eksempel peke til en fil i [Fiks Dokumentlager]({{< ref "dokumentlager.md" >}}), en sak i et kommunalt filarkiv, eller en annen tjeneste. Så lenge disse støtter innlogging gjennom ID-Porten vil nedlastingen oppleves sømløst av innbygger. 
 
-Når plattformen lanseres er KS SvarUt den første integrasjonen som leverer meldinger til Fiks Innsyn - hvis kommunen ønsker dette kan alle meldinger som har har blitt sendt gjennom svarut gjøres tilgjengelig for mottakerene. Dette styres gjennom [Fiks Konfigurasjon]({{< ref "digisos.md" >}}).    
+## Hvordan bruker en kommune Innsyn?
+En kommune kan ta i bruk Fiks Innsyn på to hovedmåter: ved å eksponere meldinger på minside.kommune.no, eller ved å benytte disse i sin eksisterende minside løsning, endten egenutviklet eller kjøpt fra leverandør. 
 
-## Integrasjonsutvikling
+Uansett er første steg å sørge for at kommunens data finnes i søkemotoren. Dette gjøres ved å legge til integrasjoner i konfigurasjonen av [(innsyntjenesten)](https://forvaltning.fiks.ks.no/fiks-konfigurasjon/tjenester/innsyn) på forvaltning.fiks.ks.no. Hver av disse integrasjonene representerer en datakilde. Disse kan være "nøkkelklare" integrasjoner levert av KS eller tredjepartsleverandører (for eksempel SvarUt), eller integrasjoner kommunen lager selv.
+
+Hvis kommunen benytter minside.kommune.no er nå alt  klart: innloggede innbyggere vil se sine meldinger i "post fra kommunen" og andre innsyn-drevede tjenester. 
+
+Hvis kommunen benytter en annen minside-løsning må søket mot Fiks Innsyn gjøres via en integrasjon, som også legges til på samme måte som datakilde-integrasjonene over. I noen tilfeller vil det finnes nøkkelklare leverandør-integrasjoner for dette, i andre må kommunen lage en egen integrasjon som leverandøren kan benytte, alt etter hvilken løsning som er valgt for dette.
+
+## Uvikling av integrasjoner som leverer data til Fiks Innsyn: 
 Først noen grunnleggende prinsipper for forvalting av meldinger i innsyn:
 
-* _Alle dokumenter eies av en Fiks Organisasjon._ 
-* _Hver integrasjon må autoriseres for å kunne indeksere dokumenter på vegen av organisasjonen._ Dette gjøres gjennom å tildele "Innsyn Index" privilegiet til integrasjonen i Fiks Konfigurasjon. 
+* _Alle dokumenter eies av en Fiks Organisasjon._ I de fleste tilfeller vil dette være en kommune eller en fylkeskommune. Det er denne organisasjonen som autoriserer indeksering av data, og har rett til å oppdatere eller slette disse, enten direkte eller via tredjepart, for eksempel en leverandør. 
+* _Hver integrasjon må autoriseres for å kunne indeksere dokumenter på vegen av organisasjonen._ Dette gjøres gjennom å tildele "Innsyn Index" privilegiet til integrasjonen i Fiks Konfigurasjon. Nøkkelklare integrasjoner vil automatisk bli tildelt de nødvendige privilegiene når de blir lagt til i Innsyn konfigurasjonen.
 * _Hver integrasjon styrer dokumentene de har lastet opp på vegne av organisasjonen._ Dvs. at integrasjon A ikke kan slette eller oppdatere dokumenter lastet opp av integrasjon B. Merk at tjenesteadministrator når som helst kan slette dokumnetene gjennom Fiks Konfigurasjon. 
 
 ### Indekseringstjeneste [(api-spec)](https://editor.swagger.io/?url=https://ks-no.github.io/api/innsyn-index-api-v1.json)
@@ -53,7 +60,15 @@ Noen viktige punkt for integrasjonsutviklere:
  
 * Hvis man ikke har informasjon for å sette et felt (f.eks. om man ikke har "avsender" for en forsendelse) bør ikke feltet settes (i stede for å sette "null", "mangler" eller lignende).
 * For _fiks organisasjon_ kan man i tillegg til å sette identifikator også sette visningsnavn. Dette vil bli benyttet i webapplikasjonens grensesnitt og filter. Merk at hvis man endrer dette vil det nye navnet bare benyttes på grupper / hendelser som er indeksert etter endringen ble gjort. For å gjøre en fullstendig operasjon må hendelsene reindekseres.
-* _Eksponert for_ angir hvem som skal kunne se meldingen. Dette kan være endten et organisasjonsnummer eller et fødselsnummer. Merk at hver melding bare kan eksponeres for en person/org, hvis man ønsker at flere aktører skal kunne se samme informasjonen må gruppen indekseres flere ganger. 
+
+### Eksponering av meldinger
+_Eksponert for_ i en indekseringsforespørsel angir hvem som skal kunne se meldingen. Dette kan ha en av følgende verdier:
+
+* _fødselsnummer_: Meldingen blir tilgjengelig for innbyggeren som er autentisert med det spesifiserte fødselsnummeret.
+* _organisasjonsnummer_: Meldingen blir tilgjengelig for innbyggere som innehar rollene "post/arkiv" eller "kommunale tjenester" i Altinn på det spesifiserte organisasjonsnummeret.
+* _matrikkelnummer_: Meldingen blir tilgjengelig for personer som er ført som eiere av matrikkelenheten med det spesifiserte nummeret, eller som innehar rollene "post/arkiv" eller "kommunale tjenester" for en organisasjon som er ført som eier av den aktuelle matrikkelenheten. Endringer i eierskap vil automatisk bli tatt hensyn til, uten at reindeksering av meldingen er nødvendig.
+
+Det er viktig at man har et bevisst forhold til hvem meldinger eksponeres for, spesielt når man eksponerer for en matrikkelenhet, da endringer i eierskap vil medføre at nye personer får tilgang til meldingen. Man bør derfor aldri eksponere sensitive data via denne metoden.
 
 #### Sletting
 Indekserte meldinger kan fjernes ved å benytte endepunkt for sletting. Her gjelder de samme reglene som over: en integrasjon må være autorisert for å handle på vegne av en ansvarlig organisasjon for at sletting kan gjennomføres, og en integrasjon kan bare slette meldinger den selv har indeksert.
@@ -63,7 +78,8 @@ Merk at sletting på samme måte som indeksering ikke gjennomføres i en atomisk
 #### Håndtering av filer
 Mange meldingstyper vil referere til filer i eksterne systemer, som for eksempel dokumenter i "Forsendelse" typen. Innsyn har i seg selv ikke noe forhold til binære filer, og betrakter dem utelukkende som en lenke. Hvis filene allerede er tilgjengelig i et ID-Porten kompatibelt filarkiv trenger man ikke å laste disse opp på nytt, hvis man ikke har en slik tjeneste fra før kan man benytte Fiks Dokumentlager til dette. 
 
-## Søketjeneste [(api-spec)](https://editor.swagger.io/?url=https://ks-no.github.io/api/innsyn-sok-api-v1.json)
+## Uvikling av integrasjoner for å søke i innsyn
+### Søketjeneste [(api-spec)](https://editor.swagger.io/?url=https://ks-no.github.io/api/innsyn-sok-api-v1.json)
 Hvis kommunen har en eksisterende løsning for innloggede innbyggertjenester kan det være aktuelt å benytte innsynsøket som en tjeneste fremfor en webapplikasjon. Integrasjonen som skal utføre dette søket trenger da Innsyn Søk privilegiet i Fiks Konfigurasjon. Merk at kommunene da tar ansvar for å fremskaffe Open Id Connect innloggingstoken fra ID-porten, og for å sørge for at dette tokenet er gyldig. Innsynsøk-tjenesten vil fortsatt utføre nødvendig autorisering.
 
 Det er også viktig å merke seg at søk gjennom en integrasjon har en begrensning som "vanlige" søk fra minside.kommune.no ikke har: man kan bare søke i dokumenter som eies av den aktuelle Fiks organisasjonen. 
