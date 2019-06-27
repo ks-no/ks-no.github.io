@@ -9,7 +9,16 @@ Norske kommuner har mengder av informasjon om sine innbyggere. Denne informasjon
 
 Innsyn tar typisk i mot data fra kommuner, kommunale virksomheter og leverandører av arkiv og fagsystemer, men også de andre tjenestene på Fiks plattformen kan levere data til Innsyn, som for eksempel [fiks-digisos]({{< ref "digisos.md" >}}) (under utvikling) som tilgjengeliggjør kvitteringer og oppdateringer for sosialsøknader, og KS SvarUt som leverer meldinger om forsendelser til innbyggeren.
 
-### Hva er Fiks Innsyn?
+### Hvordan tar man i bruk Fiks Innsyn?
+En kommune kan bruke Fiks Innsyn for å gjøre søk i kommunal informasjon om en innbygger (forsendelser, byggesaker, eiendommer, fakturaer osv) tilgjengelig for innbyggeren, endten på minside.kommune.no eller på kommunens eksisterende minside løsning.
+
+Uansett er første steg å sørge for metadata som beskriver meldingene finnes i søkemotoren. Dette gjøres ved å legge til integrasjoner i konfigurasjonen av [innsyntjenesten](https://forvaltning.fiks.ks.no/fiks-konfigurasjon/tjenester/innsyn) på forvaltning.fiks.ks.no. Hver av disse integrasjonene representerer en datakilde. Dette kan være "nøkkelklare" integrasjoner levert av KS eller tredjepartsleverandører, for eksempel forsendelser fra SvarUt eller byggesaker fra GeoMatikk, eller integrasjoner kommunen lager selv.
+
+Hvis kommunen benytter minside.kommune.no er nå alt klart: innloggede innbyggere vil se sine meldinger i "post fra kommunen" og andre innsyn-drevede tjenester. 
+
+Hvis kommunen benytter en egen minside-løsning må søket mot Fiks Innsyn også gjøres via en integrasjon, som legges til på samme måte som datakilde-integrasjonene over. I noen tilfeller vil det finnes nøkkelklare leverandør-integrasjoner for dette, i andre må kommunen lage en egen integrasjon som leverandøren kan benytte, alt etter hvilken løsning som er valgt for dette.
+
+### Hvordan er Fiks Innsyn bygget opp?
 Tjenesten består av tre hovedkomponenter:
  
  * _Innsyn webapplikasjoner_, et sett med SPA (Single Page Applications) på minside.kommune.no som innbyggere benytter for å søke i innsynsdatabasen. Eksempler er "Post fra kommunen", "Byggesaker", osv.
@@ -20,20 +29,11 @@ Søkeresultatet scores på relevans: nye meldinger scores høyere enn gamle, ule
 
 Søkemotoren inneholder utelukkende metadata, ikke selve dokumentet. Om meldingen skal peke til et dokument, bilde eller annen fil gjøres dette i form av en lenke: denne kan for eksempel peke til en fil i [Fiks Dokumentlager]({{< ref "dokumentlager.md" >}}), en sak i et kommunalt filarkiv, eller en annen tjeneste. Så lenge disse støtter innlogging gjennom ID-Porten vil nedlastingen oppleves sømløst av innbygger. 
 
-### Hvordan tar man i bruk Fiks Innsyn?
-En kommune kan ta i bruk Fiks Innsyn på to hovedmåter: ved å gjøre meldinger tilgjengelig på minside.kommune.no, eller ved å benytte disse i en eksisterende minside løsning, endten egenutviklet eller kjøpt fra leverandør. 
-
-Uansett er første steg å sørge for at kommunens data finnes i søkemotoren. Dette gjøres ved å legge til integrasjoner i konfigurasjonen av [(innsyntjenesten)](https://forvaltning.fiks.ks.no/fiks-konfigurasjon/tjenester/innsyn) på forvaltning.fiks.ks.no. Hver av disse integrasjonene representerer en datakilde. Disse kan være "nøkkelklare" integrasjoner levert av KS eller tredjepartsleverandører (for eksempel SvarUt), eller integrasjoner kommunen lager selv.
-
-Hvis kommunen benytter minside.kommune.no er nå alt  klart: innloggede innbyggere vil se sine meldinger i "post fra kommunen" og andre innsyn-drevede tjenester. 
-
-Hvis kommunen benytter en annen minside-løsning må søket mot Fiks Innsyn gjøres via en integrasjon, som også legges til på samme måte som datakilde-integrasjonene over. I noen tilfeller vil det finnes nøkkelklare leverandør-integrasjoner for dette, i andre må kommunen lage en egen integrasjon som leverandøren kan benytte, alt etter hvilken løsning som er valgt for dette.
-
-### Uvikling av integrasjoner som leverer data til Fiks Innsyn: 
+### Uvikling av integrasjoner som leverer data via Innsyn-Indexer: 
 Først noen grunnleggende prinsipper for forvalting av meldinger i innsyn:
 
 * _Alle dokumenter eies av en Fiks Organisasjon._ I de fleste tilfeller vil dette være en kommune eller en fylkeskommune. Det er denne organisasjonen som autoriserer indeksering av data, og har rett til å oppdatere eller slette disse, enten direkte eller via tredjepart, for eksempel en leverandør. 
-* _Hver integrasjon må autoriseres for å kunne indeksere dokumenter på vegen av organisasjonen._ Dette gjøres gjennom å tildele "Innsyn Index" privilegiet til integrasjonen i Fiks Konfigurasjon. Nøkkelklare integrasjoner vil automatisk bli tildelt de nødvendige privilegiene når de blir lagt til i Innsyn konfigurasjonen.
+* _Integrasjoner må ha autorisasjon for å indeksere data på vegne av en av organisasjon._ Dette gjøres gjennom å tildele "Innsyn Index" privilegiet til integrasjonen i Fiks Konfigurasjon. Nøkkelklare integrasjoner vil automatisk bli tildelt de nødvendige privilegiene når de blir lagt til i Innsyn konfigurasjonen.
 * _Hver integrasjon styrer dokumentene de har lastet opp på vegne av organisasjonen._ Dvs. at integrasjon A ikke kan slette eller oppdatere dokumenter lastet opp av integrasjon B. Merk at tjenesteadministrator når som helst kan slette dokumnetene gjennom Fiks Konfigurasjon. 
 
 #### Indekseringstjeneste [(api-spec)](https://editor.swagger.io/?url=https://ks-no.github.io/api/innsyn-index-api-v1.json)
@@ -41,7 +41,6 @@ Indekseringstjenesten lar integrasjoner opprette meldinger, eller fjerne / endre
 
 Når man lager en integrasjon mot indekseringstjenesten er det viktig å være bevisst på at Innsyn bør betraktes som en cache: man bør ikke forvente at meldingene man laster opp vil ligge der til evig tid: en forvalter med admin-privilegier på innsyn-tjenesten kan for eksempel når som helst slette meldinger. Hvis man ønsker en robust løsning er det derfor viktig at man støtter _replay_: muligheten til å reindexere alle meldinger til Innsyn. Dette er også nytting hvis man ønsker å oppgradere meldingene til en ny versjon.  
 
-##### Indeksering
 De vanlige [autentiseringsreglene]({{< ref "sikkerhet.md" >}}) for Fiks-plattformen gjelder for denne tjenesten, men i tilegg må integrasjonen har rett til å indeksere på vegne av  _fiks organisasjonen_ som er satt som eier den aktuelle meldingen.
 
 Endepunktet støtter batch av opptil 5000 elementer, og integrasjonsutviklere anbefales å benytte denne funksjonaliteten, da det skaper vesentlig mindre trykk på systemet. Merk at indeksering ikke er en atomisk transaksjon: deler av elementene i en batch kan bli indeksert selv om andre feiler.
@@ -55,11 +54,6 @@ En indekseringsoperasjon kan ha følgende utfall:
 * _5XX_. Indeksering av batchen feilet. Dette betyr som oftest at noe gikk galt på server-siden. Noen av meldingene i batchen kan likevel være indeksert. Man bør derfor forsøke å indeksere alle meldingene på nytt.
 
 Gjennomføring av batch-operasjoner skjer synkront fra ståstedet til en bruker av tjenesten: responsen blir ikke sendt før batchen er gjennomført. Dermed vil man kunne vite at en gruppe opprettet i batch 1 eksisterer når batch 2 gjennomføres, så lenge disse utføres sekvensielt. 
-
-Noen viktige punkt for integrasjonsutviklere:
- 
-* Hvis man ikke har informasjon for å sette et felt (f.eks. om man ikke har "avsender" for en forsendelse) bør ikke feltet settes (i stede for å sette "null", "mangler" eller lignende).
-* For _fiks organisasjon_ kan man i tillegg til å sette identifikator også sette visningsnavn. Dette vil bli benyttet i webapplikasjonens grensesnitt og filter. Merk at hvis man endrer dette vil det nye navnet bare benyttes på grupper / hendelser som er indeksert etter endringen ble gjort. For å gjøre en fullstendig operasjon må hendelsene reindekseres.
 
 #### Eksponering av meldinger
 _Eksponert for_ i en indekseringsforespørsel angir hvem som skal kunne se meldingen. Dette kan ha en av følgende verdier:
