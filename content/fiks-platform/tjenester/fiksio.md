@@ -1,6 +1,6 @@
 ---
 title: Fiks IO
-date: 2019-07-28
+date: 2019-06-28
 ---
 
 Fiks IO er en kanal for sikker maskin-til-maskin integrasjon. Denne kanalen kan benyttes for å bygge prosesser på tvers av systemer og organisasjoner, for eksempel når et fagsystem skal arkivere et dokument i et arkivsystem eller spørre om informasjon som er lagret i et annet system.
