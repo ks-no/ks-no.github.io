@@ -20,35 +20,59 @@
     "description" : "API for urler på matrikkelenheter"
   } ],
   "paths" : {
-    "/matrikkelkonfigurasjon/api/v1/matrikkelurler/urler/{kommunenr}" : {
-      "get" : {
+    "/matrikkelkonfigurasjon/api/v1/matrikkelurler/urler/{id}" : {
+      "put" : {
         "tags" : [ "matrikkelurler" ],
-        "description" : "Henter kommune urler",
-        "operationId" : "urler",
+        "description" : "Oppdater url",
+        "operationId" : "oppdaterUrl",
         "parameters" : [ {
-          "name" : "kommunenr",
+          "name" : "id",
           "in" : "path",
           "required" : true,
           "schema" : {
-            "type" : "string"
+            "type" : "string",
+            "format" : "uuid"
           }
         } ],
-        "responses" : {
-          "200" : {
-            "description" : "Urler til matrikkelenheter i kommunen",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "type" : "array",
-                  "items" : {
-                    "$ref" : "#/components/schemas/Url"
-                  }
-                }
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/OppdatertUrl"
               }
             }
           },
-          "404" : {
-            "description" : "Ingen urler ble funnet for det oppgitte kommunenr"
+          "required" : true
+        },
+        "responses" : {
+          "204" : {
+            "description" : "Url lagret"
+          }
+        }
+      },
+      "delete" : {
+        "tags" : [ "matrikkelurler" ],
+        "description" : "Sletter url",
+        "operationId" : "SlettUrl",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "204" : {
+            "description" : "Url slettet",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Url"
+                }
+              }
+            }
           }
         }
       }
@@ -57,7 +81,7 @@
       "get" : {
         "tags" : [ "matrikkelurler" ],
         "description" : "Henter kommune urler",
-        "operationId" : "urler_1",
+        "operationId" : "urler",
         "parameters" : [ {
           "name" : "fiksOrg",
           "in" : "path",
@@ -117,59 +141,35 @@
         }
       }
     },
-    "/matrikkelkonfigurasjon/api/v1/matrikkelurler/urler/{id}" : {
-      "put" : {
+    "/matrikkelkonfigurasjon/api/v1/matrikkelurler/urler/{kommunenr}" : {
+      "get" : {
         "tags" : [ "matrikkelurler" ],
-        "description" : "Oppdater url",
-        "operationId" : "oppdaterUrl",
+        "description" : "Henter kommune urler",
+        "operationId" : "urler_1",
         "parameters" : [ {
-          "name" : "id",
+          "name" : "kommunenr",
           "in" : "path",
           "required" : true,
           "schema" : {
-            "type" : "string",
-            "format" : "uuid"
-          }
-        } ],
-        "requestBody" : {
-          "content" : {
-            "application/json" : {
-              "schema" : {
-                "$ref" : "#/components/schemas/OppdatertUrl"
-              }
-            }
-          },
-          "required" : true
-        },
-        "responses" : {
-          "204" : {
-            "description" : "Url lagret"
-          }
-        }
-      },
-      "delete" : {
-        "tags" : [ "matrikkelurler" ],
-        "description" : "Sletter url",
-        "operationId" : "SlettUrl",
-        "parameters" : [ {
-          "name" : "id",
-          "in" : "path",
-          "required" : true,
-          "schema" : {
-            "type" : "string",
-            "format" : "uuid"
+            "type" : "string"
           }
         } ],
         "responses" : {
-          "204" : {
-            "description" : "Url slettet",
+          "200" : {
+            "description" : "Urler til matrikkelenheter i kommunen",
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/Url"
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/Url"
+                  }
                 }
               }
             }
+          },
+          "404" : {
+            "description" : "Ingen urler ble funnet for det oppgitte kommunenr"
           }
         }
       }
@@ -177,6 +177,19 @@
   },
   "components" : {
     "schemas" : {
+      "OppdatertUrl" : {
+        "required" : [ "url", "urltekst" ],
+        "type" : "object",
+        "properties" : {
+          "url" : {
+            "pattern" : "https?:\\/\\/(www\\.)?[-a-zA-Z0-9@:%._\\+~#=]{2,256}\\.[a-z]{2,6}\\b([-a-zA-Z0-9@:%_\\+.~#?&//=]*)",
+            "type" : "string"
+          },
+          "urltekst" : {
+            "type" : "string"
+          }
+        }
+      },
       "Url" : {
         "type" : "object",
         "properties" : {
@@ -207,19 +220,6 @@
           "fiksorg" : {
             "type" : "string",
             "format" : "uuid"
-          },
-          "urltekst" : {
-            "type" : "string"
-          }
-        }
-      },
-      "OppdatertUrl" : {
-        "required" : [ "url", "urltekst" ],
-        "type" : "object",
-        "properties" : {
-          "url" : {
-            "pattern" : "https?:\\/\\/(www\\.)?[-a-zA-Z0-9@:%._\\+~#=]{2,256}\\.[a-z]{2,6}\\b([-a-zA-Z0-9@:%_\\+.~#?&//=]*)",
-            "type" : "string"
           },
           "urltekst" : {
             "type" : "string"
