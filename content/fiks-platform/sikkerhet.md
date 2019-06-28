@@ -5,8 +5,7 @@ date: 2019-06-27
 
 Denne siden gir en generell innføring i de grunnleggende prinsippene for sikkerhet og personvern på Fiks Plattformen. For full beskrivelse av styringsssystem og ROS analyser for de spesifikke tjenestene, se [sikkerhetsdokumentasjon på forvaltning.fiks.ks.no](https://forvaltning.fiks.ks.no/sikkerhet-dokumentasjon/). Tilgang her er begrenset til personer som er administrator for en eller flere fiks-organisasjoner. 
 
-### Generelle sikkerhetsmekanismer
-Under kommer generelle retningslinjer for hvordan vi har sikret applikasjonene, skulle noe avvike fra dette vil det 
+Under beskrives generelle retningslinjer for hvordan vi har sikret applikasjonene, skulle noe avvike fra dette vil det 
 være spesifisert i hver tjeneste.
 
 ### Kryptering
