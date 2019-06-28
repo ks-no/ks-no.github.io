@@ -1,9 +1,7 @@
 ---
-title: Fiks IO (SvarInn 2)
-date: 2019-05-13
+title: Fiks IO
+date: 2019-07-28
 ---
-
-**STATUS: under utvikling**
 
 Fiks IO er en kanal for sikker maskin-til-maskin integrasjon. Denne kanalen kan benyttes for å bygge prosesser på tvers av systemer og organisasjoner, for eksempel når et fagsystem skal arkivere et dokument i et arkivsystem eller spørre om informasjon som er lagret i et annet system.
 
@@ -17,7 +15,7 @@ Fiks IO tilbyr:
 * _Sending av store filer_: Fiks IO integrerer mot [Fiks Dokumentlager]({{< ref "dokumentlager.md" >}}) for å støtte sending av store filer, helt opp til dokumentlagers grense på fem gigabyte. 
 
 ### Forhold til SvarUt og SvarInn
-Fiks IO er en selvstendig kanal, og er ikke bygget for å være en erstatning for SvarUt/SvarInn, som begge vil bli videreført i sin nåværende form. Bruksområdene til tjenestene kan overlappe, og dette at detnoen ganger kan være i vil om SvarUt/SvarInn eller Fiks IO er riktig verktøy for et problem.
+Fiks IO er en selvstendig kanal, og er ikke bygget for å være en erstatning for SvarUt/SvarInn, som begge vil bli videreført i sin nåværende form. Bruksområdene til tjenestene kan overlappe, og dette gjør at det noen ganger kan være tvil om SvarUt/SvarInn eller Fiks IO er riktig verktøy for et problem.
 
 Hovedsakelig bør man benytte svarut/svarinn for "post": meldinger hvor payload er menneske-lesbar (f.eks. en pdf), hvor automatisk håndtering begrenses til f.eks. opprettelse av sak i et arkivsystem, og hvor sending til Altinn eller som brevpost er gode alternativer hvis den automatiske håndteringen feiler. Andre faktorer kan være:
 
@@ -37,12 +35,12 @@ Benytt SvarUt, ved Fiks IO forsendelser risikerer man at meldingen ikke blir hå
 
 ### Grunnleggende prinsipper
 ![fiks_io](https://www.lucidchart.com/publicSegments/view/23b3e542-6059-471f-96d6-70f57da44f17/image.png)
-En Fiks organisasjon oppretter en Fiks IO _konto_. Andre kontoer kan nå sende til denne kontoen gjennom Fiks IOs REST api ved å spesifisere kontoens _KontoId_ som mottaker. Mottakeren får meldingen levert ved å etablere en AMQP kobling til io.fiks.ks.no.
+En Fiks organisasjon oppretter en Fiks IO _konto_. Andre kontoer kan nå sende til denne kontoen gjennom Fiks IOs REST api ved å spesifisere kontoens _KontoId_ som mottaker. Organisasjonen får meldingene ved å etablere en AMQP kobling til io.fiks.ks.no.
 
-Fiks IO tar i utgangspunktet ikke stilling til hva som sendes. Metadataformat, filformat, kryptering og lignende er opp til brukeren, men Fiks plattformen tilbyr tjenester og verktøy for å etablere format for integrasjoner:
+Fiks IO tar i utgangspunktet ikke stilling til hva payloaden i meldingen består i. Metadataformat, filformat, kryptering og lignende er opp til brukeren, men Fiks plattformen tilbyr tjenester og verktøy for å etablere format for integrasjoner:
 
-* _Fiks-IO Kontokatalog_: Gir mulighet for å registrere adresser bestående av organisasjonsnummer, meldingstype og sikkerhetsnivå på en Fiks IO konto, som andre så kan benytte for å finne relevant konto-id å sende til. 
-* _Fiks-IO Meldingskatalog_: Tilbyr en katalog over registrerte meldingstyper i form av json-schema. 
+* _Fiks-IO Kontokatalog_: Gir mulighet for å registrere adresser bestående av organisasjonsnummer, sikkerhetsnivå, og hvilke meldingsprotokoller en gitt konto støtter. Andre kan så gjøre oppslag mot denne katalogen for å finne riktig konto å sende en melding til.
+* _Fiks-IO Protokollkatalog_: Tilbyr en katalog over registrerte meldingsprotokoller. En protokoll er en oversikt over hvilke meldingstyper som inngår i en kommunikasjon, gjerne også med skjema som spesifiserer syntax for de enkelte typene.
 * _Fiks-IO java klient_: [Java klient](https://github.com/ks-no/fiks-io-klient-java) som tilbyr funksjonalitet for å bygge, signere, kryptere, og sende meldinger som ASiC-E pakker, samt mottak og dekryptering på andre siden. 
 * _Fiks-IO .net klient_: [.net core](https://github.com/ks-no/fiks-io-client-dotnet) implementasjon av samme funksjonalitet som klienten over.
 
@@ -51,31 +49,33 @@ Fiks IO settes opp gjennom Fiks Konfigurasjon, det er også her man oppretter ko
 
 Man kan opprette flere kontoer, og for hver konto kan man opprette flere adresser, se Kontokatalogen for informasjonom dette. For hver konto lastes det opp et sertifikat med en offentlig nøkkel. Dette sertifikatet benyttes for å kryptere meldinger sendt til den aktuelle kontoen.   
 
+Hvis man ønsker å utarbeide eller endre en protokoll må dette gjøres i sammarbeid med KS Fiks, ta kontakt med fiks@ks.no.
+
 ### Sikkerhet
 Autentisering av klienter mot REST service for sending av meldinger og AMQP service for leveranse av meldinger skjer gjennom virksomhetssertifikat-basert maskinporten autentisering. 
 
-I utgangspunktet legger ikke Fiks IO føringer på hvordan (eller om) en melding sendt over plattformen sikres, men alle klienter som utvikles av KS, og alle meldingstyper som Fiks spesifiserer, vil benytte signerte, ende-til-ende krypterte meldinger gjennom [ASIC-E](https://github.com/difi/asic) containere. Denne standarden benyttes også av DIFI i forbindelse med integrasjonspunktet. I klientene skjer signering med samme sertifikat som blir benyttet for autentisering mot maskinporten, kryptering skjer med sertifikatet som er publisert i Fiks IO Kontokatalog.
+I utgangspunktet legger ikke Fiks IO føringer på hvordan (eller om) en melding sendt over plattformen sikres, men alle klienter som utvikles av KS, og alle protokoller som Fiks spesifiserer, vil benytte signerte, ende-til-ende krypterte meldinger gjennom [ASIC-E](https://github.com/difi/asic) containere. Denne standarden benyttes også av DIFI i forbindelse med integrasjonspunktet. I klientene skjer signering med samme sertifikat som blir benyttet for autentisering mot maskinporten, kryptering skjer med sertifikatet som er publisert i Fiks IO Kontokatalog.
 
 ### Kontokatalogen
 For å sende en melding i Fiks IO må man kjenne konto-id'en til mottakeren, men for å støtte mer dynamisk bruk tilbys Fiks IO Kontokatalog. Dette er et register over Fiks IO kontoer og tilknyttede adresser. En adresse består av:
 
 * _Identifikator_: Autoriserende identifikator for adressen. Dette vil i første omgang være begrenset til organisasjonsnummer, men kan senere utvides. For organisasjonsnummer benyttes Altinn for autorisering: personen som legger til adressen må ha rollen "post/arkiv" på den aktuelle organisasjonen.
-* _Meldingstype_: Spesifiserer hvilken type meldingen har, som igjen definerer hvilket skjema fra meldingskatalogen meldingen samsvarer med.
+* _Protokoll_: Spesifiserer hvilken protokoll adressen gjelder for. En protokoll vil som regel omfatte flere meldingstyper.
 * _Sikkerhetsnivå_: Spesifiserer hvilket sikkerhetsnivå meldingen skal ha. Typisk benyttes nivå 3 for ikke sensitive og nivå 4 for sensitive meldinger.
 
 Adresser opprettes og forvaltes gjennom Fiks Konfigrasjon. Katalogen gir også mulighet for å laste opp en offentlig nøkkel i form av et X509 sertifikat. Dette sertifikatet blir benyttet for å kryptere meldinger sendt til kontoen, slik at de kan dekrypteres med den private delen av nøkkelen ved mottak.
 
 Fiks Organisasjoner kan gjøre oppslag i registrerte adresser gjennom [katalog-api'et](https://editor.swagger.io/?url=https://github.com/ks-no/ks-no.github.io/blob/source/static/api/fiksio-katalog-api-v1.json). 
 
-### Meldingskatalogen
-Som nevnt over har Fiks IO i utgangspunktet ingen formening om hva innholdet i en melding er, men det er i mange integrasjon-scenarioer nyttig å ha et felles repository med kontrakter for hvordan meldinger skal bygges opp. 
+### Protokollkatalogen
+Som nevnt over har Fiks IO i utgangspunktet ingen formening om hva innholdet i en melding er, men det er i mange integrasjon-scenarioer nyttig å ha et felles repository med kontrakter for hvordan meldinger skal bygges opp. Protokollkatalogen tilbyr en slik oversikt, og man kan her referere til spesifikasjoner for meldingstypene som inngår i protokollen, og hvordan disse skal benyttes. 
 
-Fiks-IO Meldingskatalog tilbyr kontrakter i form av json-schema, men det er også muligheter for 
+Ta kontakt med fiks@ks.no om du ønsker å etablere eller gjøre endringer i en protokoll.
 
 ### Håndtering av store filer
-Fiks-IO støtter sending av store filer ved at alle meldinger større enn 5 megabyte lagres i Fiks Dokumentlager, i en dedikert konto som opprettes sammen med Fiks-IO kontoen. En referanse til denne lagrede filen blir så sendt over AMQP. 
+Fiks-IO støtter sending av store filer ved at alle meldinger større enn 5 megabyte mellomlagres i Fiks Dokumentlager, i en dedikert konto som opprettes sammen med Fiks-IO kontoen. En referanse til denne lagrede filen blir så sendt over AMQP. Filer sendt på slik måte får en time-to-live i dokumentlager lik time-to-live for meldingen + 24 timer. Etter dette vil de automatisk slettes.
 
-Klientene utviklet av KS vil i slike tilfeller automatisk strømme filen fra Dokumentlager.
+Hvis man benytter java eller .net klienten utviklet av KS vil denne mellomlagringen oppleves sømløst - klienten streamer automatisk filer fra dokumentlageret om dette er benyttet.
 
 ### Klienter
 For å gjøre integrasjon lettere vil KS utvikle klienter som benyttes for både sending og mottak av meldinger fra Fiks-IO. 
