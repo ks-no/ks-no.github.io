@@ -16,7 +16,7 @@ Hvis kommunen benytter minside.kommune.no er nå alt klart: innloggede innbygger
 Hvis kommunen benytter en egen minside-løsning må også søket mot Fiks Innsyn gjøres via en integrasjon, som legges til på samme måte som datakilde-integrasjonene over. I noen tilfeller vil det finnes nøkkelklare leverandør-integrasjoner for dette, i andre må kommunen lage en egen integrasjon som leverandøren kan benytte. Kontakt leverandør for å avklare dette.
 
 ### Hvordan virker Fiks Innsyn?
-![minside_sok](https://www.lucidchart.com/publicSegments/view/eac56c7c-a7ba-4c9c-b0ba-2c85f605f0c9/image.png "Innsyn")
+![minside_sok](https://www.lucidchart.com/publicSegments/view/db355c1a-7955-4c4a-8ccf-ccd7e64424fd/image.png "Innsyn")
 Tjenesten består av tre hovedkomponenter:
  
  * _Innsyn-webapplikasjoner_, et sett med SPA (Single Page Applications) på minside.kommune.no som innbyggere benytter for å søke i innsynsdatabasen. Eksempler er "Post fra kommunen", "Byggesaker", osv.
