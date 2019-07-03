@@ -1,6 +1,6 @@
 ---
 title: Digisos 
-date: 2019-06-19
+date: 2019-07-03
 ---
 
 **STATUS: under utvikling**
@@ -43,7 +43,9 @@ Dokument og melding i fiks-innsyn er utelukkende tilgjengelig for innbygger, det
 
 ## Integrasjonsutvikling Fagsystem
 
-For at fagsystemet skal få tilgang til Digisos-api-et for en kommune, må kommunen først konfigurere og aktivere Digisos gjennom [Fiks Konfigurasjon]({{< ref "konfigurasjon.md" >}}), der man også gir fagsystemet sin integrasjon tilgang til Digisos. For generell integrasjonsutvikling mot Fiks, se [Integrasjonsutvikling]({{< ref "integrasjoner.md" >}}).
+For generell integrasjonsutvikling mot Fiks, se [Integrasjonsutvikling]({{< ref "integrasjoner.md" >}}). Fagsystemet må da bruke Integrasjon som autentiseringsmetode.
+
+For at fagsystemet skal få tilgang til Digisos-api-et for en kommune, må kommunen først konfigurere og aktivere Digisos gjennom [Fiks Konfigurasjon]({{< ref "konfigurasjon.md" >}}), der man også gir fagsystemet sin integrasjon tilgang til Digisos.
 
 ### Fiks IO meldingsprotokoll
 
@@ -121,6 +123,7 @@ For generell integrasjonsutvikling mot Fiks, se [Integrasjonsutvikling]({{< ref 
 ## Innsending av søknad
 
 Soknad api [(api-spec)](https://editor.swagger.io/?url=https://ks-no.github.io/api/digisos-api-v1.json)
+
 For innsending av søknad/ettersendelse brukes person-integrasjon autentisering med OIDC, se [Integrasjonsutvikling]({{< ref "integrasjoner.md" >}}) for mer detaljer.
 
 **Innsending av ny søknad**
