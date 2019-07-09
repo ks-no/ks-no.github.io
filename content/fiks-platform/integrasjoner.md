@@ -7,7 +7,7 @@ En _integrasjon_ på fiks-plattformen er en maskin-til-maskin klient som benytte
 
 Når en fiks-organisasjon tar i bruk plattformen vil man se at det allerede finnes en del forhåndsdefinerte integrasjoner, for eksempel en SvarUt integrasjon mot Fiks Innsyn. Dette er "globale integrasjoner" som blir tilgjengelig for alle fiks-organisasjoner uten at hver organisasjon trenger å opprette dem. Ta kontakt med fiks-kundeservice om du på denne måten ønsker å gjøre en av dine integrasjoner tilgjengelig på hele plattformen. Dette er for det meste relevant for leverandører av skyløsninger for flere kommuner.
 
-Hver fiks-organisasjon kan også opprette sine egne "lokale" integrasjoner - dette gjøres gjennom [Fiks Konfigurasjon]({{< ref "konfigurasjon.md" >}}). Her opprettes integrasjonen, og man definerer hvilken organisasjon som skal ha rett til å sende forespørseler til fiks-plattformen på vegne av denne. Organisasjonen kan være fiks-organisasjonen selv, eller en tredjepart som har driftsansvar. Se under for detaljer om opprettelse av integrasjoner.
+Hver fiks-organisasjon kan også opprette sine egne "lokale" integrasjoner - dette gjøres gjennom Fiks Konfigurasjon. Her opprettes integrasjonen, og man definerer hvilken organisasjon som skal ha rett til å sende forespørseler til fiks-plattformen på vegne av denne. Organisasjonen kan være fiks-organisasjonen selv, eller en tredjepart som har driftsansvar. Se under for detaljer om opprettelse av integrasjoner.
 
 Etter organisasjonen er opprettet må den autoriseres for å kunne handle på vegne av en fiks-organisasjon. Om man for eksempel ønsker å autorisere en integrasjon for å indeksere meldinger [Fiks Innsyn]({{< ref "innsyn.md" >}}) må det relevante privilegiet tildeles på konfigurasjonssiden for denne tjenesten. Dette gjelder også for globale integrasjoner.
 
@@ -17,7 +17,7 @@ Integrasjoner mot fiks-plattformen vil hovedsakelig benytte grensesnitt basert p
 Vi publiserer [OpenAPI-Specification](https://github.com/OAI/OpenAPI-Specification) for alle api'er. I dag benyttes versjon 2.0, med plan om migrering til 3.0 etter hvert som verktøy får støtte for denne. Disse spesifikasjonene er nyttige både som dokumentasjon for rest-grensesnittet og som grunnlag for automatisk generering av klienter og modell-objekter. Dette kan for eksempel gjøres ved bruk av [Swagger Codegen](https://swagger.io/swagger-codegen/). 
 
 ## Konfigurasjon
-En fiks-organisasjon kan opprette egen integrasjoner gjennom [fiks-konfigurasjon]({{< ref "konfigurasjon.md" >}}).
+En fiks-organisasjon kan opprette egen integrasjoner gjennom Fiks konfigurasjon.
 
 * _Sett autorisert organisasjon_. Dette vil som regel være organisasjonen som drifter systemet som skal integreres, enten fiks-organisasjonen selv eller en tredjepart.
 * _Genererer servicepassord_. Dette må opplyses for å autentisere integrasjonen, se under for detaljer.
