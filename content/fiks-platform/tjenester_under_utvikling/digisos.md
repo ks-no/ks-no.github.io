@@ -9,7 +9,7 @@ Fiks Digisos er en tjeneste for å tilrettelegge for kommunal behandling av sosi
 
 Fiks Digisos tilbyr:
 
-* Enkelt oppsett for den enkelte kommune gjennom [Fiks Konfigurasjon]({{< ref "konfigurasjon.md" >}}) 
+* Enkelt oppsett for den enkelte kommune gjennom Fiks Konfigurasjon 
 * Innbygger får fortløpende oppdatering på saksgang, tilgjengelig både gjennom Fiks Innsyn og på nav.no.
 * Innbygger får tilgang til alle dokumenter og mulighet til å sende inn nye søknader basert på data fra tidligere søknader.
 * Ansatte/brukerstøtte i nav kan se utvalgte deler av saken via nav sine systemer.
