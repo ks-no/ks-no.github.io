@@ -1,5 +1,5 @@
 ---
-title: Digisos 
+title: Digisos
 date: 2019-07-03
 ---
 
@@ -9,7 +9,7 @@ Fiks Digisos er en tjeneste for å tilrettelegge for kommunal behandling av sosi
 
 Fiks Digisos tilbyr:
 
-* Enkelt oppsett for den enkelte kommune gjennom Fiks Konfigurasjon 
+* Enkelt oppsett for den enkelte kommune gjennom Fiks Konfigurasjon
 * Innbygger får fortløpende oppdatering på saksgang, tilgjengelig både gjennom Fiks Innsyn og på nav.no.
 * Innbygger får tilgang til alle dokumenter og mulighet til å sende inn nye søknader basert på data fra tidligere søknader.
 * Ansatte/brukerstøtte i nav kan se utvalgte deler av saken via nav sine systemer.
@@ -32,12 +32,12 @@ Dokument og melding i fiks-innsyn er utelukkende tilgjengelig for innbygger, det
     5. Fiks returnerer 202 ACCEPTED på http-kallet fra NAV. Dette markerer ansvarsoverføring fra NAV til Fiks, som fra nå garanterer at saken leveres til kommune for behandling.
 3. Kommunen mottar meldingen gjennom Fiks IO (SvarInn 2). Den vil være tilgjengelig i køen i en fastsatt periode. Om kommunen ikke bekrefter mottak før denne perioden går ut vil meldingen bli trukket og alternativ kanal benyttes (se punkt 6).
 4. Søknanded opprettes i kommunalt fagsystem.
-5. Det kommunale fagsystemet bekrefter mottak av søknaden og oppdaterer status i Fiks Digisos. 
+5. Det kommunale fagsystemet bekrefter mottak av søknaden og oppdaterer status i Fiks Digisos.
     1. Evt. nye filer legges i Fiks Dokumentlager, autorisert for innbygger.
     2. Digisos saken i Fiks Innsyn oppdateres
     3. Saken er tilgengelig som nav.no og nav ansatte/brukerstøtte.
 6. Om fagsystemet avviser eller unnlater å bekrefte mottak av saken vil SvarUt benyttes som alternativ kanal, der feltet "eksternRef" vil inneholde DigisosId-en for saken. I praksis betyr dette at meldingen blir sendt til kommunens Altinn-konto, evt. sendt til print og postlagt.     
-    
+
 ![fiks_digisos](/images/fiks_digisos.png "Fiks Digisos")
 
 
@@ -45,7 +45,7 @@ Dokument og melding i fiks-innsyn er utelukkende tilgjengelig for innbygger, det
 
 For generell integrasjonsutvikling mot Fiks, se [Integrasjonsutvikling]({{< ref "integrasjoner.md" >}}). Fagsystemet må da bruke Integrasjon som autentiseringsmetode.
 
-For at fagsystemet skal få tilgang til Digisos-api-et for en kommune, må kommunen først konfigurere og aktivere Digisos gjennom [Fiks Konfigurasjon]({{< ref "konfigurasjon.md" >}}), der man også gir fagsystemet sin integrasjon tilgang til Digisos.
+For at fagsystemet skal få tilgang til Digisos-api-et for en kommune, må kommunen først konfigurere og aktivere Digisos gjennom Fiks Konfigurasjon der man også gir fagsystemet sin integrasjon tilgang til Digisos.
 
 ### Fiks IO meldingsprotokoll
 
@@ -77,12 +77,12 @@ Bruker filformatet for digisos-soker.json, som definert her: [soknadsosialhjelp-
 
 Før en sakoppdatering, må alle refererte filer være lastet opp på forhånd.
 
-Filer lastes opp til Fiks Digisos ved bruk av en multipart streaming request, der man spesifiserer HTTP-headeren "Transfer-Encoding" til å sende data i chunks, ```Transfer-Encoding: chunked```. 
+Filer lastes opp til Fiks Digisos ved bruk av en multipart streaming request, der man spesifiserer HTTP-headeren "Transfer-Encoding" til å sende data i chunks, ```Transfer-Encoding: chunked```.
 
-Alle filene må krypteres før opplasting, med public-key fra Fiks som kan hentes fra endepunktet ```/digisos/api/v1/dokumentlager-public-key```. 
+Alle filene må krypteres før opplasting, med public-key fra Fiks som kan hentes fra endepunktet ```/digisos/api/v1/dokumentlager-public-key```.
 Fiks tilbyr en referanseimplementasjon av hvordan en slik request skal defineres, som krypterer alle filene og som kan brukes for filopplasting: https://github.com/ks-no/fiks-digisos-klient.
 
-URL-stien til filopplasting er ```/digisos/api/v1/{fiksOrgId}/{digisosId}/filer```, der ```{fiksOrgId}``` og ```{digososId}``` er FiksOrgId-en og FiksDigisosId-en som filene skal legges til. 
+URL-stien til filopplasting er ```/digisos/api/v1/{fiksOrgId}/{digisosId}/filer```, der ```{fiksOrgId}``` og ```{digososId}``` er FiksOrgId-en og FiksDigisosId-en som filene skal legges til.
 
 Endepunktet tar inn en liste, der man for hver fil som skal lastes opp legger til en metadata-blokk som inneholder informasjon om filen og en base64-encodet blokk som inneholder selve filen.
 Metadata består av filnavn på filen (*filnavn*), type (*mimetype*) og størrelse på filen i bytes (*storrelse*), der metadata-blokken er av typen "application/json". Alle felter må oppgis.
@@ -128,11 +128,11 @@ For innsending av søknad/ettersendelse brukes person-integrasjon autentisering 
 
 **Innsending av ny søknad**
 
-Innsending av ny søknad til Fiks Digisos bruker multipart streaming request, på lik linje som opplasting av filer for fagsystemene, der man spesifiserer HTTP-headeren "Transfer-Encoding" til å sende data i chunks, ```Transfer-Encoding: chunked```. 
+Innsending av ny søknad til Fiks Digisos bruker multipart streaming request, på lik linje som opplasting av filer for fagsystemene, der man spesifiserer HTTP-headeren "Transfer-Encoding" til å sende data i chunks, ```Transfer-Encoding: chunked```.
 
-URL-stien til ny søknad er ```/digisos/api/v1/soknader/{kommunenummer}/{navEkseternRefId}```, der ```{kommunenummer}``` er kommunenummer søknaden skal sendes til og ```{navEkseternRefId}``` er en unik id fra NAV for søknaden. 
+URL-stien til ny søknad er ```/digisos/api/v1/soknader/{kommunenummer}/{navEkseternRefId}```, der ```{kommunenummer}``` er kommunenummer søknaden skal sendes til og ```{navEkseternRefId}``` er en unik id fra NAV for søknaden.
 
-Endepunktet tar inn påkrevde felter for innsending av en ny søknad, som består av metadataene soknad.json (json-encodet String) og vedlegg.json (json-encodet String), samt filen soknad.pdf (metadata + base64-encodet blokk) pluss eventuelle vedlegg (metadata + base64-encodet blokk). Disse dataene må da være definert i denne rekkefølgen i multipart requesten. 
+Endepunktet tar inn påkrevde felter for innsending av en ny søknad, som består av metadataene soknad.json (json-encodet String) og vedlegg.json (json-encodet String), samt filen soknad.pdf (metadata + base64-encodet blokk) pluss eventuelle vedlegg (metadata + base64-encodet blokk). Disse dataene må da være definert i denne rekkefølgen i multipart requesten.
 
 For hver fil som skal lastes opp (soknad.pdf og hvert vedlegg) legger man til en metadata-blokk som inneholder informasjon om filen og en base64-encodet blokk som inneholder selve filen. Base64-blokkene må også være kryptert med public key til Fiks Dokumentlager, som blir eksponert via endepunktet ```/digisos/api/v1/dokumentlager-public-key```, på lik linje med kryptering av filer for for fagsystemene, som definert i Fiks Digisos klienten.
 \
@@ -159,9 +159,9 @@ Ved feil ved opplasting får man 400 Bad Request når multipart-requesten ikke e
 
 **Innsending av ny ettersendelse**
 
-Innsending av ny ettersendelse til Fiks Digisos bruker også multipart streaming request. 
+Innsending av ny ettersendelse til Fiks Digisos bruker også multipart streaming request.
 
-URL-stien til ny ettersendelse er ```/digisos/api/v1/soknader/{kommunenummer}/{soknadId}/{navEkseternRefId}```, der ```{kommunenummer}``` er kommunenummer søknaden tilhører, ```{soknadId}``` er Fiks DigisosId-en for søknaden det skal ettersendes til og ```{navEkseternRefId}``` er en unik id fra NAV for denne ettersendelsen. 
+URL-stien til ny ettersendelse er ```/digisos/api/v1/soknader/{kommunenummer}/{soknadId}/{navEkseternRefId}```, der ```{kommunenummer}``` er kommunenummer søknaden tilhører, ```{soknadId}``` er Fiks DigisosId-en for søknaden det skal ettersendes til og ```{navEkseternRefId}``` er en unik id fra NAV for denne ettersendelsen.
 
 Endepunktet tar inn påkrevde felter for innsending av en ny ettersendelse, som består av metadataen vedlegg.json (String), samt en liste med vedlegg (metadata + base64-encodet blokk). Base64-blokkene for filene må krypteres på lik linje som for ny søknad.
 
