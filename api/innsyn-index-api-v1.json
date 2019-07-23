@@ -5,7 +5,7 @@
     "title" : "KS Fiks: Innsyn Index Service",
     "contact" : {
       "name" : "Fiks brukerstøtte",
-      "url" : "http://www.ks.no/fagomrader/utvikling/digitalisering/digitaliseringsstrategien/fiks/",
+      "url" : "https://ks-no.github.io/fiks-platform/",
       "email" : "fiks@ks.no"
     }
   },
@@ -68,7 +68,7 @@
     "/innsyn-index/api/v1/slett" : {
       "delete" : {
         "tags" : [ "Index" ],
-        "summary" : "Fjerner meldinger for den spesifiserte integrasjon/fiks-org. Enhet eller meldingsid kan legges til for ytterligere filtrering.",
+        "summary" : "Fjerner meldinger indekserte av den autentiserte integrasjonen for den spesifiserte fiks-organisasjonen. Ekstern-ref eller meldingsid kan legges til for ytterligere filtrering. Merk at dette starter en asynkron jobb, og det vil bli returnert på forespørselen før slettejobben faktisk er utført.",
         "description" : "",
         "operationId" : "slett",
         "parameters" : [ {
@@ -87,7 +87,7 @@
         }, {
           "name" : "meldingId",
           "in" : "query",
-          "description" : "Gruppe id",
+          "description" : "Melding id",
           "required" : false,
           "type" : "string",
           "format" : "uuid"
@@ -96,7 +96,7 @@
           "200" : {
             "description" : "successful operation",
             "schema" : {
-              "type" : "object"
+              "$ref" : "#/definitions/SlettRespons"
             }
           }
         }
@@ -105,7 +105,7 @@
     "/innsyn-index/api/v1/slettByMeldingId" : {
       "delete" : {
         "tags" : [ "Index" ],
-        "summary" : "Fjerner meldinger for de spesifiserte melding-id'ene.",
+        "summary" : "Fjerner meldinger for de spesifiserte melding-id'ene (max 1000). Dette starter en synkron operasjon, det vil ikke returneres på forespørselen før slettingen er utført",
         "description" : "",
         "operationId" : "slettByMeldingId",
         "parameters" : [ {
@@ -120,7 +120,7 @@
           "200" : {
             "description" : "successful operation",
             "schema" : {
-              "type" : "object"
+              "$ref" : "#/definitions/SlettRespons"
             }
           }
         }
@@ -461,11 +461,22 @@
       "properties" : {
         "meldinger" : {
           "type" : "array",
+          "description" : "Melding-id for meldinger som skal slettes, max 1000",
           "items" : {
             "$ref" : "#/definitions/slettMelding"
           },
-          "maxItems" : 2147483647,
+          "maxItems" : 1000,
           "minItems" : 1
+        }
+      }
+    },
+    "SlettRespons" : {
+      "type" : "object",
+      "properties" : {
+        "antallSlettet" : {
+          "type" : "integer",
+          "format" : "int64",
+          "description" : "Antall meldinger som ble slettet i operasjonen."
         }
       }
     },
@@ -543,7 +554,7 @@
             "type" : "integer",
             "format" : "int64",
             "example" : 1527140551605,
-            "description" : "Dato hvor saken er avsluttet"
+            "description" : "Dato når saken er avsluttet"
           },
           "saksnummer" : {
             "$ref" : "#/definitions/SaksnummerV1"
@@ -581,7 +592,7 @@
             "$ref" : "#/definitions/Forelder"
           }
         },
-        "description" : "Byggesak"
+        "description" : "Melding som beskriver en byggesak"
       } ]
     },
     "fakturaV1" : {
@@ -675,7 +686,7 @@
             "minItems" : 1
           }
         },
-        "description" : "Hendelse som beskriver en forsendelse"
+        "description" : "Melding som beskriver en forsendelse. Benyttes i dag for å vise post sendt via KS-SvarUt på minside.kommune.no"
       } ]
     },
     "forsendelseV2" : {
@@ -738,7 +749,7 @@
             "$ref" : "#/definitions/Forelder"
           }
         },
-        "description" : "Hendelse som beskriver en forsendelse"
+        "description" : "Melding som beskriver en forsendelse. Benyttes i dag for å vise post sendt via KS-SvarUt på minside.kommune.no"
       } ]
     },
     "journalpostV1" : {
