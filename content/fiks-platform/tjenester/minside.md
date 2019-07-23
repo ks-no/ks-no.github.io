@@ -14,14 +14,16 @@ Søkefeltet gir mulighet til å gjøre et fritekstsøk på informasjonen som min
 Oversikt over informasjonen minside.kommune.no har om inbyggeren. Hentes fra kontakt-og-reservasjonsregisteret med utgangspukt i brukerens ID-Porten autentisering.
 
 ### Post fra kommunen
-Lar innbyggeren søke i etter meldinger av type "Forsendelse" i Fiks Innsyn. Dette er meldingstypen som benyttes av Innsyns KS-SvarUt integrasjon. Aktiver denne integrasjonen for å gjøre din kommunes meldinger tilgjengelig.
+Lar innbyggeren søke i post som er sendt til innbyggeren via KS SvarUt. Søket er også tilgjenglig på forsiden. For at disse skal bli tilgjenglig må tjenesten aktiveres via Fiks Konfigurasjon
 
 ### Mine eiendommer
-Lar innbyggeren søke i etter meldinger av type "Matrikkelenhet" i Fiks Innsyn. Denne typen indekseres automatisk for alle kommuner av Fiks Matrikkel. Konfigurer matrikkel-tjenesten på forvaltning.fiks.ks.no for å anngi lenker til din kommunes eiendoms-systemer.
+Viser eiendommer innbyggeren eier, basert på data fra matrikkelen. Disse eiendommene er også søkbare fra forsiden.
+
+Matrikkeldata synkroniseres automatisk for alle kommuner, det er altså ikke nødvendig å aktivere denne tjenesten, men man kan via Fiks Konfigurasjon anngi lenker til kommunens eget eiendoms-system. Disse vil da bli tilgjengelige for innbyggere som har eiendommer i din kommune.
 
 ### Nasjonale tjenester
-Oversikt over viktige nasjonale tjenester. Ta kontakt med fiks@ks.no hvis du ønsker å legge til ytterligere tjenester.
+Oversikt over viktige nasjonale tjenester. Ta kontakt med fiks@ks.no hvis du har forslag til ytterligere tjenester som bør finnes her.
 
 ### Skatt og avgift
-Lenker til viktige tjenester innen skatt og avgift. Ta kontakt med fiks@ks.no hvis du ønsker å legge til ytterligere tjenester.
+Lenker til viktige tjenester innen skatt og avgift. Ta kontakt med fiks@ks.no hvis du har forslag til ytterligere tjenester som bør finnes her.
 
