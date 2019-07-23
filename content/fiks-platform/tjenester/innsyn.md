@@ -35,7 +35,7 @@ Søkeresultatet scores og sorteres basert på relevans: nye meldinger scores hø
 
 Søkemotoren inneholder utelukkende metadata, ikke selve dokumentet. Om meldingen skal peke til et dokument, bilde eller annen fil gjøres dette i form av en lenke: denne kan for eksempel peke til en fil i [Fiks Dokumentlager]({{< ref "dokumentlager.md" >}}), en sak i et kommunalt filarkiv, eller en annen tjeneste. Så lenge disse støtter innlogging gjennom ID-Porten vil nedlastingen oppleves sømløst av innbygger.
 
-### Uvikling av integrasjoner som leverer data via Innsyn-Indexer: 
+### Uvikling av integrasjoner som leverer data til Innsyn: 
 Indeksering av dokumenter gjøres via [Innsyn-Index api](https://editor.swagger.io/?url=https://ks-no.github.io/api/innsyn-index-api-v1.json). Først noen grunnleggende prinsipper for forvalting av meldinger i innsyn:
 
 * _Alle dokumenter eies av en Fiks Organisasjon._ I de fleste tilfeller vil dette være en kommune eller en fylkeskommune. Det er denne organisasjonen som autoriserer indeksering av data, og har rett til å oppdatere eller slette disse, enten direkte eller via tredjepart.
