@@ -26,11 +26,11 @@ Dokument og melding i Fiks Innsyn er utelukkende tilgjengelig for innbygger, det
 1. Innbygger fyller ut søknad om sosialstønad på nav.no, som sender denne til Fiks Digisos gjennom et synkront http api.
 2. Fiks Digisos mottar søknaden.
     1. Søknadsfilen legges i Fiks Dokumentlager, og innbyggeren autoriseres for tilgang.
-    2. Fiks Digisos henter valgt leveransekanal for søknaden fra kommunens konfigrasjon, enten 3) Fiks IO med SvarUt som alternativ eller 4) Bare SvarUt.
-    3. Fiks IO - Det gjøres oppslag i Fiks IO Kontokatalog for å se om det finnes en mottaker som støtte mottak av digisos-meldinger. Dersom den støttes, gjøres et kall mot Fiks IO, hvor filen blir validert og sendt til mottakeren. Dersom digisos-meldinger ikke støttes vil søknaden bli sendt til SvarUt (se punkt 4).
-    4. SvarUt - Søknaden sendes til SvarUt enten fordi den er valgt som eneste leveransekanal, eller fordi kommunen ikke kan motta digisos-meldinger gjennom Fiks IO.
-    5. Hvis punktene over blir gjennomført ok opprettes en digisos-melding i Fiks Innsyn. Denne autoriseres for innbyggeren.
-    6. Fiks returnerer 202 ACCEPTED på http-kallet fra NAV. Dette markerer ansvarsoverføring fra NAV til Fiks, som fra nå garanterer at saken leveres til kommune for behandling.
+    2. Fiks Digisos henter valgt leveransekanal for søknaden fra kommunens konfigrasjon, enten 2a) Fiks IO med SvarUt som alternativ eller 2b) Bare SvarUt.
+        1. Fiks IO - Det gjøres oppslag i Fiks IO Kontokatalog for å se om det finnes en mottaker som støtte mottak av digisos-meldinger. Dersom den støttes, gjøres et kall mot Fiks IO, hvor filen blir validert og sendt til mottakeren. Dersom digisos-meldinger ikke støttes vil søknaden bli sendt til SvarUt.
+        2. SvarUt - Søknaden sendes til SvarUt enten fordi den er valgt som eneste leveransekanal, eller fordi kommunen ikke kan motta digisos-meldinger gjennom Fiks IO (se punkt 6).
+    3. Hvis punktene over blir gjennomført ok opprettes en digisos-melding i Fiks Innsyn. Denne autoriseres for innbyggeren.
+    4. Fiks returnerer 202 ACCEPTED på http-kallet fra NAV. Dette markerer ansvarsoverføring fra NAV til Fiks, som fra nå garanterer at saken leveres til kommune for behandling.
 3. Kommunen mottar meldingen gjennom Fiks IO. Den vil være tilgjengelig i køen i en fastsatt periode. Om kommunen ikke bekrefter mottak før denne perioden går ut vil meldingen bli trukket og alternativ kanal benyttes (se punkt 6).
 4. Søknanded opprettes i kommunalt fagsystem.
 5. Det kommunale fagsystemet bekrefter mottak av søknaden og oppdaterer status i Fiks Digisos.
