@@ -1,6 +1,6 @@
 ---
 title: Digisos
-date: 2019-07-03
+date: 2019-07-24
 ---
 
 **STATUS: under utvikling**
@@ -19,24 +19,25 @@ Systemet er lagt opp slik at NAV ikke trenger å lagre data, disse fjernes fra N
 
 Kommunikasjonen mellom aktørene (Nav, Fiks, fagsystem) foregår med SSL kryptering, i tillegg er alle dokumenter kryptert med mottakers nøkkel. Nav krypterer med Fiks sin nøkkel, Fiks krypterer med fagsystemets, og fagsystemet vil igjen bruke fiks-nøkkelen.
 
-Dokument og melding i fiks-innsyn er utelukkende tilgjengelig for innbygger, dette gjelder også bruker-delen av den generelle metadataen som er lagret i Fiks Digisos. Et begrenset utvalg av metadata er også tilgjengelig for NAV nsatte. Uthenting av disse krever autentisering med NAVs virksomhetssertifikat og integrasjonslogin, og alle slike spørringer logges i Fiks Audit. Ansvaret for den videre autorisering av den enkelte NAV-ansatte ligger hos NAV.
+Dokument og melding i Fiks Innsyn er utelukkende tilgjengelig for innbygger, dette gjelder også bruker-delen av den generelle metadataen som er lagret i Fiks Digisos. Et begrenset utvalg av metadata er også tilgjengelig for NAV ansatte. Uthenting av disse krever autentisering med NAVs virksomhetssertifikat og integrasjonslogin, og alle slike spørringer logges i Fiks Audit. Ansvaret for den videre autorisering av den enkelte NAV-ansatte ligger hos NAV.
 
 ## Flyt
 
 1. Innbygger fyller ut søknad om sosialstønad på nav.no, som sender denne til Fiks Digisos gjennom et synkront http api.
 2. Fiks Digisos mottar søknaden.
-    1. Søknadsfilen legges i fiks-dokumentlager, og innbyggeren autoriseres for tilgang.
-    2. Det gjøres oppslag i fiks-svarinn2-katalog for å se om det finnes en mottaker på nav-enhetsnummeret som er spesifisert, og om denne mottakeren er i stand til å behandle digisos-formatet.
-    3. Det gjøres et kall mot fiks-svarinn, hvor filen blir validert og sendt til mottakeren.
+    1. Søknadsfilen legges i Fiks Dokumentlager, og innbyggeren autoriseres for tilgang.
+    2. Fiks Digisos henter valgt leveransekanal for søknaden fra kommunens konfigrasjon, enten a) Fiks IO med SvarUt som alternativ eller b) Bare SvarUt.
+    2a. Fiks IO - Det gjøres oppslag i Fiks IO Kontokatalog for å se om det finnes en mottaker som støtte mottak av digisos-meldinger. Dersom den støttes, gjøres et kall mot Fiks IO, hvor filen blir validert og sendt til mottakeren. Dersom digisos-meldinger ikke støttes vil søknaden bli sendt til SvarUt
+    2b. SvarUt - Søknaden sendes til SvarUt enten fordi den er valgt som eneste leveransekanal, eller fordi kommunen ikke kan motta digisos-meldinger gjennom Fiks IO.
     4. Hvis punktene over blir gjennomført ok opprettes en digisos-melding i Fiks Innsyn. Denne autoriseres for innbyggeren.
     5. Fiks returnerer 202 ACCEPTED på http-kallet fra NAV. Dette markerer ansvarsoverføring fra NAV til Fiks, som fra nå garanterer at saken leveres til kommune for behandling.
-3. Kommunen mottar meldingen gjennom Fiks IO (SvarInn 2). Den vil være tilgjengelig i køen i en fastsatt periode. Om kommunen ikke bekrefter mottak før denne perioden går ut vil meldingen bli trukket og alternativ kanal benyttes (se punkt 6).
+3. Kommunen mottar meldingen gjennom Fiks IO. Den vil være tilgjengelig i køen i en fastsatt periode. Om kommunen ikke bekrefter mottak før denne perioden går ut vil meldingen bli trukket og alternativ kanal benyttes (se punkt 6).
 4. Søknanded opprettes i kommunalt fagsystem.
 5. Det kommunale fagsystemet bekrefter mottak av søknaden og oppdaterer status i Fiks Digisos.
     1. Evt. nye filer legges i Fiks Dokumentlager, autorisert for innbygger.
     2. Digisos saken i Fiks Innsyn oppdateres
-    3. Saken er tilgengelig som nav.no og nav ansatte/brukerstøtte.
-6. Om fagsystemet avviser eller unnlater å bekrefte mottak av saken vil SvarUt benyttes som alternativ kanal, der feltet "eksternRef" vil inneholde DigisosId-en for saken. I praksis betyr dette at meldingen blir sendt til kommunens Altinn-konto, evt. sendt til print og postlagt.     
+    3. Saken er tilgengelig for nav.no og nav ansatte/brukerstøtte.
+6. Om fagsystemet avviser eller unnlater å bekrefte mottak av saken via Fiks IO vil SvarUt benyttes som alternativ kanal, der det inkluderes en fil som inneholder både NAV og Fiks Digisos sin id for saken. I praksis betyr dette at meldingen blir sendt til kommunens Altinn-konto, evt. sendt til print og postlagt.     
 
 ![fiks_digisos](/images/fiks_digisos.png "Fiks Digisos")
 
