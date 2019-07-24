@@ -210,7 +210,7 @@
         },
         "type" : {
           "type" : "string",
-          "enum" : [ "faktura", "saksmappe", "journalpost", "byggesak", "forsendelse", "matrikkelenhet" ]
+          "enum" : [ "faktura", "saksmappe", "journalpost", "byggesak", "forsendelse", "matrikkelenhet", "innsendtskjema", "skjemakladd" ]
         }
       },
       "description" : "Spesifiser et foreldre-dokument."
@@ -439,7 +439,7 @@
       "properties" : {
         "versjon" : {
           "type" : "string",
-          "enum" : [ "fakturaV1", "saksmappeV1", "journalpostV1", "forsendelseV1", "forsendelseV2", "byggesakV1", "matrikkelenhetV1" ]
+          "enum" : [ "fakturaV1", "saksmappeV1", "journalpostV1", "forsendelseV1", "forsendelseV2", "byggesakV1", "matrikkelenhetV1", "innsendtskjemaV1", "skjemakladdV1" ]
         }
       }
     },
@@ -454,6 +454,34 @@
           "type" : "string"
         }
       }
+    },
+    "SkjemaFilV1" : {
+      "type" : "object",
+      "required" : [ "filnavn", "mimeType", "nedlastingslenke", "size" ],
+      "properties" : {
+        "nedlastingslenke" : {
+          "type" : "string",
+          "description" : "Url til nedlasting av fil"
+        },
+        "filnavn" : {
+          "type" : "string",
+          "example" : "skjema.pdf",
+          "description" : "Filnavn"
+        },
+        "mimeType" : {
+          "type" : "string",
+          "example" : "application/pdf",
+          "description" : "MimeType på fil",
+          "pattern" : "\\w+/[-.\\w]+(?:\\+[-.\\w]+)?"
+        },
+        "size" : {
+          "type" : "integer",
+          "format" : "int64",
+          "example" : 23456847,
+          "description" : "Størrelse på fil i bytes"
+        }
+      },
+      "description" : "Fil for bruk i skjema"
     },
     "SlettMeldingerSpec" : {
       "type" : "object",
@@ -752,6 +780,59 @@
         "description" : "Melding som beskriver en forsendelse. Benyttes i dag for å vise post sendt via KS-SvarUt på minside.kommune.no"
       } ]
     },
+    "innsendtskjemaV1" : {
+      "allOf" : [ {
+        "$ref" : "#/definitions/MeldingMetadata"
+      }, {
+        "type" : "object",
+        "required" : [ "avsender", "innsendtdato", "mottaker", "skjemafil", "tittel" ],
+        "properties" : {
+          "tittel" : {
+            "type" : "string",
+            "example" : "Søknad om fartsdempende tiltak",
+            "description" : "Tittel på skjema"
+          },
+          "mottaker" : {
+            "type" : "string",
+            "example" : "Bergen kommune boligetaten",
+            "description" : "Navn på motaker av skjema"
+          },
+          "avsender" : {
+            "type" : "string",
+            "example" : "Ola Normann",
+            "description" : "Navn på avsender av skjema"
+          },
+          "innsendtdato" : {
+            "type" : "integer",
+            "format" : "int64",
+            "description" : "Dato for når skjemaet var innsendt. Uttrykket som millisekunder etter epoch"
+          },
+          "skjemafil" : {
+            "description" : "Hovedfil for skjemaet som er innsendt",
+            "$ref" : "#/definitions/SkjemaFilV1"
+          },
+          "vedlegg" : {
+            "type" : "array",
+            "description" : "Vedlegg til skjema",
+            "items" : {
+              "$ref" : "#/definitions/SkjemaFilV1"
+            }
+          },
+          "url" : {
+            "type" : "string",
+            "description" : "Url til sak, eller videre saksgang i skjemaet"
+          },
+          "korrelasjonId" : {
+            "type" : "string",
+            "pattern" : "^[A-Za-z0-9\\-]+$"
+          },
+          "forelder" : {
+            "$ref" : "#/definitions/Forelder"
+          }
+        },
+        "description" : "InnsendtSkjema"
+      } ]
+    },
     "journalpostV1" : {
       "allOf" : [ {
         "$ref" : "#/definitions/MeldingMetadata"
@@ -857,6 +938,59 @@
           }
         },
         "description" : "Saksmappe"
+      } ]
+    },
+    "skjemakladdV1" : {
+      "allOf" : [ {
+        "$ref" : "#/definitions/MeldingMetadata"
+      }, {
+        "type" : "object",
+        "required" : [ "endretDato", "tittel" ],
+        "properties" : {
+          "tittel" : {
+            "type" : "string",
+            "example" : "Søknad om fartsdempende tiltak",
+            "description" : "Tittel på skjema"
+          },
+          "mottaker" : {
+            "type" : "string",
+            "example" : "Bergen kommune boligetaten",
+            "description" : "Navn på motaker av skjema"
+          },
+          "avsender" : {
+            "type" : "string",
+            "example" : "Ola Normann",
+            "description" : "Navn på avsender av skjema"
+          },
+          "endretDato" : {
+            "type" : "integer",
+            "format" : "int64",
+            "description" : "Dato for når skjemaet sist var endret/lagret. Uttrykket som millisekunder etter epoch"
+          },
+          "skjemafil" : {
+            "description" : "Hovedfil for skjemaet som er innsendt",
+            "$ref" : "#/definitions/SkjemaFilV1"
+          },
+          "vedlegg" : {
+            "type" : "array",
+            "description" : "Vedlegg til skjema",
+            "items" : {
+              "$ref" : "#/definitions/SkjemaFilV1"
+            }
+          },
+          "url" : {
+            "type" : "string",
+            "description" : "Url til skjema kladd for videre utfylling/sletting."
+          },
+          "korrelasjonId" : {
+            "type" : "string",
+            "pattern" : "^[A-Za-z0-9\\-]+$"
+          },
+          "forelder" : {
+            "$ref" : "#/definitions/Forelder"
+          }
+        },
+        "description" : "SkjemaKladd"
       } ]
     },
     "slettMelding" : {
