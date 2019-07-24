@@ -26,7 +26,7 @@ Dokument og melding i Fiks Innsyn er utelukkende tilgjengelig for innbygger, det
 1. Innbygger fyller ut søknad om sosialstønad på nav.no, som sender denne til Fiks Digisos gjennom et synkront http api.
 2. Fiks Digisos mottar søknaden.
     1. Søknadsfilen legges i Fiks Dokumentlager, og innbyggeren autoriseres for tilgang.
-    2. Fiks Digisos henter valgt leveransekanal for søknaden fra kommunens konfigrasjon, enten 2a) Fiks IO med SvarUt som alternativ eller 2b) Bare SvarUt.
+    2. Fiks Digisos henter valgt leveransekanal for søknaden fra kommunens konfigrasjon, enten anbefalt kanal 2a) Fiks IO med SvarUt som alternativ eller 2b) Bare SvarUt.
         1. Fiks IO - Det gjøres oppslag i Fiks IO Kontokatalog for å se om det finnes en mottaker som støtter mottak av digisos-meldinger til kommunen. Dersom det støttes, gjøres et kall mot Fiks IO, hvor filen blir validert og sendt til mottakeren. Dersom digisos-meldinger ikke støttes vil søknaden bli sendt til SvarUt.
         2. SvarUt - Søknaden sendes til SvarUt enten fordi den er valgt som eneste leveransekanal, eller fordi kommunen ikke kan motta digisos-meldinger gjennom Fiks IO (se punkt 6).
     3. Hvis punktene over blir gjennomført ok opprettes en digisos-melding i Fiks Innsyn. Denne autoriseres for innbyggeren.
