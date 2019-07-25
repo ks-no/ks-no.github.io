@@ -14,6 +14,17 @@ Fiks IO tilbyr:
 * _Levetid på meldinger_: En melding har en brukerdefinert levetid. Avsender vil få beskjed hvis en melding ikke har blitt lest av mottaker innen levetidens utløp.
 * _Sending av store filer_: Fiks IO integrerer mot [Fiks Dokumentlager]({{< ref "dokumentlager.md" >}}) for å støtte sending av store filer, helt opp til dokumentlagers grense på fem gigabyte. 
 
+### Hvordan tar man i bruk Fiks IO?
+Fiks IO baserer seg på at organisasjoner benytter Fiks Konfigurasjon for å opprette en eller flere _kontoer_. Andre organisasjoner kan så sende meldinger til disse kontoene, som mottaker kan lese ved å koble seg til io.fiks.ks.no. 
+
+For å gjøre det lettere å finne en konto, og vite hvilke meldingstyper systemet som benytter kontoen kan håndtere kan man konfigurere _adresser_. Adresser består av en eller flere organisasjonsnummer, meldingsprotokoller og sikkerhetsnivåer. Avsendere kan så slå opp i Fiks IOs katalogtjeneste for å finne f.eks. hvilken konto som skal motta digisos meldinger med sikkerhetsnivå fire for Bergen kommune. 
+
+Funksjonalitet for å sende og lese meldinger vil typisk bli tilbudt av fagsystemleverandører eller offentlig virksomheter, som når Fiks Digisos formidler sosialsøknader fra Nav til kommunens sosialsystem, men kommuner og andre organisasjoner må fortsatt ha et forhold til hvilke kontoer de har, hvilke meldingstyper disse håndterer, og ikke minst hvem som har tilgang til å lese inkommende meldinger.
+
+![em fiks-io konto](/images/fiksiokonto.png)
+
+I eksempelet over ser man en konto opprettet for å formidle Digisos meldinger til en kommunes fagsystem for behandlig av sosialsøknader. Det er opprettet en adresse på kontoen, "Digisos", man har konfigurert støtte for meldingsprotokollen "no.nav.digisos.fagsystem.v1", og sagt at dette systemet kan håndtere meldinger for både sikkerhetsnivå tre og fire. 
+
 ### Forhold til SvarUt og SvarInn
 Fiks IO er en selvstendig kanal, og er ikke bygget for å være en erstatning for SvarUt/SvarInn, som begge vil bli videreført i sin nåværende form. Bruksområdene til tjenestene kan overlappe, og dette gjør at det noen ganger kan være tvil om SvarUt/SvarInn eller Fiks IO er riktig verktøy for et problem.
 
@@ -33,7 +44,7 @@ Benytt SvarUt, ved Fiks IO forsendelser risikerer man at meldingen ikke blir hå
 
 Økonomiske aspekter kan også spille inn her, Fiks IO meldinger koster vesentlig mindre pr. stykk enn SvarUt forsendelser.
 
-### Grunnleggende prinsipper
+### Hvordan virker Fiks IO
 ![fiks_io](https://www.lucidchart.com/publicSegments/view/23b3e542-6059-471f-96d6-70f57da44f17/image.png)
 En Fiks organisasjon oppretter en Fiks IO _konto_. Andre kontoer kan nå sende til denne kontoen gjennom Fiks IOs REST api ved å spesifisere kontoens _KontoId_ som mottaker. Organisasjonen får meldingene ved å etablere en AMQP kobling til io.fiks.ks.no.
 
@@ -43,13 +54,6 @@ Fiks IO tar i utgangspunktet ikke stilling til hva payloaden i meldingen består
 * _Fiks-IO Protokollkatalog_: Tilbyr en katalog over registrerte meldingsprotokoller. En protokoll er en oversikt over hvilke meldingstyper som inngår i en kommunikasjon, gjerne også med skjema som spesifiserer syntax for de enkelte typene.
 * _Fiks-IO java klient_: [Java klient](https://github.com/ks-no/fiks-io-klient-java) som tilbyr funksjonalitet for å bygge, signere, kryptere, og sende meldinger som ASiC-E pakker, samt mottak og dekryptering på andre siden. 
 * _Fiks-IO .net klient_: [.net core](https://github.com/ks-no/fiks-io-client-dotnet) implementasjon av samme funksjonalitet som klienten over.
-
-### Konfigurasjon og forvaltning
-Fiks IO settes opp gjennom Fiks Konfigurasjon, det er også her man oppretter kontoer, spesifiserer adresser, og styrer autorisasjoner. Både personer og integrasjoner må autoriseres før de kan sende meldinger fra en konto.
-
-Man kan opprette flere kontoer, og for hver konto kan man opprette flere adresser, se Kontokatalogen for informasjonom dette. For hver konto lastes det opp et sertifikat med en offentlig nøkkel. Dette sertifikatet benyttes for å kryptere meldinger sendt til den aktuelle kontoen.   
-
-Hvis man ønsker å utarbeide eller endre en protokoll må dette gjøres i sammarbeid med KS Fiks, ta kontakt med fiks@ks.no.
 
 ### Sikkerhet
 Autentisering av klienter mot REST service for sending av meldinger og AMQP service for leveranse av meldinger skjer gjennom virksomhetssertifikat-basert maskinporten autentisering. 
