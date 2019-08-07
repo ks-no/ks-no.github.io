@@ -19,7 +19,9 @@ Lar innbyggeren søke i post som er sendt til innbyggeren via KS SvarUt. Søket 
 ### Mine eiendommer
 Viser eiendommer innbyggeren eier, basert på data fra matrikkelen. Disse eiendommene er også søkbare fra forsiden.
 
-Matrikkeldata synkroniseres automatisk for alle kommuner, det er altså ikke nødvendig å aktivere denne tjenesten, men man kan via Fiks Konfigurasjon anngi lenker til kommunens eget eiendoms-system. Disse vil da bli tilgjengelige for innbyggere som har eiendommer i din kommune.
+"Mine eiendommer" er basert på data som automatisk synkroniseres fra kartverket for alle kommuner. Det er altså ikke nødvendig å aktivere denne tjenesten.
+
+Som standard kan innbyggeren følge en lenke til [seeiendom.kartverket.no](https://seeiendom.kartverket.no) for å se detaljer om eiendommen, men her har kommunen mulighet til anngi lenker til eget eiendoms-system, se [Fiks Konfigurasjon: Matrikkel](https://forvaltning.fiks.test.ks.no/fiks-konfigurasjon/tjenester/matrikkel). Minside vil da vise disse lenkene for innbyggere som har eiendommer i din kommune.
 
 ### Nasjonale tjenester
 Oversikt over viktige nasjonale tjenester. Ta kontakt med fiks@ks.no hvis du har forslag til ytterligere tjenester som bør finnes her.
