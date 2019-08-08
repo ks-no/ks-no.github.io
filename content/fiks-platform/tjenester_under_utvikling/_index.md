@@ -16,13 +16,11 @@ Innsyn utvides med støtte for å eksponere meldinger for eieren av en spesifise
 #### Minside / Innsyn: Byggesaker
 Fiks Innsyn får støtte for meldinstype byggesak, og disse gjøres tilgjengelig i egen webapp på minside.kommune.no. 
 
-## 2020
+## 2019-Q4
 #### Minside / Innsyn: Kommunale Tjenester
 Lar en kommune legge inn sine eksisterende tjenester, med beskrivelse og lenke. Disse er søkbare som egen meldinstype i Fiks Innsyn og vises på minside.kommune.no.
 
-#### SvarUt: Støtte for hemmelig adresse
-Gjør det mulig å sende forsendelser til personer som bor på hemmelig adresse.
-
+## 2020
 #### Minside: Mine Eiendommer (fase 2)
 Utvidet matrikkel- og eiendomsinformasjon gjøres tilgjengelig på MinSide. Vil inkludere mulighet for å sende korrigeringer på evt. feilaktig informasjon.
 
@@ -44,5 +42,8 @@ Innsyn utvides med ny meldinstype for søknader, og innbyggeres innsendte søkna
 
 #### Minside / Innsyn: Faktura
 Fakturaer fra kommunen gjøres tilgjengelig på gjennom egen webapp på minside.kommune.no.
+
+#### SvarUt: Støtte for hemmelig adresse
+Gjør det mulig å sende forsendelser til personer som bor på hemmelig adresse.
 
 
