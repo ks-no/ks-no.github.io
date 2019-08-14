@@ -1,7 +1,7 @@
 
 ---
 title: Kommunale Tjenester
-date: 2019-07-24
+date: 2019-08-14
 ---
 
 **STATUS: under utvikling**
