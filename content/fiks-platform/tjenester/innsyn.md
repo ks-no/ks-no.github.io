@@ -1,6 +1,6 @@
 ---
 title: Innsyn
-date: 2019-06-27
+date: 2019-08-16
 ---
 
 Norske kommuner har mengder av informasjon om sine innbyggere. Denne informasjonen er spredd rundt i arkiver, fagsystemer, dokumentlagre og eksterne skyløsninger. Fiks Innsyn lagrer metadata som beskriver denne informasjonen, og gjør den tilgjengelig for innbyggeren via en kraftig søkemotor.
@@ -23,11 +23,12 @@ Tjenesten består av tre hovedkomponenter:
  * _Innsyn-søk_, søkemotoren som utgjør back-end for webappliasjonene. Støtter fritekstsøk og score-rangerte resultater. 
  * _Innsyn-indexer_, en indekseringstjeneste som integrasjoner kan benytte for å laste opp metadata om informasjonen kommunen sitter på: hendelser, fakturaer, saker, journalposter, forsendelser, osv.  
 
-Søk i innsyn gjøres via applikasjonene på minside.kommune.no, eller direkte via et REST grensesnitt. Uansett baserer autentisering seg på innlogging via ID-Porten. En autentisert innbygger autoriserers for å lese en melding på en av tre måter:
+Søk i innsyn gjøres via applikasjonene på minside.kommune.no, eller direkte via et REST grensesnitt. Uansett baserer autentisering seg på innlogging via ID-Porten. En autentisert innbygger autoriserers for å lese en melding på en av fire måter:
 
 * Meldingen er eksponert for innbyggerens fødselsnummer
 * Innbyggeren har rollene "post/arkiv" eller "kommunale tjenester" i Altinn for organisasjonsnummeret meldingen er eksponert for
 * Innbyggeren er markert som eier av matrikkelenheten meldingen er eksponert for, endten direkte eller via organisasjon.
+* Meldingen er eksponert med type "offentlig", og er dermed tilgjengelig for alle autentiserte innbyggere.
 
 Søket er i hovedsak basert på fri-tekst, og vil også da kompenserer for stavefeil, bøyeform eller orddeling. Noe filtrering er mulig (for eksempel på dato, avsender-organisasjon osv). Alle søk er også filtrert på innloggingsnivå. Et søk gjort med innlogging på nivå tre vil ikke returnere grupper som er satt til nivå fire, uavhengig av om disse gruppene traff på søket. Hvilket innloggingsnivå som kreves for å se hver enkelt melding er bestemt av interasjonen som indekserte meldingen i Innsyn.
 
@@ -67,6 +68,7 @@ _Eksponert for_ i en indekseringsforespørsel angir hvem som skal kunne se meldi
 * _fødselsnummer_: Meldingen blir tilgjengelig for innbyggeren som er autentisert med det spesifiserte fødselsnummeret.
 * _organisasjonsnummer_: Meldingen blir tilgjengelig for innbyggere som innehar rollene "post/arkiv" eller "kommunale tjenester" i Altinn på det spesifiserte organisasjonsnummeret.
 * _matrikkelnummer_: Meldingen blir tilgjengelig for personer som er ført som eiere av matrikkelenheten med det spesifiserte nummeret, eller som innehar rollene "post/arkiv" eller "kommunale tjenester" for en organisasjon som er ført som eier av den aktuelle matrikkelenheten. Endringer i eierskap vil automatisk bli tatt hensyn til, uten at reindeksering av meldingen er nødvendig.
+* _offentlig_: Meldingen er åpent tilgjengelig for alle autentiserte personer, denne eksponert-for typen bør benyttes med varsomhet.
 
 Det er viktig at man har et bevisst forhold til hvem meldinger eksponeres for, spesielt når man eksponerer for en matrikkelenhet, da endringer i eierskap vil medføre at nye personer får tilgang til meldingen. Man bør derfor aldri eksponere sensitive data via denne metoden.
 
