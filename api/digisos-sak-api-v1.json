@@ -20,11 +20,11 @@
     "description" : "API for KS Fiks Digisos Sak oppdatering"
   } ],
   "paths" : {
-    "/digisos/api/v1/{fiksOrgId}/ny" : {
-      "post" : {
+    "/digisos/api/v1/{fiksOrgId}/{digisosId}/filer" : {
+      "get" : {
         "tags" : [ "DigisosSaksoppdatering" ],
-        "description" : "Oppretter en ny Digisos-sak og returnerer tilhørende DigisosId",
-        "operationId" : "opprettNySak",
+        "description" : "Henter filmetadata for angitt digisos-soker",
+        "operationId" : "hentFiler",
         "parameters" : [ {
           "name" : "fiksOrgId",
           "in" : "path",
@@ -35,28 +35,31 @@
             "format" : "uuid"
           }
         }, {
-          "name" : "sokerFnr",
-          "in" : "query",
-          "description" : "Angir fødselsnummer for opprettet digisos-soker",
+          "name" : "digisosId",
+          "in" : "path",
+          "description" : "Unik DigisosId tilhørende digisos-soker",
           "required" : true,
           "schema" : {
-            "type" : "string"
+            "type" : "string",
+            "format" : "uuid"
           }
         } ],
         "responses" : {
           "200" : {
-            "description" : "Saken ble opprettet",
+            "description" : "Beskrivelse av filer tilhørende sak",
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "type" : "string",
-                  "format" : "uuid"
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/DokumentInfo"
+                  }
                 }
               }
             }
           },
           "403" : {
-            "description" : "Bruker har ikke tilgang til å opprette ny sak",
+            "description" : "Bruker har ikke tilgang til å hente filmetadata for den oppgitte saken",
             "content" : {
               "application/json" : {
                 "schema" : {
@@ -66,7 +69,68 @@
             }
           },
           "400" : {
-            "description" : "Feil i de innsendte data",
+            "description" : "Ugyldig data ble oppgitt",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete" : {
+        "tags" : [ "DigisosSaksoppdatering" ],
+        "description" : "Sletter filer for angitt Digisos-sak",
+        "operationId" : "slettFiler",
+        "parameters" : [ {
+          "name" : "fiksOrgId",
+          "in" : "path",
+          "description" : "FiksOrgId tilhørende digisos-soker",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        }, {
+          "name" : "digisosId",
+          "in" : "path",
+          "description" : "Unik DigisosId tilhørende digisos-soker",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        }, {
+          "name" : "filIder",
+          "in" : "query",
+          "description" : "Liste av filer som skal slettes, tilhørende angitt digisos-soker",
+          "required" : true,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "format" : "uuid"
+            }
+          }
+        } ],
+        "responses" : {
+          "204" : {
+            "description" : "Filer ble slettet"
+          },
+          "403" : {
+            "description" : "Bruker har ikke tilgang til å slette filer for den oppgitte saken",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Ugyldig data ble oppgitt",
             "content" : {
               "application/json" : {
                 "schema" : {
@@ -189,11 +253,11 @@
         }
       }
     },
-    "/digisos/api/v1/{fiksOrgId}/{digisosId}/filer" : {
-      "get" : {
+    "/digisos/api/v1/{fiksOrgId}/ny" : {
+      "post" : {
         "tags" : [ "DigisosSaksoppdatering" ],
-        "description" : "Henter filmetadata for angitt digisos-soker",
-        "operationId" : "hentFiler",
+        "description" : "Oppretter en ny Digisos-sak og returnerer tilhørende DigisosId",
+        "operationId" : "opprettNySak",
         "parameters" : [ {
           "name" : "fiksOrgId",
           "in" : "path",
@@ -204,31 +268,28 @@
             "format" : "uuid"
           }
         }, {
-          "name" : "digisosId",
-          "in" : "path",
-          "description" : "Unik DigisosId tilhørende digisos-soker",
+          "name" : "sokerFnr",
+          "in" : "query",
+          "description" : "Angir fødselsnummer for opprettet digisos-soker",
           "required" : true,
           "schema" : {
-            "type" : "string",
-            "format" : "uuid"
+            "type" : "string"
           }
         } ],
         "responses" : {
           "200" : {
-            "description" : "Beskrivelse av filer tilhørende sak",
+            "description" : "Saken ble opprettet",
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "type" : "array",
-                  "items" : {
-                    "$ref" : "#/components/schemas/DokumentInfo"
-                  }
+                  "type" : "string",
+                  "format" : "uuid"
                 }
               }
             }
           },
           "403" : {
-            "description" : "Bruker har ikke tilgang til å hente filmetadata for den oppgitte saken",
+            "description" : "Bruker har ikke tilgang til å opprette ny sak",
             "content" : {
               "application/json" : {
                 "schema" : {
@@ -238,68 +299,7 @@
             }
           },
           "400" : {
-            "description" : "Ugyldig data ble oppgitt",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/ErrorMessage"
-                }
-              }
-            }
-          }
-        }
-      },
-      "delete" : {
-        "tags" : [ "DigisosSaksoppdatering" ],
-        "description" : "Sletter filer for angitt Digisos-sak",
-        "operationId" : "slettFiler",
-        "parameters" : [ {
-          "name" : "fiksOrgId",
-          "in" : "path",
-          "description" : "FiksOrgId tilhørende digisos-soker",
-          "required" : true,
-          "schema" : {
-            "type" : "string",
-            "format" : "uuid"
-          }
-        }, {
-          "name" : "digisosId",
-          "in" : "path",
-          "description" : "Unik DigisosId tilhørende digisos-soker",
-          "required" : true,
-          "schema" : {
-            "type" : "string",
-            "format" : "uuid"
-          }
-        }, {
-          "name" : "filIder",
-          "in" : "query",
-          "description" : "Liste av filer som skal slettes, tilhørende angitt digisos-soker",
-          "required" : true,
-          "schema" : {
-            "type" : "array",
-            "items" : {
-              "type" : "string",
-              "format" : "uuid"
-            }
-          }
-        } ],
-        "responses" : {
-          "204" : {
-            "description" : "Filer ble slettet"
-          },
-          "403" : {
-            "description" : "Bruker har ikke tilgang til å slette filer for den oppgitte saken",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/ErrorMessage"
-                }
-              }
-            }
-          },
-          "400" : {
-            "description" : "Ugyldig data ble oppgitt",
+            "description" : "Feil i de innsendte data",
             "content" : {
               "application/json" : {
                 "schema" : {
@@ -349,27 +349,6 @@
           }
         }
       },
-      "DokumentInfo" : {
-        "type" : "object",
-        "properties" : {
-          "filnavn" : {
-            "type" : "string",
-            "description" : "Logisk navn på fil",
-            "example" : "example.pdf"
-          },
-          "dokumentlagerDokumentId" : {
-            "type" : "string",
-            "description" : "ID på filen i KS Fiks Dokumentlager",
-            "format" : "uuid"
-          },
-          "storrelse" : {
-            "type" : "integer",
-            "description" : "Størrelse på filen (i bytes)",
-            "format" : "int64"
-          }
-        },
-        "description" : "Metadata om en fil"
-      },
       "DigisosSakApiModel" : {
         "required" : [ "sak", "type" ],
         "type" : "object",
@@ -411,6 +390,27 @@
             }
           }
         }
+      },
+      "DokumentInfo" : {
+        "type" : "object",
+        "properties" : {
+          "filnavn" : {
+            "type" : "string",
+            "description" : "Logisk navn på fil",
+            "example" : "example.pdf"
+          },
+          "dokumentlagerDokumentId" : {
+            "type" : "string",
+            "description" : "ID på filen i KS Fiks Dokumentlager",
+            "format" : "uuid"
+          },
+          "storrelse" : {
+            "type" : "integer",
+            "description" : "Størrelse på filen (i bytes)",
+            "format" : "int64"
+          }
+        },
+        "description" : "Metadata om en fil"
       }
     }
   }
