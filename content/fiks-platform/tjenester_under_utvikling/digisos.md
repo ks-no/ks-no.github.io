@@ -72,6 +72,7 @@ Bruker filformatet for digisos-soker.json, som definert her: [soknadsosialhjelp-
 Filer må lastes opp på forhånd, da digisos-soker.json inneholder referanse-id til dokumentene som kan linkes til søkeren, som gjelder både for filer som lastes opp til Fiks Dokumentlager via Digios-api (som beskrevet under) eller som er [sendt via SvarUt](https://ks-no.github.io/svarut/integrasjon/forsendelsesservicev10/).
 
 Det anbefales å laste opp alle filene via Digisos-api (som beskrevet under, "Opplasitng av filer"), da vil følgende gjelde:
+
 - Når en sakoppdatering skjer, vil Fiks Digisos validere at refererte filer faktisk er tilgjenglige på saken (DigisosId).
 - Når man sletter en fil via Fiks Digisos vil man bare kunne slette filer som ikke er referert til på saken (DigisosId).
 - Man kan hente en liste av alle tilgjengelige filer for en gitt sak (DigisosId).
@@ -79,6 +80,7 @@ Det anbefales å laste opp alle filene via Digisos-api (som beskrevet under, "Op
 Ved å referere til et SvarUt dokument, består denne filreferansen av SvarUt sin forsendelsesId og nummeret for dokumentet i denne forsendelsen, der indekseringen begynner fra 1. Ved referanse til SvarUt filer har ikke Fiks Digisos-api noe relasjon eller tilgang til disse filene, slik at fagsystemet selv er ansvarlig for at alle referte filer til en hver tid er tilgjengelige for søkeren når filreferansene linkes til på nav.no.
 
 Generelle vilkår for sakoppdatering:
+
 - Når en sakoppdatering skjer, må derfor alle filer være tilgjenglige på saken.
 - Filer som ikke lenger skal ligge på sak, kan fjernes etter at sakoppdatering uten filene er lastet opp.
 - Fagsystemet må ha kontroll på listen med filer og sjekke at denne er korrekt.
