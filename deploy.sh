@@ -10,8 +10,6 @@ git pull
 rm -rf *
 cd ..
 
-hugo version
-
 # Build the project.
 hugo --cleanDestinationDir 
 
