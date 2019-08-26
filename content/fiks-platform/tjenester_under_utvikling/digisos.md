@@ -1,6 +1,6 @@
 ---
 title: Digisos
-date: 2019-08-19
+date: 2019-08-26
 ---
 
 **STATUS: under utvikling**
@@ -134,7 +134,7 @@ Ved feil ved opplasting får man 400 Bad Request når multipart-requesten ikke e
 
 For generell integrasjonsutvikling mot Fiks, se [Integrasjonsutvikling]({{< ref "integrasjoner.md" >}})
 
-## Innsending av søknad
+### Innsending av søknad
 
 Soknad api [(api-spec)](https://editor.swagger.io/?url=https://ks-no.github.io/api/digisos-api-v1.json)
 
@@ -186,3 +186,8 @@ For hvert vedlegg som skal lastes opp legger man til en metadata-blokk som inneh
 Det er ingen returtype på dette endepunktet.
 
 Ved feil ved opplasting får man 400 Bad Request når multipart-requesten ikke er definert med riktige data.
+
+### Henting av filer
+Soknad api [(api-spec)](https://editor.swagger.io/?url=https://ks-no.github.io/api/digisos-api-v1.json)
+
+Ved henting av søknad vil det for hver fil returneres en UUID til Fiks Dokumentlager eller en forsendelsesid og filnummer for SvarUt, der filen kan lastes ned. Filene soknad.json, vedlegg.json og digisos-soker.json vil være tilgjengelige for NAV gjennom endepunktet ```/digisos/api/v1/nav/soknader/{digisosId}/dokumenter/{dokumentlagerId}``` fra Digisos API-et, der dokumentet blir returnert som en inputstream fra HttpServletResponse. Alle andre filreferanser vil bli eksponert for søkeren, som søkeren selv må laste ned fra Fiks Dokumentlager, ```https://minside.kommune.no/dokumentlager/nedlasting/niva4/{id}```, eller fra SvarUt, ```https://svarut.ks.no/forsendelse/{forsendelseId}/{filnummer}```. 
