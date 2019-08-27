@@ -1,6 +1,6 @@
 ---
 title: Digisos
-date: 2019-08-26
+date: 2019-08-27
 ---
 
 **STATUS: under utvikling**
@@ -9,24 +9,24 @@ Fiks Digisos er en tjeneste for å tilrettelegge for kommunal behandling av sosi
 
 Fiks Digisos tilbyr:
 
-* Enkelt oppsett for den enkelte kommune gjennom Fiks Konfigurasjon
-* Innbygger får fortløpende oppdatering på saksgang, tilgjengelig både gjennom Fiks Innsyn og på nav.no.
+* Enkelt oppsett for den enkelte kommune gjennom Fiks Konfigurasjon.
+* Innbygger får fortløpende oppdatering på saksgang, tilgjengelig på nav.no.
 * Innbygger får tilgang til alle dokumenter og mulighet til å sende inn nye søknader basert på data fra tidligere søknader.
-* Ansatte/brukerstøtte i nav kan se utvalgte deler av saken via nav sine systemer.
+* Ansatte/brukerstøtte i NAV kan se utvalgte deler av saken via NAV sine systemer.
 
 ## Sikkerhet
-Systemet er lagt opp slik at NAV ikke trenger å lagre data, disse fjernes fra Navs systemer når søknaden sendes til Fiks. All tilstand lagres dermed på Fiks plattformen og hos kommunen. Innsending av søknad kan utelukkende gjøres med brukerens ID-Porten autentisering.
+Systemet er lagt opp slik at NAV ikke trenger å lagre data, disse fjernes fra NAVs systemer når søknaden sendes til Fiks. All tilstand lagres dermed på Fiks-plattformen og hos kommunen. Innsending av søknad kan utelukkende gjøres med brukerens ID-Porten autentisering.
 
-Kommunikasjonen mellom aktørene (Nav, Fiks, fagsystem) foregår med SSL kryptering, i tillegg er alle dokumenter kryptert med mottakers nøkkel. Nav krypterer med Fiks sin nøkkel, Fiks krypterer med fagsystemets, og fagsystemet vil igjen bruke fiks-nøkkelen.
+Kommunikasjonen mellom aktørene (NAV, Fiks, fagsystem) foregår med SSL-kryptering, i tillegg er alle dokumenter kryptert med mottakers nøkkel. NAV krypterer med Fiks sin nøkkel, Fiks krypterer med fagsystemets, og fagsystemet vil igjen bruke Fiks-nøkkelen.
 
-Dokument og melding i Fiks Innsyn er utelukkende tilgjengelig for innbygger, dette gjelder også bruker-delen av den generelle metadataen som er lagret i Fiks Digisos. Et begrenset utvalg av metadata er også tilgjengelig for NAV ansatte. Uthenting av disse krever autentisering med NAVs virksomhetssertifikat og integrasjonslogin, og alle slike spørringer logges i Fiks Audit. Ansvaret for den videre autorisering av den enkelte NAV-ansatte ligger hos NAV.
+Innbygger har tilgang til alle sine opplastede dokumenter, der et begrenset utvalg av metadata også er tilgjengelig for NAV-ansatte. Uthenting av disse metadataene krever autentisering med NAVs virksomhetssertifikat og integrasjonsinnlogging, og alle slike spørringer logges i Fiks Audit. Ansvaret for den videre autorisering av den enkelte NAV-ansatte ligger hos NAV.
 
 ## Flyt
 
 1. Innbygger fyller ut søknad om sosialstønad på nav.no, som sender denne til Fiks Digisos gjennom et synkront http api.
 2. Fiks Digisos mottar søknaden.
     1. Søknadsfilen legges i Fiks Dokumentlager, og innbyggeren autoriseres for tilgang.
-    2. Fiks Digisos henter valgt leveransekanal for søknaden fra kommunens konfigrasjon, enten anbefalt kanal 2a) Fiks IO med SvarUt som alternativ eller 2b) Bare SvarUt.
+    2. Fiks Digisos henter valgt leveransekanal for søknaden fra kommunens konfigurasjon, enten anbefalt kanal 2a) Fiks IO med SvarUt som alternativ eller 2b) Bare SvarUt.
         - a. Fiks IO - Det gjøres oppslag i Fiks IO Kontokatalog for å se om det finnes en mottaker som støtter mottak av digisos-meldinger til kommunen. Dersom det støttes, gjøres et kall mot Fiks IO, hvor filen blir validert og sendt til mottakeren. Dersom digisos-meldinger ikke støttes vil søknaden bli sendt til SvarUt.
         - b. SvarUt - Søknaden sendes til SvarUt enten fordi den er valgt som eneste leveransekanal, eller fordi kommunen ikke kan motta digisos-meldinger gjennom Fiks IO (se punkt 6).
     3. Hvis punktene over blir gjennomført ok opprettes en digisos-melding i Fiks Innsyn. Denne autoriseres for innbyggeren.
@@ -34,9 +34,9 @@ Dokument og melding i Fiks Innsyn er utelukkende tilgjengelig for innbygger, det
 3. Kommunen mottar meldingen gjennom Fiks IO. Den vil være tilgjengelig i køen i en fastsatt periode. Om kommunen ikke bekrefter mottak før denne perioden går ut vil meldingen bli trukket og alternativ kanal benyttes (se punkt 6).
 4. Søknanded opprettes i kommunalt fagsystem.
 5. Det kommunale fagsystemet bekrefter mottak av søknaden og oppdaterer status i Fiks Digisos.
-    1. Evt. nye filer legges i Fiks Dokumentlager, autorisert for innbygger.
+    1. Evt. nye filer legges til saken, autorisert for innbygger.
     2. Digisos saken i Fiks Innsyn oppdateres
-    3. Saken er tilgengelig for nav.no og nav ansatte/brukerstøtte.
+    3. Saken er tilgengelig for nav.no og NAV-ansatte/brukerstøtte.
 6. Om fagsystemet avviser eller unnlater å bekrefte mottak av saken via Fiks IO vil SvarUt benyttes som alternativ kanal, der det inkluderes en fil som inneholder både NAV og Fiks Digisos sin id for saken. I praksis betyr dette at meldingen blir sendt til kommunens Altinn-konto, evt. sendt til print og postlagt.     
 
 ![fiks_digisos](/images/fiks_digisos.png "Fiks Digisos")
@@ -61,10 +61,18 @@ For ny søknad, ```no.nav.digisos.soknad.mottatt.v1```, med tom body.\
 For ettersendelse, ```no.nav.digisos.ettersendelse.mottatt.v1```, med tom body.
 
 ### Sak oppdatering fra Fagsystem
+ 
+Fiks Digisos tilbyr en [api-spec](https://editor.swagger.io/?url=https://ks-no.github.io/api/digisos-sak-api-v1.json) for alle operasjoner utenom filopplasting, som er beskrevet under avsnittet "Opplasting av filer".
 
-Sak oppdaterings api [(api-spec)](https://editor.swagger.io/?url=https://ks-no.github.io/api/digisos-sak-api-v1.json)
+[Sak oppdaterings api-spec](https://editor.swagger.io/?url=https://ks-no.github.io/api/digisos-sak-api-v1.json) er API-et der hvert endepunkt opererer på en angitt søknad, DigisosId, der førlgene operasjoner er tilgjengelige:
 
-Bruker filformatet for digisos-soker.json, som definert her: [soknadsosialhjelp-filformat
+- Opprette en ny sak for en søker, der man får tildelt en unik DigisosId for opprettet sak.
+- Oppdatere en sak med nye hendelser, der gammel sakoppdatering vil bli erstattet med den nye.
+- Slette sakoppdatering, (refererte filer fra saken slettes ikke).
+- Hente liste av dokumenter som tilgjengelige på søknaden, som tidligere er lastet opp via Fiks Digisos (se avsnitt "Opplasting av filer").
+- Slette dokument fra søknaden, som tidligere er lastet opp via Fiks Digisos (se avsnitt "Opplasting av filer").
+
+Filformatet brukt for sakoppdateringer for json-data, digisos-soker.json, er definert her: [soknadsosialhjelp-filformat
 ](https://navikt.github.io/soknadsosialhjelp-filformat/#/data%20fra%20fagsystem/getdigisos_soker_json).
 
 **Referering til filer**
@@ -89,12 +97,13 @@ Generelle vilkår for sakoppdatering:
 
 **Opplasting av filer**
 
+Fiks tilbyr en referanseimplementasjon i Java som kan brukes for filopplasting til Fiks Digisos: https://github.com/ks-no/fiks-digisos-klient.
+
 Før en sakoppdatering, må alle refererte filer være lastet opp på forhånd.
 
 Filer lastes opp til Fiks Digisos ved bruk av en multipart streaming request, der man spesifiserer HTTP-headeren "Transfer-Encoding" til å sende data i chunks, ```Transfer-Encoding: chunked```.
 
 Alle filene må krypteres før opplasting, med public-key fra Fiks som kan hentes fra endepunktet ```/digisos/api/v1/dokumentlager-public-key```.
-Fiks tilbyr en referanseimplementasjon av hvordan en slik request skal defineres, som krypterer alle filene og som kan brukes for filopplasting: https://github.com/ks-no/fiks-digisos-klient.
 
 URL-stien til filopplasting er ```/digisos/api/v1/{fiksOrgId}/{digisosId}/filer```, der ```{fiksOrgId}``` og ```{digososId}``` er FiksOrgId-en og FiksDigisosId-en som filene skal legges til.
 
@@ -109,6 +118,8 @@ Eksempel på metadata-blokk:
     "storrelse" : 1024
 }   
 ```
+
+[fiks-digisos-klient](https://github.com/ks-no/fiks-digisos-klient) beskriver hvordan en slik request skal defineres, som krypterer alle filene og sender til Fiks Digisos.
 
 ***Returtype***
 \
