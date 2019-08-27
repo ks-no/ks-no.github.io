@@ -44,9 +44,9 @@ Innbygger har tilgang til alle sine opplastede dokumenter, der et begrenset utva
 
 ## Integrasjonsutvikling Fagsystem
 
-For generell integrasjonsutvikling mot Fiks, se [Integrasjonsutvikling]({{< ref "integrasjoner.md" >}}). Fagsystemet må da bruke Integrasjon som autentiseringsmetode.
+Det anbefales å lese gjennom dokumentasjonen for generell [integrasjonsutvikling mot Fiks]({{< ref "integrasjoner.md" >}}), der siste avsnitt, "Hvordan komme i gang med utvikling", er svært nyttig. På denne siden beskrives blant annet oppsett av IDPorten og autentisering mot Fiks, der fagsystemet bruker Integrasjon som autentiseringsmetode. Fiks tilbyr både en [Java-klient](https://github.com/ks-no/fiks-maskinporten) og en [.net-klient](https://github.com/ks-no/fiks-maskinporten-client-dotnet) som kan brukes for å generere access token fra Maskinporten (IDPorten).
 
-For at fagsystemet skal få tilgang til Digisos-api-et for en kommune, må kommunen først konfigurere og aktivere Digisos gjennom Fiks Konfigurasjon der man også gir fagsystemet sin integrasjon tilgang til Digisos.
+For at fagsystemet skal få tilgang til Digisos-API-et for en kommune, må kommunen først konfigurere og aktivere Digisos gjennom Fiks Konfigurasjon der man også gir fagsystemet sin integrasjon tilgang til Digisos. Se avsnittet [Konfigurasjon](https://ks-no.github.io/fiks-platform/integrasjoner/#konfigurasjon) for hvordan en integrasjon opprettes og tilknyttes en tjeneste (Digisos). Integrasjons-id-en og passordet generert her må dermed brukes sammen med access token fra Maskinporten for å få tilgang til Digisos-API-et.
 
 ### Fiks IO meldingsprotokoll
 
@@ -59,6 +59,8 @@ For ettersendelse, ```no.nav.digisos.ettersendelse.v1```, som definert i [json-s
 #### Fra fagsystem - kvittering på mottatt søknad og ettersendelse
 For ny søknad, ```no.nav.digisos.soknad.mottatt.v1```, med tom body.\
 For ettersendelse, ```no.nav.digisos.ettersendelse.mottatt.v1```, med tom body.
+
+For mer informasjon om Fiks IO, se [dokumentasjon for Fiks IO](https://ks-no.github.io/fiks-platform/tjenester/fiksio/).
 
 ### Sak oppdatering fra Fagsystem
  
@@ -74,6 +76,8 @@ Fiks Digisos tilbyr en [api-spec](https://editor.swagger.io/?url=https://ks-no.g
 
 Filformatet brukt for sakoppdateringer for json-data, digisos-soker.json, er definert her: [soknadsosialhjelp-filformat
 ](https://navikt.github.io/soknadsosialhjelp-filformat/#/data%20fra%20fagsystem/getdigisos_soker_json).
+
+Digisos API-et har vi eksponert i en uavhengig tredjeparts-applikasjon, "Swagger Editor", som også tilbyr funksjonalitet for å generere en klient i valgt programmeringsspråk basert på api-specen vi har definert. Denne klienten kan brukes som et utgangspunkt for integrasjon mot Fiks Digisos, men der man må tilpasse klienten til eget fagsystem, med å blant annet legge til nødvendig autentisering og access token.
 
 **Referering til filer**
 
