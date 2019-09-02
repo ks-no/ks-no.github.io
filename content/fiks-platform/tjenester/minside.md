@@ -10,6 +10,8 @@ Innbyggere som navigerer til nettsiden blir autentisert via ID-porten og present
 
 Søkefeltet gir mulighet til å gjøre et fritekstsøk på informasjonen som minside.kommune.no tilbyr innbyggeren: eiendommer, post, byggesaker osv. Denne informasjonen er også tilgjengelig via den enkelte tjeneste.
 
+![matrikkel](/images/minside-forside.png "Matrikkel")
+
 ### Min profil
 Oversikt over informasjonen minside.kommune.no har om inbyggeren. Hentes fra kontakt-og-reservasjonsregisteret med utgangspukt i brukerens ID-Porten autentisering.
 
