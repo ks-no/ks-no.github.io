@@ -17,6 +17,6 @@ Kommunen kan legge inn disse tjenestene via Fiks Konfigurasjon. Hver tjeneste ha
 * _Tittel_: Kort beskrivelse av tjenesten
 * _Lenke_: Lenke til tjenesten. Hvis systemet som betjener denne støtter innlogging via ID-Porten vil overgangen oppleves som sømløs av innbygger
 * _Rettet mot_: Her kan man spesifisere at en tjeneste er rettet mot privatpersoner, organisasjoner, eller begge. Organisajonstjenester vil bare vises hvis innbyggeren opererer i kontekst av en organisasjon. 
-* _Forside_: Tjenester som er tagget med "forside" vil prioriteres for visning på landingsiden minside.kommune.no.
+* _Favoritt_: Tjenester som er tagget med "favoritt" vil prioriteres for visning på landingsiden minside.kommune.no.
 
 Det er ingen begrensing på antall tjenester en kommune kan registrere.
