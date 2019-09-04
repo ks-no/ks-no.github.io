@@ -52,7 +52,7 @@ public class TestMottakerService {
 
     @Test
     public void testMottakerServiceHentNyeForsendelser(){
-        String urlHentNyeForsendelser = "/tjenester/svarinn/mottaker/"+mottakerid+"/hentNyeForsendelser";
+        String urlHentNyeForsendelser = "/tjenester/svarinn/mottaker/hentNyeForsendelser";
 
         HttpGet request1 = new HttpGet(host+urlHentNyeForsendelser);
         System.out.println("Tester pendingForsendelser");

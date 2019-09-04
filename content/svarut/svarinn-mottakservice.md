@@ -21,7 +21,7 @@ Sakssystemer må klargjøres for bruk av mottaksservicen. SvarUt-teamet har lage
 
 ## Hvordan bruke Mottaksservice?
 
-Mottaksservicen konfigureres under menypunktet [Mottakersystem](/mottaker/). Her kan administrator opprette nye mottakersystem og gi personer tilgang til mottakersystemet. Deretter kan personene som har fått tilgang selv utføre resten av stegene. De første 3 stegene utføres kun én gang, steg 4 en gang som en test. De siste tre stegene bør settes opp som en regelmessig jobb som kjøres hvert 15\. minutt.
+Mottaksservicen konfigureres under menypunktet Mottakersystem. Her kan administrator opprette nye mottakersystem og gi personer tilgang til mottakersystemet. Deretter kan personene som har fått tilgang selv utføre resten av stegene. De første 3 stegene utføres kun én gang, steg 4 en gang som en test. De siste tre stegene bør settes opp som en regelmessig jobb som kjøres hvert 15\. minutt.
 
 1.  **Opprett mottakersystem**
 
@@ -33,11 +33,11 @@ Personen som ble gitt tilgang i punktet over legger inn organisasjoner som motta
 
 5.  **Generer servicepassord**
 
-Personen genererer et servicepassord. Dette passordet brukes for å validere mottakersystemet mot automatisk importtjeneste. Dette gjøres via [mottakersystem](/mottaker/)-siden, under "Service" fanen for et mottakersystem. Mottakersystemet må bruke brukernavnet og servicepassordet for autentisering ved hver nedlasting.
+Personen genererer et servicepassord. Dette passordet brukes for å validere mottakersystemet mot automatisk importtjeneste. Dette gjøres via Mottakersystem-siden, under "Service" fanen for et mottakersystem. Mottakersystemet må bruke brukernavnet og servicepassordet for autentisering ved hver nedlasting.
 
 7.  **Registrér offentlig sertifikat**
 
-Personen må laste opp mottakersystemets offentlige sertifikat. Dette gjøres også via [mottakersystem](/mottaker/)-siden, under "Service" fanen for et mottakersystem. Den private nøkkelen brukes i mottakersystemet for å dekryptere forsendelsesfiler etter nedlasting (se [her](https://github.com/ks-no/svarut-sak-mottak) for et eksempel på integrasjon).
+Personen må laste opp mottakersystemets offentlige sertifikat. Dette gjøres også via Mottakersystem-siden, under "Service" fanen for et mottakersystem. Den private nøkkelen brukes i mottakersystemet for å dekryptere forsendelsesfiler etter nedlasting (se [her](https://github.com/ks-no/svarut-sak-mottak) for et eksempel på integrasjon).
 
 9.  **Send forsendelse**
 
