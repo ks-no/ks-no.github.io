@@ -15,7 +15,7 @@ Etter organisasjonen er opprettet må den autoriseres for å kunne handle på ve
 
 1. Bestill virksomhetssertifikat fra comfides eller buypass for test.
 1. Vi må ha orgnr på kontoen hos idporten (samme som i virksomhetssertifikatet), slik at vi får gitt dere tilgang til "ks:fiks"-scopet. Sendes til fiks-utvikling@ks.no
-1. Du må ha maskinporten/openid connect konto hos idporten i ver2 miljøet. Dette bestiller du hos idporten@difi.no (Dere må ha virksomhetsertifikat for test fra Commfides eller Buypass)
+1. Du må ha maskinporten/openid connect konto hos idporten i ver2 miljøet. (Dere må ha virksomhetsertifikat for test fra Commfides eller Buypass)
    - Gå til https://selvbetjening-samarbeid.difi.no/#/,  velge ny integrsjon -> for egen virksomhet -> integrasjonstype = maskinporten,  -> velg scopes,  Der skal du sjå ks:fiks i lista.
    - lagre -> Da får du client_id og client_secret.
    - Hvis du skal ha person/ks:fiks scope må du sende en henvendelse til idporten@difi.no
