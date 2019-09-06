@@ -11,6 +11,21 @@ Hver fiks-organisasjon kan også opprette sine egne "lokale" integrasjoner - det
 
 Etter organisasjonen er opprettet må den autoriseres for å kunne handle på vegne av en fiks-organisasjon. Om man for eksempel ønsker å autorisere en integrasjon for å indeksere meldinger [Fiks Innsyn]({{< ref "innsyn.md" >}}) må det relevante privilegiet tildeles på konfigurasjonssiden for denne tjenesten. Dette gjelder også for globale integrasjoner.
 
+## Hvordan komme i gang med utvikling
+
+1. Bestill virksomhetssertifikat fra comfides eller buypass for test.
+1. Vi må ha orgnr på kontoen hos idporten (samme som i virksomhetssertifikatet), slik at vi får gitt dere tilgang til "ks:fiks"-scopet. Sendes til fiks-utvikling@ks.no
+1. Du må ha maskinporten/openid connect konto hos idporten i ver2 miljøet. Dette bestiller du hos idporten@difi.no (Dere må ha virksomhetsertifikat for test fra Commfides eller Buypass)
+   - Gå til https://selvbetjening-samarbeid.difi.no/#/,  velge ny integrsjon -> for egen virksomhet -> integrasjonstype = maskinporten,  -> velg scopes,  Der skal du sjå ks:fiks i lista.
+   - lagre -> Da får du client_id og client_secret.
+   - Hvis du skal ha person/ks:fiks scope må du sende en henvendelse til idporten@difi.no
+   - For produksjon må ein følge rutina her: https://samarbeid.difi.no/felleslosninger/maskinporten/ta-i-bruk-maskinporten/1-planlegge-og-akseptere-bruksvilkar
+
+1. Send en epost til fiks-utvikling@ks.no med epsoter som vil ha tilgang til vår slack support kanal. Vi liker best å ta support på chat.
+1. Har dere kontoer i idporten test send en epost med en av disse til oss slik at vi kan sette opp test kommune/organisasjon i test. fiks-utvikling@ks.no
+1. Ta kontakt på slack kanalen når dere står fast, eller ønsker å få tilbakemelding på om dere bruker apiene korrekt.
+
+
 ## Grensesnitt
 Integrasjoner mot fiks-plattformen vil hovedsakelig benytte grensesnitt basert på REST/json.
 
@@ -58,16 +73,3 @@ I tillegg må integrasjonen autoriseres for tilgang til en spesifikk tjeneste. H
 
 Dette gjelder også for integrasjoner som leveres som en del av fiks-plattformen. Skal SvarUt kunne indeksere forsendelse i Fiks Innsyn må også her kommunen eksplisitt autorisere dette.
 
-# Hvordan komme i gang med utvikling
-
-1. Bestill virksomhetssertifikat fra comfides eller buypass for test.
-1. Vi må ha orgnr på kontoen hos idporten (samme som i virksomhetssertifikatet), slik at vi får gitt dere tilgang til "ks:fiks"-scopet. Sendes til fiks-utvikling@ks.no
-1. Du må ha maskinporten/openid connect konto hos idporten i ver2 miljøet. Dette bestiller du hos idporten@difi.no (Dere må ha virksomhetsertifikat for test fra Commfides eller Buypass)
-   - Gå til https://selvbetjening-samarbeid.difi.no/#/,  velge ny integrsjon -> for egen virksomhet -> integrasjonstype = maskinporten,  -> velg scopes,  Der skal du sjå ks:fiks i lista.
-   - lagre -> Da får du client_id og client_secret.
-   - Hvis du skal ha person/ks:fiks scope må du sende en henvendelse til idporten@difi.no
-   - For produksjon må ein følge rutina her: https://samarbeid.difi.no/felleslosninger/maskinporten/ta-i-bruk-maskinporten/1-planlegge-og-akseptere-bruksvilkar
-
-1. Send en epost til fiks-utvikling@ks.no med epsoter som vil ha tilgang til vår slack support kanal. Vi liker best å ta support på chat.
-1. Har dere kontoer i idporten test send en epost med en av disse til oss slik at vi kan sette opp test kommune/organisasjon i test. fiks-utvikling@ks.no
-1. Ta kontakt på slack kanalen når dere står fast, eller ønsker å få tilbakemelding på om dere bruker apiene korrekt.
