@@ -18,7 +18,7 @@ Etter organisasjonen er opprettet må den autoriseres for å kunne handle på ve
 1. Du må ha maskinporten/openid connect konto hos idporten i ver2 miljøet. (Dere må ha virksomhetsertifikat for test fra Commfides eller Buypass)
    - Gå til https://selvbetjening-samarbeid.difi.no/#/,  velge ny integrsjon -> for egen virksomhet -> integrasjonstype = maskinporten,  -> velg scopes,  Der skal du sjå ks:fiks i lista.
    - lagre -> Da får du client_id og client_secret.
-   - Hvis du skal ha person/ks:fiks scope må du sende en henvendelse til idporten@difi.no
+   - Hvis du skal ha person openidconnect med ks:fiks scope må du sende en henvendelse til idporten@difi.no
    - For produksjon må ein følge rutina her: https://samarbeid.difi.no/felleslosninger/maskinporten/ta-i-bruk-maskinporten/1-planlegge-og-akseptere-bruksvilkar
 
 1. Send en epost til fiks-utvikling@ks.no med epsoter som vil ha tilgang til vår slack support kanal. Vi liker best å ta support på chat.
