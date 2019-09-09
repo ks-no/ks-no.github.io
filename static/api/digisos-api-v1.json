@@ -23,6 +23,63 @@
     "description" : "API for KS Fiks Digisos Service"
   } ],
   "paths" : {
+    "/digisos/api/v1/nav/soknader/{digisosId}" : {
+      "get" : {
+        "tags" : [ "DigisosSoknadNav" ],
+        "description" : "Henter søknad for angitt DigisosId",
+        "operationId" : "getSoknadNav",
+        "parameters" : [ {
+          "name" : "digisosId",
+          "in" : "path",
+          "description" : "DigisosId for søknad",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        }, {
+          "name" : "sporingsId",
+          "in" : "query",
+          "description" : "SporingsId for request",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Henter informasjon om søknad",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/DigisosSak"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Ugyldig data ble oppgitt",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Du har ikke tilgang til den angitte søknaden tilhørende fnr",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/digisos/api/v1/nav/soknader/{digisosId}/dokumenter/{dokumentlagerId}" : {
       "get" : {
         "tags" : [ "DigisosSoknadNav" ],
@@ -231,63 +288,6 @@
         }
       }
     },
-    "/digisos/api/v1/nav/soknader/{digisosId}" : {
-      "get" : {
-        "tags" : [ "DigisosSoknadNav" ],
-        "description" : "Henter søknad for angitt DigisosId",
-        "operationId" : "getSoknadNav",
-        "parameters" : [ {
-          "name" : "digisosId",
-          "in" : "path",
-          "description" : "DigisosId for søknad",
-          "required" : true,
-          "schema" : {
-            "type" : "string",
-            "format" : "uuid"
-          }
-        }, {
-          "name" : "sporingsId",
-          "in" : "query",
-          "description" : "SporingsId for request",
-          "required" : true,
-          "schema" : {
-            "type" : "string"
-          }
-        } ],
-        "responses" : {
-          "200" : {
-            "description" : "Henter informasjon om søknad",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/DigisosSak"
-                }
-              }
-            }
-          },
-          "400" : {
-            "description" : "Ugyldig data ble oppgitt",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/ErrorMessage"
-                }
-              }
-            }
-          },
-          "403" : {
-            "description" : "Du har ikke tilgang til den angitte søknaden tilhørende fnr",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/ErrorMessage"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
     "/digisos/api/v1/soknader/soknader" : {
       "get" : {
         "tags" : [ "DigisosSoknad" ],
@@ -382,79 +382,6 @@
   },
   "components" : {
     "schemas" : {
-      "ErrorMessage" : {
-        "type" : "object",
-        "properties" : {
-          "timestamp" : {
-            "type" : "integer",
-            "format" : "int64"
-          },
-          "status" : {
-            "type" : "integer",
-            "format" : "int32"
-          },
-          "error" : {
-            "type" : "string"
-          },
-          "errorId" : {
-            "type" : "string",
-            "format" : "uuid"
-          },
-          "path" : {
-            "type" : "string"
-          },
-          "originalPath" : {
-            "type" : "string"
-          },
-          "message" : {
-            "type" : "string"
-          },
-          "errorCode" : {
-            "type" : "string"
-          },
-          "errorJson" : {
-            "type" : "string"
-          }
-        }
-      },
-      "KommuneInfo" : {
-        "type" : "object",
-        "properties" : {
-          "kommunenummer" : {
-            "type" : "string"
-          },
-          "kanMottaSoknader" : {
-            "type" : "boolean"
-          },
-          "kanOppdatereStatus" : {
-            "type" : "boolean"
-          },
-          "kontaktpersoner" : {
-            "$ref" : "#/components/schemas/Kontaktpersoner"
-          }
-        }
-      },
-      "Kontaktpersoner" : {
-        "type" : "object",
-        "properties" : {
-          "fagansvarligEpost" : {
-            "type" : "array",
-            "description" : "Epost-liste fagansvarlige",
-            "items" : {
-              "type" : "string",
-              "description" : "Epost-liste fagansvarlige"
-            }
-          },
-          "tekniskAnsvarligEpost" : {
-            "type" : "array",
-            "description" : "Epost-liste teknisk-ansvarlige",
-            "items" : {
-              "type" : "string",
-              "description" : "Epost-liste teknisk-ansvarlige"
-            }
-          }
-        }
-      },
       "DigisosSak" : {
         "type" : "object",
         "properties" : {
@@ -586,6 +513,79 @@
           "timestampSendt" : {
             "type" : "integer",
             "format" : "int64"
+          }
+        }
+      },
+      "ErrorMessage" : {
+        "type" : "object",
+        "properties" : {
+          "timestamp" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "status" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "error" : {
+            "type" : "string"
+          },
+          "errorId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "path" : {
+            "type" : "string"
+          },
+          "originalPath" : {
+            "type" : "string"
+          },
+          "message" : {
+            "type" : "string"
+          },
+          "errorCode" : {
+            "type" : "string"
+          },
+          "errorJson" : {
+            "type" : "string"
+          }
+        }
+      },
+      "KommuneInfo" : {
+        "type" : "object",
+        "properties" : {
+          "kommunenummer" : {
+            "type" : "string"
+          },
+          "kanMottaSoknader" : {
+            "type" : "boolean"
+          },
+          "kanOppdatereStatus" : {
+            "type" : "boolean"
+          },
+          "kontaktpersoner" : {
+            "$ref" : "#/components/schemas/Kontaktpersoner"
+          }
+        }
+      },
+      "Kontaktpersoner" : {
+        "type" : "object",
+        "properties" : {
+          "fagansvarligEpost" : {
+            "type" : "array",
+            "description" : "Epost-liste fagansvarlige",
+            "items" : {
+              "type" : "string",
+              "description" : "Epost-liste fagansvarlige"
+            }
+          },
+          "tekniskAnsvarligEpost" : {
+            "type" : "array",
+            "description" : "Epost-liste teknisk-ansvarlige",
+            "items" : {
+              "type" : "string",
+              "description" : "Epost-liste teknisk-ansvarlige"
+            }
           }
         }
       }
