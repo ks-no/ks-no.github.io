@@ -13,7 +13,7 @@ Etter organisasjonen er opprettet må den autoriseres for å kunne handle på ve
 
 ## Hvordan komme i gang med utvikling
 
-1. Bestill virksomhetssertifikat fra comfides eller buypass for test. NB! Du kan ikke bruke selvsignert sertifikat
+1. Bestill virksomhetssertifikat fra comfides eller buypass for test. **NB!** På grunn av krav fra DIFI/Maskinporten kan du ikke bruke _selvsignert sertifikat_ hverken i test eller produksjonsmiljø
 1. Vi må ha orgnr på kontoen hos idporten (samme som i virksomhetssertifikatet), slik at vi får gitt dere tilgang til "ks:fiks"-scopet. Sendes til fiks-utvikling@ks.no
 1. Du må ha maskinporten/openid connect konto hos idporten i ver2 miljøet. (Dere må ha virksomhetsertifikat for test fra Commfides eller Buypass)
    - Gå til https://selvbetjening-samarbeid.difi.no/#/,  velge ny integrsjon -> for egen virksomhet -> integrasjonstype = maskinporten,  -> velg scopes,  Der skal du sjå ks:fiks i lista.
