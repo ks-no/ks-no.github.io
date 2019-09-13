@@ -137,6 +137,96 @@
         }
       }
     },
+    "/fiks-io/konto/api/v1/kontoer" : {
+      "post" : {
+        "tags" : [ "FiksIOKonto" ],
+        "description" : "Opprett en ny konto",
+        "operationId" : "opprettKonto",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/KontoSpesifikasjon"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "201" : {
+            "description" : "Konto ble opprettet",
+            "headers" : {
+              "kontoId" : {
+                "description" : "Id for ny konto",
+                "required" : true,
+                "style" : "simple",
+                "schema" : {
+                  "type" : "string",
+                  "format" : "uuid"
+                }
+              }
+            },
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Konto"
+                }
+              }
+            },
+            "links" : {
+              "Konto" : {
+                "operationRef" : "getKonto",
+                "parameters" : {
+                  "kontoId" : "$response.header.kontoId"
+                },
+                "description" : "Referanse til ressursen for den nye kontoen"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/fiks-io/konto/api/v1/kontoer/{kontoId}/kontoNavn" : {
+      "put" : {
+        "tags" : [ "FiksIOKonto" ],
+        "description" : "Oppdater kontonavn",
+        "operationId" : "endreKontoNavn",
+        "parameters" : [ {
+          "name" : "kontoId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/KontoNavnSpesifikasjon"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "204" : {
+            "description" : "Kontonavn ble oppdatert"
+          },
+          "404" : {
+            "description" : "Ukjent konto",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/fiks-io/konto/api/v1/kontoer/{kontoId}/offentligNokkel" : {
       "get" : {
         "tags" : [ "FiksIOKonto" ],
@@ -244,96 +334,6 @@
         "responses" : {
           "201" : {
             "description" : "Ny nøkkel lagt til"
-          }
-        }
-      }
-    },
-    "/fiks-io/konto/api/v1/kontoer" : {
-      "post" : {
-        "tags" : [ "FiksIOKonto" ],
-        "description" : "Opprett en ny konto",
-        "operationId" : "opprettKonto",
-        "requestBody" : {
-          "content" : {
-            "application/json" : {
-              "schema" : {
-                "$ref" : "#/components/schemas/KontoSpesifikasjon"
-              }
-            }
-          },
-          "required" : true
-        },
-        "responses" : {
-          "201" : {
-            "description" : "Konto ble opprettet",
-            "headers" : {
-              "kontoId" : {
-                "description" : "Id for ny konto",
-                "required" : true,
-                "style" : "simple",
-                "schema" : {
-                  "type" : "string",
-                  "format" : "uuid"
-                }
-              }
-            },
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/Konto"
-                }
-              }
-            },
-            "links" : {
-              "Konto" : {
-                "operationRef" : "getKonto",
-                "parameters" : {
-                  "kontoId" : "$response.header.kontoId"
-                },
-                "description" : "Referanse til ressursen for den nye kontoen"
-              }
-            }
-          }
-        }
-      }
-    },
-    "/fiks-io/konto/api/v1/kontoer/{kontoId}/kontoNavn" : {
-      "put" : {
-        "tags" : [ "FiksIOKonto" ],
-        "description" : "Oppdater kontonavn",
-        "operationId" : "endreKontoNavn",
-        "parameters" : [ {
-          "name" : "kontoId",
-          "in" : "path",
-          "required" : true,
-          "schema" : {
-            "type" : "string",
-            "format" : "uuid"
-          }
-        } ],
-        "requestBody" : {
-          "content" : {
-            "application/json" : {
-              "schema" : {
-                "$ref" : "#/components/schemas/KontoNavnSpesifikasjon"
-              }
-            }
-          },
-          "required" : true
-        },
-        "responses" : {
-          "204" : {
-            "description" : "Kontonavn ble oppdatert"
-          },
-          "404" : {
-            "description" : "Ukjent konto",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/ErrorMessage"
-                }
-              }
-            }
           }
         }
       }
@@ -1085,14 +1085,6 @@
           }
         }
       },
-      "Pem" : {
-        "type" : "object",
-        "properties" : {
-          "pem" : {
-            "type" : "string"
-          }
-        }
-      },
       "KontoSpesifikasjon" : {
         "required" : [ "fiksOrgId", "navn" ],
         "type" : "object",
@@ -1149,6 +1141,14 @@
         "properties" : {
           "kontoNavn" : {
             "pattern" : "^[A-ZÆØÅa-zæøå0-9ÁáÀàÂâÉéÈèÊêÍíÌìÎîÓóÒòÔôÚúÙùÛûÝýÄäËëÏïÖöÜü,.!?\\-:;/\\\\'()&+*=%§]+[A-ZÆØÅa-zæøå0-9ÁáÀàÂâÉéÈèÊêÍíÌìÎîÓóÒòÔôÚúÙùÛûÝýÄäËëÏïÖöÜü ,.!?\\-:;/\\\\'()&+*=%§]*[A-ZÆØÅa-zæøå0-9ÁáÀàÂâÉéÈèÊêÍíÌìÎîÓóÒòÔôÚúÙùÛûÝýÄäËëÏïÖöÜü,.!?\\-:;/\\\\'()&+*=%§]+$",
+            "type" : "string"
+          }
+        }
+      },
+      "Pem" : {
+        "type" : "object",
+        "properties" : {
+          "pem" : {
             "type" : "string"
           }
         }
