@@ -23,15 +23,33 @@
     "description" : "API for KS Fiks Digisos Service"
   } ],
   "paths" : {
-    "/digisos/api/v1/nav/kommune/{kommunenummer}" : {
+    "/digisos/api/v1/nav/soknader/{digisosId}/dokumenter/{dokumentlagerId}" : {
       "get" : {
         "tags" : [ "DigisosSoknadNav" ],
-        "description" : "Henter informasjon for angitt kommune",
-        "operationId" : "getKommuneStatus",
+        "description" : "Henter dokument for angitt dokumentlager-id",
+        "operationId" : "getDokumentNav",
         "parameters" : [ {
-          "name" : "kommunenummer",
+          "name" : "digisosId",
           "in" : "path",
-          "description" : "Kommunenummer for kommunen",
+          "description" : "Digisos-ID for dokument",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        }, {
+          "name" : "dokumentlagerId",
+          "in" : "path",
+          "description" : "Dokumentlager-ID for dokument",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        }, {
+          "name" : "sporingsId",
+          "in" : "query",
+          "description" : "SporingsId for request",
           "required" : true,
           "schema" : {
             "type" : "string"
@@ -39,17 +57,10 @@
         } ],
         "responses" : {
           "200" : {
-            "description" : "Henter informasjon om kommune",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/KommuneInfo"
-                }
-              }
-            }
+            "description" : "Henter dokument"
           },
           "400" : {
-            "description" : "Ugyldig data ble oppgitt",
+            "description" : "Ugyldig id",
             "content" : {
               "application/json" : {
                 "schema" : {
@@ -59,7 +70,7 @@
             }
           },
           "403" : {
-            "description" : "Du har ikke tilgang til å hente informasjon for kommunen",
+            "description" : "Du har ikke tilgang til dokumentet tilhørende den angitte id-en",
             "content" : {
               "application/json" : {
                 "schema" : {
@@ -229,33 +240,15 @@
         }
       }
     },
-    "/digisos/api/v1/nav/soknader/{digisosId}/dokumenter/{dokumentlagerId}" : {
+    "/digisos/api/v1/nav/kommune/{kommunenummer}" : {
       "get" : {
         "tags" : [ "DigisosSoknadNav" ],
-        "description" : "Henter dokument for angitt dokumentlager-id",
-        "operationId" : "getDokumentNav",
+        "description" : "Henter informasjon for angitt kommune",
+        "operationId" : "getKommuneStatus",
         "parameters" : [ {
-          "name" : "digisosId",
+          "name" : "kommunenummer",
           "in" : "path",
-          "description" : "Digisos-ID for dokument",
-          "required" : true,
-          "schema" : {
-            "type" : "string",
-            "format" : "uuid"
-          }
-        }, {
-          "name" : "dokumentlagerId",
-          "in" : "path",
-          "description" : "Dokumentlager-ID for dokument",
-          "required" : true,
-          "schema" : {
-            "type" : "string",
-            "format" : "uuid"
-          }
-        }, {
-          "name" : "sporingsId",
-          "in" : "query",
-          "description" : "SporingsId for request",
+          "description" : "Kommunenummer for kommunen",
           "required" : true,
           "schema" : {
             "type" : "string"
@@ -263,10 +256,17 @@
         } ],
         "responses" : {
           "200" : {
-            "description" : "Henter dokument"
+            "description" : "Henter informasjon om kommune",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/KommuneInfo"
+                }
+              }
+            }
           },
           "400" : {
-            "description" : "Ugyldig id",
+            "description" : "Ugyldig data ble oppgitt",
             "content" : {
               "application/json" : {
                 "schema" : {
@@ -276,7 +276,7 @@
             }
           },
           "403" : {
-            "description" : "Du har ikke tilgang til dokumentet tilhørende den angitte id-en",
+            "description" : "Du har ikke tilgang til å hente informasjon for kommunen",
             "content" : {
               "application/json" : {
                 "schema" : {
@@ -382,6 +382,41 @@
   },
   "components" : {
     "schemas" : {
+      "ErrorMessage" : {
+        "type" : "object",
+        "properties" : {
+          "timestamp" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "status" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "error" : {
+            "type" : "string"
+          },
+          "errorId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "path" : {
+            "type" : "string"
+          },
+          "originalPath" : {
+            "type" : "string"
+          },
+          "message" : {
+            "type" : "string"
+          },
+          "errorCode" : {
+            "type" : "string"
+          },
+          "errorJson" : {
+            "type" : "string"
+          }
+        }
+      },
       "KommuneInfo" : {
         "type" : "object",
         "properties" : {
@@ -417,41 +452,6 @@
               "type" : "string",
               "description" : "Epost-liste teknisk-ansvarlige"
             }
-          }
-        }
-      },
-      "ErrorMessage" : {
-        "type" : "object",
-        "properties" : {
-          "timestamp" : {
-            "type" : "integer",
-            "format" : "int64"
-          },
-          "status" : {
-            "type" : "integer",
-            "format" : "int32"
-          },
-          "error" : {
-            "type" : "string"
-          },
-          "errorId" : {
-            "type" : "string",
-            "format" : "uuid"
-          },
-          "path" : {
-            "type" : "string"
-          },
-          "originalPath" : {
-            "type" : "string"
-          },
-          "message" : {
-            "type" : "string"
-          },
-          "errorCode" : {
-            "type" : "string"
-          },
-          "errorJson" : {
-            "type" : "string"
           }
         }
       },
