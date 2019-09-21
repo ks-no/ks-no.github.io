@@ -11,7 +11,7 @@ Hver fiks-organisasjon kan også opprette sine egne "lokale" integrasjoner - det
 
 Etter organisasjonen er opprettet må den autoriseres for å kunne handle på vegne av en fiks-organisasjon. Om man for eksempel ønsker å autorisere en integrasjon for å indeksere meldinger [Fiks Innsyn]({{< ref "innsyn.md" >}}) må det relevante privilegiet tildeles på konfigurasjonssiden for denne tjenesten. Dette gjelder også for globale integrasjoner.
 
-## Hvordan komme i gang med utvikling
+## Hvordan komme i gang med utviklingen
 
 1. Bestill virksomhetssertifikat fra comfides eller buypass for test. **NB!** På grunn av krav fra DIFI/Maskinporten kan du ikke bruke _selvsignert sertifikat_ hverken i test eller produksjonsmiljø
 1. Vi må ha orgnr på kontoen hos idporten (samme som i virksomhetssertifikatet), slik at vi får gitt dere tilgang til "ks:fiks"-scopet. Sendes til fiks-utvikling@ks.no
