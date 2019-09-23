@@ -20,6 +20,31 @@
     "description" : "API for å håndtere funksjonalitet vedr. bekymringsmelding"
   } ],
   "paths" : {
+    "/bekymringsmelding/api/v1/kommuner" : {
+      "get" : {
+        "tags" : [ "bekymringsmelding" ],
+        "description" : "Henter alle kommuner",
+        "operationId" : "getKommuner",
+        "responses" : {
+          "200" : {
+            "description" : "Returnerer alle kommuner.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/Kommune"
+                  }
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Ingen kommuner ble funnet."
+          }
+        }
+      }
+    },
     "/bekymringsmelding/api/v1/kommuner/{kommunenr}" : {
       "get" : {
         "tags" : [ "bekymringsmelding" ],
@@ -150,36 +175,12 @@
           }
         }
       }
-    },
-    "/bekymringsmelding/api/v1/kommuner" : {
-      "get" : {
-        "tags" : [ "bekymringsmelding" ],
-        "description" : "Henter alle kommuner",
-        "operationId" : "getKommuner",
-        "responses" : {
-          "200" : {
-            "description" : "Returnerer alle kommuner.",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "type" : "array",
-                  "items" : {
-                    "$ref" : "#/components/schemas/Kommune"
-                  }
-                }
-              }
-            }
-          },
-          "404" : {
-            "description" : "Ingen kommuner ble funnet."
-          }
-        }
-      }
     }
   },
   "components" : {
     "schemas" : {
       "Adresse" : {
+        "required" : [ "adresselinje1", "poststed" ],
         "type" : "object",
         "properties" : {
           "adresselinje1" : {
@@ -192,6 +193,7 @@
             "type" : "string"
           },
           "postnummer" : {
+            "pattern" : "^[0-9]{4}$",
             "type" : "string"
           },
           "poststed" : {
@@ -254,6 +256,7 @@
         }
       },
       "Barn" : {
+        "required" : [ "personnavn" ],
         "type" : "object",
         "properties" : {
           "personnavn" : {
@@ -269,20 +272,22 @@
         }
       },
       "Bekymringsmelding" : {
+        "required" : [ "barn", "kommunenavn", "melder", "melding" ],
         "type" : "object",
         "properties" : {
           "kommunenummer" : {
+            "pattern" : "^\\d{4}$",
             "type" : "string"
           },
           "kommunenavn" : {
             "type" : "string"
           },
-          "bydel" : {
-            "type" : "string"
-          },
           "bydelsnummer" : {
             "type" : "integer",
             "format" : "int32"
+          },
+          "bydel" : {
+            "type" : "string"
           },
           "melder" : {
             "$ref" : "#/components/schemas/Melder"
@@ -302,9 +307,11 @@
         }
       },
       "Melder" : {
+        "required" : [ "adresse", "etternavn", "fornavn" ],
         "type" : "object",
         "properties" : {
           "fnr" : {
+            "pattern" : "^[0-9]{11}$",
             "type" : "string"
           },
           "fornavn" : {
@@ -317,8 +324,8 @@
             "type" : "string"
           },
           "telefonnummer" : {
-            "type" : "integer",
-            "format" : "int32"
+            "pattern" : "^[+]?[0-9]+([- ][0-9]+)*$",
+            "type" : "string"
           },
           "skjultIdentitet" : {
             "type" : "boolean"
