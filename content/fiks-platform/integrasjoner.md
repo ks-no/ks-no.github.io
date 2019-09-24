@@ -1,6 +1,6 @@
 ---
 title: Integrasjonsutvikling
-date: 2019-05-07
+date: 2019-09-19
 ---
 
 En _integrasjon_ på fiks-plattformen er en maskin-til-maskin klient som benytter tjenestelaget for å utføre oppgaver på vegne av en fiks-organisasjon. Dette kan for eksempel være et arkivsystem som sender saker gjennom [Fiks SvarInn]({{< ref "fiksio.md" >}}), eller et fagsystem som oppdaterer meldinger i [Fiks Innsyn]({{< ref "innsyn.md" >}}).
@@ -15,12 +15,7 @@ Etter organisasjonen er opprettet må den autoriseres for å kunne handle på ve
 
 1. Bestill virksomhetssertifikat fra comfides eller buypass for test. **NB!** På grunn av krav fra DIFI/Maskinporten kan du ikke bruke _selvsignert sertifikat_ hverken i test eller produksjonsmiljø
 1. Vi må ha orgnr på kontoen hos idporten (samme som i virksomhetssertifikatet), slik at vi får gitt dere tilgang til "ks:fiks"-scopet. Sendes til fiks-utvikling@ks.no
-1. Du må ha maskinporten/openid connect konto hos idporten i ver2 miljøet. (Dere må ha virksomhetsertifikat for test fra Commfides eller Buypass)
-   - Gå til https://selvbetjening-samarbeid.difi.no/#/,  velge ny integrsjon -> for egen virksomhet -> integrasjonstype = maskinporten,  -> velg scopes,  Der skal du sjå ks:fiks i lista.
-   - lagre -> Da får du client_id og client_secret.
-   - Hvis du skal ha person innlogging med ks:fiks scope må du sende en henvendelse til idporten@difi.no
-   - For produksjon må ein følge rutina her: https://samarbeid.difi.no/felleslosninger/maskinporten/ta-i-bruk-maskinporten/1-planlegge-og-akseptere-bruksvilkar
-
+1. [Følg oppskrift her for å lage klient hos idporten](difiIdportenKlient.md) 
 1. Send en epost til fiks-utvikling@ks.no med eposter som vil ha tilgang til vår slack support kanal. Vi liker best å ta support på slack-chat.
 1. Har dere person innlogginger i idporten test, send disse i en epost til oss slik at vi kan sette opp test kommune/organisasjon i test. fiks-utvikling@ks.no Hvis ikke får dere testpersoner av oss.
 1. Ta kontakt på slack kanalen når dere står fast, eller ønsker å få tilbakemelding på om dere bruker apiene korrekt.
