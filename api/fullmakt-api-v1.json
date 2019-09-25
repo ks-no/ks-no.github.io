@@ -1,42 +1,68 @@
 {
-  "swagger" : "2.0",
+  "openapi" : "3.0.1",
   "info" : {
-    "version" : "v1",
     "title" : "KS Fiks: Fullmakt Service",
+    "description" : "Fiks Fullmakt",
     "contact" : {
       "name" : "Fiks-brukerstøtte",
       "url" : "https://ks-no.github.io/",
       "email" : "fiks-utvikling@ks.no"
-    }
+    },
+    "version" : "v1"
   },
-  "host" : "api.fiks.test.ks.no",
-  "basePath" : "/",
-  "tags" : [ {
-    "name" : "Fullmakt"
+  "servers" : [ {
+    "url" : "https://api.fiks.test.ks.no",
+    "description" : "KS Fiks API host",
+    "variables" : { }
   } ],
-  "schemes" : [ "https" ],
+  "tags" : [ {
+    "name" : "Fullmakt",
+    "description" : "API for fullmakt"
+  } ],
   "paths" : {
+    "/fullmakt/api/v1/meg" : {
+      "get" : {
+        "tags" : [ "Fullmakt" ],
+        "summary" : "Hent en fullmakt for autentisert bruker, inkludert navn dersom det finnes hos Altinn.",
+        "operationId" : "getMe",
+        "responses" : {
+          "200" : {
+            "description" : "Fullmakt for autentisert bruker",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Fullmakt"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/fullmakt/api/v1/alle" : {
       "get" : {
         "tags" : [ "Fullmakt" ],
-        "summary" : "Henter en liste over alle aktører autentisert bruker har lov til å handle på vegne av.",
-        "description" : "En organisasjon har kun lov til å handle på vegne av seg selv. For personer vil tillatelser hentes fra Altinn.",
+        "summary" : "Henter en liste over alle aktører autentisert bruker har lov til å handle på vegne av. En organisasjon har kun lov til å handle på vegne av seg selv. For personer vil tillatelser hentes fra Altinn.",
         "operationId" : "getAllFullmakter",
         "parameters" : [ {
           "name" : "cache",
           "in" : "query",
-          "description" : "Hvis false vil resultatet ikke hentes fra cache",
-          "required" : false,
-          "type" : "boolean",
-          "default" : true
+          "schema" : {
+            "type" : "boolean",
+            "default" : true
+          }
         } ],
         "responses" : {
           "200" : {
-            "description" : "successful operation",
-            "schema" : {
-              "type" : "array",
-              "items" : {
-                "$ref" : "#/definitions/Fullmakt"
+            "description" : "Liste over alle aktører autentisert bruker har lov til å handle på vegne av",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/Fullmakt"
+                  }
+                }
               }
             }
           }
@@ -47,68 +73,58 @@
       "get" : {
         "tags" : [ "Fullmakt" ],
         "summary" : "Sjekk om autentisert person er autorisert til å handle på vegne av aktøren",
-        "description" : "",
         "operationId" : "hasFullmakt",
         "parameters" : [ {
           "name" : "aktor",
           "in" : "query",
           "required" : true,
-          "type" : "string",
-          "pattern" : "^[0-9]{11}$|^[0-9]{9}$"
+          "schema" : {
+            "type" : "string"
+          }
         }, {
           "name" : "useCache",
           "in" : "query",
-          "description" : "Hvis false vil resultatet ikke hentes fra cache",
-          "required" : false,
-          "type" : "boolean",
-          "default" : true
+          "schema" : {
+            "type" : "boolean",
+            "default" : true
+          }
         } ],
         "responses" : {
           "200" : {
-            "description" : "successful operation",
-            "schema" : {
-              "type" : "boolean"
-            }
-          }
-        }
-      }
-    },
-    "/fullmakt/api/v1/meg" : {
-      "get" : {
-        "tags" : [ "Fullmakt" ],
-        "summary" : "Hent en fullmakt for autentisert bruker, inkludert navn dersom det finnes hos Altinn.",
-        "description" : "",
-        "operationId" : "getMe",
-        "responses" : {
-          "200" : {
-            "description" : "successful operation",
-            "schema" : {
-              "$ref" : "#/definitions/Fullmakt"
+            "description" : "Om autentisert person er autorisert til å handle på vegne av aktøren eller ikke",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "boolean"
+                }
+              }
             }
           }
         }
       }
     }
   },
-  "definitions" : {
-    "Fullmakt" : {
-      "type" : "object",
-      "properties" : {
-        "aktor" : {
-          "type" : "string",
-          "description" : "Aktøren som fullmakten gir en bruker tilgang til å handle på vegne av"
+  "components" : {
+    "schemas" : {
+      "Fullmakt" : {
+        "type" : "object",
+        "properties" : {
+          "aktor" : {
+            "type" : "string",
+            "description" : "Aktøren som fullmakten gir en bruker tilgang til å handle på vegne av"
+          },
+          "navn" : {
+            "type" : "string",
+            "description" : "Det fulle navne til aktøren"
+          },
+          "type" : {
+            "type" : "string",
+            "description" : "Typene en aktør i en fullmakt kan ha",
+            "enum" : [ "PERSON", "ORGANISASJON" ]
+          }
         },
-        "navn" : {
-          "type" : "string",
-          "description" : "Det fulle navne til aktøren"
-        },
-        "type" : {
-          "type" : "string",
-          "description" : "Typen til aktøren denne fullmakten omhandler",
-          "enum" : [ "PERSON", "ORGANISASJON" ]
-        }
-      },
-      "description" : "En fullmakt som gir en bruker rett til å handle på vegne av en annen"
+        "description" : "En fullmakt som gir en bruker rett til å handle på vegne av en annen"
+      }
     }
   }
 }
