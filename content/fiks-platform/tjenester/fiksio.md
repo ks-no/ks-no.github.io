@@ -74,7 +74,7 @@ Fiks Organisasjoner kan gjøre oppslag i registrerte adresser gjennom [katalog-a
 ### Protokollkatalogen
 Som nevnt over har Fiks IO i utgangspunktet ingen formening om hva innholdet i en melding er, men det er i mange integrasjon-scenarioer nyttig å ha et felles repository med kontrakter for hvordan meldinger skal bygges opp. Protokollkatalogen tilbyr en slik oversikt, og man kan her referere til spesifikasjoner for meldingstypene som inngår i protokollen, og hvordan disse skal benyttes. 
 
-Digisos bruker som nevnt over meldingsprotokollen "no.nav.digisos.fagsystem.v1", som er beskrevet i mer detalj under [Fiks Digisos](https://ks-no.github.io/fiks-platform/tjenester_under_utvikling/digisos/#fiks-io-meldingsprotokoll).
+Digisos bruker som nevnt over meldingsprotokollen "no.nav.digisos.fagsystem.v1", som er beskrevet i mer detalj under [Fiks Digisos](https://ks-no.github.io/fiks-platform/tjenester/digisos/#fiks-io-meldingsprotokoll).
 
 Ta kontakt med fiks@ks.no om du ønsker å etablere eller gjøre endringer i en protokoll.
 

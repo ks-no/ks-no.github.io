@@ -1,9 +1,7 @@
 ---
 title: Digisos
-date: 2019-08-27
+date: 2019-09-26
 ---
-
-**STATUS: under utvikling**
 
 Fiks Digisos er en tjeneste for å tilrettelegge for kommunal behandling av sosialsøknader via et brukergrensesnitt på nav.no.
 
