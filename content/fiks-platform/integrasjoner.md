@@ -15,7 +15,7 @@ Etter organisasjonen er opprettet må den autoriseres for å kunne handle på ve
 
 1. Bestill virksomhetssertifikat fra comfides eller buypass for test. **NB!** På grunn av krav fra DIFI/Maskinporten kan du ikke bruke _selvsignert sertifikat_ hverken i test eller produksjonsmiljø
 1. Vi må ha orgnr på kontoen hos idporten (samme som i virksomhetssertifikatet), slik at vi får gitt dere tilgang til "ks:fiks"-scopet. Sendes til fiks-utvikling@ks.no
-1. [Følg oppskrift her for å lage klient hos idporten](difiIdportenKlient.md) 
+1. [Følg oppskrift her for å lage klient hos idporten](../difiidportenklient) 
 1. Send en epost til fiks-utvikling@ks.no med eposter som vil ha tilgang til vår slack support kanal. Vi liker best å ta support på slack-chat.
 1. Har dere person innlogginger i idporten test, send disse i en epost til oss slik at vi kan sette opp test kommune/organisasjon i test. fiks-utvikling@ks.no Hvis ikke får dere testpersoner av oss.
 1. Ta kontakt på slack kanalen når dere står fast, eller ønsker å få tilbakemelding på om dere bruker apiene korrekt.
