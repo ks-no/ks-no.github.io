@@ -199,7 +199,7 @@ Henter liste med informasjon om dokumentene til en forsendelse.
 | Felt           | Type           | Beskrivelse                                                  | Validering         |
 | -------------- | -------------- | ------------------------------------------------------------ | ------------------ |
 | postAdresse    | PostAdresse    | Adressen forsendelsen sendes til dersom den går via brevpost | Kan ikke være null |
-| digitalAdresse | DigitalAdresse | Se OrganisasjonDigitalAdresse og PersonDigitalAdresse        | Kan ikke være null |
+| digitalAdresse | DigitalAdresse | Se OrganisasjonDigitalAdresse og PersonDigitalAdresse        |                    |
 
 #### PostAdresse
 | Felt       | Type    | Beskrivelse      | Validering     |
