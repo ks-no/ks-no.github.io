@@ -1,40 +1,94 @@
 {
-  "swagger" : "2.0",
+  "openapi" : "3.0.1",
   "info" : {
-    "version" : "v1",
-    "title" : "KS Fiks: Autorisasjon Update Service",
+    "title" : "KS Fiks: Autorisasjon update service",
+    "description" : "KS Fiks: Autorisasjon update service",
     "contact" : {
-      "name" : "Fiks-brukerstøtte",
+      "name" : "Fiks brukerstøtte",
       "url" : "https://ks-no.github.io/",
-      "email" : "fiks-utvikling@ks.no"
-    }
+      "email" : "fiks@ks.no"
+    },
+    "version" : "v1"
   },
-  "host" : "api.fiks.test.ks.no",
-  "basePath" : "/",
-  "tags" : [ {
-    "name" : "ressurs"
+  "servers" : [ {
+    "url" : "http://autorisasjon-update-service:8080",
+    "description" : "Cluster internal service URI",
+    "variables" : { }
   } ],
-  "schemes" : [ "https" ],
+  "tags" : [ {
+    "name" : "ressurs",
+    "description" : "API for Autorisasjon update"
+  } ],
   "paths" : {
-    "/autorisasjon-update/api/v1/ressurs" : {
+    "/autorisasjon-update/api/v1/ressurs/{ressurs}/tilganger" : {
       "post" : {
         "tags" : [ "ressurs" ],
-        "summary" : "Oppretter en ressurs",
-        "description" : "",
-        "operationId" : "opprettRessurs",
+        "description" : "Gir en aktør et spesifisert privilegium på ressursen",
+        "operationId" : "tildelTilgang",
         "parameters" : [ {
-          "in" : "body",
-          "name" : "body",
-          "required" : false,
+          "name" : "ressurs",
+          "in" : "path",
+          "required" : true,
           "schema" : {
-            "$ref" : "#/definitions/OpprettRessursRequest"
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/TilgangRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "default" : {
+            "description" : "default response",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Tilgang"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete" : {
+        "tags" : [ "ressurs" ],
+        "description" : "Fjerner aktørens privilegium på ressursen",
+        "operationId" : "fjernTilgang",
+        "parameters" : [ {
+          "name" : "ressurs",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        }, {
+          "name" : "aktor",
+          "in" : "query",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "privilegium",
+          "in" : "query",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
           }
         } ],
         "responses" : {
-          "200" : {
-            "description" : "successful operation",
-            "schema" : {
-              "$ref" : "#/definitions/Ressurs"
+          "default" : {
+            "description" : "default response",
+            "content" : {
+              "application/json" : { }
             }
           }
         }
@@ -43,190 +97,195 @@
     "/autorisasjon-update/api/v1/ressurs/{ressurs}" : {
       "patch" : {
         "tags" : [ "ressurs" ],
-        "summary" : "Oppdaterer en ressurs",
-        "description" : "",
+        "description" : "Oppdaterer en ressurs",
         "operationId" : "oppdaterRessurs",
         "parameters" : [ {
           "name" : "ressurs",
           "in" : "path",
           "required" : true,
-          "type" : "string",
-          "format" : "uuid"
-        }, {
-          "in" : "body",
-          "name" : "body",
-          "required" : false,
           "schema" : {
-            "$ref" : "#/definitions/OppdaterRessursRequest"
+            "type" : "string",
+            "format" : "uuid"
           }
         } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/OppdaterRessursRequest"
+              }
+            }
+          },
+          "required" : true
+        },
         "responses" : {
-          "200" : {
-            "description" : "successful operation",
-            "schema" : {
-              "type" : "object"
+          "default" : {
+            "description" : "default response",
+            "content" : {
+              "application/json" : { }
             }
           }
         }
       }
     },
-    "/autorisasjon-update/api/v1/ressurs/{ressurs}/tilganger" : {
+    "/autorisasjon-update/api/v1/ressurs" : {
       "post" : {
         "tags" : [ "ressurs" ],
-        "summary" : "Gir en aktør et spesifisert privilegium på ressursen",
-        "description" : "",
-        "operationId" : "tildelTilgang",
-        "parameters" : [ {
-          "name" : "ressurs",
-          "in" : "path",
-          "required" : true,
-          "type" : "string",
-          "format" : "uuid"
-        }, {
-          "in" : "body",
-          "name" : "body",
-          "required" : false,
-          "schema" : {
-            "$ref" : "#/definitions/TilgangRequest"
-          }
-        } ],
-        "responses" : {
-          "200" : {
-            "description" : "successful operation",
-            "schema" : {
-              "$ref" : "#/definitions/Tilgang"
+        "description" : "Oppretter en ressurs",
+        "operationId" : "opprettRessurs",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/OpprettRessursRequest"
+              }
             }
-          }
-        }
-      },
-      "delete" : {
-        "tags" : [ "ressurs" ],
-        "summary" : "Fjerner aktørens privilegium på ressursen",
-        "description" : "",
-        "operationId" : "fjernTilgang",
-        "parameters" : [ {
-          "name" : "ressurs",
-          "in" : "path",
-          "required" : true,
-          "type" : "string",
-          "format" : "uuid"
-        }, {
-          "name" : "aktor",
-          "in" : "query",
-          "required" : true,
-          "type" : "string"
-        }, {
-          "name" : "privilegium",
-          "in" : "query",
-          "required" : true,
-          "type" : "string"
-        } ],
+          },
+          "required" : true
+        },
         "responses" : {
           "200" : {
-            "description" : "successful operation",
-            "schema" : {
-              "type" : "object"
+            "description" : "Opprettet Ressurs",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Ressurs"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Feil i inputdata",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
             }
           }
         }
       }
     }
   },
-  "definitions" : {
-    "OppdaterRessursRequest" : {
-      "type" : "object",
-      "required" : [ "navn" ],
-      "properties" : {
-        "navn" : {
-          "type" : "string",
-          "description" : "Ressursens visningsnavn",
-          "minLength" : 2,
-          "maxLength" : 200,
-          "pattern" : "^[A-ZÆØÅa-zæøå0-9ÁáÀàÂâÉéÈèÊêÍíÌìÎîÓóÒòÔôÚúÙùÛûÝýÄäËëÏïÖöÜü,.!?\\-:;/\\\\'()&+*=%§]+[A-ZÆØÅa-zæøå0-9ÁáÀàÂâÉéÈèÊêÍíÌìÎîÓóÒòÔôÚúÙùÛûÝýÄäËëÏïÖöÜü ,.!?\\-:;/\\\\'()&+*=%§]*[A-ZÆØÅa-zæøå0-9ÁáÀàÂâÉéÈèÊêÍíÌìÎîÓóÒòÔôÚúÙùÛûÝýÄäËëÏïÖöÜü,.!?\\-:;/\\\\'()&+*=%§]+$"
+  "components" : {
+    "schemas" : {
+      "Tilgang" : {
+        "type" : "object",
+        "properties" : {
+          "aktor" : {
+            "type" : "string"
+          },
+          "privilegium" : {
+            "type" : "string"
+          },
+          "ressurs" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
         }
       },
-      "description" : "En request for å oppdatere en eksisterende ressurs"
-    },
-    "OpprettRessursRequest" : {
-      "type" : "object",
-      "required" : [ "forelderRessurs", "navn", "type" ],
-      "properties" : {
-        "forelderRessurs" : {
-          "type" : "string",
-          "format" : "uuid",
-          "description" : "UUID til ressursens forelderressurs, eller null hvis det er root"
-        },
-        "type" : {
-          "type" : "string",
-          "description" : "Ressursens type",
-          "pattern" : "^[0-9A-Z_.]+$"
-        },
-        "navn" : {
-          "type" : "string",
-          "description" : "Ressursens visningsnavn",
-          "minLength" : 2,
-          "maxLength" : 200,
-          "pattern" : "^[A-ZÆØÅa-zæøå0-9ÁáÀàÂâÉéÈèÊêÍíÌìÎîÓóÒòÔôÚúÙùÛûÝýÄäËëÏïÖöÜü,.!?\\-:;/\\\\'()&+*=%§]+[A-ZÆØÅa-zæøå0-9ÁáÀàÂâÉéÈèÊêÍíÌìÎîÓóÒòÔôÚúÙùÛûÝýÄäËëÏïÖöÜü ,.!?\\-:;/\\\\'()&+*=%§]*[A-ZÆØÅa-zæøå0-9ÁáÀàÂâÉéÈèÊêÍíÌìÎîÓóÒòÔôÚúÙùÛûÝýÄäËëÏïÖöÜü,.!?\\-:;/\\\\'()&+*=%§]+$"
+      "TilgangRequest" : {
+        "required" : [ "aktor", "privilegium" ],
+        "type" : "object",
+        "properties" : {
+          "aktor" : {
+            "pattern" : "^[A-Za-zæøåÆØÅ0-9_.,/\\-_ ]+$",
+            "type" : "string"
+          },
+          "privilegium" : {
+            "pattern" : "^[0-9A-Z_.]+$",
+            "type" : "string"
+          }
         }
       },
-      "description" : "En request for å opprette en ny ressurs"
-    },
-    "Ressurs" : {
-      "type" : "object",
-      "required" : [ "forelder", "id", "navn", "type" ],
-      "properties" : {
-        "id" : {
-          "type" : "string",
-          "format" : "uuid",
-          "description" : "Ressursens ID"
-        },
-        "forelder" : {
-          "type" : "string",
-          "format" : "uuid",
-          "description" : "UUID til ressursens forelderressurs"
-        },
-        "type" : {
-          "type" : "string",
-          "description" : "Ressursens type"
-        },
-        "navn" : {
-          "type" : "string",
-          "description" : "Ressursens visningsnavn"
+      "OppdaterRessursRequest" : {
+        "required" : [ "navn" ],
+        "type" : "object",
+        "properties" : {
+          "navn" : {
+            "maxLength" : 200,
+            "minLength" : 2,
+            "pattern" : "^[A-ZÆØÅa-zæøå0-9ÁáÀàÂâÉéÈèÊêÍíÌìÎîÓóÒòÔôÚúÙùÛûÝýÄäËëÏïÖöÜü,.!?\\-:;/\\\\'()&+*=%§]+[A-ZÆØÅa-zæøå0-9ÁáÀàÂâÉéÈèÊêÍíÌìÎîÓóÒòÔôÚúÙùÛûÝýÄäËëÏïÖöÜü ,.!?\\-:;/\\\\'()&+*=%§]*[A-ZÆØÅa-zæøå0-9ÁáÀàÂâÉéÈèÊêÍíÌìÎîÓóÒòÔôÚúÙùÛûÝýÄäËëÏïÖöÜü,.!?\\-:;/\\\\'()&+*=%§]+$",
+            "type" : "string"
+          }
         }
       },
-      "description" : "Representerer en ressurs, som er en entitet som kan tilordnes privilegier. Ressurser er organisert i et hierarki der privilegier som gies en aktør på en ressurs også vil gjelde for alleunderliggende ressurser."
-    },
-    "Tilgang" : {
-      "type" : "object",
-      "properties" : {
-        "aktor" : {
-          "type" : "string"
-        },
-        "privilegium" : {
-          "type" : "string"
-        },
-        "ressurs" : {
-          "type" : "string",
-          "format" : "uuid"
+      "Ressurs" : {
+        "required" : [ "forelder", "id", "navn", "type" ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "forelder" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "type" : {
+            "type" : "string"
+          },
+          "navn" : {
+            "type" : "string"
+          }
+        }
+      },
+      "ErrorMessage" : {
+        "type" : "object",
+        "properties" : {
+          "timestamp" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "status" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "error" : {
+            "type" : "string"
+          },
+          "errorId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "path" : {
+            "type" : "string"
+          },
+          "originalPath" : {
+            "type" : "string"
+          },
+          "message" : {
+            "type" : "string"
+          },
+          "errorCode" : {
+            "type" : "string"
+          },
+          "errorJson" : {
+            "type" : "string"
+          }
+        }
+      },
+      "OpprettRessursRequest" : {
+        "required" : [ "forelderRessurs", "type" ],
+        "type" : "object",
+        "properties" : {
+          "forelderRessurs" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "type" : {
+            "pattern" : "^[0-9A-Z_.]+$",
+            "type" : "string"
+          },
+          "navn" : {
+            "maxLength" : 200,
+            "minLength" : 2,
+            "pattern" : "^[A-ZÆØÅa-zæøå0-9ÁáÀàÂâÉéÈèÊêÍíÌìÎîÓóÒòÔôÚúÙùÛûÝýÄäËëÏïÖöÜü,.!?\\-:;/\\\\'()&+*=%§]+[A-ZÆØÅa-zæøå0-9ÁáÀàÂâÉéÈèÊêÍíÌìÎîÓóÒòÔôÚúÙùÛûÝýÄäËëÏïÖöÜü ,.!?\\-:;/\\\\'()&+*=%§]*[A-ZÆØÅa-zæøå0-9ÁáÀàÂâÉéÈèÊêÍíÌìÎîÓóÒòÔôÚúÙùÛûÝýÄäËëÏïÖöÜü,.!?\\-:;/\\\\'()&+*=%§]+$",
+            "type" : "string"
+          }
         }
       }
-    },
-    "TilgangRequest" : {
-      "type" : "object",
-      "required" : [ "aktor", "privilegium" ],
-      "properties" : {
-        "aktor" : {
-          "type" : "string",
-          "description" : "Aktøren som denne forespørselen gjelder",
-          "pattern" : "^[A-Za-zæøåÆØÅ0-9_.,/\\-_ ]+$"
-        },
-        "privilegium" : {
-          "type" : "string",
-          "description" : "Navnet på det privilegium som aktøren har eller etterspør for en gitt ressurs",
-          "pattern" : "^[0-9A-Z_.]+$"
-        }
-      },
-      "description" : "Representerer en autorisasjon, som deskriver en ressurs og et privilegium som enn gitt aktør har eller ber om"
     }
   }
 }
