@@ -9,9 +9,9 @@ Her finner du dokumentasjon av Fiks plattformen og SvarUt tjenesten. Den siste e
 
 Dokumentasjonen du finner her er rettet mot deg som skal administrere plattformen på vegne av en kommune eller annen organisasjon, eller utvikle integrasjoner mot api'ene Fiks tilbyr.
 
-# Brukerdokumentasjon 
+### Brukerdokumentasjon 
 
-Finner en på https://svarut.wordpress.com
+Brukerdokumentasjon finner en på https://svarut.wordpress.com
 
 ### Feil
 Hvis du finner feil, eller noe som ikke er beskrevet godt nok, setter vi pris på om du sender en epost til [fiks-utvikling@ks.no](mailto:fiks-utvikling@ks.no) eller lager en pull request på https://github.com/ks-no/ks-no.github.io.
