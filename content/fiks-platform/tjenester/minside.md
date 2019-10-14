@@ -25,6 +25,11 @@ Viser eiendommer innbyggeren eier, basert på data fra matrikkelen. Disse eiendo
 
 Som standard kan innbyggeren følge en lenke til [seeiendom.kartverket.no](https://seeiendom.kartverket.no) for å se detaljer om eiendommen, men her har kommunen mulighet til anngi lenker til eget eiendoms-system, se [Fiks Konfigurasjon: Matrikkel](https://forvaltning.fiks.test.ks.no/fiks-konfigurasjon/tjenester/matrikkel). Minside vil da vise disse lenkene for innbyggere som har eiendommer i din kommune.
 
+### Mine byggesaker
+Viser byggesaker innbyggeren/organisasjonen har tilgang til. Disse kan være eksponert for nåværende eier av eiendom, fødselsnummer eller organisasjonsnummer.
+
+Mine byggesaker er avhengig av at byggesaksarkivet speiler metadata til Fiks Innsyn.
+
 ### Nasjonale tjenester
 Oversikt over viktige nasjonale tjenester. Ta kontakt med fiks@ks.no hvis du har forslag til ytterligere tjenester som bør finnes her.
 
