@@ -20,6 +20,45 @@
     "description" : "API for å håndtere funksjonalitet vedr. bekymringsmelding"
   } ],
   "paths" : {
+    "/bekymringsmelding/send/api/v1/konfigurasjon/{fiksOrgId}/{fortrolighetsNiva}" : {
+      "get" : {
+        "tags" : [ "bekymringsmelding-send" ],
+        "description" : "Henter konfigurasjon for sending",
+        "operationId" : "hentKonfigurasjon",
+        "parameters" : [ {
+          "name" : "fiksOrgId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        }, {
+          "name" : "fortrolighetsNiva",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int32"
+          }
+        } ],
+        "responses" : {
+          "404" : {
+            "description" : "Ingen konfigurasjon funnet for gitt fiksOrgId og fortrolighetsnivå"
+          },
+          "200" : {
+            "description" : "Konfigurasjon funnet",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/SendKonfigurasjon"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/bekymringsmelding/send/api/v1/send" : {
       "post" : {
         "tags" : [ "bekymringsmelding-send" ],
@@ -47,7 +86,41 @@
   },
   "components" : {
     "schemas" : {
+      "FiksIoKonfigurasjon" : {
+        "required" : [ "offentligNokkel" ],
+        "type" : "object",
+        "properties" : {
+          "offentligNokkel" : {
+            "type" : "string"
+          }
+        }
+      },
+      "PrintKonfigurasjon" : {
+        "required" : [ "leverandorId", "offentligNokkel" ],
+        "type" : "object",
+        "properties" : {
+          "leverandorId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "offentligNokkel" : {
+            "type" : "string"
+          }
+        }
+      },
+      "SendKonfigurasjon" : {
+        "type" : "object",
+        "properties" : {
+          "printKonfigurasjon" : {
+            "$ref" : "#/components/schemas/PrintKonfigurasjon"
+          },
+          "fiksIoKonfigurasjon" : {
+            "$ref" : "#/components/schemas/FiksIoKonfigurasjon"
+          }
+        }
+      },
       "FiksIOOrdre" : {
+        "required" : [ "dokumentRef", "meldingstype", "mottakerKontoId" ],
         "type" : "object",
         "properties" : {
           "mottakerKontoId" : {
@@ -67,12 +140,6 @@
               "seconds" : {
                 "type" : "integer",
                 "format" : "int64"
-              },
-              "negative" : {
-                "type" : "boolean"
-              },
-              "zero" : {
-                "type" : "boolean"
               },
               "units" : {
                 "type" : "array",
@@ -94,12 +161,19 @@
               "nano" : {
                 "type" : "integer",
                 "format" : "int32"
+              },
+              "negative" : {
+                "type" : "boolean"
+              },
+              "zero" : {
+                "type" : "boolean"
               }
             }
           }
         }
       },
       "Ordre" : {
+        "required" : [ "print" ],
         "type" : "object",
         "properties" : {
           "print" : {
@@ -111,6 +185,7 @@
         }
       },
       "PrintOrdre" : {
+        "required" : [ "dokumentRef", "forsideRef", "konteringsKode", "leverandorRef" ],
         "type" : "object",
         "properties" : {
           "dokumentRef" : {
