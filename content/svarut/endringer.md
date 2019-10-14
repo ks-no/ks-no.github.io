@@ -6,6 +6,10 @@ lastmod: 2018-12-17
 Her er en liste over de viktigste endringene i SvarUt, startet i 2015.
 
 ## Liste over endringer i SvarUt.
+* 27.05.2019
+  * Fiker tittel mot SDP, for å unngå at sensetive titler kommer ut.
+* 12.02.2019
+  * Mottakersystem i rapport fil
 * 17.12.2018
   * Forhåndsvisning av PDF er oppdatert og viser første side pr brev
   * Støtte for å ha flere navn i poststed
