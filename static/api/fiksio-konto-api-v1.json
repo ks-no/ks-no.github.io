@@ -20,11 +20,11 @@
     "description" : "API for å behandle kontoer i Fiks IO"
   } ],
   "paths" : {
-    "/fiks-io/konto/api/v1/kontoer/{kontoId}" : {
+    "/fiks-io/konto/api/v1/kontoer/{kontoId}/adresser" : {
       "get" : {
         "tags" : [ "FiksIOKonto" ],
-        "description" : "Henter konto-detaljer",
-        "operationId" : "getKonto",
+        "description" : "Hent adresser for en konto",
+        "operationId" : "getAdresser",
         "parameters" : [ {
           "name" : "kontoId",
           "in" : "path",
@@ -35,22 +35,25 @@
           }
         } ],
         "responses" : {
-          "default" : {
-            "description" : "default response",
+          "200" : {
+            "description" : "Adresser for konto",
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/Konto"
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/Adresse"
+                  }
                 }
               }
             }
           }
         }
       },
-      "delete" : {
+      "post" : {
         "tags" : [ "FiksIOKonto" ],
-        "description" : "Slett en eksisterende konto",
-        "operationId" : "slett",
+        "description" : "Oppretter en ny addresse for kontoen",
+        "operationId" : "opprettAdresse",
         "parameters" : [ {
           "name" : "kontoId",
           "in" : "path",
@@ -60,11 +63,25 @@
             "format" : "uuid"
           }
         } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/AdresseSpesifikasjon"
+              }
+            }
+          },
+          "required" : true
+        },
         "responses" : {
-          "default" : {
-            "description" : "default response",
+          "201" : {
+            "description" : "Adresse ble lagt til",
             "content" : {
-              "application/json" : { }
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Adresse"
+                }
+              }
             }
           }
         }
@@ -347,11 +364,11 @@
         }
       }
     },
-    "/fiks-io/konto/api/v1/kontoer/{kontoId}/adresser" : {
+    "/fiks-io/konto/api/v1/kontoer/{kontoId}" : {
       "get" : {
         "tags" : [ "FiksIOKonto" ],
-        "description" : "Hent adresser for en konto",
-        "operationId" : "getAdresser",
+        "description" : "Henter konto-detaljer",
+        "operationId" : "getKonto",
         "parameters" : [ {
           "name" : "kontoId",
           "in" : "path",
@@ -362,25 +379,22 @@
           }
         } ],
         "responses" : {
-          "200" : {
-            "description" : "Adresser for konto",
+          "default" : {
+            "description" : "default response",
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "type" : "array",
-                  "items" : {
-                    "$ref" : "#/components/schemas/Adresse"
-                  }
+                  "$ref" : "#/components/schemas/Konto"
                 }
               }
             }
           }
         }
       },
-      "post" : {
+      "delete" : {
         "tags" : [ "FiksIOKonto" ],
-        "description" : "Oppretter en ny addresse for kontoen",
-        "operationId" : "opprettAdresse",
+        "description" : "Slett en eksisterende konto",
+        "operationId" : "slett",
         "parameters" : [ {
           "name" : "kontoId",
           "in" : "path",
@@ -390,25 +404,11 @@
             "format" : "uuid"
           }
         } ],
-        "requestBody" : {
-          "content" : {
-            "application/json" : {
-              "schema" : {
-                "$ref" : "#/components/schemas/AdresseSpesifikasjon"
-              }
-            }
-          },
-          "required" : true
-        },
         "responses" : {
-          "201" : {
-            "description" : "Adresse ble lagt til",
+          "default" : {
+            "description" : "default response",
             "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/Adresse"
-                }
-              }
+              "application/json" : { }
             }
           }
         }
@@ -938,6 +938,68 @@
   },
   "components" : {
     "schemas" : {
+      "Adresse" : {
+        "type" : "object",
+        "properties" : {
+          "fiksOrgId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "kontoId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "adresseId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "opprettet" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "opprettetAvFnr" : {
+            "type" : "string"
+          },
+          "sistEndret" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "sistEndretAvFnr" : {
+            "type" : "string"
+          },
+          "aktiv" : {
+            "type" : "boolean"
+          },
+          "gyldig" : {
+            "type" : "boolean"
+          },
+          "identifikatorer" : {
+            "uniqueItems" : true,
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          },
+          "meldingsprotokoller" : {
+            "uniqueItems" : true,
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          },
+          "sikkerhetsnivaer" : {
+            "uniqueItems" : true,
+            "type" : "array",
+            "items" : {
+              "type" : "integer",
+              "format" : "int32"
+            }
+          },
+          "beskrivelse" : {
+            "type" : "string"
+          }
+        }
+      },
       "Konto" : {
         "type" : "object",
         "properties" : {
@@ -1102,68 +1164,6 @@
         "type" : "object",
         "properties" : {
           "pem" : {
-            "type" : "string"
-          }
-        }
-      },
-      "Adresse" : {
-        "type" : "object",
-        "properties" : {
-          "fiksOrgId" : {
-            "type" : "string",
-            "format" : "uuid"
-          },
-          "kontoId" : {
-            "type" : "string",
-            "format" : "uuid"
-          },
-          "adresseId" : {
-            "type" : "string",
-            "format" : "uuid"
-          },
-          "opprettet" : {
-            "type" : "string",
-            "format" : "date-time"
-          },
-          "opprettetAvFnr" : {
-            "type" : "string"
-          },
-          "sistEndret" : {
-            "type" : "string",
-            "format" : "date-time"
-          },
-          "sistEndretAvFnr" : {
-            "type" : "string"
-          },
-          "aktiv" : {
-            "type" : "boolean"
-          },
-          "gyldig" : {
-            "type" : "boolean"
-          },
-          "identifikatorer" : {
-            "uniqueItems" : true,
-            "type" : "array",
-            "items" : {
-              "type" : "string"
-            }
-          },
-          "meldingsprotokoller" : {
-            "uniqueItems" : true,
-            "type" : "array",
-            "items" : {
-              "type" : "string"
-            }
-          },
-          "sikkerhetsnivaer" : {
-            "uniqueItems" : true,
-            "type" : "array",
-            "items" : {
-              "type" : "integer",
-              "format" : "int32"
-            }
-          },
-          "beskrivelse" : {
             "type" : "string"
           }
         }
