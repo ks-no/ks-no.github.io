@@ -20,27 +20,26 @@
     "description" : "API for å håndtere funksjonalitet vedr. bekymringsmelding"
   } ],
   "paths" : {
-    "/bekymringsmelding/send/api/v1/send" : {
+    "/bekymringsmelding/send/api/v1/send/{id}" : {
       "post" : {
         "tags" : [ "bekymringsmelding-send" ],
-        "description" : "Sender en ordre som skal sendes videre til enten FiksIO eller Fiks-Print",
-        "operationId" : "sendOrdre",
-        "requestBody" : {
-          "content" : {
-            "application/json" : {
-              "schema" : {
-                "$ref" : "#/components/schemas/Ordre"
-              }
-            }
-          },
-          "required" : true
-        },
+        "description" : "Sender en bestemt ordre på nytt enten til FiksIO eller Fiks-Print basert på ID",
+        "operationId" : "sendOrdreById",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
         "responses" : {
-          "default" : {
-            "description" : "default response",
-            "content" : {
-              "application/json" : { }
-            }
+          "404" : {
+            "description" : "Ingen ordre funnet"
+          },
+          "200" : {
+            "description" : "Send ordre."
           }
         }
       }
@@ -91,10 +90,73 @@
           }
         }
       }
+    },
+    "/bekymringsmelding/send/api/v1/send" : {
+      "post" : {
+        "tags" : [ "bekymringsmelding-send" ],
+        "description" : "Sender en ordre som skal sendes videre til enten FiksIO eller Fiks-Print",
+        "operationId" : "sendOrdre",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/Ordre"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Send ordre.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "string",
+                  "format" : "uuid"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components" : {
     "schemas" : {
+      "FiksIoKonfigurasjon" : {
+        "required" : [ "offentligNokkel" ],
+        "type" : "object",
+        "properties" : {
+          "offentligNokkel" : {
+            "type" : "string"
+          }
+        }
+      },
+      "PrintKonfigurasjon" : {
+        "required" : [ "leverandorId", "offentligNokkel" ],
+        "type" : "object",
+        "properties" : {
+          "leverandorId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "offentligNokkel" : {
+            "type" : "string"
+          }
+        }
+      },
+      "SendKonfigurasjon" : {
+        "type" : "object",
+        "properties" : {
+          "printKonfigurasjon" : {
+            "$ref" : "#/components/schemas/PrintKonfigurasjon"
+          },
+          "fiksIoKonfigurasjon" : {
+            "$ref" : "#/components/schemas/FiksIoKonfigurasjon"
+          }
+        }
+      },
       "FiksIOOrdre" : {
         "required" : [ "dokumentRef", "meldingstype", "mottakerKontoId" ],
         "type" : "object",
@@ -146,39 +208,6 @@
           },
           "konteringsKode" : {
             "type" : "string"
-          }
-        }
-      },
-      "FiksIoKonfigurasjon" : {
-        "required" : [ "offentligNokkel" ],
-        "type" : "object",
-        "properties" : {
-          "offentligNokkel" : {
-            "type" : "string"
-          }
-        }
-      },
-      "PrintKonfigurasjon" : {
-        "required" : [ "leverandorId", "offentligNokkel" ],
-        "type" : "object",
-        "properties" : {
-          "leverandorId" : {
-            "type" : "string",
-            "format" : "uuid"
-          },
-          "offentligNokkel" : {
-            "type" : "string"
-          }
-        }
-      },
-      "SendKonfigurasjon" : {
-        "type" : "object",
-        "properties" : {
-          "printKonfigurasjon" : {
-            "$ref" : "#/components/schemas/PrintKonfigurasjon"
-          },
-          "fiksIoKonfigurasjon" : {
-            "$ref" : "#/components/schemas/FiksIoKonfigurasjon"
           }
         }
       }
