@@ -17,9 +17,9 @@ Tjeneste for å slå opp opplysninger i motorvognregisteret
 #### Fiks Folkeregister
 Folkeregistret sitt API for oppslag og hendelseslister blir tilgjengelig for maskin-til-maskin-integrasjon og som søketjeneste i web-portal. Vi kommer til å tilby selvbetjening for brukeradministrasjon, rollestyrt tilgangskontroll, dataminimering og sporing av søk.
 
+## 2020
 #### Minside: Mine Eiendommer (fase 2)
 Utvidet matrikkel- og eiendomsinformasjon gjøres tilgjengelig på MinSide. Vil inkludere mulighet for å sende korrigeringer på evt. feilaktig informasjon.
-
 
 ## Under utredning:
 #### Forvaltning: [Audit]({{< ref "audit.md" >}})
