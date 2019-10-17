@@ -16,10 +16,7 @@ Tjeneste for å slå opp opplysninger i motorvognregisteret
 
 ## 2020
 #### Fiks Folkeregister
-Fiks-plattformen tilgjengeliggjør folkeregistrets api for oppslag, støttet av logging, autentisering, autorisasjon og konfigurering på Fiks-plattformen.
-
-#### Fiks Innbygger
-Fiks-plattformens løsning for spørringer og rapportering på folkeregisterdata. Vil inkludere mulighet for å lage skreddresydde rapporter.
+Folkeregistret sitt API for oppslag og hendelseslister blir tilgjengelig for maskin-til-maskin-integrasjon og som søketjeneste i web-portal. Vi kommer til å tilby selvbetjening for brukeradministrasjon, rollestyrt tilgangskontroll, dataminimering og sporing av søk.
 
 #### Minside: Mine Eiendommer (fase 2)
 Utvidet matrikkel- og eiendomsinformasjon gjøres tilgjengelig på MinSide. Vil inkludere mulighet for å sende korrigeringer på evt. feilaktig informasjon.
