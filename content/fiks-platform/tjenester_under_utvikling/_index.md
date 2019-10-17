@@ -14,7 +14,6 @@ Innsyn utvides med ny meldinstype for skjema, og innbyggeres innsendte skjema og
 #### Motorvognregister oppslag
 Tjeneste for å slå opp opplysninger i motorvognregisteret
 
-## 2020
 #### Fiks Folkeregister
 Folkeregistret sitt API for oppslag og hendelseslister blir tilgjengelig for maskin-til-maskin-integrasjon og som søketjeneste i web-portal. Vi kommer til å tilby selvbetjening for brukeradministrasjon, rollestyrt tilgangskontroll, dataminimering og sporing av søk.
 
