@@ -20,36 +20,6 @@
     "description" : "API for å håndtere funksjonalitet vedr. bekymringsmelding"
   } ],
   "paths" : {
-    "/bekymringsmelding/send/api/v1/send" : {
-      "post" : {
-        "tags" : [ "bekymringsmelding-send" ],
-        "description" : "Sender en ordre som skal sendes videre til enten FiksIO eller Fiks-Print",
-        "operationId" : "sendOrdre",
-        "requestBody" : {
-          "content" : {
-            "application/json" : {
-              "schema" : {
-                "$ref" : "#/components/schemas/Ordre"
-              }
-            }
-          },
-          "required" : true
-        },
-        "responses" : {
-          "200" : {
-            "description" : "Send ordre.",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "type" : "string",
-                  "format" : "uuid"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
     "/bekymringsmelding/send/api/v1/send/{id}" : {
       "post" : {
         "tags" : [ "bekymringsmelding-send" ],
@@ -120,10 +90,95 @@
           }
         }
       }
+    },
+    "/bekymringsmelding/send/api/v1/send" : {
+      "post" : {
+        "tags" : [ "bekymringsmelding-send" ],
+        "description" : "Sender en ordre som skal sendes videre til enten FiksIO eller Fiks-Print",
+        "operationId" : "sendOrdre",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/Ordre"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Send ordre.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "string",
+                  "format" : "uuid"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components" : {
     "schemas" : {
+      "FiksIoKonfigurasjon" : {
+        "required" : [ "offentligNokkel" ],
+        "type" : "object",
+        "properties" : {
+          "offentligNokkel" : {
+            "type" : "string"
+          }
+        }
+      },
+      "PrintKonfigurasjon" : {
+        "required" : [ "leverandorId", "offentligNokkel" ],
+        "type" : "object",
+        "properties" : {
+          "leverandorId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "offentligNokkel" : {
+            "type" : "string"
+          }
+        }
+      },
+      "SendKonfigurasjon" : {
+        "type" : "object",
+        "properties" : {
+          "printKonfigurasjon" : {
+            "$ref" : "#/components/schemas/PrintKonfigurasjon"
+          },
+          "fiksIoKonfigurasjon" : {
+            "$ref" : "#/components/schemas/FiksIoKonfigurasjon"
+          }
+        }
+      },
+      "Adresse" : {
+        "required" : [ "adresselinje1", "poststed" ],
+        "type" : "object",
+        "properties" : {
+          "adresselinje1" : {
+            "type" : "string"
+          },
+          "adresselinje2" : {
+            "type" : "string"
+          },
+          "adresselinje3" : {
+            "type" : "string"
+          },
+          "postnummer" : {
+            "pattern" : "^[0-9]{4}$",
+            "type" : "string"
+          },
+          "poststed" : {
+            "type" : "string"
+          }
+        }
+      },
       "FiksIOOrdre" : {
         "required" : [ "dokumentRef", "meldingstype", "mottakerKontoId" ],
         "type" : "object",
@@ -158,16 +213,15 @@
         }
       },
       "PrintOrdre" : {
-        "required" : [ "dokumentRef", "forsideRef", "konteringsKode", "leverandorRef" ],
+        "required" : [ "adresse", "dokumentRef", "konteringsKode", "leverandorRef" ],
         "type" : "object",
         "properties" : {
           "dokumentRef" : {
             "type" : "string",
             "format" : "uuid"
           },
-          "forsideRef" : {
-            "type" : "string",
-            "format" : "uuid"
+          "adresse" : {
+            "$ref" : "#/components/schemas/Adresse"
           },
           "leverandorRef" : {
             "type" : "string",
@@ -175,39 +229,6 @@
           },
           "konteringsKode" : {
             "type" : "string"
-          }
-        }
-      },
-      "FiksIoKonfigurasjon" : {
-        "required" : [ "offentligNokkel" ],
-        "type" : "object",
-        "properties" : {
-          "offentligNokkel" : {
-            "type" : "string"
-          }
-        }
-      },
-      "PrintKonfigurasjon" : {
-        "required" : [ "leverandorId", "offentligNokkel" ],
-        "type" : "object",
-        "properties" : {
-          "leverandorId" : {
-            "type" : "string",
-            "format" : "uuid"
-          },
-          "offentligNokkel" : {
-            "type" : "string"
-          }
-        }
-      },
-      "SendKonfigurasjon" : {
-        "type" : "object",
-        "properties" : {
-          "printKonfigurasjon" : {
-            "$ref" : "#/components/schemas/PrintKonfigurasjon"
-          },
-          "fiksIoKonfigurasjon" : {
-            "$ref" : "#/components/schemas/FiksIoKonfigurasjon"
           }
         }
       }
