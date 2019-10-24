@@ -51,6 +51,87 @@
           }
         }
       }
+    },
+    "/print/api/v1/ordre/{leverandor}" : {
+      "post" : {
+        "tags" : [ "print" ],
+        "description" : "Sender printorder til leverandør",
+        "operationId" : "sendPrintOrder",
+        "parameters" : [ {
+          "name" : "leverandor",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "enum" : [ "GRAFISK_DIGITAL", "STRÅLFORS" ]
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/PrintOrdre"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "404" : {
+            "description" : "Ukjent leverandør",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "201" : {
+            "description" : "Ordre ble sendt til leverandør"
+          },
+          "400" : {
+            "description" : "Feil i inputdata. Ikke sendt til leverandør",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/print/api/v1/ordre/{leverandor}/{ref}" : {
+      "get" : {
+        "description" : "Henter status for printordre",
+        "operationId" : "getStatus",
+        "parameters" : [ {
+          "name" : "leverandor",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "enum" : [ "GRAFISK_DIGITAL", "STRÅLFORS" ]
+          }
+        }, {
+          "name" : "ref",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "default" : {
+            "description" : "default response",
+            "content" : {
+              "application/json" : { }
+            }
+          }
+        }
+      }
     }
   },
   "components" : {
@@ -58,9 +139,9 @@
       "PrintleverandoerMetadata" : {
         "type" : "object",
         "properties" : {
-          "id" : {
+          "leverandor" : {
             "type" : "string",
-            "format" : "uuid"
+            "enum" : [ "GRAFISK_DIGITAL", "STRÅLFORS" ]
           },
           "publicKey" : {
             "type" : "string"
@@ -71,6 +152,86 @@
           },
           "signature" : {
             "type" : "string"
+          }
+        }
+      },
+      "ErrorMessage" : {
+        "type" : "object",
+        "properties" : {
+          "timestamp" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "status" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "error" : {
+            "type" : "string"
+          },
+          "errorId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "path" : {
+            "type" : "string"
+          },
+          "originalPath" : {
+            "type" : "string"
+          },
+          "message" : {
+            "type" : "string"
+          },
+          "errorCode" : {
+            "type" : "string"
+          },
+          "errorJson" : {
+            "type" : "string"
+          }
+        }
+      },
+      "Adresse" : {
+        "required" : [ "adresseLinje1", "mottakerNavn", "postNummer", "postSted" ],
+        "type" : "object",
+        "properties" : {
+          "mottakerNavn" : {
+            "type" : "string"
+          },
+          "adresseLinje1" : {
+            "type" : "string"
+          },
+          "adresseLinje2" : {
+            "type" : "string"
+          },
+          "postNummer" : {
+            "pattern" : "\\d{4}",
+            "type" : "string"
+          },
+          "postSted" : {
+            "type" : "string"
+          }
+        }
+      },
+      "PrintOrdre" : {
+        "required" : [ "adresse", "eksternRef", "fil" ],
+        "type" : "object",
+        "properties" : {
+          "eksternRef" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "fil" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "format" : "byte"
+            }
+          },
+          "konteringsKode" : {
+            "type" : "string"
+          },
+          "adresse" : {
+            "$ref" : "#/components/schemas/Adresse"
           }
         }
       }
