@@ -12,20 +12,27 @@ Fiks Digisos tilbyr:
 * Innbygger får tilgang til alle dokumenter og mulighet til å sende inn nye søknader basert på data fra tidligere søknader.
 * Ansatte/brukerstøtte i NAV kan se utvalgte deler av saken via NAV sine systemer.
 
-## Sikkerhet
-Systemet er lagt opp slik at NAV ikke trenger å lagre data, disse fjernes fra NAVs systemer når søknaden sendes til Fiks. All tilstand lagres dermed på Fiks-plattformen og hos kommunen. Innsending av søknad kan utelukkende gjøres med brukerens ID-Porten autentisering.
+# Hvordan tar man i bruk Fiks Digisos?
+     
+For at fagsystemet skal få tilgang til å motta sosialsøknader og sende saksoppdateringer til NAV via Digisos-API-et for en kommune, må kommunen først konfigurere og aktivere tjenesten Digisos gjennom [Fiks Konfigurasjon](https://forvaltning.fiks.dev.ks.no/fiks-konfigurasjon/tjenester), som viser en veiviser for å sette opp blant annet leveringskanal som inneholder informasjon om hvor søknader/ettersendelser skal mottas til fagsystemet, enten via Fiks IO (anbefalt kanal) og/eller SvarUt. 
 
-Kommunikasjonen mellom aktørene (NAV, Fiks, fagsystem) foregår med SSL-kryptering, i tillegg er alle dokumenter kryptert med mottakers nøkkel. NAV krypterer med Fiks sin nøkkel, Fiks krypterer med fagsystemets, og fagsystemet vil igjen bruke Fiks-nøkkelen.
+Etter at veiviseren er fullført må man inne på Digisos-tjenesten gi fagsystemet sin integrasjon tilgang til å bruke Digisos. For mer informasjon om utvikling og opprettelse av integrasjoner for kommunen sitt fagsystemet, se avsnittet [Integrasjonsutvikling Fagsystem](https://ks-no.github.io/fiks-platform/tjenester/digisos/#integrasjonsutvikling-fagsystem).  
 
-Innbygger har tilgang til alle sine opplastede dokumenter, der et begrenset utvalg av metadata også er tilgjengelig for NAV-ansatte. Uthenting av disse metadataene krever autentisering med NAVs virksomhetssertifikat og integrasjonsinnlogging, og alle slike spørringer logges i Fiks Audit. Ansvaret for den videre autorisering av den enkelte NAV-ansatte ligger hos NAV.
+# Hvordan virker Fiks Digisos?
 
-## Flyt
+Digisos består av flere komponenter fra Fiks-plattformen, der Fiks Digisos er hovedkomponenten som bruker andre komponenter:
+- Fiks Digisos API: API for innsending av søknader fra nav.no og innsending av saksoppdateriger fra kommunenes fagsystemer.
+- Fiks Dokumentlager: Brukes for lagring av krypterte søknader og saksoppdateringer, der innbyggeren får tilgang til sine dokumenter sendt over Digisos API-et.
+- Fiks IO: Brukes som leveringskanal for søknader fra NAV til kommunene, som er en sikker kanal for maskin-til-maskin integrasjon, hvor søknadene blir meldingskryptert med mottakers offentlige nøkkel.
+- SvarUt: Brukes som en alternativ leveringskanal for søknader fra NAV til kommunene, med leveranse med print dersom kommunens fagsystem ikke klarer å motta digitale forsendelser.
+
+### Flyt
 
 1. Innbygger fyller ut søknad om sosialstønad på nav.no, som sender denne til Fiks Digisos gjennom et synkront http api.
 2. Fiks Digisos mottar søknaden.
     1. Søknadsfilen legges i Fiks Dokumentlager, og innbyggeren autoriseres for tilgang.
     2. Fiks Digisos henter valgt leveransekanal for søknaden fra kommunens konfigurasjon, enten anbefalt kanal 2a) Fiks IO med SvarUt som alternativ eller 2b) Bare SvarUt.
-        - a. Fiks IO - Det gjøres oppslag i Fiks IO Kontokatalog for å se om det finnes en mottaker som støtter mottak av digisos-meldinger til kommunen. Dersom det støttes, gjøres et kall mot Fiks IO, hvor filen blir validert og sendt til mottakeren. Dersom digisos-meldinger ikke støttes vil søknaden bli sendt til SvarUt.
+        - a. Fiks IO - Kommunens konfigurasjon inneholder en konto-id som blir brukt som mottaker. Digisos-meldingene vil bli validert før de sendes til denne kontoen via Fiks IO. Dersom den oppgitte kontoen ikke støtter digisos-meldinger, vil søknaden bli sendt til SvarUt.
         - b. SvarUt - Søknaden sendes til SvarUt enten fordi den er valgt som eneste leveransekanal, eller fordi kommunen ikke kan motta digisos-meldinger gjennom Fiks IO (se punkt 6).
     3. Hvis punktene over blir gjennomført ok opprettes en digisos-melding i Fiks Innsyn. Denne autoriseres for innbyggeren.
     4. Fiks returnerer 202 ACCEPTED på http-kallet fra NAV. Dette markerer ansvarsoverføring fra NAV til Fiks, som fra nå garanterer at saken leveres til kommune for behandling.
@@ -39,12 +46,17 @@ Innbygger har tilgang til alle sine opplastede dokumenter, der et begrenset utva
 
 ![fiks_digisos](/images/fiks_digisos.png "Fiks Digisos")
 
+### Sikkerhet
+Systemet er lagt opp slik at NAV ikke trenger å lagre data, disse fjernes fra NAVs systemer når søknaden sendes til Fiks. All tilstand lagres dermed på Fiks-plattformen og hos kommunen. Innsending av søknad kan utelukkende gjøres med brukerens ID-Porten autentisering.
+
+Kommunikasjonen mellom aktørene (NAV, Fiks, fagsystem) foregår med SSL-kryptering, i tillegg er alle dokumenter kryptert med mottakers nøkkel. NAV krypterer med Fiks sin nøkkel, Fiks krypterer med fagsystemets, og fagsystemet vil igjen bruke Fiks-nøkkelen.
+
+Innbygger har tilgang til alle sine opplastede dokumenter, der et begrenset utvalg av metadata også er tilgjengelig for NAV-ansatte. Uthenting av disse metadataene krever autentisering med NAVs virksomhetssertifikat og integrasjonsinnlogging, og alle slike spørringer logges i Fiks Audit. Ansvaret for den videre autorisering av den enkelte NAV-ansatte ligger hos NAV.
 
 ## Integrasjonsutvikling Fagsystem
 
 Det anbefales å lese gjennom dokumentasjonen for generell [integrasjonsutvikling mot Fiks]({{< ref "integrasjoner.md" >}}), der siste avsnitt, "Hvordan komme i gang med utvikling", er svært nyttig. På denne siden beskrives blant annet oppsett av IDPorten og autentisering mot Fiks, der fagsystemet bruker Integrasjon som autentiseringsmetode. Fiks tilbyr både en [Java-klient](https://github.com/ks-no/fiks-maskinporten) og en [.net-klient](https://github.com/ks-no/fiks-maskinporten-client-dotnet) som kan brukes for å generere access token fra Maskinporten (IDPorten).
-
-For at fagsystemet skal få tilgang til Digisos-API-et for en kommune, må kommunen først konfigurere og aktivere tjenesten Digisos gjennom [Fiks Konfigurasjon](https://forvaltning.fiks.dev.ks.no/fiks-konfigurasjon/tjenester), som viser en veiviser for å sette opp blant annet leveringskanal som inneholder informasjon om hvor søknader/ettersendelser skal mottas til fagsystemet, enten via Fiks IO (anbefalt kanal) og/eller SvarUt. Etter at veiviseren er fullført må man inne på Digisos tjenesten gi fagsystemet sin integrasjon tilgang til å bruke Digisos. Se avsnittet [Konfigurasjon](https://ks-no.github.io/fiks-platform/integrasjoner/#konfigurasjon) for hvordan en integrasjon opprettes og tilknyttes en tjeneste (Digisos). Integrasjons-id-en og passordet generert her må dermed brukes sammen med access token fra Maskinporten for å få tilgang til Digisos-API-et.
+Avsnittet [Konfigurasjon](https://ks-no.github.io/fiks-platform/integrasjoner/#konfigurasjon) beskriver hvordan en integrasjon opprettes og tilknyttes en tjeneste (Digisos). Integrasjons-id-en og passordet generert her må dermed brukes sammen med access token fra Maskinporten for å få tilgang til Digisos-API-et.
 
 ### Fiks IO meldingsprotokoll
 
