@@ -3,16 +3,16 @@ title: Sikkerhet og personvern
 date: 2019-06-27
 ---
 
-Denne siden gir en generell innføring i de grunnleggende prinsippene for sikkerhet og personvern på Fiks Plattformen. For full beskrivelse av styringsssystem og ROS analyser for de spesifikke tjenestene, se [sikkerhetsdokumentasjon på forvaltning.fiks.ks.no](https://forvaltning.fiks.ks.no/sikkerhet-dokumentasjon/). Tilgang her er begrenset til personer som er administrator for en eller flere fiks-organisasjoner. 
+Denne siden gir en generell innføring i de grunnleggende prinsippene for sikkerhet og personvern på Fiks-plattformen. For full beskrivelse av styringsssystem og ROS-analyser for de spesifikke tjenestene, se [sikkerhetsdokumentasjon på forvaltning.fiks.ks.no](https://forvaltning.fiks.ks.no/sikkerhet-dokumentasjon/). Tilgang her er begrenset til personer som er administrator for en eller flere Fiks-organisasjoner. 
 
 Under beskrives generelle retningslinjer for hvordan vi har sikret applikasjonene, skulle noe avvike fra dette vil det 
 være spesifisert i hver tjeneste.
 
 ### Kryptering
-All kommunikasjon mellom Fiks plattformen og integrasjoner/personer er kryptert med TLS. All data som lagres på disk er endten individuelt kryptert (for eksempel gjennom sikker lagring i Fiks Dokumentlager), eller lagres på krypterte filsystemer.
+All kommunikasjon mellom Fiks-plattformen og integrasjoner/personer er kryptert med TLS. All data som lagres på disk er endten individuelt kryptert (for eksempel gjennom sikker lagring i Fiks Dokumentlager), eller lagres på krypterte filsystemer.
 
 ### Autentisering og autorisering
-Fiks Plattformen benytter ID-porten og Maskinporten fra Difi for autentisering av brukere. Spesifikke mekanismer for autentisering og autorisering avhenger av kontekst: 
+Fiks-plattformen benytter ID-porten og Maskinporten fra Difi for autentisering av brukere. Spesifikke mekanismer for autentisering og autorisering avhenger av kontekst: 
 
 #### Personer
 Dette kan for eksempel være en innbygger som finner barnehagesøknaden sin i Fiks Innsyn.
@@ -34,7 +34,7 @@ Når organisasjonen opprettes settes et personnummer som administrator. Dette er
 Tildeling av privilegier er underlagt audit-logging, se under for detaljer.
 
 #### Integrasjoner
-De fleste tjenestene på Fiks-platformen har mulighet for maskin-til-maskin integrasjon, for eksempel når et saksystem laster opp meldinger til Fiks Innsyn. Dette gjøres gjennom å opprette  _integrasjoner_, som autentiseres ved hjelp av et virksomhetsertifikat-basert access token utstedt av ID-Porten i kombinasjon med integrasjonsid og passord generert av Fiks-konfigurasjon. Se [integrasjoner]{{< relref "integrasjoner.md" >}} for mer informasjon om oppsett av dette.
+De fleste tjenestene på Fiks-plattformen har mulighet for maskin-til-maskin integrasjon, for eksempel når et saksystem laster opp meldinger til Fiks Innsyn. Dette gjøres gjennom å opprette  _integrasjoner_, som autentiseres ved hjelp av et virksomhetsertifikat-basert access token utstedt av ID-Porten i kombinasjon med integrasjonsid og passord generert av Fiks-konfigurasjon. Se [integrasjoner]{{< relref "integrasjoner.md" >}} for mer informasjon om oppsett av dette.
 
 Integrasjoner autentiseres gjennom to mekanismer: for det første trenger man en kombinasjon av integrasjonId og passord som genereres via Fiks Konfigurasjon. For det andre benyttes et virksomhetssertifikat og ID-Porten for å bekrefter identiteten til virksomheten som drifter integrasjonen. Denne identiteten må sammsvare med orgnummer som er registrert som integrasjonseier i Fiks-konfigurasjon. Se ["Integrasjoner"]({{< ref "integrasjoner.md" >}}) for en mer detaljert beskrivelse.  
 
