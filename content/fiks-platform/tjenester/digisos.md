@@ -12,13 +12,13 @@ Fiks Digisos tilbyr:
 * Innbygger får tilgang til alle dokumenter og mulighet til å sende inn nye søknader basert på data fra tidligere søknader.
 * Ansatte/brukerstøtte i NAV kan se utvalgte deler av saken via NAV sine systemer.
 
-# Hvordan tar man i bruk Fiks Digisos?
+## Hvordan tar man i bruk Fiks Digisos?
      
 For at fagsystemet skal få tilgang til å motta sosialsøknader og sende saksoppdateringer til NAV via Digisos-API-et for en kommune, må kommunen først konfigurere og aktivere tjenesten Digisos gjennom [Fiks Konfigurasjon](https://forvaltning.fiks.dev.ks.no/fiks-konfigurasjon/tjenester), som viser en veiviser for å sette opp blant annet leveringskanal som inneholder informasjon om hvor søknader/ettersendelser skal mottas til fagsystemet, enten via Fiks IO (anbefalt kanal) og/eller SvarUt. 
 
 Etter at veiviseren er fullført må man inne på Digisos-tjenesten gi fagsystemet sin integrasjon tilgang til å bruke Digisos. For mer informasjon om utvikling og opprettelse av integrasjoner for kommunen sitt fagsystemet, se avsnittet [Integrasjonsutvikling Fagsystem](https://ks-no.github.io/fiks-platform/tjenester/digisos/#integrasjonsutvikling-fagsystem).  
 
-# Hvordan virker Fiks Digisos?
+## Hvordan virker Fiks Digisos?
 
 Digisos består av flere komponenter fra Fiks-plattformen, der Fiks Digisos er hovedkomponenten som bruker andre komponenter:
 - Fiks Digisos API: API for innsending av søknader fra nav.no og innsending av saksoppdateriger fra kommunenes fagsystemer.
