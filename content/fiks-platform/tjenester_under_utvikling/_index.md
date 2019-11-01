@@ -5,7 +5,7 @@ date: 2019-06-27
 
 Roadmap for fremtidige tjenester på Fiks-plattformen. Tidsangivelse må tolkes som en indikasjon på når tjenesten kan være klar, endringer kan forekomme.
 
-## 2019 Q3
+## 2019 Q4
 #### MinSide / Innsyn: Skjema
 Innsyn utvides med ny meldinstype for skjema, og innbyggeres innsendte skjema og kladder for gjøres tilgjengelig i egen webapp på minside.kommune.no. Utvikles som i sammarbeid med leverandører av søknadsmotorer og arkivsystem.
 
