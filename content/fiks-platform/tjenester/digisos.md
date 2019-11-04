@@ -85,8 +85,9 @@ For mer informasjon om Fiks IO, se [dokumentasjon for Fiks IO](https://ks-no.git
 
 #### SvarUt
 
-Ved bruk av SvarUt som leveringskanal må fagsystemet støtte mottak av metadata-filen som definert ovenfor.\
-Denne metadata filen vil være lagt med selve SvarUt forsendelsen, kalt ```forsendelseMetadata.json```.
+Ved bruk av SvarUt som leveringskanal må fagsystemet støtte mottak av metadata-filen som definert ovenfor, [Mottak av søknader](https://ks-no.github.io/fiks-platform/tjenester/digisos/#mottak-av-søknader). Denne metadata filen vil være lagt med selve SvarUt forsendelsen, kalt ```forsendelseMetadata.json```.\
+Søknad: Eksempel på innholdet i ```forsendelseMetadata.json``` for søknader er definert i [søknad-metadata-eksempel](https://github.com/ks-no/fiks-io-meldingstype-katalog/blob/prod/schema/no.nav.digisos.soknad.v1/examples/litenDigisosMelding.json).\
+Ettersendelse: Eksempel på innholdet i ```forsendelseMetadata.json``` for ettersendelser er definert i [ettersendelse-metadata-eksempel](https://github.com/ks-no/fiks-io-meldingstype-katalog/blob/prod/schema/no.nav.digisos.ettersendelse.v1/examples/litenDigisosMelding.json).
 
 For mer informasjon om SvarUt, se [dokumentasjon for SvarUt](https://ks-no.github.io/svarut/). 
 
