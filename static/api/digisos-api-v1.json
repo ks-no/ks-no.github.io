@@ -23,6 +23,48 @@
     "description" : "API for KS Fiks Digisos Service"
   } ],
   "paths" : {
+    "/digisos/api/v1/nav/kommuner" : {
+      "get" : {
+        "tags" : [ "DigisosSoknadNav" ],
+        "description" : "Henter informasjon for alle kommuner som er registrert",
+        "operationId" : "getAlleKommunerStatus",
+        "responses" : {
+          "200" : {
+            "description" : "Informasjon om kommuner",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/KommuneInfo"
+                  }
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Ugyldig data ble oppgitt",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Du har ikke tilgang til å hente informasjon for kommuner",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/digisos/api/v1/nav/kommuner/{kommunenummer}" : {
       "get" : {
         "tags" : [ "DigisosSoknadNav" ],
@@ -81,69 +123,36 @@
         }
       }
     },
-    "/digisos/api/v1/nav/kommuner" : {
-      "get" : {
-        "tags" : [ "DigisosSoknadNav" ],
-        "description" : "Henter informasjon for alle kommuner som er registrert",
-        "operationId" : "getAlleKommunerStatus",
-        "responses" : {
-          "200" : {
-            "description" : "Informasjon om kommuner",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "type" : "array",
-                  "items" : {
-                    "$ref" : "#/components/schemas/KommuneInfo"
-                  }
-                }
-              }
-            }
-          },
-          "400" : {
-            "description" : "Ugyldig data ble oppgitt",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/ErrorMessage"
-                }
-              }
-            }
-          },
-          "403" : {
-            "description" : "Du har ikke tilgang til å hente informasjon for kommuner",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/ErrorMessage"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/digisos/api/v1/soknader/soknader" : {
+    "/digisos/api/v1/soknader/{digisosId}/dokumenter/{dokumentlagerId}" : {
       "get" : {
         "tags" : [ "DigisosSoknad" ],
-        "description" : "Henter alle søknader for innlogget søker",
-        "operationId" : "getSoknader",
+        "description" : "Henter dokument for angitt dokumentlager-id",
+        "operationId" : "getDokument",
+        "parameters" : [ {
+          "name" : "digisosId",
+          "in" : "path",
+          "description" : "Digisos-ID for dokument",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        }, {
+          "name" : "dokumentlagerId",
+          "in" : "path",
+          "description" : "Dokumentlager-ID for dokument",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
         "responses" : {
           "200" : {
-            "description" : "Alle søknader for innlogget søker",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "type" : "array",
-                  "items" : {
-                    "$ref" : "#/components/schemas/DigisosSak"
-                  }
-                }
-              }
-            }
+            "description" : "Henter dokument"
           },
           "400" : {
-            "description" : "Ugyldig data ble oppgitt",
+            "description" : "Ugyldig id",
             "content" : {
               "application/json" : {
                 "schema" : {
@@ -153,7 +162,7 @@
             }
           },
           "403" : {
-            "description" : "Du har ikke tilgang til søknadene tilhørende angitt fnr",
+            "description" : "Du har ikke tilgang til dokumentet tilhørende den angitte id-en",
             "content" : {
               "application/json" : {
                 "schema" : {
@@ -214,36 +223,27 @@
         }
       }
     },
-    "/digisos/api/v1/soknader/{digisosId}/dokumenter/{dokumentlagerId}" : {
+    "/digisos/api/v1/soknader/soknader" : {
       "get" : {
         "tags" : [ "DigisosSoknad" ],
-        "description" : "Henter dokument for angitt dokumentlager-id",
-        "operationId" : "getDokument",
-        "parameters" : [ {
-          "name" : "digisosId",
-          "in" : "path",
-          "description" : "Digisos-ID for dokument",
-          "required" : true,
-          "schema" : {
-            "type" : "string",
-            "format" : "uuid"
-          }
-        }, {
-          "name" : "dokumentlagerId",
-          "in" : "path",
-          "description" : "Dokumentlager-ID for dokument",
-          "required" : true,
-          "schema" : {
-            "type" : "string",
-            "format" : "uuid"
-          }
-        } ],
+        "description" : "Henter alle søknader for innlogget søker",
+        "operationId" : "getSoknader",
         "responses" : {
           "200" : {
-            "description" : "Henter dokument"
+            "description" : "Alle søknader for innlogget søker",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/DigisosSak"
+                  }
+                }
+              }
+            }
           },
           "400" : {
-            "description" : "Ugyldig id",
+            "description" : "Ugyldig data ble oppgitt",
             "content" : {
               "application/json" : {
                 "schema" : {
@@ -253,7 +253,7 @@
             }
           },
           "403" : {
-            "description" : "Du har ikke tilgang til dokumentet tilhørende den angitte id-en",
+            "description" : "Du har ikke tilgang til søknadene tilhørende angitt fnr",
             "content" : {
               "application/json" : {
                 "schema" : {
