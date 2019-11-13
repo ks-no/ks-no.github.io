@@ -1,0 +1,190 @@
+{
+  "openapi" : "3.0.1",
+  "info" : {
+    "title" : "KS Fiks: Innsyn Index Service",
+    "contact" : {
+      "name" : "Fiks-brukerstøtte",
+      "url" : "https://ks-no.github.io/",
+      "email" : "fiks-utvikling@ks.no"
+    },
+    "version" : "v2"
+  },
+  "servers" : [ {
+    "url" : "https://api.fiks.test.ks.no/"
+  } ],
+  "tags" : [ {
+    "name" : "Index"
+  } ],
+  "paths" : {
+    "/innsyn-index/api/v2/indexRequest" : {
+      "put" : {
+        "tags" : [ "Index" ],
+        "summary" : "Indekser nye meldinger, eller oppdater eksisterende meldinger",
+        "description" : "Batch av en eller flere meldinger, opp til et maksimum av 5000. Merk at operasjonen ikke er atomisk: responsen vil indikere om en eller flere indekseringsoperasjoner feilet.",
+        "operationId" : "index",
+        "requestBody" : {
+          "description" : "Meldingene som skal indekseres",
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "minItems" : 1,
+                "type" : "array",
+                "items" : {
+                  "$ref" : "#/components/schemas/IndexMeldingV2"
+                }
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Indekseringsoperasjonen er gjennomført. Merk at indekseringen av en eller flere meldinger kan ha feilet, se de individuelle respons-kodene.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/MeldingIndexResponseV2"
+                }
+              }
+            }
+          },
+          "422" : {
+            "description" : "Antall meldinger i operasjonen overgår øvre begrensning (5000)"
+          },
+          "500" : {
+            "description" : "Indekseringsoperasjonen har feilet. Et ukjent antall meldinger kan likevel ha blitt indeksert, men alle bør sendes inn på nytt"
+          },
+          "400" : {
+            "description" : "Forespørselen er ikke korrekt formatert",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/Valdieringsfeil"
+                  }
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Integrasjonen er ikke autorisert for å indeksere på vegne av spesifisert organisasjon",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/IntegrasjonIkkeAutorisertForIndexApiModel"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components" : {
+    "schemas" : {
+      "MeldingIndexResponseV2" : {
+        "type" : "object",
+        "properties" : {
+          "opprettet" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "oppdatert" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "manglerSamtykke" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "meldingerUtenSamtykke" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "format" : "uuid"
+            }
+          }
+        }
+      },
+      "Valdieringsfeil" : {
+        "type" : "object",
+        "properties" : {
+          "meldingId" : {
+            "type" : "string",
+            "description" : "Id for meldingen som ikke kunne valideres",
+            "format" : "uuid"
+          },
+          "felt" : {
+            "type" : "string",
+            "description" : "Feltet som feiler"
+          },
+          "feilmelding" : {
+            "type" : "string",
+            "description" : "Beskrivelse av feilen som oppstod"
+          }
+        }
+      },
+      "IntegrasjonIkkeAutorisertForIndexApiModel" : {
+        "type" : "object",
+        "properties" : {
+          "integrasjonId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "fiksOrgId" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        }
+      },
+      "EksponertFor" : {
+        "type" : "object",
+        "properties" : {
+          "identifikatorType" : {
+            "type" : "string",
+            "description" : "Type identifikator",
+            "enum" : [ "ORGANISASJONSNUMMER", "FODSELSNUMMER", "MATRIKKELNUMMER", "OFFENTLIG" ]
+          },
+          "verdi" : {
+            "type" : "string",
+            "description" : "Et 11 siffret fødselsnummer, et 9 siffret organisasjonsnummer, eller et matrikkelnummer på format <kommunenr>-<gardsnr>/<bruksnr>/<festenr>/<seksjonsnr>"
+          }
+        },
+        "description" : "Anngir hvem som skal ha tilgang til dokumentet. Dette kan endten være en fysisk person, en organisasjon, eller en matrikkelenhet."
+      },
+      "IndexMeldingV2" : {
+        "required" : [ "eksponertFor", "fiksOrganisasjonId", "meldingId", "meldingMetadata", "sikkerhetsniva", "versjon" ],
+        "type" : "object",
+        "properties" : {
+          "versjon" : {
+            "type" : "string",
+            "enum" : [ "fakturaV1", "saksmappeV1", "journalpostV1", "forsendelseV1", "forsendelseV2", "byggesakV1", "matrikkelenhetV1", "innsendtskjemaV1", "skjemakladdV1", "kommunaltjenesteV1" ]
+          },
+          "meldingId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "sikkerhetsniva" : {
+            "minimum" : 0,
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "eksponertFor" : {
+            "$ref" : "#/components/schemas/EksponertFor"
+          },
+          "fiksOrganisasjonId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "eksternRef" : {
+            "pattern" : "^[A-Za-zæøåÆØÅ0-9_.,/\\-_ ]+$",
+            "type" : "string"
+          },
+          "meldingMetadata" : {
+            "type" : "string"
+          }
+        }
+      }
+    }
+  }
+}
