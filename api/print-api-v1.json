@@ -39,12 +39,22 @@
           }
         } ],
         "responses" : {
-          "default" : {
-            "description" : "default response",
+          "200" : {
+            "description" : "Informasjon om leverandør",
             "content" : {
               "application/json" : {
                 "schema" : {
                   "$ref" : "#/components/schemas/PrintleverandoerMetadata"
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Fant ingen som kan levere for gitt konfidensialitetsklasse",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
                 }
               }
             }
@@ -68,19 +78,26 @@
         } ],
         "requestBody" : {
           "content" : {
-            "application/json" : {
+            "multipart/form-data" : {
               "schema" : {
-                "$ref" : "#/components/schemas/PrintOrdre"
+                "$ref" : "#/components/schemas/PrintOrdreSpesifikasjon"
+              },
+              "encoding" : {
+                "ordre" : {
+                  "contentType" : "application/json"
+                },
+                "fil" : {
+                  "contentType" : "application/octet-stream"
+                }
               }
             }
-          },
-          "required" : true
+          }
         },
         "responses" : {
           "404" : {
             "description" : "Ukjent leverandør",
             "content" : {
-              "*/*" : {
+              "application/json" : {
                 "schema" : {
                   "$ref" : "#/components/schemas/ErrorMessage"
                 }
@@ -88,12 +105,19 @@
             }
           },
           "201" : {
-            "description" : "Ordre ble sendt til leverandør"
+            "description" : "Ordre ble sendt til leverandør",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/PrintOrdreKvittering"
+                }
+              }
+            }
           },
           "400" : {
             "description" : "Feil i inputdata. Ikke sendt til leverandør",
             "content" : {
-              "*/*" : {
+              "application/json" : {
                 "schema" : {
                   "$ref" : "#/components/schemas/ErrorMessage"
                 }
@@ -105,6 +129,7 @@
     },
     "/print/api/v1/ordre/{leverandor}/{ref}" : {
       "get" : {
+        "tags" : [ "print" ],
         "description" : "Henter status for printordre",
         "operationId" : "getStatus",
         "parameters" : [ {
@@ -190,6 +215,16 @@
           }
         }
       },
+      "PrintOrdreKvittering" : {
+        "required" : [ "printOrdreId" ],
+        "type" : "object",
+        "properties" : {
+          "printOrdreId" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        }
+      },
       "Adresse" : {
         "required" : [ "adresseLinje1", "mottakerNavn", "postNummer", "postSted" ],
         "type" : "object",
@@ -213,25 +248,33 @@
         }
       },
       "PrintOrdre" : {
-        "required" : [ "adresse", "eksternRef", "fil" ],
+        "required" : [ "adresse", "eksternRef" ],
         "type" : "object",
         "properties" : {
           "eksternRef" : {
             "type" : "string",
             "format" : "uuid"
           },
-          "fil" : {
-            "type" : "array",
-            "items" : {
-              "type" : "string",
-              "format" : "byte"
-            }
-          },
           "konteringsKode" : {
             "type" : "string"
           },
           "adresse" : {
             "$ref" : "#/components/schemas/Adresse"
+          }
+        },
+        "description" : "Beskriver en ordre som skal til print"
+      },
+      "PrintOrdreSpesifikasjon" : {
+        "required" : [ "fil", "ordre" ],
+        "type" : "object",
+        "properties" : {
+          "ordre" : {
+            "$ref" : "#/components/schemas/PrintOrdre"
+          },
+          "fil" : {
+            "type" : "string",
+            "description" : "Fil som skal sendes til print (kryptert ASIC-E)",
+            "format" : "base64"
           }
         }
       }
