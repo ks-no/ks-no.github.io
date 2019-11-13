@@ -1,20 +1,20 @@
 {
-  "swagger" : "2.0",
+  "openapi" : "3.0.1",
   "info" : {
-    "version" : "v1",
     "title" : "KS Fiks: Innsyn Index Service",
     "contact" : {
       "name" : "Fiks-brukerstøtte",
       "url" : "https://ks-no.github.io/",
       "email" : "fiks-utvikling@ks.no"
-    }
+    },
+    "version" : "v1"
   },
-  "host" : "api.fiks.test.ks.no",
-  "basePath" : "/",
+  "servers" : [ {
+    "url" : "https://api.fiks.test.ks.no/"
+  } ],
   "tags" : [ {
     "name" : "Index"
   } ],
-  "schemes" : [ "https" ],
   "paths" : {
     "/innsyn-index/api/v1/indexRequest" : {
       "put" : {
@@ -22,38 +22,29 @@
         "summary" : "Indekser nye meldinger, eller oppdater eksisterende meldinger",
         "description" : "Batch av en eller flere meldinger, opp til et maksimum av 5000. Merk at operasjonen ikke er atomisk: responsen vil indikere om en eller flere indekseringsoperasjoner feilet.",
         "operationId" : "index",
-        "parameters" : [ {
-          "in" : "body",
-          "name" : "body",
+        "requestBody" : {
           "description" : "Meldingene som skal indekseres",
-          "required" : false,
-          "schema" : {
-            "type" : "array",
-            "items" : {
-              "$ref" : "#/definitions/IndexMeldingV1"
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "minItems" : 1,
+                "type" : "array",
+                "items" : {
+                  "$ref" : "#/components/schemas/IndexMeldingV1"
+                }
+              }
             }
           }
-        } ],
+        },
         "responses" : {
           "200" : {
             "description" : "Indekseringsoperasjonen er gjennomført. Merk at indekseringen av en eller flere meldinger kan ha feilet, se de individuelle respons-kodene.",
-            "schema" : {
-              "$ref" : "#/definitions/MeldingIndexResponse"
-            }
-          },
-          "400" : {
-            "description" : "Forespørselen er ikke korrekt formatert",
-            "schema" : {
-              "type" : "array",
-              "items" : {
-                "$ref" : "#/definitions/Valdieringsfeil"
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/MeldingIndexResponseV1"
+                }
               }
-            }
-          },
-          "403" : {
-            "description" : "Integrasjonen er ikke autorisert for å indeksere på vegne av spesifisert organisasjon",
-            "schema" : {
-              "$ref" : "#/definitions/IntegrasjonIkkeAutorisertForIndexApiModel"
             }
           },
           "422" : {
@@ -61,6 +52,29 @@
           },
           "500" : {
             "description" : "Indekseringsoperasjonen har feilet. Et ukjent antall meldinger kan likevel ha blitt indeksert, men alle bør sendes inn på nytt"
+          },
+          "400" : {
+            "description" : "Forespørselen er ikke korrekt formatert",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/Valdieringsfeil"
+                  }
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Integrasjonen er ikke autorisert for å indeksere på vegne av spesifisert organisasjon",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/IntegrasjonIkkeAutorisertForIndexApiModel"
+                }
+              }
+            }
           }
         }
       }
@@ -69,34 +83,41 @@
       "delete" : {
         "tags" : [ "Index" ],
         "summary" : "Fjerner meldinger indekserte av den autentiserte integrasjonen for den spesifiserte fiks-organisasjonen. Ekstern-ref eller meldingsid kan legges til for ytterligere filtrering. Merk at dette starter en asynkron jobb, og det vil bli returnert på forespørselen før slettejobben faktisk er utført.",
-        "description" : "",
         "operationId" : "slett",
         "parameters" : [ {
           "name" : "fiksOrganisasjonId",
           "in" : "query",
           "description" : "Fiks-organisasjon id",
           "required" : true,
-          "type" : "string",
-          "format" : "uuid"
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
         }, {
           "name" : "eksternRef",
           "in" : "query",
           "description" : "Ekstern referanse",
-          "required" : false,
-          "type" : "string"
+          "schema" : {
+            "type" : "string"
+          }
         }, {
           "name" : "meldingId",
           "in" : "query",
           "description" : "Melding id",
-          "required" : false,
-          "type" : "string",
-          "format" : "uuid"
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
         } ],
         "responses" : {
           "202" : {
             "description" : "successful operation",
-            "schema" : {
-              "$ref" : "#/definitions/SlettRespons"
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/SlettRespons"
+                }
+              }
             }
           }
         }
@@ -106,942 +127,980 @@
       "delete" : {
         "tags" : [ "Index" ],
         "summary" : "Fjerner meldinger for de spesifiserte melding-id'ene (maks 1000). Dette starter en synkron operasjon, det vil ikke returneres på forespørselen før slettingen er utført",
-        "description" : "",
         "operationId" : "slettByMeldingId",
-        "parameters" : [ {
-          "in" : "body",
-          "name" : "body",
-          "required" : true,
-          "schema" : {
-            "$ref" : "#/definitions/SlettMeldingerSpec"
-          }
-        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/SlettMeldingerSpec"
+              }
+            }
+          },
+          "required" : true
+        },
         "responses" : {
           "200" : {
             "description" : "successful operation",
-            "schema" : {
-              "$ref" : "#/definitions/SlettRespons"
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/SlettRespons"
+                }
+              }
             }
           }
         }
       }
     }
   },
-  "definitions" : {
-    "ByggesakDokumentTypeV1" : {
-      "type" : "object",
-      "required" : [ "kodebeskrivelse", "kodeverdi" ],
-      "properties" : {
-        "kodeverdi" : {
-          "type" : "string"
+  "components" : {
+    "schemas" : {
+      "MeldingIndexResponseV1" : {
+        "required" : [ "manglerSamtykke", "oppdatert", "opprettet" ],
+        "type" : "object",
+        "properties" : {
+          "opprettet" : {
+            "type" : "integer",
+            "description" : "Antall nye meldinger som ble indeksert i Fiks Innsyn",
+            "format" : "int32"
+          },
+          "oppdatert" : {
+            "type" : "integer",
+            "description" : "Antall eksisterende meldinger som ble oppdatert",
+            "format" : "int32"
+          },
+          "manglerSamtykke" : {
+            "type" : "integer",
+            "description" : "Antall forespørsler hvor personen meldingen var eksponert for ikke har gitt samtykke til bruk av Fiks Innsyn",
+            "format" : "int32"
+          },
+          "meldingerUtenSamtykke" : {
+            "type" : "array",
+            "description" : "MeldingsId for forespørsler som ble blokkert pga manglende samtykke",
+            "items" : {
+              "type" : "string",
+              "description" : "MeldingsId for forespørsler som ble blokkert pga manglende samtykke",
+              "format" : "uuid"
+            }
+          }
         },
-        "kodebeskrivelse" : {
-          "type" : "string"
-        }
-      }
-    },
-    "ByggesakDokumentV1" : {
-      "type" : "object",
-      "required" : [ "dokumentsdato", "dokumenttype", "erstatterTidligereSystemId", "mimeType", "nedlastingslenke", "size", "systemId", "tittel", "vedtaksdato", "vedtaksstatus", "versjon" ],
-      "properties" : {
-        "tittel" : {
-          "type" : "string",
-          "description" : "Beskrivende tittel på dokumentet"
-        },
-        "dokumenttype" : {
-          "$ref" : "#/definitions/ByggesakDokumentTypeV1"
-        },
-        "nedlastingslenke" : {
-          "type" : "string",
-          "description" : "Referanse til dokument med uri"
-        },
-        "dokumentsdato" : {
-          "type" : "integer",
-          "format" : "int64",
-          "description" : "Dato som er påført selve dokumentet.  Uttrykket som millisekunder etter epoch"
-        },
-        "vedtaksstatus" : {
-          "type" : "string"
-        },
-        "vedtaksdato" : {
-          "type" : "integer",
-          "format" : "int64"
-        },
-        "versjon" : {
-          "type" : "string"
-        },
-        "systemId" : {
-          "type" : "string"
-        },
-        "erstatterTidligereSystemId" : {
-          "type" : "string"
-        },
-        "size" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
-        "mimeType" : {
-          "type" : "string"
-        }
-      }
-    },
-    "EksponertFor" : {
-      "type" : "object",
-      "properties" : {
-        "identifikatorType" : {
-          "type" : "string",
-          "description" : "Type identifikator",
-          "enum" : [ "ORGANISASJONSNUMMER", "FODSELSNUMMER", "MATRIKKELNUMMER", "OFFENTLIG" ]
-        },
-        "verdi" : {
-          "type" : "string",
-          "description" : "Et 11 siffret fødselsnummer, et 9 siffret organisasjonsnummer, eller et matrikkelnummer på format <kommunenr>-<gardsnr>/<bruksnr>/<festenr>/<seksjonsnr>"
+        "description" : "Resultat av indekseringsforespørselen"
+      },
+      "Valdieringsfeil" : {
+        "type" : "object",
+        "properties" : {
+          "meldingId" : {
+            "type" : "string",
+            "description" : "Id for meldingen som ikke kunne valideres",
+            "format" : "uuid"
+          },
+          "felt" : {
+            "type" : "string",
+            "description" : "Feltet som feiler"
+          },
+          "feilmelding" : {
+            "type" : "string",
+            "description" : "Beskrivelse av feilen som oppstod"
+          }
         }
       },
-      "description" : "Anngir hvem som skal ha tilgang til dokumentet. Dette kan endten være en fysisk person, en organisasjon, eller en matrikkelenhet."
-    },
-    "Forelder" : {
-      "type" : "object",
-      "required" : [ "meldingId", "type" ],
-      "properties" : {
-        "meldingId" : {
-          "type" : "string",
-          "format" : "uuid"
-        },
-        "type" : {
-          "type" : "string",
-          "enum" : [ "faktura", "saksmappe", "journalpost", "byggesak", "forsendelse", "matrikkelenhet", "innsendtskjema", "skjemakladd", "kommunaltjeneste" ]
-        }
-      },
-      "description" : "Spesifiser et foreldre-dokument."
-    },
-    "ForsendelseV1Dokument" : {
-      "type" : "object",
-      "required" : [ "nedlastingLenke", "tittel" ],
-      "properties" : {
-        "tittel" : {
-          "type" : "string",
-          "description" : "Tittel for dokumentet"
-        },
-        "size" : {
-          "type" : "integer",
-          "format" : "int32",
-          "description" : "Dokumentets størrelse i bytes"
-        },
-        "nedlastingLenke" : {
-          "type" : "string",
-          "description" : "Url for nedlasting av dokumentet"
-        }
-      },
-      "description" : "Et dokument for en forsendelse"
-    },
-    "ForsendelseV2Adresse" : {
-      "type" : "object",
-      "required" : [ "navn" ],
-      "properties" : {
-        "navn" : {
-          "type" : "string",
-          "description" : "Navn"
-        },
-        "addresselinje1" : {
-          "type" : "string",
-          "description" : "Første adresselinje"
-        },
-        "addresselinje2" : {
-          "type" : "string",
-          "description" : "Andre adresselinje"
-        },
-        "addresselinje3" : {
-          "type" : "string",
-          "description" : "Tredje adresselinje"
-        },
-        "poststed" : {
-          "type" : "string",
-          "description" : "Poststed"
-        },
-        "postnummer" : {
-          "type" : "string",
-          "description" : "Postnummer"
-        },
-        "land" : {
-          "type" : "string",
-          "description" : "Land"
-        }
-      },
-      "description" : "Representerer en postadresse i en forsendelse"
-    },
-    "ForsendelseV2Dokument" : {
-      "type" : "object",
-      "required" : [ "mimeType", "nedlastingLenke", "tittel" ],
-      "properties" : {
-        "tittel" : {
-          "type" : "string",
-          "description" : "Tittel for dokumentet"
-        },
-        "size" : {
-          "type" : "integer",
-          "format" : "int32",
-          "description" : "Dokumentets størrelse i bytes"
-        },
-        "nedlastingLenke" : {
-          "type" : "string",
-          "description" : "Url for nedlasting av dokumentet"
-        },
-        "mimeType" : {
-          "type" : "string",
-          "description" : "Mime-type for dokumentet lenken leder til"
-        }
-      },
-      "description" : "Reprensenterer et dokument i en forsendelse"
-    },
-    "ForsendelseV2Lenke" : {
-      "type" : "object",
-      "properties" : {
-        "url" : {
-          "type" : "string",
-          "description" : "Url for lenken"
-        },
-        "urlTekst" : {
-          "type" : "string",
-          "description" : "Tekst som skal benyttes for url"
-        },
-        "ledetekst" : {
-          "type" : "string",
-          "description" : "Ledetekst for lenken"
-        }
-      },
-      "description" : "Representerer en postadresse i en forsendelse"
-    },
-    "IndexMeldingV1" : {
-      "type" : "object",
-      "required" : [ "eksponertFor", "fiksOrganisasjonId", "meldingId", "meldingMetadata", "sikkerhetsniva" ],
-      "properties" : {
-        "meldingId" : {
-          "type" : "string",
-          "format" : "uuid",
-          "example" : "b8403bc6-4a82-4fee-b06f-8893a539c453"
-        },
-        "sikkerhetsniva" : {
-          "type" : "integer",
-          "format" : "int32",
-          "example" : 4,
-          "minimum" : 0
-        },
-        "eksponertFor" : {
-          "example" : "123456789",
-          "$ref" : "#/definitions/EksponertFor"
-        },
-        "fiksOrganisasjonId" : {
-          "type" : "string",
-          "format" : "uuid",
-          "example" : "120b7806-611f-4b76-b2d4-3a1445de5281"
-        },
-        "eksternRef" : {
-          "type" : "string",
-          "example" : "sakogarkiv.byggesak",
-          "pattern" : "^[A-Za-zæøåÆØÅ0-9_.,/\\-_ ]+$"
-        },
-        "meldingMetadata" : {
-          "$ref" : "#/definitions/MeldingMetadata"
-        }
-      },
-      "description" : "En forespørsel om å opprette en ny eller oppdatere eksisterende melding"
-    },
-    "IntegrasjonIkkeAutorisertForIndexApiModel" : {
-      "type" : "object",
-      "properties" : {
-        "integrasjonId" : {
-          "type" : "string",
-          "format" : "uuid"
-        },
-        "fiksOrgId" : {
-          "type" : "string",
-          "format" : "uuid"
-        }
-      }
-    },
-    "JournalpostV1Dokumentbeskrivelse" : {
-      "type" : "object",
-      "required" : [ "filstorrelse", "nedlastingLenke", "tittel", "variantformat" ],
-      "properties" : {
-        "tittel" : {
-          "type" : "string"
-        },
-        "filstorrelse" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
-        "variantformat" : {
-          "type" : "string"
-        },
-        "nedlastingLenke" : {
-          "type" : "string"
-        }
-      },
-      "description" : "Et dokument for en forsendelse"
-    },
-    "MatrikkelnummerV1" : {
-      "type" : "object",
-      "required" : [ "bruksnummer", "festenummer", "gardsnummer", "kommunenummer", "seksjonsnummer" ],
-      "properties" : {
-        "kommunenummer" : {
-          "type" : "string",
-          "pattern" : "^\\d{4}$"
-        },
-        "gardsnummer" : {
-          "type" : "string",
-          "pattern" : "^[0-9]{1,6}$"
-        },
-        "bruksnummer" : {
-          "type" : "string",
-          "pattern" : "^[0-9]{1,6}$"
-        },
-        "festenummer" : {
-          "type" : "string",
-          "pattern" : "^[0-9]{1,6}$"
-        },
-        "seksjonsnummer" : {
-          "type" : "string",
-          "pattern" : "^[0-9]{1,6}$"
-        }
-      }
-    },
-    "MeldingIndexResponse" : {
-      "type" : "object",
-      "required" : [ "manglerSamtykke", "oppdatert", "opprettet" ],
-      "properties" : {
-        "opprettet" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
-        "oppdatert" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
-        "manglerSamtykke" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
-        "meldingerUtenSamtykke" : {
-          "type" : "array",
-          "items" : {
+      "IntegrasjonIkkeAutorisertForIndexApiModel" : {
+        "type" : "object",
+        "properties" : {
+          "integrasjonId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "fiksOrgId" : {
             "type" : "string",
             "format" : "uuid"
           }
         }
       },
-      "description" : "Resultat av indekseringsforespørselen"
-    },
-    "MeldingMetadata" : {
-      "type" : "object",
-      "required" : [ "versjon" ],
-      "discriminator" : "versjon",
-      "properties" : {
-        "versjon" : {
-          "type" : "string",
-          "enum" : [ "fakturaV1", "saksmappeV1", "journalpostV1", "forsendelseV1", "forsendelseV2", "byggesakV1", "matrikkelenhetV1", "innsendtskjemaV1", "skjemakladdV1", "kommunaltjenesteV1" ]
-        }
-      }
-    },
-    "SaksnummerV1" : {
-      "type" : "object",
-      "required" : [ "saksaar", "sakssekvensnummer" ],
-      "properties" : {
-        "saksaar" : {
-          "type" : "string"
-        },
-        "sakssekvensnummer" : {
-          "type" : "string"
-        }
-      }
-    },
-    "SkjemaFilV1" : {
-      "type" : "object",
-      "required" : [ "filnavn", "mimeType", "nedlastingslenke", "size" ],
-      "properties" : {
-        "nedlastingslenke" : {
-          "type" : "string",
-          "description" : "Url til nedlasting av fil"
-        },
-        "filnavn" : {
-          "type" : "string",
-          "example" : "skjema.pdf",
-          "description" : "Filnavn"
-        },
-        "mimeType" : {
-          "type" : "string",
-          "example" : "application/pdf",
-          "description" : "MimeType på fil",
-          "pattern" : "\\w+/[-.\\w]+(?:\\+[-.\\w]+)?"
-        },
-        "size" : {
-          "type" : "integer",
-          "format" : "int64",
-          "example" : 23456847,
-          "description" : "Størrelse på fil i bytes"
+      "ByggesakDokumentTypeV1" : {
+        "required" : [ "kodebeskrivelse", "kodeverdi" ],
+        "type" : "object",
+        "properties" : {
+          "kodeverdi" : {
+            "type" : "string"
+          },
+          "kodebeskrivelse" : {
+            "type" : "string"
+          }
         }
       },
-      "description" : "Fil for bruk i skjema"
-    },
-    "SlettMeldingerSpec" : {
-      "type" : "object",
-      "required" : [ "meldinger" ],
-      "properties" : {
-        "meldinger" : {
-          "type" : "array",
-          "description" : "Melding-id for meldinger som skal slettes, maks 1000",
-          "items" : {
-            "$ref" : "#/definitions/slettMelding"
-          },
-          "maxItems" : 1000,
-          "minItems" : 1
-        }
-      }
-    },
-    "SlettRespons" : {
-      "type" : "object",
-      "properties" : {
-        "antallSlettet" : {
-          "type" : "integer",
-          "format" : "int64",
-          "description" : "Antall meldinger som ble slettet i operasjonen."
-        }
-      }
-    },
-    "TiltakstypeV1" : {
-      "type" : "object",
-      "properties" : {
-        "kodeverdi" : {
-          "type" : "string"
-        },
-        "kodebeskrivelse" : {
-          "type" : "string"
-        }
-      }
-    },
-    "Valdieringsfeil" : {
-      "type" : "object",
-      "properties" : {
-        "meldingId" : {
-          "type" : "string",
-          "format" : "uuid",
-          "description" : "Id for meldingen som ikke kunne valideres"
-        },
-        "felt" : {
-          "type" : "string",
-          "description" : "Feltet som feiler"
-        },
-        "feilmelding" : {
-          "type" : "string",
-          "description" : "Beskrivelse av feilen som oppstod"
-        }
-      }
-    },
-    "byggesakV1" : {
-      "allOf" : [ {
-        "$ref" : "#/definitions/MeldingMetadata"
-      }, {
+      "ByggesakDokumentV1" : {
+        "required" : [ "dokumentsdato", "dokumenttype", "erstatterTidligereSystemId", "mimeType", "nedlastingslenke", "size", "systemId", "tittel", "vedtaksdato", "vedtaksstatus", "versjon" ],
         "type" : "object",
-        "required" : [ "dokumentlistebeskrivelse", "saksdato", "tittel" ],
         "properties" : {
           "tittel" : {
             "type" : "string",
-            "description" : "Tittel for byggesaken"
+            "description" : "Beskrivende tittel på dokumentet"
           },
-          "beskrivelse" : {
+          "dokumenttype" : {
+            "$ref" : "#/components/schemas/ByggesakDokumentTypeV1"
+          },
+          "nedlastingslenke" : {
             "type" : "string",
-            "description" : "Beskrivelse av byggesaken"
+            "description" : "Referanse til dokument med uri"
           },
-          "mappeId" : {
+          "dokumentsdato" : {
+            "type" : "integer",
+            "description" : "Dato som er påført selve dokumentet.  Uttrykket som millisekunder etter epoch",
+            "format" : "int64"
+          },
+          "vedtaksstatus" : {
             "type" : "string"
           },
-          "sakstatus" : {
-            "type" : "string"
-          },
-          "saksdato" : {
-            "type" : "integer",
-            "format" : "int64",
-            "example" : 1527140551605,
-            "description" : "Datoen saken er opprettet. Uttrykket som millisekunder etter epoch"
-          },
-          "saksansvarlig" : {
-            "type" : "string",
-            "example" : "Ola Normann",
-            "description" : "Saksbehandler som er ansvarlig for saken"
-          },
-          "administrativEnhet" : {
-            "type" : "string",
-            "description" : "Avdeling, team eller etat som behandler saken"
-          },
-          "adresse" : {
-            "type" : "string",
-            "example" : "Øvre Eksempelveien 35, 5073 BERGEN",
-            "description" : "Adresse til tiltaket"
-          },
-          "avsluttetDato" : {
-            "type" : "integer",
-            "format" : "int64",
-            "example" : 1527140551605,
-            "description" : "Dato når saken er avsluttet"
-          },
-          "saksnummer" : {
-            "$ref" : "#/definitions/SaksnummerV1"
-          },
-          "tiltakstype" : {
-            "description" : "ref kodeliste https://register.geonorge.no/byggesoknad/tiltaktype",
-            "$ref" : "#/definitions/TiltakstypeV1"
-          },
-          "tiltakshaver" : {
-            "type" : "string",
-            "description" : "Navn på tiltakshaver. Tiltakshaver er eier av søknaden og har et overordnet ansvar for det som bygges"
-          },
-          "ansvarligSoker" : {
-            "type" : "string",
-            "description" : "Navn på ansvarlig søker. Ansvarlig søker har påtatt seg ansvaret for byggesøknaden og all kommunikasjon med kommunens byggesaksavdeling"
-          },
-          "matrikkelnummer" : {
-            "$ref" : "#/definitions/MatrikkelnummerV1"
-          },
-          "dokumentlistebeskrivelse" : {
-            "type" : "string",
-            "description" : "En beskrivelse av hva dokumentlisten inneholder. Feks om det er utvalge dokumenter i en sak eller alle dokumenter"
-          },
-          "dokumenter" : {
-            "type" : "array",
-            "items" : {
-              "$ref" : "#/definitions/ByggesakDokumentV1"
-            }
-          },
-          "korrelasjonId" : {
-            "type" : "string",
-            "pattern" : "^[A-Za-z0-9\\-]+$"
-          },
-          "forelder" : {
-            "$ref" : "#/definitions/Forelder"
-          }
-        },
-        "description" : "Melding som beskriver en byggesak"
-      } ]
-    },
-    "fakturaV1" : {
-      "allOf" : [ {
-        "$ref" : "#/definitions/MeldingMetadata"
-      }, {
-        "type" : "object",
-        "required" : [ "fakturaDato", "forfallDato", "tittel" ],
-        "properties" : {
-          "tittel" : {
-            "type" : "string",
-            "example" : "Parkeringsgebyr 11.05.18",
-            "description" : "Tittel for fakturaen"
-          },
-          "fakturaDato" : {
-            "type" : "integer",
-            "format" : "int64",
-            "example" : 1527140551605,
-            "description" : "Dato fakturaen er sendt. Dette feltet brukes som sorteringsdato. Uttrykket som millisekunder etter epoch"
-          },
-          "forfallDato" : {
+          "vedtaksdato" : {
             "type" : "integer",
             "format" : "int64"
           },
-          "fakturaMottaker" : {
+          "versjon" : {
             "type" : "string"
           },
-          "betalesTil" : {
+          "systemId" : {
             "type" : "string"
           },
-          "korrelasjonId" : {
-            "type" : "string",
-            "pattern" : "^[A-Za-z0-9\\-]+$"
+          "erstatterTidligereSystemId" : {
+            "type" : "string"
           },
-          "forelder" : {
-            "$ref" : "#/definitions/Forelder"
+          "size" : {
+            "type" : "integer",
+            "format" : "int32"
           },
-          "belop" : {
+          "mimeType" : {
             "type" : "string"
           }
-        },
-        "description" : "Hendelse som beskriver en forsendelse"
-      } ]
-    },
-    "forsendelseV1" : {
-      "allOf" : [ {
-        "$ref" : "#/definitions/MeldingMetadata"
-      }, {
+        }
+      },
+      "EksponertFor" : {
         "type" : "object",
-        "required" : [ "avsender", "dokumenter", "lest", "mottaker", "sendtDato", "tittel" ],
+        "properties" : {
+          "identifikatorType" : {
+            "type" : "string",
+            "description" : "Type identifikator",
+            "enum" : [ "ORGANISASJONSNUMMER", "FODSELSNUMMER", "MATRIKKELNUMMER", "OFFENTLIG" ]
+          },
+          "verdi" : {
+            "type" : "string",
+            "description" : "Et 11 siffret fødselsnummer, et 9 siffret organisasjonsnummer, eller et matrikkelnummer på format <kommunenr>-<gardsnr>/<bruksnr>/<festenr>/<seksjonsnr>"
+          }
+        },
+        "description" : "Anngir hvem som skal ha tilgang til dokumentet. Dette kan endten være en fysisk person, en organisasjon, eller en matrikkelenhet.",
+        "example" : 123456789
+      },
+      "Forelder" : {
+        "required" : [ "meldingId", "type" ],
+        "type" : "object",
+        "properties" : {
+          "meldingId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "type" : {
+            "type" : "string",
+            "enum" : [ "faktura", "saksmappe", "journalpost", "byggesak", "forsendelse", "matrikkelenhet", "innsendtskjema", "skjemakladd", "kommunaltjeneste" ]
+          }
+        },
+        "description" : "Spesifiser et foreldre-dokument."
+      },
+      "ForsendelseV1Dokument" : {
+        "required" : [ "nedlastingLenke", "tittel" ],
+        "type" : "object",
         "properties" : {
           "tittel" : {
             "type" : "string",
-            "description" : "Tittel for meldingen"
+            "description" : "Tittel for dokumentet"
           },
-          "sendtDato" : {
+          "size" : {
             "type" : "integer",
-            "format" : "int64",
-            "description" : "Dato forsendelsen er sendt. Dette feltet brukes som sorteringsdato. Uttrykket som millisekunder etter epoch"
+            "description" : "Dokumentets størrelse i bytes",
+            "format" : "int32"
           },
-          "avsender" : {
+          "nedlastingLenke" : {
             "type" : "string",
-            "description" : "Navn på person eller orgnr / navn på organisasjon som er kilde for forsendelsen."
-          },
-          "mottaker" : {
-            "type" : "string",
-            "description" : "Navn på person eller orgnr / navn på organisasjon som er mottaker for forsendelsen"
-          },
-          "lest" : {
-            "type" : "boolean",
-            "description" : "Indikerer om forsendelsen er lest eller ikke"
-          },
-          "svarLenke" : {
-            "type" : "string",
-            "description" : "Url som skal benyttes for å svare på denne forsendelsen"
-          },
-          "korrelasjonId" : {
-            "type" : "string",
-            "pattern" : "^[A-Za-z0-9\\-]+$"
-          },
-          "forelder" : {
-            "$ref" : "#/definitions/Forelder"
-          },
-          "dokumenter" : {
-            "type" : "array",
-            "description" : "Dokumenter som inngår i denne forsendelsen",
-            "items" : {
-              "$ref" : "#/definitions/ForsendelseV1Dokument"
-            },
-            "maxItems" : 2147483647,
-            "minItems" : 1
+            "description" : "Url for nedlasting av dokumentet"
           }
         },
-        "description" : "Melding som beskriver en forsendelse. Benyttes i dag for å vise post sendt via KS-SvarUt på minside.kommune.no"
-      } ]
-    },
-    "forsendelseV2" : {
-      "allOf" : [ {
-        "$ref" : "#/definitions/MeldingMetadata"
-      }, {
+        "description" : "Et dokument for en forsendelse"
+      },
+      "ForsendelseV2Adresse" : {
+        "required" : [ "navn" ],
         "type" : "object",
-        "required" : [ "avsender", "dokumenter", "lest", "mottakerAdresse", "returAdresse", "sendtDato", "tittel" ],
+        "properties" : {
+          "navn" : {
+            "type" : "string",
+            "description" : "Navn"
+          },
+          "addresselinje1" : {
+            "type" : "string",
+            "description" : "Første adresselinje"
+          },
+          "addresselinje2" : {
+            "type" : "string",
+            "description" : "Andre adresselinje"
+          },
+          "addresselinje3" : {
+            "type" : "string",
+            "description" : "Tredje adresselinje"
+          },
+          "poststed" : {
+            "type" : "string",
+            "description" : "Poststed"
+          },
+          "postnummer" : {
+            "type" : "string",
+            "description" : "Postnummer"
+          },
+          "land" : {
+            "type" : "string",
+            "description" : "Land"
+          }
+        },
+        "description" : "Representerer en postadresse i en forsendelse"
+      },
+      "ForsendelseV2Dokument" : {
+        "required" : [ "mimeType", "nedlastingLenke", "tittel" ],
+        "type" : "object",
         "properties" : {
           "tittel" : {
             "type" : "string",
-            "description" : "Tittel for meldingen"
+            "description" : "Tittel for dokumentet"
           },
-          "sendtDato" : {
+          "size" : {
             "type" : "integer",
-            "format" : "int64",
-            "description" : "Dato forsendelsen er sendt. Dette feltet brukes som sorteringsdato. Uttrykket som millisekunder etter epoch"
+            "description" : "Dokumentets størrelse i bytes",
+            "format" : "int32"
           },
-          "avsender" : {
+          "nedlastingLenke" : {
             "type" : "string",
-            "description" : "Navn på person eller orgnr / navn på organisasjon som er kilde for forsendelsen."
+            "description" : "Url for nedlasting av dokumentet"
           },
-          "returAdresse" : {
-            "description" : "Returadresse påført forsendelsen",
-            "$ref" : "#/definitions/ForsendelseV2Adresse"
-          },
-          "mottakerAdresse" : {
-            "description" : "Mottakeradresse påført forsendelsen",
-            "$ref" : "#/definitions/ForsendelseV2Adresse"
-          },
-          "lest" : {
-            "type" : "boolean",
-            "description" : "Indikerer om forsendelsen er lest eller ikke"
-          },
-          "dokumenter" : {
-            "type" : "array",
-            "description" : "Dokumenter som inngår i denne forsendelsen",
-            "items" : {
-              "$ref" : "#/definitions/ForsendelseV2Dokument"
-            },
-            "maxItems" : 2147483647,
-            "minItems" : 1
-          },
-          "lenker" : {
-            "type" : "array",
-            "description" : "Lenker vedlagt forsendelsen",
-            "items" : {
-              "$ref" : "#/definitions/ForsendelseV2Lenke"
-            }
-          },
-          "svarLenke" : {
+          "mimeType" : {
             "type" : "string",
-            "description" : "Url som skal benyttes for å svare på denne forsendelsen"
-          },
-          "korrelasjonId" : {
-            "type" : "string",
-            "pattern" : "^[A-Za-z0-9\\-]+$"
-          },
-          "forelder" : {
-            "$ref" : "#/definitions/Forelder"
+            "description" : "Mime-type for dokumentet lenken leder til"
           }
         },
-        "description" : "Melding som beskriver en forsendelse. Benyttes i dag for å vise post sendt via KS-SvarUt på minside.kommune.no"
-      } ]
-    },
-    "innsendtskjemaV1" : {
-      "allOf" : [ {
-        "$ref" : "#/definitions/MeldingMetadata"
-      }, {
+        "description" : "Reprensenterer et dokument i en forsendelse"
+      },
+      "ForsendelseV2Lenke" : {
+        "required" : [ "url", "urlTekst" ],
         "type" : "object",
-        "required" : [ "avsender", "innsendtdato", "mottaker", "skjemafil", "tittel" ],
         "properties" : {
-          "tittel" : {
-            "type" : "string",
-            "example" : "Søknad om fartsdempende tiltak",
-            "description" : "Tittel på skjema"
-          },
-          "mottaker" : {
-            "type" : "string",
-            "example" : "Bergen kommune boligetaten",
-            "description" : "Navn på mottaker av skjema"
-          },
-          "avsender" : {
-            "type" : "string",
-            "example" : "Ola Normann",
-            "description" : "Navn på avsender av skjema"
-          },
-          "innsendtdato" : {
-            "type" : "integer",
-            "format" : "int64",
-            "description" : "Dato for når skjemaet var innsendt. Uttrykket som millisekunder etter epoch"
-          },
-          "skjemafil" : {
-            "description" : "Hovedfil for skjemaet som er innsendt",
-            "$ref" : "#/definitions/SkjemaFilV1"
-          },
-          "vedlegg" : {
-            "type" : "array",
-            "description" : "Vedlegg til skjema",
-            "items" : {
-              "$ref" : "#/definitions/SkjemaFilV1"
-            }
-          },
           "url" : {
             "type" : "string",
-            "description" : "Url til sak, eller videre saksgang i skjemaet"
+            "description" : "Url for lenken"
           },
-          "korrelasjonId" : {
+          "urlTekst" : {
             "type" : "string",
-            "pattern" : "^[A-Za-z0-9\\-]+$"
+            "description" : "Tekst som skal benyttes for url"
           },
-          "forelder" : {
-            "$ref" : "#/definitions/Forelder"
+          "ledetekst" : {
+            "type" : "string",
+            "description" : "Ledetekst for lenken"
           }
         },
-        "description" : "InnsendtSkjema"
-      } ]
-    },
-    "journalpostV1" : {
-      "allOf" : [ {
-        "$ref" : "#/definitions/MeldingMetadata"
-      }, {
+        "description" : "Representerer en postadresse i en forsendelse"
+      },
+      "IndexMeldingV1" : {
+        "required" : [ "eksponertFor", "fiksOrganisasjonId", "meldingId", "meldingMetadata", "sikkerhetsniva" ],
         "type" : "object",
-        "required" : [ "beskrivelse", "dokumentbeskrivelser", "journaldato", "registreringsId", "tittel" ],
         "properties" : {
-          "registreringsId" : {
-            "type" : "string"
+          "meldingId" : {
+            "type" : "string",
+            "description" : "UUID, i samsvar med standardrepresentasjonen beskrevet her: https://docs.oracle.com/javase/8/docs/api/java/util/UUID.html#toString--",
+            "format" : "uuid",
+            "example" : "b8403bc6-4a82-4fee-b06f-8893a539c453"
           },
+          "sikkerhetsniva" : {
+            "minimum" : 0,
+            "type" : "integer",
+            "description" : "Påkrevd sikkerhetsnivå",
+            "format" : "int32",
+            "example" : 4
+          },
+          "eksponertFor" : {
+            "$ref" : "#/components/schemas/EksponertFor"
+          },
+          "fiksOrganisasjonId" : {
+            "type" : "string",
+            "description" : "Fiks-organisasjonen som er ansvarlig for meldingen, som registrert i fiks-konfigurasjon",
+            "format" : "uuid",
+            "example" : "120b7806-611f-4b76-b2d4-3a1445de5281"
+          },
+          "eksternRef" : {
+            "pattern" : "^[A-Za-zæøåÆØÅ0-9_.,/\\-_ ]+$",
+            "type" : "string",
+            "description" : "Ekstern-ref. Kan benyttes ved sletting av grupper dokumenter, for eksempel en gruppe som utgjør en kategori i kildesystemet",
+            "example" : "sakogarkiv.byggesak"
+          },
+          "meldingMetadata" : {
+            "$ref" : "#/components/schemas/MeldingMetadata"
+          }
+        },
+        "description" : "En forespørsel om å opprette en ny eller oppdatere eksisterende melding"
+      },
+      "JournalpostV1Dokumentbeskrivelse" : {
+        "required" : [ "filstorrelse", "nedlastingLenke", "tittel", "variantformat" ],
+        "type" : "object",
+        "properties" : {
           "tittel" : {
             "type" : "string"
           },
-          "beskrivelse" : {
+          "filstorrelse" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "variantformat" : {
             "type" : "string"
           },
-          "journaldato" : {
-            "type" : "integer",
-            "format" : "int64"
+          "nedlastingLenke" : {
+            "type" : "string"
+          }
+        },
+        "description" : "Et dokument for en forsendelse"
+      },
+      "MatrikkelnummerV1" : {
+        "required" : [ "bruksnummer", "festenummer", "gardsnummer", "kommunenummer", "seksjonsnummer" ],
+        "type" : "object",
+        "properties" : {
+          "kommunenummer" : {
+            "pattern" : "^\\d{4}$",
+            "type" : "string"
           },
-          "korrelasjonId" : {
+          "gardsnummer" : {
+            "pattern" : "^[0-9]{1,6}$",
+            "type" : "string"
+          },
+          "bruksnummer" : {
+            "pattern" : "^[0-9]{1,6}$",
+            "type" : "string"
+          },
+          "festenummer" : {
+            "pattern" : "^[0-9]{1,6}$",
+            "type" : "string"
+          },
+          "seksjonsnummer" : {
+            "pattern" : "^[0-9]{1,6}$",
+            "type" : "string"
+          }
+        },
+        "description" : "Adresse for matrikkelenheten"
+      },
+      "MeldingMetadata" : {
+        "type" : "object",
+        "properties" : {
+          "versjon" : {
             "type" : "string",
-            "pattern" : "^[A-Za-z0-9\\-]+$"
+            "description" : "Modellversjon for melding-typen",
+            "enum" : [ "fakturaV1", "saksmappeV1", "journalpostV1", "forsendelseV1", "forsendelseV2", "byggesakV1", "matrikkelenhetV1", "innsendtskjemaV1", "skjemakladdV1", "kommunaltjenesteV1" ]
+          }
+        },
+        "description" : "Meldingsdata i sammsvar med typen melding som ønskes opprettet eller oppdatert",
+        "discriminator" : {
+          "propertyName" : "versjon"
+        }
+      },
+      "SaksnummerV1" : {
+        "required" : [ "saksaar", "sakssekvensnummer" ],
+        "type" : "object",
+        "properties" : {
+          "saksaar" : {
+            "type" : "string"
           },
-          "forelder" : {
-            "$ref" : "#/definitions/Forelder"
-          },
-          "dokumentbeskrivelser" : {
-            "type" : "array",
-            "items" : {
-              "$ref" : "#/definitions/JournalpostV1Dokumentbeskrivelse"
-            },
-            "maxItems" : 2147483647,
-            "minItems" : 1
+          "sakssekvensnummer" : {
+            "type" : "string"
           }
         }
-      } ]
-    },
-    "kommunaltjenesteV1" : {
-      "allOf" : [ {
-        "$ref" : "#/definitions/MeldingMetadata"
-      }, {
+      },
+      "SkjemaFilV1" : {
+        "required" : [ "filnavn", "mimeType", "nedlastingslenke", "size" ],
         "type" : "object",
-        "required" : [ "kommuneFiksOrganisasjonId", "kommuneVisningsnavn", "lenke", "rettetMot", "tittel", "tjenesteId" ],
         "properties" : {
-          "tjenesteId" : {
+          "nedlastingslenke" : {
             "type" : "string",
-            "format" : "uuid",
-            "description" : "Id for den kommunale tjenesten"
+            "description" : "Url til nedlasting av fil"
           },
-          "tittel" : {
+          "filnavn" : {
             "type" : "string",
-            "description" : "Tittel på den kommunale tjenesten"
+            "description" : "Filnavn",
+            "example" : "skjema.pdf"
           },
-          "lenke" : {
+          "mimeType" : {
+            "pattern" : "\\w+/[-.\\w]+(?:\\+[-.\\w]+)?",
             "type" : "string",
-            "description" : "Lenke til den kommunale tjenesten"
+            "description" : "MimeType på fil",
+            "example" : "application/pdf"
           },
-          "rettetMot" : {
-            "type" : "string",
-            "description" : "Hvilken autentiseringstype den kommunale tjenesten er rettet mot",
-            "enum" : [ "PERSON", "ORGANISASJON", "PERSON_OG_ORGANISASJON" ]
-          },
-          "kommuneFiksOrganisasjonId" : {
-            "type" : "string",
-            "format" : "uuid",
-            "description" : "Fiks organisasjon id for kommunen som eier denne tjenesten"
-          },
-          "kommuneVisningsnavn" : {
-            "type" : "string",
-            "description" : "Visningsnavn for kommunen som eier denne tjenesten"
+          "size" : {
+            "type" : "integer",
+            "description" : "Størrelse på fil i bytes",
+            "format" : "int64",
+            "example" : 23456847
           }
         },
-        "description" : "Kommunal Tjeneste"
-      } ]
-    },
-    "matrikkelenhetV1" : {
-      "allOf" : [ {
-        "$ref" : "#/definitions/MeldingMetadata"
-      }, {
+        "description" : "Fil for bruk i skjema"
+      },
+      "TiltakstypeV1" : {
+        "required" : [ "kodebeskrivelse", "kodeverdi" ],
         "type" : "object",
-        "required" : [ "matrikkelenhetId", "matrikkelnummer" ],
         "properties" : {
-          "matrikkelnummer" : {
-            "description" : "Adresse for matrikkelenheten",
-            "$ref" : "#/definitions/MatrikkelnummerV1"
+          "kodeverdi" : {
+            "type" : "string"
           },
-          "matrikkelenhetId" : {
-            "type" : "integer",
-            "format" : "int64",
-            "description" : "Matrikkel-intern id for matrikkelenheten"
-          },
-          "adresser" : {
-            "type" : "array",
-            "example" : "Øvre Testveien 34, 3765 Storevik",
-            "description" : "Adresse for matrikkelenheten",
-            "items" : {
+          "kodebeskrivelse" : {
+            "type" : "string"
+          }
+        },
+        "description" : "ref kodeliste https://register.geonorge.no/byggesoknad/tiltaktype"
+      },
+      "byggesakV1" : {
+        "required" : [ "saksdato", "tittel" ],
+        "type" : "object",
+        "description" : "Melding som beskriver en byggesak",
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/MeldingMetadata"
+        }, {
+          "type" : "object",
+          "properties" : {
+            "korrelasjonId" : {
+              "pattern" : "^[A-Za-z0-9\\-]+$",
+              "type" : "string",
+              "description" : "Id som knytter dette dokumentet sammen med andre relaterte dokumenter. Merk at bare en av korrelasjonsid eller parent kan være oppgitt"
+            },
+            "forelder" : {
+              "$ref" : "#/components/schemas/Forelder"
+            },
+            "tittel" : {
+              "type" : "string",
+              "description" : "Tittel for byggesaken"
+            },
+            "beskrivelse" : {
+              "type" : "string",
+              "description" : "Beskrivelse av byggesaken"
+            },
+            "mappeId" : {
+              "type" : "string"
+            },
+            "sakstatus" : {
+              "type" : "string"
+            },
+            "saksdato" : {
+              "type" : "integer",
+              "description" : "Datoen saken er opprettet. Uttrykket som millisekunder etter epoch",
+              "format" : "int64",
+              "example" : 1527140551605
+            },
+            "saksansvarlig" : {
+              "type" : "string",
+              "description" : "Saksbehandler som er ansvarlig for saken",
+              "example" : "Ola Nordmann"
+            },
+            "administrativEnhet" : {
+              "type" : "string",
+              "description" : "Avdeling, team eller etat som behandler saken"
+            },
+            "adresse" : {
+              "type" : "string",
+              "description" : "Adresse til tiltaket",
+              "example" : "Øvre Eksempelveien 35, 5073 BERGEN"
+            },
+            "avsluttetDato" : {
+              "type" : "integer",
+              "description" : "Dato når saken er avsluttet",
+              "format" : "int64",
+              "example" : 1527140551605
+            },
+            "saksnummer" : {
+              "$ref" : "#/components/schemas/SaksnummerV1"
+            },
+            "tiltakstype" : {
+              "$ref" : "#/components/schemas/TiltakstypeV1"
+            },
+            "tiltakshaver" : {
+              "type" : "string",
+              "description" : "Navn på tiltakshaver. Tiltakshaver er eier av søknaden og har et overordnet ansvar for det som bygges"
+            },
+            "ansvarligSoker" : {
+              "type" : "string",
+              "description" : "Navn på ansvarlig søker. Ansvarlig søker har påtatt seg ansvaret for byggesøknaden og all kommunikasjon med kommunens byggesaksavdeling"
+            },
+            "matrikkelnummer" : {
+              "$ref" : "#/components/schemas/MatrikkelnummerV1"
+            },
+            "dokumentlistebeskrivelse" : {
+              "type" : "string",
+              "description" : "En beskrivelse av hva dokumentlisten inneholder. Feks om det er utvalge dokumenter i en sak eller alle dokumenter"
+            },
+            "dokumenter" : {
+              "type" : "array",
+              "items" : {
+                "$ref" : "#/components/schemas/ByggesakDokumentV1"
+              }
+            }
+          }
+        } ]
+      },
+      "fakturaV1" : {
+        "required" : [ "belop", "betalesTil", "fakturaDato", "fakturaMottaker", "forfallDato", "tittel" ],
+        "type" : "object",
+        "description" : "Hendelse som beskriver en forsendelse",
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/MeldingMetadata"
+        }, {
+          "type" : "object",
+          "properties" : {
+            "korrelasjonId" : {
+              "pattern" : "^[A-Za-z0-9\\-]+$",
+              "type" : "string",
+              "description" : "Id som knytter dette dokumentet sammen med andre relaterte dokumenter. Merk at bare en av korrelasjonsid eller parent kan være oppgitt"
+            },
+            "forelder" : {
+              "$ref" : "#/components/schemas/Forelder"
+            },
+            "tittel" : {
+              "type" : "string",
+              "description" : "Tittel for fakturaen",
+              "example" : "Parkeringsgebyr 11.05.18"
+            },
+            "fakturaDato" : {
+              "type" : "integer",
+              "description" : "Dato fakturaen er sendt. Dette feltet brukes som sorteringsdato. Uttrykket som millisekunder etter epoch",
+              "format" : "int64",
+              "example" : 1527140551605
+            },
+            "forfallDato" : {
+              "type" : "integer",
+              "format" : "int64"
+            },
+            "fakturaMottaker" : {
+              "type" : "string"
+            },
+            "betalesTil" : {
+              "type" : "string"
+            },
+            "belop" : {
               "type" : "string"
             }
-          },
-          "korrelasjonId" : {
-            "type" : "string",
-            "pattern" : "^[A-Za-z0-9\\-]+$"
-          },
-          "forelder" : {
-            "$ref" : "#/definitions/Forelder"
           }
-        },
-        "description" : "Matrikkelenhet"
-      } ]
-    },
-    "saksmappeV1" : {
-      "allOf" : [ {
-        "$ref" : "#/definitions/MeldingMetadata"
-      }, {
+        } ]
+      },
+      "forsendelseV1" : {
+        "required" : [ "avsender", "dokumenter", "lest", "mottaker", "sendtDato", "tittel" ],
         "type" : "object",
-        "required" : [ "administrativEnhet", "mappeId", "saksansvarlig", "saksdato", "saksstatus", "tittel" ],
-        "properties" : {
-          "mappeId" : {
-            "type" : "string"
-          },
-          "tittel" : {
-            "type" : "string"
-          },
-          "beskrivelse" : {
-            "type" : "string"
-          },
-          "saksstatus" : {
-            "type" : "string",
-            "enum" : [ "UNDER_BEHANDLING", "AVSLUTTET", "UTGAR" ]
-          },
-          "saksdato" : {
-            "type" : "integer",
-            "format" : "int64"
-          },
-          "saksansvarlig" : {
-            "type" : "string"
-          },
-          "administrativEnhet" : {
-            "type" : "string"
-          }
-        },
-        "description" : "Saksmappe"
-      } ]
-    },
-    "skjemakladdV1" : {
-      "allOf" : [ {
-        "$ref" : "#/definitions/MeldingMetadata"
-      }, {
-        "type" : "object",
-        "required" : [ "endretDato", "tittel" ],
-        "properties" : {
-          "tittel" : {
-            "type" : "string",
-            "example" : "Søknad om fartsdempende tiltak",
-            "description" : "Tittel på skjema"
-          },
-          "mottaker" : {
-            "type" : "string",
-            "example" : "Bergen kommune boligetaten",
-            "description" : "Navn på mottaker av skjema"
-          },
-          "avsender" : {
-            "type" : "string",
-            "example" : "Ola Normann",
-            "description" : "Navn på avsender av skjema"
-          },
-          "endretDato" : {
-            "type" : "integer",
-            "format" : "int64",
-            "description" : "Dato for når skjemaet sist var endret/lagret. Uttrykket som millisekunder etter epoch"
-          },
-          "skjemafil" : {
-            "description" : "Hovedfil for skjemaet som er innsendt",
-            "$ref" : "#/definitions/SkjemaFilV1"
-          },
-          "vedlegg" : {
-            "type" : "array",
-            "description" : "Vedlegg til skjema",
-            "items" : {
-              "$ref" : "#/definitions/SkjemaFilV1"
+        "description" : "Melding som beskriver en forsendelse. Benyttes i dag for å vise post sendt via KS-SvarUt på minside.kommune.no",
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/MeldingMetadata"
+        }, {
+          "type" : "object",
+          "properties" : {
+            "korrelasjonId" : {
+              "pattern" : "^[A-Za-z0-9\\-]+$",
+              "type" : "string",
+              "description" : "Id som knytter dette dokumentet sammen med andre relaterte dokumenter. Merk at bare en av korrelasjonsid eller parent kan være oppgitt"
+            },
+            "forelder" : {
+              "$ref" : "#/components/schemas/Forelder"
+            },
+            "tittel" : {
+              "type" : "string",
+              "description" : "Tittel for meldingen"
+            },
+            "sendtDato" : {
+              "type" : "integer",
+              "description" : "Dato forsendelsen er sendt. Dette feltet brukes som sorteringsdato. Uttrykket som millisekunder etter epoch",
+              "format" : "int64"
+            },
+            "avsender" : {
+              "type" : "string",
+              "description" : "Navn på person eller orgnr / navn på organisasjon som er kilde for forsendelsen."
+            },
+            "mottaker" : {
+              "type" : "string",
+              "description" : "Navn på person eller orgnr / navn på organisasjon som er mottaker for forsendelsen"
+            },
+            "lest" : {
+              "type" : "boolean",
+              "description" : "Indikerer om forsendelsen er lest eller ikke"
+            },
+            "svarLenke" : {
+              "type" : "string",
+              "description" : "Url som skal benyttes for å svare på denne forsendelsen"
+            },
+            "dokumenter" : {
+              "maxItems" : 2147483647,
+              "minItems" : 1,
+              "type" : "array",
+              "description" : "Dokumenter som inngår i denne forsendelsen",
+              "items" : {
+                "$ref" : "#/components/schemas/ForsendelseV1Dokument"
+              }
             }
-          },
-          "url" : {
+          }
+        } ]
+      },
+      "forsendelseV2" : {
+        "required" : [ "avsender", "dokumenter", "lest", "mottakerAdresse", "returAdresse", "sendtDato", "tittel" ],
+        "type" : "object",
+        "description" : "Melding som beskriver en forsendelse. Benyttes i dag for å vise post sendt via KS-SvarUt på minside.kommune.no",
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/MeldingMetadata"
+        }, {
+          "type" : "object",
+          "properties" : {
+            "korrelasjonId" : {
+              "pattern" : "^[A-Za-z0-9\\-]+$",
+              "type" : "string",
+              "description" : "Id som knytter dette dokumentet sammen med andre relaterte dokumenter. Merk at bare en av korrelasjonsid eller parent kan være oppgitt"
+            },
+            "forelder" : {
+              "$ref" : "#/components/schemas/Forelder"
+            },
+            "tittel" : {
+              "type" : "string",
+              "description" : "Tittel for meldingen"
+            },
+            "sendtDato" : {
+              "type" : "integer",
+              "description" : "Dato forsendelsen er sendt. Dette feltet brukes som sorteringsdato. Uttrykket som millisekunder etter epoch",
+              "format" : "int64"
+            },
+            "avsender" : {
+              "type" : "string",
+              "description" : "Navn på person eller orgnr / navn på organisasjon som er kilde for forsendelsen."
+            },
+            "returAdresse" : {
+              "$ref" : "#/components/schemas/ForsendelseV2Adresse"
+            },
+            "mottakerAdresse" : {
+              "$ref" : "#/components/schemas/ForsendelseV2Adresse"
+            },
+            "lest" : {
+              "type" : "boolean",
+              "description" : "Indikerer om forsendelsen er lest eller ikke"
+            },
+            "dokumenter" : {
+              "maxItems" : 2147483647,
+              "minItems" : 1,
+              "type" : "array",
+              "description" : "Dokumenter som inngår i denne forsendelsen",
+              "items" : {
+                "$ref" : "#/components/schemas/ForsendelseV2Dokument"
+              }
+            },
+            "lenker" : {
+              "type" : "array",
+              "description" : "Lenker vedlagt forsendelsen",
+              "items" : {
+                "$ref" : "#/components/schemas/ForsendelseV2Lenke"
+              }
+            },
+            "svarLenke" : {
+              "type" : "string",
+              "description" : "Url som skal benyttes for å svare på denne forsendelsen"
+            }
+          }
+        } ]
+      },
+      "innsendtskjemaV1" : {
+        "required" : [ "avsender", "innsendtdato", "mottaker", "skjemafil", "tittel" ],
+        "type" : "object",
+        "description" : "InnsendtSkjema",
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/MeldingMetadata"
+        }, {
+          "type" : "object",
+          "properties" : {
+            "korrelasjonId" : {
+              "pattern" : "^[A-Za-z0-9\\-]+$",
+              "type" : "string",
+              "description" : "Id som knytter dette dokumentet sammen med andre relaterte dokumenter. Merk at bare en av korrelasjonsid eller parent kan være oppgitt"
+            },
+            "forelder" : {
+              "$ref" : "#/components/schemas/Forelder"
+            },
+            "tittel" : {
+              "type" : "string",
+              "description" : "Tittel på skjema",
+              "example" : "Søknad om fartsdempende tiltak"
+            },
+            "mottaker" : {
+              "type" : "string",
+              "description" : "Navn på mottaker av skjema",
+              "example" : "Bergen kommune boligetaten"
+            },
+            "avsender" : {
+              "type" : "string",
+              "description" : "Navn på avsender av skjema",
+              "example" : "Ola Nordmann"
+            },
+            "innsendtdato" : {
+              "type" : "integer",
+              "description" : "Dato for når skjemaet var innsendt. Uttrykket som millisekunder etter epoch",
+              "format" : "int64"
+            },
+            "skjemafil" : {
+              "$ref" : "#/components/schemas/SkjemaFilV1"
+            },
+            "vedlegg" : {
+              "type" : "array",
+              "description" : "Vedlegg til skjema",
+              "items" : {
+                "$ref" : "#/components/schemas/SkjemaFilV1"
+              }
+            },
+            "url" : {
+              "type" : "string",
+              "description" : "Url til sak, eller videre saksgang i skjemaet"
+            }
+          }
+        } ]
+      },
+      "journalpostV1" : {
+        "required" : [ "beskrivelse", "dokumentbeskrivelser", "journaldato", "registreringsId", "tittel" ],
+        "type" : "object",
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/MeldingMetadata"
+        }, {
+          "type" : "object",
+          "properties" : {
+            "korrelasjonId" : {
+              "pattern" : "^[A-Za-z0-9\\-]+$",
+              "type" : "string",
+              "description" : "Id som knytter dette dokumentet sammen med andre relaterte dokumenter. Merk at bare en av korrelasjonsid eller parent kan være oppgitt"
+            },
+            "forelder" : {
+              "$ref" : "#/components/schemas/Forelder"
+            },
+            "registreringsId" : {
+              "type" : "string"
+            },
+            "tittel" : {
+              "type" : "string"
+            },
+            "beskrivelse" : {
+              "type" : "string"
+            },
+            "journaldato" : {
+              "type" : "integer",
+              "format" : "int64"
+            },
+            "dokumentbeskrivelser" : {
+              "maxItems" : 2147483647,
+              "minItems" : 1,
+              "type" : "array",
+              "items" : {
+                "$ref" : "#/components/schemas/JournalpostV1Dokumentbeskrivelse"
+              }
+            }
+          }
+        } ]
+      },
+      "kommunaltjenesteV1" : {
+        "required" : [ "kommuneFiksOrganisasjonId", "kommuneVisningsnavn", "lenke", "rettetMot", "tittel", "tjenesteId" ],
+        "type" : "object",
+        "description" : "Kommunal Tjeneste",
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/MeldingMetadata"
+        }, {
+          "type" : "object",
+          "properties" : {
+            "tjenesteId" : {
+              "type" : "string",
+              "description" : "Id for den kommunale tjenesten",
+              "format" : "uuid"
+            },
+            "tittel" : {
+              "type" : "string",
+              "description" : "Tittel på den kommunale tjenesten"
+            },
+            "lenke" : {
+              "type" : "string",
+              "description" : "Lenke til den kommunale tjenesten"
+            },
+            "rettetMot" : {
+              "type" : "string",
+              "description" : "Hvilken autentiseringstype den kommunale tjenesten er rettet mot",
+              "enum" : [ "PERSON", "ORGANISASJON", "PERSON_OG_ORGANISASJON" ]
+            },
+            "kommuneFiksOrganisasjonId" : {
+              "type" : "string",
+              "description" : "Fiks organisasjon id for kommunen som eier denne tjenesten",
+              "format" : "uuid"
+            },
+            "kommuneVisningsnavn" : {
+              "type" : "string",
+              "description" : "Visningsnavn for kommunen som eier denne tjenesten"
+            }
+          }
+        } ]
+      },
+      "matrikkelenhetV1" : {
+        "required" : [ "matrikkelenhetId", "matrikkelnummer" ],
+        "type" : "object",
+        "description" : "Matrikkelenhet",
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/MeldingMetadata"
+        }, {
+          "type" : "object",
+          "properties" : {
+            "korrelasjonId" : {
+              "pattern" : "^[A-Za-z0-9\\-]+$",
+              "type" : "string",
+              "description" : "Id som knytter dette dokumentet sammen med andre relaterte dokumenter. Merk at bare en av korrelasjonsid eller parent kan være oppgitt"
+            },
+            "forelder" : {
+              "$ref" : "#/components/schemas/Forelder"
+            },
+            "matrikkelnummer" : {
+              "$ref" : "#/components/schemas/MatrikkelnummerV1"
+            },
+            "matrikkelenhetId" : {
+              "type" : "integer",
+              "description" : "Matrikkel-intern id for matrikkelenheten",
+              "format" : "int64"
+            },
+            "adresser" : {
+              "type" : "array",
+              "description" : "Adresse for matrikkelenheten",
+              "example" : "Øvre Testveien 34, 3765 Storevik",
+              "items" : {
+                "type" : "string",
+                "description" : "Adresse for matrikkelenheten",
+                "example" : "Øvre Testveien 34, 3765 Storevik"
+              }
+            }
+          }
+        } ]
+      },
+      "saksmappeV1" : {
+        "required" : [ "administrativEnhet", "mappeId", "saksansvarlig", "saksdato", "saksstatus", "tittel" ],
+        "type" : "object",
+        "description" : "Saksmappe",
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/MeldingMetadata"
+        }, {
+          "type" : "object",
+          "properties" : {
+            "mappeId" : {
+              "type" : "string"
+            },
+            "tittel" : {
+              "type" : "string"
+            },
+            "beskrivelse" : {
+              "type" : "string"
+            },
+            "saksstatus" : {
+              "type" : "string",
+              "enum" : [ "UNDER_BEHANDLING", "AVSLUTTET", "UTGAR" ]
+            },
+            "saksdato" : {
+              "type" : "integer",
+              "format" : "int64"
+            },
+            "saksansvarlig" : {
+              "type" : "string"
+            },
+            "administrativEnhet" : {
+              "type" : "string"
+            }
+          }
+        } ]
+      },
+      "skjemakladdV1" : {
+        "required" : [ "endretDato", "tittel", "url" ],
+        "type" : "object",
+        "description" : "SkjemaKladd",
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/MeldingMetadata"
+        }, {
+          "type" : "object",
+          "properties" : {
+            "korrelasjonId" : {
+              "pattern" : "^[A-Za-z0-9\\-]+$",
+              "type" : "string",
+              "description" : "Id som knytter dette dokumentet sammen med andre relaterte dokumenter. Merk at bare en av korrelasjonsid eller parent kan være oppgitt"
+            },
+            "forelder" : {
+              "$ref" : "#/components/schemas/Forelder"
+            },
+            "tittel" : {
+              "type" : "string",
+              "description" : "Tittel på skjema",
+              "example" : "Søknad om fartsdempende tiltak"
+            },
+            "mottaker" : {
+              "type" : "string",
+              "description" : "Navn på mottaker av skjema",
+              "example" : "Bergen kommune boligetaten"
+            },
+            "avsender" : {
+              "type" : "string",
+              "description" : "Navn på avsender av skjema",
+              "example" : "Ola Nordmann"
+            },
+            "endretDato" : {
+              "type" : "integer",
+              "description" : "Dato for når skjemaet sist var endret/lagret. Uttrykket som millisekunder etter epoch",
+              "format" : "int64"
+            },
+            "skjemafil" : {
+              "$ref" : "#/components/schemas/SkjemaFilV1"
+            },
+            "vedlegg" : {
+              "type" : "array",
+              "description" : "Vedlegg til skjema",
+              "items" : {
+                "$ref" : "#/components/schemas/SkjemaFilV1"
+              }
+            },
+            "url" : {
+              "type" : "string",
+              "description" : "Url til skjema kladd for videre utfylling/sletting"
+            }
+          }
+        } ]
+      },
+      "SlettRespons" : {
+        "type" : "object",
+        "properties" : {
+          "antallSlettet" : {
+            "type" : "integer",
+            "description" : "Antall meldinger som ble slettet i operasjonen.",
+            "format" : "int64"
+          }
+        }
+      },
+      "SlettMeldingerSpec" : {
+        "required" : [ "meldinger" ],
+        "type" : "object",
+        "properties" : {
+          "meldinger" : {
+            "maxItems" : 1000,
+            "minItems" : 1,
+            "type" : "array",
+            "description" : "Melding-id for meldinger som skal slettes, maks 1000",
+            "items" : {
+              "$ref" : "#/components/schemas/slettMelding"
+            }
+          }
+        }
+      },
+      "slettMelding" : {
+        "type" : "object",
+        "properties" : {
+          "fiksOrgId" : {
             "type" : "string",
-            "description" : "Url til skjema kladd for videre utfylling/sletting."
+            "format" : "uuid"
           },
-          "korrelasjonId" : {
+          "meldingId" : {
             "type" : "string",
-            "pattern" : "^[A-Za-z0-9\\-]+$"
-          },
-          "forelder" : {
-            "$ref" : "#/definitions/Forelder"
+            "format" : "uuid"
           }
         },
-        "description" : "SkjemaKladd"
-      } ]
-    },
-    "slettMelding" : {
-      "type" : "object",
-      "properties" : {
-        "fiksOrgId" : {
-          "type" : "string",
-          "format" : "uuid"
-        },
-        "meldingId" : {
-          "type" : "string",
-          "format" : "uuid"
-        }
+        "description" : "Melding-id for meldinger som skal slettes, maks 1000"
       }
     }
   }
