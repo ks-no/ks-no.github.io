@@ -14,7 +14,7 @@ Fiks Digisos tilbyr:
 
 ## Hvordan tar man i bruk Fiks Digisos?
      
-For at fagsystemet skal få tilgang til å motta sosialsøknader og sende saksoppdateringer til NAV via Digisos-API-et for en kommune, må kommunen først konfigurere og aktivere tjenesten Digisos gjennom [Fiks Konfigurasjon](https://forvaltning.fiks.dev.ks.no/fiks-konfigurasjon/tjenester), som viser en veiviser for å sette opp tjenesten. Her konfigurerer man opp hvordan kommunens fagsystem skal motta søknader, enten via Fiks IO (anbefalt kanal) og/eller SvarUt. Det må også oppgis kontaktpersoner med minst èn epost for både en fagansvarlig og en teknisk ansvarlig, som kan bli kontaktet ved behov. 
+For at fagsystemet skal få tilgang til å motta sosialsøknader og sende saksoppdateringer til NAV via Digisos-API-et for en kommune, må kommunen først konfigurere og aktivere tjenesten Digisos gjennom [Fiks Konfigurasjon](https://forvaltning.fiks.ks.no/fiks-konfigurasjon/tjenester), som viser en veiviser for å sette opp tjenesten. Her konfigurerer man opp hvordan kommunens fagsystem skal motta søknader, enten via Fiks IO (anbefalt kanal) og/eller SvarUt. Det må også oppgis kontaktpersoner med minst èn epost for både en fagansvarlig og en teknisk ansvarlig, som kan bli kontaktet ved behov. 
 
 Etter at veiviseren er fullført må man inne på Digisos-tjenesten gi fagsystemet sin integrasjon tilgang til å bruke Digisos. For mer informasjon om utvikling og opprettelse av integrasjoner for kommunen sitt fagsystemet, se avsnittet [Integrasjonsutvikling Fagsystem](https://ks-no.github.io/fiks-platform/tjenester/digisos/#integrasjonsutvikling-fagsystem).  
 
@@ -74,8 +74,8 @@ Ved bruk av Fiks IO som leveringskanal må fagsystemet støtte meldingsprotokoll
 
 ##### Til fagsystem - mottak av søknad og ettersendelse
 Dette er de samme metadataene som blir beskrevet ovenfor.\
-For ny søknad, ```no.nav.digisos.soknad.v1```, som definert i [json-skjema for søknad](https://github.com/ks-no/fiks-io-meldingstype-katalog/tree/test/schema/no.nav.digisos.soknad.v1).\
-For ettersendelse, ```no.nav.digisos.ettersendelse.v1```, som definert i [json-skjema for ettersendelse](https://github.com/ks-no/fiks-io-meldingstype-katalog/tree/test/schema/no.nav.digisos.ettersendelse.v1).
+For ny søknad, ```no.nav.digisos.soknad.v1```, som definert i [json-skjema for søknad](https://github.com/ks-no/fiks-io-meldingstype-katalog/tree/prod/schema/no.nav.digisos.soknad.v1).\
+For ettersendelse, ```no.nav.digisos.ettersendelse.v1```, som definert i [json-skjema for ettersendelse](https://github.com/ks-no/fiks-io-meldingstype-katalog/tree/prod/schema/no.nav.digisos.ettersendelse.v1).
 
 ##### Fra fagsystem - kvittering på mottatt søknad og ettersendelse
 For ny søknad, ```no.nav.digisos.soknad.mottatt.v1```, med tom body.\
