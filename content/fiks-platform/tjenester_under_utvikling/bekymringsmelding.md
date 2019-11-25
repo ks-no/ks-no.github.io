@@ -19,7 +19,7 @@ Brukerne (innbyggere eller offentlig ansatte) som skal melde inn en bekymringsme
 * Manuell nedlastning, ustrukturert informasjon i digital form – PDF
 * Tilsendt på papir
 
-Når bekymringsmeldingen er sendt vil systemet forsøke å levere den som strukturert data via Fiks-plattformen til kommunens fagsystem. Dersom kommunens fagsystem ikke støtter integrasjon mot [Fiks IO](https://ks-no.github.io/fiks-platform/tjenester/fiksio/) har vi laget en løsning for å laste ned bekymringsmeldingen manuelt. Og dersom ikke bekymringsmeldingen markeres som mottatt vil den bli sendt ut som brevpost.
+Når bekymringsmeldingen er sendt vil systemet forsøke å levere den som strukturert data via Fiks-plattformen til kommunens fagsystem. Dersom kommunens fagsystem ikke støtter integrasjon mot [Fiks IO](https://ks-no.github.io/fiks-platform/tjenester/fiksio/) finnes det en løsning for å laste ned bekymeringsmeldingen manuelt. Og dersom ikke bekymringsmeldingen markeres som mottatt vil den bli sendt ut som brevpost.
 
 
 
