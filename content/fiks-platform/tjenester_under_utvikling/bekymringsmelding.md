@@ -1,9 +1,9 @@
 ---
-title: Nasjonal portal for bekymringsmeldin
+title: Nasjonal portal for bekymringsmelding
 date: 2019-11-25 
 ---
 
-# Kort introduksjon
+## Kort introduksjon
 
 Bekymringsmeldinger går i dag i all hovedsak per post, og i samarbeid med Barne-, ungdoms- og familiedirektoratet (Bufdir) lager vi en nasjonal løsning hvor alle meldere, privatpersoner og offentlig ansatte, kan sende inn bekymringsmeldinger digitalt til barnevernet. 
 
@@ -11,7 +11,7 @@ Dette skal sikre raskere og sikrere innsending av meldinger, og bedre innholdsme
 
 Mer informasjon om prosjektet ligger på [Bufdir](https://bufdir.no/prosjekter/digibarnevern/leveransene/).
 
-# Kort beskrivelse av løsningen
+## Kort beskrivelse av løsningen
 
 Brukerne (innbyggere eller offentlig ansatte) som skal melde inn en bekymringsmelding logger seg inn på portalen, fyller ut og sender inn skjemaet.
 
