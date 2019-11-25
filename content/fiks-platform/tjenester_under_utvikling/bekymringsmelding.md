@@ -28,3 +28,12 @@ Bekymringsmeldingen blir omgjort til strukturert data (JSON) for integrasjon mot
 
 Portalen tilbyr også et API hvor det er mulig å sende en bekymringsmelding fra fagsystemet til en annen kommunes barneverntjeneste.
 
+## Hvordan tar man i bruk Fiks Bekymringsmelding?
+### Fagsystem integrasjon
+### Manuell nedlastning av bekymringsmeldinger
+### Print og brevpost
+
+## Integrasjonsutvikling
+### Informasjonsmodeller og protokoller
+### Fagsystem som produsent
+### Fagsystem som konsument
