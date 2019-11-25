@@ -14,6 +14,7 @@ Mer informasjon om prosjektet ligger på [Bufdir](https://bufdir.no/prosjekter/d
 ## Kort beskrivelse av løsningen
 
 Brukerne (innbyggere eller offentlig ansatte) som skal melde inn en bekymringsmelding logger seg inn på portalen, fyller ut og sender inn skjemaet. Løsningen vil deretter forsøke å levere bekymringesmeldingen
+
 * Direkte i fagsystem (Strukturert informasjon)
 * Manuell nedlastning, ustrukturert informasjon i digital form – PDF
 * Tilsendt på papir
