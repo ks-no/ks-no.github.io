@@ -9,7 +9,7 @@ Bekymringsmeldinger til barnevernet går i dag i all hovedsak per post, og i sam
 
 Dette skal sikre raskere og sikrere innsending av meldinger, og bedre innholdsmessig kvalitet. Løsningen skiller mellom offentlige og private meldere, og leverer bekymringsmeldinger fra to ulike skjema, siden det er ulike forventinger/krav til offentlige meldere og private meldere.
 
-Mer informasjon om prosjektet ligger på [Bufdir](https://bufdir.no/prosjekter/digibarnevern/leveransene/).
+Mer informasjon om prosjektet finnes hos [Bufdir](https://bufdir.no/prosjekter/digibarnevern/leveransene/).
 
 ## Kort beskrivelse av løsningen
 
