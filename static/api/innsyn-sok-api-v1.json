@@ -18,45 +18,6 @@
     "name" : "Oppslag"
   } ],
   "paths" : {
-    "/innsyn-sok/api/v1/oppslag/korrelasjon" : {
-      "get" : {
-        "tags" : [ "Oppslag" ],
-        "summary" : "Hent alle meldinger som er korrelert på den spesifiserte meldingsid'en",
-        "operationId" : "lookupKorrelasjon",
-        "parameters" : [ {
-          "name" : "korrelasjonId",
-          "in" : "query",
-          "description" : "Korrelasjon-id som marker dokumentene som relatert",
-          "required" : true,
-          "schema" : {
-            "type" : "string"
-          }
-        }, {
-          "name" : "akseptertMeldingVersjon",
-          "in" : "query",
-          "description" : "Akseptert melding-versjon. Kan settes flere ganger. Innsyn vil nedgradere treff på høyere versjon til den høyeste av de aksepterte versjonen (om det er oppgitt flere på samme dokumenttype)",
-          "schema" : {
-            "type" : "array",
-            "items" : {
-              "type" : "string",
-              "enum" : [ "fakturaV1", "saksmappeV1", "journalpostV1", "forsendelseV1", "forsendelseV2", "byggesakV1", "matrikkelenhetV1", "innsendtskjemaV1", "skjemakladdV1", "kommunaltjenesteV1" ]
-            }
-          }
-        } ],
-        "responses" : {
-          "default" : {
-            "description" : "default response",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/KorrelasjonOppslag"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
     "/innsyn-sok/api/v1/oppslag/dokument" : {
       "get" : {
         "tags" : [ "Oppslag" ],
@@ -146,6 +107,45 @@
               "application/json" : {
                 "schema" : {
                   "$ref" : "#/components/schemas/ForelderOppslagResultat"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/innsyn-sok/api/v1/oppslag/korrelasjon" : {
+      "get" : {
+        "tags" : [ "Oppslag" ],
+        "summary" : "Hent alle meldinger som er korrelert på den spesifiserte meldingsid'en",
+        "operationId" : "lookupKorrelasjon",
+        "parameters" : [ {
+          "name" : "korrelasjonId",
+          "in" : "query",
+          "description" : "Korrelasjon-id som marker dokumentene som relatert",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "akseptertMeldingVersjon",
+          "in" : "query",
+          "description" : "Akseptert melding-versjon. Kan settes flere ganger. Innsyn vil nedgradere treff på høyere versjon til den høyeste av de aksepterte versjonen (om det er oppgitt flere på samme dokumenttype)",
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "enum" : [ "fakturaV1", "saksmappeV1", "journalpostV1", "forsendelseV1", "forsendelseV2", "byggesakV1", "matrikkelenhetV1", "innsendtskjemaV1", "skjemakladdV1", "kommunaltjenesteV1" ]
+            }
+          }
+        } ],
+        "responses" : {
+          "default" : {
+            "description" : "default response",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/KorrelasjonOppslag"
                 }
               }
             }
@@ -439,21 +439,6 @@
           }
         }
       },
-      "KorrelasjonOppslag" : {
-        "type" : "object",
-        "properties" : {
-          "barn" : {
-            "type" : "array",
-            "items" : {
-              "$ref" : "#/components/schemas/MeldingV1"
-            }
-          },
-          "barnOverInnloggingsniva" : {
-            "type" : "integer",
-            "format" : "int32"
-          }
-        }
-      },
       "MatrikkelenhetMatrikkelnummerV1" : {
         "type" : "object",
         "properties" : {
@@ -527,6 +512,19 @@
           "score" : {
             "type" : "number",
             "format" : "float"
+          }
+        }
+      },
+      "OppslagResultat" : {
+        "type" : "object",
+        "properties" : {
+          "hit" : {
+            "$ref" : "#/components/schemas/MeldingV1"
+          },
+          "lookupErrorCode" : {
+            "type" : "string",
+            "description" : "Om treff ikke kunne vises indikerer koden hvorfor. ",
+            "enum" : [ "IKKE_EKSISTERENDE_ELLER_IKKE_AUTORISERT", "INNLOGGINGSNIVA_UTILSTREKKELIG" ]
           }
         }
       },
@@ -919,19 +917,6 @@
           }
         } ]
       },
-      "OppslagResultat" : {
-        "type" : "object",
-        "properties" : {
-          "hit" : {
-            "$ref" : "#/components/schemas/MeldingV1"
-          },
-          "lookupErrorCode" : {
-            "type" : "string",
-            "description" : "Om treff ikke kunne vises indikerer koden hvorfor. ",
-            "enum" : [ "IKKE_EKSISTERENDE_ELLER_IKKE_AUTORISERT", "INNLOGGINGSNIVA_UTILSTREKKELIG" ]
-          }
-        }
-      },
       "ForelderOppslagResultat" : {
         "type" : "object",
         "properties" : {
@@ -952,6 +937,21 @@
           "barnPaHoyereInnloggingniva" : {
             "type" : "integer",
             "description" : "Antall barn som ikke vises siden disse er på et høyere sikkerhetsnivå enn brukeren er logget inn med",
+            "format" : "int32"
+          }
+        }
+      },
+      "KorrelasjonOppslag" : {
+        "type" : "object",
+        "properties" : {
+          "barn" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/MeldingV1"
+            }
+          },
+          "barnOverInnloggingsniva" : {
+            "type" : "integer",
             "format" : "int32"
           }
         }
