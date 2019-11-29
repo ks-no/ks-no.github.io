@@ -16,6 +16,35 @@
     "name" : "Delete"
   } ],
   "paths" : {
+    "/innsyn-index/api/v1/delete/slettByMeldingId" : {
+      "post" : {
+        "tags" : [ "Delete" ],
+        "summary" : "Fjerner meldinger for de spesifiserte melding-id'ene (maks 1000). Dette starter en synkron operasjon, det vil ikke returneres på forespørselen før slettingen er utført",
+        "operationId" : "slettByMeldingId",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/SlettMeldingerSpec"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/SlettRespons"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/innsyn-index/api/v1/delete/slett" : {
       "delete" : {
         "tags" : [ "Delete" ],
@@ -59,35 +88,6 @@
           }
         }
       }
-    },
-    "/innsyn-index/api/v1/delete/slettByMeldingId" : {
-      "post" : {
-        "tags" : [ "Delete" ],
-        "summary" : "Fjerner meldinger for de spesifiserte melding-id'ene (maks 1000). Dette starter en synkron operasjon, det vil ikke returneres på forespørselen før slettingen er utført",
-        "operationId" : "slettByMeldingId",
-        "requestBody" : {
-          "content" : {
-            "application/json" : {
-              "schema" : {
-                "$ref" : "#/components/schemas/SlettMeldingerSpec"
-              }
-            }
-          },
-          "required" : true
-        },
-        "responses" : {
-          "200" : {
-            "description" : "successful operation",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/SlettRespons"
-                }
-              }
-            }
-          }
-        }
-      }
     }
   },
   "components" : {
@@ -97,27 +97,12 @@
         "properties" : {
           "antallSlettet" : {
             "type" : "integer",
-            "description" : "Antall meldinger som ble slettet i operasjonen.",
             "format" : "int64"
           }
         }
       },
-      "SlettMeldingerSpec" : {
-        "required" : [ "meldinger" ],
-        "type" : "object",
-        "properties" : {
-          "meldinger" : {
-            "maxItems" : 1000,
-            "minItems" : 1,
-            "type" : "array",
-            "description" : "Melding-id for meldinger som skal slettes, maks 1000",
-            "items" : {
-              "$ref" : "#/components/schemas/slettMelding"
-            }
-          }
-        }
-      },
-      "slettMelding" : {
+      "SlettMeldingSpec" : {
+        "required" : [ "fiksOrgId", "meldingId" ],
         "type" : "object",
         "properties" : {
           "fiksOrgId" : {
@@ -128,8 +113,20 @@
             "type" : "string",
             "format" : "uuid"
           }
-        },
-        "description" : "Melding-id for meldinger som skal slettes, maks 1000"
+        }
+      },
+      "SlettMeldingerSpec" : {
+        "type" : "object",
+        "properties" : {
+          "meldinger" : {
+            "maxItems" : 1000,
+            "minItems" : 1,
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/SlettMeldingSpec"
+            }
+          }
+        }
       }
     }
   }
