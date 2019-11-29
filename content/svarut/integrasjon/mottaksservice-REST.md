@@ -58,8 +58,8 @@ Henter nye forsendelser for autentisert mottaker (basert på angitt mottaker). E
     "journalpostnummer": 0,
     "journalposttype": "U",
     "journalstatus": null,
-    "journaldato": null,
-    "dokumentetsDato": null,
+    "journaldato": null, //millis since epoch
+    "dokumentetsDato": null, //millis since epoch
     "tittel": null,
     "saksBehandler": null,
     "ekstraMetadata": [
