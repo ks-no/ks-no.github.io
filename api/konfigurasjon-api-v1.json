@@ -824,55 +824,6 @@
         }
       }
     },
-    "/konfigurasjon/api/v1/root/organisasjoner" : {
-      "get" : {
-        "tags" : [ "RootKonfigurasjon" ],
-        "description" : "Henter alle organisasjoner",
-        "operationId" : "getAllOrganisasjoner",
-        "responses" : {
-          "200" : {
-            "description" : "Alle organisasjoner",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "type" : "array",
-                  "items" : {
-                    "$ref" : "#/components/schemas/Organisasjon"
-                  }
-                }
-              }
-            }
-          }
-        }
-      },
-      "post" : {
-        "tags" : [ "RootKonfigurasjon" ],
-        "description" : "Oppretter en organisasjon",
-        "operationId" : "createOrganisasjon",
-        "requestBody" : {
-          "content" : {
-            "application/json" : {
-              "schema" : {
-                "$ref" : "#/components/schemas/OrganisasjonCreateRequest"
-              }
-            }
-          },
-          "required" : true
-        },
-        "responses" : {
-          "200" : {
-            "description" : "Den opprettede organisasjonen",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/Organisasjon"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
     "/konfigurasjon/api/v1/root/organisasjoner/{orgId}" : {
       "patch" : {
         "tags" : [ "RootKonfigurasjon" ],
@@ -1054,6 +1005,55 @@
         }
       }
     },
+    "/konfigurasjon/api/v1/root/organisasjoner" : {
+      "get" : {
+        "tags" : [ "RootKonfigurasjon" ],
+        "description" : "Henter alle organisasjoner",
+        "operationId" : "getAllOrganisasjoner",
+        "responses" : {
+          "200" : {
+            "description" : "Alle organisasjoner",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/Organisasjon"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post" : {
+        "tags" : [ "RootKonfigurasjon" ],
+        "description" : "Oppretter en organisasjon",
+        "operationId" : "createOrganisasjon",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/OrganisasjonCreateRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Den opprettede organisasjonen",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Organisasjon"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/konfigurasjon/api/v1/root/tjenester" : {
       "get" : {
         "tags" : [ "RootKonfigurasjon" ],
@@ -1143,6 +1143,16 @@
               "description" : "Alle ressurser denne integrasjonen er tilknyttet. Når integrasjonen hentes i kontekst av en organisasjon inneholder den kun tilknyttede ressurser under den spesifiserte organisasjonen.",
               "format" : "uuid"
             }
+          },
+          "synligFor" : {
+            "uniqueItems" : true,
+            "type" : "array",
+            "description" : "Andre Fiks-organisasjoner hvor denne integrasjonen skal vises i listen over integrasjoner på en tjeneste.",
+            "items" : {
+              "type" : "string",
+              "description" : "Andre Fiks-organisasjoner hvor denne integrasjonen skal vises i listen over integrasjoner på en tjeneste.",
+              "format" : "uuid"
+            }
           }
         },
         "description" : "En integrasjon."
@@ -1176,11 +1186,6 @@
       "IntegrasjonUpdateRequest" : {
         "type" : "object",
         "properties" : {
-          "autorisertOrgnr" : {
-            "pattern" : "^[0-9]{9}$",
-            "type" : "string",
-            "description" : "Organisasjonsnummeret som ligger i virksomhetsserfikatet som skal brukes til å autorisere applikasjonen som skal bruke integrasjonen."
-          },
           "navn" : {
             "pattern" : "^[A-Za-zæøåÆØÅ0-9_.,/\\-_ ]+$",
             "type" : "string",
@@ -1189,6 +1194,34 @@
           "beskrivelse" : {
             "type" : "string",
             "description" : "En beskrivelse av integrasjonen."
+          },
+          "forespurtePrivilegier" : {
+            "uniqueItems" : true,
+            "type" : "array",
+            "description" : "Privilegier denne integrasjonen krever for å fungere. Kun gyldig for globale integrasjoner.",
+            "items" : {
+              "type" : "string",
+              "description" : "Privilegier denne integrasjonen krever for å fungere. Kun gyldig for globale integrasjoner."
+            }
+          },
+          "tags" : {
+            "uniqueItems" : true,
+            "type" : "array",
+            "description" : "Tags som forteller hvilke tjenester integrasjonen skal kunne tilknyttes",
+            "items" : {
+              "type" : "string",
+              "description" : "Tags som forteller hvilke tjenester integrasjonen skal kunne tilknyttes"
+            }
+          },
+          "synligFor" : {
+            "uniqueItems" : true,
+            "type" : "array",
+            "description" : "Andre Fiks-organisasjoner hvor denne integrasjonen skal vises i listen over integrasjoner på en tjeneste.",
+            "items" : {
+              "type" : "string",
+              "description" : "Andre Fiks-organisasjoner hvor denne integrasjonen skal vises i listen over integrasjoner på en tjeneste.",
+              "format" : "uuid"
+            }
           }
         },
         "description" : "En forespørsel om å oppdatere en eksisterende integrasjon."
@@ -1264,11 +1297,6 @@
       "OrganisasjonUpdateRequest" : {
         "type" : "object",
         "properties" : {
-          "navn" : {
-            "pattern" : "^[A-ZÆØÅa-zæøå0-9ÁáÀàÂâÉéÈèÊêÍíÌìÎîÓóÒòÔôÚúÙùÛûÝýÄäËëÏïÖöÜü,.!?\\-:;/\\\\'()&+*=%§]+[A-ZÆØÅa-zæøå0-9ÁáÀàÂâÉéÈèÊêÍíÌìÎîÓóÒòÔôÚúÙùÛûÝýÄäËëÏïÖöÜü ,.!?\\-:;/\\\\'()&+*=%§]*[A-ZÆØÅa-zæøå0-9ÁáÀàÂâÉéÈèÊêÍíÌìÎîÓóÒòÔôÚúÙùÛûÝýÄäËëÏïÖöÜü,.!?\\-:;/\\\\'()&+*=%§]+$",
-            "type" : "string",
-            "description" : "Organisasjonens navn."
-          },
           "epost" : {
             "type" : "array",
             "description" : "Epostadresse som KS kan bruke for å kontakte organisasjonen.",
@@ -1683,24 +1711,6 @@
           "global" : {
             "type" : "boolean",
             "description" : "Indikerer om en integrasjon er global."
-          },
-          "forespurtePrivilegier" : {
-            "uniqueItems" : true,
-            "type" : "array",
-            "description" : "Privilegier denne integrasjonen krever for å fungere. Kun gyldig for globale integrasjoner.",
-            "items" : {
-              "type" : "string",
-              "description" : "Privilegier denne integrasjonen krever for å fungere. Kun gyldig for globale integrasjoner."
-            }
-          },
-          "tags" : {
-            "uniqueItems" : true,
-            "type" : "array",
-            "description" : "Tags som forteller hvilke tjenester integrasjonen skal kunne tilknyttes",
-            "items" : {
-              "type" : "string",
-              "description" : "Tags som forteller hvilke tjenester integrasjonen skal kunne tilknyttes"
-            }
           }
         },
         "description" : "En forespørsel om å oppdatere en eksisterende integrasjon."
