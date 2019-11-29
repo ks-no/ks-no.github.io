@@ -79,6 +79,35 @@
         }
       }
     },
+    "/innsyn-index/api/v1/slettByMeldingId" : {
+      "delete" : {
+        "tags" : [ "Index" ],
+        "summary" : "Fjerner meldinger for de spesifiserte melding-id'ene (maks 1000). Dette starter en synkron operasjon, det vil ikke returneres på forespørselen før slettingen er utført",
+        "operationId" : "slettByMeldingId",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/SlettMeldingerSpec"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/SlettRespons"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/innsyn-index/api/v1/slett" : {
       "delete" : {
         "tags" : [ "Index" ],
@@ -122,64 +151,29 @@
           }
         }
       }
-    },
-    "/innsyn-index/api/v1/slettByMeldingId" : {
-      "delete" : {
-        "tags" : [ "Index" ],
-        "summary" : "Fjerner meldinger for de spesifiserte melding-id'ene (maks 1000). Dette starter en synkron operasjon, det vil ikke returneres på forespørselen før slettingen er utført",
-        "operationId" : "slettByMeldingId",
-        "requestBody" : {
-          "content" : {
-            "application/json" : {
-              "schema" : {
-                "$ref" : "#/components/schemas/SlettMeldingerSpec"
-              }
-            }
-          },
-          "required" : true
-        },
-        "responses" : {
-          "200" : {
-            "description" : "successful operation",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/SlettRespons"
-                }
-              }
-            }
-          }
-        }
-      }
     }
   },
   "components" : {
     "schemas" : {
       "MeldingIndexResponseV1" : {
-        "required" : [ "manglerSamtykke", "oppdatert", "opprettet" ],
         "type" : "object",
         "properties" : {
           "opprettet" : {
             "type" : "integer",
-            "description" : "Antall nye meldinger som ble indeksert i Fiks Innsyn",
             "format" : "int32"
           },
           "oppdatert" : {
             "type" : "integer",
-            "description" : "Antall eksisterende meldinger som ble oppdatert",
             "format" : "int32"
           },
           "manglerSamtykke" : {
             "type" : "integer",
-            "description" : "Antall forespørsler hvor personen meldingen var eksponert for ikke har gitt samtykke til bruk av Fiks Innsyn",
             "format" : "int32"
           },
           "meldingerUtenSamtykke" : {
             "type" : "array",
-            "description" : "MeldingsId for forespørsler som ble blokkert pga manglende samtykke",
             "items" : {
               "type" : "string",
-              "description" : "MeldingsId for forespørsler som ble blokkert pga manglende samtykke",
               "format" : "uuid"
             }
           }
@@ -191,16 +185,13 @@
         "properties" : {
           "meldingId" : {
             "type" : "string",
-            "description" : "Id for meldingen som ikke kunne valideres",
             "format" : "uuid"
           },
           "felt" : {
-            "type" : "string",
-            "description" : "Feltet som feiler"
+            "type" : "string"
           },
           "feilmelding" : {
-            "type" : "string",
-            "description" : "Beskrivelse av feilen som oppstod"
+            "type" : "string"
           }
         }
       },
@@ -230,23 +221,20 @@
         }
       },
       "ByggesakDokumentV1" : {
-        "required" : [ "dokumentsdato", "dokumenttype", "erstatterTidligereSystemId", "mimeType", "nedlastingslenke", "size", "systemId", "tittel", "vedtaksdato", "vedtaksstatus", "versjon" ],
+        "required" : [ "tittel" ],
         "type" : "object",
         "properties" : {
           "tittel" : {
-            "type" : "string",
-            "description" : "Beskrivende tittel på dokumentet"
+            "type" : "string"
           },
           "dokumenttype" : {
             "$ref" : "#/components/schemas/ByggesakDokumentTypeV1"
           },
           "nedlastingslenke" : {
-            "type" : "string",
-            "description" : "Referanse til dokument med uri"
+            "type" : "string"
           },
           "dokumentsdato" : {
             "type" : "integer",
-            "description" : "Dato som er påført selve dokumentet.  Uttrykket som millisekunder etter epoch",
             "format" : "int64"
           },
           "vedtaksstatus" : {
@@ -279,16 +267,13 @@
         "properties" : {
           "identifikatorType" : {
             "type" : "string",
-            "description" : "Type identifikator",
             "enum" : [ "ORGANISASJONSNUMMER", "FODSELSNUMMER", "MATRIKKELNUMMER", "OFFENTLIG" ]
           },
           "verdi" : {
-            "type" : "string",
-            "description" : "Et 11 siffret fødselsnummer, et 9 siffret organisasjonsnummer, eller et matrikkelnummer på format <kommunenr>-<gardsnr>/<bruksnr>/<festenr>/<seksjonsnr>"
+            "type" : "string"
           }
         },
-        "description" : "Angir hvem som skal ha tilgang til dokumentet. Dette kan endten være en fysisk person, en organisasjon, eller en matrikkelenhet.",
-        "example" : 123456789
+        "description" : "Angir hvem som skal ha tilgang til dokumentet. Dette kan endten være en fysisk person, en organisasjon, eller en matrikkelenhet."
       },
       "Forelder" : {
         "required" : [ "meldingId", "type" ],
@@ -310,17 +295,14 @@
         "type" : "object",
         "properties" : {
           "tittel" : {
-            "type" : "string",
-            "description" : "Tittel for dokumentet"
+            "type" : "string"
           },
           "size" : {
             "type" : "integer",
-            "description" : "Dokumentets størrelse i bytes",
             "format" : "int32"
           },
           "nedlastingLenke" : {
-            "type" : "string",
-            "description" : "Url for nedlasting av dokumentet"
+            "type" : "string"
           }
         },
         "description" : "Et dokument for en forsendelse"
@@ -330,32 +312,25 @@
         "type" : "object",
         "properties" : {
           "navn" : {
-            "type" : "string",
-            "description" : "Navn"
+            "type" : "string"
           },
           "addresselinje1" : {
-            "type" : "string",
-            "description" : "Første adresselinje"
+            "type" : "string"
           },
           "addresselinje2" : {
-            "type" : "string",
-            "description" : "Andre adresselinje"
+            "type" : "string"
           },
           "addresselinje3" : {
-            "type" : "string",
-            "description" : "Tredje adresselinje"
+            "type" : "string"
           },
           "poststed" : {
-            "type" : "string",
-            "description" : "Poststed"
+            "type" : "string"
           },
           "postnummer" : {
-            "type" : "string",
-            "description" : "Postnummer"
+            "type" : "string"
           },
           "land" : {
-            "type" : "string",
-            "description" : "Land"
+            "type" : "string"
           }
         },
         "description" : "Representerer en postadresse i en forsendelse"
@@ -365,21 +340,17 @@
         "type" : "object",
         "properties" : {
           "tittel" : {
-            "type" : "string",
-            "description" : "Tittel for dokumentet"
+            "type" : "string"
           },
           "size" : {
             "type" : "integer",
-            "description" : "Dokumentets størrelse i bytes",
             "format" : "int32"
           },
           "nedlastingLenke" : {
-            "type" : "string",
-            "description" : "Url for nedlasting av dokumentet"
+            "type" : "string"
           },
           "mimeType" : {
-            "type" : "string",
-            "description" : "Mime-type for dokumentet lenken leder til"
+            "type" : "string"
           }
         },
         "description" : "Reprensenterer et dokument i en forsendelse"
@@ -389,16 +360,13 @@
         "type" : "object",
         "properties" : {
           "url" : {
-            "type" : "string",
-            "description" : "Url for lenken"
+            "type" : "string"
           },
           "urlTekst" : {
-            "type" : "string",
-            "description" : "Tekst som skal benyttes for url"
+            "type" : "string"
           },
           "ledetekst" : {
-            "type" : "string",
-            "description" : "Ledetekst for lenken"
+            "type" : "string"
           }
         },
         "description" : "Representerer en postadresse i en forsendelse"
@@ -409,31 +377,23 @@
         "properties" : {
           "meldingId" : {
             "type" : "string",
-            "description" : "UUID, i samsvar med standardrepresentasjonen beskrevet her: https://docs.oracle.com/javase/8/docs/api/java/util/UUID.html#toString--",
-            "format" : "uuid",
-            "example" : "b8403bc6-4a82-4fee-b06f-8893a539c453"
+            "format" : "uuid"
           },
           "sikkerhetsniva" : {
             "minimum" : 0,
             "type" : "integer",
-            "description" : "Påkrevd sikkerhetsnivå",
-            "format" : "int32",
-            "example" : 4
+            "format" : "int32"
           },
           "eksponertFor" : {
             "$ref" : "#/components/schemas/EksponertFor"
           },
           "fiksOrganisasjonId" : {
             "type" : "string",
-            "description" : "Fiks-organisasjonen som er ansvarlig for meldingen, som registrert i fiks-konfigurasjon",
-            "format" : "uuid",
-            "example" : "120b7806-611f-4b76-b2d4-3a1445de5281"
+            "format" : "uuid"
           },
           "eksternRef" : {
             "pattern" : "^[A-Za-zæøåÆØÅ0-9_.,/\\-_ ]+$",
-            "type" : "string",
-            "description" : "Ekstern-ref. Kan benyttes ved sletting av grupper dokumenter, for eksempel en gruppe som utgjør en kategori i kildesystemet",
-            "example" : "sakogarkiv.byggesak"
+            "type" : "string"
           },
           "meldingMetadata" : {
             "$ref" : "#/components/schemas/MeldingMetadata"
@@ -485,8 +445,7 @@
             "pattern" : "^[0-9]{1,6}$",
             "type" : "string"
           }
-        },
-        "description" : "Adresse for matrikkelenheten"
+        }
       },
       "MeldingMetadata" : {
         "type" : "object",
@@ -497,7 +456,6 @@
             "enum" : [ "fakturaV1", "saksmappeV1", "journalpostV1", "forsendelseV1", "forsendelseV2", "byggesakV1", "matrikkelenhetV1", "innsendtskjemaV1", "skjemakladdV1", "kommunaltjenesteV1" ]
           }
         },
-        "description" : "Meldingsdata i sammsvar med typen melding som ønskes opprettet eller oppdatert",
         "discriminator" : {
           "propertyName" : "versjon"
         }
@@ -519,25 +477,18 @@
         "type" : "object",
         "properties" : {
           "nedlastingslenke" : {
-            "type" : "string",
-            "description" : "Url til nedlasting av fil"
+            "type" : "string"
           },
           "filnavn" : {
-            "type" : "string",
-            "description" : "Filnavn",
-            "example" : "skjema.pdf"
+            "type" : "string"
           },
           "mimeType" : {
             "pattern" : "\\w+/[-.\\w]+(?:\\+[-.\\w]+)?",
-            "type" : "string",
-            "description" : "MimeType på fil",
-            "example" : "application/pdf"
+            "type" : "string"
           },
           "size" : {
             "type" : "integer",
-            "description" : "Størrelse på fil i bytes",
-            "format" : "int64",
-            "example" : 23456847
+            "format" : "int64"
           }
         },
         "description" : "Fil for bruk i skjema"
@@ -552,8 +503,7 @@
           "kodebeskrivelse" : {
             "type" : "string"
           }
-        },
-        "description" : "ref kodeliste https://register.geonorge.no/byggesoknad/tiltaktype"
+        }
       },
       "byggesakV1" : {
         "required" : [ "saksdato", "tittel" ],
@@ -573,12 +523,10 @@
               "$ref" : "#/components/schemas/Forelder"
             },
             "tittel" : {
-              "type" : "string",
-              "description" : "Tittel for byggesaken"
+              "type" : "string"
             },
             "beskrivelse" : {
-              "type" : "string",
-              "description" : "Beskrivelse av byggesaken"
+              "type" : "string"
             },
             "mappeId" : {
               "type" : "string"
@@ -588,29 +536,20 @@
             },
             "saksdato" : {
               "type" : "integer",
-              "description" : "Datoen saken er opprettet. Uttrykket som millisekunder etter epoch",
-              "format" : "int64",
-              "example" : 1527140551605
+              "format" : "int64"
             },
             "saksansvarlig" : {
-              "type" : "string",
-              "description" : "Saksbehandler som er ansvarlig for saken",
-              "example" : "Ola Nordmann"
+              "type" : "string"
             },
             "administrativEnhet" : {
-              "type" : "string",
-              "description" : "Avdeling, team eller etat som behandler saken"
+              "type" : "string"
             },
             "adresse" : {
-              "type" : "string",
-              "description" : "Adresse til tiltaket",
-              "example" : "Øvre Eksempelveien 35, 5073 BERGEN"
+              "type" : "string"
             },
             "avsluttetDato" : {
               "type" : "integer",
-              "description" : "Dato når saken er avsluttet",
-              "format" : "int64",
-              "example" : 1527140551605
+              "format" : "int64"
             },
             "saksnummer" : {
               "$ref" : "#/components/schemas/SaksnummerV1"
@@ -619,19 +558,16 @@
               "$ref" : "#/components/schemas/TiltakstypeV1"
             },
             "tiltakshaver" : {
-              "type" : "string",
-              "description" : "Navn på tiltakshaver. Tiltakshaver er eier av søknaden og har et overordnet ansvar for det som bygges"
+              "type" : "string"
             },
             "ansvarligSoker" : {
-              "type" : "string",
-              "description" : "Navn på ansvarlig søker. Ansvarlig søker har påtatt seg ansvaret for byggesøknaden og all kommunikasjon med kommunens byggesaksavdeling"
+              "type" : "string"
             },
             "matrikkelnummer" : {
               "$ref" : "#/components/schemas/MatrikkelnummerV1"
             },
             "dokumentlistebeskrivelse" : {
-              "type" : "string",
-              "description" : "En beskrivelse av hva dokumentlisten inneholder. Feks om det er utvalge dokumenter i en sak eller alle dokumenter"
+              "type" : "string"
             },
             "dokumenter" : {
               "type" : "array",
@@ -660,15 +596,11 @@
               "$ref" : "#/components/schemas/Forelder"
             },
             "tittel" : {
-              "type" : "string",
-              "description" : "Tittel for fakturaen",
-              "example" : "Parkeringsgebyr 11.05.18"
+              "type" : "string"
             },
             "fakturaDato" : {
               "type" : "integer",
-              "description" : "Dato fakturaen er sendt. Dette feltet brukes som sorteringsdato. Uttrykket som millisekunder etter epoch",
-              "format" : "int64",
-              "example" : 1527140551605
+              "format" : "int64"
             },
             "forfallDato" : {
               "type" : "integer",
@@ -687,7 +619,7 @@
         } ]
       },
       "forsendelseV1" : {
-        "required" : [ "avsender", "dokumenter", "lest", "mottaker", "sendtDato", "tittel" ],
+        "required" : [ "avsender", "lest", "mottaker", "sendtDato", "tittel" ],
         "type" : "object",
         "description" : "Melding som beskriver en forsendelse. Benyttes i dag for å vise post sendt via KS-SvarUt på minside.kommune.no",
         "allOf" : [ {
@@ -704,35 +636,28 @@
               "$ref" : "#/components/schemas/Forelder"
             },
             "tittel" : {
-              "type" : "string",
-              "description" : "Tittel for meldingen"
+              "type" : "string"
             },
             "sendtDato" : {
               "type" : "integer",
-              "description" : "Dato forsendelsen er sendt. Dette feltet brukes som sorteringsdato. Uttrykket som millisekunder etter epoch",
               "format" : "int64"
             },
             "avsender" : {
-              "type" : "string",
-              "description" : "Navn på person eller orgnr / navn på organisasjon som er kilde for forsendelsen."
+              "type" : "string"
             },
             "mottaker" : {
-              "type" : "string",
-              "description" : "Navn på person eller orgnr / navn på organisasjon som er mottaker for forsendelsen"
+              "type" : "string"
             },
             "lest" : {
-              "type" : "boolean",
-              "description" : "Indikerer om forsendelsen er lest eller ikke"
+              "type" : "boolean"
             },
             "svarLenke" : {
-              "type" : "string",
-              "description" : "Url som skal benyttes for å svare på denne forsendelsen"
+              "type" : "string"
             },
             "dokumenter" : {
               "maxItems" : 2147483647,
               "minItems" : 1,
               "type" : "array",
-              "description" : "Dokumenter som inngår i denne forsendelsen",
               "items" : {
                 "$ref" : "#/components/schemas/ForsendelseV1Dokument"
               }
@@ -741,7 +666,7 @@
         } ]
       },
       "forsendelseV2" : {
-        "required" : [ "avsender", "dokumenter", "lest", "mottakerAdresse", "returAdresse", "sendtDato", "tittel" ],
+        "required" : [ "avsender", "lest", "sendtDato", "tittel" ],
         "type" : "object",
         "description" : "Melding som beskriver en forsendelse. Benyttes i dag for å vise post sendt via KS-SvarUt på minside.kommune.no",
         "allOf" : [ {
@@ -758,17 +683,14 @@
               "$ref" : "#/components/schemas/Forelder"
             },
             "tittel" : {
-              "type" : "string",
-              "description" : "Tittel for meldingen"
+              "type" : "string"
             },
             "sendtDato" : {
               "type" : "integer",
-              "description" : "Dato forsendelsen er sendt. Dette feltet brukes som sorteringsdato. Uttrykket som millisekunder etter epoch",
               "format" : "int64"
             },
             "avsender" : {
-              "type" : "string",
-              "description" : "Navn på person eller orgnr / navn på organisasjon som er kilde for forsendelsen."
+              "type" : "string"
             },
             "returAdresse" : {
               "$ref" : "#/components/schemas/ForsendelseV2Adresse"
@@ -777,28 +699,24 @@
               "$ref" : "#/components/schemas/ForsendelseV2Adresse"
             },
             "lest" : {
-              "type" : "boolean",
-              "description" : "Indikerer om forsendelsen er lest eller ikke"
+              "type" : "boolean"
             },
             "dokumenter" : {
               "maxItems" : 2147483647,
               "minItems" : 1,
               "type" : "array",
-              "description" : "Dokumenter som inngår i denne forsendelsen",
               "items" : {
                 "$ref" : "#/components/schemas/ForsendelseV2Dokument"
               }
             },
             "lenker" : {
               "type" : "array",
-              "description" : "Lenker vedlagt forsendelsen",
               "items" : {
                 "$ref" : "#/components/schemas/ForsendelseV2Lenke"
               }
             },
             "svarLenke" : {
-              "type" : "string",
-              "description" : "Url som skal benyttes for å svare på denne forsendelsen"
+              "type" : "string"
             }
           }
         } ]
@@ -821,23 +739,16 @@
               "$ref" : "#/components/schemas/Forelder"
             },
             "tittel" : {
-              "type" : "string",
-              "description" : "Tittel på skjema",
-              "example" : "Søknad om fartsdempende tiltak"
+              "type" : "string"
             },
             "mottaker" : {
-              "type" : "string",
-              "description" : "Navn på mottaker av skjema",
-              "example" : "Bergen kommune boligetaten"
+              "type" : "string"
             },
             "avsender" : {
-              "type" : "string",
-              "description" : "Navn på avsender av skjema",
-              "example" : "Ola Nordmann"
+              "type" : "string"
             },
             "innsendtdato" : {
               "type" : "integer",
-              "description" : "Dato for når skjemaet var innsendt. Uttrykket som millisekunder etter epoch",
               "format" : "int64"
             },
             "skjemafil" : {
@@ -845,20 +756,18 @@
             },
             "vedlegg" : {
               "type" : "array",
-              "description" : "Vedlegg til skjema",
               "items" : {
                 "$ref" : "#/components/schemas/SkjemaFilV1"
               }
             },
             "url" : {
-              "type" : "string",
-              "description" : "Url til sak, eller videre saksgang i skjemaet"
+              "type" : "string"
             }
           }
         } ]
       },
       "journalpostV1" : {
-        "required" : [ "beskrivelse", "dokumentbeskrivelser", "journaldato", "registreringsId", "tittel" ],
+        "required" : [ "beskrivelse", "journaldato", "registreringsId", "tittel" ],
         "type" : "object",
         "allOf" : [ {
           "$ref" : "#/components/schemas/MeldingMetadata"
@@ -908,30 +817,24 @@
           "properties" : {
             "tjenesteId" : {
               "type" : "string",
-              "description" : "Id for den kommunale tjenesten",
               "format" : "uuid"
             },
             "tittel" : {
-              "type" : "string",
-              "description" : "Tittel på den kommunale tjenesten"
+              "type" : "string"
             },
             "lenke" : {
-              "type" : "string",
-              "description" : "Lenke til den kommunale tjenesten"
+              "type" : "string"
             },
             "rettetMot" : {
               "type" : "string",
-              "description" : "Hvilken autentiseringstype den kommunale tjenesten er rettet mot",
               "enum" : [ "PERSON", "ORGANISASJON", "PERSON_OG_ORGANISASJON" ]
             },
             "kommuneFiksOrganisasjonId" : {
               "type" : "string",
-              "description" : "Fiks organisasjon id for kommunen som eier denne tjenesten",
               "format" : "uuid"
             },
             "kommuneVisningsnavn" : {
-              "type" : "string",
-              "description" : "Visningsnavn for kommunen som eier denne tjenesten"
+              "type" : "string"
             }
           }
         } ]
@@ -958,17 +861,12 @@
             },
             "matrikkelenhetId" : {
               "type" : "integer",
-              "description" : "Matrikkel-intern id for matrikkelenheten",
               "format" : "int64"
             },
             "adresser" : {
               "type" : "array",
-              "description" : "Adresse for matrikkelenheten",
-              "example" : "Øvre Testveien 34, 3765 Storevik",
               "items" : {
-                "type" : "string",
-                "description" : "Adresse for matrikkelenheten",
-                "example" : "Øvre Testveien 34, 3765 Storevik"
+                "type" : "string"
               }
             }
           }
@@ -1027,23 +925,16 @@
               "$ref" : "#/components/schemas/Forelder"
             },
             "tittel" : {
-              "type" : "string",
-              "description" : "Tittel på skjema",
-              "example" : "Søknad om fartsdempende tiltak"
+              "type" : "string"
             },
             "mottaker" : {
-              "type" : "string",
-              "description" : "Navn på mottaker av skjema",
-              "example" : "Bergen kommune boligetaten"
+              "type" : "string"
             },
             "avsender" : {
-              "type" : "string",
-              "description" : "Navn på avsender av skjema",
-              "example" : "Ola Nordmann"
+              "type" : "string"
             },
             "endretDato" : {
               "type" : "integer",
-              "description" : "Dato for når skjemaet sist var endret/lagret. Uttrykket som millisekunder etter epoch",
               "format" : "int64"
             },
             "skjemafil" : {
@@ -1051,14 +942,12 @@
             },
             "vedlegg" : {
               "type" : "array",
-              "description" : "Vedlegg til skjema",
               "items" : {
                 "$ref" : "#/components/schemas/SkjemaFilV1"
               }
             },
             "url" : {
-              "type" : "string",
-              "description" : "Url til skjema kladd for videre utfylling/sletting"
+              "type" : "string"
             }
           }
         } ]
@@ -1068,8 +957,21 @@
         "properties" : {
           "antallSlettet" : {
             "type" : "integer",
-            "description" : "Antall meldinger som ble slettet i operasjonen.",
             "format" : "int64"
+          }
+        }
+      },
+      "SlettMelding" : {
+        "required" : [ "fiksOrgId", "meldingId" ],
+        "type" : "object",
+        "properties" : {
+          "fiksOrgId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "meldingId" : {
+            "type" : "string",
+            "format" : "uuid"
           }
         }
       },
@@ -1081,26 +983,11 @@
             "maxItems" : 1000,
             "minItems" : 1,
             "type" : "array",
-            "description" : "Melding-id for meldinger som skal slettes, maks 1000",
             "items" : {
-              "$ref" : "#/components/schemas/slettMelding"
+              "$ref" : "#/components/schemas/SlettMelding"
             }
           }
         }
-      },
-      "slettMelding" : {
-        "type" : "object",
-        "properties" : {
-          "fiksOrgId" : {
-            "type" : "string",
-            "format" : "uuid"
-          },
-          "meldingId" : {
-            "type" : "string",
-            "format" : "uuid"
-          }
-        },
-        "description" : "Melding-id for meldinger som skal slettes, maks 1000"
       }
     }
   }
