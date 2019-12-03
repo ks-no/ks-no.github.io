@@ -20,29 +20,36 @@
     "description" : "API for å håndtere funksjonalitet for sending til Fiks IO/Print"
   } ],
   "paths" : {
-    "/send/api/v1/mottak" : {
+    "/send/api/v1/status/{meldingstype}/{meldingId}" : {
       "post" : {
         "tags" : [ "fiks-send" ],
-        "description" : "Mottar en ordre som skal sendes videre til enten FiksIO eller Fiks-Print",
-        "operationId" : "mottaOrdre",
-        "requestBody" : {
-          "content" : {
-            "application/json" : {
-              "schema" : {
-                "$ref" : "#/components/schemas/OrdreModel"
-              }
-            }
-          },
-          "required" : true
-        },
+        "description" : "Oppdaterer status på en ordre",
+        "operationId" : "oppdaterStatus",
+        "parameters" : [ {
+          "name" : "meldingstype",
+          "in" : "path",
+          "description" : "Mottatt meldingstype for ordre som skal oppdateres",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "meldingId",
+          "in" : "path",
+          "description" : "MeldingId for sendt ordre som skal oppdateres",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
         "responses" : {
           "200" : {
-            "description" : "Mottar ordre.",
+            "description" : "Status mottatt",
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "type" : "string",
-                  "format" : "uuid"
+                  "$ref" : "#/components/schemas/StatusSvarModel"
                 }
               }
             }
@@ -216,36 +223,29 @@
         }
       }
     },
-    "/send/api/v1/status/{meldingstype}/{meldingId}" : {
+    "/send/api/v1/mottak" : {
       "post" : {
         "tags" : [ "fiks-send" ],
-        "description" : "Oppdaterer status på en ordre",
-        "operationId" : "oppdaterStatus",
-        "parameters" : [ {
-          "name" : "meldingstype",
-          "in" : "path",
-          "description" : "Mottatt meldingstype for ordre som skal oppdateres",
-          "required" : true,
-          "schema" : {
-            "type" : "string"
-          }
-        }, {
-          "name" : "meldingId",
-          "in" : "path",
-          "description" : "MeldingId for sendt ordre som skal oppdateres",
-          "required" : true,
-          "schema" : {
-            "type" : "string",
-            "format" : "uuid"
-          }
-        } ],
+        "description" : "Mottar en ordre som skal sendes videre til enten FiksIO eller Fiks-Print",
+        "operationId" : "mottaOrdre",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/OrdreModel"
+              }
+            }
+          },
+          "required" : true
+        },
         "responses" : {
           "200" : {
-            "description" : "Status mottatt",
+            "description" : "Mottar ordre.",
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/StatusSvarModel"
+                  "type" : "string",
+                  "format" : "uuid"
                 }
               }
             }
@@ -256,6 +256,15 @@
   },
   "components" : {
     "schemas" : {
+      "StatusSvarModel" : {
+        "type" : "object",
+        "properties" : {
+          "status" : {
+            "type" : "string",
+            "enum" : [ "OK", "FEIL" ]
+          }
+        }
+      },
       "AdresseModel" : {
         "required" : [ "adresselinje1", "poststed" ],
         "type" : "object",
@@ -358,15 +367,6 @@
           },
           "fiksIOKonfigurasjon" : {
             "$ref" : "#/components/schemas/FiksIOKonfigurasjon"
-          }
-        }
-      },
-      "StatusSvarModel" : {
-        "type" : "object",
-        "properties" : {
-          "status" : {
-            "type" : "string",
-            "enum" : [ "OK", "FEIL" ]
           }
         }
       }
