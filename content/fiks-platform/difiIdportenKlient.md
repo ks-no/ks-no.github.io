@@ -1,11 +1,11 @@
 
 ---
-title: Hvordan lage klient hos ID-porten
+title: Hvordan lage klient hos idporten
 date: 2019-09-19
 ---
-
-- Du må ha Maskinporten/OpenID Connect konto hos ID-porten i ver2 miljøet. (Dere må ha virksomhetsertifikat for test fra Commfides eller Buypass)
-- gå til https://selvbetjening-samarbeid.difi.no/#/
+- En må først ha godkjent bruksvilkår hos difi. Det har de fleste kommuner: https://samarbeid.difi.no/felleslosninger/maskinporten/ta-i-bruk-maskinporten/1-planlegge-og-akseptere-bruksvilkar
+- Dere må ha virksomhetsertifikat fra Commfides eller Buypass. Test sertifikat for test og vanlig for produksjon.
+- Gå til https://selvbetjening-samarbeid.difi.no/#/
 - logg inn
 - velg "Gå til integrasjoner", for ver2 for test. Produksjon for prod.
  ![Idporten](../images/idporten1.png "")
@@ -22,4 +22,4 @@ date: 2019-09-19
 ![Idporten](../images/idporten4.png "")
 
 - Hvis du skal ha personinnlogging med ks:fiks scope må du sende en henvendelse til idporten@difi.no
-- For produksjon må dere følge rutina her: https://samarbeid.difi.no/felleslosninger/maskinporten/ta-i-bruk-maskinporten/1-planlegge-og-akseptere-bruksvilkar
+

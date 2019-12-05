@@ -20,6 +20,15 @@ Etter organisasjonen er opprettet må den autoriseres for å kunne handle på ve
 1. Har dere personinnlogginger i ID-porten test, send disse i en e-post til oss slik at vi kan sette opp test kommune/organisasjon i test. fiks-utvikling@ks.no Hvis ikke får dere testpersoner av oss.
 1. Ta kontakt på Slack-kanalen hvis dere står fast eller ønsker å få tilbakemelding på om dere bruker api-ene korrekt.
 
+## Hvordan få tilgang i produksjon
+
+1. Bestill virksomhetsertifikat fra comfides (https://www.commfides.com/commfides-virksomhetssertifikat/) eller buypass (https://www.buypass.no/produkter/virksomhetssertifikat-esegl), hvis dere ikke har et.
+1. Send orgnr til oss (hovedorgnr til organisasjonen) det som ligger i virksomhetsertifikatet. fiks-utvikling@ks.no og si dere trenger tilgang til fiks.
+1. Bestill tilgang til Maskinporten/Idporten hos difi. For personinnlogga websider må du ha idporten, for applikasjoner der du ikke er logget inn via idporten må en ha maskinporten.
+  * For å opprette tilgang må en bruke selvbetjening: https://samarbeid.difi.no/felleslosninger/maskinporten/ta-i-bruk-maskinporten/2-selvbetjening
+  * Gå inn på https://minside-samarbeid.difi.no/organization-home/services/service-admin
+  *  [Følg oppskrift her for å lage klient hos idporten](../difiidportenklient) 
+1. Gå til https://forvaltning.fiks.ks.no og lag en integrasjon. Og gi tilgang til de tjenestene applikasjonen trenger.
 
 ## Grensesnitt
 Integrasjoner mot Fiks-plattformen vil hovedsakelig benytte grensesnitt basert på REST/json.
