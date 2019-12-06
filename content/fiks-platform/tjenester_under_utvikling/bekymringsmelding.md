@@ -22,7 +22,7 @@ Brukerne (innbyggere eller offentlig ansatte) som skal melde inn en bekymringsme
 Når bekymringsmeldingen er sendt vil systemet forsøke å levere den som strukturert data via Fiks-plattformen til kommunens fagsystem. Dersom kommunens fagsystem ikke støtter integrasjon mot [Fiks IO](https://ks-no.github.io/fiks-platform/tjenester/fiksio/) finnes det en løsning for å laste ned bekymeringsmeldingen manuelt. Bekymringsmeldinger som ikke markeres som mottatt sendes ut som brevpost.
 
 
-![alt text](https://ks-no.github.io/images/Bekymringsmelding_2.png "Overordnet designløsning")
+![alt text](https://ks-no.github.io/images/Bekymringsmelding_3.png "Overordnet designløsning")
 
 Bekymringsmeldingen blir omgjort til strukturert data (JSON) for integrasjon mot fagsystem og ustrukturert data (PDF) til manuell nedlastning og for brevpost. All kommunikasjon mellom bruker og løsningen er kanalkryptert. I tillegg lagres både strukturert og ustrukturert data kryptert med mottakersystemets offentlige nøkkel (fagsystem, utskriftsleverandør, manuell nedlastning).  
 
