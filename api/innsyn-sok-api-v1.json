@@ -18,18 +18,27 @@
     "name" : "Oppslag"
   } ],
   "paths" : {
-    "/innsyn-sok/api/v1/oppslag/korrelasjon" : {
+    "/innsyn-sok/api/v1/oppslag/dokument" : {
       "get" : {
         "tags" : [ "Oppslag" ],
-        "summary" : "Hent alle meldinger som er korrelert på den spesifiserte meldingsid'en",
-        "operationId" : "lookupKorrelasjon",
+        "summary" : "Hent en melding basert på dokumentId",
+        "operationId" : "lookupDokument",
         "parameters" : [ {
-          "name" : "korrelasjonId",
+          "name" : "dokumentId",
           "in" : "query",
-          "description" : "Korrelasjon-id som marker dokumentene som relatert",
+          "description" : "Id for dokumentet (formatert som <fiksOrgId>_<integrasjonId>_<meldingId>)",
           "required" : true,
           "schema" : {
             "type" : "string"
+          }
+        }, {
+          "name" : "type",
+          "in" : "query",
+          "description" : "Meldingstype til dokumentet",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "enum" : [ "faktura", "saksmappe", "journalpost", "byggesak", "innsendtskjema", "skjemakladd", "matrikkelenhet", "kommunaltjeneste", "forsendelse" ]
           }
         }, {
           "name" : "akseptertMeldingVersjon",
@@ -50,7 +59,7 @@
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/KorrelasjonOppslag"
+                  "$ref" : "#/components/schemas/OppslagResultat"
                 }
               }
             }
@@ -107,27 +116,18 @@
         }
       }
     },
-    "/innsyn-sok/api/v1/oppslag/dokument" : {
+    "/innsyn-sok/api/v1/oppslag/korrelasjon" : {
       "get" : {
         "tags" : [ "Oppslag" ],
-        "summary" : "Hent en melding basert på dokumentId",
-        "operationId" : "lookupDokument",
+        "summary" : "Hent alle meldinger som er korrelert på den spesifiserte meldingsid'en",
+        "operationId" : "lookupKorrelasjon",
         "parameters" : [ {
-          "name" : "dokumentId",
+          "name" : "korrelasjonId",
           "in" : "query",
-          "description" : "Id for dokumentet (formatert som <fiksOrgId>_<integrasjonId>_<meldingId>)",
+          "description" : "Korrelasjon-id som marker dokumentene som relatert",
           "required" : true,
           "schema" : {
             "type" : "string"
-          }
-        }, {
-          "name" : "type",
-          "in" : "query",
-          "description" : "Meldingstype til dokumentet",
-          "required" : true,
-          "schema" : {
-            "type" : "string",
-            "enum" : [ "faktura", "saksmappe", "journalpost", "byggesak", "innsendtskjema", "skjemakladd", "matrikkelenhet", "kommunaltjeneste", "forsendelse" ]
           }
         }, {
           "name" : "akseptertMeldingVersjon",
@@ -148,7 +148,7 @@
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/OppslagResultat"
+                  "$ref" : "#/components/schemas/KorrelasjonOppslag"
                 }
               }
             }
@@ -443,21 +443,6 @@
           }
         }
       },
-      "KorrelasjonOppslag" : {
-        "type" : "object",
-        "properties" : {
-          "barn" : {
-            "type" : "array",
-            "items" : {
-              "$ref" : "#/components/schemas/MeldingV1"
-            }
-          },
-          "barnOverInnloggingsniva" : {
-            "type" : "integer",
-            "format" : "int32"
-          }
-        }
-      },
       "MatrikkelenhetMatrikkelnummerV1" : {
         "type" : "object",
         "properties" : {
@@ -530,6 +515,19 @@
           "score" : {
             "type" : "number",
             "format" : "float"
+          }
+        }
+      },
+      "OppslagResultat" : {
+        "type" : "object",
+        "properties" : {
+          "hit" : {
+            "$ref" : "#/components/schemas/MeldingV1"
+          },
+          "lookupErrorCode" : {
+            "type" : "string",
+            "description" : "Om treff ikke kunne vises indikerer koden hvorfor. ",
+            "enum" : [ "IKKE_EKSISTERENDE_ELLER_IKKE_AUTORISERT", "INNLOGGINGSNIVA_UTILSTREKKELIG" ]
           }
         }
       },
@@ -943,16 +941,18 @@
           }
         }
       },
-      "OppslagResultat" : {
+      "KorrelasjonOppslag" : {
         "type" : "object",
         "properties" : {
-          "hit" : {
-            "$ref" : "#/components/schemas/MeldingV1"
+          "barn" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/MeldingV1"
+            }
           },
-          "lookupErrorCode" : {
-            "type" : "string",
-            "description" : "Om treff ikke kunne vises indikerer koden hvorfor. ",
-            "enum" : [ "IKKE_EKSISTERENDE_ELLER_IKKE_AUTORISERT", "INNLOGGINGSNIVA_UTILSTREKKELIG" ]
+          "barnOverInnloggingsniva" : {
+            "type" : "integer",
+            "format" : "int32"
           }
         }
       },
