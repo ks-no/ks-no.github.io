@@ -30,6 +30,7 @@ Portalen tilbyr også et API hvor det er mulig å sende en bekymringsmelding fra
 
 ## Hvordan tar man i bruk Fiks Bekymringsmelding?
 Det finnes 3 ulike måter å ta i bruk Fiks Bekymringsmelding:
+
 * Fagsystem integrasjon via Fiks IO med print som reserveløsning
 * Manuell nedlastning med print som reserveløsning
 * Print og brevpost
