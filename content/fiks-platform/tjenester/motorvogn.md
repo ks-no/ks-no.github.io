@@ -11,16 +11,12 @@ Fiks Motorvogn er en tjeneste for å gjøre oppslag i Statens Vegvesen sitt [Mot
 Fiks Motorvogn er en tjeneste for maskin-til-maskin integrasjon. For å ta i bruk Fiks Motorvogn trenger du derfor at en leverandør av fagsystem utvikler en integrasjon tjenesten.
 
 På sikt vil de bli vurdert å utvikle et administrativt grensesnitt mot Fiks Motorvogn for kommuneansatte.
-
-### Autorisasjon
-
-En autentisert integrasjon må ha privilegie `MOTORVOGN.QUERY` for *fiks-org* som integrasjonen skal søke på vegne av.
  
 ### Integrasjon
  
 Api kall gjøres i henhold til [swagger spesifikasjonen](https://vegvesen.github.io/ak-api/api/api_kjoretoyoppslag_44) til Statens Vegvesen, med følgende endringer:
-  * Autorisering skjer på fiks platformen med leverandørens virksomhetssertifikat. Ikke med Basic auth.
-  * Fiks-org som spørringen gjøres på vegne av blir en del av url'en base url for alle forespørsler.
+  * Autorisering skjer på fiks platformen med leverandørens virksomhetssertifikat som beskrevet [her](https://ks-no.github.io/fiks-platform/integrasjoner/#integrasjon), ikke med Basic auth.
+  * Fiks-org som spørringen gjøres på vegne av blir en del av url'en for alle forespørsler.
   
 Swagger filen til SVV spesifiserer en basePath som `/ws/no/vegvesen/kjoretoy/felles/v2`. Denne må erstattes med `https://api.fiks.ks.no/motorvogn/api/{fiksOrgId}` hvor `{fiksOrgId}` er fiks org til organisasjonen spørringen gjøres på vegne av. Resten av url'en er som spesifisert for de enkelte endepunktene i swagger filen:
   * `/rest/distribusjon/kjoretoy/v2.0/bulk/kjennemerke`
