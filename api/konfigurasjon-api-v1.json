@@ -54,6 +54,35 @@
         }
       }
     },
+    "/konfigurasjon/api/v1/integrasjoner" : {
+      "post" : {
+        "tags" : [ "IntegrasjonKonfigurasjon" ],
+        "summary" : "Oppretter en integrasjon",
+        "operationId" : "createIntegrasjon",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/IntegrasjonCreateRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Den opprettede integrasjonen",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Integrasjon"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/konfigurasjon/api/v1/integrasjoner/{integrasjonId}" : {
       "get" : {
         "tags" : [ "IntegrasjonKonfigurasjon" ],
@@ -130,35 +159,6 @@
         "responses" : {
           "200" : {
             "description" : "Den oppdaterte integrasjonen",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/Integrasjon"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/konfigurasjon/api/v1/integrasjoner" : {
-      "post" : {
-        "tags" : [ "IntegrasjonKonfigurasjon" ],
-        "summary" : "Oppretter en integrasjon",
-        "operationId" : "createIntegrasjon",
-        "requestBody" : {
-          "content" : {
-            "application/json" : {
-              "schema" : {
-                "$ref" : "#/components/schemas/IntegrasjonCreateRequest"
-              }
-            }
-          },
-          "required" : true
-        },
-        "responses" : {
-          "200" : {
-            "description" : "Den opprettede integrasjonen",
             "content" : {
               "application/json" : {
                 "schema" : {
@@ -1250,9 +1250,9 @@
             "type" : "string",
             "description" : "Personen som er juridisk ansvarlig for kontrakten med KS hos kunden. Må referere til en person som eksisterer i systemet."
           },
-          "aktiv" : {
+          "synlig" : {
             "type" : "boolean",
-            "description" : "Flagg som indikerer om en organisasjon er aktiv eller ikke."
+            "description" : "Flagg som indikerer om en organisasjon er synlig eller ikke."
           },
           "konfigurert" : {
             "type" : "boolean",
@@ -1647,6 +1647,32 @@
         },
         "description" : "En liste over gyldige privilegier for en gitt ressurstype"
       },
+      "OrganisasjonCreateRequest" : {
+        "required" : [ "intern", "navn", "type" ],
+        "type" : "object",
+        "properties" : {
+          "navn" : {
+            "pattern" : "^[A-ZÆØÅa-zæøå0-9ÁáÀàÂâÉéÈèÊêÍíÌìÎîÓóÒòÔôÚúÙùÛûÝýÄäËëÏïÖöÜü,.!?\\-:;/\\\\'()&+*=%§]+[A-ZÆØÅa-zæøå0-9ÁáÀàÂâÉéÈèÊêÍíÌìÎîÓóÒòÔôÚúÙùÛûÝýÄäËëÏïÖöÜü ,.!?\\-:;/\\\\'()&+*=%§]*[A-ZÆØÅa-zæøå0-9ÁáÀàÂâÉéÈèÊêÍíÌìÎîÓóÒòÔôÚúÙùÛûÝýÄäËëÏïÖöÜü,.!?\\-:;/\\\\'()&+*=%§]+$",
+            "type" : "string",
+            "description" : "Organisasjonens navn."
+          },
+          "type" : {
+            "type" : "string",
+            "description" : "Organisasjonens type",
+            "enum" : [ "KOMMUNE", "FYLKESKOMMUNE", "KOMMUNAL_VIRKSOMHET", "STATLIG_VIRKSOMHET", "LEVERANDOR" ]
+          },
+          "intern" : {
+            "type" : "boolean",
+            "description" : "Indikerer om organisasjonen er intern"
+          },
+          "kommunenr" : {
+            "pattern" : "^\\d{4}$",
+            "type" : "string",
+            "description" : "Kommunenummer."
+          }
+        },
+        "description" : "En forespørsel om å opprette en ny organisasjon."
+      },
       "RootOrganisasjonUpdateRequest" : {
         "required" : [ "intern" ],
         "type" : "object",
@@ -1661,9 +1687,9 @@
             "type" : "string",
             "description" : "Kommunenummer"
           },
-          "aktiv" : {
+          "synlig" : {
             "type" : "boolean",
-            "description" : "Flagg for å aktivere eller deaktivere en organisasjon."
+            "description" : "Flagg for å gjøre en organisasjon synlig eller ikke-synlig."
           },
           "intern" : {
             "type" : "boolean",
@@ -1721,32 +1747,6 @@
           }
         },
         "description" : "Et map med alle privilegier for alle tjenestetyper"
-      },
-      "OrganisasjonCreateRequest" : {
-        "required" : [ "intern", "navn", "type" ],
-        "type" : "object",
-        "properties" : {
-          "navn" : {
-            "pattern" : "^[A-ZÆØÅa-zæøå0-9ÁáÀàÂâÉéÈèÊêÍíÌìÎîÓóÒòÔôÚúÙùÛûÝýÄäËëÏïÖöÜü,.!?\\-:;/\\\\'()&+*=%§]+[A-ZÆØÅa-zæøå0-9ÁáÀàÂâÉéÈèÊêÍíÌìÎîÓóÒòÔôÚúÙùÛûÝýÄäËëÏïÖöÜü ,.!?\\-:;/\\\\'()&+*=%§]*[A-ZÆØÅa-zæøå0-9ÁáÀàÂâÉéÈèÊêÍíÌìÎîÓóÒòÔôÚúÙùÛûÝýÄäËëÏïÖöÜü,.!?\\-:;/\\\\'()&+*=%§]+$",
-            "type" : "string",
-            "description" : "Organisasjonens navn."
-          },
-          "type" : {
-            "type" : "string",
-            "description" : "Organisasjonens type",
-            "enum" : [ "KOMMUNE", "FYLKESKOMMUNE", "KOMMUNAL_VIRKSOMHET", "STATLIG_VIRKSOMHET", "LEVERANDOR" ]
-          },
-          "intern" : {
-            "type" : "boolean",
-            "description" : "Indikerer om organisasjonen er intern"
-          },
-          "kommunenr" : {
-            "pattern" : "^\\d{4}$",
-            "type" : "string",
-            "description" : "Kommunenummer."
-          }
-        },
-        "description" : "En forespørsel om å opprette en ny organisasjon."
       }
     }
   }
