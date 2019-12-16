@@ -1,7 +1,7 @@
 {
   "openapi" : "3.0.1",
   "info" : {
-    "title" : "KS Fiks: Innsyn Index Service",
+    "title" : "(DEPRECATED) KS Fiks: Innsyn Index Service",
     "contact" : {
       "name" : "Fiks-brukerstøtte",
       "url" : "https://ks-no.github.io/",
@@ -76,7 +76,8 @@
               }
             }
           }
-        }
+        },
+        "deprecated" : true
       }
     },
     "/innsyn-index/api/v1/slett" : {
@@ -120,7 +121,8 @@
               }
             }
           }
-        }
+        },
+        "deprecated" : true
       }
     },
     "/innsyn-index/api/v1/slettByMeldingId" : {
@@ -149,31 +151,38 @@
               }
             }
           }
-        }
+        },
+        "deprecated" : true
       }
     }
   },
   "components" : {
     "schemas" : {
       "MeldingIndexResponseV1" : {
+        "required" : [ "manglerSamtykke", "oppdatert", "opprettet" ],
         "type" : "object",
         "properties" : {
           "opprettet" : {
             "type" : "integer",
+            "description" : "Antall nye meldinger som ble indeksert i Fiks Innsyn",
             "format" : "int32"
           },
           "oppdatert" : {
             "type" : "integer",
+            "description" : "Antall eksisterende meldinger som ble oppdatert",
             "format" : "int32"
           },
           "manglerSamtykke" : {
             "type" : "integer",
+            "description" : "Antall forespørsler hvor personen meldingen var eksponert for ikke har gitt samtykke til bruk av Fiks Innsyn",
             "format" : "int32"
           },
           "meldingerUtenSamtykke" : {
             "type" : "array",
+            "description" : "MeldingsId for forespørsler som ble blokkert pga manglende samtykke",
             "items" : {
               "type" : "string",
+              "description" : "MeldingsId for forespørsler som ble blokkert pga manglende samtykke",
               "format" : "uuid"
             }
           }
@@ -267,13 +276,16 @@
         "properties" : {
           "identifikatorType" : {
             "type" : "string",
+            "description" : "Type identifikator",
             "enum" : [ "ORGANISASJONSNUMMER", "FODSELSNUMMER", "MATRIKKELNUMMER", "OFFENTLIG" ]
           },
           "verdi" : {
-            "type" : "string"
+            "type" : "string",
+            "description" : "Et 11 siffret fødselsnummer, et 9 siffret organisasjonsnummer, eller et matrikkelnummer på format <kommunenr>-<gardsnr>/<bruksnr>/<festenr>/<seksjonsnr>"
           }
         },
-        "description" : "Angir hvem som skal ha tilgang til dokumentet. Dette kan endten være en fysisk person, en organisasjon, eller en matrikkelenhet."
+        "description" : "Angir hvem som skal ha tilgang til dokumentet. Dette kan endten være en fysisk person, en organisasjon, eller en matrikkelenhet.",
+        "example" : 123456789
       },
       "Forelder" : {
         "required" : [ "meldingId", "type" ],
@@ -377,23 +389,31 @@
         "properties" : {
           "meldingId" : {
             "type" : "string",
-            "format" : "uuid"
+            "description" : "UUID, i samsvar med standardrepresentasjonen beskrevet her: https://docs.oracle.com/javase/8/docs/api/java/util/UUID.html#toString--",
+            "format" : "uuid",
+            "example" : "b8403bc6-4a82-4fee-b06f-8893a539c453"
           },
           "sikkerhetsniva" : {
             "minimum" : 0,
             "type" : "integer",
-            "format" : "int32"
+            "description" : "Påkrevd sikkerhetsnivå",
+            "format" : "int32",
+            "example" : 4
           },
           "eksponertFor" : {
             "$ref" : "#/components/schemas/EksponertFor"
           },
           "fiksOrganisasjonId" : {
             "type" : "string",
-            "format" : "uuid"
+            "description" : "Fiks-organisasjonen som er ansvarlig for meldingen, som registrert i fiks-konfigurasjon",
+            "format" : "uuid",
+            "example" : "120b7806-611f-4b76-b2d4-3a1445de5281"
           },
           "eksternRef" : {
             "pattern" : "^[A-Za-zæøåÆØÅ0-9_.,/\\-_ ]+$",
-            "type" : "string"
+            "type" : "string",
+            "description" : "Ekstern-ref. Kan benyttes ved sletting av grupper dokumenter, for eksempel en gruppe som utgjør en kategori i kildesystemet",
+            "example" : "sakogarkiv.byggesak"
           },
           "meldingMetadata" : {
             "$ref" : "#/components/schemas/MeldingMetadata"
@@ -456,6 +476,7 @@
             "enum" : [ "fakturaV1", "saksmappeV1", "journalpostV1", "forsendelseV1", "forsendelseV2", "byggesakV1", "matrikkelenhetV1", "innsendtskjemaV1", "skjemakladdV1", "kommunaltjenesteV1" ]
           }
         },
+        "description" : "Meldingsdata i sammsvar med typen melding som ønskes opprettet eller oppdatert",
         "discriminator" : {
           "propertyName" : "versjon"
         }
@@ -957,6 +978,7 @@
         "properties" : {
           "antallSlettet" : {
             "type" : "integer",
+            "description" : "Antall meldinger som ble slettet i operasjonen.",
             "format" : "int64"
           }
         }
@@ -973,7 +995,8 @@
             "type" : "string",
             "format" : "uuid"
           }
-        }
+        },
+        "description" : "Melding-id for meldinger som skal slettes, maks 1000"
       },
       "SlettMeldingerSpec" : {
         "required" : [ "meldinger" ],
@@ -983,6 +1006,7 @@
             "maxItems" : 1000,
             "minItems" : 1,
             "type" : "array",
+            "description" : "Melding-id for meldinger som skal slettes, maks 1000",
             "items" : {
               "$ref" : "#/components/schemas/SlettMelding"
             }
