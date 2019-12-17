@@ -6,6 +6,11 @@ lastmod: 2018-12-17
 Her er en liste over de viktigste endringene i SvarUt, startet i 2015.
 
 ## Liste over endringer i SvarUt.
+* 17.12.2019
+  * Endret fra epost på varselepost til no-reply@ks.no (Pga så mange sak opprettet mail som vi får i retur)
+  * Fix for like filnavn mot SDP der filnavnet blir likt etter at sdp har kuttet til 100tegn.
+  * Manuellforsendelse feiler nå etter 20 feilede forsendelser og ikke 5 som før.
+  * Tilgang for kommuneadministrator til å aktivere/deaktivere organisasjon/mottakersystem og endre navn på organisasjon.
 * 27.05.2019
   * Fiker tittel mot SDP, for å unngå at sensetive titler kommer ut.
 * 12.02.2019
