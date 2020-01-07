@@ -29,7 +29,7 @@ Bekymringsmeldingen blir omgjort til strukturert data (JSON) for integrasjon mot
 Portalen tilbyr også et API hvor det er mulig å sende en bekymringsmelding fra fagsystemet til en annen kommunes barneverntjeneste.
 
 ## Hvordan tar man i bruk Fiks Bekymringsmelding?
-Portalen vi har laget inneholder to skjema, en for innbyggere og en offentlig ansatte, som kan brukes for å melde inn bekymringsmeldinger.
+Portalen inneholder to skjema, en for innbyggere og en offentlig ansatte, som kan brukes for å melde inn bekymringsmeldinger.
 
 Noen ganger kan det være hensiktsmessig å ha skjema for offentlig melder som en integrert del eget fagsystem (eks: skole, politi, ol) og da kan man benytte API for bekymringsmelding for å implementere dette. API-et støtter maskin-til-maskin integrasjon både som produsent (avsender) av bekymringsmelding og konsument (mottaker) av bekymringsmelding. Ta kontakt med din leverandør av fagsystem og hør om de støtter integrasjon mot bekymringsmelding. 
 
