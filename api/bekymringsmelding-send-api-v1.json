@@ -20,6 +20,143 @@
     "description" : "API for å håndtere funksjonalitet for sending til Fiks IO/Print"
   } ],
   "paths" : {
+    "/send/api/v1/konfigurasjon/{fiksOrgId}/{fortrolighetsNiva}/{fiksIOKontoId}" : {
+      "get" : {
+        "tags" : [ "fiks-send" ],
+        "description" : "Henter konfigurasjon for sending til Fiks IO og Print",
+        "operationId" : "getKonfigurasjon",
+        "parameters" : [ {
+          "name" : "fiksOrgId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        }, {
+          "name" : "fortrolighetsNiva",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "enum" : [ "NORMAL", "UNTATT_OFFENTLIGHET" ]
+          }
+        }, {
+          "name" : "fiksIOKontoId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "404" : {
+            "description" : "Ingen konfigurasjon funnet for gitt fiksOrgId og fortrolighetsnivå"
+          },
+          "200" : {
+            "description" : "Konfigurasjon funnet",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/SendKonfigurasjon"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/send/api/v1/status/{meldingId}/{meldingstype}" : {
+      "post" : {
+        "tags" : [ "fiks-send" ],
+        "description" : "Oppdaterer status på en ordre",
+        "operationId" : "oppdaterStatus",
+        "parameters" : [ {
+          "name" : "meldingId",
+          "in" : "path",
+          "description" : "MeldingId for sendt ordre som skal oppdateres",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        }, {
+          "name" : "meldingstype",
+          "in" : "path",
+          "description" : "Mottatt meldingstype for ordre som skal oppdateres",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "204" : {
+            "description" : "Status oppdatert"
+          },
+          "400" : {
+            "description" : "Feil meldingstype for ordre tilhørende angitt meldingId."
+          }
+        }
+      }
+    },
+    "/send/api/v1/send" : {
+      "post" : {
+        "tags" : [ "fiks-send" ],
+        "description" : "Sender en ordre som skal sendes videre til enten FiksIO eller Fiks-Print",
+        "operationId" : "sendOrdre",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/OrdreModel"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Send ordre.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "string",
+                  "format" : "uuid"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/send/api/v1/send/{id}" : {
+      "post" : {
+        "tags" : [ "fiks-send" ],
+        "description" : "Sender en bestemt ordre på nytt enten til FiksIO eller Fiks-Print basert på ID",
+        "operationId" : "sendOrdreById",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "400" : {
+            "description" : "Ordre er allerede levert"
+          },
+          "404" : {
+            "description" : "Ingen ordre funnet"
+          },
+          "204" : {
+            "description" : "Send ordre."
+          }
+        }
+      }
+    },
     "/send/api/v1/ordrer" : {
       "get" : {
         "tags" : [ "fiks-send" ],
@@ -82,53 +219,6 @@
         }
       }
     },
-    "/send/api/v1/konfigurasjon/{fiksOrgId}/{fortrolighetsNiva}/{fiksIOKontoId}" : {
-      "get" : {
-        "tags" : [ "fiks-send" ],
-        "description" : "Henter konfigurasjon for sending til Fiks IO og Print",
-        "operationId" : "getKonfigurasjon",
-        "parameters" : [ {
-          "name" : "fiksOrgId",
-          "in" : "path",
-          "required" : true,
-          "schema" : {
-            "type" : "string",
-            "format" : "uuid"
-          }
-        }, {
-          "name" : "fortrolighetsNiva",
-          "in" : "path",
-          "required" : true,
-          "schema" : {
-            "type" : "string",
-            "enum" : [ "NORMAL", "UNTATT_OFFENTLIGHET" ]
-          }
-        }, {
-          "name" : "fiksIOKontoId",
-          "in" : "path",
-          "required" : true,
-          "schema" : {
-            "type" : "string",
-            "format" : "uuid"
-          }
-        } ],
-        "responses" : {
-          "404" : {
-            "description" : "Ingen konfigurasjon funnet for gitt fiksOrgId og fortrolighetsnivå"
-          },
-          "200" : {
-            "description" : "Konfigurasjon funnet",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/SendKonfigurasjon"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
     "/send/api/v1/mottak" : {
       "post" : {
         "tags" : [ "fiks-send" ],
@@ -155,96 +245,6 @@
                 }
               }
             }
-          }
-        }
-      }
-    },
-    "/send/api/v1/send" : {
-      "post" : {
-        "tags" : [ "fiks-send" ],
-        "description" : "Sender en ordre som skal sendes videre til enten FiksIO eller Fiks-Print",
-        "operationId" : "sendOrdre",
-        "requestBody" : {
-          "content" : {
-            "application/json" : {
-              "schema" : {
-                "$ref" : "#/components/schemas/OrdreModel"
-              }
-            }
-          },
-          "required" : true
-        },
-        "responses" : {
-          "200" : {
-            "description" : "Send ordre.",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "type" : "string",
-                  "format" : "uuid"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/send/api/v1/send/{id}" : {
-      "post" : {
-        "tags" : [ "fiks-send" ],
-        "description" : "Sender en bestemt ordre på nytt enten til FiksIO eller Fiks-Print basert på ID",
-        "operationId" : "sendOrdreById",
-        "parameters" : [ {
-          "name" : "id",
-          "in" : "path",
-          "required" : true,
-          "schema" : {
-            "type" : "string",
-            "format" : "uuid"
-          }
-        } ],
-        "responses" : {
-          "400" : {
-            "description" : "Ordre er allerede levert"
-          },
-          "404" : {
-            "description" : "Ingen ordre funnet"
-          },
-          "204" : {
-            "description" : "Send ordre."
-          }
-        }
-      }
-    },
-    "/send/api/v1/status/{meldingId}/{meldingstype}" : {
-      "post" : {
-        "tags" : [ "fiks-send" ],
-        "description" : "Oppdaterer status på en ordre",
-        "operationId" : "oppdaterStatus",
-        "parameters" : [ {
-          "name" : "meldingId",
-          "in" : "path",
-          "description" : "MeldingId for sendt ordre som skal oppdateres",
-          "required" : true,
-          "schema" : {
-            "type" : "string",
-            "format" : "uuid"
-          }
-        }, {
-          "name" : "meldingstype",
-          "in" : "path",
-          "description" : "Mottatt meldingstype for ordre som skal oppdateres",
-          "required" : true,
-          "schema" : {
-            "type" : "string"
-          }
-        } ],
-        "responses" : {
-          "204" : {
-            "description" : "Status oppdatert"
-          },
-          "400" : {
-            "description" : "Feil meldingstype for ordre tilhørende angitt meldingId."
           }
         }
       }
