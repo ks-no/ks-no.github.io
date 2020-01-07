@@ -29,13 +29,19 @@ Bekymringsmeldingen blir omgjort til strukturert data (JSON) for integrasjon mot
 Portalen tilbyr også et API hvor det er mulig å sende en bekymringsmelding fra fagsystemet til en annen kommunes barneverntjeneste.
 
 ## Hvordan tar man i bruk Fiks Bekymringsmelding?
-Det finnes 3 ulike måter å ta i bruk Fiks Bekymringsmelding:
+Portalen vi har laget inneholder to skjema, en for innbyggere og en offentlig ansatte, som kan brukes for å melde inn bekymringsmeldinger.
 
-* Fagsystem integrasjon via Fiks IO med print som reserveløsning
-* Manuell nedlastning med print som reserveløsning
-* Print og brevpost
+Noen ganger kan det være hensiktsmessig å ha skjema for offentlig melder som en integrert del eget fagsystem (eks: skole, politi, ol) og da kan man benytte API for bekymringsmelding for å implementere dette. API-et støtter maskin-til-maskin integrasjon både som produsent (avsender) av bekymringsmelding og konsument (mottaker) av bekymringsmelding. Ta kontakt med din leverandør av fagsystem og hør om de støtter integrasjon mot bekymringsmelding. 
 
-### Fagsystem integrasjon
+Dersom fagsystemet støtter integrasjon kan dere konfigurere bekymringsmeldingstjeneste til å konsumere og/eller produsere bekymringsmeldinger. Dersom fagsystem ikke støtter å maskin-til-maskin integrasjon for å konsumere bekymringsmeldinger er det mulig å laste bekymringsmeldingene ned manuelt.(TODO: skjemdump og mer beskrivelse av hvordan man går frem for å sette dette opp, samt tilgangsstyring og nedlastning)
+
+Dersom en bekymringsmelding ikke er lastet ned innen ? timer vil den bli sendt ut som brevpost.
+
+## Integrasjonsutvikling
+
+### Fagsystem som produsent
+
+### Fagsystem som konsument
 Ved bruk av Fiks IO som leveringskanal må fagsystemet støtte meldingsprotokollen ```no.ks.fiks.bekymringsmelding.v1```, som er definert til bruk av bekymringsmeldinger. Meldingsprotokollen vil inneholde kontrakter i form av JSON-skjema som gjelder både for mottak og svar på Fiks IO-meldinger.
 
 ##### Til fagsystem - mottak av bekymringsmeldinger
@@ -47,11 +53,3 @@ Privat bekymringsmelding, ```no.ks.fiks.bekymringsmelding.privat.mottatt.v1```, 
 Offentlig bekymringsmelding, ```no.ks.fiks.bekymringsmelding.offentlig.mottatt.v1```, med tom body.
 
 For mer informasjon om Fiks IO, se [dokumentasjon for Fiks IO](https://ks-no.github.io/fiks-platform/tjenester/fiksio/).
-
-### Manuell nedlastning av bekymringsmeldinger
-### Print og brevpost
-
-## Integrasjonsutvikling
-### Informasjonsmodeller og protokoller
-### Fagsystem som produsent
-### Fagsystem som konsument
