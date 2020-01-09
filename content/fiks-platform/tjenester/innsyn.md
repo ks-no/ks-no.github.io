@@ -3,13 +3,13 @@ title: Innsyn
 date: 2019-08-16
 ---
 
-Norske kommuner har mengder av informasjon om sine innbyggere. Denne informasjonen er spredd rundt i arkiver, fagsystemer, dokumentlagre og eksterne skyløsninger. Fiks Innsyn lagrer metadata som beskriver denne informasjonen, og gjør den tilgjengelig for innbyggeren via en kraftig søkemotor.
+Norske kommuner har mengder av informasjon om sine innbyggere. Denne informasjonen er spredd rundt i arkiver, fagsystemer, dokumentlagre og eksterne skyløsninger. Fiks Innsyn lagrer metadata som beskriver denne informasjonen, og gjør den tilgjengelig for innbyggeren via en kraftig søkemotor. 
 
 ### Hvordan tar man i bruk Fiks Innsyn?
-En kommune kan bruke Fiks Innsyn for å gjøre kommunal informasjon (forsendelser, byggesaker, eiendommer, fakturaer osv) tilgjengelig for innbyggere, endten på minside.kommune.no eller på kommunens eksisterende minside løsning.
+En kommune kan bruke Fiks Innsyn for å gjøre kommunal informasjon (forsendelser, byggesaker, eiendommer, fakturaer osv) tilgjengelig for innbyggere, endten på minside.kommune.no eller i kommunens eksisterende løsninger.
 ![minside_integrasjoner](/images/innsyn_konfigurasjon_integrasjoner.png "Innsyn integrasjoner")
 
-Uansett er første steg å sørge for metadata som beskriver informasjonen finnes i søkemotoren. Dette gjøres ved å legge til integrasjoner i konfigurasjonen av [innsyntjenesten](https://forvaltning.fiks.ks.no/fiks-konfigurasjon/tjenester/innsyn) på forvaltning.fiks.ks.no. Hver av disse integrasjonene representerer en datakilde. Dette kan være "nøkkelklare" integrasjoner levert av KS eller tredjepartsleverandører, for eksempel forsendelser fra SvarUt eller byggesaker fra GeoMatikk, eller integrasjoner kommunen lager selv. I skjermbildet over har en kommune lagt til SvarUt integrasjonen som kilde for innsyn, som gjør at alle forsendelser fra SvarUt-avsendere spesifisert i integrasjonens konfigurasjon blir tilgjengelig i "Post fra kommunen" på minside.kommune.no.  
+Uansett er første steg å sørge for metadata som beskriver informasjonen finnes i søkemotoren. Dette gjøres ved å legge til datakilder i konfigurasjonen av [innsyntjenesten](https://forvaltning.fiks.ks.no/fiks-konfigurasjon/tjenester/innsyn) på forvaltning.fiks.ks.no. i form av integrasjoner. Dette kan være "nøkkelklare" integrasjoner levert av KS eller tredjepartsleverandører, for eksempel forsendelser fra SvarUt eller byggesaker fra GeoMatikk, eller integrasjoner kommunen lager selv. I skjermbildet over har en kommune lagt til SvarUt integrasjonen som kilde for innsyn, som gjør at alle forsendelser fra SvarUt-avsendere spesifisert i integrasjonens konfigurasjon blir tilgjengelig i "Post fra kommunen" på minside.kommune.no.  
 
 Hvis kommunen benytter minside.kommune.no er nå alt klart: innloggede innbyggere vil se sine meldinger i "Post fra kommunen" og andre innsyn-drevede tjenester. 
 
@@ -44,7 +44,7 @@ Indeksering av dokumenter gjøres via [Innsyn-Index api](https://editor.swagger.
 * _Hver integrasjon styrer dokumentene de har lastet opp på vegne av organisasjonen._ Dvs. at integrasjon A ikke kan slette eller oppdatere dokumenter lastet opp av integrasjon B. Merk at tjenesteadministrator når som helst kan slette meldinger gjennom Fiks Konfigurasjon, uavhengig av hvilke integrasjon som har indeksert meldingene. 
 
 #### Indeksering
-Indekseringstjenesten lar integrasjoner opprette meldinger, eller fjerne / endre meldinger som alt er opprettet. Hver melding har en meldingId som settes av integrasjonen. Hvis man indekserer to meldinger på samme melding-id vil den første meldingen bli overskrevet. 
+Indekseringstjenesten lar integrasjoner opprette meldinger, eller fjerne / endre meldinger som alt er opprettet. Hver melding har en meldingId som settes av integrasjonen. Hvis man indekserer to meldinger på samme melding-id vil den første meldingen bli overskrevet av den andre. 
 
 Når man lager en integrasjon mot indekseringstjenesten er det viktig å være bevisst på at Innsyn bør betraktes som en cache: man bør ikke forvente at meldingene man laster opp vil ligge der til evig tid: en forvalter med admin-privilegier på innsyn-tjenesten kan for eksempel når som helst slette meldinger. Hvis man ønsker en robust løsning er det derfor viktig at man støtter _replay_: muligheten til å re-indexere alle meldinger til Innsyn. 
 
@@ -87,8 +87,19 @@ Mange meldingstyper vil referere til filer i eksterne systemer, som for eksempel
 
 ### Uvikling av integrasjoner for å søke i innsyn
 #### Søketjeneste 
-Hvis kommunen benytter minside.kommune.no er det ikke behov for å utvikle noen egne integrasjoner for søk, men det kan ofte være aktuelt å søke i innsyn fra kommunens eksisterende løsning, endten egenutviklet eller kjøpt via leverandør. I disse tilfellene må søket skje gjennom en integrasjon mot [Innsyn-Søk api](https://editor.swagger.io/?url=https://ks-no.github.io/api/innsyn-sok-api-v1.json). 
+Hvis kommunen benytter minside.kommune.no er det ikke behov for å utvikle noen egne integrasjoner for søk, men det kan ofte være aktuelt å søke i Innsyn fra annen løsning, for eksempel for å få "Post fra kommunen" fram på kommunens eksisterende minside-løsning. 
 
-Integrasjonen som skal utføre dette søket må benytte [integrasjon-person]({{< ref "integrasjoner.md" >}}) autentisering, dvs at de må fremvise den innloggede innbyggers ID-Porten token i kombinasjon med integrasjonId og Integrasjonpassord. I tillegg må integrasjonen ha "innsyn søk" privilegiet på den aktuelle Fiks-organisasjonen (tildelse via Innsyn konfigurasjon på forvaltning.fiks.ks.no). Søkeresultatet vil være begrenset til meldinger autorisert for den innloggede personen og eid av den aktuelle Fiks-organisasjonen.
+Innsyn tilbyr følgende søke-api'er for eksterne integrasjoner:
+
+* [Byggesak-søk](https://editor.swagger.io/?url=https://ks-no.github.io/api/openapi-sok-byggesak-v1.json)  Søk i innbyggerens byggesaker (pågående og historiske).
+* [Eiendom-søk](https://editor.swagger.io/?url=https://ks-no.github.io/api/openapi-sok-eiendom-v1.json) Søk i matrikkelenheter fra kartverket.
+* [Post-søk](https://editor.swagger.io/?url=https://ks-no.github.io/api/openapi-sok-post-v1.json) Søk i post sendt fra kommunen til inbyggeren via KS-SvarUt.
+* [Skjema-søk](https://editor.swagger.io/?url=https://ks-no.github.io/api/openapi-sok-skjema-v1.json) Søk i skjema og skjemakladder sendt fra innbyggeren til kommunen.
+* [Multi-søk](https://editor.swagger.io/?url=https://ks-no.github.io/api/openapi-sok-skjema-v1.json) Samtidig søk i alle meldingstyper.
+* [Legacy-søk](https://editor.swagger.io/?url=https://ks-no.github.io/api/innsyn-sok-api-v1.json) Innsyns gamle søke-api. Dette støttes fortsatt for eksisterende integrasjoner, ved nyutvikling bør man velge et av endepunktene over.
+
+I tillegg til søke-apier er det mulig å benytte [Innsyn Oppslag api](https://editor.swagger.io/?url=https://ks-no.github.io/api/openapi-oppslag-v1.json) for å hente meldinger. Gjennom dette api'et kan man hente en enkeltmelding (basert på melding-id), alle meldinger som har samme korrelasjon-id, eller alle meldinger som er barn av en spesifisert forelder-melding. 
+
+Integrasjonen som skal utføre søk eller oppslag må benytte [integrasjon-person]({{< ref "integrasjoner.md" >}}) autentisering, dvs at de må fremvise den innloggede innbyggers ID-Porten token i kombinasjon med integrasjonId og Integrasjonpassord. I tillegg må integrasjonen ha "innsyn søk" privilegiet på den aktuelle Fiks-organisasjonen (tildelse via Innsyn konfigurasjon på forvaltning.fiks.ks.no). Søkeresultatet vil være begrenset til meldinger autorisert for den innloggede personen og eid av den aktuelle Fiks-organisasjonen.
 
 Det er også viktig å merke seg at man når man utfører et søk har mulighet til å spesifisere hvilke versjoner av meldingstyper man støtter. Det anbefales å benyttes seg av dette for å unngå overraskelser: hvis man ikke gjør det vil man få det som til enhver tid er nyeste versjon, med oppgraderinger uten advarsel. Se api-spec for detaljer.
