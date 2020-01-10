@@ -45,8 +45,7 @@ Noen grunnleggende prinsipper for forvalting av meldinger i innsyn:
 
 #### API
 
-[Versjon 2](https://editor.swagger.io/?url=https://ks-no.github.io/api/innsyn-index-api-v2.json) er den nyeste versjonen av indekserings-APIet, og bør brukes ved utvikling av nye integrasjoner. 
-Hovedforskjellen fra versjon 1 er at kun data som er felles for alle meldingstyper er definert i API-speccen, mens metadata for spesifikke typer er definert ved bruk av JSON-schemas.
+Meldinger til Innsyn indekseres gjennom [Innsyn Index API Versjon 2](https://editor.swagger.io/?url=https://ks-no.github.io/api/innsyn-index-api-v2.json) 
 
 Merk at JSON-metadata må Base64 encodes før det sendes til APIet, dette hovedsaklig for å unngå JSON escape problematikk. Gyldige verdier for "versjon"-feltet er definert i tabellen under.
 
@@ -62,10 +61,9 @@ Merk at JSON-metadata må Base64 encodes før det sendes til APIet, dette hoveds
 Alle JSON-schema definisjoner finnes i følgende GitHub repository: [ks-no / fiks-innsyn-json-schema](https://github.com/ks-no/fiks-innsyn-json-schema).
 
 ##### Gamle APIer
+[Versjon 1](https://editor.swagger.io/?url=https://ks-no.github.io/api/innsyn-index-api-v1.json) av innsyn index støttes fortsatt for eksisterende integrasjoner, men bør ikke benyttes for nyutvikling.
 
-Disse API-versjonene er deprecated, og bør derfor ikke benyttes av nye integrasjoner.
-
-- [Versjon 1](https://editor.swagger.io/?url=https://ks-no.github.io/api/innsyn-index-api-v1.json)
+Hovedforskjellen fra versjon 2. er at metadata for meldingstypene er definert i API-speccen, i stedet for eksterne JSON-schemas.
 
 #### Indeksering
 Indekseringstjenesten lar integrasjoner opprette meldinger, eller fjerne / endre meldinger som alt er opprettet. Hver melding har en meldingId som settes av integrasjonen. Hvis man indekserer to meldinger på samme melding-id vil den første meldingen bli overskrevet av den andre. 
