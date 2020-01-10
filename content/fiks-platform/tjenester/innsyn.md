@@ -37,11 +37,36 @@ Søkeresultatet scores og sorteres basert på relevans: nye meldinger scores hø
 Søkemotoren inneholder utelukkende metadata, ikke selve dokumentet. Om meldingen skal peke til et dokument, bilde eller annen fil gjøres dette i form av en lenke: denne kan for eksempel peke til en fil i [Fiks Dokumentlager]({{< ref "dokumentlager.md" >}}), en sak i et kommunalt filarkiv, eller en annen tjeneste. Så lenge disse støtter innlogging gjennom ID-Porten vil nedlastingen oppleves sømløst av innbygger.
 
 ### Uvikling av integrasjoner som leverer data til Innsyn: 
-Indeksering av dokumenter gjøres via [Innsyn-Index api](https://editor.swagger.io/?url=https://ks-no.github.io/api/innsyn-index-api-v1.json). Først noen grunnleggende prinsipper for forvalting av meldinger i innsyn:
+Noen grunnleggende prinsipper for forvalting av meldinger i innsyn:
 
 * _Alle dokumenter eies av en Fiks Organisasjon._ I de fleste tilfeller vil dette være en kommune eller en fylkeskommune. Det er denne organisasjonen som autoriserer indeksering av data, og har rett til å oppdatere eller slette disse, enten direkte eller via tredjepart.
 * _Integrasjoner må autoriseres for å indeksere data på vegne av en av organisasjon._ Dette gjøres gjennom å tildele "Innsyn Index" privilegiet til integrasjonen i Fiks Konfigurasjon. Nøkkelklare integrasjoner vil automatisk bli tildelt de nødvendige privilegiene når de blir lagt til i Innsyn konfigurasjonen.
 * _Hver integrasjon styrer dokumentene de har lastet opp på vegne av organisasjonen._ Dvs. at integrasjon A ikke kan slette eller oppdatere dokumenter lastet opp av integrasjon B. Merk at tjenesteadministrator når som helst kan slette meldinger gjennom Fiks Konfigurasjon, uavhengig av hvilke integrasjon som har indeksert meldingene. 
+
+#### API
+
+[Versjon 2](https://editor.swagger.io/?url=https://ks-no.github.io/api/innsyn-index-api-v2.json) er den nyeste versjonen av indekserings-APIet, og bør brukes ved utvikling av nye integrasjoner. 
+Hovedforskjellen fra versjon 1 er at kun data som er felles for alle meldingstyper er definert i API-speccen, mens metadata for spesifikke typer er definert ved bruk av JSON-schemas.
+
+Merk at JSON-metadata må Base64 encodes før det sendes til APIet, dette hovedsaklig for å unngå JSON escape problematikk. Gyldige verdier for "versjon"-feltet er definert i tabellen under.
+
+##### Støttede meldingstyper
+
+| Meldingstype       | Versjon          |                                                                                                            |
+| ------------------ | ---------------- | ---------------------------------------------------------------------------------------------------------- |
+| Byggesak V1        | byggesakV1       | [Spec](https://github.com/ks-no/fiks-innsyn-json-schema/blob/master/schema/domain/byggesak.v1.json)        |
+| Faktura V1         | fakturaV1        | [Spec](https://github.com/ks-no/fiks-innsyn-json-schema/blob/master/schema/domain/faktura.v1.json)         |
+| Innsendt Skjema V1 | innsendtskjemaV1 | [Spec](https://github.com/ks-no/fiks-innsyn-json-schema/blob/master/schema/domain/innsendt.skjema.v1.json) |
+| Journalpost V1     | journalpostV1    | [Spec](https://github.com/ks-no/fiks-innsyn-json-schema/blob/master/schema/domain/journalpost.v1.json)     |
+| Saksmappe V1       | saksmappeV1      | [Spec](https://github.com/ks-no/fiks-innsyn-json-schema/blob/master/schema/domain/saksmappe.v1.json)       |
+| Skjemakladd V1     | skjemakladdV1    | [Spec](https://github.com/ks-no/fiks-innsyn-json-schema/blob/master/schema/domain/skjema.kladd.v1.json)    |
+
+Alle JSON-schema definisjoner finnes i følgende GitHub repository: [ks-no / fiks-innsyn-json-schema](https://github.com/ks-no/fiks-innsyn-json-schema).
+
+##### Gamle APIer
+
+Disse API-versjonene er deprecated, og bør derfor ikke benyttes av nye integrasjoner.
+- [Versjon 1](https://editor.swagger.io/?url=https://ks-no.github.io/api/innsyn-index-api-v1.json)
 
 #### Indeksering
 Indekseringstjenesten lar integrasjoner opprette meldinger, eller fjerne / endre meldinger som alt er opprettet. Hver melding har en meldingId som settes av integrasjonen. Hvis man indekserer to meldinger på samme melding-id vil den første meldingen bli overskrevet av den andre. 
@@ -78,7 +103,7 @@ Over tid vil json-modellen for en melding endrer seg. Innsyn løser dette ved at
 Hvis man ønsker å oppgradere eksisterende meldinger til ny versjon, for eksempel for å benytte felt som er lagt til i oppdateringen, gjøres dette gjennom _replay_; alle meldinger re-indekseres på eksisterende meldingId med ny versjon av metadata.  
 
 ##### Sletting
-Indekserte meldinger kan fjernes ved å benytte endepunkt for sletting. Her gjelder de samme reglene som over: en integrasjon må være autorisert for å handle på vegne av en ansvarlig organisasjon for at sletting kan gjennomføres, og en integrasjon kan bare slette meldinger den selv har indeksert.
+Indekserte meldinger kan fjernes ved å benytte [slette-API](https://editor.swagger.io/?url=https://ks-no.github.io/api/innsyn-delete-api-v1.json). Her gjelder de samme reglene som over: en integrasjon må være autorisert for å handle på vegne av en ansvarlig organisasjon for at sletting kan gjennomføres, og en integrasjon kan bare slette meldinger den selv har indeksert.
 
 Merk at sletting på samme måte som indeksering ikke gjennomføres i en atomisk transaksjon: deler av meldingene i batchen kan bli slettet selv om andre feiler. 
 
