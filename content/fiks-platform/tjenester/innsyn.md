@@ -64,6 +64,7 @@ Alle JSON-schema definisjoner finnes i følgende GitHub repository: [ks-no / fik
 ##### Gamle APIer
 
 Disse API-versjonene er deprecated, og bør derfor ikke benyttes av nye integrasjoner.
+
 - [Versjon 1](https://editor.swagger.io/?url=https://ks-no.github.io/api/innsyn-index-api-v1.json)
 
 #### Indeksering
