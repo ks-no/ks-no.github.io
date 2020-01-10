@@ -109,7 +109,7 @@ Merk at sletting på samme måte som indeksering ikke gjennomføres i en atomisk
 Mange meldingstyper vil referere til filer i eksterne systemer, som for eksempel dokumenter i "Forsendelse" typen. Innsyn har i seg selv ikke noe forhold til binære filer, og betrakter dem utelukkende som en lenke. Hvis filene allerede er tilgjengelig i et ID-Porten kompatibelt filarkiv trenger man ikke å laste disse opp på nytt, hvis man ikke har en slik tjeneste fra før kan man benytte Fiks Dokumentlager til dette. 
 
 ### Uvikling av integrasjoner for å søke i innsyn
-#### Søketjeneste 
+#### Gjennomføring av søk 
 Hvis kommunen benytter minside.kommune.no er det ikke behov for å utvikle noen egne integrasjoner for søk, men det kan ofte være aktuelt å søke i Innsyn fra annen løsning, for eksempel for å få "Post fra kommunen" fram på kommunens eksisterende minside-løsning. 
 
 Innsyn tilbyr følgende søke-api'er for eksterne integrasjoner:
@@ -125,4 +125,12 @@ I tillegg til søke-apier er det mulig å benytte [Innsyn Oppslag api](https://e
 
 Integrasjonen som skal utføre søk eller oppslag må benytte [integrasjon-person]({{< ref "integrasjoner.md" >}}) autentisering, dvs at de må fremvise den innloggede innbyggers ID-Porten token i kombinasjon med integrasjonId og Integrasjonpassord. I tillegg må integrasjonen ha "innsyn søk" privilegiet på den aktuelle Fiks-organisasjonen (tildelse via Innsyn konfigurasjon på forvaltning.fiks.ks.no). Søkeresultatet vil være begrenset til meldinger autorisert for den innloggede personen og eid av den aktuelle Fiks-organisasjonen.
 
-Det er også viktig å merke seg at man når man utfører et søk har mulighet til å spesifisere hvilke versjoner av meldingstyper man støtter. Det anbefales å benyttes seg av dette for å unngå overraskelser: hvis man ikke gjør det vil man få det som til enhver tid er nyeste versjon, med oppgraderinger uten advarsel. Se api-spec for detaljer.
+#### Versjonering av melding-metadata
+Meldinger i Innsyn er versjonert, for eksempel som "ForsendelseV1" eller "ForsendelseV2", og nye versjoner av en melding blir lagt til uten forvarsel.
+
+Det er derfor viktig at man spesifisere "aksepterte-versjoner" (se api-spek'ene over) når man gjør et søk - en nyere versjon av en melding vil da bli nedgradert til den spesifiserte versjonen. Hvis man ikke gjør dette vil man få det som til enhver tid er nyeste versjon, hvor endringer kan brekke parsing av JSON metadata.
+
+#### Å søke på vegne av andre
+Innsyn tilbyr støtte for å søke på vegne av en organisasjon hvor man innhar rollen "Post/Arkiv" i Altinn. Denne settes som en query-param på søket (se api-spekk'er over). Det vil da bli sjekket om personen faktisk innehar denne fullmakten, og hvis dette er tilfellet vil søkeresultatet inneholde meldinger som er eksponert for organisasjonen eller matrikkelenheter organisasjonen eier heller enn personen som er autentisert gjennom ID-Porten tokenent. 
+
+"Legacy søk" api'et støtter den samme funksjonaliteten gjennom en ON_BEHALF_OF http-header, men et anbefales å ikke benytte denne metoden ved nyutvikling.
