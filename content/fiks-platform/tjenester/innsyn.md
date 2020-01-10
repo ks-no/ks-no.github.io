@@ -50,8 +50,6 @@ Hovedforskjellen fra versjon 1 er at kun data som er felles for alle meldingstyp
 
 Merk at JSON-metadata må Base64 encodes før det sendes til APIet, dette hovedsaklig for å unngå JSON escape problematikk. Gyldige verdier for "versjon"-feltet er definert i tabellen under.
 
-##### Støttede meldingstyper
-
 | Meldingstype       | Versjon          |                                                                                                            |
 | ------------------ | ---------------- | ---------------------------------------------------------------------------------------------------------- |
 | Byggesak V1        | byggesakV1       | [Spec](https://github.com/ks-no/fiks-innsyn-json-schema/blob/master/schema/domain/byggesak.v1.json)        |
