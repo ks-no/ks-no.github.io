@@ -58,12 +58,13 @@ Merk at JSON-metadata må Base64 encodes før det sendes til APIet, dette hoveds
 | Saksmappe V1       | saksmappeV1      | [Spec](https://github.com/ks-no/fiks-innsyn-json-schema/blob/master/schema/domain/saksmappe.v1.json)       |
 | Skjemakladd V1     | skjemakladdV1    | [Spec](https://github.com/ks-no/fiks-innsyn-json-schema/blob/master/schema/domain/skjema.kladd.v1.json)    |
 
-Alle JSON-schema definisjoner finnes i følgende GitHub repository: [ks-no / fiks-innsyn-json-schema](https://github.com/ks-no/fiks-innsyn-json-schema).
+Alle JSON-schema definisjoner finnes i følgende GitHub repository: [ks-no / fiks-innsyn-json-schema](https://github.com/ks-no/fiks-innsyn-json-schema). Disse kan også brukes til å generere modeller for deres valgte språk. 
+Det finnes allerede en Maven-modul for Java-brukere som er deployet til Maven Central. Mer informasjon rundt dette finnes i prosjektets README på GitHub.
 
 ##### Gamle APIer
 [Versjon 1](https://editor.swagger.io/?url=https://ks-no.github.io/api/innsyn-index-api-v1.json) av innsyn index støttes fortsatt for eksisterende integrasjoner, men bør ikke benyttes for nyutvikling.
 
-Hovedforskjellen fra versjon 2. er at metadata for meldingstypene er definert i API-speccen, i stedet for eksterne JSON-schemas.
+Hovedforskjellen fra versjon 2 er at metadata for meldingstypene er definert i API-speccen, i stedet for eksterne JSON-schemas.
 
 #### Indeksering
 Indekseringstjenesten lar integrasjoner opprette meldinger, eller fjerne / endre meldinger som alt er opprettet. Hver melding har en meldingId som settes av integrasjonen. Hvis man indekserer to meldinger på samme melding-id vil den første meldingen bli overskrevet av den andre. 
