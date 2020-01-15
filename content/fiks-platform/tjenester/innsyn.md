@@ -118,7 +118,7 @@ Innsyn tilbyr følgende søke-api'er for eksterne integrasjoner:
 * [Eiendom-søk](https://editor.swagger.io/?url=https://ks-no.github.io/api/openapi-sok-eiendom-v1.json) Søk i matrikkelenheter fra kartverket.
 * [Post-søk](https://editor.swagger.io/?url=https://ks-no.github.io/api/openapi-sok-post-v1.json) Søk i post sendt fra kommunen til inbyggeren via KS-SvarUt.
 * [Skjema-søk](https://editor.swagger.io/?url=https://ks-no.github.io/api/openapi-sok-skjema-v1.json) Søk i skjema og skjemakladder sendt fra innbyggeren til kommunen.
-* [Multi-søk](https://editor.swagger.io/?url=https://ks-no.github.io/api/openapi-sok-skjema-v1.json) Samtidig søk i alle meldingstyper.
+* [Multi-søk](https://editor.swagger.io/?url=https://ks-no.github.io/api/openapi-sok-multi-v1.json) Samtidig søk i alle meldingstyper.
 * [Legacy-søk](https://editor.swagger.io/?url=https://ks-no.github.io/api/innsyn-sok-api-v1.json) Innsyns gamle søke-api. Dette støttes fortsatt for eksisterende integrasjoner, ved nyutvikling bør man velge et av endepunktene over.
 
 I tillegg til søke-apier er det mulig å benytte [Innsyn Oppslag api](https://editor.swagger.io/?url=https://ks-no.github.io/api/openapi-oppslag-v1.json) for å hente meldinger. Gjennom dette api'et kan man hente en enkeltmelding (basert på melding-id), alle meldinger som har samme korrelasjon-id, eller alle meldinger som er barn av en spesifisert forelder-melding. 
