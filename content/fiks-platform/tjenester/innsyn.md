@@ -51,12 +51,12 @@ Merk at JSON-metadata må Base64 encodes før det sendes til APIet, dette hoveds
 
 | Meldingstype       | Versjon          |                                                                                                            |
 | ------------------ | ---------------- | ---------------------------------------------------------------------------------------------------------- |
-| Byggesak V1        | byggesakV1       | [Spec](https://github.com/ks-no/fiks-innsyn-json-schema/blob/master/schema/domain/byggesak.v1.json)        |
-| Faktura V1         | fakturaV1        | [Spec](https://github.com/ks-no/fiks-innsyn-json-schema/blob/master/schema/domain/faktura.v1.json)         |
-| Innsendt Skjema V1 | innsendtskjemaV1 | [Spec](https://github.com/ks-no/fiks-innsyn-json-schema/blob/master/schema/domain/innsendt.skjema.v1.json) |
-| Journalpost V1     | journalpostV1    | [Spec](https://github.com/ks-no/fiks-innsyn-json-schema/blob/master/schema/domain/journalpost.v1.json)     |
-| Saksmappe V1       | saksmappeV1      | [Spec](https://github.com/ks-no/fiks-innsyn-json-schema/blob/master/schema/domain/saksmappe.v1.json)       |
-| Skjemakladd V1     | skjemakladdV1    | [Spec](https://github.com/ks-no/fiks-innsyn-json-schema/blob/master/schema/domain/skjema.kladd.v1.json)    |
+| Byggesak V1        | BYGGESAK_V1        | [Spec](https://github.com/ks-no/fiks-innsyn-json-schema/blob/master/schema/domain/byggesak.v1.json)        |
+| Faktura V1         | FAKTURA_V1         | [Spec](https://github.com/ks-no/fiks-innsyn-json-schema/blob/master/schema/domain/faktura.v1.json)         |
+| Innsendt Skjema V1 | INNSENDT_SKJEMA_V1 | [Spec](https://github.com/ks-no/fiks-innsyn-json-schema/blob/master/schema/domain/innsendt.skjema.v1.json) |
+| Journalpost V1     | JOURNALPOST_V1    | [Spec](https://github.com/ks-no/fiks-innsyn-json-schema/blob/master/schema/domain/journalpost.v1.json)     |
+| Saksmappe V1       | SAKSMAPPE_V1      | [Spec](https://github.com/ks-no/fiks-innsyn-json-schema/blob/master/schema/domain/saksmappe.v1.json)       |
+| Skjemakladd V1     | SKJEMAKLADD_V1    | [Spec](https://github.com/ks-no/fiks-innsyn-json-schema/blob/master/schema/domain/skjema.kladd.v1.json)    |
 
 Alle JSON-schema definisjoner finnes i følgende GitHub repository: [ks-no / fiks-innsyn-json-schema](https://github.com/ks-no/fiks-innsyn-json-schema). Disse kan også brukes til å generere modeller for deres valgte språk. 
 Det finnes allerede en Maven-modul for Java-brukere som er deployet til Maven Central. Mer informasjon rundt dette finnes i prosjektets README på GitHub.
