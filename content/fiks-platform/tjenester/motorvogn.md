@@ -15,10 +15,12 @@ På sikt vil de bli vurdert å utvikle et administrativt grensesnitt mot Fiks Mo
 ### Integrasjon
  
 Api kall gjøres i henhold til [swagger spesifikasjonen](https://vegvesen.github.io/ak-api/api/api_kjoretoyoppslag_44) til Statens Vegvesen, med følgende endringer:
+  
   * Autorisering skjer på fiks platformen med leverandørens virksomhetssertifikat som beskrevet [her](https://ks-no.github.io/fiks-platform/integrasjoner/#integrasjon), ikke med Basic auth.
   * Fiks-org som spørringen gjøres på vegne av blir en del av url'en for alle forespørsler.
   
 Swagger filen til SVV spesifiserer en basePath som `/ws/no/vegvesen/kjoretoy/felles/v2`. Denne må erstattes med `https://api.fiks.ks.no/motorvogn/api/{fiksOrgId}` hvor `{fiksOrgId}` er fiks org til organisasjonen spørringen gjøres på vegne av. Resten av url'en er som spesifisert for de enkelte endepunktene i swagger filen:
+  
   * `/rest/distribusjon/kjoretoy/v2.0/bulk/kjennemerke`
   * `/rest/distribusjon/kjoretoy/v2.0/bulk/kuid`
   * `/rest/distribusjon/kjoretoy/v2.0/bulk/understellsnummer/{understellsnummer}`
