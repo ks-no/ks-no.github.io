@@ -48,6 +48,15 @@ Offentlig bekymringsmelding:[no.ks.fiks.bekymringsmelding.offentlig.v1](https://
 #### Sekvensdiagram
 ![alt text](https://ks-no.github.io/images/FagsystemSomProdusent.png "FagsystemSomProdusent")
 
+1 - 2. Før fagsystemet skal sende bekymringsmelding må det gjøres et oppslag på kommunenummer for å finne ut hvilken barnevernskontorer (bydeler) som støttes av løsningen. Returnerer liste med bydeler i kommunen. Dersom det returneres en tom liste har ikke kommunen aktivert løsningen. Dersom listen ikke er tom vil det alltid være et element (en bydel) som er satt opp som kan brukes dersom bydel/barnevernskontor er ukjent.
+
+3 - 4. Når kommune og bydel er valgt må fagsystemet hente krypteringsnøkler. Det returneres en liste med to elementer som inneholder krypteringsnøkler. Den ene nøkkelen brukes for å kryptere PDF-versjonen av bekymringsmeldingen slik at det er mulig å sende den som brevpost. Den andre nøkkelen brukes for å kryptere både JSON-dokumentet og PDF-dokumentet for nedlastning via fagsystem, alternativt via manuell nedlastning.
+
+5. Fagsystemet må lage PDF basert på innholdet i bekymringsmeldingen. PDF må krypteres med printleverandør sin nøkkel. Kryptert PDF pakkes inn i ASiC-E-kontainer
+
+6. Fagsystemet må lage PDF og JSON-dokument bsert på innholdet i bekymringsmeldingen. Både PDF og JSON-dokument må krypteres med nøkkel for maskinintegrasjon. Krypterte dokument pakkes inn i ASiC-E-kontainer
+
+7 - 10. ASiC-E-filene sendes over til bekymringsmeldingsapiet som multipart-filer. Endepunkt bestemmes av om det er en privat melder eller offentlig melder som har skrevet bekymringsmeldingen. API-et returnerer en UUID som referanse på forsendelsen. 
 
 ### Fagsystem som konsument
 Ved bruk av Fiks IO som leveringskanal må fagsystemet støtte meldingsprotokollen ```no.ks.fiks.bekymringsmelding.v1```, som er definert til bruk av bekymringsmeldinger. Meldingsprotokollen vil inneholde kontrakter i form av JSON-skjema som gjelder både for mottak og svar på Fiks IO-meldinger.
