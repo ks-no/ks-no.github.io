@@ -40,7 +40,14 @@ Dersom en bekymringsmelding ikke er lastet ned innen ? timer vil den bli sendt u
 ## Integrasjonsutvikling
 
 ### Fagsystem som produsent
+#### JSON-skjema
+Privat bekymringsmelding:[no.ks.fiks.bekymringsmelding.privat.v1](https://raw.githubusercontent.com/ks-no/fiks-io-bekymringsmelding-protokoll/master/schema/domain/privat.bekymringsmelding.v1.json).
+
+Offentlig bekymringsmelding:[no.ks.fiks.bekymringsmelding.offentlig.v1](https://raw.githubusercontent.com/ks-no/fiks-io-bekymringsmelding-protokoll/master/schema/domain/offentlig.bekymringsmelding.v1.json).
+
+#### Sekvensdiagram
 ![alt text](https://ks-no.github.io/images/FagsystemSomProdusent.png "FagsystemSomProdusent")
+
 
 ### Fagsystem som konsument
 Ved bruk av Fiks IO som leveringskanal må fagsystemet støtte meldingsprotokollen ```no.ks.fiks.bekymringsmelding.v1```, som er definert til bruk av bekymringsmeldinger. Meldingsprotokollen vil inneholde kontrakter i form av JSON-skjema som gjelder både for mottak og svar på Fiks IO-meldinger.
