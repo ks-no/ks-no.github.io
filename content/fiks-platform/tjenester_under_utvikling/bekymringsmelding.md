@@ -45,8 +45,8 @@ Dersom en bekymringsmelding ikke er lastet ned innen ? timer vil den bli sendt u
 Ved bruk av Fiks IO som leveringskanal må fagsystemet støtte meldingsprotokollen ```no.ks.fiks.bekymringsmelding.v1```, som er definert til bruk av bekymringsmeldinger. Meldingsprotokollen vil inneholde kontrakter i form av JSON-skjema som gjelder både for mottak og svar på Fiks IO-meldinger.
 
 ##### Til fagsystem - mottak av bekymringsmeldinger
-Privat bekymringsmelding, ```no.ks.fiks.bekymringsmelding.privat.v1```, som definert i [JSON-skjema](https://github.com/ks-no/fiks-io-meldingstype-katalog/tree/dev/schema/no.ks.fiks.bekymringsmelding.privat.v1/no.ks.fiks.bekymringsmelding.privat.v1.schema.json).\
-Offentlig bekymringsmelding, ```no.ks.fiks.bekymringsmelding.offentlig.v1```, som definert i [JSON-skjema](https://github.com/ks-no/fiks-io-meldingstype-katalog/tree/dev/schema/no.ks.fiks.bekymringsmelding.offentlig.v1/no.ks.fiks.bekymringsmelding.offentlig.v1.schema.json).
+Privat bekymringsmelding, ```no.ks.fiks.bekymringsmelding.privat.v1```, som definert i [JSON-skjema](https://github.com/ks-no/fiks-io-bekymringsmelding-protokoll/blob/master/schema/domain/privat.bekymringsmelding.v1.json).\
+Offentlig bekymringsmelding, ```no.ks.fiks.bekymringsmelding.offentlig.v1```, som definert i [JSON-skjema](https://github.com/ks-no/fiks-io-bekymringsmelding-protokoll/blob/master/schema/domain/offentlig.bekymringsmelding.v1.json).
 
 ##### Fra fagsystem - kvittering på mottatt bekymringsmelding
 Privat bekymringsmelding, ```no.ks.fiks.bekymringsmelding.privat.mottatt.v1```, med tom body.\
