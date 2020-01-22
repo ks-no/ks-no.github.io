@@ -52,9 +52,9 @@ Offentlig bekymringsmelding:[no.ks.fiks.bekymringsmelding.offentlig.v1](https://
 
 3 - 4. Når kommune og bydel er valgt må fagsystemet hente krypteringsnøkler. Det returneres en liste med to elementer som inneholder krypteringsnøkler. Den ene nøkkelen brukes for å kryptere PDF-versjonen av bekymringsmeldingen slik at det er mulig å sende den som brevpost. Den andre nøkkelen brukes for å kryptere både JSON-dokumentet og PDF-dokumentet for nedlastning via fagsystem, alternativt via manuell nedlastning.
 
-5. Fagsystemet må lage PDF basert på innholdet i bekymringsmeldingen. PDF må krypteres med printleverandør sin nøkkel. Kryptert PDF pakkes inn i ASiC-E-kontainer
+5 - 5. Fagsystemet må lage PDF basert på innholdet i bekymringsmeldingen. PDF må krypteres med printleverandør sin nøkkel. Kryptert PDF pakkes inn i ASiC-E-kontainer
 
-6. Fagsystemet må lage PDF og JSON-dokument bsert på innholdet i bekymringsmeldingen. Både PDF og JSON-dokument må krypteres med nøkkel for maskinintegrasjon. Krypterte dokument pakkes inn i ASiC-E-kontainer
+6 - 6. Fagsystemet må lage PDF og JSON-dokument bsert på innholdet i bekymringsmeldingen. Både PDF og JSON-dokument må krypteres med nøkkel for maskinintegrasjon. Krypterte dokument pakkes inn i ASiC-E-kontainer
 
 7 - 10. ASiC-E-filene sendes over til bekymringsmeldingsapiet som multipart-filer. Endepunkt bestemmes av om det er en privat melder eller offentlig melder som har skrevet bekymringsmeldingen. API-et returnerer en UUID som referanse på forsendelsen. 
 
