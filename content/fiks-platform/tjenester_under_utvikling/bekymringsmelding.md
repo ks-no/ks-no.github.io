@@ -46,7 +46,7 @@ Privat bekymringsmelding:[no.ks.fiks.bekymringsmelding.privat.v1](https://raw.gi
 Offentlig bekymringsmelding:[no.ks.fiks.bekymringsmelding.offentlig.v1](https://raw.githubusercontent.com/ks-no/fiks-io-bekymringsmelding-protokoll/master/schema/domain/offentlig.bekymringsmelding.v1.json).
 
 #### Sekvensdiagram
-![alt text](https://ks-no.github.io/images/FagsystemSomProdusent.png "FagsystemSomProdusent")
+![alt text](https://ks-no.github.io/images/FagsystemSomProdusentv2.png "Sekvensdiagram")
 
 1 - 2. Før fagsystemet skal sende bekymringsmelding må det gjøres et oppslag på kommunenummer for å finne ut hvilken barnevernskontorer (bydeler) som støttes av løsningen. Returnerer liste med bydeler i kommunen. Dersom det returneres en tom liste har ikke kommunen aktivert løsningen. Dersom listen ikke er tom vil det alltid være et element (en bydel) som er satt opp som kan brukes dersom bydel/barnevernskontor er ukjent.
 
