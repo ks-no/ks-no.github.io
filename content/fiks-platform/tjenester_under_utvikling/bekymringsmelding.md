@@ -19,7 +19,7 @@ Brukerne (innbyggere eller offentlig ansatte) som skal melde inn en bekymringsme
 * Manuell nedlastning, ustrukturert informasjon i digital form – PDF
 * Tilsendt som brevpost
 
-Når bekymringsmeldingen er sendt vil systemet forsøke å levere den som strukturert data via Fiks-plattformen til kommunens fagsystem. Dersom kommunens fagsystem ikke støtter integrasjon mot [Fiks IO](https://ks-no.github.io/fiks-platform/tjenester/fiksio/) finnes det en løsning for å laste ned bekymeringsmeldingen manuelt. Bekymringsmeldinger som ikke markeres som mottatt sendes ut som brevpost.
+Når bekymringsmeldingen er sendt vil systemet forsøke å levere den som strukturert data via Fiks-plattformen til kommunens fagsystem. Dersom kommunens fagsystem ikke støtter integrasjon mot [Fiks IO](https://ks-no.github.io/fiks-platform/tjenester/fiksio) finnes det en løsning for å laste ned bekymeringsmeldingen manuelt. Bekymringsmeldinger som ikke markeres som mottatt sendes ut som brevpost.
 
 
 ![alt text](https://ks-no.github.io/images/Bekymringsmelding_3.png "Overordnet designløsning")
@@ -31,19 +31,22 @@ Portalen tilbyr også et API hvor det er mulig å sende en bekymringsmelding fra
 ## Hvordan tar man i bruk Fiks Bekymringsmelding?
 Portalen inneholder to skjema, en for innbyggere og en offentlig ansatte, som kan brukes for å melde inn bekymringsmeldinger.
 
-Noen ganger kan det være hensiktsmessig å ha skjema for offentlig melder som en integrert del eget fagsystem (eks: skole, politi, ol) og da kan man benytte API for bekymringsmelding for å implementere dette. API-et støtter maskin-til-maskin integrasjon både som produsent (avsender) av bekymringsmelding og konsument (mottaker) av bekymringsmelding. Ta kontakt med din leverandør av fagsystem og hør om de støtter integrasjon mot bekymringsmelding. 
+Noen ganger kan det være hensiktsmessig å ha skjema for offentlig melder som en integrert del av et eget fagsystem (eks: skole, politi, ol) og da kan man benytte API for bekymringsmelding for å implementere dette. API-et støtter maskin-til-maskin integrasjon både som produsent (avsender) av bekymringsmelding og konsument (mottaker) av bekymringsmelding. Ta kontakt med din leverandør av fagsystem og hør om de støtter integrasjon mot bekymringsmelding. 
 
-Dersom fagsystemet støtter integrasjon kan dere konfigurere bekymringsmeldingstjeneste til å konsumere og/eller produsere bekymringsmeldinger. Dersom fagsystem ikke støtter å maskin-til-maskin integrasjon for å konsumere bekymringsmeldinger er det mulig å laste bekymringsmeldingene ned manuelt.(TODO: skjemdump og mer beskrivelse av hvordan man går frem for å sette dette opp, samt tilgangsstyring og nedlastning)
+Dersom fagsystemet støtter integrasjon kan dere konfigurere bekymringsmeldingstjeneste til å konsumere og/eller produsere bekymringsmeldinger. Dersom fagsystem ikke støtter maskin-til-maskin integrasjon for å konsumere bekymringsmeldinger er det mulig å laste bekymringsmeldingene ned manuelt.(TODO: skjemdump og mer beskrivelse av hvordan man går frem for å sette dette opp, samt tilgangsstyring og nedlastning)
 
 Dersom en bekymringsmelding ikke er lastet ned innen ? timer vil den bli sendt ut som brevpost.
 
 ## Integrasjonsutvikling
+Fagsystemet kan produsere og sende inn bekymringsmeldinger til et API eller man kan benytte seg av å sende inn via skjema. Benyttes skjema så vil skjemaet produsere PDF og JSON-fil, men hvis fagsystemet skal sende inn til API, må fagsystemet sende med dette.
 
 ### Fagsystem som produsent
-#### JSON-skjema
-Privat bekymringsmelding:[no.ks.fiks.bekymringsmelding.privat.v1](https://raw.githubusercontent.com/ks-no/fiks-io-bekymringsmelding-protokoll/master/schema/domain/privat.bekymringsmelding.v1.json).
+Swagger-spesifikasjon for å sende inn bekymringsmeldinger via API finnes [her](https://editor.swagger.io/?url=https://ks-no.github.io/api/bekymringsmelding-mottak-fagsystem-api-v1.json). (TODO: Opplasting av filer må gjøres via klient?)
 
-Offentlig bekymringsmelding:[no.ks.fiks.bekymringsmelding.offentlig.v1](https://raw.githubusercontent.com/ks-no/fiks-io-bekymringsmelding-protokoll/master/schema/domain/offentlig.bekymringsmelding.v1.json).
+#### JSON-skjema
+Privat bekymringsmelding, ```no.ks.fiks.bekymringsmelding.privat.v1```, som definert i [JSON-skjema](https://raw.githubusercontent.com/ks-no/fiks-io-bekymringsmelding-protokoll/master/schema/domain/privat.bekymringsmelding.v1.json).\
+Offentlig bekymringsmelding, ```no.ks.fiks.bekymringsmelding.offentlig.v1```, som definert i [JSON-skjema](https://raw.githubusercontent.com/ks-no/fiks-io-bekymringsmelding-protokoll/master/schema/domain/offentlig.bekymringsmelding.v1.json).
+Skjemadefinisjon med eksempler finner man [her](https://github.com/ks-no/fiks-io-bekymringsmelding-protokoll).
 
 #### Sekvensdiagram
 ![alt text](https://ks-no.github.io/images/FagsystemSomProdusentv2.png "Sekvensdiagram")
