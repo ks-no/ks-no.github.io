@@ -9,7 +9,7 @@ Bekymringsmeldinger til barnevernet går i dag i all hovedsak per post, og i sam
 
 Dette skal sikre raskere og sikrere innsending av meldinger, og bedre innholdsmessig kvalitet. Løsningen skiller mellom offentlige og private meldere, og leverer bekymringsmeldinger fra to ulike skjema, siden det er ulike forventinger/krav til offentlige meldere og private meldere.
 
-Mer informasjon om prosjektet finnes hos [Bufdir](https://bufdir.no/prosjekter/digibarnevern/leveransene/).
+Mer informasjon om prosjektet finnes hos [Bufdir](https://bufdir.no/prosjekter/digibarnevern/leveransene).
 
 ## Kort beskrivelse av løsningen
 
@@ -65,11 +65,15 @@ Skjemadefinisjon med eksempler finner man [her](https://github.com/ks-no/fiks-io
 Ved bruk av Fiks IO som leveringskanal må fagsystemet støtte meldingsprotokollen ```no.ks.fiks.bekymringsmelding.v1```, som er definert til bruk av bekymringsmeldinger. Meldingsprotokollen vil inneholde kontrakter i form av JSON-skjema som gjelder både for mottak og svar på Fiks IO-meldinger.
 
 ##### Til fagsystem - mottak av bekymringsmeldinger
-Privat bekymringsmelding, ```no.ks.fiks.bekymringsmelding.privat.v1```, som definert i [JSON-skjema](https://raw.githubusercontent.com/ks-no/fiks-io-bekymringsmelding-protokoll/master/schema/domain/privat.bekymringsmelding.v1.json).\
-Offentlig bekymringsmelding, ```no.ks.fiks.bekymringsmelding.offentlig.v1```, som definert i [JSON-skjema](https://raw.githubusercontent.com/ks-no/fiks-io-bekymringsmelding-protokoll/master/schema/domain/offentlig.bekymringsmelding.v1.json).
+Privat bekymringsmelding, ```no.ks.fiks.bekymringsmelding.privat.v1```, med en ASiC-E-fil i body.  
+Offentlig bekymringsmelding, ```no.ks.fiks.bekymringsmelding.offentlig.v1```, med en ASiC-E-fil i body.
+
+AsiC-E-filen er på navneformatet «FiksIO_encrypted_[FIKS_ORG_ID]_[BYDELSNUMMER].zip», hvor FIKS_ORG_ID er en unik ID for kommunen, mens bydelsnummeret vil være et tosifret tall. Er det en kommune uten bydeler, vil bydelsnummeret typisk være «00».
+
+ASiC-E-filen vil inneholde to filer, «bekymringsmelding.json» og «bekymringsmelding.pdf». «bekymringsmelding.json» er en JSON-fil definert i JSON-skjema for [privat bekymringsmelding](https://raw.githubusercontent.com/ks-no/fiks-io-bekymringsmelding-protokoll/master/schema/domain/privat.bekymringsmelding.v1.json) eller [offentlig bekymringsmelding](https://raw.githubusercontent.com/ks-no/fiks-io-bekymringsmelding-protokoll/master/schema/domain/offentlig.bekymringsmelding.v1.json) - avhengig om meldingstypen er en privat eller offentlig bekymringsmelding. «bekymringsmelding.pdf» vil være bekymringsmeldingen på PDF-format.
 
 ##### Fra fagsystem - kvittering på mottatt bekymringsmelding
 Privat bekymringsmelding, ```no.ks.fiks.bekymringsmelding.privat.mottatt.v1```, med tom body.\
 Offentlig bekymringsmelding, ```no.ks.fiks.bekymringsmelding.offentlig.mottatt.v1```, med tom body.
 
-Skjemadefinisjon med eksempler finner man [her](https://github.com/ks-no/fiks-io-bekymringsmelding-protokoll). For mer informasjon om Fiks IO, se [dokumentasjon for Fiks IO](https://ks-no.github.io/fiks-platform/tjenester/fiksio/).
+Fullstendig skjemadefinisjon med eksempler finner man [her](https://github.com/ks-no/fiks-io-bekymringsmelding-protokoll). For mer informasjon om Fiks IO, se [dokumentasjon for Fiks IO](https://ks-no.github.io/fiks-platform/tjenester/fiksio/).
