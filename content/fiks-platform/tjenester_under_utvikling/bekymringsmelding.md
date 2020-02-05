@@ -70,7 +70,7 @@ AsiC-E-filen må inneholde to filer, «bekymringsmelding.json» og «bekymringsm
 Ved bruk av Fiks IO som leveringskanal må fagsystemet støtte meldingsprotokollen ```no.ks.fiks.bekymringsmelding.v1```, som er definert til bruk av bekymringsmeldinger. Meldingsprotokollen vil inneholde kontrakter i form av JSON-skjema som gjelder både for mottak og svar på Fiks IO-meldinger.
 
 ##### Til fagsystem - mottak av bekymringsmeldinger
-Fagsystemet vil motta enten en privat bekymringsmelding, ```no.ks.fiks.bekymringsmelding.privat.v1```, med en ASiC-E-fil i body eller en offentlig bekymringsmelding, ```no.ks.fiks.bekymringsmelding.offentlig.v1```, med en ASiC-E-fil i body. I tillegg vil det være en header «ressurs-id» som vil være ID til bydelsressursen. I de fleste tilfeller kan man se bort fra denne.
+Fagsystemet vil motta enten en privat bekymringsmelding, ```no.ks.fiks.bekymringsmelding.privat.v1```, med en ASiC-E-fil i body eller en offentlig bekymringsmelding, ```no.ks.fiks.bekymringsmelding.offentlig.v1```, med en ASiC-E-fil i body. I tillegg vil det være en header «bydel-ressurs-id» som vil være ID til bydelsressursen. I de fleste tilfeller kan man se bort fra denne.
 
 AsiC-E-filen er på navneformatet «FiksIO_encrypted_[FIKS_ORG_ID]\_[BYDELSNUMMER].zip», hvor FIKS_ORG_ID er en unik ID for kommunen, mens bydelsnummeret vil være et tosifret tall. Er det en kommune uten bydeler, vil bydelsnummeret være «00».
 
