@@ -92,4 +92,14 @@ For å gjøre integrasjon lettere vil KS utvikle klienter som benyttes for både
 
 Klientene er tilgjengelig i [Java](https://github.com/ks-no/fiks-io-klient-java), og [.net core](https://github.com/ks-no/fiks-io-client-dotnet). Andre språk vil vurderes, og vi vil gjerne høre fra deg om du skriver klienter for andre språk. 
 
+### Headere
+Følgende headere er definert i meldingsutvekslingen.
 
+| Header | Beskrivelse |
+|---|---|
+| avsender-id | Avsenders Fiks IO-konto |
+| melding-id | Meldingens ID |
+| avsender-navn | Navnet på avsenderkonto |
+| type | Meldingstype |
+| dokumentlager-id | ID til eventuell fil lagret i Dokumentlager |
+| svar-til | Hvis meldingen er svar på en tidligere Fiks IO-melding, vil svar-til referere til den |
