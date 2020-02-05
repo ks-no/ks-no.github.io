@@ -1,0 +1,159 @@
+{
+  "openapi" : "3.0.1",
+  "info" : {
+    "title" : "KS FIKS: Print leverandør service",
+    "description" : "Print leverandør service",
+    "contact" : {
+      "name" : "Fiks brukerstøtte",
+      "url" : "https://www.ks.no/fagomrader/digitalisering/utviklingsprosjekter",
+      "email" : "fiks@ks.no"
+    },
+    "version" : "v1"
+  },
+  "servers" : [ {
+    "url" : "https://api.fiks.ks.no",
+    "description" : "KS Fiks API host",
+    "variables" : { }
+  }, {
+    "url" : "https://api.test.fiks.ks.no",
+    "description" : "KS Fiks TEST API host",
+    "variables" : { }
+  } ],
+  "tags" : [ {
+    "name" : "print-leverandor",
+    "description" : "API for å håndtere funksjonalitet til bruk for printleverandør"
+  } ],
+  "paths" : {
+    "/printleverandor/api/v1/{leverandor}/{id}" : {
+      "post" : {
+        "tags" : [ "print-leverandor" ],
+        "description" : "Oppdater status",
+        "operationId" : "oppdaterStatus",
+        "parameters" : [ {
+          "name" : "leverandor",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "enum" : [ "GRAFISK_DIGITAL" ]
+          }
+        }, {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/JobbOppdatering"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "default" : {
+            "description" : "default response",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Oppsummering"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components" : {
+    "schemas" : {
+      "Oppsummering" : {
+        "type" : "object",
+        "properties" : {
+          "eksternRef" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "leverandor" : {
+            "type" : "string",
+            "enum" : [ "GRAFISK_DIGITAL" ]
+          },
+          "typeOppdatering" : {
+            "type" : "string"
+          }
+        }
+      },
+      "AvbruttLeverandor" : {
+        "required" : [ "arsak", "tidspunkt" ],
+        "type" : "object",
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/JobbOppdatering"
+        }, {
+          "type" : "object",
+          "properties" : {
+            "tidspunkt" : {
+              "type" : "integer",
+              "format" : "int64"
+            },
+            "arsak" : {
+              "type" : "string"
+            }
+          }
+        } ]
+      },
+      "JobbOppdatering" : {
+        "required" : [ "type" ],
+        "type" : "object",
+        "properties" : {
+          "type" : {
+            "type" : "string"
+          }
+        },
+        "discriminator" : {
+          "propertyName" : "type"
+        }
+      },
+      "LeveranseRapport" : {
+        "required" : [ "kostnadPorto", "kostnadProduksjon" ],
+        "type" : "object",
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/JobbOppdatering"
+        }, {
+          "type" : "object",
+          "properties" : {
+            "kostnadProduksjon" : {
+              "type" : "number"
+            },
+            "kostnadPorto" : {
+              "type" : "number"
+            },
+            "antallSider" : {
+              "type" : "integer",
+              "format" : "int32"
+            }
+          }
+        } ]
+      },
+      "LevertPostgang" : {
+        "required" : [ "levertDato" ],
+        "type" : "object",
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/JobbOppdatering"
+        }, {
+          "type" : "object",
+          "properties" : {
+            "levertDato" : {
+              "type" : "string",
+              "format" : "date"
+            }
+          }
+        } ]
+      }
+    }
+  }
+}
