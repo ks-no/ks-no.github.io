@@ -77,7 +77,7 @@ AsiC-E-filen er på navneformatet «FiksIO_encrypted_[FIKS_ORG_ID]\_[BYDELSNUMME
 ASiC-E-filen vil inneholde to filer, «bekymringsmelding.json» og «bekymringsmelding.pdf». «bekymringsmelding.json» er en JSON-fil definert i JSON-skjema for [privat bekymringsmelding](https://raw.githubusercontent.com/ks-no/fiks-io-bekymringsmelding-protokoll/master/schema/domain/privat.bekymringsmelding.v1.json) eller [offentlig bekymringsmelding](https://raw.githubusercontent.com/ks-no/fiks-io-bekymringsmelding-protokoll/master/schema/domain/offentlig.bekymringsmelding.v1.json) - avhengig om meldingstypen er en privat eller offentlig bekymringsmelding. «bekymringsmelding.pdf» vil være bekymringsmeldingen på PDF-format.
 
 ##### Fra fagsystem - kvittering på mottatt bekymringsmelding
-Privat bekymringsmelding, ```no.ks.fiks.bekymringsmelding.privat.mottatt.v1```, med tom body.\
-Offentlig bekymringsmelding, ```no.ks.fiks.bekymringsmelding.offentlig.mottatt.v1```, med tom body.
+Kvittering på mottatt bekymringsmelding, ```no.ks.fiks.bekymringsmelding.mottatt.v1```, med tom body.\
+Kvittering på avvist bekymringsmelding, ```no.ks.fiks.bekymringsmelding.avvist.v1```, med body bestående av en melding med hva som gikk galt.
 
 Fullstendig skjemadefinisjon med eksempler finner man [her](https://github.com/ks-no/fiks-io-bekymringsmelding-protokoll). For mer informasjon om Fiks IO, se [dokumentasjon for Fiks IO](https://ks-no.github.io/fiks-platform/tjenester/fiksio/).
