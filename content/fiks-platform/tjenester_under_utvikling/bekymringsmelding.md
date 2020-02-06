@@ -78,6 +78,6 @@ ASiC-E-filen vil inneholde to filer, «bekymringsmelding.json» og «bekymringsm
 
 ##### Fra fagsystem - kvittering på mottatt bekymringsmelding
 Kvittering på mottatt bekymringsmelding, ```no.ks.fiks.bekymringsmelding.mottatt.v1```, med tom body.\
-Kvittering på avvist bekymringsmelding, ```no.ks.fiks.bekymringsmelding.avvist.v1```, med body bestående av en melding med hva som gikk galt.
+Kvittering på avvist bekymringsmelding, ```no.ks.fiks.bekymringsmelding.avvist.v1```, med body bestående av en melding (string) med hva som gikk galt.
 
 Fullstendig skjemadefinisjon med eksempler finner man [her](https://github.com/ks-no/fiks-io-bekymringsmelding-protokoll). For mer informasjon om Fiks IO, se [dokumentasjon for Fiks IO](https://ks-no.github.io/fiks-platform/tjenester/fiksio/).
