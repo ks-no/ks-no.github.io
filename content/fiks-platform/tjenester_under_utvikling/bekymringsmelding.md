@@ -78,6 +78,6 @@ ASiC-E-filen vil inneholde to filer, «bekymringsmelding.json» og «bekymringsm
 
 ##### Fra fagsystem - kvittering på mottatt bekymringsmelding
 Kvittering på mottatt bekymringsmelding, ```no.ks.fiks.bekymringsmelding.mottatt.v1```, med tom body.\
-Kvittering på avvist bekymringsmelding, ```no.ks.fiks.bekymringsmelding.avvist.v1```, med body bestående av en melding (string) med hva som gikk galt. Body er optional.
+Kvittering på feilet bekymringsmelding, ```no.ks.fiks.bekymringsmelding.feilet.v1```, med body bestående av en JSON-fil «feilmelding.json» med hva som gikk galt. JSON-skjema finnes [her](https://raw.githubusercontent.com/ks-no/fiks-io-bekymringsmelding-protokoll/master/schema/domain/feilmelding.json). 
 
-Fullstendig skjemadefinisjon med eksempler finner man [her](https://github.com/ks-no/fiks-io-bekymringsmelding-protokoll). For mer informasjon om Fiks IO, se [dokumentasjon for Fiks IO](https://ks-no.github.io/fiks-platform/tjenester/fiksio/).
+Fullstendig skjemadefinisjon med eksempler finner man [her](https://github.com/ks-no/fiks-io-bekymringsmelding-protokoll). Det anbefales at man setter ttl (time-to-live) for en Fiks IO-melding til 24 timer. Får man meldingstype ```no.ks.fiks.kvittering.tidsavbrudd```, så trenger dere ikke sende noe tilbake, da vi alltid har en fallback til print. Men det anbefales at man logger det, og sier fra så vi kan feilsøke. For mer informasjon om Fiks IO, se [dokumentasjon for Fiks IO](https://ks-no.github.io/fiks-platform/tjenester/fiksio).
