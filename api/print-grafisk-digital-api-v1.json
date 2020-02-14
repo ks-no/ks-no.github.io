@@ -24,6 +24,55 @@
     "description" : "API for å sending av post til printleverandør"
   } ],
   "paths" : {
+    "/print/grafiskdigital/api/v1/importer-loggfiler" : {
+      "post" : {
+        "tags" : [ "GrafiskDigital" ],
+        "description" : "Importerer loggfiler fra Grafisk Digital",
+        "operationId" : "importerLoggfiler",
+        "responses" : {
+          "200" : {
+            "description" : "Loggfiler fra Grafisk Digital fullført",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/LoggStatusApiModel"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/print/grafiskdigital/api/v1/ordrer/{ordreId}" : {
+      "put" : {
+        "tags" : [ "GrafiskDigital" ],
+        "operationId" : "createGrafiskDigitalPrintOrdre",
+        "parameters" : [ {
+          "name" : "ordreId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/GrafiskDigitalOrdreApiModel"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "201" : {
+            "description" : "Alt ok"
+          }
+        }
+      }
+    },
     "/print/grafiskdigital/api/v1/fakturakonfigurasjon" : {
       "put" : {
         "tags" : [ "GrafiskDigital" ],
@@ -34,6 +83,9 @@
               "schema" : {
                 "type" : "object",
                 "properties" : {
+                  "authType" : {
+                    "type" : "string"
+                  },
                   "headerNames" : {
                     "type" : "object"
                   },
@@ -43,12 +95,12 @@
                       "servletName" : {
                         "type" : "string"
                       },
-                      "matchValue" : {
-                        "type" : "string"
-                      },
                       "mappingMatch" : {
                         "type" : "string",
                         "enum" : [ "CONTEXT_ROOT", "DEFAULT", "EXACT", "EXTENSION", "PATH" ]
+                      },
+                      "matchValue" : {
+                        "type" : "string"
                       },
                       "pattern" : {
                         "type" : "string"
@@ -110,8 +162,35 @@
                   "trailerFieldsReady" : {
                     "type" : "boolean"
                   },
-                  "authType" : {
-                    "type" : "string"
+                  "parts" : {
+                    "type" : "array",
+                    "items" : {
+                      "type" : "object",
+                      "properties" : {
+                        "headerNames" : {
+                          "type" : "array",
+                          "items" : {
+                            "type" : "string"
+                          }
+                        },
+                        "submittedFileName" : {
+                          "type" : "string"
+                        },
+                        "contentType" : {
+                          "type" : "string"
+                        },
+                        "name" : {
+                          "type" : "string"
+                        },
+                        "size" : {
+                          "type" : "integer",
+                          "format" : "int64"
+                        },
+                        "inputStream" : {
+                          "type" : "object"
+                        }
+                      }
+                    }
                   },
                   "cookies" : {
                     "type" : "array",
@@ -150,36 +229,6 @@
                       }
                     }
                   },
-                  "parts" : {
-                    "type" : "array",
-                    "items" : {
-                      "type" : "object",
-                      "properties" : {
-                        "headerNames" : {
-                          "type" : "array",
-                          "items" : {
-                            "type" : "string"
-                          }
-                        },
-                        "submittedFileName" : {
-                          "type" : "string"
-                        },
-                        "contentType" : {
-                          "type" : "string"
-                        },
-                        "name" : {
-                          "type" : "string"
-                        },
-                        "size" : {
-                          "type" : "integer",
-                          "format" : "int64"
-                        },
-                        "inputStream" : {
-                          "type" : "object"
-                        }
-                      }
-                    }
-                  },
                   "session" : {
                     "type" : "object",
                     "properties" : {
@@ -187,6 +236,87 @@
                         "type" : "object",
                         "properties" : {
                           "contextPath" : {
+                            "type" : "string"
+                          },
+                          "jspConfigDescriptor" : {
+                            "type" : "object",
+                            "properties" : {
+                              "taglibs" : {
+                                "type" : "array",
+                                "items" : {
+                                  "type" : "object",
+                                  "properties" : {
+                                    "taglibURI" : {
+                                      "type" : "string"
+                                    },
+                                    "taglibLocation" : {
+                                      "type" : "string"
+                                    }
+                                  }
+                                }
+                              },
+                              "jspPropertyGroups" : {
+                                "type" : "array",
+                                "items" : {
+                                  "type" : "object",
+                                  "properties" : {
+                                    "urlPatterns" : {
+                                      "type" : "array",
+                                      "items" : {
+                                        "type" : "string"
+                                      }
+                                    },
+                                    "elIgnored" : {
+                                      "type" : "string"
+                                    },
+                                    "pageEncoding" : {
+                                      "type" : "string"
+                                    },
+                                    "scriptingInvalid" : {
+                                      "type" : "string"
+                                    },
+                                    "isXml" : {
+                                      "type" : "string"
+                                    },
+                                    "includePreludes" : {
+                                      "type" : "array",
+                                      "items" : {
+                                        "type" : "string"
+                                      }
+                                    },
+                                    "includeCodas" : {
+                                      "type" : "array",
+                                      "items" : {
+                                        "type" : "string"
+                                      }
+                                    },
+                                    "deferredSyntaxAllowedAsLiteral" : {
+                                      "type" : "string"
+                                    },
+                                    "trimDirectiveWhitespaces" : {
+                                      "type" : "string"
+                                    },
+                                    "defaultContentType" : {
+                                      "type" : "string"
+                                    },
+                                    "errorOnUndeclaredNamespace" : {
+                                      "type" : "string"
+                                    },
+                                    "buffer" : {
+                                      "type" : "string"
+                                    }
+                                  }
+                                }
+                              }
+                            }
+                          },
+                          "virtualServerName" : {
+                            "type" : "string"
+                          },
+                          "requestCharacterEncoding" : {
+                            "type" : "string"
+                          },
+                          "responseCharacterEncoding" : {
                             "type" : "string"
                           },
                           "effectiveMajorVersion" : {
@@ -283,11 +413,11 @@
                                 "type" : "integer",
                                 "format" : "int32"
                               },
-                              "secure" : {
-                                "type" : "boolean"
-                              },
                               "domain" : {
                                 "type" : "string"
+                              },
+                              "secure" : {
+                                "type" : "boolean"
                               },
                               "comment" : {
                                 "type" : "string"
@@ -324,87 +454,6 @@
                               "type" : "string",
                               "enum" : [ "COOKIE", "URL", "SSL" ]
                             }
-                          },
-                          "jspConfigDescriptor" : {
-                            "type" : "object",
-                            "properties" : {
-                              "taglibs" : {
-                                "type" : "array",
-                                "items" : {
-                                  "type" : "object",
-                                  "properties" : {
-                                    "taglibURI" : {
-                                      "type" : "string"
-                                    },
-                                    "taglibLocation" : {
-                                      "type" : "string"
-                                    }
-                                  }
-                                }
-                              },
-                              "jspPropertyGroups" : {
-                                "type" : "array",
-                                "items" : {
-                                  "type" : "object",
-                                  "properties" : {
-                                    "urlPatterns" : {
-                                      "type" : "array",
-                                      "items" : {
-                                        "type" : "string"
-                                      }
-                                    },
-                                    "elIgnored" : {
-                                      "type" : "string"
-                                    },
-                                    "pageEncoding" : {
-                                      "type" : "string"
-                                    },
-                                    "isXml" : {
-                                      "type" : "string"
-                                    },
-                                    "scriptingInvalid" : {
-                                      "type" : "string"
-                                    },
-                                    "includePreludes" : {
-                                      "type" : "array",
-                                      "items" : {
-                                        "type" : "string"
-                                      }
-                                    },
-                                    "includeCodas" : {
-                                      "type" : "array",
-                                      "items" : {
-                                        "type" : "string"
-                                      }
-                                    },
-                                    "deferredSyntaxAllowedAsLiteral" : {
-                                      "type" : "string"
-                                    },
-                                    "trimDirectiveWhitespaces" : {
-                                      "type" : "string"
-                                    },
-                                    "defaultContentType" : {
-                                      "type" : "string"
-                                    },
-                                    "errorOnUndeclaredNamespace" : {
-                                      "type" : "string"
-                                    },
-                                    "buffer" : {
-                                      "type" : "string"
-                                    }
-                                  }
-                                }
-                              }
-                            }
-                          },
-                          "virtualServerName" : {
-                            "type" : "string"
-                          },
-                          "requestCharacterEncoding" : {
-                            "type" : "string"
-                          },
-                          "responseCharacterEncoding" : {
-                            "type" : "string"
                           },
                           "majorVersion" : {
                             "type" : "integer",
@@ -686,6 +735,87 @@
                       "contextPath" : {
                         "type" : "string"
                       },
+                      "jspConfigDescriptor" : {
+                        "type" : "object",
+                        "properties" : {
+                          "taglibs" : {
+                            "type" : "array",
+                            "items" : {
+                              "type" : "object",
+                              "properties" : {
+                                "taglibURI" : {
+                                  "type" : "string"
+                                },
+                                "taglibLocation" : {
+                                  "type" : "string"
+                                }
+                              }
+                            }
+                          },
+                          "jspPropertyGroups" : {
+                            "type" : "array",
+                            "items" : {
+                              "type" : "object",
+                              "properties" : {
+                                "urlPatterns" : {
+                                  "type" : "array",
+                                  "items" : {
+                                    "type" : "string"
+                                  }
+                                },
+                                "elIgnored" : {
+                                  "type" : "string"
+                                },
+                                "pageEncoding" : {
+                                  "type" : "string"
+                                },
+                                "scriptingInvalid" : {
+                                  "type" : "string"
+                                },
+                                "isXml" : {
+                                  "type" : "string"
+                                },
+                                "includePreludes" : {
+                                  "type" : "array",
+                                  "items" : {
+                                    "type" : "string"
+                                  }
+                                },
+                                "includeCodas" : {
+                                  "type" : "array",
+                                  "items" : {
+                                    "type" : "string"
+                                  }
+                                },
+                                "deferredSyntaxAllowedAsLiteral" : {
+                                  "type" : "string"
+                                },
+                                "trimDirectiveWhitespaces" : {
+                                  "type" : "string"
+                                },
+                                "defaultContentType" : {
+                                  "type" : "string"
+                                },
+                                "errorOnUndeclaredNamespace" : {
+                                  "type" : "string"
+                                },
+                                "buffer" : {
+                                  "type" : "string"
+                                }
+                              }
+                            }
+                          }
+                        }
+                      },
+                      "virtualServerName" : {
+                        "type" : "string"
+                      },
+                      "requestCharacterEncoding" : {
+                        "type" : "string"
+                      },
+                      "responseCharacterEncoding" : {
+                        "type" : "string"
+                      },
                       "effectiveMajorVersion" : {
                         "type" : "integer",
                         "format" : "int32"
@@ -780,11 +910,11 @@
                             "type" : "integer",
                             "format" : "int32"
                           },
-                          "secure" : {
-                            "type" : "boolean"
-                          },
                           "domain" : {
                             "type" : "string"
+                          },
+                          "secure" : {
+                            "type" : "boolean"
                           },
                           "comment" : {
                             "type" : "string"
@@ -821,87 +951,6 @@
                           "type" : "string",
                           "enum" : [ "COOKIE", "URL", "SSL" ]
                         }
-                      },
-                      "jspConfigDescriptor" : {
-                        "type" : "object",
-                        "properties" : {
-                          "taglibs" : {
-                            "type" : "array",
-                            "items" : {
-                              "type" : "object",
-                              "properties" : {
-                                "taglibURI" : {
-                                  "type" : "string"
-                                },
-                                "taglibLocation" : {
-                                  "type" : "string"
-                                }
-                              }
-                            }
-                          },
-                          "jspPropertyGroups" : {
-                            "type" : "array",
-                            "items" : {
-                              "type" : "object",
-                              "properties" : {
-                                "urlPatterns" : {
-                                  "type" : "array",
-                                  "items" : {
-                                    "type" : "string"
-                                  }
-                                },
-                                "elIgnored" : {
-                                  "type" : "string"
-                                },
-                                "pageEncoding" : {
-                                  "type" : "string"
-                                },
-                                "isXml" : {
-                                  "type" : "string"
-                                },
-                                "scriptingInvalid" : {
-                                  "type" : "string"
-                                },
-                                "includePreludes" : {
-                                  "type" : "array",
-                                  "items" : {
-                                    "type" : "string"
-                                  }
-                                },
-                                "includeCodas" : {
-                                  "type" : "array",
-                                  "items" : {
-                                    "type" : "string"
-                                  }
-                                },
-                                "deferredSyntaxAllowedAsLiteral" : {
-                                  "type" : "string"
-                                },
-                                "trimDirectiveWhitespaces" : {
-                                  "type" : "string"
-                                },
-                                "defaultContentType" : {
-                                  "type" : "string"
-                                },
-                                "errorOnUndeclaredNamespace" : {
-                                  "type" : "string"
-                                },
-                                "buffer" : {
-                                  "type" : "string"
-                                }
-                              }
-                            }
-                          }
-                        }
-                      },
-                      "virtualServerName" : {
-                        "type" : "string"
-                      },
-                      "requestCharacterEncoding" : {
-                        "type" : "string"
-                      },
-                      "responseCharacterEncoding" : {
-                        "type" : "string"
                       },
                       "majorVersion" : {
                         "type" : "integer",
@@ -1172,6 +1221,87 @@
                               "contextPath" : {
                                 "type" : "string"
                               },
+                              "jspConfigDescriptor" : {
+                                "type" : "object",
+                                "properties" : {
+                                  "taglibs" : {
+                                    "type" : "array",
+                                    "items" : {
+                                      "type" : "object",
+                                      "properties" : {
+                                        "taglibURI" : {
+                                          "type" : "string"
+                                        },
+                                        "taglibLocation" : {
+                                          "type" : "string"
+                                        }
+                                      }
+                                    }
+                                  },
+                                  "jspPropertyGroups" : {
+                                    "type" : "array",
+                                    "items" : {
+                                      "type" : "object",
+                                      "properties" : {
+                                        "urlPatterns" : {
+                                          "type" : "array",
+                                          "items" : {
+                                            "type" : "string"
+                                          }
+                                        },
+                                        "elIgnored" : {
+                                          "type" : "string"
+                                        },
+                                        "pageEncoding" : {
+                                          "type" : "string"
+                                        },
+                                        "scriptingInvalid" : {
+                                          "type" : "string"
+                                        },
+                                        "isXml" : {
+                                          "type" : "string"
+                                        },
+                                        "includePreludes" : {
+                                          "type" : "array",
+                                          "items" : {
+                                            "type" : "string"
+                                          }
+                                        },
+                                        "includeCodas" : {
+                                          "type" : "array",
+                                          "items" : {
+                                            "type" : "string"
+                                          }
+                                        },
+                                        "deferredSyntaxAllowedAsLiteral" : {
+                                          "type" : "string"
+                                        },
+                                        "trimDirectiveWhitespaces" : {
+                                          "type" : "string"
+                                        },
+                                        "defaultContentType" : {
+                                          "type" : "string"
+                                        },
+                                        "errorOnUndeclaredNamespace" : {
+                                          "type" : "string"
+                                        },
+                                        "buffer" : {
+                                          "type" : "string"
+                                        }
+                                      }
+                                    }
+                                  }
+                                }
+                              },
+                              "virtualServerName" : {
+                                "type" : "string"
+                              },
+                              "requestCharacterEncoding" : {
+                                "type" : "string"
+                              },
+                              "responseCharacterEncoding" : {
+                                "type" : "string"
+                              },
                               "effectiveMajorVersion" : {
                                 "type" : "integer",
                                 "format" : "int32"
@@ -1266,11 +1396,11 @@
                                     "type" : "integer",
                                     "format" : "int32"
                                   },
-                                  "secure" : {
-                                    "type" : "boolean"
-                                  },
                                   "domain" : {
                                     "type" : "string"
+                                  },
+                                  "secure" : {
+                                    "type" : "boolean"
                                   },
                                   "comment" : {
                                     "type" : "string"
@@ -1307,87 +1437,6 @@
                                   "type" : "string",
                                   "enum" : [ "COOKIE", "URL", "SSL" ]
                                 }
-                              },
-                              "jspConfigDescriptor" : {
-                                "type" : "object",
-                                "properties" : {
-                                  "taglibs" : {
-                                    "type" : "array",
-                                    "items" : {
-                                      "type" : "object",
-                                      "properties" : {
-                                        "taglibURI" : {
-                                          "type" : "string"
-                                        },
-                                        "taglibLocation" : {
-                                          "type" : "string"
-                                        }
-                                      }
-                                    }
-                                  },
-                                  "jspPropertyGroups" : {
-                                    "type" : "array",
-                                    "items" : {
-                                      "type" : "object",
-                                      "properties" : {
-                                        "urlPatterns" : {
-                                          "type" : "array",
-                                          "items" : {
-                                            "type" : "string"
-                                          }
-                                        },
-                                        "elIgnored" : {
-                                          "type" : "string"
-                                        },
-                                        "pageEncoding" : {
-                                          "type" : "string"
-                                        },
-                                        "isXml" : {
-                                          "type" : "string"
-                                        },
-                                        "scriptingInvalid" : {
-                                          "type" : "string"
-                                        },
-                                        "includePreludes" : {
-                                          "type" : "array",
-                                          "items" : {
-                                            "type" : "string"
-                                          }
-                                        },
-                                        "includeCodas" : {
-                                          "type" : "array",
-                                          "items" : {
-                                            "type" : "string"
-                                          }
-                                        },
-                                        "deferredSyntaxAllowedAsLiteral" : {
-                                          "type" : "string"
-                                        },
-                                        "trimDirectiveWhitespaces" : {
-                                          "type" : "string"
-                                        },
-                                        "defaultContentType" : {
-                                          "type" : "string"
-                                        },
-                                        "errorOnUndeclaredNamespace" : {
-                                          "type" : "string"
-                                        },
-                                        "buffer" : {
-                                          "type" : "string"
-                                        }
-                                      }
-                                    }
-                                  }
-                                }
-                              },
-                              "virtualServerName" : {
-                                "type" : "string"
-                              },
-                              "requestCharacterEncoding" : {
-                                "type" : "string"
-                              },
-                              "responseCharacterEncoding" : {
-                                "type" : "string"
                               },
                               "majorVersion" : {
                                 "type" : "integer",
@@ -1654,6 +1703,13 @@
                           "secure" : {
                             "type" : "boolean"
                           },
+                          "contentLength" : {
+                            "type" : "integer",
+                            "format" : "int32"
+                          },
+                          "localName" : {
+                            "type" : "string"
+                          },
                           "contentLengthLong" : {
                             "type" : "integer",
                             "format" : "int64"
@@ -1724,13 +1780,6 @@
                             "type" : "integer",
                             "format" : "int32"
                           },
-                          "localName" : {
-                            "type" : "string"
-                          },
-                          "contentLength" : {
-                            "type" : "integer",
-                            "format" : "int32"
-                          },
                           "attributeNames" : {
                             "type" : "object"
                           },
@@ -1773,6 +1822,9 @@
                       "response" : {
                         "type" : "object",
                         "properties" : {
+                          "committed" : {
+                            "type" : "boolean"
+                          },
                           "characterEncoding" : {
                             "type" : "string"
                           },
@@ -1784,29 +1836,6 @@
                           "bufferSize" : {
                             "type" : "integer",
                             "format" : "int32"
-                          },
-                          "committed" : {
-                            "type" : "boolean"
-                          },
-                          "contentType" : {
-                            "type" : "string"
-                          },
-                          "contentLength" : {
-                            "type" : "integer",
-                            "format" : "int32",
-                            "writeOnly" : true
-                          },
-                          "outputStream" : {
-                            "type" : "object",
-                            "properties" : {
-                              "writeListener" : {
-                                "type" : "object",
-                                "writeOnly" : true
-                              },
-                              "ready" : {
-                                "type" : "boolean"
-                              }
-                            }
                           },
                           "locale" : {
                             "type" : "object",
@@ -1867,6 +1896,26 @@
                               }
                             }
                           },
+                          "contentType" : {
+                            "type" : "string"
+                          },
+                          "contentLength" : {
+                            "type" : "integer",
+                            "format" : "int32",
+                            "writeOnly" : true
+                          },
+                          "outputStream" : {
+                            "type" : "object",
+                            "properties" : {
+                              "writeListener" : {
+                                "type" : "object",
+                                "writeOnly" : true
+                              },
+                              "ready" : {
+                                "type" : "boolean"
+                              }
+                            }
+                          },
                           "writer" : {
                             "type" : "object"
                           }
@@ -1884,6 +1933,13 @@
                   },
                   "secure" : {
                     "type" : "boolean"
+                  },
+                  "contentLength" : {
+                    "type" : "integer",
+                    "format" : "int32"
+                  },
+                  "localName" : {
+                    "type" : "string"
                   },
                   "contentLengthLong" : {
                     "type" : "integer",
@@ -1955,13 +2011,6 @@
                     "type" : "integer",
                     "format" : "int32"
                   },
-                  "localName" : {
-                    "type" : "string"
-                  },
-                  "contentLength" : {
-                    "type" : "integer",
-                    "format" : "int32"
-                  },
                   "attributeNames" : {
                     "type" : "object"
                   },
@@ -2025,85 +2074,10 @@
           }
         }
       }
-    },
-    "/print/grafiskdigital/api/v1/importer-loggfiler" : {
-      "post" : {
-        "tags" : [ "GrafiskDigital" ],
-        "description" : "Importerer loggfiler fra Grafisk Digital",
-        "operationId" : "importerLoggfiler",
-        "responses" : {
-          "200" : {
-            "description" : "Loggfiler fra Grafisk Digital fullført",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/LoggStatusApiModel"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/print/grafiskdigital/api/v1/ordrer/{ordreId}" : {
-      "put" : {
-        "tags" : [ "GrafiskDigital" ],
-        "operationId" : "createGrafiskDigitalPrintOrdre",
-        "parameters" : [ {
-          "name" : "ordreId",
-          "in" : "path",
-          "required" : true,
-          "schema" : {
-            "type" : "string",
-            "format" : "uuid"
-          }
-        } ],
-        "requestBody" : {
-          "content" : {
-            "application/json" : {
-              "schema" : {
-                "$ref" : "#/components/schemas/GrafiskDigitalOrdreApiModel"
-              }
-            }
-          },
-          "required" : true
-        },
-        "responses" : {
-          "201" : {
-            "description" : "Alt ok"
-          }
-        }
-      }
     }
   },
   "components" : {
     "schemas" : {
-      "OffentligNokkelApiModel" : {
-        "required" : [ "issuerDN", "nokkel", "serial", "subjectDN", "validFrom", "validTo" ],
-        "type" : "object",
-        "properties" : {
-          "nokkel" : {
-            "type" : "string"
-          },
-          "validFrom" : {
-            "type" : "string",
-            "format" : "date-time"
-          },
-          "validTo" : {
-            "type" : "string",
-            "format" : "date-time"
-          },
-          "serial" : {
-            "type" : "string"
-          },
-          "subjectDN" : {
-            "type" : "string"
-          },
-          "issuerDN" : {
-            "type" : "string"
-          }
-        }
-      },
       "LoggStatusApiModel" : {
         "required" : [ "loggfilerFeilet", "loggfilerOk", "statusfilerFeilet", "statusfilerOk" ],
         "type" : "object",
@@ -2236,6 +2210,32 @@
           },
           "tosidig" : {
             "type" : "boolean"
+          }
+        }
+      },
+      "OffentligNokkelApiModel" : {
+        "required" : [ "issuerDN", "nokkel", "serial", "subjectDN", "validFrom", "validTo" ],
+        "type" : "object",
+        "properties" : {
+          "nokkel" : {
+            "type" : "string"
+          },
+          "validFrom" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "validTo" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "serial" : {
+            "type" : "string"
+          },
+          "subjectDN" : {
+            "type" : "string"
+          },
+          "issuerDN" : {
+            "type" : "string"
           }
         }
       }
