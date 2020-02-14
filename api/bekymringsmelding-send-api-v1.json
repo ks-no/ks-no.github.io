@@ -20,6 +20,63 @@
     "description" : "API for å håndtere funksjonalitet for sending til Fiks IO/Print"
   } ],
   "paths" : {
+    "/send/api/v1/send" : {
+      "post" : {
+        "tags" : [ "fiks-send" ],
+        "description" : "Sender en ordre som skal sendes videre til enten FiksIO eller Fiks-Print",
+        "operationId" : "sendOrdre",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/OrdreModel"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Send ordre.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "string",
+                  "format" : "uuid"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/send/api/v1/send/{id}" : {
+      "post" : {
+        "tags" : [ "fiks-send" ],
+        "description" : "Sender en bestemt ordre på nytt enten til FiksIO eller Fiks-Print basert på ID",
+        "operationId" : "sendOrdreById",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "400" : {
+            "description" : "Ordre er allerede levert"
+          },
+          "404" : {
+            "description" : "Ingen ordre funnet"
+          },
+          "204" : {
+            "description" : "Send ordre."
+          }
+        }
+      }
+    },
     "/send/api/v1/ordrer" : {
       "get" : {
         "tags" : [ "fiks-send" ],
@@ -128,125 +185,10 @@
           }
         }
       }
-    },
-    "/send/api/v1/send" : {
-      "post" : {
-        "tags" : [ "fiks-send" ],
-        "description" : "Sender en ordre som skal sendes videre til enten FiksIO eller Fiks-Print",
-        "operationId" : "sendOrdre",
-        "requestBody" : {
-          "content" : {
-            "application/json" : {
-              "schema" : {
-                "$ref" : "#/components/schemas/OrdreModel"
-              }
-            }
-          },
-          "required" : true
-        },
-        "responses" : {
-          "200" : {
-            "description" : "Send ordre.",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "type" : "string",
-                  "format" : "uuid"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/send/api/v1/send/{id}" : {
-      "post" : {
-        "tags" : [ "fiks-send" ],
-        "description" : "Sender en bestemt ordre på nytt enten til FiksIO eller Fiks-Print basert på ID",
-        "operationId" : "sendOrdreById",
-        "parameters" : [ {
-          "name" : "id",
-          "in" : "path",
-          "required" : true,
-          "schema" : {
-            "type" : "string",
-            "format" : "uuid"
-          }
-        } ],
-        "responses" : {
-          "400" : {
-            "description" : "Ordre er allerede levert"
-          },
-          "404" : {
-            "description" : "Ingen ordre funnet"
-          },
-          "204" : {
-            "description" : "Send ordre."
-          }
-        }
-      }
     }
   },
   "components" : {
     "schemas" : {
-      "OffentligNokkel" : {
-        "required" : [ "issuerDN", "nokkel", "serial", "subjectDN", "validFrom", "validTo" ],
-        "type" : "object",
-        "properties" : {
-          "nokkel" : {
-            "type" : "string"
-          },
-          "validFrom" : {
-            "type" : "string",
-            "format" : "date-time"
-          },
-          "validTo" : {
-            "type" : "string",
-            "format" : "date-time"
-          },
-          "serial" : {
-            "type" : "string"
-          },
-          "subjectDN" : {
-            "type" : "string"
-          },
-          "issuerDN" : {
-            "type" : "string"
-          }
-        }
-      },
-      "SendKonfigurasjon" : {
-        "type" : "object",
-        "properties" : {
-          "printLeverandoerMetadata" : {
-            "type" : "string",
-            "enum" : [ "GRAFISK_DIGITAL" ]
-          },
-          "printOffentligNokkel" : {
-            "$ref" : "#/components/schemas/OffentligNokkel"
-          },
-          "fiksIOOffentligNokkel" : {
-            "$ref" : "#/components/schemas/OffentligNokkel"
-          }
-        }
-      },
-      "StatusModel" : {
-        "required" : [ "fiksIoKonto", "meldingId", "meldingstype" ],
-        "type" : "object",
-        "properties" : {
-          "meldingId" : {
-            "type" : "string",
-            "format" : "uuid"
-          },
-          "meldingstype" : {
-            "type" : "string"
-          },
-          "fiksIoKonto" : {
-            "type" : "string",
-            "format" : "uuid"
-          }
-        }
-      },
       "AdresseModel" : {
         "required" : [ "adresselinje1", "adressenavn", "poststed" ],
         "type" : "object",
@@ -332,6 +274,64 @@
           "leverandor" : {
             "type" : "string",
             "enum" : [ "GRAFISK_DIGITAL" ]
+          }
+        }
+      },
+      "OffentligNokkel" : {
+        "required" : [ "issuerDN", "nokkel", "serial", "subjectDN", "validFrom", "validTo" ],
+        "type" : "object",
+        "properties" : {
+          "nokkel" : {
+            "type" : "string"
+          },
+          "validFrom" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "validTo" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "serial" : {
+            "type" : "string"
+          },
+          "subjectDN" : {
+            "type" : "string"
+          },
+          "issuerDN" : {
+            "type" : "string"
+          }
+        }
+      },
+      "SendKonfigurasjon" : {
+        "type" : "object",
+        "properties" : {
+          "printLeverandoerMetadata" : {
+            "type" : "string",
+            "enum" : [ "GRAFISK_DIGITAL" ]
+          },
+          "printOffentligNokkel" : {
+            "$ref" : "#/components/schemas/OffentligNokkel"
+          },
+          "fiksIOOffentligNokkel" : {
+            "$ref" : "#/components/schemas/OffentligNokkel"
+          }
+        }
+      },
+      "StatusModel" : {
+        "required" : [ "fiksIoKonto", "meldingId", "meldingstype" ],
+        "type" : "object",
+        "properties" : {
+          "meldingId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "meldingstype" : {
+            "type" : "string"
+          },
+          "fiksIoKonto" : {
+            "type" : "string",
+            "format" : "uuid"
           }
         }
       }
