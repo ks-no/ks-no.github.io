@@ -72,7 +72,7 @@ Ved bruk av Fiks IO som leveringskanal må fagsystemet støtte meldingsprotokoll
 ##### Til fagsystem - mottak av bekymringsmeldinger
 Fagsystemet vil motta enten en privat bekymringsmelding, ```no.ks.fiks.bekymringsmelding.privat.v1```, med en ASiC-E-fil i body eller en offentlig bekymringsmelding, ```no.ks.fiks.bekymringsmelding.offentlig.v1```, med en ASiC-E-fil i body. I tillegg vil det være en header «bydel-ressurs-id» som vil være ID til bydelsressursen. I de fleste tilfeller kan man se bort fra denne.
 
-AsiC-E-filen er på navneformatet «FiksIO_encrypted_[FIKS_ORG_ID]\_[BYDELSNUMMER].zip», hvor FIKS_ORG_ID er en unik ID for kommunen, mens bydelsnummeret vil være et tosifret tall. Er det en kommune uten bydeler, vil bydelsnummeret være «00».
+AsiC-E-filen er på navneformatet «FiksIO\_encrypted_[FIKS_ORG_ID]\_[BYDELSNUMMER].zip», hvor FIKS_ORG_ID er en unik ID for kommunen, mens bydelsnummeret vil være et tosifret tall. Er det en kommune uten bydeler, vil bydelsnummeret være «00».
 
 ASiC-E-filen vil inneholde to filer, «bekymringsmelding.json» og «bekymringsmelding.pdf». «bekymringsmelding.json» er en JSON-fil definert i JSON-skjema for [privat bekymringsmelding](https://raw.githubusercontent.com/ks-no/fiks-io-bekymringsmelding-protokoll/master/schema/domain/privat.bekymringsmelding.v1.json) eller [offentlig bekymringsmelding](https://raw.githubusercontent.com/ks-no/fiks-io-bekymringsmelding-protokoll/master/schema/domain/offentlig.bekymringsmelding.v1.json) - avhengig om meldingstypen er en privat eller offentlig bekymringsmelding. «bekymringsmelding.pdf» vil være bekymringsmeldingen på PDF-format.
 
