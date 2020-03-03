@@ -59,12 +59,12 @@ Avsnittet [Konfigurasjon](https://ks-no.github.io/fiks-platform/integrasjoner/#k
 
 ### Mottak av søknader
 
-Fagsystemet kan motta søknader enten via Fiks IO eller SvarUt. I tillegg til søknadsfilene sendt fra NAV, vil det inkluderes en ekstra json-fil med metadata. Denne metadataen vil være forskjellig basert på om det er en søknad eller ettersendelse som er sendt fra NAV. I begge tilgfellene vil den inneholde en Fiks DigisosId for å kunne sende saksoppdateringer til Fiks Digisos API og en unik referanse fra NAV, eksternRef. For ettersendelser vil den i tillegg inneholde informasjon om hvilken søknad ettersendelsen tilhører, og om selve søknaden ble sendt over Fiks IO eller SvarUt.
+Fagsystemet kan motta søknader enten via Fiks IO eller SvarInn/SvarUt. I tillegg til søknadsfilene sendt fra NAV, vil det inkluderes en ekstra json-fil med metadata. Denne metadataen vil være forskjellig basert på om det er en søknad eller ettersendelse som er sendt fra NAV. I begge tilfellene vil den inneholde en Fiks DigisosId for å kunne sende saksoppdateringer til Fiks Digisos API og en unik referanse fra NAV, eksternRef. For ettersendelser vil den i tillegg inneholde informasjon om hvilken søknad ettersendelsen tilhører, og om selve søknaden ble sendt over Fiks IO eller SvarUt.
 
 Søknad: Eksempel på innholdet i metadata-file for søknader er definert i [søknad-metadata-eksempel](https://github.com/ks-no/fiks-io-meldingstype-katalog/blob/prod/schema/no.nav.digisos.soknad.v1/examples/litenDigisosMelding.json).\
 Ettersendelse: Eksempel på innholdet i metadata-file for ettersendelser er definert i [ettersendelse-metadata-eksempel](https://github.com/ks-no/fiks-io-meldingstype-katalog/blob/prod/schema/no.nav.digisos.ettersendelse.v1/examples/litenDigisosMelding.json).    
 
-Selve innholdet i metadata-filen vil være definert likt for både Fiks IO og SvarUt. Følgende er spesifikt for de ulike leveringskanalene: 
+Selve data-feltene i metadata-filen vil være definert likt for både Fiks IO og SvarUt. Følgende er spesifikt for de ulike leveringskanalene: 
 
 #### Fiks IO
 
@@ -81,13 +81,43 @@ For ettersendelse, ```no.nav.digisos.ettersendelse.mottatt.v1```, med tom body.
 
 For mer informasjon om Fiks IO, se [dokumentasjon for Fiks IO](https://ks-no.github.io/fiks-platform/tjenester/fiksio/).
 
-#### SvarUt
+#### SvarInn/SvarUt
 
 Ved bruk av SvarUt som leveringskanal må fagsystemet støtte mottak av metadata-filen som definert ovenfor, [Mottak av søknader](https://ks-no.github.io/fiks-platform/tjenester/digisos/#mottak-av-søknader). Denne metadata filen vil være lagt med selve SvarUt forsendelsen, kalt ```forsendelseMetadata.json```.\
 Søknad: Eksempel på innholdet i ```forsendelseMetadata.json``` for søknader er definert i [søknad-metadata-eksempel](https://github.com/ks-no/fiks-io-meldingstype-katalog/blob/prod/schema/no.nav.digisos.soknad.v1/examples/litenDigisosMelding.json).\
 Ettersendelse: Eksempel på innholdet i ```forsendelseMetadata.json``` for ettersendelser er definert i [ettersendelse-metadata-eksempel](https://github.com/ks-no/fiks-io-meldingstype-katalog/blob/prod/schema/no.nav.digisos.ettersendelse.v1/examples/litenDigisosMelding.json).
 
-For mer informasjon om SvarUt, se [dokumentasjon for SvarUt](https://ks-no.github.io/svarut/). 
+##### Eksempel på mottak av søknad med tilhørende ettersendelse
+
+Mottak av søknad med tilhørende fil ```forsendelseMetadata.json```:
+```
+{
+    "eksternRef": "110004PCC",
+    "digisosId": "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+}
+``` 
+```eksternRef```: NAV sin referanse på innsendt søknad.\
+```digisosId```: DigisosId som brukes for å sende saksoppdateringer (innsyn) til Fiks Digisos API. (må ikke forveksles med ForsendelsesId, som er id-en til selve SvarUt-forsendelsen)
+
+Mottak av ettersendelse tilknyttet samme søknad, med tilhørende fil ```forsendelseMetadata.json```:
+```
+{
+    "eksternRef": "110003EFF",
+    "digisosId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+    "soknadLeveranseId": { 
+        "sendtKanal": "SVARUT",
+        "id": "4c7ca4bf-d2c2-4eaa-9a53-4544c9261c18"
+    }
+}
+```
+```eksternRef```: NAV sin referanse på innsendt søknad.\
+```digisosId```: DigisosId, samme Id som den orginale søknaden.\
+```soknadLeveranseId```: Blokk som inneholder informasjon om hvor den orginale søknaden ble sendt, med tilknyttet meldingsId. Denne kan inneholde noen forskjellige verdier:
+ 
+- Dersom søknaden ble sendt til SvarUt/SvarInn vil feltet `sendtKanal` ha verdi `SVARUT`. Feltet `id` vil da tilsvare Forsendelses-`id`-en til den orginal søknadens sin SvarUt/SvarInn forsendelsen.
+- Dersom fagsystemet bruker Fiks IO i kombinasjon med SvarUt/SvarInn kan det oppstå situasjoner hvor søknad blir sendt til Fiks IO, men ettersendelsen blir sendt til SvarUt/SvarInn. Da vil feltet `sendtKanal` ha verdi `FIKS_IO`. Feltet `id` vil være meldingsId-en til Fiks IO forsendelsen. 
+
+For mer informasjon om SvarUt/SvarInn, se [dokumentasjon for SvarUt](https://ks-no.github.io/svarut/). 
 
 ### Sak oppdatering fra Fagsystem
  
