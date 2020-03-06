@@ -96,9 +96,8 @@ Mottak av søknad med tilhørende fil ```forsendelseMetadata.json```:
     "digisosId": "3fa85f64-5717-4562-b3fc-2c963f66afa6"
 }
 ``` 
-
-```eksternRef```: NAV sin referanse på innsendt søknad.\
-```digisosId```: DigisosId som brukes for å sende saksoppdateringer (innsyn) til Fiks Digisos API. (må ikke forveksles med ForsendelsesId, som er id-en til selve SvarUt-forsendelsen)
+`eksternRef`: NAV sin referanse på innsendt søknad.\
+`digisosId`: DigisosId som brukes for å sende saksoppdateringer (innsyn) til Fiks Digisos API. (må ikke forveksles med ForsendelsesId, som er id-en til selve SvarUt-forsendelsen)
 
 Mottak av ettersendelse tilknyttet samme søknad, med tilhørende fil ```forsendelseMetadata.json```:
 ```
@@ -111,10 +110,9 @@ Mottak av ettersendelse tilknyttet samme søknad, med tilhørende fil ```forsend
     }
 }
 ```
-
-```eksternRef```: NAV sin referanse på innsendt søknad.\
-```digisosId```: DigisosId, samme Id som den orginale søknaden.\
-```soknadLeveranseId```: Blokk som inneholder informasjon om hvor den orginale søknaden ble sendt, med tilknyttet meldingsId. Denne kan inneholde noen forskjellige verdier:
+`eksternRef`: NAV sin referanse på innsendt søknad.\
+`digisosId`: DigisosId, samme Id som den orginale søknaden.\
+`soknadLeveranseId`: Blokk som inneholder informasjon om hvor den orginale søknaden ble sendt, med tilknyttet meldingsId. Denne kan inneholde noen forskjellige verdier:
  
 - Dersom søknaden ble sendt til SvarUt/SvarInn vil feltet `sendtKanal` ha verdi `SVARUT`. Feltet `id` vil da tilsvare Forsendelses-`id`-en til den orginal søknadens sin SvarUt/SvarInn forsendelsen.
 - Dersom fagsystemet bruker Fiks IO i kombinasjon med SvarUt/SvarInn kan det oppstå situasjoner hvor søknad blir sendt til Fiks IO, men ettersendelsen blir sendt til SvarUt/SvarInn. Da vil feltet `sendtKanal` ha verdi `FIKS_IO`. Feltet `id` vil være meldingsId-en til Fiks IO forsendelsen. 
