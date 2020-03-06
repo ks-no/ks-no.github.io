@@ -110,6 +110,7 @@ Mottak av ettersendelse tilknyttet samme søknad, med tilhørende fil ```forsend
     }
 }
 ```
+
 ```eksternRef```: NAV sin referanse på innsendt søknad.\
 ```digisosId```: DigisosId, samme Id som den orginale søknaden.\
 ```soknadLeveranseId```: Blokk som inneholder informasjon om hvor den orginale søknaden ble sendt, med tilknyttet meldingsId. Denne kan inneholde noen forskjellige verdier:
