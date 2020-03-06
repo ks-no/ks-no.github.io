@@ -96,6 +96,7 @@ Mottak av søknad med tilhørende fil ```forsendelseMetadata.json```:
     "digisosId": "3fa85f64-5717-4562-b3fc-2c963f66afa6"
 }
 ``` 
+
 ```eksternRef```: NAV sin referanse på innsendt søknad.\
 ```digisosId```: DigisosId som brukes for å sende saksoppdateringer (innsyn) til Fiks Digisos API. (må ikke forveksles med ForsendelsesId, som er id-en til selve SvarUt-forsendelsen)
 
