@@ -41,7 +41,7 @@ Dersom en bekymringsmelding ikke er lastet ned innen 2 virkedager vil den bli se
 Fagsystemet kan produsere og sende inn bekymringsmeldinger til et API eller man kan benytte seg av å sende inn via skjema. Benyttes skjema så vil skjemaet produsere PDF og JSON-fil, men hvis fagsystemet skal sende inn til API, må fagsystemet sende med dette.
 
 ### Fagsystem som produsent
-Swagger-spesifikasjon for å sende inn bekymringsmeldinger via API finnes [her](https://editor.swagger.io/?url=https://ks-no.github.io/api/bekymringsmelding-mottak-fagsystem-api-v1.json). (TODO: Opplasting av filer må gjøres via klient?)
+Swagger-spesifikasjon for å sende inn bekymringsmeldinger via API finnes [her](https://editor.swagger.io/?url=https://ks-no.github.io/api/bekymringsmelding-mottak-fagsystem-api-v1.json). Merk at filene som skal sendes med, sendes som multipart request. Ikke alle Swaggergenererte klienter genererer dette riktig i henhold til OpenAPI 3.0-spesifikasjonen. Du kan se et eksempel på multipartforsendelse i Java her (LENKE!).
 
 #### Filer
 Det må sendes med to filer, en AsiC-E-fil og en PDF-fil.
@@ -65,6 +65,36 @@ AsiC-E-filen må inneholde to filer, «bekymringsmelding.json» og «bekymringsm
 6 - 6. Fagsystemet må lage PDF og JSON-dokument bsert på innholdet i bekymringsmeldingen. Både PDF og JSON-dokument må krypteres med nøkkel for maskinintegrasjon. Krypterte dokument pakkes inn i ASiC-E-kontainer
 
 7 - 10. ASiC-E-filene sendes over til bekymringsmeldingsapiet som multipart-filer. Endepunkt bestemmes av om det er en privat melder eller offentlig melder som har skrevet bekymringsmeldingen. API-et returnerer en UUID som referanse på forsendelsen. 
+
+#### Eksempel på innsending (Java med Jersey client)
+```java
+        StreamDataBodyPart bekymringsmeldingPdf = new StreamDataBodyPart("bekymringsmelding", {bekymringsmeldingPdfInputStream}, "bekymringsmelding.pdf");
+        StreamDataBodyPart asiceZip = new StreamDataBodyPart("asice", {bekymringsmeldingAsiceInputStream}, "asice.zip");
+
+        Client client = ClientBuilder.newBuilder().register(MultiPartFeature.class).build();
+        MultiPart multipart = new FormDataMultiPart().bodyPart(bekymringsmeldingPdf).bodyPart(asiceZip);
+
+        client.target({url})
+                .request()
+                .header("IntegrasjonId", {integrasjonId})
+                .header("IntegrasjonPassord", {integrasjonPassord})
+                .header("Authorization", "Bearer {token}")
+                .post(Entity.entity(multipart, multipart.getMediaType()));
+```
+hvor:
+- bekymringsmeldingPdfInputStream: InputStream av bekymringsmelding.pdf
+- bekymringsmeldingAsiceInputStream: InputStream av asice.zip
+- url
+  - Privat bekymringsmelding test: ``https://api.fiks.test.ks.no/bekymringsmelding/api/v1/mottak/fagsystem/{fiksOrgId}/{kommunenummer}/{bydelsnummer}/privat``
+  - Offentlig bekymringsmelding test: ``https://api.fiks.test.ks.no/bekymringsmelding/api/v1/mottak/fagsystem/{fiksOrgId}/{kommunenummer}/{bydelsnummer}/offentlig``
+  - Privat bekymringsmelding prod: ``https://api.fiks.ks.no/bekymringsmelding/api/v1/mottak/fagsystem/{fiksOrgId}/{kommunenummer}/{bydelsnummer}/privat``
+  - Offentlig bekymringsmelding prod: ``https://api.fiks.ks.no/bekymringsmelding/api/v1/mottak/fagsystem/{fiksOrgId}/{kommunenummer}/{bydelsnummer}/offentlig``
+- integrasjonsId: Integrasjonsid i form av en UUID
+- integrasjonPassord: Integrasjonspassord
+- token: Gyldig aksesstoken fra maskinporten
+
+
+#### Sekvensdiagram
 
 ### Fagsystem som konsument
 Ved bruk av Fiks IO som leveringskanal må fagsystemet støtte meldingsprotokollen ```no.ks.fiks.bekymringsmelding.v1```, som er definert til bruk av bekymringsmeldinger. Meldingsprotokollen vil inneholde kontrakter i form av JSON-skjema som gjelder både for mottak og svar på Fiks IO-meldinger.
