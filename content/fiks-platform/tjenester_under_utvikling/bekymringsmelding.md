@@ -93,9 +93,6 @@ hvor:
 - integrasjonPassord: Integrasjonspassord
 - token: Gyldig aksesstoken fra maskinporten
 
-
-#### Sekvensdiagram
-
 ### Fagsystem som konsument
 Ved bruk av Fiks IO som leveringskanal må fagsystemet støtte meldingsprotokollen ```no.ks.fiks.bekymringsmelding.v1```, som er definert til bruk av bekymringsmeldinger. Meldingsprotokollen vil inneholde kontrakter i form av JSON-skjema som gjelder både for mottak og svar på Fiks IO-meldinger.
 
