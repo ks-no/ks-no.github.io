@@ -20,6 +20,93 @@
     "description" : "API for å håndtere funksjonalitet for sending til Fiks IO/Print"
   } ],
   "paths" : {
+    "/send/api/v1/konfigurasjon/{fiksIOKontoId}" : {
+      "get" : {
+        "tags" : [ "fiks-send" ],
+        "description" : "Henter konfigurasjon for sending til Fiks IO og Print",
+        "operationId" : "getKonfigurasjon",
+        "parameters" : [ {
+          "name" : "fiksIOKontoId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "404" : {
+            "description" : "Ingen konfigurasjon funnet for gitt fiksOrgId og fortrolighetsnivå"
+          },
+          "200" : {
+            "description" : "Konfigurasjon funnet",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/SendKonfigurasjon"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/send/api/v1/status" : {
+      "post" : {
+        "tags" : [ "fiks-send" ],
+        "description" : "Oppdaterer status på en ordre",
+        "operationId" : "oppdaterStatus",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/StatusModel"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "204" : {
+            "description" : "Status oppdatert"
+          },
+          "400" : {
+            "description" : "Feil meldingstype for ordre tilhørende angitt meldingId."
+          }
+        }
+      }
+    },
+    "/send/api/v1/historikk/{ordreId}" : {
+      "get" : {
+        "tags" : [ "fiks-send" ],
+        "description" : "Henter historikk for en ordre",
+        "operationId" : "getHistorikkForOrdre",
+        "parameters" : [ {
+          "name" : "ordreId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Historikk for ordre funnet",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/OrdreHistorikkModel"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/send/api/v1/mottak" : {
       "post" : {
         "tags" : [ "fiks-send" ],
@@ -129,185 +216,10 @@
           }
         }
       }
-    },
-    "/send/api/v1/konfigurasjon/{fiksIOKontoId}" : {
-      "get" : {
-        "tags" : [ "fiks-send" ],
-        "description" : "Henter konfigurasjon for sending til Fiks IO og Print",
-        "operationId" : "getKonfigurasjon",
-        "parameters" : [ {
-          "name" : "fiksIOKontoId",
-          "in" : "path",
-          "required" : true,
-          "schema" : {
-            "type" : "string",
-            "format" : "uuid"
-          }
-        } ],
-        "responses" : {
-          "404" : {
-            "description" : "Ingen konfigurasjon funnet for gitt fiksOrgId og fortrolighetsnivå"
-          },
-          "200" : {
-            "description" : "Konfigurasjon funnet",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/SendKonfigurasjon"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/send/api/v1/status" : {
-      "post" : {
-        "tags" : [ "fiks-send" ],
-        "description" : "Oppdaterer status på en ordre",
-        "operationId" : "oppdaterStatus",
-        "requestBody" : {
-          "content" : {
-            "application/json" : {
-              "schema" : {
-                "$ref" : "#/components/schemas/StatusModel"
-              }
-            }
-          },
-          "required" : true
-        },
-        "responses" : {
-          "204" : {
-            "description" : "Status oppdatert"
-          },
-          "400" : {
-            "description" : "Feil meldingstype for ordre tilhørende angitt meldingId."
-          }
-        }
-      }
-    },
-    "/send/api/v1/historikk/{ordreId}" : {
-      "get" : {
-        "tags" : [ "fiks-send" ],
-        "description" : "Henter historikk for en ordre",
-        "operationId" : "getHistorikkForOrdre",
-        "parameters" : [ {
-          "name" : "ordreId",
-          "in" : "path",
-          "required" : true,
-          "schema" : {
-            "type" : "string",
-            "format" : "uuid"
-          }
-        } ],
-        "responses" : {
-          "200" : {
-            "description" : "Historikk for ordre funnet",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "type" : "array",
-                  "items" : {
-                    "$ref" : "#/components/schemas/OrdreHistorikkModel"
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
     }
   },
   "components" : {
     "schemas" : {
-      "AdresseModel" : {
-        "required" : [ "adresselinje1", "adressenavn", "poststed" ],
-        "type" : "object",
-        "properties" : {
-          "adressenavn" : {
-            "type" : "string"
-          },
-          "adresselinje1" : {
-            "type" : "string"
-          },
-          "adresselinje2" : {
-            "type" : "string"
-          },
-          "adresselinje3" : {
-            "type" : "string"
-          },
-          "postnummer" : {
-            "pattern" : "^[0-9]{4}$",
-            "type" : "string"
-          },
-          "poststed" : {
-            "type" : "string"
-          }
-        }
-      },
-      "FiksIOOrdreModel" : {
-        "required" : [ "bydelRessursId", "dokumentlagerId", "mottakerKontoId", "ttl", "type" ],
-        "type" : "object",
-        "properties" : {
-          "mottakerKontoId" : {
-            "type" : "string",
-            "format" : "uuid"
-          },
-          "type" : {
-            "type" : "string",
-            "enum" : [ "FAGSYSTEM_PRIVAT", "FAGSYSTEM_OFFENTLIG" ]
-          },
-          "dokumentlagerId" : {
-            "type" : "string",
-            "format" : "uuid"
-          },
-          "ttl" : {
-            "type" : "integer",
-            "format" : "int64"
-          },
-          "bydelRessursId" : {
-            "type" : "string",
-            "format" : "uuid"
-          }
-        }
-      },
-      "OrdreModel" : {
-        "required" : [ "print", "tilFiksOrgId" ],
-        "type" : "object",
-        "properties" : {
-          "print" : {
-            "$ref" : "#/components/schemas/PrintOrdreModel"
-          },
-          "fiksIO" : {
-            "$ref" : "#/components/schemas/FiksIOOrdreModel"
-          },
-          "fraFiksOrgId" : {
-            "type" : "string",
-            "format" : "uuid"
-          },
-          "tilFiksOrgId" : {
-            "type" : "string",
-            "format" : "uuid"
-          }
-        }
-      },
-      "PrintOrdreModel" : {
-        "required" : [ "adresse", "dokumentlagerId", "leverandor" ],
-        "type" : "object",
-        "properties" : {
-          "dokumentlagerId" : {
-            "type" : "string",
-            "format" : "uuid"
-          },
-          "adresse" : {
-            "$ref" : "#/components/schemas/AdresseModel"
-          },
-          "leverandor" : {
-            "type" : "string",
-            "enum" : [ "GRAFISK_DIGITAL" ]
-          }
-        }
-      },
       "OffentligNokkel" : {
         "required" : [ "issuerDN", "nokkel", "serial", "subjectDN", "validFrom", "validTo" ],
         "type" : "object",
@@ -393,6 +305,94 @@
           },
           "feilmelding" : {
             "type" : "string"
+          }
+        }
+      },
+      "AdresseModel" : {
+        "required" : [ "adresselinje1", "adressenavn", "poststed" ],
+        "type" : "object",
+        "properties" : {
+          "adressenavn" : {
+            "type" : "string"
+          },
+          "adresselinje1" : {
+            "type" : "string"
+          },
+          "adresselinje2" : {
+            "type" : "string"
+          },
+          "adresselinje3" : {
+            "type" : "string"
+          },
+          "postnummer" : {
+            "pattern" : "^[0-9]{4}$",
+            "type" : "string"
+          },
+          "poststed" : {
+            "type" : "string"
+          }
+        }
+      },
+      "FiksIOOrdreModel" : {
+        "required" : [ "bydelRessursId", "dokumentlagerId", "mottakerKontoId", "ttl", "type" ],
+        "type" : "object",
+        "properties" : {
+          "mottakerKontoId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "type" : {
+            "type" : "string",
+            "enum" : [ "FAGSYSTEM_PRIVAT", "FAGSYSTEM_OFFENTLIG" ]
+          },
+          "dokumentlagerId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "ttl" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "bydelRessursId" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        }
+      },
+      "OrdreModel" : {
+        "required" : [ "print", "tilFiksOrgId" ],
+        "type" : "object",
+        "properties" : {
+          "print" : {
+            "$ref" : "#/components/schemas/PrintOrdreModel"
+          },
+          "fiksIO" : {
+            "$ref" : "#/components/schemas/FiksIOOrdreModel"
+          },
+          "fraFiksOrgId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "tilFiksOrgId" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        }
+      },
+      "PrintOrdreModel" : {
+        "required" : [ "adresse", "dokumentlagerId", "leverandor" ],
+        "type" : "object",
+        "properties" : {
+          "dokumentlagerId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "adresse" : {
+            "$ref" : "#/components/schemas/AdresseModel"
+          },
+          "leverandor" : {
+            "type" : "string",
+            "enum" : [ "GRAFISK_DIGITAL" ]
           }
         }
       }
