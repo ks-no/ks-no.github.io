@@ -1,0 +1,182 @@
+{
+  "openapi" : "3.0.1",
+  "info" : {
+    "title" : "KS FIKS: Print service",
+    "description" : "Print service",
+    "contact" : {
+      "name" : "Fiks brukerstøtte",
+      "url" : "https://www.ks.no/fagomrader/digitalisering/utviklingsprosjekter",
+      "email" : "fiks@ks.no"
+    },
+    "version" : "v1"
+  },
+  "servers" : [ {
+    "url" : "https://api.fiks.ks.no",
+    "description" : "KS Fiks API host",
+    "variables" : { }
+  }, {
+    "url" : "https://api.test.fiks.ks.no",
+    "description" : "KS Fiks TEST API host",
+    "variables" : { }
+  } ],
+  "tags" : [ {
+    "name" : "print",
+    "description" : "API for å håndtere funksjonalitet rundt sending av post til printleverandør"
+  } ],
+  "paths" : {
+    "/print/api/v1/konfidensialitetsklasse/{konfidensialitetsklasse}" : {
+      "get" : {
+        "tags" : [ "print" ],
+        "description" : "Henter metadata om printleverandør",
+        "operationId" : "getPrintleverandoerMetadata",
+        "parameters" : [ {
+          "name" : "konfidensialitetsklasse",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "enum" : [ "NORMAL", "UNNTATT_OFFENTLIGHETEN" ]
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Informasjon om leverandør",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/PrintleverandoerMetadata"
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Fant ingen som kan levere for gitt konfidensialitetsklasse",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/print/api/v1/ordre/{leverandor}/{ref}" : {
+      "get" : {
+        "tags" : [ "print" ],
+        "description" : "Henter status for printordre",
+        "operationId" : "getStatus",
+        "parameters" : [ {
+          "name" : "leverandor",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "enum" : [ "GRAFISK_DIGITAL" ]
+          }
+        }, {
+          "name" : "ref",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "default" : {
+            "description" : "default response",
+            "content" : {
+              "application/json" : { }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components" : {
+    "schemas" : {
+      "OffentligNokkel" : {
+        "required" : [ "issuerDN", "nokkel", "serial", "subjectDN", "validFrom", "validTo" ],
+        "type" : "object",
+        "properties" : {
+          "nokkel" : {
+            "type" : "string"
+          },
+          "validFrom" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "validTo" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "serial" : {
+            "type" : "string"
+          },
+          "subjectDN" : {
+            "type" : "string"
+          },
+          "issuerDN" : {
+            "type" : "string"
+          }
+        }
+      },
+      "PrintleverandoerMetadata" : {
+        "required" : [ "konfidensialitetsklasse", "leverandor", "offentligNokkel", "signature" ],
+        "type" : "object",
+        "properties" : {
+          "leverandor" : {
+            "type" : "string",
+            "enum" : [ "GRAFISK_DIGITAL" ]
+          },
+          "offentligNokkel" : {
+            "$ref" : "#/components/schemas/OffentligNokkel"
+          },
+          "konfidensialitetsklasse" : {
+            "type" : "string",
+            "enum" : [ "NORMAL", "UNNTATT_OFFENTLIGHETEN" ]
+          },
+          "signature" : {
+            "type" : "string"
+          }
+        }
+      },
+      "ErrorMessage" : {
+        "type" : "object",
+        "properties" : {
+          "timestamp" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "status" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "error" : {
+            "type" : "string"
+          },
+          "errorId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "path" : {
+            "type" : "string"
+          },
+          "originalPath" : {
+            "type" : "string"
+          },
+          "message" : {
+            "type" : "string"
+          },
+          "errorCode" : {
+            "type" : "string"
+          },
+          "errorJson" : {
+            "type" : "string"
+          }
+        }
+      }
+    }
+  }
+}
