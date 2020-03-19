@@ -33,7 +33,7 @@ Etter organisasjonen er opprettet må den autoriseres for å kunne handle på ve
 ## Grensesnitt
 Integrasjoner mot Fiks-plattformen vil hovedsakelig benytte grensesnitt basert på REST/json.
 
-Vi publiserer [OpenAPI-Specification](https://github.com/OAI/OpenAPI-Specification) for alle api'er. I dag benyttes versjon 2.0, med plan om migrering til 3.0 etter hvert som verktøy får støtte for denne. Disse spesifikasjonene er nyttige både som dokumentasjon for rest-grensesnittet og som grunnlag for automatisk generering av klienter og modell-objekter. Dette kan for eksempel gjøres ved bruk av [Swagger Codegen](https://swagger.io/swagger-codegen/). 
+Vi publiserer [OpenAPI-Specification](https://github.com/OAI/OpenAPI-Specification) for alle api'er. I dag benyttes versjon 3.0, noen tjenester kan være fortsatt være på 2.0. Disse spesifikasjonene er nyttige både som dokumentasjon for rest-grensesnittet og som grunnlag for automatisk generering av klienter og modell-objekter. Dette kan for eksempel gjøres ved bruk av [Swagger Codegen](https://swagger.io/swagger-codegen/). 
 
 ## Konfigurasjon
 En Fiks-organisasjon kan opprette egen integrasjoner gjennom Fiks konfigurasjon.
