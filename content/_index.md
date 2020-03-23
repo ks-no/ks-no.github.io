@@ -9,6 +9,8 @@ På disse sidene finner du dokumentasjon av Fiks-plattformen og SvarUt-tjenesten
 
 Dokumentasjonen du finner her er rettet mot deg som skal administrere plattformen på vegne av en kommune eller annen organisasjon, eller utvikle integrasjoner mot api-ene Fiks tilbyr.
 
+Det er utarbeidet et dokument som går igjennom fiks-platformen. Dette kan [lastes ned](/fiks-plattformen.pdf)
+
 ### Brukerdokumentasjon 
 
 Brukerdokumentasjon finner en på https://svarut.wordpress.com
