@@ -1,6 +1,6 @@
 ---
 title: KS Fiks dokumentasjon
-date: 2019-02-27
+date: 2020-03-23
 ---
 
 # KS Fiks dokumentasjon
