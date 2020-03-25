@@ -6,11 +6,11 @@ date: 2020-03-19
 FIKS IO Matrikkelføring er en tjeneste for å overføre grunnlag til matrikkelføring fra eByggesak til Matrikkelklienter. 
 Den er tilsvarende løsningen som er etablert på FIKS SvarUt/SvarInn http://geointegrasjon.no/nytt-grensesnitt-ebyggesak-og-matrikkel/
 
-##Løsningskonsept
+## Løsningskonsept
 
 TODO figur
 
-##Flyt
+## Flyt
 
 TODO figur
 
@@ -28,9 +28,9 @@ FIKS IO.
 
 TODO feilsituasjoner, videresending og oppslag på kontoer som støtter meldinger om matrikkelføring
 
-##Datamodell for meldinger
+## Datamodell for meldinger
 
-##FIKS IO meldingsprotokoll for matrikkelføring
+## FIKS IO meldingsprotokoll for matrikkelføring
 Meldingsprotokoll som matrikkelklient må støtte ```no.ks.fiks.matrikkelfoering.v1```
 Fra eByggesak/fagsystem - grunnlag til matrikkelføring
 ```no.ks.fiks.matrikkelfoering.grunnlag.v1```
@@ -38,5 +38,5 @@ Fra eByggesak/fagsystem - grunnlag til matrikkelføring
 Fra matrikkelklienter - kvittering på mottatt og ført
 ```no.ks.fiks.matrikkelfoering.kvittering.v1```
 
-##Nivå på grunnlaget til matrikkelføring
+## Nivå på grunnlaget til matrikkelføring
 Trappetrinnsmodellen
