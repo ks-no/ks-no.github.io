@@ -14,7 +14,7 @@ På sikt vil de bli vurdert å utvikle et administrativt grensesnitt mot Fiks Mo
  
 ### Integrasjon
  
-Api kall gjøres i henhold til [swagger spesifikasjonen](https://vegvesen.github.io/ak-api/api/api_kjoretoyoppslag_44) til Statens Vegvesen, med følgende endringer:
+Api kall gjøres i henhold til [swagger spesifikasjonen](https://vegvesen.github.io/ak-api/api/#kjoretoyoppslag) til Statens Vegvesen, med følgende endringer:
   
   * Autorisering skjer på fiks platformen med leverandørens virksomhetssertifikat som beskrevet [her](https://ks-no.github.io/fiks-platform/integrasjoner/#integrasjon), ikke med Basic auth.
   * Fiks-org som spørringen gjøres på vegne av blir en del av url'en for alle forespørsler.
