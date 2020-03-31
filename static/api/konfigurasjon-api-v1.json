@@ -141,6 +141,35 @@
         }
       }
     },
+    "/konfigurasjon/api/v1/integrasjoner" : {
+      "post" : {
+        "tags" : [ "IntegrasjonKonfigurasjon" ],
+        "summary" : "Oppretter en integrasjon",
+        "operationId" : "createIntegrasjon",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/IntegrasjonCreateRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Den opprettede integrasjonen",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Integrasjon"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/konfigurasjon/api/v1/integrasjoner/{integrasjonId}/lagPassord" : {
       "post" : {
         "tags" : [ "IntegrasjonKonfigurasjon" ],
@@ -231,16 +260,16 @@
         }
       }
     },
-    "/konfigurasjon/api/v1/integrasjoner" : {
+    "/konfigurasjon/api/v1/organisasjoner/flere" : {
       "post" : {
-        "tags" : [ "IntegrasjonKonfigurasjon" ],
-        "summary" : "Oppretter en integrasjon",
-        "operationId" : "createIntegrasjon",
+        "tags" : [ "OrganisasjonKonfigurasjon" ],
+        "summary" : "Henter alle organisasjonene i listene med id'er og kommunenummer",
+        "operationId" : "getFlereOrganisasjoner",
         "requestBody" : {
           "content" : {
             "application/json" : {
               "schema" : {
-                "$ref" : "#/components/schemas/IntegrasjonCreateRequest"
+                "$ref" : "#/components/schemas/OrganisasjonGetRequest"
               }
             }
           },
@@ -248,11 +277,14 @@
         },
         "responses" : {
           "200" : {
-            "description" : "Den opprettede integrasjonen",
+            "description" : "Organisasjonene med forespurte IDer og kommunenummer",
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/Integrasjon"
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/Organisasjon"
+                  }
                 }
               }
             }
@@ -263,7 +295,7 @@
     "/konfigurasjon/api/v1/organisasjoner" : {
       "get" : {
         "tags" : [ "OrganisasjonKonfigurasjon" ],
-        "summary" : "Henter alle organisasjonene i listene med id'er og kommunenummer",
+        "summary" : "Henter alle organisasjonene i listene med id-er og kommunenummer. Bruk endepunkt \"getFlereOrganisasjoner\" for query på mer enn 100 id-er",
         "operationId" : "getOrganisasjoner",
         "parameters" : [ {
           "name" : "orgId",
@@ -856,82 +888,21 @@
         }
       }
     },
-    "/konfigurasjon/api/v1/root/personer/{fnr}" : {
-      "patch" : {
-        "tags" : [ "RootKonfigurasjon" ],
-        "description" : "Oppdaterer personen med gitt fødselsnummer",
-        "operationId" : "updatePersonRoot",
-        "parameters" : [ {
-          "name" : "fnr",
-          "in" : "path",
-          "required" : true,
-          "schema" : {
-            "type" : "string"
-          }
-        } ],
-        "requestBody" : {
-          "content" : {
-            "application/json" : {
-              "schema" : {
-                "$ref" : "#/components/schemas/PersonUpdateRequest"
-              }
-            }
-          },
-          "required" : true
-        },
-        "responses" : {
-          "200" : {
-            "description" : "Den oppdaterte personen",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/Person"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/konfigurasjon/api/v1/root/privilegier" : {
+    "/konfigurasjon/api/v1/root/tjenester" : {
       "get" : {
         "tags" : [ "RootKonfigurasjon" ],
-        "description" : "Henter alle privilegier",
-        "operationId" : "getAllPrivilegier",
+        "description" : "Henter alle eksisterende tjenester",
+        "operationId" : "getAllTjenester",
         "responses" : {
           "200" : {
-            "description" : "Alle eksisterende privilegier",
+            "description" : "Alle eksisterende tjenester",
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/PrivilegiumMap"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/konfigurasjon/api/v1/root/tjenester/{tjenesteKode}" : {
-      "get" : {
-        "tags" : [ "RootKonfigurasjon" ],
-        "description" : "Henter tjenesten med gitt kode",
-        "operationId" : "getTjenesteByKode",
-        "parameters" : [ {
-          "name" : "tjenesteKode",
-          "in" : "path",
-          "required" : true,
-          "schema" : {
-            "type" : "string"
-          }
-        } ],
-        "responses" : {
-          "200" : {
-            "description" : "Tjenesten med gitt kode",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/Tjeneste"
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/Tjeneste"
+                  }
                 }
               }
             }
@@ -1086,21 +1057,82 @@
         }
       }
     },
-    "/konfigurasjon/api/v1/root/tjenester" : {
-      "get" : {
+    "/konfigurasjon/api/v1/root/personer/{fnr}" : {
+      "patch" : {
         "tags" : [ "RootKonfigurasjon" ],
-        "description" : "Henter alle eksisterende tjenester",
-        "operationId" : "getAllTjenester",
+        "description" : "Oppdaterer personen med gitt fødselsnummer",
+        "operationId" : "updatePersonRoot",
+        "parameters" : [ {
+          "name" : "fnr",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/PersonUpdateRequest"
+              }
+            }
+          },
+          "required" : true
+        },
         "responses" : {
           "200" : {
-            "description" : "Alle eksisterende tjenester",
+            "description" : "Den oppdaterte personen",
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "type" : "array",
-                  "items" : {
-                    "$ref" : "#/components/schemas/Tjeneste"
-                  }
+                  "$ref" : "#/components/schemas/Person"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/konfigurasjon/api/v1/root/privilegier" : {
+      "get" : {
+        "tags" : [ "RootKonfigurasjon" ],
+        "description" : "Henter alle privilegier",
+        "operationId" : "getAllPrivilegier",
+        "responses" : {
+          "200" : {
+            "description" : "Alle eksisterende privilegier",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/PrivilegiumMap"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/konfigurasjon/api/v1/root/tjenester/{tjenesteKode}" : {
+      "get" : {
+        "tags" : [ "RootKonfigurasjon" ],
+        "description" : "Henter tjenesten med gitt kode",
+        "operationId" : "getTjenesteByKode",
+        "parameters" : [ {
+          "name" : "tjenesteKode",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Tjenesten med gitt kode",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Tjeneste"
                 }
               }
             }
@@ -1179,6 +1211,32 @@
         },
         "description" : "En integrasjon."
       },
+      "IntegrasjonCreateRequest" : {
+        "required" : [ "autorisertOrgnr", "fiksOrganisasjonUuid", "navn" ],
+        "type" : "object",
+        "properties" : {
+          "autorisertOrgnr" : {
+            "pattern" : "^[0-9]{9}$",
+            "type" : "string",
+            "description" : "Organisasjonsnummeret som ligger i virksomhetsserfikatet som skal brukes til å autorisere applikasjonen som skal bruke integrasjonen."
+          },
+          "navn" : {
+            "pattern" : "^[A-Za-zæøåÆØÅ0-9_.,/\\-_ ]+$",
+            "type" : "string",
+            "description" : "Et kort navn for integrasjonen."
+          },
+          "beskrivelse" : {
+            "type" : "string",
+            "description" : "En beskrivelse av integrasjonen."
+          },
+          "fiksOrganisasjonUuid" : {
+            "type" : "string",
+            "description" : "Id for FIKS-organisasjonen som eier integrasjonen, eller null for globale integrasjoner.",
+            "format" : "uuid"
+          }
+        },
+        "description" : "En forespørsel om å opprette en ny integrasjon."
+      },
       "IntegrasjonUpdateRequest" : {
         "type" : "object",
         "properties" : {
@@ -1209,32 +1267,6 @@
           }
         },
         "description" : "Inneholder et passord"
-      },
-      "IntegrasjonCreateRequest" : {
-        "required" : [ "autorisertOrgnr", "fiksOrganisasjonUuid", "navn" ],
-        "type" : "object",
-        "properties" : {
-          "autorisertOrgnr" : {
-            "pattern" : "^[0-9]{9}$",
-            "type" : "string",
-            "description" : "Organisasjonsnummeret som ligger i virksomhetsserfikatet som skal brukes til å autorisere applikasjonen som skal bruke integrasjonen."
-          },
-          "navn" : {
-            "pattern" : "^[A-Za-zæøåÆØÅ0-9_.,/\\-_ ]+$",
-            "type" : "string",
-            "description" : "Et kort navn for integrasjonen."
-          },
-          "beskrivelse" : {
-            "type" : "string",
-            "description" : "En beskrivelse av integrasjonen."
-          },
-          "fiksOrganisasjonUuid" : {
-            "type" : "string",
-            "description" : "Id for FIKS-organisasjonen som eier integrasjonen, eller null for globale integrasjoner.",
-            "format" : "uuid"
-          }
-        },
-        "description" : "En forespørsel om å opprette en ny integrasjon."
       },
       "Organisasjon" : {
         "required" : [ "intern", "navn", "type", "uuid" ],
@@ -1292,6 +1324,29 @@
           }
         },
         "description" : "En organisasjon."
+      },
+      "OrganisasjonGetRequest" : {
+        "type" : "object",
+        "properties" : {
+          "ids" : {
+            "type" : "array",
+            "description" : "Liste av id-er",
+            "items" : {
+              "type" : "string",
+              "description" : "Liste av id-er",
+              "format" : "uuid"
+            }
+          },
+          "kommunenr" : {
+            "type" : "array",
+            "description" : "Liste av kommunenr",
+            "items" : {
+              "type" : "string",
+              "description" : "Liste av kommunenr"
+            }
+          }
+        },
+        "description" : "En forespørsel om å hente organisasjoner"
       },
       "OrganisasjonInfo" : {
         "required" : [ "intern", "type", "uuid" ],
@@ -1730,23 +1785,6 @@
         },
         "description" : "En liste over gyldige privilegier for en gitt ressurstype"
       },
-      "PrivilegiumMap" : {
-        "type" : "object",
-        "properties" : {
-          "privilegier" : {
-            "type" : "object",
-            "additionalProperties" : {
-              "type" : "array",
-              "description" : "Et map med alle privilegier for alle tjenestetyper",
-              "items" : {
-                "$ref" : "#/components/schemas/Privilegium"
-              }
-            },
-            "description" : "Et map med alle privilegier for alle tjenestetyper"
-          }
-        },
-        "description" : "Et map med alle privilegier for alle tjenestetyper"
-      },
       "OrganisasjonCreateRequest" : {
         "required" : [ "intern", "navn", "type" ],
         "type" : "object",
@@ -1830,6 +1868,23 @@
           }
         },
         "description" : "En forespørsel om å oppdatere en eksisterende integrasjon."
+      },
+      "PrivilegiumMap" : {
+        "type" : "object",
+        "properties" : {
+          "privilegier" : {
+            "type" : "object",
+            "additionalProperties" : {
+              "type" : "array",
+              "description" : "Et map med alle privilegier for alle tjenestetyper",
+              "items" : {
+                "$ref" : "#/components/schemas/Privilegium"
+              }
+            },
+            "description" : "Et map med alle privilegier for alle tjenestetyper"
+          }
+        },
+        "description" : "Et map med alle privilegier for alle tjenestetyper"
       }
     }
   }
