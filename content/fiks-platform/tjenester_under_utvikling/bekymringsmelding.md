@@ -43,7 +43,7 @@ Før løsningen kan tas i bruk må kommunen inngå en [avtale](https://svarut.wo
 Fagsystemet kan produsere og sende inn bekymringsmeldinger til et API eller man kan benytte seg av å sende inn via skjema. Benyttes skjema så vil skjemaet produsere PDF og JSON-fil, men hvis fagsystemet skal sende inn til API, må fagsystemet sende med dette.
 
 ### Fagsystem som produsent
-Swagger-spesifikasjon for å sende inn bekymringsmeldinger via API finnes [her](https://editor.swagger.io/?url=https://ks-no.github.io/api/bekymringsmelding-mottak-fagsystem-api-v1.json). Merk at filene som skal sendes med, sendes som multipart request. Ikke alle Swagger-genererte klienter genererer dette riktig i henhold til OpenAPI 3.0-spesifikasjonen. Du kan se et eksempel på multipartforsendelse i Java [her](bekymringsmelding.md#Eksempel-på-innsending-(Java-med-Jersey-client)).
+Swagger-spesifikasjon for å sende inn bekymringsmeldinger via API finnes her: [Bekymringsmelding mottak fagsystem](https://editor.swagger.io/?url=https://ks-no.github.io/api/bekymringsmelding-mottak-fagsystem-api-v1.json) og [Bekymringsmelding kommune service](https://editor.swagger.io/?url=https://ks-no.github.io/api/bekymringsmelding-kommune-api-v1.json). Merk at filene som skal sendes med, sendes som multipart request. Ikke alle Swagger-genererte klienter genererer dette riktig i henhold til OpenAPI 3.0-spesifikasjonen. Du kan se et eksempel på multipartforsendelse i Java [her](bekymringsmelding.md#Eksempel-på-innsending-(Java-med-Jersey-client)).
 
 #### Filer
 Det må sendes med to filer, en AsiC-E-fil og en PDF-fil.
