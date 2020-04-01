@@ -88,9 +88,13 @@ hvor:
 - bekymringsmeldingAsiceInputStream: InputStream av asice.zip
 - url
   - Privat bekymringsmelding test: ``https://api.fiks.test.ks.no/bekymringsmelding/api/v1/mottak/fagsystem/{fiksOrgId}/{kommunenummer}/{bydelsnummer}/privat``
+
   - Offentlig bekymringsmelding test: ``https://api.fiks.test.ks.no/bekymringsmelding/api/v1/mottak/fagsystem/{fiksOrgId}/{kommunenummer}/{bydelsnummer}/offentlig``
+
   - Privat bekymringsmelding prod: ``https://api.fiks.ks.no/bekymringsmelding/api/v1/mottak/fagsystem/{fiksOrgId}/{kommunenummer}/{bydelsnummer}/privat``
+
   - Offentlig bekymringsmelding prod: ``https://api.fiks.ks.no/bekymringsmelding/api/v1/mottak/fagsystem/{fiksOrgId}/{kommunenummer}/{bydelsnummer}/offentlig``
+
 - integrasjonsId: Integrasjonsid i form av en UUID
 - integrasjonPassord: Integrasjonspassord
 - token: Gyldig aksesstoken fra maskinporten
