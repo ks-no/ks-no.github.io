@@ -56,7 +56,7 @@ AsiC-E-filen må inneholde to filer, «bekymringsmelding.json» og «bekymringsm
 
 
 #### Sekvensdiagram
-![alt text](https://ks-no.github.io/images/FagsystemSomProdusentv2.png "Sekvensdiagram")
+![alt text](https://ks-no.github.io/images/FagsystemSomProdusentv3.png "Sekvensdiagram")
 
 1 - 2. Før fagsystemet skal sende bekymringsmelding må det gjøres et oppslag på kommunenummer for å finne ut hvilken barnevernskontorer (bydeler) som støttes av løsningen. Returnerer liste med bydeler i kommunen. Dersom det returneres en tom liste har ikke kommunen aktivert løsningen. Dersom listen ikke er tom vil det alltid være et element (en bydel) som er satt opp som kan brukes dersom bydel/barnevernskontor er ukjent.
 
