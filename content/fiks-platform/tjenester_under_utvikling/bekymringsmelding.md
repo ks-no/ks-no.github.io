@@ -84,9 +84,13 @@ AsiC-E-filen må inneholde to filer, «bekymringsmelding.json» og «bekymringsm
                 .post(Entity.entity(multipart, multipart.getMediaType()));
 ```
 hvor:
+
 - bekymringsmeldingPdfInputStream: InputStream av bekymringsmelding.pdf
+
 - bekymringsmeldingAsiceInputStream: InputStream av asice.zip
+
 - url
+
   - Privat bekymringsmelding test: ``https://api.fiks.test.ks.no/bekymringsmelding/api/v1/mottak/fagsystem/{fiksOrgId}/{kommunenummer}/{bydelsnummer}/privat``
 
   - Offentlig bekymringsmelding test: ``https://api.fiks.test.ks.no/bekymringsmelding/api/v1/mottak/fagsystem/{fiksOrgId}/{kommunenummer}/{bydelsnummer}/offentlig``
