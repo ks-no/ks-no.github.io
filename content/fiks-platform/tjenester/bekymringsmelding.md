@@ -61,6 +61,8 @@ Fullstendig skjemadefinisjon med eksempler finner man [her](https://github.com/k
 ### Fagsystem som produsent
 Swagger-spesifikasjon for å sende inn bekymringsmeldinger via API finnes her: [Bekymringsmelding mottak fagsystem](https://editor.swagger.io/?url=https://ks-no.github.io/api/bekymringsmelding-mottak-fagsystem-api-v1.json) og [Bekymringsmelding kommune service](https://editor.swagger.io/?url=https://ks-no.github.io/api/bekymringsmelding-kommune-api-v1.json). Merk at filene som skal sendes med, sendes som multipart request. Ikke alle Swagger-genererte klienter genererer dette riktig i henhold til OpenAPI 3.0-spesifikasjonen. Du kan se et eksempel på multipartforsendelse i Java [her](#eksempel-på-innsending-java-med-jersey-client).
 
+Feltet "Leveringskanal", jmf JSON-skjemaene, skal settes til navn på organisasjonen(Politiet, navnet på skolen, etc) som sender bekymringsmeldingen.
+
 #### Filer
 Det må sendes med to filer, en AsiC-E-fil og en PDF-fil.
 
@@ -68,7 +70,7 @@ Det må sendes med to filer, en AsiC-E-fil og en PDF-fil.
 AsiC-E-filen må inneholde to filer, «bekymringsmelding.json» og «bekymringsmelding.pdf». «bekymringsmelding.json» er en JSON-fil definert i JSON-skjema for [privat bekymringsmelding](https://raw.githubusercontent.com/ks-no/fiks-io-bekymringsmelding-protokoll/master/schema/domain/privat.bekymringsmelding.v1.json) eller [offentlig bekymringsmelding](https://raw.githubusercontent.com/ks-no/fiks-io-bekymringsmelding-protokoll/master/schema/domain/offentlig.bekymringsmelding.v1.json) - avhengig om meldingstypen er en privat eller offentlig bekymringsmelding. Skjemadefinisjon med eksempler finner man [her](https://github.com/ks-no/fiks-io-bekymringsmelding-protokoll). AsiC-E-filen må være kryptert med mottakersystemets offentlige nøkkel.
 
 ##### PDF-fil
-«bekymringsmelding.pdf» vil være selve bekymringsmeldingen på PDF-format og må være kryptert med printleverandørens offentlige nøkkel.
+«bekymringsmelding.pdf» vil være selve bekymringsmeldingen på PDF-format og må være kryptert med printleverandørens offentlige nøkkel. Fagsystemet har ansvar for å lage PDF. Eksempler på PDF for [privat melder](http://ks-no.github.io/images/eksempel-privat-melder.pdf) og [offentlig melder](http://ks-no.github.io/images/eksempel-offentlig-melder.pdf). 
 
 
 #### Sekvensdiagram
