@@ -1,9 +1,9 @@
 ---
-title: Sikkerhet og personvern
-date: 2019-06-27
+title: Sikkerhet og personvern i Fiks-plattformen
+date: 2020-04-17
 ---
 
-Denne siden gir en generell innføring i de grunnleggende prinsippene for sikkerhet og personvern på Fiks-plattformen. For full beskrivelse av styringsssystem og ROS-analyser for de spesifikke tjenestene, se [sikkerhetsdokumentasjon på forvaltning.fiks.ks.no](https://forvaltning.fiks.ks.no/sikkerhet-dokumentasjon/). Tilgang her er begrenset til personer som er administrator for en eller flere Fiks-organisasjoner. 
+Denne siden gir en generell innføring i hvordan personvern og informasjonssikkerhet (sikkerhet) er ivaretatt gjennom Fiks-plattformen. For full beskrivelse av styringsssystem og ROS-analyser for de spesifikke tjenestene, se [sikkerhetsdokumentasjon på forvaltning.fiks.ks.no](https://forvaltning.fiks.ks.no/sikkerhet-dokumentasjon/). Tilgangen der er begrenset til personer som er administrator for en organisasjon i Fiks-plattformen. 
 
 Under beskrives generelle retningslinjer for hvordan vi har sikret applikasjonene, skulle noe avvike fra dette vil det 
 være spesifisert i hver tjeneste.
