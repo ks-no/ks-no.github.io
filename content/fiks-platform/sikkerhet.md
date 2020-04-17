@@ -3,30 +3,34 @@ title: Sikkerhet og personvern i Fiks-plattformen
 date: 2020-04-17
 ---
 
-Denne siden gir en generell innføring i hvordan personvern og informasjonssikkerhet (sikkerhet) er ivaretatt gjennom Fiks-plattformen. For full beskrivelse av styringsssystem og ROS-analyser for de spesifikke tjenestene, se [sikkerhetsdokumentasjon på forvaltning.fiks.ks.no](https://forvaltning.fiks.ks.no/sikkerhet-dokumentasjon/). Tilgangen der er begrenset til personer som er administrator for en organisasjon i Fiks-plattformen. 
+Denne siden gir en generell innføring i hvordan personvern og informasjonssikkerhet (sikkerhet) er ivaretatt i Fiks-plattformen. 
+Under beskrives generelle retningslinjer for hvordan vi har sikret tjenestene.
 
-Under beskrives generelle retningslinjer for hvordan vi har sikret applikasjonene, skulle noe avvike fra dette vil det 
-være spesifisert i hver tjeneste.
+### Styringsystem for personvern og informasjonssikkerhet
+Avdeling for digitale fellestjenester har etablert og jobber etter et eget styringssystem for personvern og informasjonssikkerhet. Styringssystemet bygger på anerkjente standarder som ISO27001, ISO27701 og NSMs grunnprinsipper for IKT-sikkerhet. For full beskrivelse av styringsssystem og risiko- og sårbarhetsanalyser for den enkelte tjeneste, se [sikkerhetsdokumentasjon på forvaltning.fiks.ks.no](https://forvaltning.fiks.ks.no/sikkerhet-dokumentasjon/). Tilgangen der er begrenset til personer som er administrator for en organisasjon i Fiks-plattformen.
 
-### Kryptering
-All kommunikasjon mellom Fiks-plattformen og integrasjoner/personer er kryptert med TLS. All data som lagres på disk er endten individuelt kryptert (for eksempel gjennom sikker lagring i Fiks Dokumentlager), eller lagres på krypterte filsystemer.
+### Sikkerhet i utvikling
+
+### Sikkerhet i produksjon
+
+#### Leverandøroppfølging
 
 ### Autentisering og autorisering
-Fiks-plattformen benytter ID-porten og Maskinporten fra Difi for autentisering av brukere. Spesifikke mekanismer for autentisering og autorisering avhenger av kontekst: 
+Fiks-plattformen benytter ID-porten og Maskinporten fra Digitaliseringsdirektoratet (digdir) for autentisering av brukere. Spesifikke mekanismer for autentisering og autorisering avhenger av kontekst: 
 
-#### Personer
+#### Privatpersoner
 Dette kan for eksempel være en innbygger som finner barnehagesøknaden sin i Fiks Innsyn.
 
 Personer autentiseres ved hjelp av Open-Id Connect løsningen til ID-Porten. Dette vil si at de (om de ikke allerede er innlogget) dirigeres til ID-Porten for innlogging ved hjelp av for eksempel MinId eller BankId. ID-Porten og Fiks utveksler så informasjon for å bekrefte brukerens identitet og hvilket innloggingsnivå som er benyttet. Utgåtte innlogginger vil automatisk bli fornyet.
 
 Denne typen innlogging krever som regel ikke videre autorisering - en person har tilgang til informasjon og tjenester som er eksponert på det aktuelle fødselsnummeret.
 
-#### Personer på vegne av organisasjon
+#### Personer som opererer på vegne av en organisasjon
 Når en person autentiserer seg på Fiks-plattformen (som beskrevet over) vil plattformen hente denne personens roller i næringslivet fra Altinn, og gi personen mulighet til å opptre på vegne av organisasjoner hvor han eventuelt måtte ha en rolle. Han vil så få tilgang til informasjon og tjenester som er eksponert på det aktuelle orgnummeret. 
 
 Om det etterhvert kommer flere kilder for slike fullmakter (som for eksempel gir mulighet for å opptre på vegne av andre organisasjoner) vil Fiks-plattformen kunne støtte dette gjennom samme løsning.
 
-#### Forvaltere
+#### Tjenesteforvaltere
 Dette er personer som forvalter en tjeneste på Fiks-plattformen på vegne av en Fiks-organisasjon, for eksempel en kommuneansatt som konfigurerer Fiks Innsyn eller sender forsendelser gjennom SvarUt. Disse autentiseres gjennom ID-Porten OpenID-Connect på samme måte som andre personer, og autorisereres for hver enkelt tjeneste og funksjon basert på privilegier organisasjonen har tildelt personen gjennom Fiks-konfigurasjon.
 
 Når organisasjonen opprettes settes et personnummer som administrator. Dette er en "superbruker", administrator-privilegiet gir alle tilganger på en kommune. En administrator kan lage andre administratorer, både på organisasjonsnivå og for de enkelte tjenestene. Han kan også tildele mer spesifikke privilegier, for eksempel ved å gi en person rett til å sende SvarUt forsendelser på vegne av en avdeling i kommunen. KS anbefaler at denne funksjonaliteten benyttes slik at ansatte ikke har tilganger utover det som er nødvendig for å utføre arbeidsoppgavene, og at tildelte privilegier følges opp, slik at endringer (person som bytter rolle, person som slutter i sin stilling) reflekteres i tildelte privilegier.
@@ -41,6 +45,9 @@ Integrasjoner autentiseres gjennom to mekanismer: for det første trenger man en
 Autorisering av integrasjoner gjøres på bakgrunn av privilegier tildelt i Fiks-konfigurasjon. Hver Fiks-organisasjon må eksplisitt si at en integrasjon skal ha tilgang til sine systemer, for eksempel ved å gi svarut integrasjonen tilgang til en kommunes Fiks Innsyn tjeneste.
 
 En slik autorisasjon kan når som helst trekkes tilbake. 
+
+### Beskyttelse av data (kryptering)
+All kommunikasjon mellom Fiks-plattformen og integrasjoner/personer er kryptert med TLS. All data som lagres på disk er endten individuelt kryptert (for eksempel gjennom sikker lagring i Fiks Dokumentlager), eller lagres på krypterte filsystemer.
 
 ### Audit logging
 Selv om grunnprinsippet er at det bare er innbyggeren selv som har tilgang til sine data vil noen tjenester gjør data om en person tilgjengelig for andre, for eksempel når en kommuneansatt gjør ett oppslag mot et nasjonalt register. I slike tilfeller vil dette bli dokumentert i tjenstebeskrivelsen, autorisert eksplisitt i Fiks-konfigurasjon, og underlagt audit-logging, slik at det blir mulig å se hvem som har hatt tilgang til hvilke data når, og under hvilken lovhjemmel tilgangen ble oppnådd.
