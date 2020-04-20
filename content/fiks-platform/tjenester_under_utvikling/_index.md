@@ -22,8 +22,6 @@ Folkeregistret sitt API for oppslag og hendelseslister blir tilgjengelig for mas
 Utvidet matrikkel- og eiendomsinformasjon gjøres tilgjengelig på MinSide. Vil inkludere mulighet for å sende korrigeringer på evt. feilaktig informasjon.
 
 ## Under utredning:
-#### Forvaltning: [Audit]({{< ref "audit.md" >}})
-Audit-logg for handlinger på Fiks plattformen gjøres tilgjengelig for kommunale tjeneste-administratorer. Det vil være mulig å se hvilke integrasjoner eller personer som har gjort hvilke handlinger, og når det er utført.
 
 #### Forvaltning: Statistikk
 Statistikk og oversikt over hvordan en kommunes tjenester på MinSide og Fiks-plattformen benyttes. Antall besøkende, dataforbruk osv. 
