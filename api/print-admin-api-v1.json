@@ -195,12 +195,12 @@
         }
       }
     },
-    "/printadmin/api/v1/jobber/{avsender}-{ref}" : {
+    "/printadmin/api/v1/jobber/{avsenderKonto}/{ref}" : {
       "get" : {
         "tags" : [ "printadmin" ],
         "operationId" : "hentEnkeltJobb",
         "parameters" : [ {
-          "name" : "ref",
+          "name" : "avsenderKonto",
           "in" : "path",
           "required" : true,
           "schema" : {
@@ -208,7 +208,7 @@
             "format" : "uuid"
           }
         }, {
-          "name" : "avsender",
+          "name" : "ref",
           "in" : "path",
           "required" : true,
           "schema" : {
@@ -253,16 +253,47 @@
   },
   "components" : {
     "schemas" : {
-      "BulkOppdateringOppsummering" : {
+      "EksternRef" : {
         "type" : "object",
         "properties" : {
-          "antallAvbrutt" : {
-            "type" : "integer",
-            "format" : "int32"
+          "ref" : {
+            "type" : "string",
+            "format" : "uuid"
           },
-          "antallSattLevert" : {
+          "avsenderKonto" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        }
+      },
+      "JobbTreff" : {
+        "type" : "object",
+        "properties" : {
+          "eksternRef" : {
+            "$ref" : "#/components/schemas/EksternRef"
+          },
+          "status" : {
+            "type" : "string",
+            "enum" : [ "Akseptert", "LevertLeverandor", "LevertPostgang", "FeiletUnderSendingTilLeverandor" ]
+          },
+          "mottatt" : {
+            "type" : "string",
+            "format" : "date-time"
+          }
+        }
+      },
+      "TreffListe" : {
+        "type" : "object",
+        "properties" : {
+          "fra" : {
             "type" : "integer",
-            "format" : "int32"
+            "format" : "int64"
+          },
+          "treff" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/JobbTreff"
+            }
           }
         }
       },
@@ -301,6 +332,19 @@
           }
         }
       },
+      "BulkOppdateringOppsummering" : {
+        "type" : "object",
+        "properties" : {
+          "antallAvbrutt" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "antallSattLevert" : {
+            "type" : "integer",
+            "format" : "int32"
+          }
+        }
+      },
       "AvbrytJobb" : {
         "type" : "object",
         "properties" : {
@@ -334,19 +378,6 @@
         },
         "description" : "En bulk oppdatering av print jobber"
       },
-      "EksternRef" : {
-        "type" : "object",
-        "properties" : {
-          "ref" : {
-            "type" : "string",
-            "format" : "uuid"
-          },
-          "avsenderKonto" : {
-            "type" : "string",
-            "format" : "uuid"
-          }
-        }
-      },
       "SettLevert" : {
         "type" : "object",
         "properties" : {
@@ -361,37 +392,6 @@
           }
         },
         "description" : "Operasjon for å sette en jobb som manuelt levert"
-      },
-      "JobbTreff" : {
-        "type" : "object",
-        "properties" : {
-          "eksternRef" : {
-            "$ref" : "#/components/schemas/EksternRef"
-          },
-          "status" : {
-            "type" : "string",
-            "enum" : [ "Akseptert", "LevertLeverandor", "LevertPostgang", "FeiletUnderSendingTilLeverandor" ]
-          },
-          "mottatt" : {
-            "type" : "string",
-            "format" : "date-time"
-          }
-        }
-      },
-      "TreffListe" : {
-        "type" : "object",
-        "properties" : {
-          "fra" : {
-            "type" : "integer",
-            "format" : "int64"
-          },
-          "treff" : {
-            "type" : "array",
-            "items" : {
-              "$ref" : "#/components/schemas/JobbTreff"
-            }
-          }
-        }
       }
     }
   }
