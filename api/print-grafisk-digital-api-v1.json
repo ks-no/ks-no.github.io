@@ -24,6 +24,43 @@
     "description" : "API for å sending av post til printleverandør"
   } ],
   "paths" : {
+    "/print/grafiskdigital/api/v1/ordrer/{ordreId}" : {
+      "put" : {
+        "tags" : [ "GrafiskDigital" ],
+        "operationId" : "createGrafiskDigitalPrintOrdre",
+        "parameters" : [ {
+          "name" : "ordreId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/GrafiskDigitalOrdreApiModel"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "201" : {
+            "description" : "Alt ok",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/OpplastetGrafiskDigital"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/print/grafiskdigital/api/v1/fakturakonfigurasjon" : {
       "put" : {
         "tags" : [ "GrafiskDigital" ],
@@ -34,6 +71,30 @@
               "schema" : {
                 "type" : "object",
                 "properties" : {
+                  "authType" : {
+                    "type" : "string"
+                  },
+                  "headerNames" : {
+                    "type" : "object"
+                  },
+                  "httpServletMapping" : {
+                    "type" : "object",
+                    "properties" : {
+                      "servletName" : {
+                        "type" : "string"
+                      },
+                      "mappingMatch" : {
+                        "type" : "string",
+                        "enum" : [ "CONTEXT_ROOT", "DEFAULT", "EXACT", "EXTENSION", "PATH" ]
+                      },
+                      "matchValue" : {
+                        "type" : "string"
+                      },
+                      "pattern" : {
+                        "type" : "string"
+                      }
+                    }
+                  },
                   "pathInfo" : {
                     "type" : "string"
                   },
@@ -89,30 +150,6 @@
                   "trailerFieldsReady" : {
                     "type" : "boolean"
                   },
-                  "authType" : {
-                    "type" : "string"
-                  },
-                  "headerNames" : {
-                    "type" : "object"
-                  },
-                  "httpServletMapping" : {
-                    "type" : "object",
-                    "properties" : {
-                      "servletName" : {
-                        "type" : "string"
-                      },
-                      "matchValue" : {
-                        "type" : "string"
-                      },
-                      "mappingMatch" : {
-                        "type" : "string",
-                        "enum" : [ "CONTEXT_ROOT", "DEFAULT", "EXACT", "EXTENSION", "PATH" ]
-                      },
-                      "pattern" : {
-                        "type" : "string"
-                      }
-                    }
-                  },
                   "parts" : {
                     "type" : "array",
                     "items" : {
@@ -143,95 +180,16 @@
                       }
                     }
                   },
-                  "cookies" : {
-                    "type" : "array",
-                    "items" : {
-                      "type" : "object",
-                      "properties" : {
-                        "name" : {
-                          "type" : "string"
-                        },
-                        "value" : {
-                          "type" : "string"
-                        },
-                        "comment" : {
-                          "type" : "string"
-                        },
-                        "domain" : {
-                          "type" : "string"
-                        },
-                        "maxAge" : {
-                          "type" : "integer",
-                          "format" : "int32"
-                        },
-                        "path" : {
-                          "type" : "string"
-                        },
-                        "secure" : {
-                          "type" : "boolean"
-                        },
-                        "version" : {
-                          "type" : "integer",
-                          "format" : "int32"
-                        },
-                        "httpOnly" : {
-                          "type" : "boolean"
-                        }
-                      }
-                    }
+                  "method" : {
+                    "type" : "string"
                   },
                   "session" : {
                     "type" : "object",
                     "properties" : {
-                      "sessionContext" : {
-                        "type" : "object",
-                        "properties" : {
-                          "ids" : {
-                            "type" : "object"
-                          }
-                        }
-                      },
-                      "lastAccessedTime" : {
-                        "type" : "integer",
-                        "format" : "int64"
-                      },
-                      "valueNames" : {
-                        "type" : "array",
-                        "items" : {
-                          "type" : "string"
-                        }
-                      },
                       "servletContext" : {
                         "type" : "object",
                         "properties" : {
-                          "sessionTimeout" : {
-                            "type" : "integer",
-                            "format" : "int32"
-                          },
                           "contextPath" : {
-                            "type" : "string"
-                          },
-                          "effectiveMajorVersion" : {
-                            "type" : "integer",
-                            "format" : "int32"
-                          },
-                          "effectiveMinorVersion" : {
-                            "type" : "integer",
-                            "format" : "int32"
-                          },
-                          "servlets" : {
-                            "type" : "object"
-                          },
-                          "servletNames" : {
-                            "type" : "object"
-                          },
-                          "serverInfo" : {
-                            "type" : "string"
-                          },
-                          "initParameterNames" : {
-                            "type" : "object"
-                          },
-                          "servletContextName" : {
                             "type" : "string"
                           },
                           "servletRegistrations" : {
@@ -298,12 +256,6 @@
                           "sessionCookieConfig" : {
                             "type" : "object",
                             "properties" : {
-                              "domain" : {
-                                "type" : "string"
-                              },
-                              "secure" : {
-                                "type" : "boolean"
-                              },
                               "httpOnly" : {
                                 "type" : "boolean"
                               },
@@ -311,14 +263,20 @@
                                 "type" : "integer",
                                 "format" : "int32"
                               },
+                              "domain" : {
+                                "type" : "string"
+                              },
                               "comment" : {
+                                "type" : "string"
+                              },
+                              "name" : {
                                 "type" : "string"
                               },
                               "path" : {
                                 "type" : "string"
                               },
-                              "name" : {
-                                "type" : "string"
+                              "secure" : {
+                                "type" : "boolean"
                               }
                             }
                           },
@@ -428,6 +386,33 @@
                           "responseCharacterEncoding" : {
                             "type" : "string"
                           },
+                          "effectiveMajorVersion" : {
+                            "type" : "integer",
+                            "format" : "int32"
+                          },
+                          "effectiveMinorVersion" : {
+                            "type" : "integer",
+                            "format" : "int32"
+                          },
+                          "servlets" : {
+                            "type" : "object"
+                          },
+                          "servletNames" : {
+                            "type" : "object"
+                          },
+                          "serverInfo" : {
+                            "type" : "string"
+                          },
+                          "initParameterNames" : {
+                            "type" : "object"
+                          },
+                          "servletContextName" : {
+                            "type" : "string"
+                          },
+                          "sessionTimeout" : {
+                            "type" : "integer",
+                            "format" : "int32"
+                          },
                           "majorVersion" : {
                             "type" : "integer",
                             "format" : "int32"
@@ -435,9 +420,6 @@
                           "minorVersion" : {
                             "type" : "integer",
                             "format" : "int32"
-                          },
-                          "attributeNames" : {
-                            "type" : "object"
                           },
                           "classLoader" : {
                             "type" : "object",
@@ -644,6 +626,9 @@
                                 }
                               }
                             }
+                          },
+                          "attributeNames" : {
+                            "type" : "object"
                           }
                         }
                       },
@@ -654,15 +639,33 @@
                         "type" : "integer",
                         "format" : "int32"
                       },
+                      "sessionContext" : {
+                        "type" : "object",
+                        "properties" : {
+                          "ids" : {
+                            "type" : "object"
+                          }
+                        }
+                      },
+                      "lastAccessedTime" : {
+                        "type" : "integer",
+                        "format" : "int64"
+                      },
+                      "valueNames" : {
+                        "type" : "array",
+                        "items" : {
+                          "type" : "string"
+                        }
+                      },
                       "creationTime" : {
                         "type" : "integer",
                         "format" : "int64"
                       },
-                      "attributeNames" : {
-                        "type" : "object"
-                      },
                       "id" : {
                         "type" : "string"
+                      },
+                      "attributeNames" : {
+                        "type" : "object"
                       }
                     }
                   },
@@ -674,40 +677,47 @@
                       }
                     }
                   },
-                  "method" : {
-                    "type" : "string"
+                  "cookies" : {
+                    "type" : "array",
+                    "items" : {
+                      "type" : "object",
+                      "properties" : {
+                        "name" : {
+                          "type" : "string"
+                        },
+                        "value" : {
+                          "type" : "string"
+                        },
+                        "comment" : {
+                          "type" : "string"
+                        },
+                        "domain" : {
+                          "type" : "string"
+                        },
+                        "maxAge" : {
+                          "type" : "integer",
+                          "format" : "int32"
+                        },
+                        "path" : {
+                          "type" : "string"
+                        },
+                        "secure" : {
+                          "type" : "boolean"
+                        },
+                        "version" : {
+                          "type" : "integer",
+                          "format" : "int32"
+                        },
+                        "httpOnly" : {
+                          "type" : "boolean"
+                        }
+                      }
+                    }
                   },
                   "servletContext" : {
                     "type" : "object",
                     "properties" : {
-                      "sessionTimeout" : {
-                        "type" : "integer",
-                        "format" : "int32"
-                      },
                       "contextPath" : {
-                        "type" : "string"
-                      },
-                      "effectiveMajorVersion" : {
-                        "type" : "integer",
-                        "format" : "int32"
-                      },
-                      "effectiveMinorVersion" : {
-                        "type" : "integer",
-                        "format" : "int32"
-                      },
-                      "servlets" : {
-                        "type" : "object"
-                      },
-                      "servletNames" : {
-                        "type" : "object"
-                      },
-                      "serverInfo" : {
-                        "type" : "string"
-                      },
-                      "initParameterNames" : {
-                        "type" : "object"
-                      },
-                      "servletContextName" : {
                         "type" : "string"
                       },
                       "servletRegistrations" : {
@@ -774,12 +784,6 @@
                       "sessionCookieConfig" : {
                         "type" : "object",
                         "properties" : {
-                          "domain" : {
-                            "type" : "string"
-                          },
-                          "secure" : {
-                            "type" : "boolean"
-                          },
                           "httpOnly" : {
                             "type" : "boolean"
                           },
@@ -787,14 +791,20 @@
                             "type" : "integer",
                             "format" : "int32"
                           },
+                          "domain" : {
+                            "type" : "string"
+                          },
                           "comment" : {
+                            "type" : "string"
+                          },
+                          "name" : {
                             "type" : "string"
                           },
                           "path" : {
                             "type" : "string"
                           },
-                          "name" : {
-                            "type" : "string"
+                          "secure" : {
+                            "type" : "boolean"
                           }
                         }
                       },
@@ -904,6 +914,33 @@
                       "responseCharacterEncoding" : {
                         "type" : "string"
                       },
+                      "effectiveMajorVersion" : {
+                        "type" : "integer",
+                        "format" : "int32"
+                      },
+                      "effectiveMinorVersion" : {
+                        "type" : "integer",
+                        "format" : "int32"
+                      },
+                      "servlets" : {
+                        "type" : "object"
+                      },
+                      "servletNames" : {
+                        "type" : "object"
+                      },
+                      "serverInfo" : {
+                        "type" : "string"
+                      },
+                      "initParameterNames" : {
+                        "type" : "object"
+                      },
+                      "servletContextName" : {
+                        "type" : "string"
+                      },
+                      "sessionTimeout" : {
+                        "type" : "integer",
+                        "format" : "int32"
+                      },
                       "majorVersion" : {
                         "type" : "integer",
                         "format" : "int32"
@@ -911,9 +948,6 @@
                       "minorVersion" : {
                         "type" : "integer",
                         "format" : "int32"
-                      },
-                      "attributeNames" : {
-                        "type" : "object"
                       },
                       "classLoader" : {
                         "type" : "object",
@@ -1120,8 +1154,20 @@
                             }
                           }
                         }
+                      },
+                      "attributeNames" : {
+                        "type" : "object"
                       }
                     }
+                  },
+                  "characterEncoding" : {
+                    "type" : "string"
+                  },
+                  "parameterNames" : {
+                    "type" : "object"
+                  },
+                  "serverName" : {
+                    "type" : "string"
                   },
                   "serverPort" : {
                     "type" : "integer",
@@ -1135,15 +1181,6 @@
                   },
                   "locales" : {
                     "type" : "object"
-                  },
-                  "characterEncoding" : {
-                    "type" : "string"
-                  },
-                  "parameterNames" : {
-                    "type" : "object"
-                  },
-                  "serverName" : {
-                    "type" : "string"
                   },
                   "localAddr" : {
                     "type" : "string"
@@ -1163,34 +1200,7 @@
                           "servletContext" : {
                             "type" : "object",
                             "properties" : {
-                              "sessionTimeout" : {
-                                "type" : "integer",
-                                "format" : "int32"
-                              },
                               "contextPath" : {
-                                "type" : "string"
-                              },
-                              "effectiveMajorVersion" : {
-                                "type" : "integer",
-                                "format" : "int32"
-                              },
-                              "effectiveMinorVersion" : {
-                                "type" : "integer",
-                                "format" : "int32"
-                              },
-                              "servlets" : {
-                                "type" : "object"
-                              },
-                              "servletNames" : {
-                                "type" : "object"
-                              },
-                              "serverInfo" : {
-                                "type" : "string"
-                              },
-                              "initParameterNames" : {
-                                "type" : "object"
-                              },
-                              "servletContextName" : {
                                 "type" : "string"
                               },
                               "servletRegistrations" : {
@@ -1257,12 +1267,6 @@
                               "sessionCookieConfig" : {
                                 "type" : "object",
                                 "properties" : {
-                                  "domain" : {
-                                    "type" : "string"
-                                  },
-                                  "secure" : {
-                                    "type" : "boolean"
-                                  },
                                   "httpOnly" : {
                                     "type" : "boolean"
                                   },
@@ -1270,14 +1274,20 @@
                                     "type" : "integer",
                                     "format" : "int32"
                                   },
+                                  "domain" : {
+                                    "type" : "string"
+                                  },
                                   "comment" : {
+                                    "type" : "string"
+                                  },
+                                  "name" : {
                                     "type" : "string"
                                   },
                                   "path" : {
                                     "type" : "string"
                                   },
-                                  "name" : {
-                                    "type" : "string"
+                                  "secure" : {
+                                    "type" : "boolean"
                                   }
                                 }
                               },
@@ -1387,6 +1397,33 @@
                               "responseCharacterEncoding" : {
                                 "type" : "string"
                               },
+                              "effectiveMajorVersion" : {
+                                "type" : "integer",
+                                "format" : "int32"
+                              },
+                              "effectiveMinorVersion" : {
+                                "type" : "integer",
+                                "format" : "int32"
+                              },
+                              "servlets" : {
+                                "type" : "object"
+                              },
+                              "servletNames" : {
+                                "type" : "object"
+                              },
+                              "serverInfo" : {
+                                "type" : "string"
+                              },
+                              "initParameterNames" : {
+                                "type" : "object"
+                              },
+                              "servletContextName" : {
+                                "type" : "string"
+                              },
+                              "sessionTimeout" : {
+                                "type" : "integer",
+                                "format" : "int32"
+                              },
                               "majorVersion" : {
                                 "type" : "integer",
                                 "format" : "int32"
@@ -1394,9 +1431,6 @@
                               "minorVersion" : {
                                 "type" : "integer",
                                 "format" : "int32"
-                              },
-                              "attributeNames" : {
-                                "type" : "object"
                               },
                               "classLoader" : {
                                 "type" : "object",
@@ -1603,8 +1637,20 @@
                                     }
                                   }
                                 }
+                              },
+                              "attributeNames" : {
+                                "type" : "object"
                               }
                             }
+                          },
+                          "characterEncoding" : {
+                            "type" : "string"
+                          },
+                          "parameterNames" : {
+                            "type" : "object"
+                          },
+                          "serverName" : {
+                            "type" : "string"
                           },
                           "serverPort" : {
                             "type" : "integer",
@@ -1619,15 +1665,6 @@
                           "locales" : {
                             "type" : "object"
                           },
-                          "characterEncoding" : {
-                            "type" : "string"
-                          },
-                          "parameterNames" : {
-                            "type" : "object"
-                          },
-                          "serverName" : {
-                            "type" : "string"
-                          },
                           "localAddr" : {
                             "type" : "string"
                           },
@@ -1641,22 +1678,9 @@
                             "type" : "string",
                             "enum" : [ "FORWARD", "INCLUDE", "REQUEST", "ASYNC", "ERROR" ]
                           },
-                          "reader" : {
-                            "type" : "object"
-                          },
-                          "localName" : {
-                            "type" : "string"
-                          },
-                          "localPort" : {
-                            "type" : "integer",
-                            "format" : "int32"
-                          },
                           "locale" : {
                             "type" : "object",
                             "properties" : {
-                              "displayName" : {
-                                "type" : "string"
-                              },
                               "script" : {
                                 "type" : "string"
                               },
@@ -1705,21 +1729,16 @@
                               "displayVariant" : {
                                 "type" : "string"
                               },
+                              "displayName" : {
+                                "type" : "string"
+                              },
                               "language" : {
                                 "type" : "string"
                               }
                             }
                           },
-                          "remotePort" : {
-                            "type" : "integer",
-                            "format" : "int32"
-                          },
-                          "secure" : {
-                            "type" : "boolean"
-                          },
-                          "contentLength" : {
-                            "type" : "integer",
-                            "format" : "int32"
+                          "reader" : {
+                            "type" : "object"
                           },
                           "contentLengthLong" : {
                             "type" : "integer",
@@ -1728,17 +1747,16 @@
                           "contentType" : {
                             "type" : "string"
                           },
-                          "attributeNames" : {
-                            "type" : "object"
+                          "localPort" : {
+                            "type" : "integer",
+                            "format" : "int32"
                           },
-                          "parameterMap" : {
-                            "type" : "object",
-                            "additionalProperties" : {
-                              "type" : "array",
-                              "items" : {
-                                "type" : "string"
-                              }
-                            }
+                          "localName" : {
+                            "type" : "string"
+                          },
+                          "contentLength" : {
+                            "type" : "integer",
+                            "format" : "int32"
                           },
                           "protocol" : {
                             "type" : "string"
@@ -1760,6 +1778,25 @@
                                 "type" : "boolean"
                               }
                             }
+                          },
+                          "attributeNames" : {
+                            "type" : "object"
+                          },
+                          "parameterMap" : {
+                            "type" : "object",
+                            "additionalProperties" : {
+                              "type" : "array",
+                              "items" : {
+                                "type" : "string"
+                              }
+                            }
+                          },
+                          "remotePort" : {
+                            "type" : "integer",
+                            "format" : "int32"
+                          },
+                          "secure" : {
+                            "type" : "boolean"
                           }
                         }
                       },
@@ -1770,9 +1807,6 @@
                       "response" : {
                         "type" : "object",
                         "properties" : {
-                          "committed" : {
-                            "type" : "boolean"
-                          },
                           "characterEncoding" : {
                             "type" : "string"
                           },
@@ -1781,12 +1815,12 @@
                             "format" : "int64",
                             "writeOnly" : true
                           },
+                          "committed" : {
+                            "type" : "boolean"
+                          },
                           "locale" : {
                             "type" : "object",
                             "properties" : {
-                              "displayName" : {
-                                "type" : "string"
-                              },
                               "script" : {
                                 "type" : "string"
                               },
@@ -1835,14 +1869,13 @@
                               "displayVariant" : {
                                 "type" : "string"
                               },
+                              "displayName" : {
+                                "type" : "string"
+                              },
                               "language" : {
                                 "type" : "string"
                               }
                             }
-                          },
-                          "bufferSize" : {
-                            "type" : "integer",
-                            "format" : "int32"
                           },
                           "contentType" : {
                             "type" : "string"
@@ -1866,6 +1899,10 @@
                           },
                           "writer" : {
                             "type" : "object"
+                          },
+                          "bufferSize" : {
+                            "type" : "integer",
+                            "format" : "int32"
                           }
                         }
                       }
@@ -1875,22 +1912,9 @@
                     "type" : "string",
                     "enum" : [ "FORWARD", "INCLUDE", "REQUEST", "ASYNC", "ERROR" ]
                   },
-                  "reader" : {
-                    "type" : "object"
-                  },
-                  "localName" : {
-                    "type" : "string"
-                  },
-                  "localPort" : {
-                    "type" : "integer",
-                    "format" : "int32"
-                  },
                   "locale" : {
                     "type" : "object",
                     "properties" : {
-                      "displayName" : {
-                        "type" : "string"
-                      },
                       "script" : {
                         "type" : "string"
                       },
@@ -1939,21 +1963,16 @@
                       "displayVariant" : {
                         "type" : "string"
                       },
+                      "displayName" : {
+                        "type" : "string"
+                      },
                       "language" : {
                         "type" : "string"
                       }
                     }
                   },
-                  "remotePort" : {
-                    "type" : "integer",
-                    "format" : "int32"
-                  },
-                  "secure" : {
-                    "type" : "boolean"
-                  },
-                  "contentLength" : {
-                    "type" : "integer",
-                    "format" : "int32"
+                  "reader" : {
+                    "type" : "object"
                   },
                   "contentLengthLong" : {
                     "type" : "integer",
@@ -1962,17 +1981,16 @@
                   "contentType" : {
                     "type" : "string"
                   },
-                  "attributeNames" : {
-                    "type" : "object"
+                  "localPort" : {
+                    "type" : "integer",
+                    "format" : "int32"
                   },
-                  "parameterMap" : {
-                    "type" : "object",
-                    "additionalProperties" : {
-                      "type" : "array",
-                      "items" : {
-                        "type" : "string"
-                      }
-                    }
+                  "localName" : {
+                    "type" : "string"
+                  },
+                  "contentLength" : {
+                    "type" : "integer",
+                    "format" : "int32"
                   },
                   "protocol" : {
                     "type" : "string"
@@ -1994,6 +2012,25 @@
                         "type" : "boolean"
                       }
                     }
+                  },
+                  "attributeNames" : {
+                    "type" : "object"
+                  },
+                  "parameterMap" : {
+                    "type" : "object",
+                    "additionalProperties" : {
+                      "type" : "array",
+                      "items" : {
+                        "type" : "string"
+                      }
+                    }
+                  },
+                  "remotePort" : {
+                    "type" : "integer",
+                    "format" : "int32"
+                  },
+                  "secure" : {
+                    "type" : "boolean"
                   }
                 }
               }
@@ -2044,103 +2081,10 @@
           }
         }
       }
-    },
-    "/print/grafiskdigital/api/v1/ordrer/{ordreId}" : {
-      "put" : {
-        "tags" : [ "GrafiskDigital" ],
-        "operationId" : "createGrafiskDigitalPrintOrdre",
-        "parameters" : [ {
-          "name" : "ordreId",
-          "in" : "path",
-          "required" : true,
-          "schema" : {
-            "type" : "string",
-            "format" : "uuid"
-          }
-        } ],
-        "requestBody" : {
-          "content" : {
-            "application/json" : {
-              "schema" : {
-                "$ref" : "#/components/schemas/GrafiskDigitalOrdreApiModel"
-              }
-            }
-          },
-          "required" : true
-        },
-        "responses" : {
-          "201" : {
-            "description" : "Alt ok",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/OpplastetGrafiskDigital"
-                }
-              }
-            }
-          }
-        }
-      }
     }
   },
   "components" : {
     "schemas" : {
-      "OffentligNokkelApiModel" : {
-        "required" : [ "issuerDN", "nokkel", "serial", "subjectDN", "validFrom", "validTo" ],
-        "type" : "object",
-        "properties" : {
-          "nokkel" : {
-            "type" : "string"
-          },
-          "validFrom" : {
-            "type" : "string",
-            "format" : "date-time"
-          },
-          "validTo" : {
-            "type" : "string",
-            "format" : "date-time"
-          },
-          "serial" : {
-            "type" : "string"
-          },
-          "subjectDN" : {
-            "type" : "string"
-          },
-          "issuerDN" : {
-            "type" : "string"
-          }
-        }
-      },
-      "LoggStatusApiModel" : {
-        "required" : [ "loggfilerFeilet", "loggfilerOk", "statusfilerFeilet", "statusfilerOk" ],
-        "type" : "object",
-        "properties" : {
-          "loggfilerOk" : {
-            "type" : "array",
-            "items" : {
-              "type" : "string"
-            }
-          },
-          "loggfilerFeilet" : {
-            "type" : "array",
-            "items" : {
-              "type" : "string"
-            }
-          },
-          "statusfilerOk" : {
-            "type" : "array",
-            "items" : {
-              "type" : "string"
-            }
-          },
-          "statusfilerFeilet" : {
-            "type" : "array",
-            "items" : {
-              "type" : "string"
-            }
-          }
-        }
-      },
       "OpplastetGrafiskDigital" : {
         "type" : "object",
         "properties" : {
@@ -2254,6 +2198,62 @@
           },
           "tosidig" : {
             "type" : "boolean"
+          }
+        }
+      },
+      "OffentligNokkelApiModel" : {
+        "required" : [ "issuerDN", "nokkel", "serial", "subjectDN", "validFrom", "validTo" ],
+        "type" : "object",
+        "properties" : {
+          "nokkel" : {
+            "type" : "string"
+          },
+          "validFrom" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "validTo" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "serial" : {
+            "type" : "string"
+          },
+          "subjectDN" : {
+            "type" : "string"
+          },
+          "issuerDN" : {
+            "type" : "string"
+          }
+        }
+      },
+      "LoggStatusApiModel" : {
+        "required" : [ "loggfilerFeilet", "loggfilerOk", "statusfilerFeilet", "statusfilerOk" ],
+        "type" : "object",
+        "properties" : {
+          "loggfilerOk" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          },
+          "loggfilerFeilet" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          },
+          "statusfilerOk" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          },
+          "statusfilerFeilet" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
           }
         }
       }
