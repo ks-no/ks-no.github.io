@@ -6,12 +6,19 @@ pipeline {
 
   stages {
 
+    stage('check version') {
+      steps {
+        script {
+           sh 'which hugo'
+            sh 'hugo version'
+        }
+      }
+    }
+
     stage('checkout') {
       steps {
         checkout scm
 	sh 'git submodule update --init'
-  sh 'which hugo'
-  sh 'hugo version'
       }
     }h
 
