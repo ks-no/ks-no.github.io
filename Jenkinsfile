@@ -10,8 +10,10 @@ pipeline {
       steps {
         checkout scm
 	sh 'git submodule update --init'
+  sh 'which hugo'
+  sh 'hugo version'
       }
-    }
+    }h
 
     stage('deploy') {
       when{
