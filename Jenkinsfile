@@ -18,8 +18,7 @@ pipeline {
     stage('check version') {
       steps {
         script {
-           sh 'which hugo'
-            sh 'hugo version'
+          sh 'hugo version'
         }
       }
     }
