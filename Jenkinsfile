@@ -6,6 +6,15 @@ pipeline {
 
   stages {
 
+
+
+    stage('checkout') {
+      steps {
+        checkout scm
+	      sh 'git submodule update --init'
+      }
+    }
+
     stage('check version') {
       steps {
         script {
@@ -14,13 +23,6 @@ pipeline {
         }
       }
     }
-
-    stage('checkout') {
-      steps {
-        checkout scm
-	sh 'git submodule update --init'
-      }
-    }h
 
     stage('deploy') {
       when{
