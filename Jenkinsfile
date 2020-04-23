@@ -6,10 +6,20 @@ pipeline {
 
   stages {
 
+
+
     stage('checkout') {
       steps {
         checkout scm
-	sh 'git submodule update --init'
+	      sh 'git submodule update --init'
+      }
+    }
+
+    stage('check version') {
+      steps {
+        script {
+          sh 'hugo version'
+        }
       }
     }
 
