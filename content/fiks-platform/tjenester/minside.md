@@ -1,4 +1,3 @@
-
 ---
 title: MinSide
 date: 2019-06-27
