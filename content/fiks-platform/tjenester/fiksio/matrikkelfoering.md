@@ -125,8 +125,12 @@ var kontoliste = client.Lookup(new LookupRequest("KOMM.3817", "no.ks.fiks.matrik
 ```
 ## Videresending av grunnlag som skal føres i en annen matrikkelklient
 
-Hvis matrikkelfører finner ut at en melding skal registreres ved bruk av en annen matrikkelklient så kan denne meldingen videresendes. Det skal da brukes egne headere for å angi hvilken opprinnelig konto og hvilken opprinnelig meldingsid som skal besvares med mottatt melding, evt feilmelding og kvitteringsmelding. Gjenstår avklaring av header og eksempel.
+Hvis matrikkelfører finner ut at en melding skal registreres ved bruk av en annen matrikkelklient så kan denne meldingen videresendes. Det skal da brukes egne headere for å angi hvilken opprinnelig konto og hvilken opprinnelig meldingsid som skal besvares med mottatt melding, evt feilmelding og kvitteringsmelding. 
 
+| Header        | Beskrivelse  |
+| ------------- |-------------------|
+| videresendt-fra-konto      | Opprinnelig konto som melding kom fra |
+| opprinnelig-melding-id      | Opprinnelig meldingsid som svar-til skal sendes tilbake til |
 
 ## Eksempel 1 - viser eksempel på en nivå 1 melding
 
