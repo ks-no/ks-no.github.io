@@ -1,6 +1,7 @@
 ---
 title: MinSide
 date: 2019-06-27
+aliases: [/fiks-platform/tjenester/minside]
 ---
 
 minside.kommune.no er en portal for de innbyggerrettede tjenestene på Fiks-plattformen. 

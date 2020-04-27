@@ -1,10 +1,11 @@
 ---
 title: Kjøretøyregister
 date: 2019-12-11
+aliases: [/fiks-platform/tjenester/kjoretoyregister]
 ---
 
 ### Hva er Fiks Kjøretøyregister
-Fiks Kjøretøyregister er en tjeneste for å gjøre oppslag i Statens Vegvesen sitt [Kjøretøy register](https://vegvesen.github.io/ak-api/) (Autosys). Fiks Kjøretøyregister speiler [Kjøretøyoppslag](https://vegvesen.github.io/ak-api/api/#kjoretoyoppslag) tjenesten til Statens Vegvesen på Fiks platformen. Den gjør det mulig å slå opp et eller flere kjøretøy basert på *kjennemerke*, *kuid* (svv-identifikator), eller *understellsnummer*. Oppslaget vil gi informasjon om kjøretøyet og eierforhold på nåværende tidspunkt, eller på et spesifisert tidspunkt som angis i søket.  
+Fiks Kjøretøyregister er en tjeneste for å gjøre oppslag i Statens Vegvesen sitt [Kjøretøy register](https://vegvesen.github.io/ak-api/) (Autosys). Fiks Kjøretøyregister speiler [Kjøretøyoppslag](https://vegvesen.github.io/ak-api/api/#kjoretoyoppslag) tjenesten til Statens Vegvesen på Fiks plattformen. Den gjør det mulig å slå opp et eller flere kjøretøy basert på *kjennemerke*, *kuid* (svv-identifikator), eller *understellsnummer*. Oppslaget vil gi informasjon om kjøretøyet og eierforhold på nåværende tidspunkt, eller på et spesifisert tidspunkt som angis i søket.  
 
 ### Hvordan tar jeg i bruk Fiks Kjøretøyregister
 
@@ -16,7 +17,7 @@ På sikt vil de bli vurdert å utvikle et administrativt grensesnitt mot Fiks Kj
  
 Api kall gjøres i henhold til [swagger spesifikasjonen](https://vegvesen.github.io/ak-api/api/#kjoretoyoppslag) til Statens Vegvesen, med følgende endringer:
   
-  * Autorisering skjer på fiks platformen med leverandørens virksomhetssertifikat som beskrevet [her](https://ks-no.github.io/fiks-platform/integrasjoner/#integrasjon), ikke med Basic auth.
+  * Autorisering skjer på fiks plattformen med leverandørens virksomhetssertifikat som beskrevet [her](https://ks-no.github.io/fiks-plattform/integrasjoner/#integrasjon), ikke med Basic auth.
   * Fiks-org som spørringen gjøres på vegne av blir en del av url'en for alle forespørsler.
   
 Swagger filen til SVV spesifiserer en basePath som `/ws/no/vegvesen/kjoretoy/felles/v2`. Denne må erstattes med `https://api.fiks.ks.no/kjoretoyregister/api/{fiksOrgId}` hvor `{fiksOrgId}` er fiks org til organisasjonen spørringen gjøres på vegne av. Resten av url'en er som spesifisert for de enkelte endepunktene i swagger filen:

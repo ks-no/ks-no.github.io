@@ -1,6 +1,7 @@
 ---
 title: Sikkerhet og personvern i Fiks-plattformen
 date: 2020-04-17
+aliases: [/fiks-platform/sikkerhet]
 ---
 
 Denne siden gir en generell innføring i hvordan personvern og informasjonssikkerhet (sikkerhet) er ivaretatt i Fiks-plattformen. 

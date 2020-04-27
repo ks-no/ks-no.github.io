@@ -1,6 +1,7 @@
 ---
 title: Hvordan lage klient hos idporten
 date: 2019-09-19
+aliases: [/fiks-platform/difiidportenklient]
 ---
 - En må først ha godkjent bruksvilkår hos difi. Det har de fleste kommuner: https://samarbeid.difi.no/felleslosninger/maskinporten/ta-i-bruk-maskinporten/1-planlegge-og-akseptere-bruksvilkar
 - Dere må ha virksomhetsertifikat fra Commfides eller Buypass. Test sertifikat for test og vanlig for produksjon.

@@ -1,6 +1,7 @@
 --- 
 title: Tjenester under utvikling
 date: 2019-06-27
+aliases: [/fiks-platform/tjenester_under_utvikling]
 --- 
 
 Roadmap for fremtidige tjenester på Fiks-plattformen. Tidsangivelse må tolkes som en indikasjon på når tjenesten kan være klar, endringer kan forekomme.

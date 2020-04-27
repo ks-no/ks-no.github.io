@@ -1,6 +1,7 @@
 ---
 title: Fullmakt
 date: 2018-10-03
+aliases: [/fiks-platform/tjenester/fullmakt]
 ---
 Tjenesten gjør det foreløpig mulig å hente fullmakter for organisasjoner, samt navn for autentisert bruker.
 
