@@ -9,7 +9,7 @@ Denne løsningen benytter [FIKS IO](https://ks-no.github.io/fiks-platform/tjenes
 
 ## Løsningskonsept
 
-![fiks_matrikkelfoering](..\images\matrikkelfoering_skisse.png "Fiks IO Matrikkelføring")
+![fiks_matrikkelfoering](/fiks-plattform/images/matrikkelfoering_skisse.png "Fiks IO Matrikkelføring")
 
 ## Hvordan ta i bruk FIKS IO Matrikkelføring
 For at eByggesak eller annet fagsystem skal få tilgang til å sende grunnlag for matrikkelføring til matrikkelklienter, så må kommunen aktivere tjenesten FIKS IO i [Fiks Konfigurasjon](https://forvaltning.fiks.ks.no/fiks-konfigurasjon/tjenester).
@@ -18,7 +18,7 @@ Aktuell matrikkelklient må aktiveres for å kunne svare på meldingsprotokoll `
 
 ## Flyt
 
-![fiks_matrikkelfoering_prosess](..\images\matrikkelfoering_flyt.png "Matrikkelføring prosess")
+![fiks_matrikkelfoering_prosess](/fiks-plattform/images/matrikkelfoering_flyt.png "Matrikkelføring prosess")
 
 - eByggesak mottar en søknad med strukturerte data og vedlegg fra eByggesøknad system via Fellestjenester Bygg ved hjelp av FIKS/SvarInn. Samme datastrukturer og vedleggsstruktur kan bygges opp manuelt i eByggesak ved mottak av søknad i andre kanaler enn Fellestjenester Bygg.
 - Saksbehandler behandler saken og kontrollerer at søknaden har tilstrekkelig informasjon til at det kan fattes et vedtak. Saksbehandler kompletterer og korrigerer søknadsdataene ved behov.
@@ -38,22 +38,22 @@ Meldingsprotokoll som matrikkelklient må støtte ```no.ks.fiks.matrikkelfoering
 
 Fra eByggesak/fagsystem: 
 - Grunnlag til matrikkelføring:
-```no.ks.fiks.matrikkelfoering.grunnlag.v1``` [Datamodell matrikkelfoering.xsd](..\images\matrikkelfoering.xsd)
+```no.ks.fiks.matrikkelfoering.grunnlag.v1``` [Datamodell matrikkelfoering.xsd](/fiks-plattform/images/matrikkelfoering.xsd)
 
 Fra matrikkelklienter: 
 - Mottak vellykket: ```no.ks.fiks.matrikkelfoering.mottatt.v1```
 - Mottak feilet: ```no.ks.fiks.matrikkelfoering.feil.v1```
 - Kvittering på føring i matrikkelen:
-```no.ks.fiks.matrikkelfoering.kvittering.v1``` [Datamodell MatrikkelFoeringsRespons.xsd](..\images\MatrikkelFoeringsRespons.xsd)
+```no.ks.fiks.matrikkelfoering.kvittering.v1``` [Datamodell MatrikkelFoeringsRespons.xsd](/fiks-plattform/images/MatrikkelFoeringsRespons.xsd)
 
 ## Datamodell for meldinger
-![fiks_matrikkelfoering_datamodell_grunnlag](..\images\datamodell_grunnlag.png "Matrikkelføring datamodell grunnlag")
+![fiks_matrikkelfoering_datamodell_grunnlag](/fiks-plattform/images/datamodell_grunnlag.PNG "Matrikkelføring datamodell grunnlag")
 
-```no.ks.fiks.matrikkelfoering.grunnlag.v1``` [Datamodell matrikkelfoering.xsd](..\images\matrikkelfoering.xsd)
+```no.ks.fiks.matrikkelfoering.grunnlag.v1``` [Datamodell matrikkelfoering.xsd](/fiks-plattform/images/matrikkelfoering.xsd)
 
-![fiks_matrikkelfoering_datamodell_kvittering](..\images\datamodell_kvittering.png "Matrikkelføring datamodell kvittering")
+![fiks_matrikkelfoering_datamodell_kvittering](/fiks-plattform/images/datamodell_kvittering.PNG "Matrikkelføring datamodell kvittering")
 
-```no.ks.fiks.matrikkelfoering.kvittering.v1``` [Datamodell MatrikkelFoeringsRespons.xsd](..\images\MatrikkelFoeringsRespons.xsd)
+```no.ks.fiks.matrikkelfoering.kvittering.v1``` [Datamodell MatrikkelFoeringsRespons.xsd](/fiks-plattform/images/MatrikkelFoeringsRespons.xsd)
 
 ## Overføring av filer
 
@@ -83,7 +83,7 @@ I tillegg til Arkivlett dokumenttyper benyttes dokumenttype Byggesak for overfø
 Det er definert 4 trappetrinn/nivå i løsningskonseptet som illustrerer hvor godt et tiltak er tilrettelagt for effektiv
 matrikkelføring.
 
-![fiks_matrikkelfoering_trappetrinn](..\images\matrikkelfoering_trappetrinn.png "Matrikkelføring trappetrinn")
+![fiks_matrikkelfoering_trappetrinn](/fiks-plattform/images/matrikkelfoering_trappetrinn.PNG "Matrikkelføring trappetrinn")
 
 Nivå 0:
 - Overføringen inneholder kun saksnummer/url på vedtaket.
