@@ -1,6 +1,7 @@
 ---
 title: Digisos
 date: 2019-11-01
+aliases: [/fiks-platform/tjenester/digisos/]
 ---
 
 Fiks Digisos er en tjeneste for å tilrettelegge for kommunal behandling av sosialsøknader via et brukergrensesnitt på nav.no.
@@ -16,7 +17,7 @@ Fiks Digisos tilbyr:
      
 For at fagsystemet skal få tilgang til å motta sosialsøknader og sende saksoppdateringer til NAV via Digisos-API-et for en kommune, må kommunen først konfigurere og aktivere tjenesten Digisos gjennom [Fiks Konfigurasjon](https://forvaltning.fiks.ks.no/fiks-konfigurasjon/tjenester), som viser en veiviser for å sette opp tjenesten. Her konfigurerer man opp hvordan kommunens fagsystem skal motta søknader, enten via Fiks IO (anbefalt kanal) og/eller SvarUt. Det må også oppgis kontaktpersoner med minst èn epost for både en fagansvarlig og en teknisk ansvarlig, som kan bli kontaktet ved behov. 
 
-Etter at veiviseren er fullført må man inne på Digisos-tjenesten gi fagsystemet sin integrasjon tilgang til å bruke Digisos. For mer informasjon om utvikling og opprettelse av integrasjoner for kommunen sitt fagsystemet, se avsnittet [Integrasjonsutvikling Fagsystem](https://ks-no.github.io/fiks-platform/tjenester/digisos/#integrasjonsutvikling-fagsystem).  
+Etter at veiviseren er fullført må man inne på Digisos-tjenesten gi fagsystemet sin integrasjon tilgang til å bruke Digisos. For mer informasjon om utvikling og opprettelse av integrasjoner for kommunen sitt fagsystemet, se avsnittet [Integrasjonsutvikling Fagsystem](https://ks-no.github.io/fiks-plattform/tjenester/digisos/#integrasjonsutvikling-fagsystem).  
 
 ## Hvordan virker Fiks Digisos?
 
@@ -55,7 +56,7 @@ Innbygger har tilgang til alle sine opplastede dokumenter, der et begrenset utva
 ## Integrasjonsutvikling Fagsystem
 
 Det anbefales å lese gjennom dokumentasjonen for generell [integrasjonsutvikling mot Fiks]({{< ref "integrasjoner.md" >}}), der siste avsnitt, "Hvordan komme i gang med utvikling", er svært nyttig. På denne siden beskrives blant annet oppsett av IDPorten og autentisering mot Fiks, der fagsystemet bruker Integrasjon som autentiseringsmetode. Fiks tilbyr både en [Java-klient](https://github.com/ks-no/fiks-maskinporten) og en [.net-klient](https://github.com/ks-no/fiks-maskinporten-client-dotnet) som kan brukes for å generere access token fra Maskinporten (IDPorten).
-Avsnittet [Konfigurasjon](https://ks-no.github.io/fiks-platform/integrasjoner/#konfigurasjon) beskriver hvordan en integrasjon opprettes og tilknyttes en tjeneste (Digisos). Integrasjons-id-en og passordet generert her må dermed brukes sammen med access token fra Maskinporten for å få tilgang til Digisos-API-et.
+Avsnittet [Konfigurasjon](https://ks-no.github.io/fiks-plattform/integrasjoner/#konfigurasjon) beskriver hvordan en integrasjon opprettes og tilknyttes en tjeneste (Digisos). Integrasjons-id-en og passordet generert her må dermed brukes sammen med access token fra Maskinporten for å få tilgang til Digisos-API-et.
 
 ### Mottak av søknader
 
@@ -79,11 +80,11 @@ For ettersendelse, ```no.nav.digisos.ettersendelse.v1```, som definert i [json-s
 For ny søknad, ```no.nav.digisos.soknad.mottatt.v1```, med tom body.\
 For ettersendelse, ```no.nav.digisos.ettersendelse.mottatt.v1```, med tom body.
 
-For mer informasjon om Fiks IO, se [dokumentasjon for Fiks IO](https://ks-no.github.io/fiks-platform/tjenester/fiksio/).
+For mer informasjon om Fiks IO, se [dokumentasjon for Fiks IO](https://ks-no.github.io/fiks-plattform/tjenester/fiksio/).
 
 #### SvarInn/SvarUt
 
-Ved bruk av SvarUt som leveringskanal må fagsystemet støtte mottak av metadata-filen som definert ovenfor, [Mottak av søknader](https://ks-no.github.io/fiks-platform/tjenester/digisos/#mottak-av-søknader). Denne metadata filen vil være lagt med selve SvarUt forsendelsen, kalt ```forsendelseMetadata.json```.\
+Ved bruk av SvarUt som leveringskanal må fagsystemet støtte mottak av metadata-filen som definert ovenfor, [Mottak av søknader](https://ks-no.github.io/fiks-plattform/tjenester/digisos/#mottak-av-søknader). Denne metadata filen vil være lagt med selve SvarUt forsendelsen, kalt ```forsendelseMetadata.json```.\
 Søknad: Eksempel på innholdet i ```forsendelseMetadata.json``` for søknader er definert i [søknad-metadata-eksempel](https://github.com/ks-no/fiks-io-meldingstype-katalog/blob/prod/schema/no.nav.digisos.soknad.v1/examples/litenDigisosMelding.json).\
 Ettersendelse: Eksempel på innholdet i ```forsendelseMetadata.json``` for ettersendelser er definert i [ettersendelse-metadata-eksempel](https://github.com/ks-no/fiks-io-meldingstype-katalog/blob/prod/schema/no.nav.digisos.ettersendelse.v1/examples/litenDigisosMelding.json).
 

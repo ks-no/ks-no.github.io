@@ -1,6 +1,6 @@
 ---
 title: KS Fiks dokumentasjon
-date: 2019-02-27
+date: 2020-03-23
 ---
 
 # KS Fiks dokumentasjon
@@ -8,6 +8,8 @@ date: 2019-02-27
 På disse sidene finner du dokumentasjon av Fiks-plattformen og SvarUt-tjenesten. SvarUt-tjenesten er fortsatt ikke flyttet over på Fiks-plattformen og kjører derfor som en selvstendig applikasjon med sin egen konfigurasjon og sikkerhetsløsning. Over tid vil også SvarUt migreres over på Fiks-plattformen.
 
 Dokumentasjonen du finner her er rettet mot deg som skal administrere plattformen på vegne av en kommune eller annen organisasjon, eller utvikle integrasjoner mot api-ene Fiks tilbyr.
+
+Det er utarbeidet et dokument som går igjennom fiks-plattformen. Dette kan [lastes ned](/fiks-plattformen.pdf)
 
 ### Brukerdokumentasjon 
 

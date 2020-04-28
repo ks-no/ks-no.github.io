@@ -1,6 +1,7 @@
 ---
 title: Dokumentlager
 date: 2018-09-10
+aliases: [/fiks-platform/tjenester/dokumentlager/]
 ---
 
 Dokumentlager-tjenesten lar kommunen og andre Fiks-organisasjoner laste opp dokumenter. Ved opplasting autoriseres en eller 
