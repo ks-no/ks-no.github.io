@@ -5,8 +5,6 @@ date: 2019-04-28
 
 Faktura består av flere tjenester som sammen lager faktura visningen.
 
-
-
 ### Funksjonalitet levert kun av Innsyn
 Dette er metadata om fakturaen som blir indeksert i innsyn. For detaljer se  [Innsyn](/fiks-plattform/tjenester/innsyn/)
 
