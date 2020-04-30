@@ -1,63 +1,62 @@
 ---
-title: FIKS IO Matrikkelføring
-date: 2020-03-19
+title: Fiks IO Matrikkelføring
+date: 2020-04-28
 ---
 
-FIKS IO Matrikkelføring er en tjeneste for å overføre grunnlag til matrikkelføring fra eByggesak til Matrikkelklienter. 
-Den er tilsvarende løsningen som er etablert på FIKS SvarUt/SvarInn http://geointegrasjon.no/nytt-grensesnitt-ebyggesak-og-matrikkel/.
+Fiks IO Matrikkelføring er en tjeneste for å overføre grunnlag til matrikkelføring fra eByggesak til Matrikkelklienter. 
+Den er tilsvarende løsningen som er etablert på Fiks SvarUt/SvarInn http://geointegrasjon.no/nytt-grensesnitt-ebyggesak-og-matrikkel/.
 Denne løsningen benytter [FIKS IO](https://ks-no.github.io/fiks-platform/tjenester/fiksio/) for maskin til maskin integrasjon 
 
 ## Løsningskonsept
 
-![fiks_matrikkelfoering](/fiks-plattform/images/matrikkelfoering_skisse.png "Fiks IO Matrikkelføring")
+![fiks_matrikkelfoering](/images/matrikkelfoering_skisse.png "Fiks IO Matrikkelføring")
 
-## Hvordan ta i bruk FIKS IO Matrikkelføring
-For at eByggesak eller annet fagsystem skal få tilgang til å sende grunnlag for matrikkelføring til matrikkelklienter, så må kommunen aktivere tjenesten FIKS IO i [Fiks Konfigurasjon](https://forvaltning.fiks.ks.no/fiks-konfigurasjon/tjenester).
+## Hvordan ta i bruk Fiks IO Matrikkelføring
+For at eByggesak eller annet fagsystem skal få tilgang til å sende grunnlag for matrikkelføring til matrikkelklienter, så må kommunen aktivere tjenesten Fiks IO i [Fiks Konfigurasjon](https://forvaltning.fiks.ks.no/fiks-konfigurasjon/tjenester).
 
 Aktuell matrikkelklient må aktiveres for å kunne svare på meldingsprotokoll ```no.ks.fiks.matrikkelfoering.v1```
 
 ## Flyt
 
-![fiks_matrikkelfoering_prosess](/fiks-plattform/images/matrikkelfoering_flyt.png "Matrikkelføring prosess")
+![fiks_matrikkelfoering_prosess](/images/matrikkelfoering_flyt.png "Matrikkelføring prosess")
 
-- eByggesak mottar en søknad med strukturerte data og vedlegg fra eByggesøknad system via Fellestjenester Bygg ved hjelp av FIKS/SvarInn. Samme datastrukturer og vedleggsstruktur kan bygges opp manuelt i eByggesak ved mottak av søknad i andre kanaler enn Fellestjenester Bygg.
+- eByggesak mottar en søknad med strukturerte data og vedlegg fra eByggesøknad system via Fellestjenester Bygg ved hjelp av Fiks/SvarInn. Samme datastrukturer og vedleggsstruktur kan bygges opp manuelt i eByggesak ved mottak av søknad i andre kanaler enn Fellestjenester Bygg.
 - Saksbehandler behandler saken og kontrollerer at søknaden har tilstrekkelig informasjon til at det kan fattes et vedtak. Saksbehandler kompletterer og korrigerer søknadsdataene ved behov.
 - Før vedtaket fattes, kontrollerer eByggesak at saken har tilstrekkelig data og tegninger til matrikkelføringen.
 - Når vedtak er fattet i eByggesak, kontrollerer eByggesak om tiltaket skal matrikkelføres.
 - Hvis tiltaket (tiltakene) skal matrikkelføres, bygger eByggesak opp en datastruktur for matrikkelføringen som består av data fra saksbehandlingen, matrikkelinformasjon og tegninger som ligger til grunn for vedtaket.
 - eByggesak sender deretter denne datastrukturen og tegningene til Matrikkelklienten ved hjelp av
-FIKS IO.
-- Matrikkelklienten mottar datastruktur og tegninger ved hjelp av FIKS IO.
+Fiks IO.
+- Matrikkelklienten mottar datastruktur og tegninger ved hjelp av Fiks IO.
 - Matrikkelfører fører tiltaket i Matrikkel / FKB. Her skisseres det også muligheter for at Matrikkelklienten basert på et regelsett kan matrikkelføre enkelte tiltak automatisk.
-- Når tiltaket er matrikkelført / ført i FKB, sender Matrikkelklienten en kvitteringsmelding tilbake til eByggesak via FIKS IO.
-- eByggesak mottar kvitteringsmeldingen via FIKS IO og oppretter milepæl for matrikkelføring i saken
+- Når tiltaket er matrikkelført / ført i FKB, sender Matrikkelklienten en kvitteringsmelding tilbake til eByggesak via Fiks IO.
+- eByggesak mottar kvitteringsmeldingen via Fiks IO og oppretter milepæl for matrikkelføring i saken
 
 
-## FIKS IO meldingsprotokoll for matrikkelføring
+## Fiks IO meldingsprotokoll for matrikkelføring
 Meldingsprotokoll som matrikkelklient må støtte ```no.ks.fiks.matrikkelfoering.v1```
 
 Fra eByggesak/fagsystem: 
-- Grunnlag til matrikkelføring:
-```no.ks.fiks.matrikkelfoering.grunnlag.v1``` [Datamodell matrikkelfoering.xsd](/fiks-plattform/images/matrikkelfoering.xsd)
+- Grunnlag til matrikkelføring: ```no.ks.fiks.matrikkelfoering.grunnlag.v1```  [Datamodell matrikkelfoering.xsd](/files/matrikkelfoering.xsd)
 
 Fra matrikkelklienter: 
 - Mottak vellykket: ```no.ks.fiks.matrikkelfoering.mottatt.v1```
 - Mottak feilet: ```no.ks.fiks.matrikkelfoering.feil.v1```
 - Kvittering på føring i matrikkelen:
-```no.ks.fiks.matrikkelfoering.kvittering.v1``` [Datamodell MatrikkelFoeringsRespons.xsd](/fiks-plattform/images/MatrikkelFoeringsRespons.xsd)
+```no.ks.fiks.matrikkelfoering.kvittering.v1``` [Datamodell MatrikkelFoeringsRespons.xsd](/files/MatrikkelFoeringsRespons.xsd)
 
 ## Datamodell for meldinger
-![fiks_matrikkelfoering_datamodell_grunnlag](/fiks-plattform/images/datamodell_grunnlag.PNG "Matrikkelføring datamodell grunnlag")
+![fiks_matrikkelfoering_datamodell_grunnlag](/images/datamodell_grunnlag.png "Matrikkelføring datamodell grunnlag")
 
-```no.ks.fiks.matrikkelfoering.grunnlag.v1``` [Datamodell matrikkelfoering.xsd](/fiks-plattform/images/matrikkelfoering.xsd)
+```no.ks.fiks.matrikkelfoering.grunnlag.v1``` [Datamodell matrikkelfoering.xsd](/files/matrikkelfoering.xsd)
 
-![fiks_matrikkelfoering_datamodell_kvittering](/fiks-plattform/images/datamodell_kvittering.PNG "Matrikkelføring datamodell kvittering")
+![fiks_matrikkelfoering_datamodell_kvittering](/images/datamodell_kvittering.png "Matrikkelføring datamodell kvittering")
 
-```no.ks.fiks.matrikkelfoering.kvittering.v1``` [Datamodell MatrikkelFoeringsRespons.xsd](/fiks-plattform/images/MatrikkelFoeringsRespons.xsd)
+```no.ks.fiks.matrikkelfoering.kvittering.v1``` [Datamodell MatrikkelFoeringsRespons.xsd](/files/MatrikkelFoeringsRespons.xsd)
 
 ## Overføring av filer
 
-Vedleggstyper som brukes i overføringen ref https://dibk.atlassian.net/wiki/spaces/FB/pages/270139400/Vedlegg
+Vedleggstyper fra Fellestjenester bygg(FtB) som brukes i overføringen ref https://dibk.atlassian.net/wiki/spaces/FB/pages/270139400/Vedlegg
 
 Dokumenttyper ihht Arkivlett anbefales https://www.ks.no/fagomrader/digitalisering/felleslosninger/verktoykasse-plan--og-byggesak/enklere-tilgang-til-kommunale-byggesaksarkiv/
 
@@ -83,7 +82,7 @@ I tillegg til Arkivlett dokumenttyper benyttes dokumenttype Byggesak for overfø
 Det er definert 4 trappetrinn/nivå i løsningskonseptet som illustrerer hvor godt et tiltak er tilrettelagt for effektiv
 matrikkelføring.
 
-![fiks_matrikkelfoering_trappetrinn](/fiks-plattform/images/matrikkelfoering_trappetrinn.PNG "Matrikkelføring trappetrinn")
+![fiks_matrikkelfoering_trappetrinn](/images/matrikkelfoering_trappetrinn.png "Matrikkelføring trappetrinn")
 
 Nivå 0:
 - Overføringen inneholder kun saksnummer/url på vedtaket.
@@ -126,10 +125,12 @@ var kontoliste = client.Lookup(new LookupRequest("KOMM.3817", "no.ks.fiks.matrik
 ```
 ## Videresending av grunnlag som skal føres i en annen matrikkelklient
 
-Bruk av header for å ta vare på opprinnelig konto som kvittering skal sendes tilbake til.
-TODO
+Hvis matrikkelfører finner ut at en melding skal registreres ved bruk av en annen matrikkelklient så kan denne meldingen videresendes. Det skal da brukes egne headere for å angi hvilken opprinnelig konto og hvilken opprinnelig meldingsid som skal besvares med mottatt melding, evt feilmelding og kvitteringsmelding. 
 
-
+| Header        | Beskrivelse  |
+| ------------- |-------------------|
+| videresendt-fra-konto      | Opprinnelig konto som melding kom fra |
+| opprinnelig-melding-id      | Opprinnelig meldingsid som svar-til skal sendes tilbake til |
 
 ## Eksempel 1 - viser eksempel på en nivå 1 melding
 
