@@ -1,6 +1,6 @@
 ---
 title: Fiks IO Matrikkelføring
-date: 2020-03-19
+date: 2020-04-28
 ---
 
 Fiks IO Matrikkelføring er en tjeneste for å overføre grunnlag til matrikkelføring fra eByggesak til Matrikkelklienter. 
