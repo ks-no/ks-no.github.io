@@ -1,6 +1,6 @@
 ---
 title: Fiks IO Arkivlett Byggesak
-date: 2020-04-29
+date: 2020-04-30
 ---
 
 Fiks IO Arkivlett Byggesak er en tjeneste for å spørre etter relevante dokumenter i en byggesak.
