@@ -1,5 +1,5 @@
 ---
-title: Smittesporing ved burk av DHIS2
+title: Smittesporing ved bruk av DHIS2
 date: 2020-04-29
 ---
 
