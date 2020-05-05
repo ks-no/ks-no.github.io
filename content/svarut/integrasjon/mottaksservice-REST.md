@@ -192,6 +192,7 @@ Etter mottatt forsendelse kvitteres den ut fra importtjenesten. Forsendelsesstat
 
 Hvis mottak av forsendelse feilet, kan dette meldes tilbake til SvarUt. Dette vil da framkomme i loggen til avsender.
 
+
 <table>
 
 <thead>
@@ -231,10 +232,11 @@ Hvis feilen er ikke mulig å fikse kan den markeres som permanent. Feilen som er
 </table>
 
 Json body:
-<pre>
+{{< highlight json >}}
 {
  "feilmelding":"En god feilmelding som mennesker kan lese",
  "permanent":true
 }
-</pre>
+{{< / highlight >}}
+
 Permanent true vil si at mottaker aldri vil kunne klare å hente denne forsendelsen, den vil da gå videre og prøvd å levert via andre kanaler.
