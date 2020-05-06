@@ -20,6 +20,64 @@
     "description" : "Internt API for administrasjon av innsendte bekymringsmeldinger"
   } ],
   "paths" : {
+    "/bekymringsmelding/api/v1/admin/historikk/{bekymringsmeldingId}" : {
+      "get" : {
+        "tags" : [ "Bekymringsmelding admin" ],
+        "description" : "Henter hendelser for en bekymringsmelding",
+        "operationId" : "getHistorikk",
+        "parameters" : [ {
+          "name" : "bekymringsmeldingId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Hendelser hentet",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/HistorikkApiModel"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/bekymringsmelding/api/v1/admin/statistikk" : {
+      "get" : {
+        "tags" : [ "Bekymringsmelding admin" ],
+        "description" : "Henter statistikk",
+        "operationId" : "getStatistikk",
+        "parameters" : [ {
+          "name" : "sisteDager",
+          "in" : "query",
+          "schema" : {
+            "type" : "integer",
+            "format" : "int32"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Statistikk hentet",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/StatistikkApiModel"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/bekymringsmelding/api/v1/admin/statistikk/skjematyper" : {
       "get" : {
         "tags" : [ "Bekymringsmelding admin" ],
@@ -95,37 +153,6 @@
         }
       }
     },
-    "/bekymringsmelding/api/v1/admin/historikk/{bekymringsmeldingId}" : {
-      "get" : {
-        "tags" : [ "Bekymringsmelding admin" ],
-        "description" : "Henter hendelser for en bekymringsmelding",
-        "operationId" : "getHistorikk",
-        "parameters" : [ {
-          "name" : "bekymringsmeldingId",
-          "in" : "path",
-          "required" : true,
-          "schema" : {
-            "type" : "string",
-            "format" : "uuid"
-          }
-        } ],
-        "responses" : {
-          "200" : {
-            "description" : "Hendelser hentet",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "type" : "array",
-                  "items" : {
-                    "$ref" : "#/components/schemas/HistorikkApiModel"
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
     "/bekymringsmelding/api/v1/admin/meldinger" : {
       "get" : {
         "tags" : [ "Bekymringsmelding admin" ],
@@ -186,37 +213,82 @@
           }
         }
       }
-    },
-    "/bekymringsmelding/api/v1/admin/statistikk" : {
-      "get" : {
-        "tags" : [ "Bekymringsmelding admin" ],
-        "description" : "Henter statistikk",
-        "operationId" : "getStatistikk",
-        "parameters" : [ {
-          "name" : "sisteDager",
-          "in" : "query",
-          "schema" : {
-            "type" : "integer",
-            "format" : "int32"
-          }
-        } ],
-        "responses" : {
-          "200" : {
-            "description" : "Statistikk hentet",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/StatistikkApiModel"
-                }
-              }
-            }
-          }
-        }
-      }
     }
   },
   "components" : {
     "schemas" : {
+      "HistorikkApiModel" : {
+        "required" : [ "bekymringsmeldingId", "state", "tidspunkt" ],
+        "type" : "object",
+        "properties" : {
+          "bekymringsmeldingId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "tidspunkt" : {
+            "type" : "string"
+          },
+          "meldingstype" : {
+            "type" : "string"
+          },
+          "meldingId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "state" : {
+            "type" : "string"
+          },
+          "fiksIoKonto" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "feilmelding" : {
+            "type" : "string"
+          }
+        }
+      },
+      "StatistikkApiModel" : {
+        "required" : [ "antallBekymringsmeldingerTotalt", "antallIkkeBekreftetFagsystem", "antallIkkeLevertPost", "antallIkkeSendt", "antallLevertFagsystemSisteDager", "antallLevertPrintSisteDager", "antallOffentligBekymringsmeldingerSisteDager", "antallPrivateBekymringsmeldingerSisteDager", "sisteDager" ],
+        "type" : "object",
+        "properties" : {
+          "antallBekymringsmeldingerTotalt" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "antallPrivateBekymringsmeldingerSisteDager" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "antallOffentligBekymringsmeldingerSisteDager" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "antallLevertPrintSisteDager" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "antallLevertFagsystemSisteDager" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "antallIkkeSendt" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "antallIkkeBekreftetFagsystem" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "antallIkkeLevertPost" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "sisteDager" : {
+            "type" : "integer",
+            "format" : "int32"
+          }
+        }
+      },
       "StatistikkSkjematypeApiModel" : {
         "required" : [ "antallBekymringsmeldingerTotalt", "antallOffentligBekymringsmeldinger", "antallPrivatBekymringsmeldinger", "dato" ],
         "type" : "object",
@@ -330,36 +402,6 @@
           }
         }
       },
-      "HistorikkApiModel" : {
-        "required" : [ "bekymringsmeldingId", "state", "tidspunkt" ],
-        "type" : "object",
-        "properties" : {
-          "bekymringsmeldingId" : {
-            "type" : "string",
-            "format" : "uuid"
-          },
-          "tidspunkt" : {
-            "type" : "string"
-          },
-          "meldingstype" : {
-            "type" : "string"
-          },
-          "meldingId" : {
-            "type" : "string",
-            "format" : "uuid"
-          },
-          "state" : {
-            "type" : "string"
-          },
-          "fiksIoKonto" : {
-            "type" : "string",
-            "format" : "uuid"
-          },
-          "feilmelding" : {
-            "type" : "string"
-          }
-        }
-      },
       "MeldingApiModel" : {
         "required" : [ "bekreftet", "bekymringsmeldingId", "bydelRessursId", "bydelsnavn", "fiksOrgId", "innsendt", "kanal" ],
         "type" : "object",
@@ -403,48 +445,6 @@
             "items" : {
               "$ref" : "#/components/schemas/MeldingApiModel"
             }
-          }
-        }
-      },
-      "StatistikkApiModel" : {
-        "required" : [ "antallBekymringsmeldingerTotalt", "antallIkkeBekreftetFagsystem", "antallIkkeLevertPost", "antallIkkeSendt", "antallLevertFagsystemSisteDager", "antallLevertPrintSisteDager", "antallOffentligBekymringsmeldingerSisteDager", "antallPrivateBekymringsmeldingerSisteDager", "sisteDager" ],
-        "type" : "object",
-        "properties" : {
-          "antallBekymringsmeldingerTotalt" : {
-            "type" : "integer",
-            "format" : "int32"
-          },
-          "antallPrivateBekymringsmeldingerSisteDager" : {
-            "type" : "integer",
-            "format" : "int32"
-          },
-          "antallOffentligBekymringsmeldingerSisteDager" : {
-            "type" : "integer",
-            "format" : "int32"
-          },
-          "antallLevertPrintSisteDager" : {
-            "type" : "integer",
-            "format" : "int32"
-          },
-          "antallLevertFagsystemSisteDager" : {
-            "type" : "integer",
-            "format" : "int32"
-          },
-          "antallIkkeSendt" : {
-            "type" : "integer",
-            "format" : "int32"
-          },
-          "antallIkkeBekreftetFagsystem" : {
-            "type" : "integer",
-            "format" : "int32"
-          },
-          "antallIkkeLevertPost" : {
-            "type" : "integer",
-            "format" : "int32"
-          },
-          "sisteDager" : {
-            "type" : "integer",
-            "format" : "int32"
           }
         }
       }
