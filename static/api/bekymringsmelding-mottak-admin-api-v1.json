@@ -20,44 +20,30 @@
     "description" : "Internt API for administrasjon av innsendte bekymringsmeldinger"
   } ],
   "paths" : {
-    "/bekymringsmelding/api/v1/admin/statistikk/bydeler" : {
+    "/bekymringsmelding/api/v1/admin/historikk/{bekymringsmeldingId}" : {
       "get" : {
         "tags" : [ "Bekymringsmelding admin" ],
-        "description" : "Henter statistikk for bydeler",
-        "operationId" : "getStatistikkBydeler",
+        "description" : "Henter hendelser for en bekymringsmelding",
+        "operationId" : "getHistorikk",
         "parameters" : [ {
-          "name" : "fra",
-          "in" : "query",
-          "description" : "Index for det første søketreffet som skal returneres",
+          "name" : "bekymringsmeldingId",
+          "in" : "path",
+          "required" : true,
           "schema" : {
-            "type" : "integer",
-            "format" : "int32",
-            "default" : 0
-          }
-        }, {
-          "name" : "antall",
-          "in" : "query",
-          "description" : "Antall søketreff som skal returneres",
-          "schema" : {
-            "type" : "integer",
-            "format" : "int32",
-            "default" : 50
-          }
-        }, {
-          "name" : "sok",
-          "in" : "query",
-          "description" : "Filtrer på søkefrase. Det kan søkes etter bydelsnavn, fiksOrgId eller bydelsRessursId",
-          "schema" : {
-            "type" : "string"
+            "type" : "string",
+            "format" : "uuid"
           }
         } ],
         "responses" : {
           "200" : {
-            "description" : "Statistikk for bydeler hentet",
+            "description" : "Hendelser hentet",
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/StatistikkBydelResultApiModel"
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/HistorikkApiModel"
+                  }
                 }
               }
             }
@@ -182,30 +168,44 @@
         }
       }
     },
-    "/bekymringsmelding/api/v1/admin/historikk/{bekymringsmeldingId}" : {
+    "/bekymringsmelding/api/v1/admin/statistikk/bydeler" : {
       "get" : {
         "tags" : [ "Bekymringsmelding admin" ],
-        "description" : "Henter hendelser for en bekymringsmelding",
-        "operationId" : "getHistorikk",
+        "description" : "Henter statistikk for bydeler",
+        "operationId" : "getStatistikkBydeler",
         "parameters" : [ {
-          "name" : "bekymringsmeldingId",
-          "in" : "path",
-          "required" : true,
+          "name" : "fra",
+          "in" : "query",
+          "description" : "Index for det første søketreffet som skal returneres",
           "schema" : {
-            "type" : "string",
-            "format" : "uuid"
+            "type" : "integer",
+            "format" : "int32",
+            "default" : 0
+          }
+        }, {
+          "name" : "antall",
+          "in" : "query",
+          "description" : "Antall søketreff som skal returneres",
+          "schema" : {
+            "type" : "integer",
+            "format" : "int32",
+            "default" : 50
+          }
+        }, {
+          "name" : "sok",
+          "in" : "query",
+          "description" : "Filtrer på søkefrase. Det kan søkes etter bydelsnavn, fiksOrgId eller bydelsRessursId",
+          "schema" : {
+            "type" : "string"
           }
         } ],
         "responses" : {
           "200" : {
-            "description" : "Hendelser hentet",
+            "description" : "Statistikk for bydeler hentet",
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "type" : "array",
-                  "items" : {
-                    "$ref" : "#/components/schemas/HistorikkApiModel"
-                  }
+                  "$ref" : "#/components/schemas/StatistikkBydelResultApiModel"
                 }
               }
             }
@@ -216,95 +216,33 @@
   },
   "components" : {
     "schemas" : {
-      "KontaktinformasjonApiModel" : {
+      "HistorikkApiModel" : {
+        "required" : [ "bekymringsmeldingId", "state", "tidspunkt" ],
         "type" : "object",
         "properties" : {
-          "telefon" : {
-            "type" : "string"
-          },
-          "epost" : {
-            "type" : "string"
-          },
-          "postadresseNavn" : {
-            "type" : "string"
-          },
-          "postadresseAdresselinje1" : {
-            "type" : "string"
-          },
-          "postadresseAdresselinje2" : {
-            "type" : "string"
-          },
-          "postadresseAdresselinje3" : {
-            "type" : "string"
-          },
-          "postadressePostnr" : {
-            "type" : "string"
-          },
-          "postadressePoststed" : {
-            "type" : "string"
-          }
-        }
-      },
-      "StatistikkBydelApiModel" : {
-        "required" : [ "bydelRessursId", "bydelsnavn", "fiksOrgId", "kontaktinformasjon", "statistikk", "varseleposter" ],
-        "type" : "object",
-        "properties" : {
-          "bydelsnavn" : {
-            "type" : "string"
-          },
-          "statistikk" : {
-            "$ref" : "#/components/schemas/StatistikkEnkelApiModel"
-          },
-          "fiksOrgId" : {
+          "bekymringsmeldingId" : {
             "type" : "string",
             "format" : "uuid"
           },
-          "bydelRessursId" : {
+          "tidspunkt" : {
+            "type" : "string"
+          },
+          "meldingstype" : {
+            "type" : "string"
+          },
+          "meldingId" : {
             "type" : "string",
             "format" : "uuid"
           },
-          "varseleposter" : {
-            "type" : "array",
-            "items" : {
-              "type" : "string"
-            }
+          "state" : {
+            "type" : "string"
           },
-          "kontaktinformasjon" : {
-            "$ref" : "#/components/schemas/KontaktinformasjonApiModel"
-          }
-        }
-      },
-      "StatistikkBydelResultApiModel" : {
-        "required" : [ "statistikkBydeler", "totaltAntallTreff" ],
-        "type" : "object",
-        "properties" : {
-          "totaltAntallTreff" : {
-            "type" : "integer",
-            "format" : "int32"
+          "fiksIoKonto" : {
+            "type" : "string",
+            "format" : "uuid"
           },
-          "statistikkBydeler" : {
-            "type" : "array",
-            "items" : {
-              "$ref" : "#/components/schemas/StatistikkBydelApiModel"
-            }
-          }
-        }
-      },
-      "StatistikkEnkelApiModel" : {
-        "required" : [ "antallBekymringsmeldingerTotalt", "antallLevertFagsystem", "antallLevertPrint" ],
-        "type" : "object",
-        "properties" : {
-          "antallBekymringsmeldingerTotalt" : {
-            "type" : "integer",
-            "format" : "int32"
-          },
-          "antallLevertPrint" : {
-            "type" : "integer",
-            "format" : "int32"
-          },
-          "antallLevertFagsystem" : {
-            "type" : "integer",
-            "format" : "int32"
+          "feilmelding" : {
+            "type" : "string"
           }
         }
       },
@@ -417,33 +355,95 @@
           }
         }
       },
-      "HistorikkApiModel" : {
-        "required" : [ "bekymringsmeldingId", "state", "tidspunkt" ],
+      "KontaktinformasjonApiModel" : {
         "type" : "object",
         "properties" : {
-          "bekymringsmeldingId" : {
+          "telefon" : {
+            "type" : "string"
+          },
+          "epost" : {
+            "type" : "string"
+          },
+          "postadresseNavn" : {
+            "type" : "string"
+          },
+          "postadresseAdresselinje1" : {
+            "type" : "string"
+          },
+          "postadresseAdresselinje2" : {
+            "type" : "string"
+          },
+          "postadresseAdresselinje3" : {
+            "type" : "string"
+          },
+          "postadressePostnr" : {
+            "type" : "string"
+          },
+          "postadressePoststed" : {
+            "type" : "string"
+          }
+        }
+      },
+      "StatistikkBydelApiModel" : {
+        "required" : [ "bydelRessursId", "bydelsnavn", "fiksOrgId", "kontaktinformasjon", "statistikk", "varseleposter" ],
+        "type" : "object",
+        "properties" : {
+          "bydelsnavn" : {
+            "type" : "string"
+          },
+          "statistikk" : {
+            "$ref" : "#/components/schemas/StatistikkEnkelApiModel"
+          },
+          "fiksOrgId" : {
             "type" : "string",
             "format" : "uuid"
           },
-          "tidspunkt" : {
-            "type" : "string"
-          },
-          "meldingstype" : {
-            "type" : "string"
-          },
-          "meldingId" : {
+          "bydelRessursId" : {
             "type" : "string",
             "format" : "uuid"
           },
-          "state" : {
-            "type" : "string"
+          "varseleposter" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
           },
-          "fiksIoKonto" : {
-            "type" : "string",
-            "format" : "uuid"
+          "kontaktinformasjon" : {
+            "$ref" : "#/components/schemas/KontaktinformasjonApiModel"
+          }
+        }
+      },
+      "StatistikkBydelResultApiModel" : {
+        "required" : [ "statistikkBydeler", "totaltAntallTreff" ],
+        "type" : "object",
+        "properties" : {
+          "totaltAntallTreff" : {
+            "type" : "integer",
+            "format" : "int32"
           },
-          "feilmelding" : {
-            "type" : "string"
+          "statistikkBydeler" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/StatistikkBydelApiModel"
+            }
+          }
+        }
+      },
+      "StatistikkEnkelApiModel" : {
+        "required" : [ "antallBekymringsmeldingerTotalt", "antallLevertFagsystem", "antallLevertPrint" ],
+        "type" : "object",
+        "properties" : {
+          "antallBekymringsmeldingerTotalt" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "antallLevertPrint" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "antallLevertFagsystem" : {
+            "type" : "integer",
+            "format" : "int32"
           }
         }
       }
