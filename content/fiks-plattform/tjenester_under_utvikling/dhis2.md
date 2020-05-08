@@ -9,3 +9,4 @@ KS vil i løpet av mai lansere en tjeneste under Fiks-plattformen som tilbyr kom
 
 DHIS2 (District Health Information Software 2) er et verktøy for innsamling, validering, analyse og presentasjon av samlede og personbaserte statistiske data. DHIS2 er en modulbasert programvarepakke bygget med gratis og åpen kildekode Java-rammer. DHIS2 har utviklet en spesialisert modul for smittesporingrundt covid-19 pandemien. DHIS2 er utviklet av Universitetet i Oslo og er tatt i bruk i en rekke land.
 
+For mere informasjon om DHIS2 covid-19 se https://www.dhis2.org/covid-19
