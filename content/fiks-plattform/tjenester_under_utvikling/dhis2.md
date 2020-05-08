@@ -17,7 +17,7 @@ Systemet har en felles installasjon for alle kommunene og leveres som en skytjen
 
 Figuren under beskriver de overordnede prosessene som inngår i tjenesten Smittsporing.
 
-![Smittesporingtjeneste](../images/Smittesportjeneste.gif "Smittesporing")
+![Smittesporingtjeneste](../../images/Smittesportjeneste.gif "Smittesporing")
 
 Funksjonaliteten i DHIS2 er kort fortalt registrering av informasjon om smittet og hvem den smittede har vært i kontakt med, kalt nærkontakter. Innsamling av informasjon som skal registreres, skjer ved intervju. En nærkontakt er definert etter regler gitt av FHI. Ved innsamling av informasjon kan ansatte bruke andre kilder som folkeregisteret, karttjenester, arrangementinformasjon, etc.
 
