@@ -20,11 +20,114 @@
     "description" : "Eksternt API rettet mot fagsystemer for å sende inn bekymringsmeldinger"
   } ],
   "paths" : {
+    "/bekymringsmelding/api/v1/mottak/fagsystem/{fraFiksOrgId}/bekymringsmelding/{bekymringsmeldingId}/status" : {
+      "get" : {
+        "tags" : [ "Bekymringsmelding mottak fagsystem" ],
+        "description" : "Henter status for en bekymringsmelding",
+        "operationId" : "getStatusBekymringsmelding",
+        "parameters" : [ {
+          "name" : "fraFiksOrgId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        }, {
+          "name" : "bekymringsmeldingId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Status for bekymringsmelding funnet",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/HistorikkApiModel"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/bekymringsmelding/api/v1/mottak/fagsystem/{fraFiksOrgId}/{kommunenummer}/{bydelsnummer}/privat" : {
       "post" : {
         "tags" : [ "Bekymringsmelding mottak fagsystem" ],
         "description" : "Oppretter privat bekymringsmelding",
         "operationId" : "opprettPrivatBekymringsmelding",
+        "parameters" : [ {
+          "name" : "fraFiksOrgId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        }, {
+          "name" : "kommunenummer",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "bydelsnummer",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "multipart/form-data" : {
+              "schema" : {
+                "required" : [ "asice", "bekymringsmelding" ],
+                "type" : "object",
+                "properties" : {
+                  "bekymringsmelding" : {
+                    "type" : "string",
+                    "description" : "bekymringsmelding.pdf kryptert med printleverandørens nøkkel",
+                    "format" : "binary"
+                  },
+                  "asice" : {
+                    "type" : "string",
+                    "description" : "asice.zip, kryptert med fagsystemnøkkel, skal inneholde bekymringsmelding.pdf og bekymringsmelding.json",
+                    "format" : "binary"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses" : {
+          "201" : {
+            "description" : "Bekymringsmelding opprettet",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/BekymringsmeldingId"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/bekymringsmelding/api/v1/mottak/fagsystem/{fraFiksOrgId}/{kommunenummer}/{bydelsnummer}/offentlig" : {
+      "post" : {
+        "tags" : [ "Bekymringsmelding mottak fagsystem" ],
+        "description" : "Oppretter offentlig bekymringsmelding",
+        "operationId" : "opprettOffentligBekymringsmelding",
         "parameters" : [ {
           "name" : "fraFiksOrgId",
           "in" : "path",
@@ -117,113 +220,29 @@
           }
         }
       }
-    },
-    "/bekymringsmelding/api/v1/mottak/fagsystem/{fraFiksOrgId}/{kommunenummer}/{bydelsnummer}/offentlig" : {
-      "post" : {
-        "tags" : [ "Bekymringsmelding mottak fagsystem" ],
-        "description" : "Oppretter offentlig bekymringsmelding",
-        "operationId" : "opprettOffentligBekymringsmelding",
-        "parameters" : [ {
-          "name" : "fraFiksOrgId",
-          "in" : "path",
-          "required" : true,
-          "schema" : {
-            "type" : "string",
-            "format" : "uuid"
-          }
-        }, {
-          "name" : "kommunenummer",
-          "in" : "path",
-          "required" : true,
-          "schema" : {
-            "type" : "string"
-          }
-        }, {
-          "name" : "bydelsnummer",
-          "in" : "path",
-          "required" : true,
-          "schema" : {
-            "type" : "string"
-          }
-        } ],
-        "requestBody" : {
-          "content" : {
-            "multipart/form-data" : {
-              "schema" : {
-                "required" : [ "asice", "bekymringsmelding" ],
-                "type" : "object",
-                "properties" : {
-                  "bekymringsmelding" : {
-                    "type" : "string",
-                    "description" : "bekymringsmelding.pdf kryptert med printleverandørens nøkkel",
-                    "format" : "binary"
-                  },
-                  "asice" : {
-                    "type" : "string",
-                    "description" : "asice.zip, kryptert med fagsystemnøkkel, skal inneholde bekymringsmelding.pdf og bekymringsmelding.json",
-                    "format" : "binary"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "responses" : {
-          "201" : {
-            "description" : "Bekymringsmelding opprettet",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/BekymringsmeldingId"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/bekymringsmelding/api/v1/mottak/fagsystem/{fraFiksOrgId}/bekymringsmelding/{bekymringsmeldingId}/status" : {
-      "get" : {
-        "tags" : [ "Bekymringsmelding mottak fagsystem" ],
-        "description" : "Henter status for en bekymringsmelding",
-        "operationId" : "getStatusBekymringsmelding",
-        "parameters" : [ {
-          "name" : "fraFiksOrgId",
-          "in" : "path",
-          "required" : true,
-          "schema" : {
-            "type" : "string",
-            "format" : "uuid"
-          }
-        }, {
-          "name" : "bekymringsmeldingId",
-          "in" : "path",
-          "required" : true,
-          "schema" : {
-            "type" : "string",
-            "format" : "uuid"
-          }
-        } ],
-        "responses" : {
-          "200" : {
-            "description" : "Status for bekymringsmelding funnet",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "type" : "array",
-                  "items" : {
-                    "$ref" : "#/components/schemas/HistorikkApiModel"
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
     }
   },
   "components" : {
     "schemas" : {
+      "HistorikkApiModel" : {
+        "required" : [ "bekymringsmeldingId", "tidspunkt", "tilstand" ],
+        "type" : "object",
+        "properties" : {
+          "bekymringsmeldingId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "tidspunkt" : {
+            "type" : "string"
+          },
+          "tilstand" : {
+            "type" : "string"
+          },
+          "feilmelding" : {
+            "type" : "string"
+          }
+        }
+      },
       "BekymringsmeldingId" : {
         "required" : [ "uuid" ],
         "type" : "object",
@@ -304,25 +323,6 @@
             "type" : "string"
           },
           "issuerDN" : {
-            "type" : "string"
-          }
-        }
-      },
-      "HistorikkApiModel" : {
-        "required" : [ "bekymringsmeldingId", "tidspunkt", "tilstand" ],
-        "type" : "object",
-        "properties" : {
-          "bekymringsmeldingId" : {
-            "type" : "string",
-            "format" : "uuid"
-          },
-          "tidspunkt" : {
-            "type" : "string"
-          },
-          "tilstand" : {
-            "type" : "string"
-          },
-          "feilmelding" : {
             "type" : "string"
           }
         }
