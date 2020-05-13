@@ -20,55 +20,96 @@
     "variables" : { }
   } ],
   "tags" : [ {
-    "name" : "Dhis2Konfigurasjon",
+    "name" : "Dhis2KonfigurasjonBrukere",
+    "description" : "API for konfigurasjon av DHIS2"
+  }, {
+    "name" : "Dhis2KonfigurasjonOrganisasjoner",
     "description" : "API for konfigurasjon av DHIS2"
   } ],
   "paths" : {
-    "/dhis2-konfigurasjon/api/v1/organisasjoner/{fiksOrganisasjonId}" : {
-      "get" : {
-        "tags" : [ "Dhis2Konfigurasjon" ],
-        "description" : "Henter informasjon om en Fiks-organisasjon fra DHIS2",
-        "operationId" : "getOrganisasjon",
+    "/dhis2-konfigurasjon/api/v1/brukere/{id}" : {
+      "put" : {
+        "tags" : [ "Dhis2KonfigurasjonBrukere" ],
+        "description" : "Oppdaterer en eksisterende bruker i DHIS2.",
+        "operationId" : "oppdaterBruker",
         "parameters" : [ {
-          "name" : "fiksOrganisasjonId",
+          "name" : "id",
           "in" : "path",
           "required" : true,
           "schema" : {
-            "type" : "string",
-            "format" : "uuid"
+            "type" : "string"
           }
         } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/OppdaterBrukerRequest"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "default" : {
+            "description" : "default response",
+            "content" : {
+              "*/*" : { }
+            }
+          }
+        }
+      }
+    },
+    "/dhis2-konfigurasjon/api/v1/brukere/sok" : {
+      "get" : {
+        "tags" : [ "Dhis2KonfigurasjonBrukere" ],
+        "description" : "Søker etter en bruker i DHIS2",
+        "operationId" : "brukerSok",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/BrukerSok"
+              }
+            }
+          }
+        },
         "responses" : {
           "default" : {
             "description" : "default response",
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/Organisasjon"
+                  "$ref" : "#/components/schemas/BrukerSokResponse"
                 }
               }
             }
           }
         }
-      },
+      }
+    },
+    "/dhis2-konfigurasjon/api/v1/brukere" : {
       "post" : {
-        "tags" : [ "Dhis2Konfigurasjon" ],
-        "description" : "Oppretter en ekisterende Fiks-organisasjon i DHIS2",
-        "operationId" : "opprettOrganisasjon",
-        "parameters" : [ {
-          "name" : "fiksOrganisasjonId",
-          "in" : "path",
-          "required" : true,
-          "schema" : {
-            "type" : "string",
-            "format" : "uuid"
+        "tags" : [ "Dhis2KonfigurasjonBrukere" ],
+        "description" : "Oppretter en bruker i DHIS2",
+        "operationId" : "opprettBruker",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/OpprettBrukerRequest"
+              }
+            }
           }
-        } ],
+        },
         "responses" : {
           "default" : {
             "description" : "default response",
             "content" : {
-              "application/json" : { }
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/OpprettBrukerResponse"
+                }
+              }
             }
           }
         }
@@ -76,7 +117,7 @@
     },
     "/dhis2-konfigurasjon/api/v1/organisasjoner/{fiksOrganisasjonId}/tilganger" : {
       "get" : {
-        "tags" : [ "Dhis2Konfigurasjon" ],
+        "tags" : [ "Dhis2KonfigurasjonOrganisasjoner" ],
         "description" : "Henter alle tilganger på gitt Fiks-organisasjon fra DHIS2",
         "operationId" : "getTilganger",
         "parameters" : [ {
@@ -100,9 +141,11 @@
             }
           }
         }
-      },
+      }
+    },
+    "/dhis2-konfigurasjon/api/v1/organisasjoner/{fiksOrganisasjonId}/tilganger/{brukerId}" : {
       "post" : {
-        "tags" : [ "Dhis2Konfigurasjon" ],
+        "tags" : [ "Dhis2KonfigurasjonOrganisasjoner" ],
         "description" : "Gir en bruker tilgang i DHIS2 for gitt Fiks-organisasjon",
         "operationId" : "opprettTilgang",
         "parameters" : [ {
@@ -112,6 +155,13 @@
           "schema" : {
             "type" : "string",
             "format" : "uuid"
+          }
+        }, {
+          "name" : "brukerId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
           }
         } ],
         "requestBody" : {
@@ -131,11 +181,9 @@
             }
           }
         }
-      }
-    },
-    "/dhis2-konfigurasjon/api/v1/organisasjoner/{fiksOrganisasjonId}/tilganger/{brukerId}" : {
+      },
       "delete" : {
-        "tags" : [ "Dhis2Konfigurasjon" ],
+        "tags" : [ "Dhis2KonfigurasjonOrganisasjoner" ],
         "description" : "Fjerner tilgang for en bruker i DHIS2 for gitt Fiks-organisasjon",
         "operationId" : "fjernTilgang",
         "parameters" : [ {
@@ -167,11 +215,81 @@
   },
   "components" : {
     "schemas" : {
-      "Organisasjon" : {
+      "OppdaterBrukerRequest" : {
         "type" : "object",
         "properties" : {
-          "eksisterer" : {
-            "type" : "boolean"
+          "fornavn" : {
+            "type" : "string"
+          },
+          "etternavn" : {
+            "type" : "string"
+          },
+          "epost" : {
+            "type" : "string"
+          },
+          "telefonnummer" : {
+            "type" : "string"
+          }
+        }
+      },
+      "Bruker" : {
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string"
+          },
+          "fornavn" : {
+            "type" : "string"
+          },
+          "etternavn" : {
+            "type" : "string"
+          }
+        }
+      },
+      "BrukerSokResponse" : {
+        "type" : "object",
+        "properties" : {
+          "treff" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Bruker"
+            }
+          }
+        }
+      },
+      "BrukerSok" : {
+        "type" : "object",
+        "properties" : {
+          "fnr" : {
+            "type" : "string"
+          }
+        }
+      },
+      "OpprettBrukerResponse" : {
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string"
+          }
+        }
+      },
+      "OpprettBrukerRequest" : {
+        "type" : "object",
+        "properties" : {
+          "fnr" : {
+            "type" : "string"
+          },
+          "fornavn" : {
+            "type" : "string"
+          },
+          "etternavn" : {
+            "type" : "string"
+          },
+          "epost" : {
+            "type" : "string"
+          },
+          "telefonnummer" : {
+            "type" : "string"
           }
         }
       },
@@ -186,6 +304,10 @@
           },
           "etternavn" : {
             "type" : "string"
+          },
+          "role" : {
+            "type" : "string",
+            "enum" : [ "LESE_SKRIVE", "LESE" ]
           }
         }
       },
@@ -203,14 +325,9 @@
       "OpprettTilgangRequest" : {
         "type" : "object",
         "properties" : {
-          "fnr" : {
-            "type" : "string"
-          },
-          "fornavn" : {
-            "type" : "string"
-          },
-          "etternavn" : {
-            "type" : "string"
+          "role" : {
+            "type" : "string",
+            "enum" : [ "LESE_SKRIVE", "LESE" ]
           }
         }
       }
