@@ -153,8 +153,7 @@ KS arbeider med en veileder for brukere av systemet.
 Alle kurs vil gjøres tilgjengelig på KS-læring.
 
 ### Referanser
-1. Bestilling av tilgang til Fiks smittesporing
-2. Bestilling import av manuelt registrert smittesporing
+1. Bestilling av tilgang til Fiks smittesporing: smittesporing@ks.no 
 3. Informasjon om DHIS2 Covid-19: https://www.dhis2.org/covid-19 
 4. Coronaveileder https://www.fhi.no/nettpub/coronavirus/ 
 5. Kontaktsporing og oppfølging av kontakter til personer med nytt koronavirus (coronavirus)
