@@ -123,11 +123,129 @@
         }
       }
     },
-    "/digisos/api/v1/soknader/{digisosId}/dokumenter/{dokumentlagerId}" : {
+    "/digisos/api/v1/nav/soknader/soknader/{sporingsId}" : {
+      "post" : {
+        "tags" : [ "DigisosSoknadNav" ],
+        "description" : "Henter alle søknader for angitt søker",
+        "operationId" : "getSoknaderNav",
+        "parameters" : [ {
+          "name" : "sporingsId",
+          "in" : "path",
+          "description" : "SporingsId for request",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/Fnr"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Søknader som tilhører søkeren",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/DigisosSak"
+                  }
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Ugyldig data ble oppgitt",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Du har ikke tilgang til søknadene tilhørende angitt fnr",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/digisos/api/v1/nav/soknader/{digisosId}/{sporingsId}" : {
       "get" : {
-        "tags" : [ "DigisosSoknad" ],
+        "tags" : [ "DigisosSoknadNav" ],
+        "description" : "Henter søknad for angitt DigisosId",
+        "operationId" : "getSoknadNav",
+        "parameters" : [ {
+          "name" : "digisosId",
+          "in" : "path",
+          "description" : "DigisosId for søknad",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        }, {
+          "name" : "sporingsId",
+          "in" : "path",
+          "description" : "SporingsId for request",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Henter informasjon om søknad",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/DigisosSak"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Ugyldig data ble oppgitt",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Du har ikke tilgang til den angitte søknaden tilhørende fnr",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/digisos/api/v1/nav/soknader/{digisosId}/dokumenter/{dokumentlagerId}" : {
+      "get" : {
+        "tags" : [ "DigisosSoknadNav" ],
         "description" : "Henter dokument for angitt dokumentlager-id",
-        "operationId" : "getDokument",
+        "operationId" : "getDokumentNav",
         "parameters" : [ {
           "name" : "digisosId",
           "in" : "path",
@@ -145,6 +263,14 @@
           "schema" : {
             "type" : "string",
             "format" : "uuid"
+          }
+        }, {
+          "name" : "sporingsId",
+          "in" : "query",
+          "description" : "SporingsId for request",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
           }
         } ],
         "responses" : {
@@ -264,6 +390,57 @@
           }
         }
       }
+    },
+    "/digisos/api/v1/soknader/{digisosId}/dokumenter/{dokumentlagerId}" : {
+      "get" : {
+        "tags" : [ "DigisosSoknad" ],
+        "description" : "Henter dokument for angitt dokumentlager-id",
+        "operationId" : "getDokument",
+        "parameters" : [ {
+          "name" : "digisosId",
+          "in" : "path",
+          "description" : "Digisos-ID for dokument",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        }, {
+          "name" : "dokumentlagerId",
+          "in" : "path",
+          "description" : "Dokumentlager-ID for dokument",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Henter dokument"
+          },
+          "400" : {
+            "description" : "Ugyldig id",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Du har ikke tilgang til dokumentet tilhørende den angitte id-en",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components" : {
@@ -356,20 +533,25 @@
         "properties" : {
           "fiksDigisosId" : {
             "type" : "string",
+            "description" : "Unik identifikator for søknaden, generert av Fiks",
             "format" : "uuid"
           },
           "sokerFnr" : {
-            "type" : "string"
+            "type" : "string",
+            "description" : "Fødselsnummer tilknyttet søknaden"
           },
           "fiksOrgId" : {
             "type" : "string",
+            "description" : "Fiks organisasjon-id søknaden er sendt til",
             "format" : "uuid"
           },
           "kommunenummer" : {
-            "type" : "string"
+            "type" : "string",
+            "description" : "Kommunenummer søknaden er sendt til"
           },
           "sistEndret" : {
             "type" : "integer",
+            "description" : "Timestamp for når søknad-data ble sist oppdatert",
             "format" : "int64"
           },
           "originalSoknadNAV" : {
@@ -380,8 +562,12 @@
           },
           "digisosSoker" : {
             "$ref" : "#/components/schemas/DigisosSoker"
+          },
+          "tilleggsinformasjon" : {
+            "$ref" : "#/components/schemas/Tilleggsinformasjon"
           }
-        }
+        },
+        "description" : "Metadata for søknad"
       },
       "DigisosSoker" : {
         "type" : "object",
@@ -400,7 +586,8 @@
             "type" : "integer",
             "format" : "int64"
           }
-        }
+        },
+        "description" : "Saksoppdateringer fra kommunen. Kan være null"
       },
       "DokumentInfo" : {
         "type" : "object",
@@ -454,20 +641,24 @@
               "$ref" : "#/components/schemas/Ettersendelse"
             }
           }
-        }
+        },
+        "description" : "Innsendt ettersendelse via nav.no. Kan være null dersom kommunen har opprettet søknaden manuelt"
       },
       "OriginalSoknadNAV" : {
         "type" : "object",
         "properties" : {
           "navEksternRefId" : {
-            "type" : "string"
+            "type" : "string",
+            "description" : "Referanse tildelt søknaden fra NAV"
           },
           "metadata" : {
             "type" : "string",
+            "description" : "Dokumentlager-id for soknad.json",
             "format" : "uuid"
           },
           "vedleggMetadata" : {
             "type" : "string",
+            "description" : "Dokumentlager-id for vedlegg.json",
             "format" : "uuid"
           },
           "soknadDokument" : {
@@ -475,15 +666,40 @@
           },
           "vedlegg" : {
             "type" : "array",
+            "description" : "Liste av vedlegg",
             "items" : {
               "$ref" : "#/components/schemas/DokumentInfo"
             }
           },
           "timestampSendt" : {
             "type" : "integer",
+            "description" : "Tidspunkt for sendt søknad",
             "format" : "int64"
           }
-        }
+        },
+        "description" : "Innsendt søknad via nav.no. Kan være null dersom kommunen har opprettet søknaden manuelt"
+      },
+      "Tilleggsinformasjon" : {
+        "type" : "object",
+        "properties" : {
+          "enhetsnummer" : {
+            "type" : "string",
+            "description" : "Enhetsnummer på tildelt NAV-kontor for søknaden. Kan være null"
+          }
+        },
+        "description" : "Tilleggsinformasjon tilknyttet søknaden"
+      },
+      "Fnr" : {
+        "required" : [ "fnr" ],
+        "type" : "object",
+        "properties" : {
+          "fnr" : {
+            "pattern" : "^[0-9]{11}$",
+            "type" : "string",
+            "description" : "fnr"
+          }
+        },
+        "description" : "Fødselsnummer for søker"
       }
     }
   }
