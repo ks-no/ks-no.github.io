@@ -1,7 +1,9 @@
 ---
 title: Smittesporing ved bruk av DHIS2
 date: 2020-05-13
-aliases: [/fiks-plattform/tjenester_under_utvikling/dhis2/]
+aliases: 
+ - /fiks-plattform/tjenester_under_utvikling/dhis2/
+ - /fiks-platform/tjenester/dhis2/
 
 ---
 
