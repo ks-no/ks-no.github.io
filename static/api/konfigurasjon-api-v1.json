@@ -844,6 +844,39 @@
         }
       }
     },
+    "/konfigurasjon/api/v1/personer/list" : {
+      "post" : {
+        "tags" : [ "PersonKonfigurasjon" ],
+        "summary" : "Henter alle personene i listen med fødselsnummer",
+        "description" : "Krever at alle verdiene som sendes inn er gyldige fødselsnummer. Feiler ikke for personer som ikke blir funnet",
+        "operationId" : "getPersonerV2",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/PersonerGetRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Personene med forespurte fødselsnummer",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/Person"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/konfigurasjon/api/v1/personer/{fnr}" : {
       "patch" : {
         "tags" : [ "PersonKonfigurasjon" ],
@@ -862,6 +895,35 @@
             "application/json" : {
               "schema" : {
                 "$ref" : "#/components/schemas/PersonUpdateRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Den oppdaterte personen",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Person"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/konfigurasjon/api/v1/personer/oppdater" : {
+      "patch" : {
+        "tags" : [ "PersonKonfigurasjon" ],
+        "summary" : "Oppdaterer personen med gitt fødselsnummer",
+        "operationId" : "updatePersonV2",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/PersonMedFnrUpdateRequest"
               }
             }
           },
@@ -1811,9 +1873,56 @@
         },
         "description" : "En forespørsel om å opprette en person."
       },
+      "PersonerGetRequest" : {
+        "type" : "object",
+        "properties" : {
+          "fnrs" : {
+            "type" : "array",
+            "description" : "Liste av fodselsnummer",
+            "items" : {
+              "type" : "string",
+              "description" : "Liste av fodselsnummer"
+            }
+          }
+        },
+        "description" : "En forespørsel om å hente personer"
+      },
       "PersonUpdateRequest" : {
         "type" : "object",
         "properties" : {
+          "navn" : {
+            "maxLength" : 450,
+            "minLength" : 2,
+            "type" : "string",
+            "description" : "Personens fulle navn."
+          },
+          "tittel" : {
+            "pattern" : "^[A-Za-zæøåÆØÅ0-9_.,/\\-_ ]+$",
+            "type" : "string",
+            "description" : "Personens tittel i organisasjonen han eller hun opptrer på vegne av."
+          },
+          "telefon" : {
+            "pattern" : "^[+]?[0-9]+([- ][0-9]+)*$",
+            "type" : "string",
+            "description" : "Personens telefonnummer."
+          },
+          "epost" : {
+            "pattern" : "^[A-Za-zæøåÆØÅ0-9-_]+(\\.[A-Za-zæøåÆØÅ0-9-_]+)*@[A-Za-zæøåÆØÅ0-9-]+(\\.[A-Za-zæøåÆØÅ0-9-]+)*(\\.[A-Za-z]{2,})$",
+            "type" : "string",
+            "description" : "Personens epostadresse."
+          }
+        },
+        "description" : "En forespørsel om å oppdatere en ekisterende person."
+      },
+      "PersonMedFnrUpdateRequest" : {
+        "required" : [ "fnr" ],
+        "type" : "object",
+        "properties" : {
+          "fnr" : {
+            "pattern" : "^[0-9]{11}$",
+            "type" : "string",
+            "description" : "Personens fodselsnummer"
+          },
           "navn" : {
             "maxLength" : 450,
             "minLength" : 2,
