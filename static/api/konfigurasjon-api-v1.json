@@ -967,21 +967,48 @@
         }
       }
     },
-    "/konfigurasjon/api/v1/root/integrasjoner" : {
+    "/konfigurasjon/api/v1/root/organisasjoner" : {
       "get" : {
         "tags" : [ "RootKonfigurasjon" ],
-        "description" : "Henter alle integrasjoner",
-        "operationId" : "getAllIntegrasjoner",
+        "description" : "Henter alle organisasjoner",
+        "operationId" : "getAllOrganisasjoner",
         "responses" : {
           "200" : {
-            "description" : "Alle integrasjoner",
+            "description" : "Alle organisasjoner",
             "content" : {
               "application/json" : {
                 "schema" : {
                   "type" : "array",
                   "items" : {
-                    "$ref" : "#/components/schemas/Integrasjon"
+                    "$ref" : "#/components/schemas/Organisasjon"
                   }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post" : {
+        "tags" : [ "RootKonfigurasjon" ],
+        "description" : "Oppretter en organisasjon",
+        "operationId" : "createOrganisasjon",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/OrganisasjonCreateRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Den opprettede organisasjonen",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Organisasjon"
                 }
               }
             }
@@ -1129,55 +1156,6 @@
         }
       }
     },
-    "/konfigurasjon/api/v1/root/organisasjoner" : {
-      "get" : {
-        "tags" : [ "RootKonfigurasjon" ],
-        "description" : "Henter alle organisasjoner",
-        "operationId" : "getAllOrganisasjoner",
-        "responses" : {
-          "200" : {
-            "description" : "Alle organisasjoner",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "type" : "array",
-                  "items" : {
-                    "$ref" : "#/components/schemas/Organisasjon"
-                  }
-                }
-              }
-            }
-          }
-        }
-      },
-      "post" : {
-        "tags" : [ "RootKonfigurasjon" ],
-        "description" : "Oppretter en organisasjon",
-        "operationId" : "createOrganisasjon",
-        "requestBody" : {
-          "content" : {
-            "application/json" : {
-              "schema" : {
-                "$ref" : "#/components/schemas/OrganisasjonCreateRequest"
-              }
-            }
-          },
-          "required" : true
-        },
-        "responses" : {
-          "200" : {
-            "description" : "Den opprettede organisasjonen",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/Organisasjon"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
     "/konfigurasjon/api/v1/root/organisasjoner/{orgId}" : {
       "patch" : {
         "tags" : [ "RootKonfigurasjon" ],
@@ -1209,6 +1187,28 @@
               "application/json" : {
                 "schema" : {
                   "$ref" : "#/components/schemas/Organisasjon"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/konfigurasjon/api/v1/root/integrasjoner" : {
+      "get" : {
+        "tags" : [ "RootKonfigurasjon" ],
+        "description" : "Henter alle integrasjoner",
+        "operationId" : "getAllIntegrasjoner",
+        "responses" : {
+          "200" : {
+            "description" : "Alle integrasjoner",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/Integrasjon"
+                  }
                 }
               }
             }
@@ -2006,6 +2006,32 @@
         },
         "description" : "En liste over gyldige privilegier for en gitt ressurstype"
       },
+      "OrganisasjonCreateRequest" : {
+        "required" : [ "intern", "navn", "type" ],
+        "type" : "object",
+        "properties" : {
+          "navn" : {
+            "pattern" : "^[A-ZÆØÅa-zæøå0-9ÁáÀàÂâÉéÈèÊêÍíÌìÎîÓóÒòÔôÚúÙùÛûÝýÄäËëÏïÖöÜü,.!?\\-:;/\\\\'()&+*=%§]+[A-ZÆØÅa-zæøå0-9ÁáÀàÂâÉéÈèÊêÍíÌìÎîÓóÒòÔôÚúÙùÛûÝýÄäËëÏïÖöÜü ,.!?\\-:;/\\\\'()&+*=%§]*[A-ZÆØÅa-zæøå0-9ÁáÀàÂâÉéÈèÊêÍíÌìÎîÓóÒòÔôÚúÙùÛûÝýÄäËëÏïÖöÜü,.!?\\-:;/\\\\'()&+*=%§]+$",
+            "type" : "string",
+            "description" : "Organisasjonens navn."
+          },
+          "type" : {
+            "type" : "string",
+            "description" : "Organisasjonens type",
+            "enum" : [ "KOMMUNE", "FYLKESKOMMUNE", "KOMMUNAL_VIRKSOMHET", "STATLIG_VIRKSOMHET", "LEVERANDOR" ]
+          },
+          "intern" : {
+            "type" : "boolean",
+            "description" : "Indikerer om organisasjonen er intern"
+          },
+          "kommunenr" : {
+            "pattern" : "^\\d{4}$",
+            "type" : "string",
+            "description" : "Kommunenummer."
+          }
+        },
+        "description" : "En forespørsel om å opprette en ny organisasjon."
+      },
       "RootIntegrasjonUpdateRequest" : {
         "type" : "object",
         "properties" : {
@@ -2160,10 +2186,10 @@
           "singleValued" : {
             "type" : "boolean"
           },
-          "ordered" : {
+          "empty" : {
             "type" : "boolean"
           },
-          "empty" : {
+          "ordered" : {
             "type" : "boolean"
           },
           "orNull" : {
@@ -2195,10 +2221,10 @@
           "singleValued" : {
             "type" : "boolean"
           },
-          "ordered" : {
+          "empty" : {
             "type" : "boolean"
           },
-          "empty" : {
+          "ordered" : {
             "type" : "boolean"
           },
           "orNull" : {
@@ -2214,32 +2240,6 @@
             "type" : "boolean"
           }
         }
-      },
-      "OrganisasjonCreateRequest" : {
-        "required" : [ "intern", "navn", "type" ],
-        "type" : "object",
-        "properties" : {
-          "navn" : {
-            "pattern" : "^[A-ZÆØÅa-zæøå0-9ÁáÀàÂâÉéÈèÊêÍíÌìÎîÓóÒòÔôÚúÙùÛûÝýÄäËëÏïÖöÜü,.!?\\-:;/\\\\'()&+*=%§]+[A-ZÆØÅa-zæøå0-9ÁáÀàÂâÉéÈèÊêÍíÌìÎîÓóÒòÔôÚúÙùÛûÝýÄäËëÏïÖöÜü ,.!?\\-:;/\\\\'()&+*=%§]*[A-ZÆØÅa-zæøå0-9ÁáÀàÂâÉéÈèÊêÍíÌìÎîÓóÒòÔôÚúÙùÛûÝýÄäËëÏïÖöÜü,.!?\\-:;/\\\\'()&+*=%§]+$",
-            "type" : "string",
-            "description" : "Organisasjonens navn."
-          },
-          "type" : {
-            "type" : "string",
-            "description" : "Organisasjonens type",
-            "enum" : [ "KOMMUNE", "FYLKESKOMMUNE", "KOMMUNAL_VIRKSOMHET", "STATLIG_VIRKSOMHET", "LEVERANDOR" ]
-          },
-          "intern" : {
-            "type" : "boolean",
-            "description" : "Indikerer om organisasjonen er intern"
-          },
-          "kommunenr" : {
-            "pattern" : "^\\d{4}$",
-            "type" : "string",
-            "description" : "Kommunenummer."
-          }
-        },
-        "description" : "En forespørsel om å opprette en ny organisasjon."
       },
       "RootOrganisasjonUpdateRequest" : {
         "required" : [ "intern" ],
