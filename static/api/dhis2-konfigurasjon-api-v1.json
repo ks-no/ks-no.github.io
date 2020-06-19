@@ -114,20 +114,70 @@
         }
       }
     },
-    "/dhis2-konfigurasjon/api/v1/organisasjoner" : {
-      "get" : {
+    "/dhis2-konfigurasjon/api/v1/organisasjoner/{fiksOrganisasjonId}/tilganger/{brukerId}" : {
+      "post" : {
         "tags" : [ "Dhis2KonfigurasjonOrganisasjoner" ],
-        "description" : "Henter informasjon for alle registrerte organisasjoner",
-        "operationId" : "getOrganisasjoner",
+        "description" : "Gir en bruker tilgang i DHIS2 for gitt Fiks-organisasjon",
+        "operationId" : "opprettTilgang",
+        "parameters" : [ {
+          "name" : "fiksOrganisasjonId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        }, {
+          "name" : "brukerId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/OpprettTilgangRequest"
+              }
+            }
+          }
+        },
         "responses" : {
           "default" : {
             "description" : "default response",
             "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/Organisasjoner"
-                }
-              }
+              "*/*" : { }
+            }
+          }
+        }
+      },
+      "delete" : {
+        "tags" : [ "Dhis2KonfigurasjonOrganisasjoner" ],
+        "description" : "Fjerner tilgang for en bruker i DHIS2 for gitt Fiks-organisasjon",
+        "operationId" : "fjernTilgang",
+        "parameters" : [ {
+          "name" : "fiksOrganisasjonId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        }, {
+          "name" : "brukerId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "default" : {
+            "description" : "default response",
+            "content" : {
+              "*/*" : { }
             }
           }
         }
@@ -224,70 +274,20 @@
         }
       }
     },
-    "/dhis2-konfigurasjon/api/v1/organisasjoner/{fiksOrganisasjonId}/tilganger/{brukerId}" : {
-      "post" : {
+    "/dhis2-konfigurasjon/api/v1/organisasjoner" : {
+      "get" : {
         "tags" : [ "Dhis2KonfigurasjonOrganisasjoner" ],
-        "description" : "Gir en bruker tilgang i DHIS2 for gitt Fiks-organisasjon",
-        "operationId" : "opprettTilgang",
-        "parameters" : [ {
-          "name" : "fiksOrganisasjonId",
-          "in" : "path",
-          "required" : true,
-          "schema" : {
-            "type" : "string",
-            "format" : "uuid"
-          }
-        }, {
-          "name" : "brukerId",
-          "in" : "path",
-          "required" : true,
-          "schema" : {
-            "type" : "string"
-          }
-        } ],
-        "requestBody" : {
-          "content" : {
-            "application/json" : {
-              "schema" : {
-                "$ref" : "#/components/schemas/OpprettTilgangRequest"
+        "description" : "Henter informasjon for alle registrerte organisasjoner",
+        "operationId" : "getOrganisasjoner",
+        "responses" : {
+          "default" : {
+            "description" : "default response",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Organisasjoner"
+                }
               }
-            }
-          }
-        },
-        "responses" : {
-          "default" : {
-            "description" : "default response",
-            "content" : {
-              "*/*" : { }
-            }
-          }
-        }
-      },
-      "delete" : {
-        "tags" : [ "Dhis2KonfigurasjonOrganisasjoner" ],
-        "description" : "Fjerner tilgang for en bruker i DHIS2 for gitt Fiks-organisasjon",
-        "operationId" : "fjernTilgang",
-        "parameters" : [ {
-          "name" : "fiksOrganisasjonId",
-          "in" : "path",
-          "required" : true,
-          "schema" : {
-            "type" : "string",
-            "format" : "uuid"
-          }
-        }, {
-          "name" : "brukerId",
-          "in" : "path",
-          "required" : true,
-          "schema" : {
-            "type" : "string"
-          }
-        } ],
-        "responses" : {
-          "default" : {
-            "description" : "default response",
-            "content" : {
-              "*/*" : { }
             }
           }
         }
@@ -394,6 +394,15 @@
           }
         }
       },
+      "OpprettTilgangRequest" : {
+        "type" : "object",
+        "properties" : {
+          "rolle" : {
+            "type" : "string",
+            "enum" : [ "LESE_SKRIVE", "LESE" ]
+          }
+        }
+      },
       "Organisasjon" : {
         "type" : "object",
         "properties" : {
@@ -405,17 +414,6 @@
             "type" : "array",
             "items" : {
               "type" : "string"
-            }
-          }
-        }
-      },
-      "Organisasjoner" : {
-        "type" : "object",
-        "properties" : {
-          "organisasjoner" : {
-            "type" : "array",
-            "items" : {
-              "$ref" : "#/components/schemas/Organisasjon"
             }
           }
         }
@@ -468,12 +466,14 @@
           }
         }
       },
-      "OpprettTilgangRequest" : {
+      "Organisasjoner" : {
         "type" : "object",
         "properties" : {
-          "rolle" : {
-            "type" : "string",
-            "enum" : [ "LESE_SKRIVE", "LESE" ]
+          "organisasjoner" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Organisasjon"
+            }
           }
         }
       }
