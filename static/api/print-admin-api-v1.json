@@ -157,53 +157,6 @@
         }
       }
     },
-    "/printadmin/api/v1/jobber/{fiksOrgId}" : {
-      "post" : {
-        "tags" : [ "printadmin" ],
-        "description" : "Bulk oppdatering som krever fiksorg admin",
-        "operationId" : "bulkOppdateringFiksOrgId",
-        "parameters" : [ {
-          "name" : "fiksOrgId",
-          "in" : "path",
-          "required" : true,
-          "schema" : {
-            "type" : "string",
-            "format" : "uuid"
-          }
-        } ],
-        "requestBody" : {
-          "content" : {
-            "application/json" : {
-              "schema" : {
-                "$ref" : "#/components/schemas/BulkOppdatering"
-              }
-            }
-          }
-        },
-        "responses" : {
-          "200" : {
-            "description" : "Ok",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/BulkOppdateringOppsummering"
-                }
-              }
-            }
-          },
-          "403" : {
-            "description" : "Ikke fiksOrgId admin",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/ErrorMessage"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
     "/printadmin/api/v1/jobber/{avsenderKonto}/{ref}" : {
       "get" : {
         "tags" : [ "printadmin" ],
@@ -258,20 +211,119 @@
           }
         }
       }
+    },
+    "/printadmin/api/v1/jobber/{fiksOrgId}" : {
+      "post" : {
+        "tags" : [ "printadmin" ],
+        "description" : "Bulk oppdatering som krever fiksorg admin",
+        "operationId" : "bulkOppdateringFiksOrgId",
+        "parameters" : [ {
+          "name" : "fiksOrgId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/BulkOppdatering"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Ok",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/BulkOppdateringOppsummering"
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Ikke fiksOrgId admin",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components" : {
     "schemas" : {
-      "BulkOppdateringOppsummering" : {
+      "EksternRef" : {
         "type" : "object",
         "properties" : {
-          "antallAvbrutt" : {
-            "type" : "integer",
-            "format" : "int32"
+          "ref" : {
+            "type" : "string",
+            "format" : "uuid"
           },
-          "antallSattLevert" : {
+          "avsenderKonto" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        }
+      },
+      "JobbTreff" : {
+        "type" : "object",
+        "properties" : {
+          "eksternRef" : {
+            "$ref" : "#/components/schemas/EksternRef"
+          },
+          "status" : {
+            "type" : "string",
+            "enum" : [ "Akseptert", "LevertLeverandor", "LevertPostgang", "Avbrutt" ]
+          },
+          "mottatt" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "oppdatert" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "fiksOrgId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "navnFiksOrg" : {
+            "type" : "string"
+          },
+          "navnAvsenderKonto" : {
+            "type" : "string"
+          },
+          "advarsel" : {
+            "type" : "boolean"
+          }
+        }
+      },
+      "TreffListe" : {
+        "type" : "object",
+        "properties" : {
+          "fra" : {
             "type" : "integer",
-            "format" : "int32"
+            "format" : "int64"
+          },
+          "totaltAntallTreff" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "treff" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/JobbTreff"
+            }
           }
         }
       },
@@ -307,6 +359,19 @@
           },
           "errorJson" : {
             "type" : "string"
+          }
+        }
+      },
+      "BulkOppdateringOppsummering" : {
+        "type" : "object",
+        "properties" : {
+          "antallAvbrutt" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "antallSattLevert" : {
+            "type" : "integer",
+            "format" : "int32"
           }
         }
       },
@@ -347,19 +412,6 @@
           }
         },
         "description" : "En bulk oppdatering av print jobber"
-      },
-      "EksternRef" : {
-        "type" : "object",
-        "properties" : {
-          "ref" : {
-            "type" : "string",
-            "format" : "uuid"
-          },
-          "avsenderKonto" : {
-            "type" : "string",
-            "format" : "uuid"
-          }
-        }
       },
       "SettLevert" : {
         "required" : [ "bekreftetLevert", "eksternRef" ],
@@ -433,58 +485,6 @@
           },
           "beskrivelse" : {
             "type" : "string"
-          }
-        }
-      },
-      "JobbTreff" : {
-        "type" : "object",
-        "properties" : {
-          "eksternRef" : {
-            "$ref" : "#/components/schemas/EksternRef"
-          },
-          "status" : {
-            "type" : "string",
-            "enum" : [ "Akseptert", "LevertLeverandor", "LevertPostgang", "Avbrutt" ]
-          },
-          "mottatt" : {
-            "type" : "string",
-            "format" : "date-time"
-          },
-          "oppdatert" : {
-            "type" : "string",
-            "format" : "date-time"
-          },
-          "fiksOrgId" : {
-            "type" : "string",
-            "format" : "uuid"
-          },
-          "navnFiksOrg" : {
-            "type" : "string"
-          },
-          "navnAvsenderKonto" : {
-            "type" : "string"
-          },
-          "advarsel" : {
-            "type" : "boolean"
-          }
-        }
-      },
-      "TreffListe" : {
-        "type" : "object",
-        "properties" : {
-          "fra" : {
-            "type" : "integer",
-            "format" : "int64"
-          },
-          "totaltAntallTreff" : {
-            "type" : "integer",
-            "format" : "int64"
-          },
-          "treff" : {
-            "type" : "array",
-            "items" : {
-              "$ref" : "#/components/schemas/JobbTreff"
-            }
           }
         }
       }
