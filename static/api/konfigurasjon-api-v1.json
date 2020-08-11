@@ -33,6 +33,9 @@
   }, {
     "name" : "RootKonfigurasjon",
     "description" : "API for konfigurasjon som er spesifikk for ROOT-brukere"
+  }, {
+    "name" : "TjenesteKonfigurasjon",
+    "description" : "API for henting av informasjon om tjenester"
   } ],
   "paths" : {
     "/konfigurasjon/api/v1/integrasjoner/autentisering" : {
@@ -465,7 +468,7 @@
                 "schema" : {
                   "type" : "array",
                   "items" : {
-                    "$ref" : "#/components/schemas/Tjeneste"
+                    "$ref" : "#/components/schemas/TjenesteForOrganisasjon"
                   }
                 }
               }
@@ -501,7 +504,7 @@
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/Tjeneste"
+                  "$ref" : "#/components/schemas/TjenesteForOrganisasjon"
                 }
               }
             }
@@ -571,7 +574,7 @@
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/Tjeneste"
+                  "$ref" : "#/components/schemas/TjenesteForOrganisasjon"
                 }
               }
             }
@@ -969,21 +972,37 @@
         }
       }
     },
-    "/konfigurasjon/api/v1/root/tjenester" : {
-      "get" : {
+    "/konfigurasjon/api/v1/root/organisasjoner/{orgId}" : {
+      "patch" : {
         "tags" : [ "RootKonfigurasjon" ],
-        "description" : "Henter alle eksisterende tjenester",
-        "operationId" : "getAllTjenester",
+        "description" : "Oppdaterer organisasjonen med gitt id",
+        "operationId" : "updateOrganisasjonRoot",
+        "parameters" : [ {
+          "name" : "orgId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/RootOrganisasjonUpdateRequest"
+              }
+            }
+          },
+          "required" : true
+        },
         "responses" : {
           "200" : {
-            "description" : "Alle eksisterende tjenester",
+            "description" : "Den oppdaterte organisasjonen",
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "type" : "array",
-                  "items" : {
-                    "$ref" : "#/components/schemas/Tjeneste"
-                  }
+                  "$ref" : "#/components/schemas/Organisasjon"
                 }
               }
             }
@@ -1202,37 +1221,40 @@
         }
       }
     },
-    "/konfigurasjon/api/v1/root/organisasjoner/{orgId}" : {
-      "patch" : {
+    "/konfigurasjon/api/v1/root/tjenester" : {
+      "get" : {
         "tags" : [ "RootKonfigurasjon" ],
-        "description" : "Oppdaterer organisasjonen med gitt id",
-        "operationId" : "updateOrganisasjonRoot",
-        "parameters" : [ {
-          "name" : "orgId",
-          "in" : "path",
-          "required" : true,
-          "schema" : {
-            "type" : "string",
-            "format" : "uuid"
-          }
-        } ],
-        "requestBody" : {
-          "content" : {
-            "application/json" : {
-              "schema" : {
-                "$ref" : "#/components/schemas/RootOrganisasjonUpdateRequest"
-              }
-            }
-          },
-          "required" : true
-        },
+        "description" : "Henter alle eksisterende tjenester",
+        "operationId" : "getAllTjenester",
         "responses" : {
           "200" : {
-            "description" : "Den oppdaterte organisasjonen",
+            "description" : "Alle eksisterende tjenester",
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/Organisasjon"
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/Tjeneste"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/konfigurasjon/api/v1/tjenester" : {
+      "get" : {
+        "tags" : [ "TjenesteKonfigurasjon" ],
+        "summary" : "Henter informasjon om alle tjenester",
+        "operationId" : "getTjenester",
+        "responses" : {
+          "200" : {
+            "description" : "Alle gyldige privilegier for oppgitt ressurstype",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/TjenesteList"
                 }
               }
             }
@@ -1425,6 +1447,29 @@
         },
         "description" : "En organisasjon."
       },
+      "OrganisasjonGetRequest" : {
+        "type" : "object",
+        "properties" : {
+          "ids" : {
+            "type" : "array",
+            "description" : "Liste av id-er",
+            "items" : {
+              "type" : "string",
+              "description" : "Liste av id-er",
+              "format" : "uuid"
+            }
+          },
+          "kommunenr" : {
+            "type" : "array",
+            "description" : "Liste av kommunenr",
+            "items" : {
+              "type" : "string",
+              "description" : "Liste av kommunenr"
+            }
+          }
+        },
+        "description" : "En forespørsel om å hente organisasjoner"
+      },
       "FakturaOversiktAdresseModel" : {
         "type" : "object",
         "properties" : {
@@ -1576,7 +1621,7 @@
         },
         "description" : "En forespørsel om å oppdatere en eksisterende organisasjon."
       },
-      "Tjeneste" : {
+      "TjenesteForOrganisasjon" : {
         "required" : [ "kode", "navn", "ressursType" ],
         "type" : "object",
         "properties" : {
@@ -1811,29 +1856,6 @@
         },
         "description" : "Kontaktinformasjon for organisasjoner."
       },
-      "OrganisasjonGetRequest" : {
-        "type" : "object",
-        "properties" : {
-          "ids" : {
-            "type" : "array",
-            "description" : "Liste av id-er",
-            "items" : {
-              "type" : "string",
-              "description" : "Liste av id-er",
-              "format" : "uuid"
-            }
-          },
-          "kommunenr" : {
-            "type" : "array",
-            "description" : "Liste av kommunenr",
-            "items" : {
-              "type" : "string",
-              "description" : "Liste av kommunenr"
-            }
-          }
-        },
-        "description" : "En forespørsel om å hente organisasjoner"
-      },
       "Person" : {
         "required" : [ "fnr", "navn" ],
         "type" : "object",
@@ -2008,6 +2030,31 @@
         },
         "description" : "En liste over gyldige privilegier for en gitt ressurstype"
       },
+      "RootOrganisasjonUpdateRequest" : {
+        "required" : [ "intern" ],
+        "type" : "object",
+        "properties" : {
+          "navn" : {
+            "pattern" : "^[A-ZÆØÅa-zæøå0-9ÁáÀàÂâÉéÈèÊêÍíÌìÎîÓóÒòÔôÚúÙùÛûÝýÄäËëÏïÖöÜü,.!?\\-:;/\\\\'()&+*=%§]+[A-ZÆØÅa-zæøå0-9ÁáÀàÂâÉéÈèÊêÍíÌìÎîÓóÒòÔôÚúÙùÛûÝýÄäËëÏïÖöÜü ,.!?\\-:;/\\\\'()&+*=%§]*[A-ZÆØÅa-zæøå0-9ÁáÀàÂâÉéÈèÊêÍíÌìÎîÓóÒòÔôÚúÙùÛûÝýÄäËëÏïÖöÜü,.!?\\-:;/\\\\'()&+*=%§]+$",
+            "type" : "string",
+            "description" : "Organisasjonens navn"
+          },
+          "kommunenr" : {
+            "pattern" : "^\\d{4}$",
+            "type" : "string",
+            "description" : "Kommunenummer"
+          },
+          "synlig" : {
+            "type" : "boolean",
+            "description" : "Flagg for å gjøre en organisasjon synlig eller ikke-synlig."
+          },
+          "intern" : {
+            "type" : "boolean",
+            "description" : "Indikerer om organisasjonen er intern"
+          }
+        },
+        "description" : "En forespørsel om å oppdatere en eksisterende organisasjon fra Root"
+      },
       "RootIntegrasjonUpdateRequest" : {
         "type" : "object",
         "properties" : {
@@ -2057,6 +2104,31 @@
           }
         },
         "description" : "Et map med alle privilegier for alle tjenestetyper"
+      },
+      "Tjeneste" : {
+        "required" : [ "kode", "navn" ],
+        "type" : "object",
+        "properties" : {
+          "kode" : {
+            "pattern" : "^[0-9A-Z_.]+$",
+            "type" : "string",
+            "description" : "En unik kode for tjenesten."
+          },
+          "navn" : {
+            "pattern" : "^[A-Za-zæøåÆØÅ0-9_.,/\\-_ ]+$",
+            "type" : "string",
+            "description" : "Tjenestens navn."
+          },
+          "beskrivelse" : {
+            "type" : "string",
+            "description" : "En utfyllende beskrivelse av tjenesten."
+          },
+          "lesmer" : {
+            "type" : "string",
+            "description" : "Les mer lenke"
+          }
+        },
+        "description" : "En tjeneste."
       },
       "OrganisasjonMedTjenesterModel" : {
         "type" : "object",
@@ -2243,30 +2315,18 @@
         },
         "description" : "En forespørsel om å opprette en ny organisasjon."
       },
-      "RootOrganisasjonUpdateRequest" : {
-        "required" : [ "intern" ],
+      "TjenesteList" : {
         "type" : "object",
         "properties" : {
-          "navn" : {
-            "pattern" : "^[A-ZÆØÅa-zæøå0-9ÁáÀàÂâÉéÈèÊêÍíÌìÎîÓóÒòÔôÚúÙùÛûÝýÄäËëÏïÖöÜü,.!?\\-:;/\\\\'()&+*=%§]+[A-ZÆØÅa-zæøå0-9ÁáÀàÂâÉéÈèÊêÍíÌìÎîÓóÒòÔôÚúÙùÛûÝýÄäËëÏïÖöÜü ,.!?\\-:;/\\\\'()&+*=%§]*[A-ZÆØÅa-zæøå0-9ÁáÀàÂâÉéÈèÊêÍíÌìÎîÓóÒòÔôÚúÙùÛûÝýÄäËëÏïÖöÜü,.!?\\-:;/\\\\'()&+*=%§]+$",
-            "type" : "string",
-            "description" : "Organisasjonens navn"
-          },
-          "kommunenr" : {
-            "pattern" : "^\\d{4}$",
-            "type" : "string",
-            "description" : "Kommunenummer"
-          },
-          "synlig" : {
-            "type" : "boolean",
-            "description" : "Flagg for å gjøre en organisasjon synlig eller ikke-synlig."
-          },
-          "intern" : {
-            "type" : "boolean",
-            "description" : "Indikerer om organisasjonen er intern"
+          "tjenester" : {
+            "type" : "array",
+            "description" : "En liste over alle tjenester",
+            "items" : {
+              "$ref" : "#/components/schemas/Tjeneste"
+            }
           }
         },
-        "description" : "En forespørsel om å oppdatere en eksisterende organisasjon fra Root"
+        "description" : "En liste over alle tjenester"
       }
     }
   }
