@@ -23,7 +23,7 @@ Viser eiendommer innbyggeren eier, basert på data fra matrikkelen. Disse eiendo
 
 "Mine eiendommer" er basert på data som automatisk synkroniseres fra Kartverket for alle kommuner. Det er altså ikke nødvendig å aktivere denne tjenesten.
 
-Som standard kan innbyggeren følge en lenke til [seeiendom.kartverket.no](https://seeiendom.kartverket.no) for å se detaljer om eiendommen, men her har kommunen mulighet til angi lenker til eget eiendomssystem, se [Fiks Konfigurasjon: Matrikkel](https://forvaltning.fiks.test.ks.no/fiks-konfigurasjon/tjenester/matrikkel). Minside vil da vise disse lenkene for innbyggere som har eiendommer i din kommune.
+Som standard kan innbyggeren følge en lenke til [seeiendom.kartverket.no](https://seeiendom.kartverket.no) for å se detaljer om eiendommen, men her har kommunen mulighet til angi lenker til eget eiendomssystem, se [Fiks Konfigurasjon: Matrikkel](https://forvaltning.fiks.ks.no/fiks-konfigurasjon/tjenester/matrikkel). Minside vil da vise disse lenkene for innbyggere som har eiendommer i din kommune.
 
 ### Mine byggesaker
 Viser byggesaker innbyggeren/organisasjonen har tilgang til. Disse kan være eksponert for nåværende eier av eiendom, fødselsnummer eller organisasjonsnummer.
