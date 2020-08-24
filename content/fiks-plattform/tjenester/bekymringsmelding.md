@@ -1,7 +1,7 @@
 ---
 title: Nasjonal portal for bekymringsmelding
 date: 2019-11-25 
-aliases: [/fiks-platform/tjenester/bekymringsmelding]
+aliases: ["/fiks-platform/tjenester/bekymringsmelding", "/fiks-platform/tjenester_under_utvikling/bekymringsmelding"]
 ---
 
 ## Kort introduksjon
