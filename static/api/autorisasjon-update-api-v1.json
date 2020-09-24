@@ -26,25 +26,6 @@
     "description" : "API for typetilganger"
   } ],
   "paths" : {
-    "/autorisasjon-update/api/v1/privilegier" : {
-      "get" : {
-        "tags" : [ "Privilegium" ],
-        "summary" : "Henter alle gyldige privilegier for alle ressurstyper",
-        "operationId" : "getAllePrivilegier",
-        "responses" : {
-          "200" : {
-            "description" : "Alle gyldige privilegier for alle ressurstyper",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/PrivilegiumMap"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
     "/autorisasjon-update/api/v1/privilegier/{ressursType}" : {
       "get" : {
         "tags" : [ "Privilegium" ],
@@ -72,74 +53,20 @@
         }
       }
     },
-    "/autorisasjon-update/api/v1/ressurs" : {
-      "post" : {
-        "tags" : [ "Ressurs" ],
-        "description" : "Oppretter en ressurs",
-        "operationId" : "opprettRessurs",
-        "requestBody" : {
-          "content" : {
-            "application/json" : {
-              "schema" : {
-                "$ref" : "#/components/schemas/OpprettRessursRequest"
-              }
-            }
-          },
-          "required" : true
-        },
+    "/autorisasjon-update/api/v1/privilegier" : {
+      "get" : {
+        "tags" : [ "Privilegium" ],
+        "summary" : "Henter alle gyldige privilegier for alle ressurstyper",
+        "operationId" : "getAllePrivilegier",
         "responses" : {
-          "201" : {
-            "description" : "Opprettet Ressurs",
+          "200" : {
+            "description" : "Alle gyldige privilegier for alle ressurstyper",
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/Ressurs"
+                  "$ref" : "#/components/schemas/PrivilegiumMap"
                 }
               }
-            }
-          },
-          "400" : {
-            "description" : "Feil i inputdata",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/ErrorMessage"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/autorisasjon-update/api/v1/ressurs/{ressurs}" : {
-      "patch" : {
-        "tags" : [ "Ressurs" ],
-        "description" : "Oppdaterer en ressurs",
-        "operationId" : "oppdaterRessurs",
-        "parameters" : [ {
-          "name" : "ressurs",
-          "in" : "path",
-          "required" : true,
-          "schema" : {
-            "type" : "string",
-            "format" : "uuid"
-          }
-        } ],
-        "requestBody" : {
-          "content" : {
-            "application/json" : {
-              "schema" : {
-                "$ref" : "#/components/schemas/OppdaterRessursRequest"
-              }
-            }
-          },
-          "required" : true
-        },
-        "responses" : {
-          "default" : {
-            "description" : "default response",
-            "content" : {
-              "application/json" : { }
             }
           }
         }
@@ -209,6 +136,79 @@
             "type" : "string"
           }
         } ],
+        "responses" : {
+          "default" : {
+            "description" : "default response",
+            "content" : {
+              "application/json" : { }
+            }
+          }
+        }
+      }
+    },
+    "/autorisasjon-update/api/v1/ressurs" : {
+      "post" : {
+        "tags" : [ "Ressurs" ],
+        "description" : "Oppretter en ressurs",
+        "operationId" : "opprettRessurs",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/OpprettRessursRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "201" : {
+            "description" : "Opprettet Ressurs",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Ressurs"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Feil i inputdata",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/autorisasjon-update/api/v1/ressurs/{ressurs}" : {
+      "patch" : {
+        "tags" : [ "Ressurs" ],
+        "description" : "Oppdaterer en ressurs",
+        "operationId" : "oppdaterRessurs",
+        "parameters" : [ {
+          "name" : "ressurs",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/OppdaterRessursRequest"
+              }
+            }
+          },
+          "required" : true
+        },
         "responses" : {
           "default" : {
             "description" : "default response",
@@ -325,7 +325,19 @@
             }
           }
         },
-        "description" : "En liste over gyldige privilegier for en gitt ressurstype"
+        "description" : "Et map med alle privilegier for alle tjenestetyper"
+      },
+      "PrivilegiumList" : {
+        "type" : "object",
+        "properties" : {
+          "privilegier" : {
+            "type" : "array",
+            "description" : "En liste over gyldige privilegier for en gitt ressurstype",
+            "items" : {
+              "$ref" : "#/components/schemas/Privilegium"
+            }
+          }
+        }
       },
       "PrivilegiumMap" : {
         "type" : "object",
@@ -343,17 +355,41 @@
           }
         }
       },
-      "PrivilegiumList" : {
+      "Tilgang" : {
+        "required" : [ "aktor", "privilegium", "ressurs" ],
         "type" : "object",
         "properties" : {
-          "privilegier" : {
-            "type" : "array",
-            "description" : "En liste over gyldige privilegier for en gitt ressurstype",
-            "items" : {
-              "$ref" : "#/components/schemas/Privilegium"
-            }
+          "aktor" : {
+            "type" : "string",
+            "description" : "Aktøren (personen eller integrasjonen) som har blitt tildelt privilegiet"
+          },
+          "privilegium" : {
+            "type" : "string",
+            "description" : "Privilegiet som har blitt tildelt"
+          },
+          "ressurs" : {
+            "type" : "string",
+            "description" : "Ressursen privilegiet har blitt tildelt på",
+            "format" : "uuid"
           }
         }
+      },
+      "TilgangRequest" : {
+        "required" : [ "aktor", "privilegium" ],
+        "type" : "object",
+        "properties" : {
+          "aktor" : {
+            "pattern" : "^[A-Za-zæøåÆØÅ0-9_.,/\\-_ ]+$",
+            "type" : "string",
+            "description" : "Aktøren som denne forespørselen gjelder"
+          },
+          "privilegium" : {
+            "pattern" : "^[0-9A-Z_.]+$",
+            "type" : "string",
+            "description" : "Navnet på det privilegium som aktøren har eller etterspør for en gitt ressurs"
+          }
+        },
+        "description" : "Representerer en autorisasjon, som deskriver en ressurs og et privilegium som enn gitt aktør har eller ber om"
       },
       "Ressurs" : {
         "required" : [ "forelder", "id", "navn", "type" ],
@@ -452,42 +488,6 @@
           }
         },
         "description" : "En request for å oppdatere en eksisterende ressurs"
-      },
-      "Tilgang" : {
-        "required" : [ "aktor", "privilegium", "ressurs" ],
-        "type" : "object",
-        "properties" : {
-          "aktor" : {
-            "type" : "string",
-            "description" : "Aktøren (personen eller integrasjonen) som har blitt tildelt privilegiet"
-          },
-          "privilegium" : {
-            "type" : "string",
-            "description" : "Privilegiet som har blitt tildelt"
-          },
-          "ressurs" : {
-            "type" : "string",
-            "description" : "Ressursen privilegiet har blitt tildelt på",
-            "format" : "uuid"
-          }
-        }
-      },
-      "TilgangRequest" : {
-        "required" : [ "aktor", "privilegium" ],
-        "type" : "object",
-        "properties" : {
-          "aktor" : {
-            "pattern" : "^[A-Za-zæøåÆØÅ0-9_.,/\\-_ ]+$",
-            "type" : "string",
-            "description" : "Aktøren som denne forespørselen gjelder"
-          },
-          "privilegium" : {
-            "pattern" : "^[0-9A-Z_.]+$",
-            "type" : "string",
-            "description" : "Navnet på det privilegium som aktøren har eller etterspør for en gitt ressurs"
-          }
-        },
-        "description" : "Representerer en autorisasjon, som deskriver en ressurs og et privilegium som enn gitt aktør har eller ber om"
       },
       "TypeTilgang" : {
         "required" : [ "aktor", "privilegium", "ressursType" ],
