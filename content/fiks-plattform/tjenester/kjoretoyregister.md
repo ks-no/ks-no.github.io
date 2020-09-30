@@ -37,3 +37,5 @@ Oppslag på *understellsummer* utføres med en `GET` request. Oppslag på *kjenn
 ```
 
 I test miljøet (`https://api.fiks.test.ks.no/kjoretoyregister/api/{fixOrgId}`) går alle api kall mot et syntetisk datasett hos SVV (https://vegvesen.github.io/ak-api/envs/#sisdinky). Informasjon om kjøretøy som inngår i det syntetiske datasettet finnes [her](https://vegvesen.github.io/ak-api/filer/testdata-sisdinky.xlsx).
+
+Hvis du opplever feil som blir returnert med json fra SVV med f.eks en svvguid kan en kontakte akfsupport@vegvesen.no.
