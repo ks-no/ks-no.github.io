@@ -118,6 +118,75 @@
         }
       }
     },
+    "/dhis2-konfigurasjon/api/v1/organisasjoner/{fiksOrganisasjonId}/tilganger/{brukerId}" : {
+      "post" : {
+        "tags" : [ "Dhis2KonfigurasjonOrganisasjoner" ],
+        "description" : "Gir en bruker tilgang i DHIS2 for gitt Fiks-organisasjon",
+        "operationId" : "opprettTilgang",
+        "parameters" : [ {
+          "name" : "fiksOrganisasjonId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        }, {
+          "name" : "brukerId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/OpprettTilgangRequest"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "default" : {
+            "description" : "default response",
+            "content" : {
+              "*/*" : { }
+            }
+          }
+        }
+      },
+      "delete" : {
+        "tags" : [ "Dhis2KonfigurasjonOrganisasjoner" ],
+        "description" : "Fjerner tilgang for en bruker i DHIS2 for gitt Fiks-organisasjon",
+        "operationId" : "fjernTilgang",
+        "parameters" : [ {
+          "name" : "fiksOrganisasjonId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        }, {
+          "name" : "brukerId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "default" : {
+            "description" : "default response",
+            "content" : {
+              "*/*" : { }
+            }
+          }
+        }
+      }
+    },
     "/dhis2-konfigurasjon/api/v1/organisasjoner" : {
       "get" : {
         "tags" : [ "Dhis2KonfigurasjonOrganisasjoner" ],
@@ -228,79 +297,10 @@
         }
       }
     },
-    "/dhis2-konfigurasjon/api/v1/organisasjoner/{fiksOrganisasjonId}/tilganger/{brukerId}" : {
-      "post" : {
-        "tags" : [ "Dhis2KonfigurasjonOrganisasjoner" ],
-        "description" : "Gir en bruker tilgang i DHIS2 for gitt Fiks-organisasjon",
-        "operationId" : "opprettTilgang",
-        "parameters" : [ {
-          "name" : "fiksOrganisasjonId",
-          "in" : "path",
-          "required" : true,
-          "schema" : {
-            "type" : "string",
-            "format" : "uuid"
-          }
-        }, {
-          "name" : "brukerId",
-          "in" : "path",
-          "required" : true,
-          "schema" : {
-            "type" : "string"
-          }
-        } ],
-        "requestBody" : {
-          "content" : {
-            "application/json" : {
-              "schema" : {
-                "$ref" : "#/components/schemas/OpprettTilgangRequest"
-              }
-            }
-          }
-        },
-        "responses" : {
-          "default" : {
-            "description" : "default response",
-            "content" : {
-              "*/*" : { }
-            }
-          }
-        }
-      },
-      "delete" : {
-        "tags" : [ "Dhis2KonfigurasjonOrganisasjoner" ],
-        "description" : "Fjerner tilgang for en bruker i DHIS2 for gitt Fiks-organisasjon",
-        "operationId" : "fjernTilgang",
-        "parameters" : [ {
-          "name" : "fiksOrganisasjonId",
-          "in" : "path",
-          "required" : true,
-          "schema" : {
-            "type" : "string",
-            "format" : "uuid"
-          }
-        }, {
-          "name" : "brukerId",
-          "in" : "path",
-          "required" : true,
-          "schema" : {
-            "type" : "string"
-          }
-        } ],
-        "responses" : {
-          "default" : {
-            "description" : "default response",
-            "content" : {
-              "*/*" : { }
-            }
-          }
-        }
-      }
-    },
     "/dhis2-konfigurasjon/api/v1/person/sokperson" : {
       "post" : {
         "tags" : [ "Dhis2KonfigurasjonPersonSok" ],
-        "description" : "Søker etter en bruker i DHIS2",
+        "description" : "Søker etter en bruker i Kontakt og reservasjonsregisteret",
         "operationId" : "hentPersonInfo",
         "requestBody" : {
           "content" : {
@@ -312,12 +312,22 @@
           }
         },
         "responses" : {
-          "default" : {
-            "description" : "default response",
+          "401" : {
+            "description" : "Ikke tilgang",
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/PersonModel"
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "200" : {
+            "description" : "Kontaktopplysninger på person",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Person"
                 }
               }
             }
@@ -426,6 +436,15 @@
           }
         }
       },
+      "OpprettTilgangRequest" : {
+        "type" : "object",
+        "properties" : {
+          "rolle" : {
+            "type" : "string",
+            "enum" : [ "LESE_SKRIVE", "LESE" ]
+          }
+        }
+      },
       "Organisasjon" : {
         "type" : "object",
         "properties" : {
@@ -500,28 +519,54 @@
           }
         }
       },
-      "OpprettTilgangRequest" : {
+      "ErrorMessage" : {
         "type" : "object",
         "properties" : {
-          "rolle" : {
+          "timestamp" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "status" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "error" : {
+            "type" : "string"
+          },
+          "errorId" : {
             "type" : "string",
-            "enum" : [ "LESE_SKRIVE", "LESE" ]
+            "format" : "uuid"
+          },
+          "path" : {
+            "type" : "string"
+          },
+          "originalPath" : {
+            "type" : "string"
+          },
+          "message" : {
+            "type" : "string"
+          },
+          "errorCode" : {
+            "type" : "string"
+          },
+          "errorJson" : {
+            "type" : "string"
           }
         }
       },
-      "PersonModel" : {
+      "Person" : {
         "type" : "object",
         "properties" : {
-          "epost" : {
-            "type" : "string"
-          },
-          "telefonnummer" : {
-            "type" : "string"
-          },
           "fornavn" : {
             "type" : "string"
           },
           "etternavn" : {
+            "type" : "string"
+          },
+          "epost" : {
+            "type" : "string"
+          },
+          "telefonnummer" : {
             "type" : "string"
           },
           "adresse" : {
@@ -537,6 +582,10 @@
         "properties" : {
           "fnr" : {
             "pattern" : "^[0-9]{11}$",
+            "type" : "string"
+          },
+          "kommunenr" : {
+            "pattern" : "^\\d{4}$",
             "type" : "string"
           }
         }
