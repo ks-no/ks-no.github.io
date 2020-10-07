@@ -24,13 +24,117 @@
     "description" : "API for å håndtere funksjonalitet rundt konfigurasjon av Folkeregister"
   } ],
   "paths" : {
-    "/folkeregister/api/v1/konfigurasjon/{fiksOrgId}" : {
+    "/folkeregister/api/v1/konfigurasjon/{fiksOrgId}/roller" : {
       "get" : {
         "tags" : [ "folkeregister-konfigurasjon" ],
-        "description" : "Henter gjeldende konfigurasjon for en organisasjon",
-        "operationId" : "hentKonfigurasjon",
+        "description" : "Henter gitt rolle for gitt organisasjon",
+        "operationId" : "hentRollerForOrganisasjon",
         "parameters" : [ {
           "name" : "fiksOrgId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Fant rolle",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/RolleDefinisjon"
+                  }
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Ikke funnet",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Ikke tilgang",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post" : {
+        "tags" : [ "folkeregister-konfigurasjon" ],
+        "description" : "Oppretter rolle for gitt organisasjon",
+        "operationId" : "opprettRolle",
+        "parameters" : [ {
+          "name" : "fiksOrgId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/OpprettRolleDefinisjon"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/RolleDefinisjon"
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Ikke tilgang",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/folkeregister/api/v1/konfigurasjon/{fiksOrgId}/roller/{rolleId}/aktiver" : {
+      "put" : {
+        "tags" : [ "folkeregister-konfigurasjon" ],
+        "description" : "Aktiverer gitt rolle for gitt organisasjon",
+        "operationId" : "aktiverRolle",
+        "parameters" : [ {
+          "name" : "fiksOrgId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        }, {
+          "name" : "rolleId",
           "in" : "path",
           "required" : true,
           "schema" : {
@@ -44,7 +148,7 @@
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/FolkeregisterKonfigurasjon"
+                  "$ref" : "#/components/schemas/RolleDefinisjon"
                 }
               }
             }
@@ -318,17 +422,18 @@
         }
       }
     },
-    "/folkeregister/api/v1/konfigurasjon/lovhjemler/{omrade}" : {
+    "/folkeregister/api/v1/konfigurasjon/{fiksOrgId}" : {
       "get" : {
         "tags" : [ "folkeregister-konfigurasjon" ],
-        "description" : "Henter alle lovhjemler for gitt fagområde",
-        "operationId" : "hentLovhjemlerForOmrade",
+        "description" : "Henter gjeldende konfigurasjon for en organisasjon",
+        "operationId" : "hentKonfigurasjon",
         "parameters" : [ {
-          "name" : "omrade",
+          "name" : "fiksOrgId",
           "in" : "path",
           "required" : true,
           "schema" : {
-            "type" : "string"
+            "type" : "string",
+            "format" : "uuid"
           }
         } ],
         "responses" : {
@@ -337,29 +442,17 @@
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "type" : "array",
-                  "items" : {
-                    "type" : "string"
-                  }
+                  "$ref" : "#/components/schemas/FolkeregisterKonfigurasjon"
                 }
               }
             }
-          }
-        }
-      }
-    },
-    "/folkeregister/api/v1/konfigurasjon/tjenesteomrader" : {
-      "get" : {
-        "tags" : [ "folkeregister-konfigurasjon" ],
-        "description" : "Henter liste med alle omrader",
-        "operationId" : "hentOmrader",
-        "responses" : {
-          "200" : {
-            "description" : "Liste med tjenesteområder",
+          },
+          "401" : {
+            "description" : "Ikke tilgang",
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/TjenesteomradeListe"
+                  "$ref" : "#/components/schemas/ErrorMessage"
                 }
               }
             }
@@ -476,95 +569,29 @@
         }
       }
     },
-    "/folkeregister/api/v1/konfigurasjon/{fiksOrgId}/roller" : {
+    "/folkeregister/api/v1/konfigurasjon/lovhjemler/{omrade}" : {
       "get" : {
         "tags" : [ "folkeregister-konfigurasjon" ],
-        "description" : "Henter gitt rolle for gitt organisasjon",
-        "operationId" : "hentRollerForOrganisasjon",
+        "description" : "Henter alle lovhjemler for gitt fagområde",
+        "operationId" : "hentLovhjemlerForOmrade",
         "parameters" : [ {
-          "name" : "fiksOrgId",
+          "name" : "omrade",
           "in" : "path",
           "required" : true,
           "schema" : {
-            "type" : "string",
-            "format" : "uuid"
+            "type" : "string"
           }
         } ],
-        "responses" : {
-          "200" : {
-            "description" : "Fant rolle",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "type" : "array",
-                  "items" : {
-                    "$ref" : "#/components/schemas/RolleDefinisjon"
-                  }
-                }
-              }
-            }
-          },
-          "404" : {
-            "description" : "Ikke funnet",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/ErrorMessage"
-                }
-              }
-            }
-          },
-          "401" : {
-            "description" : "Ikke tilgang",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/ErrorMessage"
-                }
-              }
-            }
-          }
-        }
-      },
-      "post" : {
-        "tags" : [ "folkeregister-konfigurasjon" ],
-        "description" : "Oppretter rolle for gitt organisasjon",
-        "operationId" : "opprettRolle",
-        "parameters" : [ {
-          "name" : "fiksOrgId",
-          "in" : "path",
-          "required" : true,
-          "schema" : {
-            "type" : "string",
-            "format" : "uuid"
-          }
-        } ],
-        "requestBody" : {
-          "content" : {
-            "application/json" : {
-              "schema" : {
-                "$ref" : "#/components/schemas/OpprettRolleDefinisjon"
-              }
-            }
-          }
-        },
         "responses" : {
           "200" : {
             "description" : "OK",
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/RolleDefinisjon"
-                }
-              }
-            }
-          },
-          "401" : {
-            "description" : "Ikke tilgang",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/ErrorMessage"
+                  "type" : "array",
+                  "items" : {
+                    "type" : "string"
+                  }
                 }
               }
             }
@@ -572,45 +599,18 @@
         }
       }
     },
-    "/folkeregister/api/v1/konfigurasjon/{fiksOrgId}/roller/{rolleId}/aktiver" : {
-      "put" : {
+    "/folkeregister/api/v1/konfigurasjon/tjenesteomrader" : {
+      "get" : {
         "tags" : [ "folkeregister-konfigurasjon" ],
-        "description" : "Aktiverer gitt rolle for gitt organisasjon",
-        "operationId" : "aktiverRolle",
-        "parameters" : [ {
-          "name" : "fiksOrgId",
-          "in" : "path",
-          "required" : true,
-          "schema" : {
-            "type" : "string",
-            "format" : "uuid"
-          }
-        }, {
-          "name" : "rolleId",
-          "in" : "path",
-          "required" : true,
-          "schema" : {
-            "type" : "string",
-            "format" : "uuid"
-          }
-        } ],
+        "description" : "Henter liste med alle omrader",
+        "operationId" : "hentOmrader",
         "responses" : {
           "200" : {
-            "description" : "OK",
+            "description" : "Liste med tjenesteområder",
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/RolleDefinisjon"
-                }
-              }
-            }
-          },
-          "401" : {
-            "description" : "Ikke tilgang",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/ErrorMessage"
+                  "$ref" : "#/components/schemas/TjenesteomradeListe"
                 }
               }
             }
@@ -640,50 +640,6 @@
   },
   "components" : {
     "schemas" : {
-      "FolkeregisterKonfigurasjon" : {
-        "type" : "object",
-        "properties" : {
-          "fiksOrgId" : {
-            "type" : "string",
-            "format" : "uuid"
-          }
-        }
-      },
-      "ErrorMessage" : {
-        "type" : "object",
-        "properties" : {
-          "timestamp" : {
-            "type" : "integer",
-            "format" : "int64"
-          },
-          "status" : {
-            "type" : "integer",
-            "format" : "int32"
-          },
-          "error" : {
-            "type" : "string"
-          },
-          "errorId" : {
-            "type" : "string",
-            "format" : "uuid"
-          },
-          "path" : {
-            "type" : "string"
-          },
-          "originalPath" : {
-            "type" : "string"
-          },
-          "message" : {
-            "type" : "string"
-          },
-          "errorCode" : {
-            "type" : "string"
-          },
-          "errorJson" : {
-            "type" : "string"
-          }
-        }
-      },
       "Dataminimering" : {
         "type" : "object",
         "properties" : {
@@ -781,6 +737,41 @@
           }
         }
       },
+      "ErrorMessage" : {
+        "type" : "object",
+        "properties" : {
+          "timestamp" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "status" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "error" : {
+            "type" : "string"
+          },
+          "errorId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "path" : {
+            "type" : "string"
+          },
+          "originalPath" : {
+            "type" : "string"
+          },
+          "message" : {
+            "type" : "string"
+          },
+          "errorCode" : {
+            "type" : "string"
+          },
+          "errorJson" : {
+            "type" : "string"
+          }
+        }
+      },
       "LeggTilTilgangDefinisjon" : {
         "type" : "object",
         "properties" : {
@@ -862,41 +853,12 @@
           }
         }
       },
-      "TjenesteomradeBeskrivelse" : {
+      "FolkeregisterKonfigurasjon" : {
         "type" : "object",
         "properties" : {
-          "navn" : {
-            "type" : "string"
-          },
-          "beskrivelse" : {
-            "type" : "string"
-          }
-        }
-      },
-      "TjenesteomradeListe" : {
-        "required" : [ "omrader" ],
-        "type" : "object",
-        "properties" : {
-          "omrader" : {
-            "type" : "array",
-            "items" : {
-              "$ref" : "#/components/schemas/TjenesteomradeBeskrivelse"
-            }
-          }
-        }
-      },
-      "OppdaterRolleDefinisjon" : {
-        "required" : [ "navn" ],
-        "type" : "object",
-        "properties" : {
-          "navn" : {
-            "type" : "string"
-          },
-          "beskrivelse" : {
-            "type" : "string"
-          },
-          "dataminimering" : {
-            "$ref" : "#/components/schemas/Dataminimering"
+          "fiksOrgId" : {
+            "type" : "string",
+            "format" : "uuid"
           }
         }
       },
@@ -923,6 +885,44 @@
             "items" : {
               "type" : "string",
               "enum" : [ "OPPSLAG", "HENDELSESLISTE", "UTTREKK" ]
+            }
+          }
+        }
+      },
+      "OppdaterRolleDefinisjon" : {
+        "required" : [ "navn" ],
+        "type" : "object",
+        "properties" : {
+          "navn" : {
+            "type" : "string"
+          },
+          "beskrivelse" : {
+            "type" : "string"
+          },
+          "dataminimering" : {
+            "$ref" : "#/components/schemas/Dataminimering"
+          }
+        }
+      },
+      "TjenesteomradeBeskrivelse" : {
+        "type" : "object",
+        "properties" : {
+          "navn" : {
+            "type" : "string"
+          },
+          "beskrivelse" : {
+            "type" : "string"
+          }
+        }
+      },
+      "TjenesteomradeListe" : {
+        "required" : [ "omrader" ],
+        "type" : "object",
+        "properties" : {
+          "omrader" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/TjenesteomradeBeskrivelse"
             }
           }
         }
