@@ -16,7 +16,7 @@ En må ha en gyldig helseid innlogging for å kunne spør etter prøvesvar. Komm
 Kommunikasjonen vil være kryptert med TLS. Autentiserin med HelseID og Fiks integrasjon.
 
 
-Denne tjenesten er ikke ferdig enda, vi har en foreløpig apispec som kan indikere funksjonalitet i endelig api. [(api-spec)](https://editor.swagger.io/?url=https://ks-no.github.io/api/Labdatabasen.Fiks.Api.swagger.json)
+Denne tjenesten er ikke ferdig enda, vi har en foreløpig apispec som kan indikere funksjonalitet i endelig api. [(api-spec)](https://editor.swagger.io/?url=https://ks-no.github.io/api/provesvar-api-v1.json)
 
 
 
