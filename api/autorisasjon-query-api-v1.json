@@ -20,11 +20,18 @@
     "description" : "API for Autorisasjon Query"
   } ],
   "paths" : {
-    "/autorisasjon-query/api/v1/autorisasjon/typeTilganger" : {
+    "/autorisasjon-query/api/v1/autorisasjon/ressurser" : {
       "get" : {
         "tags" : [ "autorisasjonQuery" ],
-        "description" : "Henter ressurstyper med type-tilganger. Listen vil bare inneholde typer med en eller flere type-tilganger",
-        "operationId" : "typeTilgangerLookup",
+        "description" : "Henter ressurser i henhold til søkeparametere",
+        "operationId" : "ressursSok",
+        "parameters" : [ {
+          "name" : "type",
+          "in" : "query",
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
         "responses" : {
           "default" : {
             "description" : "default response",
@@ -34,47 +41,8 @@
                   "uniqueItems" : true,
                   "type" : "array",
                   "items" : {
-                    "$ref" : "#/components/schemas/TypeTilgang"
+                    "$ref" : "#/components/schemas/Ressurs"
                   }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/autorisasjon-query/api/v1/autorisasjon/isAutorisert" : {
-      "get" : {
-        "tags" : [ "autorisasjonQuery" ],
-        "description" : "Returnerer \"true\" om aktøren er tildelt privilegiet på ressursen, \"false\" om dette ikke er tilfellet",
-        "operationId" : "isAutorisert",
-        "parameters" : [ {
-          "name" : "aktor",
-          "in" : "query",
-          "schema" : {
-            "type" : "string"
-          }
-        }, {
-          "name" : "privilegium",
-          "in" : "query",
-          "schema" : {
-            "type" : "string"
-          }
-        }, {
-          "name" : "ressurs",
-          "in" : "query",
-          "schema" : {
-            "type" : "string",
-            "format" : "uuid"
-          }
-        } ],
-        "responses" : {
-          "default" : {
-            "description" : "default response",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "type" : "boolean"
                 }
               }
             }
@@ -235,18 +203,11 @@
         }
       }
     },
-    "/autorisasjon-query/api/v1/autorisasjon/ressurser" : {
+    "/autorisasjon-query/api/v1/autorisasjon/typeTilganger" : {
       "get" : {
         "tags" : [ "autorisasjonQuery" ],
-        "description" : "Henter ressurser i henhold til søkeparametere",
-        "operationId" : "ressursSok",
-        "parameters" : [ {
-          "name" : "type",
-          "in" : "query",
-          "schema" : {
-            "type" : "string"
-          }
-        } ],
+        "description" : "Henter ressurstyper med type-tilganger. Listen vil bare inneholde typer med en eller flere type-tilganger",
+        "operationId" : "typeTilgangerLookup",
         "responses" : {
           "default" : {
             "description" : "default response",
@@ -256,8 +217,47 @@
                   "uniqueItems" : true,
                   "type" : "array",
                   "items" : {
-                    "$ref" : "#/components/schemas/Ressurs"
+                    "$ref" : "#/components/schemas/TypeTilgang"
                   }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/autorisasjon-query/api/v1/autorisasjon/isAutorisert" : {
+      "get" : {
+        "tags" : [ "autorisasjonQuery" ],
+        "description" : "Returnerer \"true\" om aktøren er tildelt privilegiet på ressursen, \"false\" om dette ikke er tilfellet",
+        "operationId" : "isAutorisert",
+        "parameters" : [ {
+          "name" : "aktor",
+          "in" : "query",
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "privilegium",
+          "in" : "query",
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "ressurs",
+          "in" : "query",
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "default" : {
+            "description" : "default response",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "boolean"
                 }
               }
             }
@@ -268,34 +268,48 @@
   },
   "components" : {
     "schemas" : {
-      "Tilgang" : {
-        "required" : [ "aktor", "privilegium" ],
+      "PathRessurs" : {
+        "required" : [ "id", "navn", "type" ],
         "type" : "object",
         "properties" : {
-          "privilegium" : {
+          "id" : {
             "type" : "string",
-            "description" : "Aktøren (personen eller integrasjonen) som er autorisert"
+            "description" : "Id for ressursen",
+            "format" : "uuid"
           },
-          "aktor" : {
+          "type" : {
             "type" : "string",
-            "description" : "Privilegiet som er tildelt aktøren"
+            "description" : "Type for ressursen"
+          },
+          "navn" : {
+            "type" : "string",
+            "description" : "Navn for ressursen"
           }
-        }
+        },
+        "description" : "Path fra denne ressursen til roten av ressurs-treet"
       },
-      "TypeTilgang" : {
-        "required" : [ "ressursType", "tilganger" ],
+      "Ressurs" : {
+        "required" : [ "id", "navn", "path", "type" ],
         "type" : "object",
         "properties" : {
-          "ressursType" : {
+          "id" : {
             "type" : "string",
-            "description" : "Ressurstypen tilgangene er gitt på"
+            "description" : "Id for ressursen",
+            "format" : "uuid"
           },
-          "tilganger" : {
-            "uniqueItems" : true,
+          "type" : {
+            "type" : "string",
+            "description" : "Type for ressursen"
+          },
+          "navn" : {
+            "type" : "string",
+            "description" : "Ressursens navn"
+          },
+          "path" : {
             "type" : "array",
-            "description" : "Tilgangene som er tildelt",
+            "description" : "Path fra denne ressursen til roten av ressurs-treet",
             "items" : {
-              "$ref" : "#/components/schemas/Tilgang"
+              "$ref" : "#/components/schemas/PathRessurs"
             }
           }
         }
@@ -344,52 +358,6 @@
           }
         }
       },
-      "PathRessurs" : {
-        "required" : [ "id", "navn", "type" ],
-        "type" : "object",
-        "properties" : {
-          "id" : {
-            "type" : "string",
-            "description" : "Id for ressursen",
-            "format" : "uuid"
-          },
-          "type" : {
-            "type" : "string",
-            "description" : "Type for ressursen"
-          },
-          "navn" : {
-            "type" : "string",
-            "description" : "Navn for ressursen"
-          }
-        },
-        "description" : "Path fra denne ressursen til roten av ressurs-treet"
-      },
-      "Ressurs" : {
-        "required" : [ "id", "navn", "path", "type" ],
-        "type" : "object",
-        "properties" : {
-          "id" : {
-            "type" : "string",
-            "description" : "Id for ressursen",
-            "format" : "uuid"
-          },
-          "type" : {
-            "type" : "string",
-            "description" : "Type for ressursen"
-          },
-          "navn" : {
-            "type" : "string",
-            "description" : "Ressursens navn"
-          },
-          "path" : {
-            "type" : "array",
-            "description" : "Path fra denne ressursen til roten av ressurs-treet",
-            "items" : {
-              "$ref" : "#/components/schemas/PathRessurs"
-            }
-          }
-        }
-      },
       "ErrorMessage" : {
         "type" : "object",
         "properties" : {
@@ -422,6 +390,39 @@
           },
           "errorJson" : {
             "type" : "string"
+          }
+        }
+      },
+      "Tilgang" : {
+        "required" : [ "aktor", "privilegium" ],
+        "type" : "object",
+        "properties" : {
+          "privilegium" : {
+            "type" : "string",
+            "description" : "Aktøren (personen eller integrasjonen) som er autorisert"
+          },
+          "aktor" : {
+            "type" : "string",
+            "description" : "Privilegiet som er tildelt aktøren"
+          }
+        },
+        "description" : "Tilgangene som er tildelt"
+      },
+      "TypeTilgang" : {
+        "required" : [ "ressursType", "tilganger" ],
+        "type" : "object",
+        "properties" : {
+          "ressursType" : {
+            "type" : "string",
+            "description" : "Ressurstypen tilgangene er gitt på"
+          },
+          "tilganger" : {
+            "uniqueItems" : true,
+            "type" : "array",
+            "description" : "Tilgangene som er tildelt",
+            "items" : {
+              "$ref" : "#/components/schemas/Tilgang"
+            }
           }
         }
       }
