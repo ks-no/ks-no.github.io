@@ -44,7 +44,7 @@
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/FolkeregisterKonfigurasjon"
+                  "$ref" : "#/components/schemas/FolkeregisterKonfigurasjonDefinisjon"
                 }
               }
             }
@@ -151,6 +151,74 @@
               "application/json" : {
                 "schema" : {
                   "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/folkeregister/api/v1/konfigurasjon/lovhjemler/{omrade}" : {
+      "get" : {
+        "tags" : [ "folkeregister-konfigurasjon" ],
+        "description" : "Henter alle lovhjemler for gitt fagområde",
+        "operationId" : "hentLovhjemlerForOmrade",
+        "parameters" : [ {
+          "name" : "omrade",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "type" : "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/folkeregister/api/v1/konfigurasjon/tjenesteomrader" : {
+      "get" : {
+        "tags" : [ "folkeregister-konfigurasjon" ],
+        "description" : "Henter liste med alle omrader",
+        "operationId" : "hentOmrader",
+        "responses" : {
+          "200" : {
+            "description" : "Liste med tjenesteområder",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/TjenesteomradeListe"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/folkeregister/api/v1/konfigurasjon/deler" : {
+      "get" : {
+        "tags" : [ "folkeregister-konfigurasjon" ],
+        "description" : "Henter liste over alle deler samt hvilke felt de inneholder som brukes til dataminimering",
+        "operationId" : "hentDeler",
+        "responses" : {
+          "200" : {
+            "description" : "Liste med deler",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/DelListe"
                 }
               }
             }
@@ -542,84 +610,23 @@
           }
         }
       }
-    },
-    "/folkeregister/api/v1/konfigurasjon/lovhjemler/{omrade}" : {
-      "get" : {
-        "tags" : [ "folkeregister-konfigurasjon" ],
-        "description" : "Henter alle lovhjemler for gitt fagområde",
-        "operationId" : "hentLovhjemlerForOmrade",
-        "parameters" : [ {
-          "name" : "omrade",
-          "in" : "path",
-          "required" : true,
-          "schema" : {
-            "type" : "string"
-          }
-        } ],
-        "responses" : {
-          "200" : {
-            "description" : "OK",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "type" : "array",
-                  "items" : {
-                    "type" : "string"
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/folkeregister/api/v1/konfigurasjon/tjenesteomrader" : {
-      "get" : {
-        "tags" : [ "folkeregister-konfigurasjon" ],
-        "description" : "Henter liste med alle omrader",
-        "operationId" : "hentOmrader",
-        "responses" : {
-          "200" : {
-            "description" : "Liste med tjenesteområder",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/TjenesteomradeListe"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/folkeregister/api/v1/konfigurasjon/deler" : {
-      "get" : {
-        "tags" : [ "folkeregister-konfigurasjon" ],
-        "description" : "Henter liste over alle deler samt hvilke felt de inneholder som brukes til dataminimering",
-        "operationId" : "hentDeler",
-        "responses" : {
-          "200" : {
-            "description" : "Liste med deler",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/DelListe"
-                }
-              }
-            }
-          }
-        }
-      }
     }
   },
   "components" : {
     "schemas" : {
-      "FolkeregisterKonfigurasjon" : {
+      "FolkeregisterKonfigurasjonDefinisjon" : {
+        "required" : [ "fiksOrgId", "kontakteposter" ],
         "type" : "object",
         "properties" : {
           "fiksOrgId" : {
             "type" : "string",
             "format" : "uuid"
+          },
+          "kontakteposter" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
           }
         }
       },
@@ -807,6 +814,71 @@
           }
         }
       },
+      "TjenesteomradeBeskrivelse" : {
+        "type" : "object",
+        "properties" : {
+          "navn" : {
+            "type" : "string"
+          },
+          "beskrivelse" : {
+            "type" : "string"
+          }
+        }
+      },
+      "TjenesteomradeListe" : {
+        "required" : [ "omrader" ],
+        "type" : "object",
+        "properties" : {
+          "omrader" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/TjenesteomradeBeskrivelse"
+            }
+          }
+        }
+      },
+      "Del" : {
+        "required" : [ "beskrivelse", "felt", "navn" ],
+        "type" : "object",
+        "properties" : {
+          "navn" : {
+            "type" : "string"
+          },
+          "beskrivelse" : {
+            "type" : "string"
+          },
+          "felt" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Felt"
+            }
+          }
+        }
+      },
+      "DelListe" : {
+        "required" : [ "deler" ],
+        "type" : "object",
+        "properties" : {
+          "deler" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Del"
+            }
+          }
+        }
+      },
+      "Felt" : {
+        "required" : [ "beskrivelse", "navn" ],
+        "type" : "object",
+        "properties" : {
+          "navn" : {
+            "type" : "string"
+          },
+          "beskrivelse" : {
+            "type" : "string"
+          }
+        }
+      },
       "OppdaterRolleDefinisjon" : {
         "required" : [ "navn" ],
         "type" : "object",
@@ -891,71 +963,6 @@
             "items" : {
               "$ref" : "#/components/schemas/Lovhjemmel"
             }
-          }
-        }
-      },
-      "TjenesteomradeBeskrivelse" : {
-        "type" : "object",
-        "properties" : {
-          "navn" : {
-            "type" : "string"
-          },
-          "beskrivelse" : {
-            "type" : "string"
-          }
-        }
-      },
-      "TjenesteomradeListe" : {
-        "required" : [ "omrader" ],
-        "type" : "object",
-        "properties" : {
-          "omrader" : {
-            "type" : "array",
-            "items" : {
-              "$ref" : "#/components/schemas/TjenesteomradeBeskrivelse"
-            }
-          }
-        }
-      },
-      "Del" : {
-        "required" : [ "beskrivelse", "felt", "navn" ],
-        "type" : "object",
-        "properties" : {
-          "navn" : {
-            "type" : "string"
-          },
-          "beskrivelse" : {
-            "type" : "string"
-          },
-          "felt" : {
-            "type" : "array",
-            "items" : {
-              "$ref" : "#/components/schemas/Felt"
-            }
-          }
-        }
-      },
-      "DelListe" : {
-        "required" : [ "deler" ],
-        "type" : "object",
-        "properties" : {
-          "deler" : {
-            "type" : "array",
-            "items" : {
-              "$ref" : "#/components/schemas/Del"
-            }
-          }
-        }
-      },
-      "Felt" : {
-        "required" : [ "beskrivelse", "navn" ],
-        "type" : "object",
-        "properties" : {
-          "navn" : {
-            "type" : "string"
-          },
-          "beskrivelse" : {
-            "type" : "string"
           }
         }
       }
