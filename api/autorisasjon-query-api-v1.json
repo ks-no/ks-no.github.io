@@ -121,6 +121,47 @@
         }
       }
     },
+    "/autorisasjon-query/api/v1/autorisasjon/ressurser/{ressursId}" : {
+      "get" : {
+        "tags" : [ "autorisasjonQuery" ],
+        "description" : "Henter ressurs-metadata. Denne operasjonen krever minst ett privilegium på ressursen",
+        "operationId" : "getRessurs",
+        "parameters" : [ {
+          "name" : "ressursId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Metadata som beskriver ressursen",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Ressurs"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Feil i inputdata",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Ressursen finnes ikke"
+          }
+        }
+      }
+    },
     "/autorisasjon-query/api/v1/autorisasjon/ressurser/{ressursId}/tilganger" : {
       "get" : {
         "tags" : [ "autorisasjonQuery" ],
@@ -215,47 +256,6 @@
                 }
               }
             }
-          }
-        }
-      }
-    },
-    "/autorisasjon-query/api/v1/autorisasjon/ressurser/{ressursId}" : {
-      "get" : {
-        "tags" : [ "autorisasjonQuery" ],
-        "description" : "Henter ressurs-metadata. Denne operasjonen krever minst ett privilegium på ressursen",
-        "operationId" : "getRessurs",
-        "parameters" : [ {
-          "name" : "ressursId",
-          "in" : "path",
-          "required" : true,
-          "schema" : {
-            "type" : "string",
-            "format" : "uuid"
-          }
-        } ],
-        "responses" : {
-          "200" : {
-            "description" : "Metadata som beskriver ressursen",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/Ressurs"
-                }
-              }
-            }
-          },
-          "400" : {
-            "description" : "Feil i inputdata",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/ErrorMessage"
-                }
-              }
-            }
-          },
-          "404" : {
-            "description" : "Ressursen finnes ikke"
           }
         }
       }
@@ -380,20 +380,31 @@
         },
         "description" : "Path fra denne ressursen til roten av ressurs-treet"
       },
-      "Tilgang" : {
-        "required" : [ "aktor", "privilegium" ],
+      "Ressurs" : {
+        "required" : [ "id", "navn", "path", "type" ],
         "type" : "object",
         "properties" : {
-          "privilegium" : {
+          "id" : {
             "type" : "string",
-            "description" : "Aktøren (personen eller integrasjonen) som er autorisert"
+            "description" : "Id for ressursen",
+            "format" : "uuid"
           },
-          "aktor" : {
+          "type" : {
             "type" : "string",
-            "description" : "Privilegiet som er tildelt aktøren"
+            "description" : "Type for ressursen"
+          },
+          "navn" : {
+            "type" : "string",
+            "description" : "Ressursens navn"
+          },
+          "path" : {
+            "type" : "array",
+            "description" : "Path fra denne ressursen til roten av ressurs-treet",
+            "items" : {
+              "$ref" : "#/components/schemas/PathRessurs"
+            }
           }
-        },
-        "description" : "Tilgangene som er tildelt"
+        }
       },
       "ErrorMessage" : {
         "type" : "object",
@@ -429,6 +440,21 @@
             "type" : "string"
           }
         }
+      },
+      "Tilgang" : {
+        "required" : [ "aktor", "privilegium" ],
+        "type" : "object",
+        "properties" : {
+          "privilegium" : {
+            "type" : "string",
+            "description" : "Aktøren (personen eller integrasjonen) som er autorisert"
+          },
+          "aktor" : {
+            "type" : "string",
+            "description" : "Privilegiet som er tildelt aktøren"
+          }
+        },
+        "description" : "Tilgangene som er tildelt"
       },
       "BulkTilgangOppsummeringResponse" : {
         "required" : [ "ressurser", "type" ],
@@ -491,32 +517,6 @@
           "ressursType" : {
             "pattern" : "^[0-9A-Z_.]+$",
             "type" : "string"
-          }
-        }
-      },
-      "Ressurs" : {
-        "required" : [ "id", "navn", "path", "type" ],
-        "type" : "object",
-        "properties" : {
-          "id" : {
-            "type" : "string",
-            "description" : "Id for ressursen",
-            "format" : "uuid"
-          },
-          "type" : {
-            "type" : "string",
-            "description" : "Type for ressursen"
-          },
-          "navn" : {
-            "type" : "string",
-            "description" : "Ressursens navn"
-          },
-          "path" : {
-            "type" : "array",
-            "description" : "Path fra denne ressursen til roten av ressurs-treet",
-            "items" : {
-              "$ref" : "#/components/schemas/PathRessurs"
-            }
           }
         }
       },
