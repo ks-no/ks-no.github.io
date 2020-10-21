@@ -30,6 +30,34 @@
     "description" : "API for konfigurasjon av DHIS2"
   } ],
   "paths" : {
+    "/dhis2-konfigurasjon/api/v1/brukere" : {
+      "post" : {
+        "tags" : [ "Dhis2KonfigurasjonBrukere" ],
+        "description" : "Oppretter en bruker i DHIS2",
+        "operationId" : "opprettBruker",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/OpprettBrukerRequest"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "default" : {
+            "description" : "default response",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/OpprettBrukerResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/dhis2-konfigurasjon/api/v1/brukere/{id}" : {
       "put" : {
         "tags" : [ "Dhis2KonfigurasjonBrukere" ],
@@ -83,53 +111,6 @@
               "application/json" : {
                 "schema" : {
                   "$ref" : "#/components/schemas/BrukerSokResponse"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/dhis2-konfigurasjon/api/v1/brukere" : {
-      "post" : {
-        "tags" : [ "Dhis2KonfigurasjonBrukere" ],
-        "description" : "Oppretter en bruker i DHIS2",
-        "operationId" : "opprettBruker",
-        "requestBody" : {
-          "content" : {
-            "application/json" : {
-              "schema" : {
-                "$ref" : "#/components/schemas/OpprettBrukerRequest"
-              }
-            }
-          }
-        },
-        "responses" : {
-          "default" : {
-            "description" : "default response",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/OpprettBrukerResponse"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/dhis2-konfigurasjon/api/v1/organisasjoner" : {
-      "get" : {
-        "tags" : [ "Dhis2KonfigurasjonOrganisasjoner" ],
-        "description" : "Henter informasjon for alle registrerte organisasjoner",
-        "operationId" : "getOrganisasjoner",
-        "responses" : {
-          "default" : {
-            "description" : "default response",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/Organisasjoner"
                 }
               }
             }
@@ -310,27 +291,18 @@
         }
       }
     },
-    "/dhis2-konfigurasjon/api/v1/organisasjoner/{fiksOrganisasjonId}/tilganger" : {
+    "/dhis2-konfigurasjon/api/v1/organisasjoner" : {
       "get" : {
         "tags" : [ "Dhis2KonfigurasjonOrganisasjoner" ],
-        "description" : "Henter alle tilganger på gitt Fiks-organisasjon fra DHIS2",
-        "operationId" : "getTilganger",
-        "parameters" : [ {
-          "name" : "fiksOrganisasjonId",
-          "in" : "path",
-          "required" : true,
-          "schema" : {
-            "type" : "string",
-            "format" : "uuid"
-          }
-        } ],
+        "description" : "Henter informasjon for alle registrerte organisasjoner",
+        "operationId" : "getOrganisasjoner",
         "responses" : {
           "default" : {
             "description" : "default response",
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/Tilganger"
+                  "$ref" : "#/components/schemas/Organisasjoner"
                 }
               }
             }
@@ -407,6 +379,34 @@
         }
       }
     },
+    "/dhis2-konfigurasjon/api/v1/organisasjoner/{fiksOrganisasjonId}/tilganger" : {
+      "get" : {
+        "tags" : [ "Dhis2KonfigurasjonOrganisasjoner" ],
+        "description" : "Henter alle tilganger på gitt Fiks-organisasjon fra DHIS2",
+        "operationId" : "getTilganger",
+        "parameters" : [ {
+          "name" : "fiksOrganisasjonId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "default" : {
+            "description" : "default response",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Tilganger"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/dhis2-konfigurasjon/api/v1/person/sokperson" : {
       "post" : {
         "tags" : [ "Dhis2KonfigurasjonPersonSok" ],
@@ -448,6 +448,41 @@
   },
   "components" : {
     "schemas" : {
+      "OpprettBrukerResponse" : {
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string"
+          }
+        }
+      },
+      "OpprettBrukerRequest" : {
+        "type" : "object",
+        "properties" : {
+          "fnr" : {
+            "pattern" : "^[0-9]{11}$",
+            "type" : "string"
+          },
+          "fornavn" : {
+            "maxLength" : 160,
+            "minLength" : 2,
+            "type" : "string"
+          },
+          "etternavn" : {
+            "maxLength" : 160,
+            "minLength" : 2,
+            "type" : "string"
+          },
+          "epost" : {
+            "pattern" : "^[A-Za-zæøåÆØÅ0-9-_]+(\\.[A-Za-zæøåÆØÅ0-9-_]+)*@[A-Za-zæøåÆØÅ0-9-]+(\\.[A-Za-zæøåÆØÅ0-9-]+)*(\\.[A-Za-z]{2,})$",
+            "type" : "string"
+          },
+          "telefonnummer" : {
+            "pattern" : "^[+]?[0-9]+([- ][0-9]+)*$",
+            "type" : "string"
+          }
+        }
+      },
       "OppdaterBrukerRequest" : {
         "type" : "object",
         "properties" : {
@@ -511,41 +546,6 @@
           }
         }
       },
-      "OpprettBrukerResponse" : {
-        "type" : "object",
-        "properties" : {
-          "id" : {
-            "type" : "string"
-          }
-        }
-      },
-      "OpprettBrukerRequest" : {
-        "type" : "object",
-        "properties" : {
-          "fnr" : {
-            "pattern" : "^[0-9]{11}$",
-            "type" : "string"
-          },
-          "fornavn" : {
-            "maxLength" : 160,
-            "minLength" : 2,
-            "type" : "string"
-          },
-          "etternavn" : {
-            "maxLength" : 160,
-            "minLength" : 2,
-            "type" : "string"
-          },
-          "epost" : {
-            "pattern" : "^[A-Za-zæøåÆØÅ0-9-_]+(\\.[A-Za-zæøåÆØÅ0-9-_]+)*@[A-Za-zæøåÆØÅ0-9-]+(\\.[A-Za-zæøåÆØÅ0-9-]+)*(\\.[A-Za-z]{2,})$",
-            "type" : "string"
-          },
-          "telefonnummer" : {
-            "pattern" : "^[+]?[0-9]+([- ][0-9]+)*$",
-            "type" : "string"
-          }
-        }
-      },
       "Organisasjon" : {
         "type" : "object",
         "properties" : {
@@ -561,17 +561,6 @@
           },
           "folkeregisterAktivert" : {
             "type" : "boolean"
-          }
-        }
-      },
-      "Organisasjoner" : {
-        "type" : "object",
-        "properties" : {
-          "organisasjoner" : {
-            "type" : "array",
-            "items" : {
-              "$ref" : "#/components/schemas/Organisasjon"
-            }
           }
         }
       },
@@ -623,6 +612,26 @@
           }
         }
       },
+      "Organisasjoner" : {
+        "type" : "object",
+        "properties" : {
+          "organisasjoner" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Organisasjon"
+            }
+          }
+        }
+      },
+      "OpprettTilgangRequest" : {
+        "type" : "object",
+        "properties" : {
+          "rolle" : {
+            "type" : "string",
+            "enum" : [ "LESE_SKRIVE", "LESE" ]
+          }
+        }
+      },
       "Tilgang" : {
         "type" : "object",
         "properties" : {
@@ -655,15 +664,6 @@
             "items" : {
               "$ref" : "#/components/schemas/Tilgang"
             }
-          }
-        }
-      },
-      "OpprettTilgangRequest" : {
-        "type" : "object",
-        "properties" : {
-          "rolle" : {
-            "type" : "string",
-            "enum" : [ "LESE_SKRIVE", "LESE" ]
           }
         }
       },
