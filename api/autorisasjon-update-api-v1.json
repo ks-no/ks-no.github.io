@@ -26,25 +26,6 @@
     "description" : "API for typetilganger"
   } ],
   "paths" : {
-    "/autorisasjon-update/api/v1/privilegier" : {
-      "get" : {
-        "tags" : [ "Privilegium" ],
-        "summary" : "Henter alle gyldige privilegier for alle ressurstyper",
-        "operationId" : "getAllePrivilegier",
-        "responses" : {
-          "200" : {
-            "description" : "Alle gyldige privilegier for alle ressurstyper",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/PrivilegiumMap"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
     "/autorisasjon-update/api/v1/privilegier/{ressursType}" : {
       "get" : {
         "tags" : [ "Privilegium" ],
@@ -72,35 +53,20 @@
         }
       }
     },
-    "/autorisasjon-update/api/v1/ressurs/{ressurs}" : {
-      "patch" : {
-        "tags" : [ "Ressurs" ],
-        "description" : "Oppdaterer en ressurs",
-        "operationId" : "oppdaterRessurs",
-        "parameters" : [ {
-          "name" : "ressurs",
-          "in" : "path",
-          "required" : true,
-          "schema" : {
-            "type" : "string",
-            "format" : "uuid"
-          }
-        } ],
-        "requestBody" : {
-          "content" : {
-            "application/json" : {
-              "schema" : {
-                "$ref" : "#/components/schemas/OppdaterRessursRequest"
-              }
-            }
-          },
-          "required" : true
-        },
+    "/autorisasjon-update/api/v1/privilegier" : {
+      "get" : {
+        "tags" : [ "Privilegium" ],
+        "summary" : "Henter alle gyldige privilegier for alle ressurstyper",
+        "operationId" : "getAllePrivilegier",
         "responses" : {
-          "default" : {
-            "description" : "default response",
+          "200" : {
+            "description" : "Alle gyldige privilegier for alle ressurstyper",
             "content" : {
-              "application/json" : { }
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/PrivilegiumMap"
+                }
+              }
             }
           }
         }
@@ -219,6 +185,40 @@
         }
       }
     },
+    "/autorisasjon-update/api/v1/ressurs/{ressurs}" : {
+      "patch" : {
+        "tags" : [ "Ressurs" ],
+        "description" : "Oppdaterer en ressurs",
+        "operationId" : "oppdaterRessurs",
+        "parameters" : [ {
+          "name" : "ressurs",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/OppdaterRessursRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "default" : {
+            "description" : "default response",
+            "content" : {
+              "application/json" : { }
+            }
+          }
+        }
+      }
+    },
     "/autorisasjon-update/api/v1/typeTilganger/{ressursType}/tilganger" : {
       "post" : {
         "tags" : [ "TypeTilgang" ],
@@ -325,7 +325,19 @@
             }
           }
         },
-        "description" : "En liste over gyldige privilegier for en gitt ressurstype"
+        "description" : "Et map med alle privilegier for alle tjenestetyper"
+      },
+      "PrivilegiumList" : {
+        "type" : "object",
+        "properties" : {
+          "privilegier" : {
+            "type" : "array",
+            "description" : "En liste over gyldige privilegier for en gitt ressurstype",
+            "items" : {
+              "$ref" : "#/components/schemas/Privilegium"
+            }
+          }
+        }
       },
       "PrivilegiumMap" : {
         "type" : "object",
@@ -342,32 +354,6 @@
             "description" : "Et map med alle privilegier for alle tjenestetyper"
           }
         }
-      },
-      "PrivilegiumList" : {
-        "type" : "object",
-        "properties" : {
-          "privilegier" : {
-            "type" : "array",
-            "description" : "En liste over gyldige privilegier for en gitt ressurstype",
-            "items" : {
-              "$ref" : "#/components/schemas/Privilegium"
-            }
-          }
-        }
-      },
-      "OppdaterRessursRequest" : {
-        "required" : [ "navn" ],
-        "type" : "object",
-        "properties" : {
-          "navn" : {
-            "maxLength" : 200,
-            "minLength" : 2,
-            "pattern" : "^[A-ZÆØÅa-zæøå0-9ÁáÀàÂâÉéÈèÊêÍíÌìÎîÓóÒòÔôÚúÙùÛûÝýÄäËëÏïÖöÜü,.!?\\-:;/\\\\'()&+*=%§]+[A-ZÆØÅa-zæøå0-9ÁáÀàÂâÉéÈèÊêÍíÌìÎîÓóÒòÔôÚúÙùÛûÝýÄäËëÏïÖöÜü ,.!?\\-:;/\\\\'()&+*=%§]*[A-ZÆØÅa-zæøå0-9ÁáÀàÂâÉéÈèÊêÍíÌìÎîÓóÒòÔôÚúÙùÛûÝýÄäËëÏïÖöÜü,.!?\\-:;/\\\\'()&+*=%§]+$",
-            "type" : "string",
-            "description" : "Ressursens visningsnavn"
-          }
-        },
-        "description" : "En request for å oppdatere en eksisterende ressurs"
       },
       "Tilgang" : {
         "required" : [ "aktor", "privilegium", "ressurs" ],
@@ -488,6 +474,20 @@
           }
         },
         "description" : "En request for å opprette en ny ressurs"
+      },
+      "OppdaterRessursRequest" : {
+        "required" : [ "navn" ],
+        "type" : "object",
+        "properties" : {
+          "navn" : {
+            "maxLength" : 200,
+            "minLength" : 2,
+            "pattern" : "^[A-ZÆØÅa-zæøå0-9ÁáÀàÂâÉéÈèÊêÍíÌìÎîÓóÒòÔôÚúÙùÛûÝýÄäËëÏïÖöÜü,.!?\\-:;/\\\\'()&+*=%§]+[A-ZÆØÅa-zæøå0-9ÁáÀàÂâÉéÈèÊêÍíÌìÎîÓóÒòÔôÚúÙùÛûÝýÄäËëÏïÖöÜü ,.!?\\-:;/\\\\'()&+*=%§]*[A-ZÆØÅa-zæøå0-9ÁáÀàÂâÉéÈèÊêÍíÌìÎîÓóÒòÔôÚúÙùÛûÝýÄäËëÏïÖöÜü,.!?\\-:;/\\\\'()&+*=%§]+$",
+            "type" : "string",
+            "description" : "Ressursens visningsnavn"
+          }
+        },
+        "description" : "En request for å oppdatere en eksisterende ressurs"
       },
       "TypeTilgang" : {
         "required" : [ "aktor", "privilegium", "ressursType" ],
