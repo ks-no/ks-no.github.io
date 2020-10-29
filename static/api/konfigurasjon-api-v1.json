@@ -57,6 +57,93 @@
         }
       }
     },
+    "/konfigurasjon/api/v1/integrasjoner/{integrasjonId}" : {
+      "get" : {
+        "tags" : [ "IntegrasjonKonfigurasjon" ],
+        "summary" : "Henter integrasjonen med gitt id",
+        "operationId" : "getIntegrasjon",
+        "parameters" : [ {
+          "name" : "integrasjonId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Integrasjonen med etterspurt ID",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Integrasjon"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete" : {
+        "tags" : [ "IntegrasjonKonfigurasjon" ],
+        "summary" : "Sletter integrasjonen med gitt id, inkludert alle tilganger den har under organisasjonen",
+        "operationId" : "deleteIntegrasjon",
+        "parameters" : [ {
+          "name" : "integrasjonId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "default" : {
+            "description" : "default response",
+            "content" : {
+              "application/json" : { }
+            }
+          }
+        }
+      },
+      "patch" : {
+        "tags" : [ "IntegrasjonKonfigurasjon" ],
+        "summary" : "Oppdaterer integrasjonen med gitt id",
+        "description" : "Kun felt som er satt blir oppdatert. Kode-feltet er kun gyldig for globale integrasjoner, og vil derfor bli ignorert for andre. Når kode er satt må denne være unik.",
+        "operationId" : "updateIntegrasjon",
+        "parameters" : [ {
+          "name" : "integrasjonId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/IntegrasjonUpdateRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Den oppdaterte integrasjonen",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Integrasjon"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/konfigurasjon/api/v1/integrasjoner/{integrasjonId}/lagPassord" : {
       "post" : {
         "tags" : [ "IntegrasjonKonfigurasjon" ],
@@ -176,74 +263,56 @@
         }
       }
     },
-    "/konfigurasjon/api/v1/integrasjoner/{integrasjonId}" : {
+    "/konfigurasjon/api/v1/organisasjoner" : {
       "get" : {
-        "tags" : [ "IntegrasjonKonfigurasjon" ],
-        "summary" : "Henter integrasjonen med gitt id",
-        "operationId" : "getIntegrasjon",
+        "tags" : [ "OrganisasjonKonfigurasjon" ],
+        "summary" : "Henter alle organisasjonene i listene med id-er og kommunenummer. Bruk endepunkt \"getFlereOrganisasjoner\" for query på mer enn 100 id-er",
+        "operationId" : "getOrganisasjoner",
         "parameters" : [ {
-          "name" : "integrasjonId",
-          "in" : "path",
-          "required" : true,
+          "name" : "orgId",
+          "in" : "query",
           "schema" : {
-            "type" : "string",
-            "format" : "uuid"
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "format" : "uuid"
+            }
+          }
+        }, {
+          "name" : "kommunenr",
+          "in" : "query",
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
           }
         } ],
         "responses" : {
           "200" : {
-            "description" : "Integrasjonen med etterspurt ID",
+            "description" : "Organisasjonene med forespurte IDer og kommunenummer",
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/Integrasjon"
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/Organisasjon"
+                  }
                 }
               }
             }
           }
         }
       },
-      "delete" : {
-        "tags" : [ "IntegrasjonKonfigurasjon" ],
-        "summary" : "Sletter integrasjonen med gitt id, inkludert alle tilganger den har under organisasjonen",
-        "operationId" : "deleteIntegrasjon",
-        "parameters" : [ {
-          "name" : "integrasjonId",
-          "in" : "path",
-          "required" : true,
-          "schema" : {
-            "type" : "string",
-            "format" : "uuid"
-          }
-        } ],
-        "responses" : {
-          "default" : {
-            "description" : "default response",
-            "content" : {
-              "application/json" : { }
-            }
-          }
-        }
-      },
-      "patch" : {
-        "tags" : [ "IntegrasjonKonfigurasjon" ],
-        "summary" : "Oppdaterer integrasjonen med gitt id",
-        "description" : "Kun felt som er satt blir oppdatert. Kode-feltet er kun gyldig for globale integrasjoner, og vil derfor bli ignorert for andre. Når kode er satt må denne være unik.",
-        "operationId" : "updateIntegrasjon",
-        "parameters" : [ {
-          "name" : "integrasjonId",
-          "in" : "path",
-          "required" : true,
-          "schema" : {
-            "type" : "string",
-            "format" : "uuid"
-          }
-        } ],
+      "post" : {
+        "tags" : [ "OrganisasjonKonfigurasjon" ],
+        "summary" : "Henter alle organisasjonene i listene med id'er og kommunenummer",
+        "operationId" : "getFlereOrganisasjoner",
         "requestBody" : {
           "content" : {
             "application/json" : {
               "schema" : {
-                "$ref" : "#/components/schemas/IntegrasjonUpdateRequest"
+                "$ref" : "#/components/schemas/OrganisasjonGetRequest"
               }
             }
           },
@@ -251,11 +320,14 @@
         },
         "responses" : {
           "200" : {
-            "description" : "Den oppdaterte integrasjonen",
+            "description" : "Organisasjonene med forespurte IDer og kommunenummer",
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/Integrasjon"
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/Organisasjon"
+                  }
                 }
               }
             }
@@ -705,78 +777,6 @@
               "application/json" : {
                 "schema" : {
                   "$ref" : "#/components/schemas/OrganisasjonKontaktinformasjonListe"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/konfigurasjon/api/v1/organisasjoner" : {
-      "get" : {
-        "tags" : [ "OrganisasjonKonfigurasjon" ],
-        "summary" : "Henter alle organisasjonene i listene med id-er og kommunenummer. Bruk endepunkt \"getFlereOrganisasjoner\" for query på mer enn 100 id-er",
-        "operationId" : "getOrganisasjoner",
-        "parameters" : [ {
-          "name" : "orgId",
-          "in" : "query",
-          "schema" : {
-            "type" : "array",
-            "items" : {
-              "type" : "string",
-              "format" : "uuid"
-            }
-          }
-        }, {
-          "name" : "kommunenr",
-          "in" : "query",
-          "schema" : {
-            "type" : "array",
-            "items" : {
-              "type" : "string"
-            }
-          }
-        } ],
-        "responses" : {
-          "200" : {
-            "description" : "Organisasjonene med forespurte IDer og kommunenummer",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "type" : "array",
-                  "items" : {
-                    "$ref" : "#/components/schemas/Organisasjon"
-                  }
-                }
-              }
-            }
-          }
-        }
-      },
-      "post" : {
-        "tags" : [ "OrganisasjonKonfigurasjon" ],
-        "summary" : "Henter alle organisasjonene i listene med id'er og kommunenummer",
-        "operationId" : "getFlereOrganisasjoner",
-        "requestBody" : {
-          "content" : {
-            "application/json" : {
-              "schema" : {
-                "$ref" : "#/components/schemas/OrganisasjonGetRequest"
-              }
-            }
-          },
-          "required" : true
-        },
-        "responses" : {
-          "200" : {
-            "description" : "Organisasjonene med forespurte IDer og kommunenummer",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "type" : "array",
-                  "items" : {
-                    "$ref" : "#/components/schemas/Organisasjon"
-                  }
                 }
               }
             }
@@ -1265,17 +1265,6 @@
   },
   "components" : {
     "schemas" : {
-      "Passord" : {
-        "required" : [ "passord" ],
-        "type" : "object",
-        "properties" : {
-          "passord" : {
-            "type" : "string",
-            "description" : "Passord"
-          }
-        },
-        "description" : "Inneholder et passord"
-      },
       "Integrasjon" : {
         "required" : [ "autorisertOrgnr", "fiksOrganisasjonUuid", "navn", "opprettet", "uuid" ],
         "type" : "object",
@@ -1352,6 +1341,37 @@
         },
         "description" : "En integrasjon."
       },
+      "IntegrasjonUpdateRequest" : {
+        "type" : "object",
+        "properties" : {
+          "autorisertOrgnr" : {
+            "pattern" : "^[0-9]{9}$",
+            "type" : "string",
+            "description" : "Organisasjonsnummeret som ligger i virksomhetsserfikatet som skal brukes til å autorisere applikasjonen som skal bruke integrasjonen."
+          },
+          "navn" : {
+            "pattern" : "^[A-Za-zæøåÆØÅ0-9_.,/\\-_ ]+$",
+            "type" : "string",
+            "description" : "Et kort navn for integrasjonen."
+          },
+          "beskrivelse" : {
+            "type" : "string",
+            "description" : "En beskrivelse av integrasjonen."
+          }
+        },
+        "description" : "En forespørsel om å oppdatere en eksisterende integrasjon."
+      },
+      "Passord" : {
+        "required" : [ "passord" ],
+        "type" : "object",
+        "properties" : {
+          "passord" : {
+            "type" : "string",
+            "description" : "Passord"
+          }
+        },
+        "description" : "Inneholder et passord"
+      },
       "IntegrasjonCreateRequest" : {
         "required" : [ "autorisertOrgnr", "fiksOrganisasjonUuid", "navn" ],
         "type" : "object",
@@ -1377,26 +1397,6 @@
           }
         },
         "description" : "En forespørsel om å opprette en ny integrasjon."
-      },
-      "IntegrasjonUpdateRequest" : {
-        "type" : "object",
-        "properties" : {
-          "autorisertOrgnr" : {
-            "pattern" : "^[0-9]{9}$",
-            "type" : "string",
-            "description" : "Organisasjonsnummeret som ligger i virksomhetsserfikatet som skal brukes til å autorisere applikasjonen som skal bruke integrasjonen."
-          },
-          "navn" : {
-            "pattern" : "^[A-Za-zæøåÆØÅ0-9_.,/\\-_ ]+$",
-            "type" : "string",
-            "description" : "Et kort navn for integrasjonen."
-          },
-          "beskrivelse" : {
-            "type" : "string",
-            "description" : "En beskrivelse av integrasjonen."
-          }
-        },
-        "description" : "En forespørsel om å oppdatere en eksisterende integrasjon."
       },
       "Organisasjon" : {
         "required" : [ "intern", "navn", "type", "uuid" ],
