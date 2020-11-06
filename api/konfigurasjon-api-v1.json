@@ -144,6 +144,35 @@
         }
       }
     },
+    "/konfigurasjon/api/v1/integrasjoner" : {
+      "post" : {
+        "tags" : [ "IntegrasjonKonfigurasjon" ],
+        "summary" : "Oppretter en integrasjon",
+        "operationId" : "createIntegrasjon",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/IntegrasjonCreateRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Den opprettede integrasjonen",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Integrasjon"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/konfigurasjon/api/v1/integrasjoner/{integrasjonId}/lagPassord" : {
       "post" : {
         "tags" : [ "IntegrasjonKonfigurasjon" ],
@@ -305,16 +334,56 @@
         }
       }
     },
-    "/konfigurasjon/api/v1/integrasjoner" : {
+    "/konfigurasjon/api/v1/organisasjoner" : {
+      "get" : {
+        "tags" : [ "OrganisasjonKonfigurasjon" ],
+        "summary" : "Henter alle organisasjonene i listene med id-er og kommunenummer. Bruk endepunkt \"getFlereOrganisasjoner\" for query på mer enn 100 id-er",
+        "operationId" : "getOrganisasjoner",
+        "parameters" : [ {
+          "name" : "orgId",
+          "in" : "query",
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "format" : "uuid"
+            }
+          }
+        }, {
+          "name" : "kommunenr",
+          "in" : "query",
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Organisasjonene med forespurte IDer og kommunenummer",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/Organisasjon"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
       "post" : {
-        "tags" : [ "IntegrasjonKonfigurasjon" ],
-        "summary" : "Oppretter en integrasjon",
-        "operationId" : "createIntegrasjon",
+        "tags" : [ "OrganisasjonKonfigurasjon" ],
+        "summary" : "Henter alle organisasjonene i listene med id'er og kommunenummer",
+        "operationId" : "getFlereOrganisasjoner",
         "requestBody" : {
           "content" : {
             "application/json" : {
               "schema" : {
-                "$ref" : "#/components/schemas/IntegrasjonCreateRequest"
+                "$ref" : "#/components/schemas/OrganisasjonGetRequest"
               }
             }
           },
@@ -322,11 +391,125 @@
         },
         "responses" : {
           "200" : {
-            "description" : "Den opprettede integrasjonen",
+            "description" : "Organisasjonene med forespurte IDer og kommunenummer",
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/Integrasjon"
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/Organisasjon"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/konfigurasjon/api/v1/organisasjoner/synlige" : {
+      "get" : {
+        "tags" : [ "OrganisasjonKonfigurasjon" ],
+        "summary" : "Henter alle organisasjoner innlogget aktør har lov til å se",
+        "operationId" : "getSynligeOrganisasjoner",
+        "responses" : {
+          "200" : {
+            "description" : "Alle organisasjonen som autentisert bruker har tilgang til å se",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/Organisasjon"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/konfigurasjon/api/v1/organisasjoner/fakturaoversikt" : {
+      "get" : {
+        "tags" : [ "OrganisasjonKonfigurasjon" ],
+        "summary" : "Henter fakturaoversikt. Inkluderer alle synlige og konfigurerte enheter",
+        "operationId" : "getFakturaOversikt",
+        "responses" : {
+          "200" : {
+            "description" : "Fakturaoversikt. Tar med alle synlige og konfigurerte organisasjoner",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/FiksFakturaOversikt"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/konfigurasjon/api/v1/organisasjoner/info" : {
+      "get" : {
+        "tags" : [ "OrganisasjonKonfigurasjon" ],
+        "summary" : "Henter minimal organisasjonsinfo basert på kommunenummer",
+        "operationId" : "getOrganisasjonInfo",
+        "parameters" : [ {
+          "name" : "kommunenr",
+          "in" : "query",
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Returnerer minimal organisasjonsinfo basert på kommunenummer",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/OrganisasjonInfo"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/konfigurasjon/api/v1/organisasjoner/{fiksOrgId}" : {
+      "patch" : {
+        "tags" : [ "OrganisasjonKonfigurasjon" ],
+        "summary" : "Oppdaterer organisasjonen med gitt id",
+        "operationId" : "updateOrganisasjon",
+        "parameters" : [ {
+          "name" : "fiksOrgId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/OrganisasjonUpdateRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Den oppdaterte organisasjonen",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Organisasjon"
                 }
               }
             }
@@ -672,189 +855,6 @@
         }
       }
     },
-    "/konfigurasjon/api/v1/organisasjoner" : {
-      "get" : {
-        "tags" : [ "OrganisasjonKonfigurasjon" ],
-        "summary" : "Henter alle organisasjonene i listene med id-er og kommunenummer. Bruk endepunkt \"getFlereOrganisasjoner\" for query på mer enn 100 id-er",
-        "operationId" : "getOrganisasjoner",
-        "parameters" : [ {
-          "name" : "orgId",
-          "in" : "query",
-          "schema" : {
-            "type" : "array",
-            "items" : {
-              "type" : "string",
-              "format" : "uuid"
-            }
-          }
-        }, {
-          "name" : "kommunenr",
-          "in" : "query",
-          "schema" : {
-            "type" : "array",
-            "items" : {
-              "type" : "string"
-            }
-          }
-        } ],
-        "responses" : {
-          "200" : {
-            "description" : "Organisasjonene med forespurte IDer og kommunenummer",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "type" : "array",
-                  "items" : {
-                    "$ref" : "#/components/schemas/Organisasjon"
-                  }
-                }
-              }
-            }
-          }
-        }
-      },
-      "post" : {
-        "tags" : [ "OrganisasjonKonfigurasjon" ],
-        "summary" : "Henter alle organisasjonene i listene med id'er og kommunenummer",
-        "operationId" : "getFlereOrganisasjoner",
-        "requestBody" : {
-          "content" : {
-            "application/json" : {
-              "schema" : {
-                "$ref" : "#/components/schemas/OrganisasjonGetRequest"
-              }
-            }
-          },
-          "required" : true
-        },
-        "responses" : {
-          "200" : {
-            "description" : "Organisasjonene med forespurte IDer og kommunenummer",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "type" : "array",
-                  "items" : {
-                    "$ref" : "#/components/schemas/Organisasjon"
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/konfigurasjon/api/v1/organisasjoner/synlige" : {
-      "get" : {
-        "tags" : [ "OrganisasjonKonfigurasjon" ],
-        "summary" : "Henter alle organisasjoner innlogget aktør har lov til å se",
-        "operationId" : "getSynligeOrganisasjoner",
-        "responses" : {
-          "200" : {
-            "description" : "Alle organisasjonen som autentisert bruker har tilgang til å se",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "type" : "array",
-                  "items" : {
-                    "$ref" : "#/components/schemas/Organisasjon"
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/konfigurasjon/api/v1/organisasjoner/fakturaoversikt" : {
-      "get" : {
-        "tags" : [ "OrganisasjonKonfigurasjon" ],
-        "summary" : "Henter fakturaoversikt. Inkluderer alle synlige og konfigurerte enheter",
-        "operationId" : "getFakturaOversikt",
-        "responses" : {
-          "200" : {
-            "description" : "Fakturaoversikt. Tar med alle synlige og konfigurerte organisasjoner",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/FiksFakturaOversikt"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/konfigurasjon/api/v1/organisasjoner/info" : {
-      "get" : {
-        "tags" : [ "OrganisasjonKonfigurasjon" ],
-        "summary" : "Henter minimal organisasjonsinfo basert på kommunenummer",
-        "operationId" : "getOrganisasjonInfo",
-        "parameters" : [ {
-          "name" : "kommunenr",
-          "in" : "query",
-          "schema" : {
-            "type" : "array",
-            "items" : {
-              "type" : "string"
-            }
-          }
-        } ],
-        "responses" : {
-          "200" : {
-            "description" : "Returnerer minimal organisasjonsinfo basert på kommunenummer",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "type" : "array",
-                  "items" : {
-                    "$ref" : "#/components/schemas/OrganisasjonInfo"
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/konfigurasjon/api/v1/organisasjoner/{fiksOrgId}" : {
-      "patch" : {
-        "tags" : [ "OrganisasjonKonfigurasjon" ],
-        "summary" : "Oppdaterer organisasjonen med gitt id",
-        "operationId" : "updateOrganisasjon",
-        "parameters" : [ {
-          "name" : "fiksOrgId",
-          "in" : "path",
-          "required" : true,
-          "schema" : {
-            "type" : "string",
-            "format" : "uuid"
-          }
-        } ],
-        "requestBody" : {
-          "content" : {
-            "application/json" : {
-              "schema" : {
-                "$ref" : "#/components/schemas/OrganisasjonUpdateRequest"
-              }
-            }
-          },
-          "required" : true
-        },
-        "responses" : {
-          "200" : {
-            "description" : "Den oppdaterte organisasjonen",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/Organisasjon"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
     "/konfigurasjon/api/v1/personer" : {
       "get" : {
         "tags" : [ "PersonKonfigurasjon" ],
@@ -909,39 +909,6 @@
               "application/json" : {
                 "schema" : {
                   "$ref" : "#/components/schemas/Person"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/konfigurasjon/api/v1/personer/list" : {
-      "post" : {
-        "tags" : [ "PersonKonfigurasjon" ],
-        "summary" : "Henter alle personene i listen med fødselsnummer",
-        "description" : "Krever at alle verdiene som sendes inn er gyldige fødselsnummer. Feiler ikke for personer som ikke blir funnet",
-        "operationId" : "getPersonerV2",
-        "requestBody" : {
-          "content" : {
-            "application/json" : {
-              "schema" : {
-                "$ref" : "#/components/schemas/PersonerGetRequest"
-              }
-            }
-          },
-          "required" : true
-        },
-        "responses" : {
-          "200" : {
-            "description" : "Personene med forespurte fødselsnummer",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "type" : "array",
-                  "items" : {
-                    "$ref" : "#/components/schemas/Person"
-                  }
                 }
               }
             }
@@ -1016,6 +983,39 @@
         }
       }
     },
+    "/konfigurasjon/api/v1/personer/list" : {
+      "post" : {
+        "tags" : [ "PersonKonfigurasjon" ],
+        "summary" : "Henter alle personene i listen med fødselsnummer",
+        "description" : "Krever at alle verdiene som sendes inn er gyldige fødselsnummer. Feiler ikke for personer som ikke blir funnet",
+        "operationId" : "getPersonerV2",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/PersonerGetRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Personene med forespurte fødselsnummer",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/Person"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/konfigurasjon/api/v1/privilegier/{ressursType}" : {
       "get" : {
         "tags" : [ "PrivilegiumKonfigurasjon" ],
@@ -1036,6 +1036,77 @@
               "application/json" : {
                 "schema" : {
                   "$ref" : "#/components/schemas/PrivilegiumList"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/konfigurasjon/api/v1/root/tjenester" : {
+      "get" : {
+        "tags" : [ "RootKonfigurasjon" ],
+        "description" : "Henter alle eksisterende tjenester",
+        "operationId" : "getAllTjenester",
+        "responses" : {
+          "200" : {
+            "description" : "Alle eksisterende tjenester",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/Tjeneste"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/konfigurasjon/api/v1/root/organisasjoner" : {
+      "get" : {
+        "tags" : [ "RootKonfigurasjon" ],
+        "description" : "Henter alle organisasjoner",
+        "operationId" : "getAllOrganisasjoner",
+        "responses" : {
+          "200" : {
+            "description" : "Alle organisasjoner",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/Organisasjon"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post" : {
+        "tags" : [ "RootKonfigurasjon" ],
+        "description" : "Oppretter en organisasjon",
+        "operationId" : "createOrganisasjon",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/OrganisasjonCreateRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Den opprettede organisasjonen",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Organisasjon"
                 }
               }
             }
@@ -1243,77 +1314,6 @@
         }
       }
     },
-    "/konfigurasjon/api/v1/root/tjenester" : {
-      "get" : {
-        "tags" : [ "RootKonfigurasjon" ],
-        "description" : "Henter alle eksisterende tjenester",
-        "operationId" : "getAllTjenester",
-        "responses" : {
-          "200" : {
-            "description" : "Alle eksisterende tjenester",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "type" : "array",
-                  "items" : {
-                    "$ref" : "#/components/schemas/Tjeneste"
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/konfigurasjon/api/v1/root/organisasjoner" : {
-      "get" : {
-        "tags" : [ "RootKonfigurasjon" ],
-        "description" : "Henter alle organisasjoner",
-        "operationId" : "getAllOrganisasjoner",
-        "responses" : {
-          "200" : {
-            "description" : "Alle organisasjoner",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "type" : "array",
-                  "items" : {
-                    "$ref" : "#/components/schemas/Organisasjon"
-                  }
-                }
-              }
-            }
-          }
-        }
-      },
-      "post" : {
-        "tags" : [ "RootKonfigurasjon" ],
-        "description" : "Oppretter en organisasjon",
-        "operationId" : "createOrganisasjon",
-        "requestBody" : {
-          "content" : {
-            "application/json" : {
-              "schema" : {
-                "$ref" : "#/components/schemas/OrganisasjonCreateRequest"
-              }
-            }
-          },
-          "required" : true
-        },
-        "responses" : {
-          "200" : {
-            "description" : "Den opprettede organisasjonen",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/Organisasjon"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
     "/konfigurasjon/api/v1/tjenester" : {
       "get" : {
         "tags" : [ "TjenesteKonfigurasjon" ],
@@ -1412,6 +1412,32 @@
         },
         "description" : "En integrasjon."
       },
+      "IntegrasjonCreateRequest" : {
+        "required" : [ "autorisertOrgnr", "fiksOrganisasjonUuid", "navn" ],
+        "type" : "object",
+        "properties" : {
+          "autorisertOrgnr" : {
+            "pattern" : "^[0-9]{9}$",
+            "type" : "string",
+            "description" : "Organisasjonsnummeret som ligger i virksomhetsserfikatet som skal brukes til å autorisere applikasjonen som skal bruke integrasjonen."
+          },
+          "navn" : {
+            "pattern" : "^[A-Za-zæøåÆØÅ0-9_.,/\\-_ ]+$",
+            "type" : "string",
+            "description" : "Et kort navn for integrasjonen."
+          },
+          "beskrivelse" : {
+            "type" : "string",
+            "description" : "En beskrivelse av integrasjonen."
+          },
+          "fiksOrganisasjonUuid" : {
+            "type" : "string",
+            "description" : "Id for FIKS-organisasjonen som eier integrasjonen, eller null for globale integrasjoner.",
+            "format" : "uuid"
+          }
+        },
+        "description" : "En forespørsel om å opprette en ny integrasjon."
+      },
       "IntegrasjonUpdateRequest" : {
         "type" : "object",
         "properties" : {
@@ -1442,267 +1468,6 @@
           }
         },
         "description" : "Inneholder et passord"
-      },
-      "IntegrasjonCreateRequest" : {
-        "required" : [ "autorisertOrgnr", "fiksOrganisasjonUuid", "navn" ],
-        "type" : "object",
-        "properties" : {
-          "autorisertOrgnr" : {
-            "pattern" : "^[0-9]{9}$",
-            "type" : "string",
-            "description" : "Organisasjonsnummeret som ligger i virksomhetsserfikatet som skal brukes til å autorisere applikasjonen som skal bruke integrasjonen."
-          },
-          "navn" : {
-            "pattern" : "^[A-Za-zæøåÆØÅ0-9_.,/\\-_ ]+$",
-            "type" : "string",
-            "description" : "Et kort navn for integrasjonen."
-          },
-          "beskrivelse" : {
-            "type" : "string",
-            "description" : "En beskrivelse av integrasjonen."
-          },
-          "fiksOrganisasjonUuid" : {
-            "type" : "string",
-            "description" : "Id for FIKS-organisasjonen som eier integrasjonen, eller null for globale integrasjoner.",
-            "format" : "uuid"
-          }
-        },
-        "description" : "En forespørsel om å opprette en ny integrasjon."
-      },
-      "TjenesteForOrganisasjon" : {
-        "required" : [ "kode", "navn", "ressursType" ],
-        "type" : "object",
-        "properties" : {
-          "kode" : {
-            "pattern" : "^[0-9A-Z_.]+$",
-            "type" : "string",
-            "description" : "En unik kode for tjenesten."
-          },
-          "ressursType" : {
-            "pattern" : "^[0-9A-Z_.]+$",
-            "type" : "string",
-            "description" : "Tjenestens ressurstype i autorisasjon."
-          },
-          "navn" : {
-            "pattern" : "^[A-Za-zæøåÆØÅ0-9_.,/\\-_ ]+$",
-            "type" : "string",
-            "description" : "Tjenestens navn."
-          },
-          "beskrivelse" : {
-            "type" : "string",
-            "description" : "En utfyllende beskrivelse av tjenesten."
-          },
-          "lesmer" : {
-            "type" : "string",
-            "description" : "Les mer lenke"
-          },
-          "initialisert" : {
-            "type" : "boolean",
-            "description" : "Indikerer om en tjenste er initialisert i kontekst av en organisasjon."
-          },
-          "konfigurert" : {
-            "type" : "boolean",
-            "description" : "Indikerer om en tjenste er konfigurert i kontekst av en organisasjon."
-          },
-          "tilgjengeligFor" : {
-            "uniqueItems" : true,
-            "type" : "array",
-            "description" : "Viser hvilke organisasjonstyper denne tjenesten er tilgjengelig for",
-            "items" : {
-              "type" : "string",
-              "description" : "Viser hvilke organisasjonstyper denne tjenesten er tilgjengelig for"
-            }
-          }
-        },
-        "description" : "En tjeneste."
-      },
-      "InitialisertTjeneste" : {
-        "required" : [ "ressursId" ],
-        "type" : "object",
-        "properties" : {
-          "ressursId" : {
-            "type" : "string",
-            "description" : "Id til ressursen som ble opprettet for tjenesten",
-            "format" : "uuid"
-          }
-        },
-        "description" : "Resultatet av initialisering av en tjeneste."
-      },
-      "Faktura" : {
-        "required" : [ "juridiskNavn", "navn", "orgnr", "postnummer", "poststed", "referanse", "sistEndret" ],
-        "type" : "object",
-        "properties" : {
-          "orgnr" : {
-            "pattern" : "^[0-9]{9}$",
-            "type" : "string",
-            "description" : "Organisasjonsnummeret til organisasjonen fakturainformasjonen gjelder."
-          },
-          "navn" : {
-            "pattern" : "^[A-Za-zæøåÆØÅ0-9_.,/\\-_ ]+$",
-            "type" : "string",
-            "description" : "Organisasjonens navn."
-          },
-          "juridiskNavn" : {
-            "pattern" : "^[A-Za-zæøåÆØÅ0-9_.,/\\-_ ]+$",
-            "type" : "string",
-            "description" : "Organisasjonens juridiske navn ihht. Enhetsregisteret (Kan være det samme som organisasjonens navn, men skal uansett oppgis)"
-          },
-          "referanse" : {
-            "pattern" : "^[A-Za-zæøåÆØÅ0-9_.,/\\-_ ]+$",
-            "type" : "string",
-            "description" : "Navn eller annen identifikator som angir organisasjonens referanse, f.eks. ansattnummer (Deres Ref.)"
-          },
-          "epost" : {
-            "pattern" : "^[A-Za-zæøåÆØÅ0-9-_]+(\\.[A-Za-zæøåÆØÅ0-9-_]+)*@[A-Za-zæøåÆØÅ0-9-]+(\\.[A-Za-zæøåÆØÅ0-9-]+)*(\\.[A-Za-z]{2,})$",
-            "type" : "string",
-            "description" : "Epostadresse for å kontakte organisasjonen."
-          },
-          "telefon" : {
-            "pattern" : "^[+]?[0-9]+([- ][0-9]+)*$",
-            "type" : "string",
-            "description" : "Telefonnummer for å kontakte organisasjonen."
-          },
-          "adresselinje1" : {
-            "pattern" : "^[A-Za-zæøåÆØÅ0-9_.,/\\-_ ]+$",
-            "type" : "string",
-            "description" : "Første adresselinje."
-          },
-          "adresselinje2" : {
-            "pattern" : "^[A-Za-zæøåÆØÅ0-9_.,/\\-_ ]+$",
-            "type" : "string",
-            "description" : "Andre adresselinje."
-          },
-          "postnummer" : {
-            "pattern" : "^[0-9]{4}$",
-            "type" : "string",
-            "description" : "Postnummer."
-          },
-          "poststed" : {
-            "pattern" : "^[A-Za-zæøåÆØÅ0-9_.,/\\-_ ]+$",
-            "type" : "string",
-            "description" : "Poststed."
-          },
-          "kundenummer" : {
-            "pattern" : "^[A-Za-zæøåÆØÅ0-9_.,/\\-_ ]+$",
-            "type" : "string",
-            "description" : "Kundenummer som oppgis i faktura."
-          },
-          "endepunktId" : {
-            "pattern" : "^[0-9]{9}$",
-            "type" : "string",
-            "description" : "Identifiserer mottaker for faktura. Dette vil være organisasjonsnummer for enheten som skal motta fakturaen. I større virksomheter kan dette være et annet organisasjonsnummer enn det som angis i 'Organisasjonsnummer' NB! organisasjonsnummeret må være registert i Elektronisk mottakeradresseregister (ELMA)"
-          },
-          "sistEndret" : {
-            "type" : "integer",
-            "description" : "Tidspunkt for siste endring av fakturainformasjonen i epoch millis",
-            "format" : "int64"
-          }
-        },
-        "description" : "Inneholder fakturainformasjon for en organisasjon."
-      },
-      "FakturaUpdateRequest" : {
-        "required" : [ "juridiskNavn", "navn", "orgnr", "postnummer", "poststed", "referanse" ],
-        "type" : "object",
-        "properties" : {
-          "orgnr" : {
-            "pattern" : "^[0-9]{9}$",
-            "type" : "string",
-            "description" : "Organisasjonsnummeret til organisasjonen fakturainformasjonen gjelder."
-          },
-          "navn" : {
-            "pattern" : "^[A-Za-zæøåÆØÅ0-9_.,/\\-_ ]+$",
-            "type" : "string",
-            "description" : "Organisasjonens navn."
-          },
-          "juridiskNavn" : {
-            "pattern" : "^[A-Za-zæøåÆØÅ0-9_.,/\\-_ ]+$",
-            "type" : "string",
-            "description" : "Organisasjonens juridiske navn ihht. Enhetsregisteret (Kan være det samme som organisasjonens navn, men skal uansett oppgis)"
-          },
-          "referanse" : {
-            "pattern" : "^[A-Za-zæøåÆØÅ0-9_.,/\\-_ ]+$",
-            "type" : "string",
-            "description" : "Navn eller annen identifikator som angir organisasjonens referanse, f.eks. ansattnummer (Deres Ref.)"
-          },
-          "epost" : {
-            "pattern" : "^[A-Za-zæøåÆØÅ0-9-_]+(\\.[A-Za-zæøåÆØÅ0-9-_]+)*@[A-Za-zæøåÆØÅ0-9-]+(\\.[A-Za-zæøåÆØÅ0-9-]+)*(\\.[A-Za-z]{2,})$",
-            "type" : "string",
-            "description" : "Epostadresse for å kontakte organisasjonen."
-          },
-          "telefon" : {
-            "pattern" : "^[+]?[0-9]+([- ][0-9]+)*$",
-            "type" : "string",
-            "description" : "Telefonnummer for å kontakte organisasjonen."
-          },
-          "adresselinje1" : {
-            "pattern" : "^[A-Za-zæøåÆØÅ0-9_.,/\\-_ ]+$",
-            "type" : "string",
-            "description" : "Første adresselinje."
-          },
-          "adresselinje2" : {
-            "pattern" : "^[A-Za-zæøåÆØÅ0-9_.,/\\-_ ]+$",
-            "type" : "string",
-            "description" : "Andre adresselinje."
-          },
-          "postnummer" : {
-            "pattern" : "^[0-9]{4}$",
-            "type" : "string",
-            "description" : "Postnummer."
-          },
-          "poststed" : {
-            "pattern" : "^[A-Za-zæøåÆØÅ0-9_.,/\\-_ ]+$",
-            "type" : "string",
-            "description" : "Poststed."
-          },
-          "kundenummer" : {
-            "pattern" : "^[A-Za-zæøåÆØÅ0-9_.,/\\-_ ]+$",
-            "type" : "string",
-            "description" : "Kundenummer som oppgis i faktura."
-          },
-          "endepunktId" : {
-            "pattern" : "^[0-9]{9}$",
-            "type" : "string",
-            "description" : "Identifiserer mottaker for faktura. Dette vil være organisasjonsnummer for enheten som skal motta fakturaen. I større virksomheter kan dette være et annet organisasjonsnummer enn det som angis i 'Organisasjonsnummer' NB! organisasjonsnummeret må være registert i Elektronisk mottakeradresseregister (ELMA)"
-          }
-        },
-        "description" : "Inneholder fakturainformasjon for en organisasjon."
-      },
-      "OrganisasjonKontaktinformasjon" : {
-        "required" : [ "epost", "fiksOrganisasjonId", "navn" ],
-        "type" : "object",
-        "properties" : {
-          "fiksOrganisasjonId" : {
-            "type" : "string",
-            "description" : "Organisasjonens id.",
-            "format" : "uuid"
-          },
-          "navn" : {
-            "type" : "string",
-            "description" : "Organisasjonens navn."
-          },
-          "epost" : {
-            "type" : "string",
-            "description" : "Organisasjonens epostadresse."
-          },
-          "kommunenr" : {
-            "type" : "string",
-            "description" : "Organisasjonens kommunenummer, dersom det er en kommune."
-          }
-        },
-        "description" : "Kontaktinformasjon for en organisasjon."
-      },
-      "OrganisasjonKontaktinformasjonListe" : {
-        "type" : "object",
-        "properties" : {
-          "organisasjoner" : {
-            "type" : "array",
-            "description" : "Kontaktinformasjon for organisasjoner.",
-            "items" : {
-              "$ref" : "#/components/schemas/OrganisasjonKontaktinformasjon"
-            }
-          }
-        },
-        "description" : "Kontaktinformasjon for organisasjoner."
       },
       "Organisasjon" : {
         "required" : [ "intern", "navn", "type", "uuid" ],
@@ -1945,6 +1710,241 @@
         },
         "description" : "En forespørsel om å oppdatere en eksisterende organisasjon."
       },
+      "TjenesteForOrganisasjon" : {
+        "required" : [ "kode", "navn", "ressursType" ],
+        "type" : "object",
+        "properties" : {
+          "kode" : {
+            "pattern" : "^[0-9A-Z_.]+$",
+            "type" : "string",
+            "description" : "En unik kode for tjenesten."
+          },
+          "ressursType" : {
+            "pattern" : "^[0-9A-Z_.]+$",
+            "type" : "string",
+            "description" : "Tjenestens ressurstype i autorisasjon."
+          },
+          "navn" : {
+            "pattern" : "^[A-Za-zæøåÆØÅ0-9_.,/\\-_ ]+$",
+            "type" : "string",
+            "description" : "Tjenestens navn."
+          },
+          "beskrivelse" : {
+            "type" : "string",
+            "description" : "En utfyllende beskrivelse av tjenesten."
+          },
+          "lesmer" : {
+            "type" : "string",
+            "description" : "Les mer lenke"
+          },
+          "initialisert" : {
+            "type" : "boolean",
+            "description" : "Indikerer om en tjenste er initialisert i kontekst av en organisasjon."
+          },
+          "konfigurert" : {
+            "type" : "boolean",
+            "description" : "Indikerer om en tjenste er konfigurert i kontekst av en organisasjon."
+          },
+          "tilgjengeligFor" : {
+            "uniqueItems" : true,
+            "type" : "array",
+            "description" : "Viser hvilke organisasjonstyper denne tjenesten er tilgjengelig for",
+            "items" : {
+              "type" : "string",
+              "description" : "Viser hvilke organisasjonstyper denne tjenesten er tilgjengelig for"
+            }
+          }
+        },
+        "description" : "En tjeneste."
+      },
+      "InitialisertTjeneste" : {
+        "required" : [ "ressursId" ],
+        "type" : "object",
+        "properties" : {
+          "ressursId" : {
+            "type" : "string",
+            "description" : "Id til ressursen som ble opprettet for tjenesten",
+            "format" : "uuid"
+          }
+        },
+        "description" : "Resultatet av initialisering av en tjeneste."
+      },
+      "Faktura" : {
+        "required" : [ "juridiskNavn", "navn", "orgnr", "postnummer", "poststed", "referanse", "sistEndret" ],
+        "type" : "object",
+        "properties" : {
+          "orgnr" : {
+            "pattern" : "^[0-9]{9}$",
+            "type" : "string",
+            "description" : "Organisasjonsnummeret til organisasjonen fakturainformasjonen gjelder."
+          },
+          "navn" : {
+            "pattern" : "^[A-Za-zæøåÆØÅ0-9_.,/\\-_ ]+$",
+            "type" : "string",
+            "description" : "Organisasjonens navn."
+          },
+          "juridiskNavn" : {
+            "pattern" : "^[A-Za-zæøåÆØÅ0-9_.,/\\-_ ]+$",
+            "type" : "string",
+            "description" : "Organisasjonens juridiske navn ihht. Enhetsregisteret (Kan være det samme som organisasjonens navn, men skal uansett oppgis)"
+          },
+          "referanse" : {
+            "pattern" : "^[A-Za-zæøåÆØÅ0-9_.,/\\-_ ]+$",
+            "type" : "string",
+            "description" : "Navn eller annen identifikator som angir organisasjonens referanse, f.eks. ansattnummer (Deres Ref.)"
+          },
+          "epost" : {
+            "pattern" : "^[A-Za-zæøåÆØÅ0-9-_]+(\\.[A-Za-zæøåÆØÅ0-9-_]+)*@[A-Za-zæøåÆØÅ0-9-]+(\\.[A-Za-zæøåÆØÅ0-9-]+)*(\\.[A-Za-z]{2,})$",
+            "type" : "string",
+            "description" : "Epostadresse for å kontakte organisasjonen."
+          },
+          "telefon" : {
+            "pattern" : "^[+]?[0-9]+([- ][0-9]+)*$",
+            "type" : "string",
+            "description" : "Telefonnummer for å kontakte organisasjonen."
+          },
+          "adresselinje1" : {
+            "pattern" : "^[A-Za-zæøåÆØÅ0-9_.,/\\-_ ]+$",
+            "type" : "string",
+            "description" : "Første adresselinje."
+          },
+          "adresselinje2" : {
+            "pattern" : "^[A-Za-zæøåÆØÅ0-9_.,/\\-_ ]+$",
+            "type" : "string",
+            "description" : "Andre adresselinje."
+          },
+          "postnummer" : {
+            "pattern" : "^[0-9]{4}$",
+            "type" : "string",
+            "description" : "Postnummer."
+          },
+          "poststed" : {
+            "pattern" : "^[A-Za-zæøåÆØÅ0-9_.,/\\-_ ]+$",
+            "type" : "string",
+            "description" : "Poststed."
+          },
+          "kundenummer" : {
+            "pattern" : "^[A-Za-zæøåÆØÅ0-9_.,/\\-_ ]+$",
+            "type" : "string",
+            "description" : "Kundenummer som oppgis i faktura."
+          },
+          "endepunktId" : {
+            "pattern" : "^[0-9]{9}$",
+            "type" : "string",
+            "description" : "Identifiserer mottaker for faktura. Dette vil være organisasjonsnummer for enheten som skal motta fakturaen. I større virksomheter kan dette være et annet organisasjonsnummer enn det som angis i 'Organisasjonsnummer' NB! organisasjonsnummeret må være registert i Elektronisk mottakeradresseregister (ELMA)"
+          },
+          "sistEndret" : {
+            "type" : "integer",
+            "description" : "Tidspunkt for siste endring av fakturainformasjonen i epoch millis",
+            "format" : "int64"
+          }
+        },
+        "description" : "Inneholder fakturainformasjon for en organisasjon."
+      },
+      "FakturaUpdateRequest" : {
+        "required" : [ "juridiskNavn", "navn", "orgnr", "postnummer", "poststed", "referanse" ],
+        "type" : "object",
+        "properties" : {
+          "orgnr" : {
+            "pattern" : "^[0-9]{9}$",
+            "type" : "string",
+            "description" : "Organisasjonsnummeret til organisasjonen fakturainformasjonen gjelder."
+          },
+          "navn" : {
+            "pattern" : "^[A-Za-zæøåÆØÅ0-9_.,/\\-_ ]+$",
+            "type" : "string",
+            "description" : "Organisasjonens navn."
+          },
+          "juridiskNavn" : {
+            "pattern" : "^[A-Za-zæøåÆØÅ0-9_.,/\\-_ ]+$",
+            "type" : "string",
+            "description" : "Organisasjonens juridiske navn ihht. Enhetsregisteret (Kan være det samme som organisasjonens navn, men skal uansett oppgis)"
+          },
+          "referanse" : {
+            "pattern" : "^[A-Za-zæøåÆØÅ0-9_.,/\\-_ ]+$",
+            "type" : "string",
+            "description" : "Navn eller annen identifikator som angir organisasjonens referanse, f.eks. ansattnummer (Deres Ref.)"
+          },
+          "epost" : {
+            "pattern" : "^[A-Za-zæøåÆØÅ0-9-_]+(\\.[A-Za-zæøåÆØÅ0-9-_]+)*@[A-Za-zæøåÆØÅ0-9-]+(\\.[A-Za-zæøåÆØÅ0-9-]+)*(\\.[A-Za-z]{2,})$",
+            "type" : "string",
+            "description" : "Epostadresse for å kontakte organisasjonen."
+          },
+          "telefon" : {
+            "pattern" : "^[+]?[0-9]+([- ][0-9]+)*$",
+            "type" : "string",
+            "description" : "Telefonnummer for å kontakte organisasjonen."
+          },
+          "adresselinje1" : {
+            "pattern" : "^[A-Za-zæøåÆØÅ0-9_.,/\\-_ ]+$",
+            "type" : "string",
+            "description" : "Første adresselinje."
+          },
+          "adresselinje2" : {
+            "pattern" : "^[A-Za-zæøåÆØÅ0-9_.,/\\-_ ]+$",
+            "type" : "string",
+            "description" : "Andre adresselinje."
+          },
+          "postnummer" : {
+            "pattern" : "^[0-9]{4}$",
+            "type" : "string",
+            "description" : "Postnummer."
+          },
+          "poststed" : {
+            "pattern" : "^[A-Za-zæøåÆØÅ0-9_.,/\\-_ ]+$",
+            "type" : "string",
+            "description" : "Poststed."
+          },
+          "kundenummer" : {
+            "pattern" : "^[A-Za-zæøåÆØÅ0-9_.,/\\-_ ]+$",
+            "type" : "string",
+            "description" : "Kundenummer som oppgis i faktura."
+          },
+          "endepunktId" : {
+            "pattern" : "^[0-9]{9}$",
+            "type" : "string",
+            "description" : "Identifiserer mottaker for faktura. Dette vil være organisasjonsnummer for enheten som skal motta fakturaen. I større virksomheter kan dette være et annet organisasjonsnummer enn det som angis i 'Organisasjonsnummer' NB! organisasjonsnummeret må være registert i Elektronisk mottakeradresseregister (ELMA)"
+          }
+        },
+        "description" : "Inneholder fakturainformasjon for en organisasjon."
+      },
+      "OrganisasjonKontaktinformasjon" : {
+        "required" : [ "epost", "fiksOrganisasjonId", "navn" ],
+        "type" : "object",
+        "properties" : {
+          "fiksOrganisasjonId" : {
+            "type" : "string",
+            "description" : "Organisasjonens id.",
+            "format" : "uuid"
+          },
+          "navn" : {
+            "type" : "string",
+            "description" : "Organisasjonens navn."
+          },
+          "epost" : {
+            "type" : "string",
+            "description" : "Organisasjonens epostadresse."
+          },
+          "kommunenr" : {
+            "type" : "string",
+            "description" : "Organisasjonens kommunenummer, dersom det er en kommune."
+          }
+        },
+        "description" : "Kontaktinformasjon for en organisasjon."
+      },
+      "OrganisasjonKontaktinformasjonListe" : {
+        "type" : "object",
+        "properties" : {
+          "organisasjoner" : {
+            "type" : "array",
+            "description" : "Kontaktinformasjon for organisasjoner.",
+            "items" : {
+              "$ref" : "#/components/schemas/OrganisasjonKontaktinformasjon"
+            }
+          }
+        },
+        "description" : "Kontaktinformasjon for organisasjoner."
+      },
       "Person" : {
         "required" : [ "fnr", "navn" ],
         "type" : "object",
@@ -1975,38 +1975,6 @@
           }
         },
         "description" : "En person med tilhørende kontaktinformasjon."
-      },
-      "PersonCreateRequest" : {
-        "required" : [ "fnr", "navn" ],
-        "type" : "object",
-        "properties" : {
-          "fnr" : {
-            "pattern" : "^[0-9]{11}$",
-            "type" : "string",
-            "description" : "Fødselsnummeret til personen."
-          },
-          "navn" : {
-            "maxLength" : 450,
-            "minLength" : 2,
-            "type" : "string",
-            "description" : "Personens fulle navn."
-          }
-        },
-        "description" : "En forespørsel om å opprette en person."
-      },
-      "PersonerGetRequest" : {
-        "type" : "object",
-        "properties" : {
-          "fnrs" : {
-            "type" : "array",
-            "description" : "Liste av fodselsnummer",
-            "items" : {
-              "type" : "string",
-              "description" : "Liste av fodselsnummer"
-            }
-          }
-        },
-        "description" : "En forespørsel om å hente personer"
       },
       "PersonUpdateRequest" : {
         "type" : "object",
@@ -2068,6 +2036,38 @@
         },
         "description" : "En forespørsel om å oppdatere en ekisterende person."
       },
+      "PersonCreateRequest" : {
+        "required" : [ "fnr", "navn" ],
+        "type" : "object",
+        "properties" : {
+          "fnr" : {
+            "pattern" : "^[0-9]{11}$",
+            "type" : "string",
+            "description" : "Fødselsnummeret til personen."
+          },
+          "navn" : {
+            "maxLength" : 450,
+            "minLength" : 2,
+            "type" : "string",
+            "description" : "Personens fulle navn."
+          }
+        },
+        "description" : "En forespørsel om å opprette en person."
+      },
+      "PersonerGetRequest" : {
+        "type" : "object",
+        "properties" : {
+          "fnrs" : {
+            "type" : "array",
+            "description" : "Liste av fodselsnummer",
+            "items" : {
+              "type" : "string",
+              "description" : "Liste av fodselsnummer"
+            }
+          }
+        },
+        "description" : "En forespørsel om å hente personer"
+      },
       "Privilegium" : {
         "required" : [ "navn", "visningsnavn" ],
         "type" : "object",
@@ -2118,6 +2118,62 @@
           }
         },
         "description" : "En liste over gyldige privilegier for en gitt ressurstype"
+      },
+      "Tjeneste" : {
+        "required" : [ "kode", "navn" ],
+        "type" : "object",
+        "properties" : {
+          "kode" : {
+            "pattern" : "^[0-9A-Z_.]+$",
+            "type" : "string",
+            "description" : "En unik kode for tjenesten."
+          },
+          "navn" : {
+            "pattern" : "^[A-Za-zæøåÆØÅ0-9_.,/\\-_ ]+$",
+            "type" : "string",
+            "description" : "Tjenestens navn."
+          },
+          "beskrivelse" : {
+            "type" : "string",
+            "description" : "En utfyllende beskrivelse av tjenesten."
+          },
+          "lesmer" : {
+            "type" : "string",
+            "description" : "Les mer lenke"
+          }
+        },
+        "description" : "En tjeneste."
+      },
+      "OrganisasjonCreateRequest" : {
+        "required" : [ "intern", "navn", "type" ],
+        "type" : "object",
+        "properties" : {
+          "navn" : {
+            "pattern" : "^[A-ZÆØÅa-zæøå0-9ÁáÀàÂâÉéÈèÊêÍíÌìÎîÓóÒòÔôÚúÙùÛûÝýÄäËëÏïÖöÜü,.!?\\-:;/\\\\'()&+*=%§]+[A-ZÆØÅa-zæøå0-9ÁáÀàÂâÉéÈèÊêÍíÌìÎîÓóÒòÔôÚúÙùÛûÝýÄäËëÏïÖöÜü ,.!?\\-:;/\\\\'()&+*=%§]*[A-ZÆØÅa-zæøå0-9ÁáÀàÂâÉéÈèÊêÍíÌìÎîÓóÒòÔôÚúÙùÛûÝýÄäËëÏïÖöÜü,.!?\\-:;/\\\\'()&+*=%§]+$",
+            "type" : "string",
+            "description" : "Organisasjonens navn."
+          },
+          "type" : {
+            "type" : "string",
+            "description" : "Organisasjonens type",
+            "enum" : [ "KOMMUNE", "FYLKESKOMMUNE", "KOMMUNAL_VIRKSOMHET", "STATLIG_VIRKSOMHET", "LEVERANDOR" ]
+          },
+          "intern" : {
+            "type" : "boolean",
+            "description" : "Indikerer om organisasjonen er intern"
+          },
+          "kommunenr" : {
+            "pattern" : "^\\d{4}$",
+            "type" : "string",
+            "description" : "Kommunenummer."
+          },
+          "orgnr" : {
+            "pattern" : "^[0-9]{9}$",
+            "type" : "string",
+            "description" : "Organisasjonsnummer"
+          }
+        },
+        "description" : "En forespørsel om å opprette en ny organisasjon."
       },
       "RootOrganisasjonUpdateRequest" : {
         "required" : [ "intern" ],
@@ -2198,31 +2254,6 @@
           }
         },
         "description" : "Et map med alle privilegier for alle tjenestetyper"
-      },
-      "Tjeneste" : {
-        "required" : [ "kode", "navn" ],
-        "type" : "object",
-        "properties" : {
-          "kode" : {
-            "pattern" : "^[0-9A-Z_.]+$",
-            "type" : "string",
-            "description" : "En unik kode for tjenesten."
-          },
-          "navn" : {
-            "pattern" : "^[A-Za-zæøåÆØÅ0-9_.,/\\-_ ]+$",
-            "type" : "string",
-            "description" : "Tjenestens navn."
-          },
-          "beskrivelse" : {
-            "type" : "string",
-            "description" : "En utfyllende beskrivelse av tjenesten."
-          },
-          "lesmer" : {
-            "type" : "string",
-            "description" : "Les mer lenke"
-          }
-        },
-        "description" : "En tjeneste."
       },
       "OrganisasjonMedTjenesterModel" : {
         "type" : "object",
@@ -2328,23 +2359,23 @@
           "sequential" : {
             "type" : "boolean"
           },
+          "singleValued" : {
+            "type" : "boolean"
+          },
           "ordered" : {
             "type" : "boolean"
           },
           "empty" : {
             "type" : "boolean"
           },
-          "singleValued" : {
-            "type" : "boolean"
+          "orNull" : {
+            "$ref" : "#/components/schemas/OrganisasjonMedTjenesterModel"
           },
           "async" : {
             "type" : "boolean"
           },
           "lazy" : {
             "type" : "boolean"
-          },
-          "orNull" : {
-            "$ref" : "#/components/schemas/OrganisasjonMedTjenesterModel"
           },
           "memoized" : {
             "type" : "boolean"
@@ -2363,14 +2394,17 @@
           "sequential" : {
             "type" : "boolean"
           },
+          "singleValued" : {
+            "type" : "boolean"
+          },
           "ordered" : {
             "type" : "boolean"
           },
           "empty" : {
             "type" : "boolean"
           },
-          "singleValued" : {
-            "type" : "boolean"
+          "orNull" : {
+            "$ref" : "#/components/schemas/OrganisasjonTjenesteModel"
           },
           "async" : {
             "type" : "boolean"
@@ -2378,44 +2412,10 @@
           "lazy" : {
             "type" : "boolean"
           },
-          "orNull" : {
-            "$ref" : "#/components/schemas/OrganisasjonTjenesteModel"
-          },
           "memoized" : {
             "type" : "boolean"
           }
         }
-      },
-      "OrganisasjonCreateRequest" : {
-        "required" : [ "intern", "navn", "type" ],
-        "type" : "object",
-        "properties" : {
-          "navn" : {
-            "pattern" : "^[A-ZÆØÅa-zæøå0-9ÁáÀàÂâÉéÈèÊêÍíÌìÎîÓóÒòÔôÚúÙùÛûÝýÄäËëÏïÖöÜü,.!?\\-:;/\\\\'()&+*=%§]+[A-ZÆØÅa-zæøå0-9ÁáÀàÂâÉéÈèÊêÍíÌìÎîÓóÒòÔôÚúÙùÛûÝýÄäËëÏïÖöÜü ,.!?\\-:;/\\\\'()&+*=%§]*[A-ZÆØÅa-zæøå0-9ÁáÀàÂâÉéÈèÊêÍíÌìÎîÓóÒòÔôÚúÙùÛûÝýÄäËëÏïÖöÜü,.!?\\-:;/\\\\'()&+*=%§]+$",
-            "type" : "string",
-            "description" : "Organisasjonens navn."
-          },
-          "type" : {
-            "type" : "string",
-            "description" : "Organisasjonens type",
-            "enum" : [ "KOMMUNE", "FYLKESKOMMUNE", "KOMMUNAL_VIRKSOMHET", "STATLIG_VIRKSOMHET", "LEVERANDOR" ]
-          },
-          "intern" : {
-            "type" : "boolean",
-            "description" : "Indikerer om organisasjonen er intern"
-          },
-          "kommunenr" : {
-            "pattern" : "^\\d{4}$",
-            "type" : "string",
-            "description" : "Kommunenummer."
-          },
-          "orgnr" : {
-            "pattern" : "^[0-9]{9}$",
-            "type" : "string",
-            "description" : "Organisasjonsnummer"
-          }
-        },
-        "description" : "En forespørsel om å opprette en ny organisasjon."
       },
       "TjenesteList" : {
         "type" : "object",
