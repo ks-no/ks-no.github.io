@@ -20,37 +20,6 @@
     "description" : "Internt API for administrasjon av innsendte bekymringsmeldinger"
   } ],
   "paths" : {
-    "/bekymringsmelding/api/v1/admin/historikk/{bekymringsmeldingId}" : {
-      "get" : {
-        "tags" : [ "Bekymringsmelding admin" ],
-        "description" : "Henter hendelser for en bekymringsmelding",
-        "operationId" : "getHistorikk",
-        "parameters" : [ {
-          "name" : "bekymringsmeldingId",
-          "in" : "path",
-          "required" : true,
-          "schema" : {
-            "type" : "string",
-            "format" : "uuid"
-          }
-        } ],
-        "responses" : {
-          "200" : {
-            "description" : "Hendelser hentet",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "type" : "array",
-                  "items" : {
-                    "$ref" : "#/components/schemas/HistorikkApiModel"
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
     "/bekymringsmelding/api/v1/admin/meldinger" : {
       "get" : {
         "tags" : [ "Bekymringsmelding admin" ],
@@ -104,6 +73,37 @@
               "application/json" : {
                 "schema" : {
                   "$ref" : "#/components/schemas/MeldingResultApiModel"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/bekymringsmelding/api/v1/admin/historikk/{bekymringsmeldingId}" : {
+      "get" : {
+        "tags" : [ "Bekymringsmelding admin" ],
+        "description" : "Henter hendelser for en bekymringsmelding",
+        "operationId" : "getHistorikk",
+        "parameters" : [ {
+          "name" : "bekymringsmeldingId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Hendelser hentet",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/HistorikkApiModel"
+                  }
                 }
               }
             }
@@ -238,6 +238,33 @@
         }
       }
     },
+    "/bekymringsmelding/api/v1/admin/send/{bekymringsmeldingId}" : {
+      "post" : {
+        "tags" : [ "Bekymringsmelding admin" ],
+        "description" : "Sender en bestemt ordre på nytt til fagsystem eller print basert på ID",
+        "operationId" : "sendOrdreById",
+        "parameters" : [ {
+          "name" : "bekymringsmeldingId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "400" : {
+            "description" : "Ordre er allerede levert"
+          },
+          "404" : {
+            "description" : "Ingen ordre funnet"
+          },
+          "204" : {
+            "description" : "Send ordre."
+          }
+        }
+      }
+    },
     "/bekymringsmelding/api/v1/admin/status/{bekymringsmeldingId}/{state}" : {
       "put" : {
         "tags" : [ "Bekymringsmelding admin" ],
@@ -268,67 +295,10 @@
           }
         }
       }
-    },
-    "/bekymringsmelding/api/v1/admin/send/{bekymringsmeldingId}" : {
-      "post" : {
-        "tags" : [ "Bekymringsmelding admin" ],
-        "description" : "Sender en bestemt ordre på nytt til fagsystem eller print basert på ID",
-        "operationId" : "sendOrdreById",
-        "parameters" : [ {
-          "name" : "bekymringsmeldingId",
-          "in" : "path",
-          "required" : true,
-          "schema" : {
-            "type" : "string",
-            "format" : "uuid"
-          }
-        } ],
-        "responses" : {
-          "400" : {
-            "description" : "Ordre er allerede levert"
-          },
-          "404" : {
-            "description" : "Ingen ordre funnet"
-          },
-          "204" : {
-            "description" : "Send ordre."
-          }
-        }
-      }
     }
   },
   "components" : {
     "schemas" : {
-      "HistorikkApiModel" : {
-        "required" : [ "bekymringsmeldingId", "state", "tidspunkt" ],
-        "type" : "object",
-        "properties" : {
-          "bekymringsmeldingId" : {
-            "type" : "string",
-            "format" : "uuid"
-          },
-          "tidspunkt" : {
-            "type" : "string"
-          },
-          "meldingstype" : {
-            "type" : "string"
-          },
-          "meldingId" : {
-            "type" : "string",
-            "format" : "uuid"
-          },
-          "state" : {
-            "type" : "string"
-          },
-          "fiksIoKonto" : {
-            "type" : "string",
-            "format" : "uuid"
-          },
-          "beskrivelse" : {
-            "type" : "string"
-          }
-        }
-      },
       "MeldingApiModel" : {
         "required" : [ "bekreftet", "bekymringsmeldingId", "bydelRessursId", "bydelsnavn", "fiksOrgId", "innsendt", "kanal" ],
         "type" : "object",
@@ -372,6 +342,36 @@
             "items" : {
               "$ref" : "#/components/schemas/MeldingApiModel"
             }
+          }
+        }
+      },
+      "HistorikkApiModel" : {
+        "required" : [ "bekymringsmeldingId", "state", "tidspunkt" ],
+        "type" : "object",
+        "properties" : {
+          "bekymringsmeldingId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "tidspunkt" : {
+            "type" : "string"
+          },
+          "meldingstype" : {
+            "type" : "string"
+          },
+          "meldingId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "state" : {
+            "type" : "string"
+          },
+          "fiksIoKonto" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "beskrivelse" : {
+            "type" : "string"
           }
         }
       },
