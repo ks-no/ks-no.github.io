@@ -13,55 +13,6 @@
     "url" : "https://api.fiks.test.ks.no/"
   } ],
   "paths" : {
-    "/innsyn-sok/api/v1/oppslag/dokument" : {
-      "get" : {
-        "tags" : [ "Oppslag" ],
-        "summary" : "Hent en melding basert på dokumentId",
-        "operationId" : "lookupDokument",
-        "parameters" : [ {
-          "name" : "dokumentId",
-          "in" : "query",
-          "description" : "Id for dokumentet (formatert som <fiksOrgId>_<integrasjonId>_<meldingId>)",
-          "required" : true,
-          "schema" : {
-            "type" : "string"
-          }
-        }, {
-          "name" : "type",
-          "in" : "query",
-          "description" : "Meldingstype til dokumentet",
-          "required" : true,
-          "schema" : {
-            "type" : "string",
-            "enum" : [ "faktura", "saksmappe", "journalpost", "byggesak", "innsendtskjema", "skjemakladd", "matrikkelenhet", "kommunaltjeneste", "forsendelse" ]
-          }
-        }, {
-          "name" : "akseptertMeldingVersjon",
-          "in" : "query",
-          "description" : "Akseptert melding-versjon. Kan settes flere ganger. Innsyn vil nedgradere treff på høyere versjon til den høyeste av de aksepterte versjonen (om det er oppgitt flere på samme dokumenttype)",
-          "schema" : {
-            "uniqueItems" : true,
-            "type" : "array",
-            "items" : {
-              "type" : "string",
-              "enum" : [ "fakturaV1", "saksmappeV1", "journalpostV1", "forsendelseV1", "forsendelseV2", "byggesakV1", "matrikkelenhetV1", "innsendtskjemaV1", "skjemakladdV1", "kommunaltjenesteV1" ]
-            }
-          }
-        } ],
-        "responses" : {
-          "default" : {
-            "description" : "default response",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/OppslagResultat"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
     "/innsyn-sok/api/v1/oppslag/forelder" : {
       "get" : {
         "tags" : [ "Oppslag" ],
@@ -144,6 +95,55 @@
               "application/json" : {
                 "schema" : {
                   "$ref" : "#/components/schemas/KorrelasjonOppslag"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/innsyn-sok/api/v1/oppslag/dokument" : {
+      "get" : {
+        "tags" : [ "Oppslag" ],
+        "summary" : "Hent en melding basert på dokumentId",
+        "operationId" : "lookupDokument",
+        "parameters" : [ {
+          "name" : "dokumentId",
+          "in" : "query",
+          "description" : "Id for dokumentet (formatert som <fiksOrgId>_<integrasjonId>_<meldingId>)",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "type",
+          "in" : "query",
+          "description" : "Meldingstype til dokumentet",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "enum" : [ "faktura", "saksmappe", "journalpost", "byggesak", "innsendtskjema", "skjemakladd", "matrikkelenhet", "kommunaltjeneste", "forsendelse" ]
+          }
+        }, {
+          "name" : "akseptertMeldingVersjon",
+          "in" : "query",
+          "description" : "Akseptert melding-versjon. Kan settes flere ganger. Innsyn vil nedgradere treff på høyere versjon til den høyeste av de aksepterte versjonen (om det er oppgitt flere på samme dokumenttype)",
+          "schema" : {
+            "uniqueItems" : true,
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "enum" : [ "fakturaV1", "saksmappeV1", "journalpostV1", "forsendelseV1", "forsendelseV2", "byggesakV1", "matrikkelenhetV1", "innsendtskjemaV1", "skjemakladdV1", "kommunaltjenesteV1" ]
+            }
+          }
+        } ],
+        "responses" : {
+          "default" : {
+            "description" : "default response",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/OppslagResultat"
                 }
               }
             }
@@ -348,6 +348,28 @@
           }
         }
       },
+      "ForelderOppslagResultat" : {
+        "type" : "object",
+        "properties" : {
+          "forelder" : {
+            "$ref" : "#/components/schemas/MeldingV1OppslagMetadata"
+          },
+          "ingenForelderKode" : {
+            "type" : "string",
+            "enum" : [ "IKKE_EKSISTERENDE_ELLER_IKKE_AUTORISERT", "INNLOGGINGSNIVA_UTILSTREKKELIG" ]
+          },
+          "barn" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/MeldingV1OppslagMetadata"
+            }
+          },
+          "barnPaHoyereInnloggingniva" : {
+            "type" : "integer",
+            "format" : "int32"
+          }
+        }
+      },
       "ForsendelseV1Dokument" : {
         "type" : "object",
         "properties" : {
@@ -511,7 +533,8 @@
             "type" : "number",
             "format" : "float"
           }
-        }
+        },
+        "description" : "Treff"
       },
       "OppslagMetadata" : {
         "type" : "object",
@@ -527,19 +550,6 @@
         },
         "discriminator" : {
           "propertyName" : "versjon"
-        }
-      },
-      "OppslagResultat" : {
-        "type" : "object",
-        "properties" : {
-          "hit" : {
-            "$ref" : "#/components/schemas/MeldingV1OppslagMetadata"
-          },
-          "lookupErrorCode" : {
-            "type" : "string",
-            "description" : "Om treff ikke kunne vises indikerer koden hvorfor. ",
-            "enum" : [ "IKKE_EKSISTERENDE_ELLER_IKKE_AUTORISERT", "INNLOGGINGSNIVA_UTILSTREKKELIG" ]
-          }
         }
       },
       "SkjemaFilV1" : {
@@ -992,28 +1002,6 @@
           }
         } ]
       },
-      "ForelderOppslagResultat" : {
-        "type" : "object",
-        "properties" : {
-          "forelder" : {
-            "$ref" : "#/components/schemas/MeldingV1OppslagMetadata"
-          },
-          "ingenForelderKode" : {
-            "type" : "string",
-            "enum" : [ "IKKE_EKSISTERENDE_ELLER_IKKE_AUTORISERT", "INNLOGGINGSNIVA_UTILSTREKKELIG" ]
-          },
-          "barn" : {
-            "type" : "array",
-            "items" : {
-              "$ref" : "#/components/schemas/MeldingV1OppslagMetadata"
-            }
-          },
-          "barnPaHoyereInnloggingniva" : {
-            "type" : "integer",
-            "format" : "int32"
-          }
-        }
-      },
       "KorrelasjonOppslag" : {
         "type" : "object",
         "properties" : {
@@ -1026,6 +1014,19 @@
           "barnOverInnloggingsniva" : {
             "type" : "integer",
             "format" : "int32"
+          }
+        }
+      },
+      "OppslagResultat" : {
+        "type" : "object",
+        "properties" : {
+          "hit" : {
+            "$ref" : "#/components/schemas/MeldingV1OppslagMetadata"
+          },
+          "lookupErrorCode" : {
+            "type" : "string",
+            "description" : "Om treff ikke kunne vises indikerer koden hvorfor. ",
+            "enum" : [ "IKKE_EKSISTERENDE_ELLER_IKKE_AUTORISERT", "INNLOGGINGSNIVA_UTILSTREKKELIG" ]
           }
         }
       }
