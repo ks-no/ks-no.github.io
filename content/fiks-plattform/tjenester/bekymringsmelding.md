@@ -1,7 +1,7 @@
 ---
 title: Nasjonal portal for bekymringsmelding
 date: 2019-11-25 
-aliases: [/fiks-platform/tjenester/bekymringsmelding]
+aliases: ["/fiks-platform/tjenester/bekymringsmelding", "/fiks-platform/tjenester_under_utvikling/bekymringsmelding"]
 ---
 
 ## Kort introduksjon
@@ -49,7 +49,7 @@ Informasjon om generell integrasjonsutvikling mot Fiks, som blant annet autentis
 Ved bruk av Fiks IO som leveringskanal må fagsystemet støtte meldingsprotokollen ```no.ks.fiks.bekymringsmelding.v1```, som er definert til bruk av bekymringsmeldinger. Meldingsprotokollen vil inneholde kontrakter i form av JSON-skjema som gjelder både for mottak og svar på Fiks IO-meldinger.
 
 ##### Til fagsystem - mottak av bekymringsmeldinger
-Fagsystemet vil motta enten en privat bekymringsmelding, ```no.ks.fiks.bekymringsmelding.privat.v1```, med en ASiC-E-fil i body eller en offentlig bekymringsmelding, ```no.ks.fiks.bekymringsmelding.offentlig.v1```, med en ASiC-E-fil i body. I tillegg vil det være en header «bydel-ressurs-id» som vil være ID til bydelsressursen. I de fleste tilfeller kan man se bort fra denne.
+Fagsystemet vil motta enten en privat bekymringsmelding, ```no.ks.fiks.bekymringsmelding.privat.v1```, med en ASiC-E-fil i body eller en offentlig bekymringsmelding, ```no.ks.fiks.bekymringsmelding.offentlig.v1```, med en ASiC-E-fil i body. I tillegg vil det være en header «bydel-ressurs-id», som vil være ID til bydelsressursen, og en header «bekymringsmelding-id» som vil være bekymringsmeldingens unike ID. I de fleste tilfeller kan man se bort fra disse.
 
 AsiC-E-filen er på navneformatet «FiksIO\_encrypted_[FIKS_ORG_ID]\_[BYDELSNUMMER].zip», hvor FIKS_ORG_ID er en unik ID for kommunen, mens bydelsnummeret vil være et tosifret tall. Er det en kommune uten bydeler, vil bydelsnummeret være «00».
 
@@ -124,3 +124,16 @@ hvor:
 - integrasjonPassord: Integrasjonspassord
 - token: Gyldig aksesstoken fra maskinporten
 
+#### Hente status for sendt bekymringsmelding
+Et fagsystem kan hente status med tilhørende historikk for sendte bekymringsmeldinger via API-et [Bekymringsmelding mottak fagsystem](https://editor.swagger.io/?url=https://ks-no.github.io/api/bekymringsmelding-mottak-fagsystem-api-v1.json).
+
+Endepunktet `/bekymringsmelding/api/v1/mottak/fagsystem/{fraFiksOrgId}/bekymringsmelding/{bekymringsmeldingId}/status` returnerer en liste av alle hendelsene for den angitte bekymringsmelding-id-en. Hver hendelse inneholder en tilstand for bekymringsmeldingen, som kan inneholde følgende verdier:
+
+* `AKSEPTERT` (alltid 1. tilstand) - Fiks Bekymringsmelding har mottatt og lagret bekymringsmeldingen.
+* `SENDT_FAGSYSTEM` (alltid 2. tilstand) - Bekymringsmeldingen er sendt til fagsystemet til mottakeren.
+* `AVVIST_FAGSYSTEM` - Fagsystemet har avvist mottak av bekymringsmeldingen. Fiks Bekymringsmelding vil automatisk sende denne til brevpost.
+* `SENDT_PRINT` - Bekymringsmeldingen er sendt til printleverandør for å sende den med brevpost.
+* `AVVIST_PRINT` - Printleverandøren kan ikke printe ut bekymringsmeldingen for brevpost. Fiks følger opp bekymringsmeldingen manuelt.
+* `LEVERT` (alltid siste tilstand) - Bekymringsmeldingen er levert fagsystem eller sendt som brevpost til barnevernskontoret.
+
+`LEVERT` vil alltid være den siste endelige tilstanden til en bekymringsmelding. Da vil den enten ha blitt bekreftet mottatt til fagsystemet, eller i tilfelle man tidligere har mottatt `SENDT_PRINT`, så vil den ha blitt levert posten for levering som brevpost. 

@@ -1,8 +1,8 @@
 {
   "openapi" : "3.0.1",
   "info" : {
-    "title" : "KS FIKS: Bekymringsmelding root service",
-    "description" : "Bekymringsmelding root service",
+    "title" : "KS FIKS: Bekymringsmelding konfigurasjon service",
+    "description" : "Bekymringsmelding konfigurasjon service",
     "contact" : {
       "name" : "Fiks brukerstøtte",
       "url" : "https://ks-no.github.io/",
@@ -18,9 +18,6 @@
   "tags" : [ {
     "name" : "bekymringsmeldingKonfigurasjon",
     "description" : "API for å håndtere funksjonalitet vedr. konfigurasjon i bekymringsmelding"
-  }, {
-    "name" : "bekymringsmeldingKonfigurasjonRoot",
-    "description" : "API for å håndtere funksjonalitet vedr. root-funksjonalitet i bekymringsmelding"
   } ],
   "paths" : {
     "/bekymringsmelding/api/v1/konfigurasjon/{fiksOrgId}/bydeler" : {
@@ -120,7 +117,14 @@
         },
         "responses" : {
           "204" : {
-            "description" : "Oppdaterer eksisterende bydel."
+            "description" : "Oppdaterer eksisterende bydel.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/BydelApiModel"
+                }
+              }
+            }
           }
         }
       }
@@ -307,24 +311,6 @@
           "schema" : {
             "type" : "string"
           }
-        }, {
-          "name" : "fra",
-          "in" : "query",
-          "description" : "Index for det første søketreffet som skal returneres",
-          "schema" : {
-            "type" : "integer",
-            "format" : "int32",
-            "default" : 0
-          }
-        }, {
-          "name" : "antall",
-          "in" : "query",
-          "description" : "Antall søketreff som skal returneres",
-          "schema" : {
-            "type" : "integer",
-            "format" : "int32",
-            "default" : 50
-          }
         } ],
         "responses" : {
           "200" : {
@@ -340,13 +326,13 @@
         }
       }
     },
-    "/bekymringsmelding/api/v1/konfigurasjon/root/send/{bekymringsmeldingId}" : {
-      "post" : {
-        "tags" : [ "bekymringsmeldingKonfigurasjonRoot" ],
-        "description" : "Sender en bestemt ordre på nytt til fagsystem eller print basert på ID",
-        "operationId" : "sendOrdreById",
+    "/bekymringsmelding/api/v1/konfigurasjon/bydeler/svarinn/{integrasjonId}" : {
+      "get" : {
+        "tags" : [ "bekymringsmeldingKonfigurasjon" ],
+        "description" : "Henter bydel basert på integrasjon-ID",
+        "operationId" : "getBydelByIntegrasjonId",
         "parameters" : [ {
-          "name" : "bekymringsmeldingId",
+          "name" : "integrasjonId",
           "in" : "path",
           "required" : true,
           "schema" : {
@@ -355,74 +341,15 @@
           }
         } ],
         "responses" : {
-          "400" : {
-            "description" : "Ordre er allerede levert"
-          },
-          "404" : {
-            "description" : "Ingen ordre funnet"
-          },
-          "204" : {
-            "description" : "Send ordre."
-          }
-        }
-      }
-    },
-    "/bekymringsmelding/api/v1/konfigurasjon/root/status/{bekymringsmeldingId}" : {
-      "put" : {
-        "tags" : [ "bekymringsmeldingKonfigurasjonRoot" ],
-        "description" : "Oppdaterer status på en ordre",
-        "operationId" : "oppdaterStatusByBekymringsmeldingId",
-        "parameters" : [ {
-          "name" : "bekymringsmeldingId",
-          "in" : "path",
-          "required" : true,
-          "schema" : {
-            "type" : "string",
-            "format" : "uuid"
-          }
-        } ],
-        "requestBody" : {
-          "content" : {
-            "application/json" : {
-              "schema" : {
-                "type" : "string",
-                "enum" : [ "AKSEPTERT", "SENDT_FAGSYSTEM", "SENDT_PRINT", "LEVERT", "AVVIST_FAGSYSTEM", "AVVIST_PRINT" ]
+          "200" : {
+            "description" : "Returnerer bydel basert på integrasjon-ID",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/BydelApiModel"
+                }
               }
             }
-          },
-          "required" : true
-        },
-        "responses" : {
-          "204" : {
-            "description" : "Status oppdatert"
-          },
-          "400" : {
-            "description" : "Feil meldingstype for ordre tilhørende angitt meldingId."
-          }
-        }
-      }
-    },
-    "/bekymringsmelding/api/v1/konfigurasjon/root/status" : {
-      "post" : {
-        "tags" : [ "bekymringsmeldingKonfigurasjonRoot" ],
-        "description" : "Oppdaterer status på en ordre",
-        "operationId" : "oppdaterStatusByMeldingId",
-        "requestBody" : {
-          "content" : {
-            "application/json" : {
-              "schema" : {
-                "$ref" : "#/components/schemas/StatusModel"
-              }
-            }
-          },
-          "required" : true
-        },
-        "responses" : {
-          "204" : {
-            "description" : "Status oppdatert"
-          },
-          "400" : {
-            "description" : "Feil meldingstype for ordre tilhørende angitt meldingId."
           }
         }
       }
@@ -431,7 +358,7 @@
   "components" : {
     "schemas" : {
       "BydelApiModel" : {
-        "required" : [ "bydelsnavn", "bydelsnummer", "deaktivert", "fiksOrgId", "kontaktinformasjon", "konto", "ressursId", "standardMottaker", "varselEposter" ],
+        "required" : [ "bydelsnavn", "bydelsnummer", "deaktivert", "fiksOrgId", "kontaktinformasjon", "konto", "ressursId", "standardMottaker" ],
         "type" : "object",
         "properties" : {
           "bydelsnummer" : {
@@ -509,20 +436,60 @@
         }
       },
       "KontoApiModel" : {
+        "required" : [ "type" ],
         "type" : "object",
         "properties" : {
           "fiksIoKonto" : {
             "type" : "string",
             "format" : "uuid"
           },
-          "tilFagsystem" : {
-            "type" : "boolean",
-            "description" : "Skal kontoen bruke eget fagsystem?"
+          "type" : {
+            "pattern" : "FIKS_IO|MANUELL_MOTTAK|SVARINN",
+            "type" : "string",
+            "description" : "Er kontoen konfigurert til å gå mot FIKS_IO, MANUELL_MOTTAK eller SVARINN?"
+          },
+          "orgnr" : {
+            "pattern" : "^[0-9]{9}$|^$",
+            "type" : "string"
+          },
+          "offentligNokkel" : {
+            "$ref" : "#/components/schemas/OffentligNokkelApiModel"
+          },
+          "integrasjonId" : {
+            "type" : "string",
+            "description" : "IntegrasjonId til integrasjonen som blir brukt i kontotype SVARINN",
+            "format" : "uuid"
           }
         }
       },
+      "OffentligNokkelApiModel" : {
+        "type" : "object",
+        "properties" : {
+          "nokkel" : {
+            "type" : "string"
+          },
+          "validFrom" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "validTo" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "serial" : {
+            "type" : "string"
+          },
+          "subjectDN" : {
+            "type" : "string"
+          },
+          "issuerDN" : {
+            "type" : "string"
+          }
+        },
+        "description" : "Offentlig nøkkel til rekryptering for kontotype SVARINN"
+      },
       "RequestBydelApiModel" : {
-        "required" : [ "bydelsnavn", "bydelsnummer", "kontaktinformasjon", "konto", "varselEposter" ],
+        "required" : [ "bydelsnavn", "bydelsnummer", "kontaktinformasjon", "konto" ],
         "type" : "object",
         "properties" : {
           "bydelsnummer" : {
@@ -565,22 +532,6 @@
             "items" : {
               "$ref" : "#/components/schemas/BydelApiModel"
             }
-          }
-        }
-      },
-      "StatusModel" : {
-        "type" : "object",
-        "properties" : {
-          "meldingId" : {
-            "type" : "string",
-            "format" : "uuid"
-          },
-          "meldingstype" : {
-            "type" : "string"
-          },
-          "fiksIoKonto" : {
-            "type" : "string",
-            "format" : "uuid"
           }
         }
       }
