@@ -33,6 +33,34 @@
     "description" : "API for henting av provesvar for DHIS2"
   } ],
   "paths" : {
+    "/dhis2-konfigurasjon/api/v1/brukere/sok" : {
+      "post" : {
+        "tags" : [ "Dhis2KonfigurasjonBrukere" ],
+        "description" : "Søker etter en bruker i DHIS2",
+        "operationId" : "brukerSok",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/BrukerSok"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "default" : {
+            "description" : "default response",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/BrukerSokResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/dhis2-konfigurasjon/api/v1/brukere" : {
       "post" : {
         "tags" : [ "Dhis2KonfigurasjonBrukere" ],
@@ -88,34 +116,6 @@
             "description" : "default response",
             "content" : {
               "*/*" : { }
-            }
-          }
-        }
-      }
-    },
-    "/dhis2-konfigurasjon/api/v1/brukere/sok" : {
-      "post" : {
-        "tags" : [ "Dhis2KonfigurasjonBrukere" ],
-        "description" : "Søker etter en bruker i DHIS2",
-        "operationId" : "brukerSok",
-        "requestBody" : {
-          "content" : {
-            "application/json" : {
-              "schema" : {
-                "$ref" : "#/components/schemas/BrukerSok"
-              }
-            }
-          }
-        },
-        "responses" : {
-          "default" : {
-            "description" : "default response",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/BrukerSokResponse"
-                }
-              }
             }
           }
         }
@@ -241,25 +241,6 @@
         }
       }
     },
-    "/dhis2-konfigurasjon/api/v1/organisasjoner" : {
-      "get" : {
-        "tags" : [ "Dhis2KonfigurasjonOrganisasjoner" ],
-        "description" : "Henter informasjon for alle registrerte organisasjoner",
-        "operationId" : "getOrganisasjoner",
-        "responses" : {
-          "default" : {
-            "description" : "default response",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/Organisasjoner"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
     "/dhis2-konfigurasjon/api/v1/organisasjoner/{fiksOrganisasjonId}/folkeregister" : {
       "post" : {
         "tags" : [ "Dhis2KonfigurasjonOrganisasjoner" ],
@@ -363,6 +344,25 @@
               "*/*" : {
                 "schema" : {
                   "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/dhis2-konfigurasjon/api/v1/organisasjoner" : {
+      "get" : {
+        "tags" : [ "Dhis2KonfigurasjonOrganisasjoner" ],
+        "description" : "Henter informasjon for alle registrerte organisasjoner",
+        "operationId" : "getOrganisasjoner",
+        "responses" : {
+          "default" : {
+            "description" : "default response",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Organisasjoner"
                 }
               }
             }
@@ -571,7 +571,7 @@
     "/dhis2-konfigurasjon/api/v1/provesvar/tilgang" : {
       "post" : {
         "tags" : [ "Dhis2KonfigurasjonProvesvar" ],
-        "description" : "Søker etter prøvesvar for en person",
+        "description" : "Sjekker om kommunen har aktivert prøvesvar-tjenesten",
         "operationId" : "harTilgangTilProvesok",
         "requestBody" : {
           "content" : {
@@ -594,7 +594,7 @@
             }
           },
           "200" : {
-            "description" : "Prøvesvar for person",
+            "description" : "Aktiveringsstatus",
             "content" : {
               "application/json" : {
                 "schema" : {
@@ -647,6 +647,46 @@
   },
   "components" : {
     "schemas" : {
+      "Bruker" : {
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string"
+          },
+          "fornavn" : {
+            "type" : "string"
+          },
+          "etternavn" : {
+            "type" : "string"
+          },
+          "epost" : {
+            "type" : "string"
+          },
+          "telefonnummer" : {
+            "type" : "string"
+          }
+        }
+      },
+      "BrukerSokResponse" : {
+        "type" : "object",
+        "properties" : {
+          "treff" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Bruker"
+            }
+          }
+        }
+      },
+      "BrukerSok" : {
+        "type" : "object",
+        "properties" : {
+          "fnr" : {
+            "pattern" : "^[0-9]{11}$",
+            "type" : "string"
+          }
+        }
+      },
       "OpprettBrukerResponse" : {
         "type" : "object",
         "properties" : {
@@ -701,49 +741,6 @@
           },
           "telefonnummer" : {
             "pattern" : "^[+]?[0-9]+([- ][0-9]+)*$",
-            "type" : "string"
-          }
-        }
-      },
-      "Bruker" : {
-        "type" : "object",
-        "properties" : {
-          "id" : {
-            "type" : "string"
-          },
-          "fornavn" : {
-            "type" : "string"
-          },
-          "etternavn" : {
-            "type" : "string"
-          },
-          "epost" : {
-            "type" : "string"
-          },
-          "telefonnummer" : {
-            "type" : "string"
-          },
-          "fnr" : {
-            "type" : "string"
-          }
-        }
-      },
-      "BrukerSokResponse" : {
-        "type" : "object",
-        "properties" : {
-          "treff" : {
-            "type" : "array",
-            "items" : {
-              "$ref" : "#/components/schemas/Bruker"
-            }
-          }
-        }
-      },
-      "BrukerSok" : {
-        "type" : "object",
-        "properties" : {
-          "fnr" : {
-            "pattern" : "^[0-9]{11}$",
             "type" : "string"
           }
         }
@@ -849,9 +846,6 @@
           "rolle" : {
             "type" : "string",
             "enum" : [ "LESE_SKRIVE", "LESE" ]
-          },
-          "fnr" : {
-            "type" : "string"
           }
         }
       },
