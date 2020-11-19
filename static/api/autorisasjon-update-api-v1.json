@@ -106,45 +106,6 @@
         }
       }
     },
-    "/autorisasjon-update/api/v1/ressurs" : {
-      "post" : {
-        "tags" : [ "Ressurs" ],
-        "description" : "Oppretter en ressurs",
-        "operationId" : "opprettRessurs",
-        "requestBody" : {
-          "content" : {
-            "application/json" : {
-              "schema" : {
-                "$ref" : "#/components/schemas/OpprettRessursRequest"
-              }
-            }
-          },
-          "required" : true
-        },
-        "responses" : {
-          "201" : {
-            "description" : "Opprettet Ressurs",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/Ressurs"
-                }
-              }
-            }
-          },
-          "400" : {
-            "description" : "Feil i inputdata",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/ErrorMessage"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
     "/autorisasjon-update/api/v1/ressurs/{ressurs}/tilganger" : {
       "post" : {
         "tags" : [ "Ressurs" ],
@@ -219,36 +180,38 @@
         }
       }
     },
-    "/autorisasjon-update/api/v1/typeTilganger/{ressursType}/tilganger" : {
+    "/autorisasjon-update/api/v1/ressurs" : {
       "post" : {
-        "tags" : [ "TypeTilgang" ],
-        "description" : "Gir en aktør et spesifisert privilegium på alle ressurser av den spesifiserte typen",
-        "operationId" : "tildelTypeTilgang",
-        "parameters" : [ {
-          "name" : "ressursType",
-          "in" : "path",
-          "required" : true,
-          "schema" : {
-            "type" : "string"
-          }
-        } ],
+        "tags" : [ "Ressurs" ],
+        "description" : "Oppretter en ressurs",
+        "operationId" : "opprettRessurs",
         "requestBody" : {
           "content" : {
             "application/json" : {
               "schema" : {
-                "$ref" : "#/components/schemas/TypeTilgangRequest"
+                "$ref" : "#/components/schemas/OpprettRessursRequest"
               }
             }
           },
           "required" : true
         },
         "responses" : {
-          "default" : {
-            "description" : "default response",
+          "201" : {
+            "description" : "Opprettet Ressurs",
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/TypeTilgang"
+                  "$ref" : "#/components/schemas/Ressurs"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Feil i inputdata",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
                 }
               }
             }
@@ -284,6 +247,43 @@
             "description" : "default response",
             "content" : {
               "application/json" : { }
+            }
+          }
+        }
+      }
+    },
+    "/autorisasjon-update/api/v1/typeTilganger/{ressursType}/tilganger" : {
+      "post" : {
+        "tags" : [ "TypeTilgang" ],
+        "description" : "Gir en aktør et spesifisert privilegium på alle ressurser av den spesifiserte typen",
+        "operationId" : "tildelTypeTilgang",
+        "parameters" : [ {
+          "name" : "ressursType",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/TypeTilgangRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "default" : {
+            "description" : "default response",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/TypeTilgang"
+                }
+              }
             }
           }
         }
@@ -369,6 +369,42 @@
         },
         "description" : "En request for å oppdatere en eksisterende ressurs"
       },
+      "Tilgang" : {
+        "required" : [ "aktor", "privilegium", "ressurs" ],
+        "type" : "object",
+        "properties" : {
+          "aktor" : {
+            "type" : "string",
+            "description" : "Aktøren (personen eller integrasjonen) som har blitt tildelt privilegiet"
+          },
+          "privilegium" : {
+            "type" : "string",
+            "description" : "Privilegiet som har blitt tildelt"
+          },
+          "ressurs" : {
+            "type" : "string",
+            "description" : "Ressursen privilegiet har blitt tildelt på",
+            "format" : "uuid"
+          }
+        }
+      },
+      "TilgangRequest" : {
+        "required" : [ "aktor", "privilegium" ],
+        "type" : "object",
+        "properties" : {
+          "aktor" : {
+            "pattern" : "^[A-Za-zæøåÆØÅ0-9_.,/\\-_ ]+$",
+            "type" : "string",
+            "description" : "Aktøren som denne forespørselen gjelder"
+          },
+          "privilegium" : {
+            "pattern" : "^[0-9A-Z_.]+$",
+            "type" : "string",
+            "description" : "Navnet på det privilegium som aktøren har eller etterspør for en gitt ressurs"
+          }
+        },
+        "description" : "Representerer en autorisasjon, som deskriver en ressurs og et privilegium som enn gitt aktør har eller ber om"
+      },
       "Ressurs" : {
         "required" : [ "forelder", "id", "navn", "type" ],
         "type" : "object",
@@ -453,41 +489,21 @@
         },
         "description" : "En request for å opprette en ny ressurs"
       },
-      "Tilgang" : {
-        "required" : [ "aktor", "privilegium", "ressurs" ],
-        "type" : "object",
-        "properties" : {
-          "aktor" : {
-            "type" : "string",
-            "description" : "Aktøren (personen eller integrasjonen) som har blitt tildelt privilegiet"
-          },
-          "privilegium" : {
-            "type" : "string",
-            "description" : "Privilegiet som har blitt tildelt"
-          },
-          "ressurs" : {
-            "type" : "string",
-            "description" : "Ressursen privilegiet har blitt tildelt på",
-            "format" : "uuid"
-          }
-        }
-      },
-      "TilgangRequest" : {
+      "TypeTilgangRequest" : {
         "required" : [ "aktor", "privilegium" ],
         "type" : "object",
         "properties" : {
           "aktor" : {
             "pattern" : "^[A-Za-zæøåÆØÅ0-9_.,/\\-_ ]+$",
             "type" : "string",
-            "description" : "Aktøren som denne forespørselen gjelder"
+            "description" : "Fnr eller integrasjon-id privilegiet skal tildeles til"
           },
           "privilegium" : {
             "pattern" : "^[0-9A-Z_.]+$",
             "type" : "string",
-            "description" : "Navnet på det privilegium som aktøren har eller etterspør for en gitt ressurs"
+            "description" : "Privilegium som skal tildeles"
           }
-        },
-        "description" : "Representerer en autorisasjon, som deskriver en ressurs og et privilegium som enn gitt aktør har eller ber om"
+        }
       },
       "TypeTilgang" : {
         "required" : [ "aktor", "privilegium", "ressursType" ],
@@ -507,22 +523,6 @@
             "pattern" : "^[0-9A-Z_.]+$",
             "type" : "string",
             "description" : "Tildelt privilegium"
-          }
-        }
-      },
-      "TypeTilgangRequest" : {
-        "required" : [ "aktor", "privilegium" ],
-        "type" : "object",
-        "properties" : {
-          "aktor" : {
-            "pattern" : "^[A-Za-zæøåÆØÅ0-9_.,/\\-_ ]+$",
-            "type" : "string",
-            "description" : "Fnr eller integrasjon-id privilegiet skal tildeles til"
-          },
-          "privilegium" : {
-            "pattern" : "^[0-9A-Z_.]+$",
-            "type" : "string",
-            "description" : "Privilegium som skal tildeles"
           }
         }
       }
