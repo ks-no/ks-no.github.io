@@ -1,7 +1,7 @@
 ---
 title: Innsyn
 date: 2019-08-16
-aliases: [/fiks-platform/tjenester/innsyn]
+aliases: [/fiks-platform/tjenester/innsyn, /fiks-plattform/tjenester/innsyn]
 ---
 
 Norske kommuner har mengder av informasjon om sine innbyggere. Denne informasjonen er spredd rundt i arkiver, fagsystemer, dokumentlagre og eksterne skyløsninger. Fiks Innsyn lagrer metadata som beskriver denne informasjonen, og gjør den tilgjengelig for innbyggeren via en kraftig søkemotor. 
