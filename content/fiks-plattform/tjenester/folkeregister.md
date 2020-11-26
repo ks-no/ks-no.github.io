@@ -1,25 +1,22 @@
 ---
-title: Modernisert folkeregister
+title: Folkeregister
 date: 2020-11-19
 ---
-### Hva er Modernisert folkeregister?
 
-Folkeregisteret inneholder opplysninger om alle som er eller har vært bosatt i Norge. Dagens register(DFS) tilfredsstiller ikke lenger samfunnets behov da samfunnsendringer har økt behovet for et enklere og mer effektivt system, med mindre manuelt arbeid, som fanger opp korrekte og oppdaterte personopplysninger til enhver tid. Med dagens register kan det ta opptil flere måneder før hendelser er registrert i Folkeregisteret. Skatteetaten har derfor startet et moderniseringsprosjekt for Folkeregisteret og det vil komme en helt ny løsning i løpet av 2020.
+## Fiks folkeregister
 
 KS vil tilby det nye Folkeregisteret(FREG) via Fiks-plattformen for kommunal sektor, foruten helse. E-helse tilbyr løsning for den delen som omhandler helse.
-
-Mer informasjon om Modernisert Folkeregister finner man [her](https://www.ks.no/fagomrader/digitalisering/utviklingsprosjekter/modernisert-folkeregister).
-
-#### Fiks folkeregister
 
 Fiks folkeregister er en tjeneste som tilbyr maskin-til-maskin integrasjon for å hente ut data fra Folkeregisteret. Fiks folkeregister tilbyr et proxy-api som gjør det mulig for leverandører å bruke skatteetatens api-er for dette formålet.
 Fiks folkeregister bruker "roller" som sørger for riktig tilgangsstyring ved bruk av proxy-api-et.
 
 Skatteetatens [api-dokumentasjon](https://skatteetaten.github.io/folkeregisteret-api-dokumentasjon/om-tjenestene/) for Folkeregisteret er også relevant for bruk av proxy-api-et.
 
+Mer informasjon om Fiks folkeregister finner man [her](https://www.ks.no/fagomrader/digitalisering/utviklingsprosjekter/modernisert-folkeregister).
+
 ## Hvordan tar man i bruk Fiks folkeregister?
 
-Før man kan ta i bruk Fiks folkeregister må kommunen inngå avtaler og tildele KS rettigheter i Altinn. Dette er beskrevet [her](https://svarut.wordpress.com/fiks/fiks-folkeregister/).
+Før man kan ta i bruk Fiks folkeregister må kommunen inngå avtaler og tildele KS rettigheter i Altinn. Dette er beskrevet [her](https://portal.fiks.ks.no/fiks/fiks-folkeregister/).
  
 Kommunen må deretter konfigurere opp [rolle(r)](https://ks-no.github.io/fiks-plattform/modernisert-folkeregister/#roller) og [integrasjon](https://ks-no.github.io/fiks-plattform/modernisert-folkeregister/#integrasjonsutvikling) i Fiks Konfigurasjon som fagsystem-leverandøren trenger for å bruke api-ene.
  
