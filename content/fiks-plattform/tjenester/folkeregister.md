@@ -8,7 +8,7 @@ Folkeregisteret inneholder opplysninger om alle som er eller har vært bosatt i 
 
 KS vil tilby det nye Folkeregisteret(FREG) via Fiks-plattformen for kommunal sektor, foruten helse. E-helse tilbyr løsning for den delen som omhandler helse.
 
-Mer informasjon om Modernisert Folkeregister finner man hos [Skatteetaten](https://www.skatteetaten.no/person/folkeregister/om/modernisering/).
+Mer informasjon om Modernisert Folkeregister finner man [her](https://www.ks.no/fagomrader/digitalisering/utviklingsprosjekter/modernisert-folkeregister).
 
 #### Fiks folkeregister
 
