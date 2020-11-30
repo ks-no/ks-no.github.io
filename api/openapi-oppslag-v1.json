@@ -13,23 +13,23 @@
     "url" : "https://api.fiks.test.ks.no/"
   } ],
   "paths" : {
-    "/innsyn-sok/api/v1/oppslag/dokument" : {
+    "/innsyn-sok/api/v1/oppslag/forelder" : {
       "get" : {
         "tags" : [ "Oppslag" ],
-        "summary" : "Hent en melding basert på dokumentId",
-        "operationId" : "lookupDokument",
+        "summary" : "Hent en forelder-melding og dennes barn-meldinger",
+        "operationId" : "lookupForelder",
         "parameters" : [ {
-          "name" : "dokumentId",
+          "name" : "forelderId",
           "in" : "query",
-          "description" : "Id for dokumentet (formatert som <fiksOrgId>_<integrasjonId>_<meldingId>)",
+          "description" : "Id for forelder-dokumentet",
           "required" : true,
           "schema" : {
             "type" : "string"
           }
         }, {
-          "name" : "type",
+          "name" : "forelderType",
           "in" : "query",
-          "description" : "Meldingstype til dokumentet",
+          "description" : "Typen til forelder-dokumentet",
           "required" : true,
           "schema" : {
             "type" : "string",
@@ -54,7 +54,7 @@
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/OppslagResultat"
+                  "$ref" : "#/components/schemas/ForelderOppslagResultat"
                 }
               }
             }
@@ -102,23 +102,23 @@
         }
       }
     },
-    "/innsyn-sok/api/v1/oppslag/forelder" : {
+    "/innsyn-sok/api/v1/oppslag/dokument" : {
       "get" : {
         "tags" : [ "Oppslag" ],
-        "summary" : "Hent en forelder-melding og dennes barn-meldinger",
-        "operationId" : "lookupForelder",
+        "summary" : "Hent en melding basert på dokumentId",
+        "operationId" : "lookupDokument",
         "parameters" : [ {
-          "name" : "forelderId",
+          "name" : "dokumentId",
           "in" : "query",
-          "description" : "Id for forelder-dokumentet",
+          "description" : "Id for dokumentet (formatert som <fiksOrgId>_<integrasjonId>_<meldingId>)",
           "required" : true,
           "schema" : {
             "type" : "string"
           }
         }, {
-          "name" : "forelderType",
+          "name" : "type",
           "in" : "query",
-          "description" : "Typen til forelder-dokumentet",
+          "description" : "Meldingstype til dokumentet",
           "required" : true,
           "schema" : {
             "type" : "string",
@@ -143,7 +143,7 @@
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/ForelderOppslagResultat"
+                  "$ref" : "#/components/schemas/OppslagResultat"
                 }
               }
             }
@@ -348,6 +348,28 @@
           }
         }
       },
+      "ForelderOppslagResultat" : {
+        "type" : "object",
+        "properties" : {
+          "forelder" : {
+            "$ref" : "#/components/schemas/MeldingV1OppslagMetadata"
+          },
+          "ingenForelderKode" : {
+            "type" : "string",
+            "enum" : [ "IKKE_EKSISTERENDE_ELLER_IKKE_AUTORISERT", "INNLOGGINGSNIVA_UTILSTREKKELIG" ]
+          },
+          "barn" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/MeldingV1OppslagMetadata"
+            }
+          },
+          "barnPaHoyereInnloggingniva" : {
+            "type" : "integer",
+            "format" : "int32"
+          }
+        }
+      },
       "ForsendelseV1Dokument" : {
         "type" : "object",
         "properties" : {
@@ -511,7 +533,8 @@
             "type" : "number",
             "format" : "float"
           }
-        }
+        },
+        "description" : "Treff"
       },
       "OppslagMetadata" : {
         "type" : "object",
@@ -527,19 +550,6 @@
         },
         "discriminator" : {
           "propertyName" : "versjon"
-        }
-      },
-      "OppslagResultat" : {
-        "type" : "object",
-        "properties" : {
-          "hit" : {
-            "$ref" : "#/components/schemas/MeldingV1OppslagMetadata"
-          },
-          "lookupErrorCode" : {
-            "type" : "string",
-            "description" : "Om treff ikke kunne vises indikerer koden hvorfor. ",
-            "enum" : [ "IKKE_EKSISTERENDE_ELLER_IKKE_AUTORISERT", "INNLOGGINGSNIVA_UTILSTREKKELIG" ]
-          }
         }
       },
       "SkjemaFilV1" : {
@@ -1007,25 +1017,16 @@
           }
         }
       },
-      "ForelderOppslagResultat" : {
+      "OppslagResultat" : {
         "type" : "object",
         "properties" : {
-          "forelder" : {
+          "hit" : {
             "$ref" : "#/components/schemas/MeldingV1OppslagMetadata"
           },
-          "ingenForelderKode" : {
+          "lookupErrorCode" : {
             "type" : "string",
+            "description" : "Om treff ikke kunne vises indikerer koden hvorfor. ",
             "enum" : [ "IKKE_EKSISTERENDE_ELLER_IKKE_AUTORISERT", "INNLOGGINGSNIVA_UTILSTREKKELIG" ]
-          },
-          "barn" : {
-            "type" : "array",
-            "items" : {
-              "$ref" : "#/components/schemas/MeldingV1OppslagMetadata"
-            }
-          },
-          "barnPaHoyereInnloggingniva" : {
-            "type" : "integer",
-            "format" : "int32"
           }
         }
       }
