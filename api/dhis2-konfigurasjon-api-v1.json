@@ -1,8 +1,8 @@
 {
   "openapi" : "3.0.1",
   "info" : {
-    "title" : "KS Fiks: DHIS2 provesvar Service",
-    "description" : "DHIS2 provesvar Service",
+    "title" : "KS Fiks: DHIS2 selvregistrering service",
+    "description" : "DHIS2 selvregistrering service",
     "contact" : {
       "name" : "Fiks brukerstøtte",
       "url" : "https://ks-no.github.io/",
@@ -31,8 +31,39 @@
   }, {
     "name" : "Dhis2KonfigurasjonProvesvar",
     "description" : "API for henting av provesvar for DHIS2"
+  }, {
+    "name" : "Selvregistrering",
+    "description" : "API for å registrere nærkontaker i Fiks smittesporing"
   } ],
   "paths" : {
+    "/dhis2-konfigurasjon/api/v1/brukere" : {
+      "post" : {
+        "tags" : [ "Dhis2KonfigurasjonBrukere" ],
+        "description" : "Oppretter en bruker i DHIS2",
+        "operationId" : "opprettBruker",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/OpprettBrukerRequest"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "default" : {
+            "description" : "default response",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/OpprettBrukerResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/dhis2-konfigurasjon/api/v1/brukere/{id}" : {
       "put" : {
         "tags" : [ "Dhis2KonfigurasjonBrukere" ],
@@ -93,16 +124,180 @@
         }
       }
     },
-    "/dhis2-konfigurasjon/api/v1/brukere" : {
+    "/dhis2-konfigurasjon/api/v1/organisasjoner" : {
+      "get" : {
+        "tags" : [ "Dhis2KonfigurasjonOrganisasjoner" ],
+        "description" : "Henter informasjon for alle registrerte organisasjoner",
+        "operationId" : "getOrganisasjoner",
+        "responses" : {
+          "default" : {
+            "description" : "default response",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Organisasjoner"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/dhis2-konfigurasjon/api/v1/organisasjoner/{fiksOrganisasjonId}/folkeregister" : {
       "post" : {
-        "tags" : [ "Dhis2KonfigurasjonBrukere" ],
-        "description" : "Oppretter en bruker i DHIS2",
-        "operationId" : "opprettBruker",
+        "tags" : [ "Dhis2KonfigurasjonOrganisasjoner" ],
+        "description" : "Aktiverer tilgang til å gjøre spørringer mot Folkeregisteret",
+        "operationId" : "aktiverFolkeregisterOppslag",
+        "parameters" : [ {
+          "name" : "fiksOrganisasjonId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "204" : {
+            "description" : "OK"
+          },
+          "400" : {
+            "description" : "Problem med fiksOrg i input",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Mangler tilgang til å utføre handlingen",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Ikke autentisert",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Mangler info om kommunen eller rollen",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete" : {
+        "tags" : [ "Dhis2KonfigurasjonOrganisasjoner" ],
+        "description" : "Deaktiver tilgang til å gjøre spørringer mot Folkeregisteret",
+        "operationId" : "deaktiverFolkeregisterOppslag",
+        "parameters" : [ {
+          "name" : "fiksOrganisasjonId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "204" : {
+            "description" : "OK"
+          },
+          "401" : {
+            "description" : "Mangler tilgang til å utføre handlingen",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Ikke autentisert",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Fant ikke kommune eller rollen knyttet til fiksOrgId",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/dhis2-konfigurasjon/api/v1/organisasjoner/{fiksOrganisasjonId}" : {
+      "get" : {
+        "tags" : [ "Dhis2KonfigurasjonOrganisasjoner" ],
+        "description" : "Henter informasjon for en organisasjon",
+        "operationId" : "getOrganisasjon",
+        "parameters" : [ {
+          "name" : "fiksOrganisasjonId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "default" : {
+            "description" : "default response",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Organisasjon"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put" : {
+        "tags" : [ "Dhis2KonfigurasjonOrganisasjoner" ],
+        "description" : "Oppdaterer informasjon for en organisasjon",
+        "operationId" : "oppdaterOrganisasjon",
+        "parameters" : [ {
+          "name" : "fiksOrganisasjonId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
         "requestBody" : {
           "content" : {
             "application/json" : {
               "schema" : {
-                "$ref" : "#/components/schemas/OpprettBrukerRequest"
+                "$ref" : "#/components/schemas/OppdaterOrganisasjonRequest"
               }
             }
           }
@@ -113,7 +308,7 @@
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/OpprettBrukerResponse"
+                  "$ref" : "#/components/schemas/Organisasjon"
                 }
               }
             }
@@ -338,198 +533,6 @@
         }
       }
     },
-    "/dhis2-konfigurasjon/api/v1/organisasjoner/{fiksOrganisasjonId}" : {
-      "get" : {
-        "tags" : [ "Dhis2KonfigurasjonOrganisasjoner" ],
-        "description" : "Henter informasjon for en organisasjon",
-        "operationId" : "getOrganisasjon",
-        "parameters" : [ {
-          "name" : "fiksOrganisasjonId",
-          "in" : "path",
-          "required" : true,
-          "schema" : {
-            "type" : "string",
-            "format" : "uuid"
-          }
-        } ],
-        "responses" : {
-          "default" : {
-            "description" : "default response",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/Organisasjon"
-                }
-              }
-            }
-          }
-        }
-      },
-      "put" : {
-        "tags" : [ "Dhis2KonfigurasjonOrganisasjoner" ],
-        "description" : "Oppdaterer informasjon for en organisasjon",
-        "operationId" : "oppdaterOrganisasjon",
-        "parameters" : [ {
-          "name" : "fiksOrganisasjonId",
-          "in" : "path",
-          "required" : true,
-          "schema" : {
-            "type" : "string",
-            "format" : "uuid"
-          }
-        } ],
-        "requestBody" : {
-          "content" : {
-            "application/json" : {
-              "schema" : {
-                "$ref" : "#/components/schemas/OppdaterOrganisasjonRequest"
-              }
-            }
-          }
-        },
-        "responses" : {
-          "default" : {
-            "description" : "default response",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/Organisasjon"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/dhis2-konfigurasjon/api/v1/organisasjoner/{fiksOrganisasjonId}/folkeregister" : {
-      "post" : {
-        "tags" : [ "Dhis2KonfigurasjonOrganisasjoner" ],
-        "description" : "Aktiverer tilgang til å gjøre spørringer mot Folkeregisteret",
-        "operationId" : "aktiverFolkeregisterOppslag",
-        "parameters" : [ {
-          "name" : "fiksOrganisasjonId",
-          "in" : "path",
-          "required" : true,
-          "schema" : {
-            "type" : "string",
-            "format" : "uuid"
-          }
-        } ],
-        "responses" : {
-          "204" : {
-            "description" : "OK"
-          },
-          "400" : {
-            "description" : "Problem med fiksOrg i input",
-            "content" : {
-              "*/*" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/ErrorMessage"
-                }
-              }
-            }
-          },
-          "401" : {
-            "description" : "Mangler tilgang til å utføre handlingen",
-            "content" : {
-              "*/*" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/ErrorMessage"
-                }
-              }
-            }
-          },
-          "403" : {
-            "description" : "Ikke autentisert",
-            "content" : {
-              "*/*" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/ErrorMessage"
-                }
-              }
-            }
-          },
-          "404" : {
-            "description" : "Mangler info om kommunen eller rollen",
-            "content" : {
-              "*/*" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/ErrorMessage"
-                }
-              }
-            }
-          }
-        }
-      },
-      "delete" : {
-        "tags" : [ "Dhis2KonfigurasjonOrganisasjoner" ],
-        "description" : "Deaktiver tilgang til å gjøre spørringer mot Folkeregisteret",
-        "operationId" : "deaktiverFolkeregisterOppslag",
-        "parameters" : [ {
-          "name" : "fiksOrganisasjonId",
-          "in" : "path",
-          "required" : true,
-          "schema" : {
-            "type" : "string",
-            "format" : "uuid"
-          }
-        } ],
-        "responses" : {
-          "204" : {
-            "description" : "OK"
-          },
-          "401" : {
-            "description" : "Mangler tilgang til å utføre handlingen",
-            "content" : {
-              "*/*" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/ErrorMessage"
-                }
-              }
-            }
-          },
-          "403" : {
-            "description" : "Ikke autentisert",
-            "content" : {
-              "*/*" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/ErrorMessage"
-                }
-              }
-            }
-          },
-          "404" : {
-            "description" : "Fant ikke kommune eller rollen knyttet til fiksOrgId",
-            "content" : {
-              "*/*" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/ErrorMessage"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/dhis2-konfigurasjon/api/v1/organisasjoner" : {
-      "get" : {
-        "tags" : [ "Dhis2KonfigurasjonOrganisasjoner" ],
-        "description" : "Henter informasjon for alle registrerte organisasjoner",
-        "operationId" : "getOrganisasjoner",
-        "responses" : {
-          "default" : {
-            "description" : "default response",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/Organisasjoner"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
     "/dhis2-konfigurasjon/api/v1/person/sokperson" : {
       "post" : {
         "tags" : [ "Dhis2KonfigurasjonPersonSok" ],
@@ -561,6 +564,44 @@
               "application/json" : {
                 "schema" : {
                   "$ref" : "#/components/schemas/Person"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/dhis2-konfigurasjon/api/v1/provesvar/tilgang" : {
+      "post" : {
+        "tags" : [ "Dhis2KonfigurasjonProvesvar" ],
+        "description" : "Sjekker om kommunen har aktivert prøvesvar-tjenesten",
+        "operationId" : "harTilgangTilProvesok",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "type" : "string"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "401" : {
+            "description" : "Ikke tilgang",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "200" : {
+            "description" : "Aktiveringsstatus",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "boolean"
                 }
               }
             }
@@ -606,23 +647,26 @@
         }
       }
     },
-    "/dhis2-konfigurasjon/api/v1/provesvar/tilgang" : {
+    "/dhis2-konfigurasjon/api/v1/registrer/naerkontakt" : {
       "post" : {
-        "tags" : [ "Dhis2KonfigurasjonProvesvar" ],
-        "description" : "Sjekker om kommunen har aktivert prøvesvar-tjenesten",
-        "operationId" : "harTilgangTilProvesok",
+        "tags" : [ "Selvregistrering" ],
+        "description" : "Registrer nærkontakt",
+        "operationId" : "registrerKontakt",
         "requestBody" : {
           "content" : {
             "application/json" : {
               "schema" : {
-                "type" : "string"
+                "$ref" : "#/components/schemas/OpprettKontaktRequest"
               }
             }
           }
         },
         "responses" : {
-          "401" : {
-            "description" : "Ikke tilgang",
+          "201" : {
+            "description" : "Created"
+          },
+          "400" : {
+            "description" : "Mangelfull input",
             "content" : {
               "application/json" : {
                 "schema" : {
@@ -631,12 +675,22 @@
               }
             }
           },
-          "200" : {
-            "description" : "Aktiveringsstatus",
+          "403" : {
+            "description" : "Ikke autentisert",
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "type" : "boolean"
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "502" : {
+            "description" : "Bad gateway",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
                 }
               }
             }
@@ -647,6 +701,41 @@
   },
   "components" : {
     "schemas" : {
+      "OpprettBrukerResponse" : {
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string"
+          }
+        }
+      },
+      "OpprettBrukerRequest" : {
+        "type" : "object",
+        "properties" : {
+          "fnr" : {
+            "pattern" : "^[0-9]{11}$",
+            "type" : "string"
+          },
+          "fornavn" : {
+            "maxLength" : 160,
+            "minLength" : 2,
+            "type" : "string"
+          },
+          "etternavn" : {
+            "maxLength" : 160,
+            "minLength" : 2,
+            "type" : "string"
+          },
+          "epost" : {
+            "pattern" : "^[A-Za-zæøåÆØÅ0-9-_]+(\\.[A-Za-zæøåÆØÅ0-9-_]+)*@[A-Za-zæøåÆØÅ0-9-]+(\\.[A-Za-zæøåÆØÅ0-9-]+)*(\\.[A-Za-z]{2,})$",
+            "type" : "string"
+          },
+          "telefonnummer" : {
+            "pattern" : "^[+]?[0-9]+([- ][0-9]+)*$",
+            "type" : "string"
+          }
+        }
+      },
       "OppdaterBrukerRequest" : {
         "type" : "object",
         "properties" : {
@@ -710,38 +799,35 @@
           }
         }
       },
-      "OpprettBrukerResponse" : {
+      "Organisasjon" : {
         "type" : "object",
         "properties" : {
-          "id" : {
-            "type" : "string"
+          "fiksOrganisasjonId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "epost" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          },
+          "folkeregisterAktivert" : {
+            "type" : "boolean"
+          },
+          "provesvarAktivert" : {
+            "type" : "boolean"
           }
         }
       },
-      "OpprettBrukerRequest" : {
+      "Organisasjoner" : {
         "type" : "object",
         "properties" : {
-          "fnr" : {
-            "pattern" : "^[0-9]{11}$",
-            "type" : "string"
-          },
-          "fornavn" : {
-            "maxLength" : 160,
-            "minLength" : 2,
-            "type" : "string"
-          },
-          "etternavn" : {
-            "maxLength" : 160,
-            "minLength" : 2,
-            "type" : "string"
-          },
-          "epost" : {
-            "pattern" : "^[A-Za-zæøåÆØÅ0-9-_]+(\\.[A-Za-zæøåÆØÅ0-9-_]+)*@[A-Za-zæøåÆØÅ0-9-]+(\\.[A-Za-zæøåÆØÅ0-9-]+)*(\\.[A-Za-z]{2,})$",
-            "type" : "string"
-          },
-          "telefonnummer" : {
-            "pattern" : "^[+]?[0-9]+([- ][0-9]+)*$",
-            "type" : "string"
+          "organisasjoner" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Organisasjon"
+            }
           }
         }
       },
@@ -777,6 +863,19 @@
           },
           "errorJson" : {
             "type" : "string"
+          }
+        }
+      },
+      "OppdaterOrganisasjonRequest" : {
+        "type" : "object",
+        "properties" : {
+          "epost" : {
+            "maxItems" : 100,
+            "minItems" : 0,
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
           }
         }
       },
@@ -821,51 +920,6 @@
           "rolle" : {
             "type" : "string",
             "enum" : [ "LESE_SKRIVE", "LESE" ]
-          }
-        }
-      },
-      "Organisasjon" : {
-        "type" : "object",
-        "properties" : {
-          "fiksOrganisasjonId" : {
-            "type" : "string",
-            "format" : "uuid"
-          },
-          "epost" : {
-            "type" : "array",
-            "items" : {
-              "type" : "string"
-            }
-          },
-          "folkeregisterAktivert" : {
-            "type" : "boolean"
-          },
-          "provesvarAktivert" : {
-            "type" : "boolean"
-          }
-        }
-      },
-      "OppdaterOrganisasjonRequest" : {
-        "type" : "object",
-        "properties" : {
-          "epost" : {
-            "maxItems" : 100,
-            "minItems" : 0,
-            "type" : "array",
-            "items" : {
-              "type" : "string"
-            }
-          }
-        }
-      },
-      "Organisasjoner" : {
-        "type" : "object",
-        "properties" : {
-          "organisasjoner" : {
-            "type" : "array",
-            "items" : {
-              "$ref" : "#/components/schemas/Organisasjon"
-            }
           }
         }
       },
@@ -1035,6 +1089,48 @@
           },
           "organiasjonsnummer" : {
             "type" : "string"
+          }
+        }
+      },
+      "OpprettKontaktRequest" : {
+        "required" : [ "kjonn", "kontaktDato", "relasjonstype" ],
+        "type" : "object",
+        "properties" : {
+          "fornavn" : {
+            "maxLength" : 160,
+            "minLength" : 2,
+            "type" : "string"
+          },
+          "etternavn" : {
+            "maxLength" : 160,
+            "minLength" : 2,
+            "type" : "string"
+          },
+          "epost" : {
+            "pattern" : "^[A-Za-zæøåÆØÅ0-9-_]+(\\.[A-Za-zæøåÆØÅ0-9-_]+)*@[A-Za-zæøåÆØÅ0-9-]+(\\.[A-Za-zæøåÆØÅ0-9-]+)*(\\.[A-Za-z]{2,})$",
+            "type" : "string"
+          },
+          "telefonnummer" : {
+            "pattern" : "^[+]?[0-9]+([- ][0-9]+)*$",
+            "type" : "string"
+          },
+          "relasjonstype" : {
+            "type" : "string",
+            "description" : "Type relasjon med smittede",
+            "enum" : [ "SAMME_HUSSTAND", "ANNET", "BARNEHAGE_SKOLE", "HELSEINSTITUSJON", "HJEMMEBESOK", "SERVICENAERING", "SOSIAL", "UNVIERSITET_JOBB" ]
+          },
+          "kjonn" : {
+            "type" : "string",
+            "description" : "Type relasjon med smittede",
+            "enum" : [ "MANN", "KVINNE" ]
+          },
+          "kontaktDato" : {
+            "type" : "string",
+            "description" : "Dato for siste(?) kontakt. Format: dd.MM.yyyy"
+          },
+          "fodselsdato" : {
+            "type" : "string",
+            "description" : "Fodselsdato. Format: dd.MM.yyyy"
           }
         }
       }
