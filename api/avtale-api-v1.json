@@ -24,18 +24,152 @@
     "description" : "API for å håndtere signering av avtaler for bruk av Fiks-plattformen"
   } ],
   "paths" : {
-    "/avtale/api/v1/hovedavtale" : {
+    "/avtale/api/v1/fiksorgs/avtale/{avtaleUuid}" : {
       "get" : {
         "tags" : [ "avtale" ],
-        "description" : "Forespør og signer hovedavtale for bruk av Fiks-plattformen",
-        "operationId" : "signerHovedavtale",
+        "description" : "Hent alle Fiks-organisasjoner som har signert angitt avtale",
+        "operationId" : "hentFiksOrgIderForSignertAvtale",
+        "parameters" : [ {
+          "name" : "avtaleUuid",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
         "responses" : {
           "200" : {
-            "description" : "Fant avtale",
+            "description" : "Fiks-organisasjoner",
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/HovedavtaleDefinisjon"
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/FiksOrganisasjonDefinisjon"
+                  }
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Ikke tilgang",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/avtale/api/v1/fiksorg/tjeneste/{tjenestekode}" : {
+      "get" : {
+        "tags" : [ "avtale" ],
+        "description" : "Hent alle Fiks-organisasjoner som har signert avtale for angitt tjeneste",
+        "operationId" : "hentFiksOrgerForAngittTjeneste",
+        "parameters" : [ {
+          "name" : "tjenestekode",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Fiks-organisasjoner",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/FiksOrganisasjonDefinisjon"
+                  }
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Ikke tilgang",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/avtale/api/v1/avtaler/{fiksOrgId}" : {
+      "get" : {
+        "tags" : [ "avtale" ],
+        "description" : "Hent alle signerte avtaler for angitt fiksOrgId",
+        "operationId" : "hentSignerteAvtalerForFiksOrg",
+        "parameters" : [ {
+          "name" : "fiksOrgId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Avtaler",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/SignertAvtaleDefinisjon"
+                  }
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Ikke tilgang",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/avtale/api/v1/tjenester/{fiksOrgId}" : {
+      "get" : {
+        "tags" : [ "avtale" ],
+        "description" : "Hent alle tjenestene en Fiks-organisasjon har signert avtale for",
+        "operationId" : "hentTjenesterForFiksOrg",
+        "parameters" : [ {
+          "name" : "fiksOrgId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Tjenester",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "type" : "string"
+                  }
                 }
               }
             }
@@ -56,7 +190,7 @@
   },
   "components" : {
     "schemas" : {
-      "HovedavtaleDefinisjon" : {
+      "FiksOrganisasjonDefinisjon" : {
         "type" : "object",
         "properties" : {
           "id" : {
@@ -64,20 +198,6 @@
             "format" : "uuid"
           },
           "navn" : {
-            "type" : "string"
-          },
-          "beskrivelse" : {
-            "type" : "string"
-          },
-          "fiksOrgId" : {
-            "type" : "string",
-            "format" : "uuid"
-          },
-          "datoSignert" : {
-            "type" : "string",
-            "format" : "date-time"
-          },
-          "signertAv" : {
             "type" : "string"
           }
         }
@@ -114,6 +234,46 @@
           },
           "errorJson" : {
             "type" : "string"
+          }
+        }
+      },
+      "SignertAvtaleDefinisjon" : {
+        "type" : "object",
+        "properties" : {
+          "avtaleUuid" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "tjenestekode" : {
+            "type" : "string"
+          },
+          "navn" : {
+            "type" : "string"
+          },
+          "beskrivelse" : {
+            "type" : "string"
+          },
+          "fiksOrgId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "fiksOrgNavn" : {
+            "type" : "string"
+          },
+          "signeringsdato" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "signertAv" : {
+            "type" : "string"
+          },
+          "gyldigFra" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "gyldigTil" : {
+            "type" : "string",
+            "format" : "date-time"
           }
         }
       }
