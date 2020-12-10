@@ -6,6 +6,10 @@ lastmod: 2018-12-17
 Her er en liste over de viktigste endringene i SvarUt, startet i 2015.
 
 ## Liste over endringer i SvarUt.
+* 10.12.2020
+  * Inkluderer avgivende system i svar fra tjenesten hentNyeForsendelser, [Mottaksservice V1]({{< ref "/svarut/integrasjon/mottaksservice-rest/" >}})
+* 04.12.2020
+  * Flyttet SvarUt til nytt driftsmiljø
 * 17.12.2019
   * Endret fra epost på varselepost til no-reply@ks.no (Pga så mange sak opprettet mail som vi får i retur)
   * Fix for like filnavn mot SDP der filnavnet blir likt etter at sdp har kuttet til 100tegn.

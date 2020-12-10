@@ -47,6 +47,7 @@ Henter nye forsendelser for autentisert mottaker (basert på angitt mottaker). E
   },
   "id": "AAAAAAA-AAAA-AAAA-AAAA-AAAAAAAAAAAA",
   "tittel": "En tittel",
+  "avgivendeSystem": "FIKS_SYSTEM",
   "date": 1412668736853, //millis since epoch
   "metadataFraAvleverendeSystem": {
     "sakssekvensnummer": 0,
