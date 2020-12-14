@@ -7,7 +7,7 @@ date: 2020-12-14
 Tjeneste for å sende klinikermeldinger til FHI.
 
 ### Produktbeskrivelse
-Tjenesten vil tilby et api hvor man kan sende klinikermeldinger til FHI 
+KS har sammen med Folkehelseinstituttet (FHI) utviklet et API som gjør det mulig å sende MSIS klinikermelding direkte fra smittesporingsverktøyet eller EPJ til MSIS ved FHI. Tjenesten heter Fiks klinikermelding. API-et vil bli tatt i bruk av Fiks smittsporing og ReMin så snart som mulig, og er tilgjengelig for kommuner som benytter andre løsninger til smittesporing enn de nevnte.
 
 #### Brukeradministrasjon og tilgangsstyring
 En må ha en gyldig HelseID innlogging for å sende klinikermeldinger. 
