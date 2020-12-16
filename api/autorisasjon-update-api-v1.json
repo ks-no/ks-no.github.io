@@ -72,54 +72,6 @@
         }
       }
     },
-    "/autorisasjon-update/api/v1/ressurs/bulk/{ressurs}/tilganger" : {
-      "post" : {
-        "tags" : [ "Ressurs" ],
-        "description" : "Brukes for å tildele privilegier til samme ressurs for flere aktører samtidig",
-        "operationId" : "bulkTildelTilganger",
-        "parameters" : [ {
-          "name" : "ressurs",
-          "in" : "path",
-          "required" : true,
-          "schema" : {
-            "type" : "string",
-            "format" : "uuid"
-          }
-        } ],
-        "requestBody" : {
-          "content" : {
-            "application/json" : {
-              "schema" : {
-                "$ref" : "#/components/schemas/TilgangBulkRequest"
-              }
-            }
-          },
-          "required" : true
-        },
-        "responses" : {
-          "400" : {
-            "description" : "Ugyldig tilgang",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/ErrorMessage"
-                }
-              }
-            }
-          },
-          "200" : {
-            "description" : "Tilganger tildelt",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/TilgangBulkResponse"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
     "/autorisasjon-update/api/v1/ressurs" : {
       "post" : {
         "tags" : [ "Ressurs" ],
@@ -267,6 +219,54 @@
         }
       }
     },
+    "/autorisasjon-update/api/v1/ressurs/bulk/{ressurs}/tilganger" : {
+      "post" : {
+        "tags" : [ "Ressurs" ],
+        "description" : "Brukes for å tildele privilegier til samme ressurs for flere aktører samtidig",
+        "operationId" : "bulkTildelTilganger",
+        "parameters" : [ {
+          "name" : "ressurs",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/TilgangBulkRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "400" : {
+            "description" : "Ugyldig tilgang",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "200" : {
+            "description" : "Tilganger tildelt",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/TilgangBulkResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/autorisasjon-update/api/v1/typeTilganger/{ressursType}/tilganger" : {
       "post" : {
         "tags" : [ "TypeTilgang" ],
@@ -403,6 +403,31 @@
           }
         }
       },
+      "Ressurs" : {
+        "required" : [ "forelder", "id", "navn", "type" ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string",
+            "description" : "Ressursens ID",
+            "format" : "uuid"
+          },
+          "forelder" : {
+            "type" : "string",
+            "description" : "UUID til ressursens forelderressurs",
+            "format" : "uuid"
+          },
+          "type" : {
+            "type" : "string",
+            "description" : "Ressursens type"
+          },
+          "navn" : {
+            "type" : "string",
+            "description" : "Ressursens visningsnavn"
+          }
+        },
+        "description" : "Representerer en ressurs, som er en entitet som kan tilordnes privilegier. Ressurser er \n                               organisert i et hierarki der privilegier som gies en aktør på en ressurs også vil gjelde for alle\n                               underliggende ressurser."
+      },
       "ErrorMessage" : {
         "type" : "object",
         "properties" : {
@@ -437,93 +462,6 @@
             "type" : "string"
           }
         }
-      },
-      "Tilgang" : {
-        "required" : [ "aktor", "privilegium", "ressurs" ],
-        "type" : "object",
-        "properties" : {
-          "aktor" : {
-            "type" : "string",
-            "description" : "Aktøren (personen eller integrasjonen) som har blitt tildelt privilegiet"
-          },
-          "privilegium" : {
-            "type" : "string",
-            "description" : "Privilegiet som har blitt tildelt"
-          },
-          "ressurs" : {
-            "type" : "string",
-            "description" : "Ressursen privilegiet har blitt tildelt på",
-            "format" : "uuid"
-          }
-        }
-      },
-      "TilgangBulkResponse" : {
-        "required" : [ "tilgangerGitt" ],
-        "type" : "object",
-        "properties" : {
-          "tilgangerGitt" : {
-            "type" : "array",
-            "items" : {
-              "$ref" : "#/components/schemas/Tilgang"
-            }
-          }
-        },
-        "description" : "Oppsummering av tilganger som er gitt eller som feilet"
-      },
-      "TilgangBulkRequest" : {
-        "required" : [ "requests" ],
-        "type" : "object",
-        "properties" : {
-          "requests" : {
-            "type" : "array",
-            "items" : {
-              "$ref" : "#/components/schemas/TilgangRequest"
-            }
-          }
-        },
-        "description" : "Representerer en rekke autorisasjoner som ønskes tildelt"
-      },
-      "TilgangRequest" : {
-        "required" : [ "aktor", "privilegium" ],
-        "type" : "object",
-        "properties" : {
-          "aktor" : {
-            "pattern" : "^[A-Za-zæøåÆØÅ0-9_.,/\\-_ ]+$",
-            "type" : "string",
-            "description" : "Aktøren som denne forespørselen gjelder"
-          },
-          "privilegium" : {
-            "pattern" : "^[0-9A-Z_.]+$",
-            "type" : "string",
-            "description" : "Navnet på det privilegium som aktøren har eller etterspør for en gitt ressurs"
-          }
-        },
-        "description" : "Representerer en autorisasjon, som deskriver en ressurs og et privilegium som enn gitt aktør har eller ber om"
-      },
-      "Ressurs" : {
-        "required" : [ "forelder", "id", "navn", "type" ],
-        "type" : "object",
-        "properties" : {
-          "id" : {
-            "type" : "string",
-            "description" : "Ressursens ID",
-            "format" : "uuid"
-          },
-          "forelder" : {
-            "type" : "string",
-            "description" : "UUID til ressursens forelderressurs",
-            "format" : "uuid"
-          },
-          "type" : {
-            "type" : "string",
-            "description" : "Ressursens type"
-          },
-          "navn" : {
-            "type" : "string",
-            "description" : "Ressursens visningsnavn"
-          }
-        },
-        "description" : "Representerer en ressurs, som er en entitet som kan tilordnes privilegier. Ressurser er \n                               organisert i et hierarki der privilegier som gies en aktør på en ressurs også vil gjelde for alle\n                               underliggende ressurser."
       },
       "OpprettRessursRequest" : {
         "required" : [ "forelderRessurs", "navn", "type" ],
@@ -562,6 +500,68 @@
           }
         },
         "description" : "En request for å oppdatere en eksisterende ressurs"
+      },
+      "Tilgang" : {
+        "required" : [ "aktor", "privilegium", "ressurs" ],
+        "type" : "object",
+        "properties" : {
+          "aktor" : {
+            "type" : "string",
+            "description" : "Aktøren (personen eller integrasjonen) som har blitt tildelt privilegiet"
+          },
+          "privilegium" : {
+            "type" : "string",
+            "description" : "Privilegiet som har blitt tildelt"
+          },
+          "ressurs" : {
+            "type" : "string",
+            "description" : "Ressursen privilegiet har blitt tildelt på",
+            "format" : "uuid"
+          }
+        }
+      },
+      "TilgangRequest" : {
+        "required" : [ "aktor", "privilegium" ],
+        "type" : "object",
+        "properties" : {
+          "aktor" : {
+            "pattern" : "^[A-Za-zæøåÆØÅ0-9_.,/\\-_ ]+$",
+            "type" : "string",
+            "description" : "Aktøren som denne forespørselen gjelder"
+          },
+          "privilegium" : {
+            "pattern" : "^[0-9A-Z_.]+$",
+            "type" : "string",
+            "description" : "Navnet på det privilegium som aktøren har eller etterspør for en gitt ressurs"
+          }
+        },
+        "description" : "Representerer en autorisasjon, som deskriver en ressurs og et privilegium som enn gitt aktør har eller ber om"
+      },
+      "TilgangBulkResponse" : {
+        "required" : [ "tilgangerGitt" ],
+        "type" : "object",
+        "properties" : {
+          "tilgangerGitt" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Tilgang"
+            }
+          }
+        },
+        "description" : "Oppsummering av tilganger som er gitt eller som feilet"
+      },
+      "TilgangBulkRequest" : {
+        "required" : [ "requests" ],
+        "type" : "object",
+        "properties" : {
+          "requests" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/TilgangRequest"
+            }
+          }
+        },
+        "description" : "Representerer en rekke autorisasjoner som ønskes tildelt"
       },
       "TypeTilgang" : {
         "required" : [ "aktor", "privilegium", "ressursType" ],
