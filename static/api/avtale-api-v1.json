@@ -24,11 +24,66 @@
     "description" : "API for å håndtere signering av avtaler for bruk av Fiks-plattformen"
   } ],
   "paths" : {
+    "/avtale/api/v1/avtaler/{fiksOrgId}/{tjenestekode}" : {
+      "get" : {
+        "tags" : [ "avtale" ],
+        "description" : "Hent signert avtale for angitt fiksOrgId og tjeneste",
+        "operationId" : "hentAvtaleSignertForFiksOrg",
+        "parameters" : [ {
+          "name" : "fiksOrgId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        }, {
+          "name" : "tjenestekode",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Signert avtale",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/AvtaleSignertDefinisjon"
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Signert avtale ikke funnet",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Ikke tilgang",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/avtale/api/v1/fiksorgs/avtale/{avtaleUuid}" : {
       "get" : {
         "tags" : [ "avtale" ],
         "description" : "Hent alle Fiks-organisasjoner som har signert angitt avtale",
-        "operationId" : "hentFiksOrgIderForSignertAvtale",
+        "operationId" : "hentFiksOrgIderForAvtaleSignert",
         "parameters" : [ {
           "name" : "avtaleUuid",
           "in" : "path",
@@ -127,8 +182,98 @@
                 "schema" : {
                   "type" : "array",
                   "items" : {
-                    "$ref" : "#/components/schemas/SignertAvtaleDefinisjon"
+                    "$ref" : "#/components/schemas/AvtaleSignertDefinisjon"
                   }
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Ikke tilgang",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put" : {
+        "tags" : [ "avtale" ],
+        "description" : "Oppdaterer signert avtale for angitt fiksOrgId",
+        "operationId" : "oppdaterAvtaleForFiksOrg",
+        "parameters" : [ {
+          "name" : "fiksOrgId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/OppdaterAvtaleDefinisjon"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Oppdatert signert avtale",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/AvtaleSignertDefinisjon"
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Ikke tilgang",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post" : {
+        "tags" : [ "avtale" ],
+        "description" : "Registrer signert avtale for angitt fiksOrgId",
+        "operationId" : "registrerAvtaleForFiksOrg",
+        "parameters" : [ {
+          "name" : "fiksOrgId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/RegistrerAvtaleDefinisjon"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "201" : {
+            "description" : "Registrert signert avtale",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/AvtaleSignertDefinisjon"
                 }
               }
             }
@@ -190,15 +335,35 @@
   },
   "components" : {
     "schemas" : {
-      "FiksOrganisasjonDefinisjon" : {
-        "required" : [ "id", "navn" ],
+      "AvtaleSignertDefinisjon" : {
+        "required" : [ "avtaleUuid", "fiksOrgId", "fiksOrgNavn", "gjeldendeVersjon", "signeringsdato", "signertAv", "signertVersjon", "tjenestekode" ],
         "type" : "object",
         "properties" : {
-          "id" : {
+          "avtaleUuid" : {
             "type" : "string",
             "format" : "uuid"
           },
-          "navn" : {
+          "tjenestekode" : {
+            "type" : "string"
+          },
+          "fiksOrgId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "fiksOrgNavn" : {
+            "type" : "string"
+          },
+          "signeringsdato" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "signertAv" : {
+            "type" : "string"
+          },
+          "signertVersjon" : {
+            "type" : "string"
+          },
+          "gjeldendeVersjon" : {
             "type" : "string"
           }
         }
@@ -238,8 +403,21 @@
           }
         }
       },
-      "SignertAvtaleDefinisjon" : {
-        "required" : [ "avtaleUuid", "beskrivelse", "fiksOrgId", "fiksOrgNavn", "gyldigFra", "gyldigTil", "navn", "signeringsdato", "tjenestekode" ],
+      "FiksOrganisasjonDefinisjon" : {
+        "required" : [ "id", "navn" ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "navn" : {
+            "type" : "string"
+          }
+        }
+      },
+      "OppdaterAvtaleDefinisjon" : {
+        "required" : [ "avtaleUuid", "signeringsdato", "signertAv", "tjenestekode" ],
         "type" : "object",
         "properties" : {
           "avtaleUuid" : {
@@ -249,17 +427,24 @@
           "tjenestekode" : {
             "type" : "string"
           },
-          "navn" : {
-            "type" : "string"
+          "signeringsdato" : {
+            "type" : "string",
+            "format" : "date-time"
           },
-          "beskrivelse" : {
+          "signertAv" : {
             "type" : "string"
-          },
-          "fiksOrgId" : {
+          }
+        }
+      },
+      "RegistrerAvtaleDefinisjon" : {
+        "required" : [ "avtaleUuid", "signeringsdato", "signertAv", "signertVersjon", "tjenestekode" ],
+        "type" : "object",
+        "properties" : {
+          "avtaleUuid" : {
             "type" : "string",
             "format" : "uuid"
           },
-          "fiksOrgNavn" : {
+          "tjenestekode" : {
             "type" : "string"
           },
           "signeringsdato" : {
@@ -269,13 +454,8 @@
           "signertAv" : {
             "type" : "string"
           },
-          "gyldigFra" : {
-            "type" : "string",
-            "format" : "date-time"
-          },
-          "gyldigTil" : {
-            "type" : "string",
-            "format" : "date-time"
+          "signertVersjon" : {
+            "type" : "string"
           }
         }
       }
