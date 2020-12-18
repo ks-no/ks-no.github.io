@@ -42,3 +42,15 @@ For å sikre bakoverkompabilitet versjoneres servicen. Når grensesnittet endres
 | [MottaksService V1 REST](mottaksservice-rest) | Stabil | NA |
 
 
+# IPer
+
+Hvis dere må åpne i brannvegg ligger svarut bak disse ipene:
+
+| SvarUT-Test | SvarUT-PROD |
+| --- | --- |
+|137.221.25.65 | 137.221.25.66| 
+| 137.221.28.65 | 137.221.28.66 | 
+
+
+
+
