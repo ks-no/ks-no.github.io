@@ -182,6 +182,65 @@
           }
         }
       }
+    },
+    "/avtale/api/v1/tjenester/avtaler/{avtaleId}/dokumenter" : {
+      "post" : {
+        "tags" : [ "tjeneste" ],
+        "description" : "Last opp dokument",
+        "operationId" : "uploadDokument",
+        "parameters" : [ {
+          "name" : "avtaleId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "multipart/form-data" : {
+              "schema" : {
+                "type" : "object",
+                "properties" : {
+                  "navn" : {
+                    "type" : "string"
+                  },
+                  "dokument" : {
+                    "type" : "string",
+                    "format" : "binary"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses" : {
+          "204" : {
+            "description" : "Dokument lastet opp"
+          },
+          "401" : {
+            "description" : "Ikke tilgang",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Ikke funnet",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components" : {
@@ -214,14 +273,15 @@
         }
       },
       "AvtaleDokumentDefinisjon" : {
-        "required" : [ "navn", "url" ],
+        "required" : [ "dokumentlagerId", "navn" ],
         "type" : "object",
         "properties" : {
           "navn" : {
             "type" : "string"
           },
-          "url" : {
-            "type" : "string"
+          "dokumentlagerId" : {
+            "type" : "string",
+            "format" : "uuid"
           }
         }
       },
@@ -379,17 +439,11 @@
         }
       },
       "OpprettAvtaleDefinisjon" : {
-        "required" : [ "dokumenter", "gyldigFra", "versjon" ],
+        "required" : [ "gyldigFra", "versjon" ],
         "type" : "object",
         "properties" : {
           "versjon" : {
             "type" : "string"
-          },
-          "dokumenter" : {
-            "type" : "array",
-            "items" : {
-              "$ref" : "#/components/schemas/AvtaleDokumentDefinisjon"
-            }
           },
           "gyldigFra" : {
             "type" : "string",
@@ -442,6 +496,43 @@
             "$ref" : "#/components/schemas/OpprettAvtaleDefinisjon"
           }
         }
+      },
+      "FormDataContentDisposition" : {
+        "type" : "object",
+        "properties" : {
+          "type" : {
+            "type" : "string"
+          },
+          "parameters" : {
+            "type" : "object",
+            "additionalProperties" : {
+              "type" : "string"
+            }
+          },
+          "fileName" : {
+            "type" : "string"
+          },
+          "creationDate" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "modificationDate" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "readDate" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "size" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "name" : {
+            "type" : "string"
+          }
+        },
+        "format" : "binary"
       }
     }
   }
