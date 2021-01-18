@@ -45,6 +45,55 @@
                 }
               }
             }
+          },
+          "403" : {
+            "description" : "Ikke tillatt",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/krr/api/krr/personer" : {
+      "post" : {
+        "tags" : [ "Kontakt- og reservasjonsregisteret" ],
+        "description" : "Henter kontakinfo for flere personer basert på personnr",
+        "operationId" : "kontaktInfoPersonerBulk",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/SokBulkRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Kontaktinfo for liste med personnr",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/PersonerBulkResponse"
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Ikke tillatt",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
           }
         }
       }
@@ -133,15 +182,88 @@
           }
         }
       },
+      "ErrorMessage" : {
+        "type" : "object",
+        "properties" : {
+          "timestamp" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "status" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "error" : {
+            "type" : "string"
+          },
+          "errorId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "path" : {
+            "type" : "string"
+          },
+          "originalPath" : {
+            "type" : "string"
+          },
+          "message" : {
+            "type" : "string"
+          },
+          "errorCode" : {
+            "type" : "string"
+          },
+          "errorJson" : {
+            "type" : "string"
+          }
+        }
+      },
       "SokRequest" : {
         "type" : "object",
         "properties" : {
           "fnr" : {
             "pattern" : "^[0-9]{11}$",
-            "type" : "string"
+            "type" : "string",
+            "description" : "Fodselsnummer til sokekandidat"
           }
         },
         "description" : "En forespørsel om å hente personopplysninger"
+      },
+      "PersonerBulkResponse" : {
+        "type" : "object",
+        "properties" : {
+          "personerListe" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Person"
+            }
+          }
+        }
+      },
+      "Fnr" : {
+        "type" : "object",
+        "properties" : {
+          "fnr" : {
+            "pattern" : "^[0-9]{11}$",
+            "type" : "string",
+            "description" : "Fodselsnummer til sokekandidat"
+          }
+        },
+        "description" : "Fnr for forespørsel om å hente personopplysninger for liste med personer"
+      },
+      "SokBulkRequest" : {
+        "type" : "object",
+        "properties" : {
+          "fnrListe" : {
+            "maxItems" : 1000,
+            "minItems" : 1,
+            "type" : "array",
+            "description" : "Liste med fodselsnummer til sokekandidater",
+            "items" : {
+              "$ref" : "#/components/schemas/Fnr"
+            }
+          }
+        },
+        "description" : "En forespørsel om å hente personopplysninger for liste med personer"
       }
     }
   }
