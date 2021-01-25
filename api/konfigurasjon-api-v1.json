@@ -1246,6 +1246,25 @@
         }
       }
     },
+    "/konfigurasjon/api/v1/root/organisasjoner/tjenester" : {
+      "get" : {
+        "tags" : [ "RootKonfigurasjon" ],
+        "description" : "Henter alle eksisterende tjenester for alle kommuner",
+        "operationId" : "getAlleTjenesterForOrganisasjoner",
+        "responses" : {
+          "200" : {
+            "description" : "Alle eksisterende tjenester tilknyttet alle kommuner. Returnert som csv.",
+            "content" : {
+              "text/csv" : {
+                "schema" : {
+                  "type" : "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/konfigurasjon/api/v1/root/tjenester/{tjenesteKode}" : {
       "get" : {
         "tags" : [ "RootKonfigurasjon" ],
@@ -1266,25 +1285,6 @@
               "application/json" : {
                 "schema" : {
                   "$ref" : "#/components/schemas/Tjeneste"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/konfigurasjon/api/v1/root/organisasjoner/tjenester" : {
-      "get" : {
-        "tags" : [ "RootKonfigurasjon" ],
-        "description" : "Henter alle eksisterende tjenester for alle kommuner",
-        "operationId" : "getAlleTjenesterForOrganisasjoner",
-        "responses" : {
-          "200" : {
-            "description" : "Alle eksisterende tjenester tilknyttet alle kommuner. Returnert som csv.",
-            "content" : {
-              "text/csv" : {
-                "schema" : {
-                  "type" : "string"
                 }
               }
             }
@@ -1412,6 +1412,26 @@
         },
         "description" : "En integrasjon."
       },
+      "IntegrasjonUpdateRequest" : {
+        "type" : "object",
+        "properties" : {
+          "autorisertOrgnr" : {
+            "pattern" : "^[0-9]{9}$",
+            "type" : "string",
+            "description" : "Organisasjonsnummeret som ligger i virksomhetsserfikatet som skal brukes til å autorisere applikasjonen som skal bruke integrasjonen."
+          },
+          "navn" : {
+            "pattern" : "^[A-Za-zæøåÆØÅ0-9_.,/\\-_ ]+$",
+            "type" : "string",
+            "description" : "Et kort navn for integrasjonen."
+          },
+          "beskrivelse" : {
+            "type" : "string",
+            "description" : "En beskrivelse av integrasjonen."
+          }
+        },
+        "description" : "En forespørsel om å oppdatere en eksisterende integrasjon."
+      },
       "Passord" : {
         "required" : [ "passord" ],
         "type" : "object",
@@ -1448,26 +1468,6 @@
           }
         },
         "description" : "En forespørsel om å opprette en ny integrasjon."
-      },
-      "IntegrasjonUpdateRequest" : {
-        "type" : "object",
-        "properties" : {
-          "autorisertOrgnr" : {
-            "pattern" : "^[0-9]{9}$",
-            "type" : "string",
-            "description" : "Organisasjonsnummeret som ligger i virksomhetsserfikatet som skal brukes til å autorisere applikasjonen som skal bruke integrasjonen."
-          },
-          "navn" : {
-            "pattern" : "^[A-Za-zæøåÆØÅ0-9_.,/\\-_ ]+$",
-            "type" : "string",
-            "description" : "Et kort navn for integrasjonen."
-          },
-          "beskrivelse" : {
-            "type" : "string",
-            "description" : "En beskrivelse av integrasjonen."
-          }
-        },
-        "description" : "En forespørsel om å oppdatere en eksisterende integrasjon."
       },
       "Organisasjon" : {
         "required" : [ "intern", "navn", "type", "uuid" ],
@@ -1530,6 +1530,29 @@
           }
         },
         "description" : "En organisasjon."
+      },
+      "OrganisasjonGetRequest" : {
+        "type" : "object",
+        "properties" : {
+          "ids" : {
+            "type" : "array",
+            "description" : "Liste av id-er",
+            "items" : {
+              "type" : "string",
+              "description" : "Liste av id-er",
+              "format" : "uuid"
+            }
+          },
+          "kommunenr" : {
+            "type" : "array",
+            "description" : "Liste av kommunenr",
+            "items" : {
+              "type" : "string",
+              "description" : "Liste av kommunenr"
+            }
+          }
+        },
+        "description" : "En forespørsel om å hente organisasjoner"
       },
       "FakturaOversiktAdresseModel" : {
         "type" : "object",
@@ -1817,29 +1840,6 @@
           }
         },
         "description" : "Inneholder fakturainformasjon for en organisasjon."
-      },
-      "OrganisasjonGetRequest" : {
-        "type" : "object",
-        "properties" : {
-          "ids" : {
-            "type" : "array",
-            "description" : "Liste av id-er",
-            "items" : {
-              "type" : "string",
-              "description" : "Liste av id-er",
-              "format" : "uuid"
-            }
-          },
-          "kommunenr" : {
-            "type" : "array",
-            "description" : "Liste av kommunenr",
-            "items" : {
-              "type" : "string",
-              "description" : "Liste av kommunenr"
-            }
-          }
-        },
-        "description" : "En forespørsel om å hente organisasjoner"
       },
       "FakturaUpdateRequest" : {
         "required" : [ "juridiskNavn", "navn", "orgnr", "postnummer", "poststed", "referanse" ],
@@ -2230,31 +2230,6 @@
         },
         "description" : "Et map med alle privilegier for alle tjenestetyper"
       },
-      "Tjeneste" : {
-        "required" : [ "kode", "navn" ],
-        "type" : "object",
-        "properties" : {
-          "kode" : {
-            "pattern" : "^[0-9A-Z_.]+$",
-            "type" : "string",
-            "description" : "En unik kode for tjenesten."
-          },
-          "navn" : {
-            "pattern" : "^[A-Za-zæøåÆØÅ0-9_.,/\\-_ ]+$",
-            "type" : "string",
-            "description" : "Tjenestens navn."
-          },
-          "beskrivelse" : {
-            "type" : "string",
-            "description" : "En utfyllende beskrivelse av tjenesten."
-          },
-          "lesmer" : {
-            "type" : "string",
-            "description" : "Les mer lenke"
-          }
-        },
-        "description" : "En tjeneste."
-      },
       "OrganisasjonMedTjenesterModel" : {
         "type" : "object",
         "properties" : {
@@ -2353,10 +2328,10 @@
           "distinct" : {
             "type" : "boolean"
           },
-          "traversableAgain" : {
+          "singleValued" : {
             "type" : "boolean"
           },
-          "singleValued" : {
+          "traversableAgain" : {
             "type" : "boolean"
           },
           "sequential" : {
@@ -2388,10 +2363,10 @@
           "distinct" : {
             "type" : "boolean"
           },
-          "traversableAgain" : {
+          "singleValued" : {
             "type" : "boolean"
           },
-          "singleValued" : {
+          "traversableAgain" : {
             "type" : "boolean"
           },
           "sequential" : {
@@ -2416,6 +2391,31 @@
             "type" : "boolean"
           }
         }
+      },
+      "Tjeneste" : {
+        "required" : [ "kode", "navn" ],
+        "type" : "object",
+        "properties" : {
+          "kode" : {
+            "pattern" : "^[0-9A-Z_.]+$",
+            "type" : "string",
+            "description" : "En unik kode for tjenesten."
+          },
+          "navn" : {
+            "pattern" : "^[A-Za-zæøåÆØÅ0-9_.,/\\-_ ]+$",
+            "type" : "string",
+            "description" : "Tjenestens navn."
+          },
+          "beskrivelse" : {
+            "type" : "string",
+            "description" : "En utfyllende beskrivelse av tjenesten."
+          },
+          "lesmer" : {
+            "type" : "string",
+            "description" : "Les mer lenke"
+          }
+        },
+        "description" : "En tjeneste."
       },
       "TjenesteList" : {
         "type" : "object",
