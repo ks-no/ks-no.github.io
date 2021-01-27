@@ -54,6 +54,52 @@
       }
     },
     "/folkeregister/api/v1/uttrekk/{fiksOrgId}" : {
+      "get" : {
+        "tags" : [ "uttrekk" ],
+        "description" : "Oppretter uttrekk for en organisasjon",
+        "operationId" : "listUttrekk",
+        "parameters" : [ {
+          "name" : "fiksOrgId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        }, {
+          "name" : "status",
+          "in" : "query",
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "enum" : [ "OPPRETTET", "HOS_SKATT", "FERDIG_SKATT", "FERDIG", "FEILET" ]
+            }
+          }
+        } ],
+        "responses" : {
+          "201" : {
+            "description" : "OK",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/UttrekkListResponse"
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Ikke tilgang",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      },
       "post" : {
         "tags" : [ "uttrekk" ],
         "description" : "Oppretter uttrekk for en organisasjon",
@@ -78,12 +124,12 @@
           "required" : true
         },
         "responses" : {
-          "201" : {
+          "200" : {
             "description" : "OK",
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/UttrekkOpprettet"
+                  "$ref" : "#/components/schemas/UttrekkFerdig"
                 }
               }
             }
@@ -245,11 +291,81 @@
           }
         }
       },
-      "UttrekkOpprettet" : {
-        "required" : [ "id" ],
+      "FerdigUttrekk" : {
+        "required" : [ "autorisasjonRolleId", "dokumentlagerId", "id", "rolleId" ],
         "type" : "object",
         "properties" : {
           "id" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "rolleId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "autorisasjonRolleId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "dokumentlagerId" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        }
+      },
+      "UttrekkListResponse" : {
+        "required" : [ "ferdige", "uttrekkIGang" ],
+        "type" : "object",
+        "properties" : {
+          "ferdige" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/FerdigUttrekk"
+            }
+          },
+          "uttrekkIGang" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/UttrekkStatusResponse"
+            }
+          }
+        }
+      },
+      "UttrekkStatusResponse" : {
+        "required" : [ "fiksOrg", "id", "innbyggereHentet", "rolleId", "uttrekkStatus" ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "fiksOrg" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "rolleId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "uttrekkStatus" : {
+            "type" : "string",
+            "enum" : [ "OPPRETTET", "HOS_SKATT", "FERDIG_SKATT", "FERDIG", "FEILET" ]
+          },
+          "innbyggereHentet" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        }
+      },
+      "UttrekkFerdig" : {
+        "required" : [ "dokumentlagerId", "id" ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "dokumentlagerId" : {
             "type" : "string",
             "format" : "uuid"
           }
@@ -307,14 +423,12 @@
           "statsborgerskap" : {
             "maxLength" : 3,
             "minLength" : 3,
-            "type" : "string"
+            "type" : "string",
+            "description" : "Må være en gyldig ISO 3166-1 alpha-3 landkode"
           },
           "sivilstand" : {
-            "type" : "array",
-            "items" : {
-              "type" : "string",
-              "enum" : [ "UGIFT", "GIFT", "ENKE_ELLER_ENKEMANN", "SKILT", "SEPARERT", "PARTNER", "SEPARERT_PARTNER", "SKILT_PARTNER", "GJENLEVENDE_PARTNER" ]
-            }
+            "type" : "string",
+            "enum" : [ "UGIFT", "GIFT", "ENKE_ELLER_ENKEMANN", "SKILT", "SEPARERT", "PARTNER", "SEPARERT_PARTNER", "SKILT_PARTNER", "GJENLEVENDE_PARTNER" ]
           },
           "varsling" : {
             "$ref" : "#/components/schemas/Varsling"
@@ -329,28 +443,6 @@
             "items" : {
               "type" : "string"
             }
-          }
-        }
-      },
-      "UttrekkStatusResponse" : {
-        "required" : [ "fiksOrg", "id", "innbyggereHentet", "uttrekkStatus" ],
-        "type" : "object",
-        "properties" : {
-          "id" : {
-            "type" : "string",
-            "format" : "uuid"
-          },
-          "fiksOrg" : {
-            "type" : "string",
-            "format" : "uuid"
-          },
-          "uttrekkStatus" : {
-            "type" : "string",
-            "enum" : [ "OPPRETTET", "HOS_SKATT", "FERDIG_SKATT", "FERDIG" ]
-          },
-          "innbyggereHentet" : {
-            "type" : "integer",
-            "format" : "int64"
           }
         }
       }
