@@ -13,55 +13,6 @@
     "url" : "https://api.fiks.test.ks.no/"
   } ],
   "paths" : {
-    "/innsyn-sok/api/v1/oppslag/forelder" : {
-      "get" : {
-        "tags" : [ "Oppslag" ],
-        "summary" : "Hent en forelder-melding og dennes barn-meldinger",
-        "operationId" : "lookupForelder",
-        "parameters" : [ {
-          "name" : "forelderId",
-          "in" : "query",
-          "description" : "Id for forelder-dokumentet",
-          "required" : true,
-          "schema" : {
-            "type" : "string"
-          }
-        }, {
-          "name" : "forelderType",
-          "in" : "query",
-          "description" : "Typen til forelder-dokumentet",
-          "required" : true,
-          "schema" : {
-            "type" : "string",
-            "enum" : [ "faktura", "saksmappe", "journalpost", "byggesak", "innsendtskjema", "skjemakladd", "matrikkelenhet", "kommunaltjeneste", "forsendelse" ]
-          }
-        }, {
-          "name" : "akseptertMeldingVersjon",
-          "in" : "query",
-          "description" : "Akseptert melding-versjon. Kan settes flere ganger. Innsyn vil nedgradere treff på høyere versjon til den høyeste av de aksepterte versjonen (om det er oppgitt flere på samme dokumenttype)",
-          "schema" : {
-            "uniqueItems" : true,
-            "type" : "array",
-            "items" : {
-              "type" : "string",
-              "enum" : [ "fakturaV1", "saksmappeV1", "journalpostV1", "forsendelseV1", "forsendelseV2", "byggesakV1", "matrikkelenhetV1", "innsendtskjemaV1", "skjemakladdV1", "kommunaltjenesteV1" ]
-            }
-          }
-        } ],
-        "responses" : {
-          "default" : {
-            "description" : "default response",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/ForelderOppslagResultat"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
     "/innsyn-sok/api/v1/oppslag/dokument" : {
       "get" : {
         "tags" : [ "Oppslag" ],
@@ -104,6 +55,55 @@
               "application/json" : {
                 "schema" : {
                   "$ref" : "#/components/schemas/OppslagResultat"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/innsyn-sok/api/v1/oppslag/forelder" : {
+      "get" : {
+        "tags" : [ "Oppslag" ],
+        "summary" : "Hent en forelder-melding og dennes barn-meldinger",
+        "operationId" : "lookupForelder",
+        "parameters" : [ {
+          "name" : "forelderId",
+          "in" : "query",
+          "description" : "Id for forelder-dokumentet",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "forelderType",
+          "in" : "query",
+          "description" : "Typen til forelder-dokumentet",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "enum" : [ "faktura", "saksmappe", "journalpost", "byggesak", "innsendtskjema", "skjemakladd", "matrikkelenhet", "kommunaltjeneste", "forsendelse" ]
+          }
+        }, {
+          "name" : "akseptertMeldingVersjon",
+          "in" : "query",
+          "description" : "Akseptert melding-versjon. Kan settes flere ganger. Innsyn vil nedgradere treff på høyere versjon til den høyeste av de aksepterte versjonen (om det er oppgitt flere på samme dokumenttype)",
+          "schema" : {
+            "uniqueItems" : true,
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "enum" : [ "fakturaV1", "saksmappeV1", "journalpostV1", "forsendelseV1", "forsendelseV2", "byggesakV1", "matrikkelenhetV1", "innsendtskjemaV1", "skjemakladdV1", "kommunaltjenesteV1" ]
+            }
+          }
+        } ],
+        "responses" : {
+          "default" : {
+            "description" : "default response",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ForelderOppslagResultat"
                 }
               }
             }
@@ -348,28 +348,6 @@
           }
         }
       },
-      "ForelderOppslagResultat" : {
-        "type" : "object",
-        "properties" : {
-          "forelder" : {
-            "$ref" : "#/components/schemas/MeldingV1OppslagMetadata"
-          },
-          "ingenForelderKode" : {
-            "type" : "string",
-            "enum" : [ "IKKE_EKSISTERENDE_ELLER_IKKE_AUTORISERT", "INNLOGGINGSNIVA_UTILSTREKKELIG" ]
-          },
-          "barn" : {
-            "type" : "array",
-            "items" : {
-              "$ref" : "#/components/schemas/MeldingV1OppslagMetadata"
-            }
-          },
-          "barnPaHoyereInnloggingniva" : {
-            "type" : "integer",
-            "format" : "int32"
-          }
-        }
-      },
       "ForsendelseV1Dokument" : {
         "type" : "object",
         "properties" : {
@@ -549,6 +527,19 @@
         },
         "discriminator" : {
           "propertyName" : "versjon"
+        }
+      },
+      "OppslagResultat" : {
+        "type" : "object",
+        "properties" : {
+          "hit" : {
+            "$ref" : "#/components/schemas/MeldingV1OppslagMetadata"
+          },
+          "lookupErrorCode" : {
+            "type" : "string",
+            "description" : "Om treff ikke kunne vises indikerer koden hvorfor. ",
+            "enum" : [ "IKKE_EKSISTERENDE_ELLER_IKKE_AUTORISERT", "INNLOGGINGSNIVA_UTILSTREKKELIG" ]
+          }
         }
       },
       "SkjemaFilV1" : {
@@ -1001,16 +992,25 @@
           }
         } ]
       },
-      "OppslagResultat" : {
+      "ForelderOppslagResultat" : {
         "type" : "object",
         "properties" : {
-          "hit" : {
+          "forelder" : {
             "$ref" : "#/components/schemas/MeldingV1OppslagMetadata"
           },
-          "lookupErrorCode" : {
+          "ingenForelderKode" : {
             "type" : "string",
-            "description" : "Om treff ikke kunne vises indikerer koden hvorfor. ",
             "enum" : [ "IKKE_EKSISTERENDE_ELLER_IKKE_AUTORISERT", "INNLOGGINGSNIVA_UTILSTREKKELIG" ]
+          },
+          "barn" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/MeldingV1OppslagMetadata"
+            }
+          },
+          "barnPaHoyereInnloggingniva" : {
+            "type" : "integer",
+            "format" : "int32"
           }
         }
       },
