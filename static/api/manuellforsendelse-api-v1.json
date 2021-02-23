@@ -18,8 +18,47 @@
   "tags" : [ {
     "name" : "manuellforsendelse",
     "description" : "API for bruk av manuellforsendelse"
+  }, {
+    "name" : "manuellforsendelse - mottaker",
+    "description" : "API for bruk av manuellforsendelse - mottaker"
   } ],
   "paths" : {
+    "/fiks/api/v1/manuellForsendelse/forsendelsefil" : {
+      "get" : {
+        "tags" : [ "ManuellForsendelse" ],
+        "description" : "Henter ut en liste med forsendelseFiler koblet mot autorisert bruker",
+        "operationId" : "hentForsendelseFiler",
+        "responses" : {
+          "200" : {
+            "description" : "Hente forsendelseFil kobla mot autentisert bruker"
+          }
+        }
+      }
+    },
+    "/fiks/api/v1/manuellForsendelse/forsendelsefil/importer" : {
+      "post" : {
+        "tags" : [ "ManuellForsendelse" ],
+        "description" : "Lagrer forsendelseFil som autorisert bruker har lagt til",
+        "operationId" : "importerForsendelseFil",
+        "requestBody" : {
+          "content" : {
+            "*/*" : {
+              "schema" : {
+                "type" : "array",
+                "items" : {
+                  "$ref" : "#/components/schemas/ForsendelseFilDB"
+                }
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Lagre mottakere"
+          }
+        }
+      }
+    },
     "/fiks/api/v1/manuellForsendelse/{manuellForsendelseId}" : {
       "get" : {
         "tags" : [ "ManuellForsendelse" ],
@@ -44,6 +83,16 @@
                 }
               }
             }
+          },
+          "404" : {
+            "description" : "Ingen manuell forsendelse",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
           }
         }
       },
@@ -64,7 +113,7 @@
           "content" : {
             "application/json" : {
               "schema" : {
-                "$ref" : "#/components/schemas/ManuellForsendelse"
+                "$ref" : "#/components/schemas/ManuellForsendelseRequest"
               }
             }
           }
@@ -224,10 +273,136 @@
           }
         }
       }
+    },
+    "/fiks/api/v1/manuellForsendelse/mottaker/{manuellForsendelseId}" : {
+      "get" : {
+        "tags" : [ "ManuellForsendelse" ],
+        "description" : "Henter ut en liste med mottakere koblet mot forsendelse",
+        "operationId" : "finnMottakere",
+        "parameters" : [ {
+          "name" : "manuellForsendelseId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Mottakere for forsendelse",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/MottakerObject"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/fiks/api/v1/manuellForsendelse/mottaker/status/{mottakerid}" : {
+      "get" : {
+        "tags" : [ "ManuellForsendelse" ],
+        "description" : "Hente status på forsendelse knytta mot mottaker",
+        "operationId" : "hentStatus",
+        "parameters" : [ {
+          "name" : "mottakerid",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Hente status"
+          }
+        }
+      }
+    },
+    "/fiks/api/v1/manuellForsendelse/mottaker" : {
+      "post" : {
+        "tags" : [ "ManuellForsendelse" ],
+        "description" : "Opprett mottakere som autorisert bruker har lagt til",
+        "operationId" : "opprettMottaker",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/MottakerObject"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "201" : {
+            "description" : "Opprett mottaker",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/MottakerId"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/fiks/api/v1/manuellForsendelse/mottaker/{mottakerId}" : {
+      "delete" : {
+        "tags" : [ "ManuellForsendelse" ],
+        "description" : "Slette mottakere som autorisert bruker har lagt til",
+        "operationId" : "sletteMottaker",
+        "parameters" : [ {
+          "name" : "mottakerId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Slette mottaker"
+          }
+        }
+      }
     }
   },
   "components" : {
     "schemas" : {
+      "ForsendelseFilDB" : {
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string"
+          },
+          "filnavn" : {
+            "type" : "string"
+          },
+          "forsendelseId" : {
+            "type" : "string"
+          },
+          "storrelse" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "contentType" : {
+            "type" : "string"
+          },
+          "dokumentLagerId" : {
+            "type" : "string"
+          },
+          "index" : {
+            "type" : "integer",
+            "format" : "int32"
+          }
+        }
+      },
       "ManuellForsendelseRespons" : {
         "required" : [ "avsender", "id", "tittel" ],
         "type" : "object",
@@ -248,7 +423,42 @@
           }
         }
       },
-      "ManuellForsendelse" : {
+      "ErrorMessage" : {
+        "type" : "object",
+        "properties" : {
+          "timestamp" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "status" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "error" : {
+            "type" : "string"
+          },
+          "errorId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "path" : {
+            "type" : "string"
+          },
+          "originalPath" : {
+            "type" : "string"
+          },
+          "message" : {
+            "type" : "string"
+          },
+          "errorCode" : {
+            "type" : "string"
+          },
+          "errorJson" : {
+            "type" : "string"
+          }
+        }
+      },
+      "ManuellForsendelseRequest" : {
         "required" : [ "tittel" ],
         "type" : "object",
         "properties" : {
@@ -282,7 +492,7 @@
             "type" : "string",
             "description" : "postnummer"
           },
-          "postssted" : {
+          "poststed" : {
             "type" : "string",
             "description" : "poststed"
           },
@@ -339,7 +549,7 @@
             "type" : "string",
             "description" : "postnummer"
           },
-          "postssted" : {
+          "poststed" : {
             "type" : "string",
             "description" : "poststed"
           },
@@ -380,6 +590,65 @@
           }
         },
         "description" : "En forespørsel for å opprette en ny ID for manuell forsendelse"
+      },
+      "MottakerObject" : {
+        "required" : [ "manuellForsendelseFilIds", "manuellForsendelseId", "mottakertype", "navn", "tittel" ],
+        "type" : "object",
+        "properties" : {
+          "navn" : {
+            "type" : "string",
+            "description" : "Mottaker navn"
+          },
+          "privatAdresse" : {
+            "$ref" : "#/components/schemas/PrivatAdresse"
+          },
+          "orgAdresse" : {
+            "$ref" : "#/components/schemas/OrganisasjonsAdresse"
+          },
+          "tittel" : {
+            "type" : "string",
+            "description" : "Tittel på forsendelsen"
+          },
+          "mottakertype" : {
+            "type" : "string",
+            "description" : "MottakerType",
+            "enum" : [ "PRIVAT", "ORGANISASJON" ]
+          },
+          "manuellForsendelseFilIds" : {
+            "type" : "array",
+            "description" : "Id'er til filer",
+            "items" : {
+              "type" : "string",
+              "description" : "Id'er til filer"
+            }
+          },
+          "manuellForsendelseId" : {
+            "type" : "string",
+            "description" : "Id til den manuelle forsendelsen"
+          },
+          "id" : {
+            "type" : "string",
+            "description" : "MottakerId"
+          },
+          "mottakerStatus" : {
+            "type" : "string",
+            "description" : "Status på manuell forsendelse knyttet til mottaker",
+            "enum" : [ "STARTET", "UNDER_ARBEID", "FERDIG" ]
+          },
+          "feilmelding" : {
+            "type" : "string",
+            "description" : "Feilmelding"
+          }
+        }
+      },
+      "MottakerId" : {
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string",
+            "description" : "id"
+          }
+        }
       }
     }
   }
