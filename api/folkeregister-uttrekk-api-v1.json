@@ -259,6 +259,100 @@
           }
         }
       }
+    },
+    "/folkeregister/api/v1/uttrekk/events/{fiksOrgId}" : {
+      "get" : {
+        "tags" : [ "uttrekk" ],
+        "description" : "Brukes til å lese alle hendelser for alle uttrekk man har tilgang til",
+        "operationId" : "lesAlleEventer",
+        "parameters" : [ {
+          "name" : "fiksOrgId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "403" : {
+            "description" : "Ikke tilgang",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "200" : {
+            "description" : "Ok",
+            "content" : {
+              "text/event-stream" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/UttrekkHendelse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/folkeregister/api/v1/uttrekk/events/{fiksOrgId}/{rolleId}" : {
+      "get" : {
+        "tags" : [ "uttrekk" ],
+        "description" : "Brukes til å lese alle hendelser for alle uttrekk som gjøres for en gitt rolle",
+        "operationId" : "lesAlleEventerForRolle",
+        "parameters" : [ {
+          "name" : "fiksOrgId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        }, {
+          "name" : "rolleId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "400" : {
+            "description" : "Feil input",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Ikke tilgang",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "200" : {
+            "description" : "Ok",
+            "content" : {
+              "text/event-stream" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/UttrekkHendelse"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components" : {
@@ -589,6 +683,86 @@
               "type" : "string"
             }
           }
+        }
+      },
+      "HendelseUttrekkFeilet" : {
+        "required" : [ "beskrivelse", "type" ],
+        "type" : "object",
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/UttrekkHendelse"
+        }, {
+          "type" : "object",
+          "properties" : {
+            "beskrivelse" : {
+              "type" : "string"
+            }
+          }
+        } ]
+      },
+      "HendelseUttrekkFerdig" : {
+        "required" : [ "dokumentlagerId", "ferdig", "innbyggereHentet", "type" ],
+        "type" : "object",
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/UttrekkHendelse"
+        }, {
+          "type" : "object",
+          "properties" : {
+            "ferdig" : {
+              "type" : "string",
+              "format" : "date-time"
+            },
+            "dokumentlagerId" : {
+              "type" : "string",
+              "format" : "uuid"
+            },
+            "innbyggereHentet" : {
+              "type" : "integer",
+              "format" : "int64"
+            }
+          }
+        } ]
+      },
+      "HendelseUttrekkStartet" : {
+        "required" : [ "opprettet", "type" ],
+        "type" : "object",
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/UttrekkHendelse"
+        }, {
+          "type" : "object",
+          "properties" : {
+            "opprettet" : {
+              "type" : "string",
+              "format" : "date-time"
+            }
+          }
+        } ]
+      },
+      "UttrekkHendelse" : {
+        "required" : [ "fiksOrg", "id", "rolleId", "type", "uttrekkId" ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "fiksOrg" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "rolleId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "uttrekkId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "type" : {
+            "type" : "string"
+          }
+        },
+        "discriminator" : {
+          "propertyName" : "type"
         }
       }
     }
