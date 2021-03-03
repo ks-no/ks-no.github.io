@@ -20,27 +20,65 @@
     "description" : "API for å hente kommuner og bydeler i bekymringsmelding"
   } ],
   "paths" : {
-    "/bekymringsmelding/api/v1/kommuner" : {
+    "/bekymringsmelding/api/v1/kommuner/{kommunenummer}/bydeler/{bydelsnummer}" : {
       "get" : {
         "tags" : [ "bekymringsmeldingKommune" ],
-        "description" : "Henter alle kommuner og tilhørende bydeler som har aktivert bekymringsmelding.",
-        "operationId" : "getKommuner",
+        "description" : "Henter en bydel for en kommune som har aktivert bekymringsmelding.",
+        "operationId" : "getBydel",
         "parameters" : [ {
-          "name" : "sprakKode",
-          "in" : "query",
+          "name" : "kommunenummer",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "bydelsnummer",
+          "in" : "path",
+          "required" : true,
           "schema" : {
             "type" : "string"
           }
         } ],
         "responses" : {
           "200" : {
-            "description" : "Returnerer alle kommuner og tilhørende bydeler som har aktivert bekymringsmelding.",
+            "description" : "Returnerer en bydel for en kommune som har aktivert bekymringsmelding.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/BydelEnkel"
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Ingen bydeler som har aktivert bekymringsmelding ble funnet."
+          }
+        }
+      }
+    },
+    "/bekymringsmelding/api/v1/kommuner/{kommunenummer}/bydeler" : {
+      "get" : {
+        "tags" : [ "bekymringsmeldingKommune" ],
+        "description" : "Henter bydeler for en kommune som har aktivert bekymringsmelding.",
+        "operationId" : "getBydeler",
+        "parameters" : [ {
+          "name" : "kommunenummer",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Returnerer alle bydeler for en kommune som har aktivert bekymringsmelding.",
             "content" : {
               "application/json" : {
                 "schema" : {
                   "type" : "array",
                   "items" : {
-                    "$ref" : "#/components/schemas/KommuneEnkel"
+                    "$ref" : "#/components/schemas/BydelEnkel"
                   }
                 }
               }
@@ -85,28 +123,27 @@
         }
       }
     },
-    "/bekymringsmelding/api/v1/kommuner/{kommunenummer}/bydeler" : {
+    "/bekymringsmelding/api/v1/kommuner" : {
       "get" : {
         "tags" : [ "bekymringsmeldingKommune" ],
-        "description" : "Henter bydeler for en kommune som har aktivert bekymringsmelding.",
-        "operationId" : "getBydeler",
+        "description" : "Henter alle kommuner og tilhørende bydeler som har aktivert bekymringsmelding.",
+        "operationId" : "getKommuner",
         "parameters" : [ {
-          "name" : "kommunenummer",
-          "in" : "path",
-          "required" : true,
+          "name" : "sprakKode",
+          "in" : "query",
           "schema" : {
             "type" : "string"
           }
         } ],
         "responses" : {
           "200" : {
-            "description" : "Returnerer alle bydeler for en kommune som har aktivert bekymringsmelding.",
+            "description" : "Returnerer alle kommuner og tilhørende bydeler som har aktivert bekymringsmelding.",
             "content" : {
               "application/json" : {
                 "schema" : {
                   "type" : "array",
                   "items" : {
-                    "$ref" : "#/components/schemas/BydelEnkel"
+                    "$ref" : "#/components/schemas/KommuneEnkel"
                   }
                 }
               }
@@ -114,58 +151,10 @@
           }
         }
       }
-    },
-    "/bekymringsmelding/api/v1/kommuner/{kommunenummer}/bydeler/{bydelsnummer}" : {
-      "get" : {
-        "tags" : [ "bekymringsmeldingKommune" ],
-        "description" : "Henter en bydel for en kommune som har aktivert bekymringsmelding.",
-        "operationId" : "getBydel",
-        "parameters" : [ {
-          "name" : "kommunenummer",
-          "in" : "path",
-          "required" : true,
-          "schema" : {
-            "type" : "string"
-          }
-        }, {
-          "name" : "bydelsnummer",
-          "in" : "path",
-          "required" : true,
-          "schema" : {
-            "type" : "string"
-          }
-        } ],
-        "responses" : {
-          "200" : {
-            "description" : "Returnerer en bydel for en kommune som har aktivert bekymringsmelding.",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/BydelEnkel"
-                }
-              }
-            }
-          },
-          "404" : {
-            "description" : "Ingen bydeler som har aktivert bekymringsmelding ble funnet."
-          }
-        }
-      }
     }
   },
   "components" : {
     "schemas" : {
-      "KommuneEnkel" : {
-        "type" : "object",
-        "properties" : {
-          "kommunenummer" : {
-            "type" : "string"
-          },
-          "kommunenavn" : {
-            "type" : "string"
-          }
-        }
-      },
       "BydelEnkel" : {
         "type" : "object",
         "properties" : {
@@ -180,7 +169,8 @@
             "type" : "boolean",
             "description" : "Standard mottaker til kommunen hvor bekymringsmeldinger blir levert hvis bydel ikke er valgt"
           }
-        }
+        },
+        "description" : "Liste av bydeler som tilhører en kommune."
       },
       "Kommune" : {
         "type" : "object",
@@ -198,6 +188,17 @@
             "items" : {
               "$ref" : "#/components/schemas/BydelEnkel"
             }
+          }
+        }
+      },
+      "KommuneEnkel" : {
+        "type" : "object",
+        "properties" : {
+          "kommunenummer" : {
+            "type" : "string"
+          },
+          "kommunenavn" : {
+            "type" : "string"
           }
         }
       }
