@@ -20,52 +20,41 @@
     "description" : "API for Autorisasjon Query"
   } ],
   "paths" : {
-    "/autorisasjon-query/api/v1/autorisasjon/ressurser/{ressursId}/tilganger" : {
+    "/autorisasjon-query/api/v1/autorisasjon/isAutorisert" : {
       "get" : {
         "tags" : [ "autorisasjonQuery" ],
-        "description" : "Henter tilganger gitt på ressursen. Merk at dette ikke inkluderer arvede tilganger eller type-tilganger",
-        "operationId" : "ressursTilgangerLookup",
+        "description" : "Returnerer \"true\" om aktøren er tildelt privilegiet på ressursen, \"false\" om dette ikke er tilfellet",
+        "operationId" : "isAutorisert",
         "parameters" : [ {
-          "name" : "ressursId",
-          "in" : "path",
-          "required" : true,
-          "schema" : {
-            "type" : "string",
-            "format" : "uuid"
-          }
-        }, {
           "name" : "aktor",
           "in" : "query",
           "schema" : {
             "type" : "string"
           }
+        }, {
+          "name" : "privilegium",
+          "in" : "query",
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "ressurs",
+          "in" : "query",
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
         } ],
         "responses" : {
-          "200" : {
-            "description" : "Tilganger for ressursen",
+          "default" : {
+            "description" : "default response",
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "type" : "array",
-                  "items" : {
-                    "$ref" : "#/components/schemas/Tilgang"
-                  }
+                  "type" : "boolean"
                 }
               }
             }
-          },
-          "400" : {
-            "description" : "Feil i inputdata",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/ErrorMessage"
-                }
-              }
-            }
-          },
-          "404" : {
-            "description" : "Ressursen finnes ikke"
           }
         }
       }
@@ -173,6 +162,56 @@
         }
       }
     },
+    "/autorisasjon-query/api/v1/autorisasjon/ressurser/{ressursId}/tilganger" : {
+      "get" : {
+        "tags" : [ "autorisasjonQuery" ],
+        "description" : "Henter tilganger gitt på ressursen. Merk at dette ikke inkluderer arvede tilganger eller type-tilganger",
+        "operationId" : "ressursTilgangerLookup",
+        "parameters" : [ {
+          "name" : "ressursId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        }, {
+          "name" : "aktor",
+          "in" : "query",
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Tilganger for ressursen",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/Tilgang"
+                  }
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Feil i inputdata",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Ressursen finnes ikke"
+          }
+        }
+      }
+    },
     "/autorisasjon-query/api/v1/autorisasjon/ressurser/oversikt" : {
       "post" : {
         "tags" : [ "autorisasjonQuery" ],
@@ -214,45 +253,6 @@
               "application/json" : {
                 "schema" : {
                   "$ref" : "#/components/schemas/ErrorMessage"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/autorisasjon-query/api/v1/autorisasjon/isAutorisert" : {
-      "get" : {
-        "tags" : [ "autorisasjonQuery" ],
-        "description" : "Returnerer \"true\" om aktøren er tildelt privilegiet på ressursen, \"false\" om dette ikke er tilfellet",
-        "operationId" : "isAutorisert",
-        "parameters" : [ {
-          "name" : "aktor",
-          "in" : "query",
-          "schema" : {
-            "type" : "string"
-          }
-        }, {
-          "name" : "privilegium",
-          "in" : "query",
-          "schema" : {
-            "type" : "string"
-          }
-        }, {
-          "name" : "ressurs",
-          "in" : "query",
-          "schema" : {
-            "type" : "string",
-            "format" : "uuid"
-          }
-        } ],
-        "responses" : {
-          "default" : {
-            "description" : "default response",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "type" : "boolean"
                 }
               }
             }
@@ -316,56 +316,6 @@
   },
   "components" : {
     "schemas" : {
-      "Tilgang" : {
-        "required" : [ "aktor", "privilegium" ],
-        "type" : "object",
-        "properties" : {
-          "privilegium" : {
-            "type" : "string",
-            "description" : "Aktøren (personen eller integrasjonen) som er autorisert"
-          },
-          "aktor" : {
-            "type" : "string",
-            "description" : "Privilegiet som er tildelt aktøren"
-          }
-        },
-        "description" : "Tilgangene som er tildelt"
-      },
-      "ErrorMessage" : {
-        "type" : "object",
-        "properties" : {
-          "timestamp" : {
-            "type" : "integer",
-            "format" : "int64"
-          },
-          "status" : {
-            "type" : "integer",
-            "format" : "int32"
-          },
-          "error" : {
-            "type" : "string"
-          },
-          "errorId" : {
-            "type" : "string",
-            "format" : "uuid"
-          },
-          "path" : {
-            "type" : "string"
-          },
-          "originalPath" : {
-            "type" : "string"
-          },
-          "message" : {
-            "type" : "string"
-          },
-          "errorCode" : {
-            "type" : "string"
-          },
-          "errorJson" : {
-            "type" : "string"
-          }
-        }
-      },
       "Autorisasjon" : {
         "required" : [ "aktor", "path", "privilegium", "privilegiumNiva", "ressurs", "ressursNavn", "ressursNiva", "type" ],
         "type" : "object",
@@ -455,6 +405,56 @@
             }
           }
         }
+      },
+      "ErrorMessage" : {
+        "type" : "object",
+        "properties" : {
+          "timestamp" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "status" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "error" : {
+            "type" : "string"
+          },
+          "errorId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "path" : {
+            "type" : "string"
+          },
+          "originalPath" : {
+            "type" : "string"
+          },
+          "message" : {
+            "type" : "string"
+          },
+          "errorCode" : {
+            "type" : "string"
+          },
+          "errorJson" : {
+            "type" : "string"
+          }
+        }
+      },
+      "Tilgang" : {
+        "required" : [ "aktor", "privilegium" ],
+        "type" : "object",
+        "properties" : {
+          "privilegium" : {
+            "type" : "string",
+            "description" : "Aktøren (personen eller integrasjonen) som er autorisert"
+          },
+          "aktor" : {
+            "type" : "string",
+            "description" : "Privilegiet som er tildelt aktøren"
+          }
+        },
+        "description" : "Tilgangene som er tildelt"
       },
       "BulkTilgangOppsummeringResponse" : {
         "required" : [ "ressurser", "type" ],
