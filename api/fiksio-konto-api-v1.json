@@ -20,13 +20,115 @@
     "description" : "API for å behandle kontoer i Fiks IO"
   } ],
   "paths" : {
-    "/fiks-io/konto/api/v1/kontoer/{kontoId}" : {
+    "/fiks-io/konto/api/v1/kontoer/{kontoId}/aksepterteAvsendere" : {
       "get" : {
         "tags" : [ "FiksIOKonto" ],
-        "description" : "Henter konto-detaljer",
-        "operationId" : "getKonto",
+        "description" : "Hent aksepterte avsendere for en konto",
+        "operationId" : "aksepterteAvsendere",
         "parameters" : [ {
           "name" : "kontoId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Aksepterte avsendere for konto",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/AksepterteAvsendere"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post" : {
+        "tags" : [ "FiksIOKonto" ],
+        "description" : "Legger til en avsender på listen over aksepterte avsendere for denne kontoen",
+        "operationId" : "leggTilAkseptertAvsender",
+        "parameters" : [ {
+          "name" : "kontoId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/AvsenderId"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "204" : {
+            "description" : "Avsender lagt til"
+          }
+        }
+      }
+    },
+    "/fiks-io/konto/api/v1/kontoer/{kontoId}/aktiver" : {
+      "put" : {
+        "tags" : [ "FiksIOKonto" ],
+        "description" : "Aktiver kontoen",
+        "operationId" : "aktiver",
+        "parameters" : [ {
+          "name" : "kontoId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Kontoen ble aktivert",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Konto"
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Ukjent konto",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/fiks-io/konto/api/v1/kontoer/{kontoId}/adresser/{adresseId}/aktiver" : {
+      "put" : {
+        "tags" : [ "FiksIOKonto" ],
+        "description" : "Aktiverer adressen, og gjør den tilgjengelig for oppslag i katalogen. For å kunne aktivere en adresse må den være gyldig (ha minst en identifikator, meldingsprotokoll og sikkerhetsnivå), og ikke ha konflikter med noen andre adresser i SvarInn katalogen",
+        "operationId" : "aktiverAdresse",
+        "parameters" : [ {
+          "name" : "kontoId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        }, {
+          "name" : "adresseId",
           "in" : "path",
           "required" : true,
           "schema" : {
@@ -40,19 +142,88 @@
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/Konto"
+                  "$ref" : "#/components/schemas/Adresse"
                 }
               }
             }
           }
         }
-      },
-      "delete" : {
+      }
+    },
+    "/fiks-io/konto/api/v1/kontoer/{kontoId}/aksepterteAvsendere/aktiver" : {
+      "put" : {
         "tags" : [ "FiksIOKonto" ],
-        "description" : "Slett en eksisterende konto",
-        "operationId" : "slett",
+        "description" : "Aktiver filtrering av aksepterte avsendere for denne kontoen",
+        "operationId" : "aktiverAksepterteAvsendere",
         "parameters" : [ {
           "name" : "kontoId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "204" : {
+            "description" : "Aksepterte avsendere filtrering aktivert"
+          }
+        }
+      }
+    },
+    "/fiks-io/konto/api/v1/kontoer/{kontoId}/deaktiver" : {
+      "put" : {
+        "tags" : [ "FiksIOKonto" ],
+        "description" : "Deaktiver kontoen",
+        "operationId" : "deaktiver",
+        "parameters" : [ {
+          "name" : "kontoId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Kontoen ble deaktivert",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Konto"
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Ukjent konto",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/fiks-io/konto/api/v1/kontoer/{kontoId}/adresser/{adresseId}/deaktiver" : {
+      "put" : {
+        "tags" : [ "FiksIOKonto" ],
+        "description" : "Deaktiverer adressen. En deaktivert adresse er ikke lengre tilgjengelig for oppslag i katalogen",
+        "operationId" : "deaktiverAdresse",
+        "parameters" : [ {
+          "name" : "kontoId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        }, {
+          "name" : "adresseId",
           "in" : "path",
           "required" : true,
           "schema" : {
@@ -64,7 +235,222 @@
           "default" : {
             "description" : "default response",
             "content" : {
-              "application/json" : { }
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Adresse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/fiks-io/konto/api/v1/kontoer/{kontoId}/aksepterteAvsendere/deaktiver" : {
+      "put" : {
+        "tags" : [ "FiksIOKonto" ],
+        "description" : "Deaktiver filtrering av aksepterte avsendere for denne kontoen",
+        "operationId" : "deaktiverAksepterteAvsendere",
+        "parameters" : [ {
+          "name" : "kontoId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "204" : {
+            "description" : "Aksepterte avsendere filtrering deaktivert"
+          }
+        }
+      }
+    },
+    "/fiks-io/konto/api/v1/kontoer/{kontoId}/kontoNavn" : {
+      "put" : {
+        "tags" : [ "FiksIOKonto" ],
+        "description" : "Oppdater kontonavn",
+        "operationId" : "endreKontoNavn",
+        "parameters" : [ {
+          "name" : "kontoId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/KontoNavnSpesifikasjon"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "204" : {
+            "description" : "Kontonavn ble oppdatert"
+          },
+          "404" : {
+            "description" : "Ukjent konto",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/fiks-io/konto/api/v1/kontoer/{kontoId}/adresser/{adresseId}/identifikatorer/fjern" : {
+      "post" : {
+        "tags" : [ "FiksIOKonto" ],
+        "description" : "Fjerner de spesifiserte identifikatorene fra en adresse",
+        "operationId" : "fjernIdentifikator",
+        "parameters" : [ {
+          "name" : "kontoId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        }, {
+          "name" : "adresseId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "minItems" : 1,
+                "uniqueItems" : true,
+                "type" : "array",
+                "items" : {
+                  "$ref" : "#/components/schemas/Identifikator"
+                }
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Fjernet identifikator",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Adresse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/fiks-io/konto/api/v1/kontoer/{kontoId}/adresser/{adresseId}/meldingsprotokoller/fjern" : {
+      "post" : {
+        "tags" : [ "FiksIOKonto" ],
+        "description" : "Fjerner de spesifiserte meldingsprotokollene fra en adresse",
+        "operationId" : "fjernMeldingsprotokoller",
+        "parameters" : [ {
+          "name" : "kontoId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        }, {
+          "name" : "adresseId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "minItems" : 1,
+                "type" : "array",
+                "items" : {
+                  "$ref" : "#/components/schemas/MeldingsprotokollSpesifikasjon"
+                }
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Fjernet protokoll",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Adresse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/fiks-io/konto/api/v1/kontoer/{kontoId}/adresser/{adresseId}/sikkerhetsnivaer/fjern" : {
+      "post" : {
+        "tags" : [ "FiksIOKonto" ],
+        "description" : "Fjerner de spesifiserte sikkerhetsnivåene fra en adresse",
+        "operationId" : "fjernSikkerhetsnivaer",
+        "parameters" : [ {
+          "name" : "kontoId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        }, {
+          "name" : "adresseId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "minItems" : 1,
+                "uniqueItems" : true,
+                "type" : "array",
+                "items" : {
+                  "$ref" : "#/components/schemas/SikkerhetsnivaSpesifikasjon"
+                }
+              }
+            }
+          }
+        },
+        "responses" : {
+          "default" : {
+            "description" : "default response",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Adresse"
+                }
+              }
             }
           }
         }
@@ -137,11 +523,11 @@
         }
       }
     },
-    "/fiks-io/konto/api/v1/kontoer/{kontoId}/aksepterteAvsendere" : {
+    "/fiks-io/konto/api/v1/kontoer/{kontoId}" : {
       "get" : {
         "tags" : [ "FiksIOKonto" ],
-        "description" : "Hent aksepterte avsendere for en konto",
-        "operationId" : "aksepterteAvsendere",
+        "description" : "Henter konto-detaljer",
+        "operationId" : "getKonto",
         "parameters" : [ {
           "name" : "kontoId",
           "in" : "path",
@@ -152,101 +538,22 @@
           }
         } ],
         "responses" : {
-          "200" : {
-            "description" : "Aksepterte avsendere for konto",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/AksepterteAvsendere"
-                }
-              }
-            }
-          }
-        }
-      },
-      "post" : {
-        "tags" : [ "FiksIOKonto" ],
-        "description" : "Legger til en avsender på listen over aksepterte avsendere for denne kontoen",
-        "operationId" : "leggTilAkseptertAvsender",
-        "parameters" : [ {
-          "name" : "kontoId",
-          "in" : "path",
-          "required" : true,
-          "schema" : {
-            "type" : "string",
-            "format" : "uuid"
-          }
-        } ],
-        "requestBody" : {
-          "content" : {
-            "application/json" : {
-              "schema" : {
-                "$ref" : "#/components/schemas/AvsenderId"
-              }
-            }
-          }
-        },
-        "responses" : {
-          "204" : {
-            "description" : "Avsender lagt til"
-          }
-        }
-      }
-    },
-    "/fiks-io/konto/api/v1/kontoer" : {
-      "post" : {
-        "tags" : [ "FiksIOKonto" ],
-        "description" : "Opprett en ny konto",
-        "operationId" : "opprettKonto",
-        "requestBody" : {
-          "content" : {
-            "application/json" : {
-              "schema" : {
-                "$ref" : "#/components/schemas/OpprettKontoSpesifikasjon"
-              }
-            }
-          },
-          "required" : true
-        },
-        "responses" : {
-          "201" : {
-            "description" : "Konto ble opprettet",
-            "headers" : {
-              "kontoId" : {
-                "description" : "Id for ny konto",
-                "required" : true,
-                "style" : "simple",
-                "schema" : {
-                  "type" : "string",
-                  "format" : "uuid"
-                }
-              }
-            },
+          "default" : {
+            "description" : "default response",
             "content" : {
               "application/json" : {
                 "schema" : {
                   "$ref" : "#/components/schemas/Konto"
                 }
               }
-            },
-            "links" : {
-              "Konto" : {
-                "operationRef" : "getKonto",
-                "parameters" : {
-                  "kontoId" : "$response.header.kontoId"
-                },
-                "description" : "Referanse til ressursen for den nye kontoen"
-              }
             }
           }
         }
-      }
-    },
-    "/fiks-io/konto/api/v1/kontoer/{kontoId}/kontoNavn" : {
-      "put" : {
+      },
+      "delete" : {
         "tags" : [ "FiksIOKonto" ],
-        "description" : "Oppdater kontonavn",
-        "operationId" : "endreKontoNavn",
+        "description" : "Slett en eksisterende konto",
+        "operationId" : "slett",
         "parameters" : [ {
           "name" : "kontoId",
           "in" : "path",
@@ -256,28 +563,11 @@
             "format" : "uuid"
           }
         } ],
-        "requestBody" : {
-          "content" : {
-            "application/json" : {
-              "schema" : {
-                "$ref" : "#/components/schemas/KontoNavnSpesifikasjon"
-              }
-            }
-          },
-          "required" : true
-        },
         "responses" : {
-          "204" : {
-            "description" : "Kontonavn ble oppdatert"
-          },
-          "404" : {
-            "description" : "Ukjent konto",
+          "default" : {
+            "description" : "default response",
             "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/ErrorMessage"
-                }
-              }
+              "application/json" : { }
             }
           }
         }
@@ -366,75 +656,35 @@
         }
       }
     },
-    "/fiks-io/konto/api/v1/kontoer/{kontoId}/deaktiver" : {
-      "put" : {
+    "/fiks-io/konto/api/v1/kontosok" : {
+      "get" : {
         "tags" : [ "FiksIOKonto" ],
-        "description" : "Deaktiver kontoen",
-        "operationId" : "deaktiver",
+        "description" : "Søk på kontoer i katalogen",
+        "operationId" : "kontosok",
         "parameters" : [ {
-          "name" : "kontoId",
-          "in" : "path",
-          "required" : true,
+          "name" : "fiksOrgId",
+          "in" : "query",
           "schema" : {
             "type" : "string",
             "format" : "uuid"
           }
-        } ],
-        "responses" : {
-          "200" : {
-            "description" : "Kontoen ble deaktivert",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/Konto"
-                }
-              }
-            }
-          },
-          "404" : {
-            "description" : "Ukjent konto",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/ErrorMessage"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/fiks-io/konto/api/v1/kontoer/{kontoId}/aktiver" : {
-      "put" : {
-        "tags" : [ "FiksIOKonto" ],
-        "description" : "Aktiver kontoen",
-        "operationId" : "aktiver",
-        "parameters" : [ {
-          "name" : "kontoId",
-          "in" : "path",
-          "required" : true,
+        }, {
+          "name" : "aktiv",
+          "in" : "query",
           "schema" : {
-            "type" : "string",
-            "format" : "uuid"
+            "type" : "boolean"
           }
         } ],
         "responses" : {
           "200" : {
-            "description" : "Kontoen ble aktivert",
+            "description" : "Kontoer som tilfredstilte søk",
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/Konto"
-                }
-              }
-            }
-          },
-          "404" : {
-            "description" : "Ukjent konto",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/ErrorMessage"
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/Konto"
+                  }
                 }
               }
             }
@@ -491,56 +741,6 @@
           },
           "200" : {
             "description" : "Identifikator lagt til",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/Adresse"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/fiks-io/konto/api/v1/kontoer/{kontoId}/adresser/{adresseId}/identifikatorer/fjern" : {
-      "post" : {
-        "tags" : [ "FiksIOKonto" ],
-        "description" : "Fjerner de spesifiserte identifikatorene fra en adresse",
-        "operationId" : "fjernIdentifikator",
-        "parameters" : [ {
-          "name" : "kontoId",
-          "in" : "path",
-          "required" : true,
-          "schema" : {
-            "type" : "string",
-            "format" : "uuid"
-          }
-        }, {
-          "name" : "adresseId",
-          "in" : "path",
-          "required" : true,
-          "schema" : {
-            "type" : "string",
-            "format" : "uuid"
-          }
-        } ],
-        "requestBody" : {
-          "content" : {
-            "application/json" : {
-              "schema" : {
-                "minItems" : 1,
-                "uniqueItems" : true,
-                "type" : "array",
-                "items" : {
-                  "$ref" : "#/components/schemas/Identifikator"
-                }
-              }
-            }
-          }
-        },
-        "responses" : {
-          "200" : {
-            "description" : "Fjernet identifikator",
             "content" : {
               "application/json" : {
                 "schema" : {
@@ -615,55 +815,6 @@
         }
       }
     },
-    "/fiks-io/konto/api/v1/kontoer/{kontoId}/adresser/{adresseId}/meldingsprotokoller/fjern" : {
-      "post" : {
-        "tags" : [ "FiksIOKonto" ],
-        "description" : "Fjerner de spesifiserte meldingsprotokollene fra en adresse",
-        "operationId" : "fjernMeldingsprotokoller",
-        "parameters" : [ {
-          "name" : "kontoId",
-          "in" : "path",
-          "required" : true,
-          "schema" : {
-            "type" : "string",
-            "format" : "uuid"
-          }
-        }, {
-          "name" : "adresseId",
-          "in" : "path",
-          "required" : true,
-          "schema" : {
-            "type" : "string",
-            "format" : "uuid"
-          }
-        } ],
-        "requestBody" : {
-          "content" : {
-            "application/json" : {
-              "schema" : {
-                "minItems" : 1,
-                "type" : "array",
-                "items" : {
-                  "$ref" : "#/components/schemas/MeldingsprotokollSpesifikasjon"
-                }
-              }
-            }
-          }
-        },
-        "responses" : {
-          "200" : {
-            "description" : "Fjernet protokoll",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/Adresse"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
     "/fiks-io/konto/api/v1/kontoer/{kontoId}/adresser/{adresseId}/sikkerhetsnivaer" : {
       "post" : {
         "tags" : [ "FiksIOKonto" ],
@@ -727,56 +878,6 @@
         }
       }
     },
-    "/fiks-io/konto/api/v1/kontoer/{kontoId}/adresser/{adresseId}/sikkerhetsnivaer/fjern" : {
-      "post" : {
-        "tags" : [ "FiksIOKonto" ],
-        "description" : "Fjerner de spesifiserte sikkerhetsnivåene fra en adresse",
-        "operationId" : "fjernSikkerhetsnivaer",
-        "parameters" : [ {
-          "name" : "kontoId",
-          "in" : "path",
-          "required" : true,
-          "schema" : {
-            "type" : "string",
-            "format" : "uuid"
-          }
-        }, {
-          "name" : "adresseId",
-          "in" : "path",
-          "required" : true,
-          "schema" : {
-            "type" : "string",
-            "format" : "uuid"
-          }
-        } ],
-        "requestBody" : {
-          "content" : {
-            "application/json" : {
-              "schema" : {
-                "minItems" : 1,
-                "uniqueItems" : true,
-                "type" : "array",
-                "items" : {
-                  "$ref" : "#/components/schemas/SikkerhetsnivaSpesifikasjon"
-                }
-              }
-            }
-          }
-        },
-        "responses" : {
-          "default" : {
-            "description" : "default response",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/Adresse"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
     "/fiks-io/konto/api/v1/kontoer/{kontoId}/adresser/{adresseId}/beskrivelse" : {
       "put" : {
         "tags" : [ "FiksIOKonto" ],
@@ -823,72 +924,49 @@
         }
       }
     },
-    "/fiks-io/konto/api/v1/kontoer/{kontoId}/adresser/{adresseId}/aktiver" : {
-      "put" : {
+    "/fiks-io/konto/api/v1/kontoer" : {
+      "post" : {
         "tags" : [ "FiksIOKonto" ],
-        "description" : "Aktiverer adressen, og gjør den tilgjengelig for oppslag i katalogen. For å kunne aktivere en adresse må den være gyldig (ha minst en identifikator, meldingsprotokoll og sikkerhetsnivå), og ikke ha konflikter med noen andre adresser i SvarInn katalogen",
-        "operationId" : "aktiverAdresse",
-        "parameters" : [ {
-          "name" : "kontoId",
-          "in" : "path",
-          "required" : true,
-          "schema" : {
-            "type" : "string",
-            "format" : "uuid"
-          }
-        }, {
-          "name" : "adresseId",
-          "in" : "path",
-          "required" : true,
-          "schema" : {
-            "type" : "string",
-            "format" : "uuid"
-          }
-        } ],
-        "responses" : {
-          "default" : {
-            "description" : "default response",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/Adresse"
-                }
+        "description" : "Opprett en ny konto",
+        "operationId" : "opprettKonto",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/OpprettKontoSpesifikasjon"
               }
             }
-          }
-        }
-      }
-    },
-    "/fiks-io/konto/api/v1/kontoer/{kontoId}/adresser/{adresseId}/deaktiver" : {
-      "put" : {
-        "tags" : [ "FiksIOKonto" ],
-        "description" : "Deaktiverer adressen. En deaktivert adresse er ikke lengre tilgjengelig for oppslag i katalogen",
-        "operationId" : "deaktiverAdresse",
-        "parameters" : [ {
-          "name" : "kontoId",
-          "in" : "path",
-          "required" : true,
-          "schema" : {
-            "type" : "string",
-            "format" : "uuid"
-          }
-        }, {
-          "name" : "adresseId",
-          "in" : "path",
-          "required" : true,
-          "schema" : {
-            "type" : "string",
-            "format" : "uuid"
-          }
-        } ],
+          },
+          "required" : true
+        },
         "responses" : {
-          "default" : {
-            "description" : "default response",
+          "201" : {
+            "description" : "Konto ble opprettet",
+            "headers" : {
+              "kontoId" : {
+                "description" : "Id for ny konto",
+                "required" : true,
+                "style" : "simple",
+                "schema" : {
+                  "type" : "string",
+                  "format" : "uuid"
+                }
+              }
+            },
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/Adresse"
+                  "$ref" : "#/components/schemas/Konto"
                 }
+              }
+            },
+            "links" : {
+              "Konto" : {
+                "operationRef" : "getKonto",
+                "parameters" : {
+                  "kontoId" : "$response.header.kontoId"
+                },
+                "description" : "Referanse til ressursen for den nye kontoen"
               }
             }
           }
@@ -927,42 +1005,6 @@
         }
       }
     },
-    "/fiks-io/konto/api/v1/kontosok" : {
-      "get" : {
-        "tags" : [ "FiksIOKonto" ],
-        "description" : "Søk på kontoer i katalogen",
-        "operationId" : "kontosok",
-        "parameters" : [ {
-          "name" : "fiksOrgId",
-          "in" : "query",
-          "schema" : {
-            "type" : "string",
-            "format" : "uuid"
-          }
-        }, {
-          "name" : "aktiv",
-          "in" : "query",
-          "schema" : {
-            "type" : "boolean"
-          }
-        } ],
-        "responses" : {
-          "200" : {
-            "description" : "Kontoer som tilfredstilte søk",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "type" : "array",
-                  "items" : {
-                    "$ref" : "#/components/schemas/Konto"
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
     "/fiks-io/konto/api/v1/kontoer/{kontoId}/aksepterteAvsendere/{avsenderKontoId}" : {
       "delete" : {
         "tags" : [ "FiksIOKonto" ],
@@ -994,52 +1036,40 @@
           }
         }
       }
-    },
-    "/fiks-io/konto/api/v1/kontoer/{kontoId}/aksepterteAvsendere/aktiver" : {
-      "put" : {
-        "tags" : [ "FiksIOKonto" ],
-        "description" : "Aktiver filtrering av aksepterte avsendere for denne kontoen",
-        "operationId" : "aktiverAksepterteAvsendere",
-        "parameters" : [ {
-          "name" : "kontoId",
-          "in" : "path",
-          "required" : true,
-          "schema" : {
-            "type" : "string",
-            "format" : "uuid"
-          }
-        } ],
-        "responses" : {
-          "204" : {
-            "description" : "Aksepterte avsendere filtrering aktivert"
-          }
-        }
-      }
-    },
-    "/fiks-io/konto/api/v1/kontoer/{kontoId}/aksepterteAvsendere/deaktiver" : {
-      "put" : {
-        "tags" : [ "FiksIOKonto" ],
-        "description" : "Deaktiver filtrering av aksepterte avsendere for denne kontoen",
-        "operationId" : "deaktiverAksepterteAvsendere",
-        "parameters" : [ {
-          "name" : "kontoId",
-          "in" : "path",
-          "required" : true,
-          "schema" : {
-            "type" : "string",
-            "format" : "uuid"
-          }
-        } ],
-        "responses" : {
-          "204" : {
-            "description" : "Aksepterte avsendere filtrering deaktivert"
-          }
-        }
-      }
     }
   },
   "components" : {
     "schemas" : {
+      "AksepterteAvsendere" : {
+        "type" : "object",
+        "properties" : {
+          "avsendere" : {
+            "uniqueItems" : true,
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Avsender"
+            }
+          },
+          "aktivert" : {
+            "type" : "boolean"
+          }
+        }
+      },
+      "Avsender" : {
+        "type" : "object",
+        "properties" : {
+          "kontoId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "kontoNavn" : {
+            "type" : "string"
+          },
+          "fiksOrgNavn" : {
+            "type" : "string"
+          }
+        }
+      },
       "Konto" : {
         "type" : "object",
         "properties" : {
@@ -1135,6 +1165,41 @@
           }
         }
       },
+      "ErrorMessage" : {
+        "type" : "object",
+        "properties" : {
+          "timestamp" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "status" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "error" : {
+            "type" : "string"
+          },
+          "errorId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "path" : {
+            "type" : "string"
+          },
+          "originalPath" : {
+            "type" : "string"
+          },
+          "message" : {
+            "type" : "string"
+          },
+          "errorCode" : {
+            "type" : "string"
+          },
+          "errorJson" : {
+            "type" : "string"
+          }
+        }
+      },
       "Adresse" : {
         "type" : "object",
         "properties" : {
@@ -1197,101 +1262,6 @@
           }
         }
       },
-      "AksepterteAvsendere" : {
-        "type" : "object",
-        "properties" : {
-          "avsendere" : {
-            "uniqueItems" : true,
-            "type" : "array",
-            "items" : {
-              "$ref" : "#/components/schemas/Avsender"
-            }
-          },
-          "aktivert" : {
-            "type" : "boolean"
-          }
-        }
-      },
-      "Avsender" : {
-        "type" : "object",
-        "properties" : {
-          "kontoId" : {
-            "type" : "string",
-            "format" : "uuid"
-          },
-          "kontoNavn" : {
-            "type" : "string"
-          },
-          "fiksOrgNavn" : {
-            "type" : "string"
-          }
-        }
-      },
-      "KontoSpesifikasjon" : {
-        "required" : [ "fiksOrgId", "navn" ],
-        "type" : "object",
-        "properties" : {
-          "fiksOrgId" : {
-            "type" : "string",
-            "format" : "uuid"
-          },
-          "navn" : {
-            "pattern" : "^[A-ZÆØÅa-zæøå0-9ÁáÀàÂâÉéÈèÊêÍíÌìÎîÓóÒòÔôÚúÙùÛûÝýÄäËëÏïÖöÜü,.!?\\-:;/\\\\'()&+*=%§]+[A-ZÆØÅa-zæøå0-9ÁáÀàÂâÉéÈèÊêÍíÌìÎîÓóÒòÔôÚúÙùÛûÝýÄäËëÏïÖöÜü ,.!?\\-:;/\\\\'()&+*=%§]*[A-ZÆØÅa-zæøå0-9ÁáÀàÂâÉéÈèÊêÍíÌìÎîÓóÒòÔôÚúÙùÛûÝýÄäËëÏïÖöÜü,.!?\\-:;/\\\\'()&+*=%§]+$",
-            "type" : "string",
-            "example" : "Kontonavn"
-          }
-        }
-      },
-      "OpprettKontoSpesifikasjon" : {
-        "required" : [ "konto", "offentligNokkel" ],
-        "type" : "object",
-        "properties" : {
-          "konto" : {
-            "$ref" : "#/components/schemas/KontoSpesifikasjon"
-          },
-          "offentligNokkel" : {
-            "type" : "string"
-          },
-          "skalAktiveres" : {
-            "type" : "boolean"
-          }
-        }
-      },
-      "ErrorMessage" : {
-        "type" : "object",
-        "properties" : {
-          "timestamp" : {
-            "type" : "integer",
-            "format" : "int64"
-          },
-          "status" : {
-            "type" : "integer",
-            "format" : "int32"
-          },
-          "error" : {
-            "type" : "string"
-          },
-          "errorId" : {
-            "type" : "string",
-            "format" : "uuid"
-          },
-          "path" : {
-            "type" : "string"
-          },
-          "originalPath" : {
-            "type" : "string"
-          },
-          "message" : {
-            "type" : "string"
-          },
-          "errorCode" : {
-            "type" : "string"
-          },
-          "errorJson" : {
-            "type" : "string"
-          }
-        }
-      },
       "KontoNavnSpesifikasjon" : {
         "required" : [ "kontoNavn" ],
         "type" : "object",
@@ -1302,22 +1272,48 @@
           }
         }
       },
-      "OppdaterOffentligNokkelSpesifikasjon" : {
-        "required" : [ "pem" ],
+      "Identifikator" : {
+        "required" : [ "identifikator", "identifikatorType" ],
         "type" : "object",
         "properties" : {
-          "pem" : {
+          "identifikatorType" : {
+            "type" : "string",
+            "enum" : [ "ORG_NO", "NAVENHET_ID" ]
+          },
+          "identifikator" : {
+            "pattern" : "^\\d+$",
             "type" : "string"
           }
         }
       },
-      "AdresseSpesifikasjon" : {
-        "required" : [ "beskrivelse" ],
+      "MeldingsprotokollSpesifikasjon" : {
+        "required" : [ "meldingsprotokoll" ],
         "type" : "object",
         "properties" : {
-          "beskrivelse" : {
-            "pattern" : "^[A-Za-zæøåÆØÅ0-9_.,/\\-_ ]+$",
+          "meldingsprotokoll" : {
+            "pattern" : "^[0-9a-zæøåA-ZÆØÅ.]+$",
             "type" : "string"
+          }
+        }
+      },
+      "SikkerhetsnivaSpesifikasjon" : {
+        "required" : [ "sikkerhetsniva" ],
+        "type" : "object",
+        "properties" : {
+          "sikkerhetsniva" : {
+            "maximum" : 4,
+            "minimum" : 1,
+            "type" : "integer",
+            "format" : "int32"
+          }
+        }
+      },
+      "AvsenderId" : {
+        "type" : "object",
+        "properties" : {
+          "kontoId" : {
+            "type" : "string",
+            "format" : "uuid"
           }
         }
       },
@@ -1369,42 +1365,6 @@
           }
         }
       },
-      "Identifikator" : {
-        "required" : [ "identifikator", "identifikatorType" ],
-        "type" : "object",
-        "properties" : {
-          "identifikatorType" : {
-            "type" : "string",
-            "enum" : [ "ORG_NO", "NAVENHET_ID" ]
-          },
-          "identifikator" : {
-            "pattern" : "^\\d+$",
-            "type" : "string"
-          }
-        }
-      },
-      "MeldingsprotokollSpesifikasjon" : {
-        "required" : [ "meldingsprotokoll" ],
-        "type" : "object",
-        "properties" : {
-          "meldingsprotokoll" : {
-            "pattern" : "^[0-9a-zæøåA-ZÆØÅ.]+$",
-            "type" : "string"
-          }
-        }
-      },
-      "SikkerhetsnivaSpesifikasjon" : {
-        "required" : [ "sikkerhetsniva" ],
-        "type" : "object",
-        "properties" : {
-          "sikkerhetsniva" : {
-            "maximum" : 4,
-            "minimum" : 1,
-            "type" : "integer",
-            "format" : "int32"
-          }
-        }
-      },
       "AdresseBeskrivelseSpesifikasjon" : {
         "required" : [ "beskrivelse" ],
         "type" : "object",
@@ -1415,12 +1375,52 @@
           }
         }
       },
-      "AvsenderId" : {
+      "AdresseSpesifikasjon" : {
+        "required" : [ "beskrivelse" ],
         "type" : "object",
         "properties" : {
-          "kontoId" : {
+          "beskrivelse" : {
+            "pattern" : "^[A-Za-zæøåÆØÅ0-9_.,/\\-_ ]+$",
+            "type" : "string"
+          }
+        }
+      },
+      "KontoSpesifikasjon" : {
+        "required" : [ "fiksOrgId", "navn" ],
+        "type" : "object",
+        "properties" : {
+          "fiksOrgId" : {
             "type" : "string",
             "format" : "uuid"
+          },
+          "navn" : {
+            "pattern" : "^[A-ZÆØÅa-zæøå0-9ÁáÀàÂâÉéÈèÊêÍíÌìÎîÓóÒòÔôÚúÙùÛûÝýÄäËëÏïÖöÜü,.!?\\-:;/\\\\'()&+*=%§]+[A-ZÆØÅa-zæøå0-9ÁáÀàÂâÉéÈèÊêÍíÌìÎîÓóÒòÔôÚúÙùÛûÝýÄäËëÏïÖöÜü ,.!?\\-:;/\\\\'()&+*=%§]*[A-ZÆØÅa-zæøå0-9ÁáÀàÂâÉéÈèÊêÍíÌìÎîÓóÒòÔôÚúÙùÛûÝýÄäËëÏïÖöÜü,.!?\\-:;/\\\\'()&+*=%§]+$",
+            "type" : "string",
+            "example" : "Kontonavn"
+          }
+        }
+      },
+      "OpprettKontoSpesifikasjon" : {
+        "required" : [ "konto", "offentligNokkel" ],
+        "type" : "object",
+        "properties" : {
+          "konto" : {
+            "$ref" : "#/components/schemas/KontoSpesifikasjon"
+          },
+          "offentligNokkel" : {
+            "type" : "string"
+          },
+          "skalAktiveres" : {
+            "type" : "boolean"
+          }
+        }
+      },
+      "OppdaterOffentligNokkelSpesifikasjon" : {
+        "required" : [ "pem" ],
+        "type" : "object",
+        "properties" : {
+          "pem" : {
+            "type" : "string"
           }
         }
       }
