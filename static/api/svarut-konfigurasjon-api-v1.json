@@ -302,6 +302,115 @@
         }
       }
     },
+    "/svarut-konfigurasjon/api/v1/{fiksOrgId}/kontoer/{kontoId}/genererServicepassord" : {
+      "post" : {
+        "tags" : [ "Konto" ],
+        "description" : "Genererer nytt servicepassord for konto",
+        "operationId" : "genererServicePassord",
+        "parameters" : [ {
+          "name" : "fiksOrgId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "kontoId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Nytt servicepassord for konto",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ServicePassord"
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Kontoid ikke funnet",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Systemfeil",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/svarut-konfigurasjon/api/v1/{fiksOrgId}/kontoer/{kontoId}/forsidePdfPreview" : {
+      "get" : {
+        "tags" : [ "Konto" ],
+        "description" : "Returnerer forhåndsvisning av PDF",
+        "operationId" : "getForsidePreview",
+        "parameters" : [ {
+          "name" : "fiksOrgId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "kontoId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Forhåndsvisning av PDF",
+            "content" : {
+              "application/pdf" : {
+                "schema" : {
+                  "type" : "string",
+                  "format" : "binary"
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Kontoid ikke funnet",
+            "content" : {
+              "application/pdf" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Systemfeil",
+            "content" : {
+              "application/pdf" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/svarut-konfigurasjon/api/v1/{fiksOrgId}/kontoer/{kontoId}" : {
       "get" : {
         "tags" : [ "Konto" ],
@@ -414,7 +523,7 @@
     "/svarut-konfigurasjon/api/v1/{fiksOrgId}/kontoer" : {
       "get" : {
         "tags" : [ "Konto" ],
-        "description" : "Hent kontoer knytta mot bestemt fiksOrgId som har spesifikk tilgangstype",
+        "description" : "Hent kontoer knytta mot bestemt fiksOrgId",
         "operationId" : "hentKontoerForFiksOrg",
         "parameters" : [ {
           "name" : "fiksOrgId",
@@ -422,13 +531,6 @@
           "required" : true,
           "schema" : {
             "type" : "string"
-          }
-        }, {
-          "name" : "typeKonto",
-          "in" : "query",
-          "schema" : {
-            "type" : "string",
-            "enum" : [ "ALLE", "LESETILGANG", "SENDETILGANG", "KONFIGURASJONSTILGANG" ]
           }
         } ],
         "responses" : {
@@ -487,12 +589,12 @@
           "required" : true
         },
         "responses" : {
-          "200" : {
+          "201" : {
             "description" : "Oppretter konto",
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "type" : "string"
+                  "$ref" : "#/components/schemas/NyKonto"
                 }
               }
             }
@@ -715,7 +817,7 @@
           "required" : true
         },
         "responses" : {
-          "201" : {
+          "204" : {
             "description" : "Oppdatert sdpkonfigurasjon"
           },
           "400" : {
@@ -768,6 +870,14 @@
             "type" : "string"
           },
           "errorJson" : {
+            "type" : "string"
+          }
+        }
+      },
+      "ServicePassord" : {
+        "type" : "object",
+        "properties" : {
+          "passord" : {
             "type" : "string"
           }
         }
@@ -832,6 +942,9 @@
           "aktiv" : {
             "type" : "boolean"
           },
+          "kontoId" : {
+            "type" : "string"
+          },
           "konfigurasjon" : {
             "$ref" : "#/components/schemas/Kontokonfigurasjon"
           }
@@ -892,6 +1005,14 @@
           }
         }
       },
+      "NyKonto" : {
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string"
+          }
+        }
+      },
       "OpprettAdresse" : {
         "required" : [ "postnummer", "poststed" ],
         "type" : "object",
@@ -906,7 +1027,7 @@
             "type" : "string"
           },
           "postnummer" : {
-            "pattern" : "\\d{4}",
+            "pattern" : "^[0-9]{4}$",
             "type" : "string"
           },
           "poststed" : {
@@ -920,7 +1041,7 @@
         "type" : "object",
         "properties" : {
           "orgnummer" : {
-            "pattern" : "(^\\d{9}$)|",
+            "pattern" : "^[0-9]{9}$",
             "type" : "string"
           },
           "avsender" : {
@@ -940,7 +1061,7 @@
         "type" : "object",
         "properties" : {
           "visningsnavn" : {
-            "pattern" : "^[_a-zæøåA-ZÆØÅ0-9\\-]+$",
+            "pattern" : "^[A-Za-zæøåÆØÅ0-9_.,/\\-_ ]+$",
             "type" : "string"
           },
           "konfigurasjon" : {
