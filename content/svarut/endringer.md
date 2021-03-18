@@ -6,6 +6,18 @@ lastmod: 2018-12-17
 Her er en liste over de viktigste endringene i SvarUt, startet i 2015.
 
 ## Liste over endringer i SvarUt.
+* 01.03.2021
+  * Fakturakonfigurasjon flyttet til Fiks-konfigurasjon
+* 23.02.2021
+  * Lagt inn begrensning på antall ganger en forsendelse kan lastes ned via SvarInn. Dersom en forsendelse når maksimalt antall SvarInn-nedlastinger, vil denne ikke lenger være mulig å laste ned via SvarInn, men må lastes ned manuelt.
+* 19.01.2021
+  * Mulighet til å søke etter forsendelsesid blant inkommende forsendelser
+  * Nytt søkefelt for mottakers organisasjonsnummer og fødselsnummer i utgående forsendelser
+* 14.01.2021
+  * Støtte for å legge til kommentar når en forsendelse avvises manuelt
+  * Støtte for å legge til en kommentar på en forsendelse
+* 04.01.2021
+  * Utvidet duplikatsjekk til å omfatte kun digital
 * 04.12.2020
   * Flyttet SvarUt til nytt driftsmiljø
 * 17.12.2019
