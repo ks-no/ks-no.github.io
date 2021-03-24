@@ -29,7 +29,7 @@ Når vi brekker json strukturen vil det komme ny versjon av servicen. Alle imple
 
 | Versjon | Status | Endringer |
 | --- | --- | --- |
-| [ForsendelsesRestServiceV1](forsendelsesrestservicev1) | Stabil | <ul><li>Funksjonaliteten i V11 flyttet til http/json basert api.</li></ul> |
+| [ForsendelseRestServiceV1](forsendelserestservicev1) | Stabil | <ul><li>Funksjonaliteten i V11 flyttet til http/json basert api.</li></ul> |
 
 # Nedlasting av forsendelser direkte til sakssystem
 
