@@ -6,6 +6,10 @@ lastmod: 2018-12-17
 Her er en liste over de viktigste endringene i SvarUt, startet i 2015.
 
 ## Liste over endringer i SvarUt.
+* 26.03.2021
+  * Fjernet ForsendelseServiceV1
+  * Fjernet ForsendelseServiceV2
+  * Fjernet ForsendelseServiceV3
 * 01.03.2021
   * Fakturakonfigurasjon flyttet til Fiks-konfigurasjon
 * 23.02.2021
