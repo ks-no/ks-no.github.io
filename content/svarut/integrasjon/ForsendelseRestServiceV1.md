@@ -41,3 +41,8 @@ Disse json spec filene kan brukes av alle. De blir løpende oppdatert om vi legg
 
 ### VIKTIG!
 /sendForsendelse bør ha readtimeout på 16min. SvarUT har Timeout på 15min. SvarUt kan ta i mot ganske store filer, derfor er denne timeouten så høg. 
+
+Content-Type må være 'multipart/form-data'
+Første part må være name="forsendelse" med [JSON](https://github.com/ks-no/svarut-rest-klient/blob/master/svarut-rest-klient/json/forsendelse.json)
+
+Parts med dokumenter må være content-type application/octet-stream
