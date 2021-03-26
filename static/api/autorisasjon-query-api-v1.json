@@ -20,47 +20,6 @@
     "description" : "API for Autorisasjon Query"
   } ],
   "paths" : {
-    "/autorisasjon-query/api/v1/autorisasjon/ressurser/{ressursId}" : {
-      "get" : {
-        "tags" : [ "autorisasjonQuery" ],
-        "description" : "Henter ressurs-metadata. Denne operasjonen krever minst ett privilegium på ressursen",
-        "operationId" : "getRessurs",
-        "parameters" : [ {
-          "name" : "ressursId",
-          "in" : "path",
-          "required" : true,
-          "schema" : {
-            "type" : "string",
-            "format" : "uuid"
-          }
-        } ],
-        "responses" : {
-          "200" : {
-            "description" : "Metadata som beskriver ressursen",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/Ressurs"
-                }
-              }
-            }
-          },
-          "400" : {
-            "description" : "Feil i inputdata",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/ErrorMessage"
-                }
-              }
-            }
-          },
-          "404" : {
-            "description" : "Ressursen finnes ikke"
-          }
-        }
-      }
-    },
     "/autorisasjon-query/api/v1/autorisasjon/isAutorisert" : {
       "get" : {
         "tags" : [ "autorisasjonQuery" ],
@@ -158,6 +117,47 @@
                 }
               }
             }
+          }
+        }
+      }
+    },
+    "/autorisasjon-query/api/v1/autorisasjon/ressurser/{ressursId}" : {
+      "get" : {
+        "tags" : [ "autorisasjonQuery" ],
+        "description" : "Henter ressurs-metadata. Denne operasjonen krever minst ett privilegium på ressursen",
+        "operationId" : "getRessurs",
+        "parameters" : [ {
+          "name" : "ressursId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Metadata som beskriver ressursen",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Ressurs"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Feil i inputdata",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Ressursen finnes ikke"
           }
         }
       }
@@ -316,6 +316,50 @@
   },
   "components" : {
     "schemas" : {
+      "Autorisasjon" : {
+        "required" : [ "aktor", "path", "privilegium", "privilegiumNiva", "ressurs", "ressursNavn", "ressursNiva", "type" ],
+        "type" : "object",
+        "properties" : {
+          "aktor" : {
+            "type" : "string",
+            "description" : "Aktøren (personen eller integrasjonen) som er autorisert"
+          },
+          "privilegium" : {
+            "type" : "string",
+            "description" : "Privilegiet som er tildelt til aktøren"
+          },
+          "privilegiumNiva" : {
+            "type" : "integer",
+            "description" : "Det orginale nivået i treet privilegiet er tildelt på (0 indeksert)",
+            "format" : "int32"
+          },
+          "ressurs" : {
+            "type" : "string",
+            "description" : "Id for ressursen privilegiet er tildelt på",
+            "format" : "uuid"
+          },
+          "ressursNiva" : {
+            "type" : "integer",
+            "description" : "Nivået i treet ressursen eksisterer på (0 indeksert)",
+            "format" : "int32"
+          },
+          "ressursNavn" : {
+            "type" : "string",
+            "description" : "Navnet tildelt til ressursen"
+          },
+          "type" : {
+            "type" : "string",
+            "description" : "Ressurstypen til den aktuelle ressursen"
+          },
+          "path" : {
+            "type" : "array",
+            "description" : "Liste over foreldre-ressurser fra denne ressursen til roten av ressurs-treet",
+            "items" : {
+              "$ref" : "#/components/schemas/PathRessurs"
+            }
+          }
+        }
+      },
       "PathRessurs" : {
         "required" : [ "id", "navn", "type" ],
         "type" : "object",
@@ -394,50 +438,6 @@
           },
           "errorJson" : {
             "type" : "string"
-          }
-        }
-      },
-      "Autorisasjon" : {
-        "required" : [ "aktor", "path", "privilegium", "privilegiumNiva", "ressurs", "ressursNavn", "ressursNiva", "type" ],
-        "type" : "object",
-        "properties" : {
-          "aktor" : {
-            "type" : "string",
-            "description" : "Aktøren (personen eller integrasjonen) som er autorisert"
-          },
-          "privilegium" : {
-            "type" : "string",
-            "description" : "Privilegiet som er tildelt til aktøren"
-          },
-          "privilegiumNiva" : {
-            "type" : "integer",
-            "description" : "Det orginale nivået i treet privilegiet er tildelt på (0 indeksert)",
-            "format" : "int32"
-          },
-          "ressurs" : {
-            "type" : "string",
-            "description" : "Id for ressursen privilegiet er tildelt på",
-            "format" : "uuid"
-          },
-          "ressursNiva" : {
-            "type" : "integer",
-            "description" : "Nivået i treet ressursen eksisterer på (0 indeksert)",
-            "format" : "int32"
-          },
-          "ressursNavn" : {
-            "type" : "string",
-            "description" : "Navnet tildelt til ressursen"
-          },
-          "type" : {
-            "type" : "string",
-            "description" : "Ressurstypen til den aktuelle ressursen"
-          },
-          "path" : {
-            "type" : "array",
-            "description" : "Liste over foreldre-ressurser fra denne ressursen til roten av ressurs-treet",
-            "items" : {
-              "$ref" : "#/components/schemas/PathRessurs"
-            }
           }
         }
       },
