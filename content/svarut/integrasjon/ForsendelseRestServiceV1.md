@@ -49,7 +49,8 @@ Parts med dokumenter må være content-type application/octet-stream
 
 
 ### Eksempel på forsendelse JSON
-Dette er ment som eksempel på JSON som sendes inn sammen med dokumenter
+Dette er ment som eksempel på JSON som sendes inn sammen med dokumenter.
+For utvidet beskrivelse av felter, se [DOC](https://ks-no.github.io/svarut/integrasjon/forsendelsesservicev11/#forsendelse)
 ```json
 {
     "mottaker": {
