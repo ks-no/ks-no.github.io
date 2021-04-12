@@ -46,3 +46,42 @@ Content-Type må være 'multipart/form-data'
 Første part må være name="forsendelse" med [JSON](https://github.com/ks-no/svarut-rest-klient/blob/master/svarut-rest-klient/json/forsendelse.json)
 
 Parts med dokumenter må være content-type application/octet-stream
+
+
+### Eksempel på forsendelse JSON
+Dette er ment som eksempel på JSON som sendes inn sammen med dokumenter
+```json
+{
+    "mottaker": {
+        "postAdresse": {
+            "navn": "Ole Olsen",
+            "adresse1": "Gamleveien 1",
+            "postNummer": "5258",
+            "postSted": "Poststed"
+        },
+        "digitalAdresse": {
+            "fodselsNummer": "12345678912"
+        }
+    },
+    "eksponertFor": [],
+    "avgivendeSystem": "S002-SAK",
+    "tittel": "Tittel for sak",
+    "kunDigitalLevering": false,
+    "kryptert": false,
+    "utskriftsKonfigurasjon": {
+        "utskriftMedFarger": false,
+        "tosidig": false
+    },
+    "krevNiva4Innlogging": false,
+    "dokumenter": [
+        {
+            "filnavn": "doc.pdf",
+            "mimeType": "application/pdf",
+            "skalSigneres": false,
+            "ekskluderesFraUtskrift": false
+        }
+    ],
+    "lenker": [],
+    "svarPaForsendelseLink": false
+}
+```
