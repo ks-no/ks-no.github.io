@@ -85,6 +85,7 @@ Et eksempel er vist under:
   "mimetype": "application/pdf",
   "ttl": 86400,
   "sikkerhetsniva": 3,
+  "korrelasjonsid": "fa315d73-7ed0-4192-99d1-4049f47e2200"
   "eksponertFor": [
     { "type": "PERSON", "fnr": "12345679810" },
     { "type": "INTEGRASJON", "id": "249e3fde-e3d8-435e-835f-16a432598c10" },
@@ -99,6 +100,7 @@ Et eksempel er vist under:
 - TTL - Hvor mange sekunder etter opplasting dokumentet skal være tilgjengelig. Ved utløp blir dokumentet utilgjengeliggjort og slettes.
 - Sikkerhetsniva - Sikkerhetsnivå som skal kreves ved nedlasting av dokument. Ved nivå 4 kreves kryptering hos klient før opplasting.
 Se https://eid.difi.no/nb/sikkerhet-og-informasjonskapsler/ulike-sikkerhetsniva
+- Korrelasjonsid - Id som kan brukes til å indikere at flere dokumenter hører sammen. Feltet er ikke påkrevd.
 - Eksponert for - Liste over aktører som skal ha tilgang til å laste ned dokumentet. Kan være følgende typer:
     - Person - Eksponeres for en persons fødselsnummer. En gyldig ID-porten innlogging for en person med dette 
     fødselsnummeret vil ha lov til å laste ned dokumentet.
