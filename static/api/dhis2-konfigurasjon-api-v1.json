@@ -1,8 +1,8 @@
 {
   "openapi" : "3.0.1",
   "info" : {
-    "title" : "KS Fiks: DHIS2 selvregistrering service",
-    "description" : "DHIS2 selvregistrering service",
+    "title" : "KS Fiks: DHIS2 Vaksine Service",
+    "description" : "DHIS2 Vaksine Service",
     "contact" : {
       "name" : "Fiks brukerstøtte",
       "url" : "https://ks-no.github.io/",
@@ -37,6 +37,9 @@
   }, {
     "name" : "Selvregistrering",
     "description" : "API for å registrere nærkontaker i Fiks smittesporing"
+  }, {
+    "name" : "Dhis2KonfigurasjonVaksine",
+    "description" : "API for henting av vaksinestatus for DHIS2"
   } ],
   "paths" : {
     "/dhis2-konfigurasjon/api/v1/brukere/sok" : {
@@ -1033,6 +1036,82 @@
           }
         }
       }
+    },
+    "/dhis2-konfigurasjon/api/v1/vaksine/tilgang" : {
+      "post" : {
+        "tags" : [ "Dhis2KonfigurasjonVaksine" ],
+        "description" : "Sjekker om kommunen har aktivert vaksine-tjenesten",
+        "operationId" : "harTilgangTilVaksine",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "type" : "string"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "401" : {
+            "description" : "Ikke tilgang",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "200" : {
+            "description" : "Aktiveringsstatus",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "boolean"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/dhis2-konfigurasjon/api/v1/vaksine/sok" : {
+      "post" : {
+        "tags" : [ "Dhis2KonfigurasjonVaksine" ],
+        "description" : "Søker etter vaksinestatus for en person",
+        "operationId" : "sok_1",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/ImmunizationRequest"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "401" : {
+            "description" : "Ikke tilgang",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "200" : {
+            "description" : "Vaksiner for person",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ImmunizationResponse"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components" : {
@@ -1778,6 +1857,77 @@
           "paarorendeTelefonnummer" : {
             "type" : "string",
             "description" : "Ugyldig telefonnummer"
+          }
+        }
+      },
+      "CodeObject" : {
+        "type" : "object",
+        "properties" : {
+          "system" : {
+            "type" : "string"
+          },
+          "code" : {
+            "type" : "string"
+          },
+          "display" : {
+            "type" : "string"
+          }
+        }
+      },
+      "Immunization" : {
+        "type" : "object",
+        "properties" : {
+          "vaccinationDate" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "vaccineCode" : {
+            "$ref" : "#/components/schemas/CodeObject"
+          },
+          "atcCode" : {
+            "type" : "string"
+          },
+          "lotNumber" : {
+            "type" : "string"
+          },
+          "preparation" : {
+            "$ref" : "#/components/schemas/CodeObject"
+          },
+          "identifier" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "recordedDate" : {
+            "type" : "string",
+            "format" : "date-time"
+          }
+        }
+      },
+      "ImmunizationResponse" : {
+        "type" : "object",
+        "properties" : {
+          "patientNin" : {
+            "type" : "string"
+          },
+          "kanLevereUtData" : {
+            "type" : "boolean"
+          },
+          "immunizations" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Immunization"
+            }
+          }
+        }
+      },
+      "ImmunizationRequest" : {
+        "type" : "object",
+        "properties" : {
+          "patientNin" : {
+            "type" : "string"
+          },
+          "kommunenr" : {
+            "type" : "string"
           }
         }
       }
