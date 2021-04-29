@@ -3,6 +3,9 @@ title: Innreiseregister fra Helsedirektoratet
 date: 2021-04-27
 ---
 
+### Status
+Tjenesten er foreløpig bare tilgjengelig i test-miljøet til KS, ikke prod. 
+
 ### Formål
 Fiks innreise er en tjeneste for å kunne gjøre oppslag mot Helsedirektoratet (HDIR) sitt innreiseregister. 
 Datagrunnlaget vil vere basert på en daglig datadump fra HDIR: Hver natt vil KS importere data for de siste 10 dager fra HDIR. 
@@ -20,3 +23,7 @@ Autentisering skjer ved hjelp av en Integrasjon-mekanismen beskrevet [her](https
 En kan enten velge å sende med fiksOrgId som en del av URL'en eller la API'et ta seg av å finne tilhørende fiksOrgId til integrasjonsId'en som spør.
 
 Utover dette kan man sende med et request-objekt som inneholder filter-parametrene.
+
+### Testdata
+Data som ligger i test-miljøet er produksjonsdata KS har fått fra HDIR, som er vasket for personlig informasjon. 
+Det er verdt å merke seg at testdataene stort sett vil vere eldre enn 10 dager. Produksjonsdata vil alltid vere yngre enn 10 dager gamle, så dette vil altså ikke vere gjenspeilet i testdatagrunnlaget.   
