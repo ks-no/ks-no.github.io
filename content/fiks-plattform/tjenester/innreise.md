@@ -7,15 +7,20 @@ date: 2021-04-27
 Tjenesten er foreløpig bare tilgjengelig i test-miljøet til KS, ikke prod. 
 
 ### Formål
-Fiks innreise er en tjeneste for å kunne gjøre oppslag mot Helsedirektoratet (HDIR) sitt innreiseregister. 
-Datagrunnlaget vil vere basert på en daglig datadump fra HDIR: Hver natt vil KS importere data for de siste 10 dager fra HDIR. 
-Siste oppdatering på dataene som ligger hos KS vil vere ved midnatt samme dag, og dette betyr at man ikkje kan spørre etter innreiser fra dagens dato.
+KS har sammen med Helsedirektoratet (HDIR) utviklet et API som gjør det mulig å hente informasjon om innreisende elektronisk fra HDIR sitt 
+nasjonale kontrollsenter for innreise, til kommunen. 
+Tjenesten heter Fiks innreise. 
+Flere leverandører (Fiks smittesporing (DHIS2), ReMin og Oslo kommune) arbeider med utvikling av funksjonalitet for innreiseoppfølging i kommunene. 
+Fiks innreise er sammen med Fiks prøvesvar sentrale komponenter i dette arbeidet. 
+API-et er også tilgjengelig for kommuner som benytter andre løsninger for innreiseoppfølging enn de nevnte.
 
 ### Produktbeskrivelse
 Tjenesten vil tilby et api der kommuner, som er blitt gitt tilgang til tjenesten, kan spørre etter innreiser basert på et filter. 
 Dette kan for eksemple vere å spørre etter innreiser til et gitt kommunenummer eller fødselsnummer/dnummer/preg-nummer (nytt nasjonalt hjelpenummer).
 
-Fiks innreise gjør ingenting med dataene som blir importert fra HDIR, så feltene og innholdet blir styrt av HDIR.  
+Fiks innreise gjør ingenting med dataene som blir importert fra HDIR, så feltene og innholdet blir styrt av HDIR. 
+Datagrunnlaget vil vere basert på en daglig datadump fra HDIR: Hver natt vil KS importere data for de siste 10 dager fra HDIR.
+Siste oppdatering på dataene som ligger hos KS vil vere ved midnatt samme dag, og dette betyr at man ikkje kan spørre etter innreiser fra dagens dato.
 
 ### Integrasjon [(api-spec)](https://editor.swagger.io/?url=https://ks-no.github.io/api/innreise-api-v1.json)
 Autentisering skjer ved hjelp av en Integrasjon-mekanismen beskrevet [her](https://ks-no.github.io/fiks-plattform/integrasjoner/#integrasjon)
