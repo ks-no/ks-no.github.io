@@ -15,12 +15,12 @@ Fiks innreise er sammen med Fiks prøvesvar sentrale komponenter i dette arbeide
 API-et er også tilgjengelig for kommuner som benytter andre løsninger for innreiseoppfølging enn de nevnte.
 
 ### Produktbeskrivelse
-Tjenesten vil tilby et api der kommuner, som er blitt gitt tilgang til tjenesten, kan spørre etter innreiser basert på et filter. 
-Dette kan for eksemple vere å spørre etter innreiser til et gitt kommunenummer eller fødselsnummer/dnummer/preg-nummer (nytt nasjonalt hjelpenummer).
+Tjenesten tilbyr et API hvor kommuner kan spørre etter personer som er registrert som innreisende. 
+Dette kan for eksempel være å spørre etter innreisende til et gitt kommunenummer eller fødselsnummer, d-nummer eller nasjonalt hjelpenummer (hentes fra PREG).
 
-Fiks innreise gjør ingenting med dataene som blir importert fra HDIR, så feltene og innholdet blir styrt av HDIR. 
-Datagrunnlaget vil vere basert på en daglig datadump fra HDIR: Hver natt vil KS importere data for de siste 10 dager fra HDIR.
-Siste oppdatering på dataene som ligger hos KS vil vere ved midnatt samme dag, og dette betyr at man ikkje kan spørre etter innreiser fra dagens dato.
+Fiks innreise gjør ingenting med dataene som blir importert fra HDIR. Datagrunnlaget vil være basert på en daglig uttrekk fra HDIR. 
+Hver natt vil KS importere data for de siste 10 dager fra HDIR. Siste oppdatering på dataene som ligger hos KS vil være ved midnatt samme dag. 
+Dette betyr at man ikke kan spørre etter innreiser fra dagens dato.
 
 ### Integrasjon [(api-spec)](https://editor.swagger.io/?url=https://ks-no.github.io/api/innreise-api-v1.json)
 Autentisering skjer ved hjelp av en Integrasjon-mekanismen beskrevet [her](https://ks-no.github.io/fiks-plattform/integrasjoner/#integrasjon)
