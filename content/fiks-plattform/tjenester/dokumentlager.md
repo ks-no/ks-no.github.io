@@ -126,6 +126,26 @@ Public-keyen kan hentes med en GET-request mot følgende endepunkt:
 - Test: ``https://api.fiks.test.ks.no/dokumentlager/api/v1/public-key``
 - Prod: ``https://api.fiks.ks.no/dokumentlager/api/v1/public-key``
 
+##### Responskoder
+- 201 Created - Dokumentet ble lastet opp. 
+  Body inneholder metadata:
+  ```json
+  {
+    "id": "5636b391-41e7-4504-ab3c-1f3df122b483",
+    "dokumentnavn": "dokument.pdf",
+    "mimeType": "application/pdf",
+    "ukryptertStorrelse": 29765,
+    "kryptertStorrelse": 30680
+  }
+  ```
+
+  Url for personnedlasting returneres i Location-header:
+  `Location: https://minside.kommune.no/dokumentlager/nedlasting/5636b391-41e7-4504-ab3c-1f3df122b483`
+- 400 Bad Request - Request er ikke i henhold til spesifikasjonen.
+- 403 Forbidden - Integrasjonen har ikke nødvendige tilganger til å laste opp dokumenter på spesifisert konto og organisasjon.
+- 404 Not Found - Fant ingen konto med spesifisert id for organisasjonen.
+- 410 Gone - Konto er slettet.
+
 ##### Eksempel (cURL)
 
 ```bash
@@ -146,3 +166,25 @@ Dette gjøres med en DELETE-request mot følgende URL:
 - Test: ``https://api.fiks.test.ks.no/dokumentlager/api/v1/{fiksOrganisasjonId}/kontoer/{kontoId}/dokumenter/{dokumentId}``
 - Prod: ``https://api.fiks.ks.no/dokumentlager/api/v1/{fiksOrganisasjonId}/kontoer/{kontoId}/dokumenter/{dokumentId}``
 
+##### Responskoder
+- 200 OK - Dokumentet med spesifisert id ble slettet. Tom body.
+- 400 Bad Request - Request er ikke i henhold til spesifikasjonen.
+- 403 Forbidden - Integrasjonen har ikke nødvendige tilganger til å slette dokumenter på spesifisert konto og organisasjon.
+- 404 Not Found - Fant ikke et dokument med oppgitt id, eller spesifisert konto og organisasjon.
+- 410 Gone - Dokumentet er allerede slettet, eller konto er slettet.
+
+#### Feilmeldinger
+Feilmeldinger (HTTP status 4xx og 5xx) returnerer body på følgende format:
+```json
+{
+  "timestamp": 1620041021710,
+  "status": 400,
+  "error": "Bad Request",
+  "errorId": "3c313e30-e5ee-47c9-8a33-cabffc999f0b",
+  "path": "/dokumentlager/api/v1/d9444a65-396e-4092-af2a-55fa090dbd59/kontoer/db00967c-d57f-4f4d-aa9b-ba1faa20ce22/dokumenter/",
+  "originalPath": null,
+  "message": "Beskrivelse av feilen",
+  "errorCode": "",
+  "errorJson": null
+}
+```
