@@ -11,7 +11,8 @@ Tjenesten vil tilby et api hvor kommunen kan spørre etter vaksineinformasjon p�
 
 #### Brukeradministrasjon og tilgangsstyring
 Autentisering  skjer ved hjelp av en IntegrasjonPerson-mekanismen beskrevet [her](https://ks-no.github.io/fiks-plattform/integrasjoner/#integrasjon-person)
-Token som sendes med må være et personlig HelseID-token.
+Merk at token som sendes med må være et personlig HelseID-token.
+
 Vedkommende det gjøres oppslag for må også ha blitt gitt søke-privilegiet på tjenestesiden for Fiks Vaksine på [Fiks forvaltning](https://forvaltning.fiks.ks.no/). 
 
 ### Sikkerhet
