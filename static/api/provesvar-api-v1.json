@@ -23,6 +23,85 @@
     "description" : "API for å hente provesvar fra FHI MSIS"
   } ],
   "paths" : {
+    "/provesvar/api/v1/sokForKommune" : {
+      "post" : {
+        "tags" : [ "Provesvar" ],
+        "description" : "Søk for kommune",
+        "operationId" : "sokForKommune",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/SokParameterForKommune"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ProvesvarSearchResponseForKommune"
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Ikke autentisert",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Ikke tilgang",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Feil input",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "En serverfeil",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "502" : {
+            "description" : "Et problem med kall mot FHI",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/provesvar/api/v1/sok" : {
       "post" : {
         "tags" : [ "Provesvar" ],
@@ -189,47 +268,45 @@
         "properties" : {
           "kodeverdi" : {
             "type" : "string",
-            "description" : "Kode-verdi tilknyttet analysen på NLK-format eller en internverdi fra laboratoriet",
-            "nullable" : true
+            "description" : "Kode-verdi tilknyttet analysen på NLK-format eller en internverdi fra laboratoriet"
           },
           "kodebeskrivelse" : {
             "type" : "string",
-            "description" : "En tekstlig beskrivelse av kodeverdien",
-            "nullable" : true
+            "description" : "En tekstlig beskrivelse av kodeverdien"
           },
           "materiale" : {
             "type" : "string",
-            "description" : "Beskriver hvilket materiale som er blitt analysert. Eksempelverdier: Luftveissekret, Nasopharynxsekret, Blod",
-            "nullable" : true
+            "description" : "Beskriver hvilket materiale som er blitt analysert. Eksempelverdier: Luftveissekret, Nasopharynxsekret, Blod"
           },
           "resultat" : {
             "type" : "string",
-            "description" : "Resultatet av analysen. Et fritekstfelt som kommer fra laboratoriet. Eksempelverdier: 'Positivt', 'Svakt positivt', 'Negativt', 'Ikkje påvist', 'Se kommentar'",
-            "nullable" : true
+            "description" : "Resultatet av analysen. Et fritekstfelt som kommer fra laboratoriet. Eksempelverdier: 'Positivt', 'Svakt positivt', 'Negativt', 'Ikkje påvist', 'Se kommentar'"
           },
           "status" : {
             "type" : "string",
-            "description" : "Status på analysen som er utført. Eksempelverdier: 'Endelig', 'Foreløpig', 'I prosess', 'Revidert'",
-            "nullable" : true
+            "description" : "Status på analysen som er utført. Eksempelverdier: 'Endelig', 'Foreløpig', 'I prosess', 'Revidert'"
           },
           "kommentar" : {
             "type" : "string",
-            "description" : "En kommentar tilknyttet analysen. Fritekstfelt som kommer fra laboratoriet",
-            "nullable" : true
+            "description" : "En kommentar tilknyttet analysen. Fritekstfelt som kommer fra laboratoriet"
           }
         },
-        "description" : "Funn ved analyse av prøve",
-        "nullable" : true
+        "description" : "Funn ved analyse av prøve"
       },
-      "Provesvar" : {
+      "ProvesvarForKommune" : {
         "type" : "object",
         "properties" : {
+          "kommunenummerForRekvirent" : {
+            "type" : "string"
+          },
+          "kommunenummerForLaboratorium" : {
+            "type" : "string"
+          },
           "meldingId" : {
             "type" : "string",
-            "description" : "Intern melding id.",
-            "nullable" : true
+            "description" : "Intern melding id."
           },
-          "mottattdao" : {
+          "mottattdato" : {
             "type" : "string",
             "description" : "MottattDato hos FHI",
             "format" : "date-time"
@@ -240,18 +317,15 @@
           },
           "labHerId" : {
             "type" : "string",
-            "description" : "Laboratoriets HER-id",
-            "nullable" : true
+            "description" : "Laboratoriets HER-id"
           },
           "labNavn" : {
             "type" : "string",
-            "description" : "Laboratoriets navn",
-            "nullable" : true
+            "description" : "Laboratoriets navn"
           },
           "provenummer" : {
             "type" : "string",
-            "description" : "Prøvesvarets prøvenummer",
-            "nullable" : true
+            "description" : "Prøvesvarets prøvenummer"
           },
           "provedato" : {
             "type" : "string",
@@ -260,87 +334,77 @@
           },
           "meldingskommentar" : {
             "type" : "string",
-            "description" : "Fritekst felt fra laboratoriet",
-            "nullable" : true
+            "description" : "Fritekst felt fra laboratoriet"
           },
           "meldingsstatus" : {
             "type" : "string",
-            "description" : "Beskriver status fra laboratoriet. Eksempelverdier: 'Endelig','Endelig rapport', 'Endelig svarbrev', 'Foreløpig rapport','Planlagt'",
-            "nullable" : true
+            "description" : "Beskriver status fra laboratoriet. Eksempelverdier: 'Endelig','Endelig rapport', 'Endelig svarbrev', 'Foreløpig rapport','Planlagt'"
           },
           "fodselsnummer" : {
             "type" : "string",
-            "description" : "Pasientens fødselsnummer",
-            "nullable" : true
+            "description" : "Pasientens fødselsnummer"
           },
           "fodselsdato" : {
             "type" : "string",
-            "description" : "Pasientens fødselsdato",
-            "nullable" : true
+            "description" : "Pasientens fødselsdato"
           },
           "fornavn" : {
             "type" : "string",
-            "description" : "Pasientens fornavn",
-            "nullable" : true
+            "description" : "Pasientens fornavn"
           },
           "etternavn" : {
             "type" : "string",
-            "description" : "Pasientens etternavn",
-            "nullable" : true
+            "description" : "Pasientens etternavn"
           },
           "kjonn" : {
             "type" : "string",
-            "description" : "Pasientens kjønn",
-            "nullable" : true
+            "description" : "Pasientens kjønn"
           },
           "bostedskommunenummer" : {
             "type" : "string",
-            "description" : "Pasientens bostedskommunenummer",
-            "nullable" : true
+            "description" : "Pasientens bostedskommunenummer"
           },
           "bostedskommunenavn" : {
             "type" : "string",
-            "description" : "Pasientens bostendskommunenavn",
-            "nullable" : true
+            "description" : "Pasientens bostendskommunenavn"
           },
           "funn" : {
             "type" : "array",
             "description" : "Et eller flere funn",
-            "nullable" : true,
             "items" : {
               "$ref" : "#/components/schemas/Funn"
             }
           },
           "provesvarstatus" : {
             "type" : "string",
-            "description" : "Bemerkninger til prøvesvaret",
-            "nullable" : true
+            "description" : "Bemerkninger til prøvesvaret"
           }
         },
-        "description" : "Provesvar for en person",
-        "nullable" : true
+        "description" : "Prøvesvar for kommunesøk"
       },
-      "ProvesvarResponse" : {
+      "ProvesvarSearchResponseForKommune" : {
         "type" : "object",
         "properties" : {
           "antallProvesvar" : {
             "type" : "integer",
             "description" : "Faktisk antall prøvesvar",
-            "format" : "int32",
-            "nullable" : true
+            "format" : "int32"
           },
           "maksAntallProvesvar" : {
             "type" : "integer",
             "description" : "Maks antall prøvesvar som kan returneres",
-            "format" : "int32",
-            "nullable" : true
+            "format" : "int32"
+          },
+          "tilMottattidspunkt" : {
+            "type" : "string",
+            "description" : "ISO-8601 format",
+            "format" : "date-time"
           },
           "provesvarliste" : {
             "type" : "array",
             "description" : "Liste over prøvesvar",
-            "nullable" : true,
             "items" : {
-              "$ref" : "#/components/schemas/Provesvar"
+              "$ref" : "#/components/schemas/ProvesvarForKommune"
             }
           }
         }
@@ -377,6 +441,130 @@
           },
           "errorJson" : {
             "type" : "string"
+          }
+        }
+      },
+      "SokParameterForKommune" : {
+        "required" : [ "kommunenr" ],
+        "type" : "object",
+        "properties" : {
+          "kommunenr" : {
+            "pattern" : "^\\d{4}$",
+            "type" : "string",
+            "description" : "Kommunenummeret til den som spør. Påkrevd."
+          },
+          "fraMottattidspunkt" : {
+            "type" : "string",
+            "description" : "Fra - Format ISO-8601 format. Støtter presisjon opp til 7 milliseconds."
+          },
+          "tilMottattidspunkt" : {
+            "type" : "string",
+            "description" : "Til - Format ISO-8601 format. Støtter presisjon opp til 7 milliseconds."
+          }
+        }
+      },
+      "Provesvar" : {
+        "type" : "object",
+        "properties" : {
+          "meldingId" : {
+            "type" : "string",
+            "description" : "Intern melding id."
+          },
+          "mottattdao" : {
+            "type" : "string",
+            "description" : "MottattDato hos FHI",
+            "format" : "date-time"
+          },
+          "mottattdatoBruktSomProvedato" : {
+            "type" : "boolean",
+            "description" : "Angir om mottattdato er satt inn som substitutt for provedato for provesvar der vi ikke mottok provedato"
+          },
+          "labHerId" : {
+            "type" : "string",
+            "description" : "Laboratoriets HER-id"
+          },
+          "labNavn" : {
+            "type" : "string",
+            "description" : "Laboratoriets navn"
+          },
+          "provenummer" : {
+            "type" : "string",
+            "description" : "Prøvesvarets prøvenummer"
+          },
+          "provedato" : {
+            "type" : "string",
+            "description" : "Når prøven ble tatt",
+            "format" : "date-time"
+          },
+          "meldingskommentar" : {
+            "type" : "string",
+            "description" : "Fritekst felt fra laboratoriet"
+          },
+          "meldingsstatus" : {
+            "type" : "string",
+            "description" : "Beskriver status fra laboratoriet. Eksempelverdier: 'Endelig','Endelig rapport', 'Endelig svarbrev', 'Foreløpig rapport','Planlagt'"
+          },
+          "fodselsnummer" : {
+            "type" : "string",
+            "description" : "Pasientens fødselsnummer"
+          },
+          "fodselsdato" : {
+            "type" : "string",
+            "description" : "Pasientens fødselsdato"
+          },
+          "fornavn" : {
+            "type" : "string",
+            "description" : "Pasientens fornavn"
+          },
+          "etternavn" : {
+            "type" : "string",
+            "description" : "Pasientens etternavn"
+          },
+          "kjonn" : {
+            "type" : "string",
+            "description" : "Pasientens kjønn"
+          },
+          "bostedskommunenummer" : {
+            "type" : "string",
+            "description" : "Pasientens bostedskommunenummer"
+          },
+          "bostedskommunenavn" : {
+            "type" : "string",
+            "description" : "Pasientens bostendskommunenavn"
+          },
+          "funn" : {
+            "type" : "array",
+            "description" : "Et eller flere funn",
+            "items" : {
+              "$ref" : "#/components/schemas/Funn"
+            }
+          },
+          "provesvarstatus" : {
+            "type" : "string",
+            "description" : "Bemerkninger til prøvesvaret"
+          }
+        },
+        "description" : "Provesvar for en person"
+      },
+      "ProvesvarResponse" : {
+        "type" : "object",
+        "properties" : {
+          "antallProvesvar" : {
+            "type" : "integer",
+            "description" : "Faktisk antall prøvesvar",
+            "format" : "int32"
+          },
+          "maksAntallProvesvar" : {
+            "type" : "integer",
+            "description" : "Maks antall prøvesvar som kan returneres",
+            "format" : "int32"
+          },
+          "provesvarliste" : {
+            "type" : "array",
+            "description" : "Liste over prøvesvar",
+            "items" : {
+              "$ref" : "#/components/schemas/Provesvar"
+            }
           }
         }
       },
