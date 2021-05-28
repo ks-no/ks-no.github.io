@@ -67,6 +67,43 @@
         }
       }
     },
+    "/dhis2-konfigurasjon/api/v1/brukere/sok/tilganger/{fiksOrganisasjonId}" : {
+      "post" : {
+        "tags" : [ "Dhis2KonfigurasjonBrukere" ],
+        "description" : "Søker etter en bruker i DHIS2",
+        "operationId" : "brukerSokTilganger",
+        "parameters" : [ {
+          "name" : "fiksOrganisasjonId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/BrukerTilgangSok"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "default" : {
+            "description" : "default response",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/BrukerTilgangSokResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/dhis2-konfigurasjon/api/v1/brukere/{id}" : {
       "put" : {
         "tags" : [ "Dhis2KonfigurasjonBrukere" ],
@@ -275,6 +312,67 @@
         }
       }
     },
+    "/dhis2-konfigurasjon/api/v1/organisasjoner/{fiksOrganisasjonId}/innreiseoppfolging/konfigurer" : {
+      "post" : {
+        "tags" : [ "Dhis2KonfigurasjonOrganisasjoner" ],
+        "description" : "Aktiverer tilgang til å hente data fra Fiks Innreise",
+        "operationId" : "aktiverInnreise",
+        "parameters" : [ {
+          "name" : "fiksOrganisasjonId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "204" : {
+            "description" : "OK"
+          },
+          "400" : {
+            "description" : "Problem med fiksOrg i input",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Mangler tilgang til å utføre handlingen",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Ikke autentisert",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Mangler info om kommunen eller rollen",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/dhis2-konfigurasjon/api/v1/organisasjoner/{fiksOrganisasjonId}/klinikermelding" : {
       "post" : {
         "tags" : [ "Dhis2KonfigurasjonOrganisasjoner" ],
@@ -459,6 +557,67 @@
         "tags" : [ "Dhis2KonfigurasjonOrganisasjoner" ],
         "description" : "Deaktiverer tilgang til å hente prøvesvar fra FHI",
         "operationId" : "deaktiverProvesvarOppslag",
+        "parameters" : [ {
+          "name" : "fiksOrganisasjonId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "204" : {
+            "description" : "OK"
+          },
+          "400" : {
+            "description" : "Problem med fiksOrg i input",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Mangler tilgang til å utføre handlingen",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Ikke autentisert",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Mangler info om kommunen eller rollen",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/dhis2-konfigurasjon/api/v1/organisasjoner/{fiksOrganisasjonId}/innreise" : {
+      "delete" : {
+        "tags" : [ "Dhis2KonfigurasjonOrganisasjoner" ],
+        "description" : "Deaktiverer tilgang til å hente data fra Fiks Innreise",
+        "operationId" : "deaktiverInnreise",
         "parameters" : [ {
           "name" : "fiksOrganisasjonId",
           "in" : "path",
@@ -957,6 +1116,94 @@
           }
         }
       },
+      "BrukerTilgangSokResponse" : {
+        "type" : "object",
+        "properties" : {
+          "roller" : {
+            "uniqueItems" : true,
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "enum" : [ "LESE_SKRIVE", "LESE", "ANDRE" ]
+            }
+          },
+          "brukergrupper" : {
+            "uniqueItems" : true,
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "enum" : [ "INNREISEOPPFOLGING", "SMITTESPORING", "SMITTESPORING_ANALYSE", "ADMIN" ]
+            }
+          },
+          "teiSearchOrganisationUnits" : {
+            "uniqueItems" : true,
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/KommuneModel"
+            }
+          },
+          "organisationUnits" : {
+            "uniqueItems" : true,
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/KommuneModel"
+            }
+          },
+          "dataViewOrganisationUnits" : {
+            "uniqueItems" : true,
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/KommuneModel"
+            }
+          },
+          "harTilgangTilAlt" : {
+            "type" : "boolean"
+          },
+          "girTilgangTilAnnetProgram" : {
+            "type" : "boolean"
+          },
+          "girTilgangTilAnnenKommune" : {
+            "type" : "boolean"
+          },
+          "flereGrupper" : {
+            "type" : "boolean"
+          },
+          "flereKommuner" : {
+            "type" : "boolean"
+          }
+        }
+      },
+      "KommuneModel" : {
+        "type" : "object",
+        "properties" : {
+          "kommunenr" : {
+            "type" : "string"
+          },
+          "id" : {
+            "type" : "string"
+          },
+          "navn" : {
+            "type" : "string"
+          },
+          "level" : {
+            "type" : "integer",
+            "format" : "int32"
+          }
+        }
+      },
+      "BrukerTilgangSok" : {
+        "type" : "object",
+        "properties" : {
+          "fnr" : {
+            "pattern" : "^[0-9]{11}$",
+            "type" : "string"
+          },
+          "brukergruppe" : {
+            "type" : "string",
+            "enum" : [ "INNREISEOPPFOLGING", "SMITTESPORING", "SMITTESPORING_ANALYSE", "ADMIN" ]
+          }
+        }
+      },
       "OppdaterBrukerRequest" : {
         "type" : "object",
         "properties" : {
@@ -1406,6 +1653,12 @@
               "type" : "string"
             }
           },
+          "innreiseEpost" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          },
           "folkeregisterAktivert" : {
             "type" : "boolean"
           },
@@ -1413,6 +1666,9 @@
             "type" : "boolean"
           },
           "klinikermeldingAktivert" : {
+            "type" : "boolean"
+          },
+          "innreiseAktivert" : {
             "type" : "boolean"
           },
           "ansvarligLegeHprNummer" : {
@@ -1473,6 +1729,14 @@
         "type" : "object",
         "properties" : {
           "epost" : {
+            "maxItems" : 100,
+            "minItems" : 0,
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          },
+          "innreiseEpost" : {
             "maxItems" : 100,
             "minItems" : 0,
             "type" : "array",
