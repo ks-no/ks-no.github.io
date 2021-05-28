@@ -21,5 +21,5 @@ Kommunikasjonen vil være kryptert med TLS. Autentisering med HelseID og Fiks in
 ## Endepunkt [(api-spec)](https://editor.swagger.io/?url=https://ks-no.github.io/api/klinikermelding-api-v1.json)
 
 For alle endepunktene hentes autentisert bruker fra access token i "Authorization"-headeren på requesten. Dette tokenet 
-må være utstedt av HelseID med aud-verdi ks:fiks, scope-verdi fhi:msisklinikermeldingapi/api og nivå 3.
+må være utstedt av HelseID med aud-verdi ks:fiks, scope-verdi fhi:msisklinikermeldingapi/api, helseid://scopes/hpr/hpr_number helseid://scopes/identity/security_level helseid://scopes/identity/pid og nivå 3.
 
