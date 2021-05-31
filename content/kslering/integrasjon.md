@@ -47,8 +47,11 @@ Når data har kommet inn kan kunde logge inn og bekrefte at dataene ser riktig u
 1. Logg inn i Azure AD portalen (https://aad.portal.azure.com)
 
 2. Gå til Basic SAML Configuration
+
 Entidy ID: https://www.kslaring.no/auth/saml2/sp/metadata.php
+
 Reply URL: https://www.kslaring.no/auth/saml2/sp/saml2/-acs.php/www.kslaring.no
+
 Logout URL: https://www.kslaring.no/auth/saml2/sp/saml2-logout.php/www.kslaring.no
 
 ![image (7)](https://user-images.githubusercontent.com/85100070/120184144-f031e880-c210-11eb-9dde-a442e8df21d4.png)
