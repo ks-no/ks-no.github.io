@@ -45,6 +45,7 @@ Når data har kommet inn kan kunde logge inn og bekrefte at dataene ser riktig u
 
 ## Single sign On (SSO)
 1.Bestilling
+
 Kommune / IKT samarbeidet sender bestilling med meta-datalenke. Gjerne i forbindelse med sak spm er opprettet under bestilling av HR API.
 
 2.Grunnoppsett
