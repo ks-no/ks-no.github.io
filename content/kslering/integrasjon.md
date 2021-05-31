@@ -42,7 +42,43 @@ Når data har kommet inn kan kunde logge inn og bekrefte at dataene ser riktig u
 
 
 ## Single sign On (SSO)
+1. Kommune / IKT samarbeidet sender bestilling med meta-datalenke. Gjerne i forbindelse med sak spm er opprettet under bestilling av HR API.
 
+2. Grunnoppsett
+
+2a. Sertifikater
+Manuelt importere rot-sertifikatet til KS fra lenke https://www.commfides.com/wp-content/uploads/2017/09/cpnrootcasha256class3.zip. Rot-sertifikatet skal installeres i mappen Trusted Root Certificates Authorities, Microsoft AD FS kan komme til å foreslå Intermediate Certification Authorities.
+
+2b. Relaying party trust
+Sette opp relying party trust basert på provider meta-data link tilsendt i e-post. Eks: https://www.kslaring.no/auth/saml2/sp/metadata.php?idp=<kommunenavn>
+
+3. Oppsett i KS Læring (utføres av KS)
+  
+4. Testing
+
+4a. Teste en pålogging via test-lenke 
+Logg inn via SSO, klikk på linken under. Bytt ut <id> med kommunenavn. 
+https://www.kslaring.no/auth/saml2/login.php?idp=<id> 
+Hvis det er feil i sertifikat, så får dere en "SAML2 exception: responder"-feil fra KS Læring. Dere må sjekke at nedlastet root-sertifikat er riktig installert og på riktig server hos dere. 
+Hvis det er feil i claims, så får dere «You have logged in succesfully but we could not find your 'eksempel' attribute to associate you to an account in Moodle.» i KS Læring, men får en feilmelding om feil mapping/attributt. Forsett til steg 3b, sjekk av attributter, via tilsendt lenke for dette. 
+
+4b. 
+– Når du er innlogget, klikk på linken under for å sjekke liste over attributter: (hos kommunen)
+https://www.kslaring.no/auth/saml2/test.php 
+
+4c - Send den faktiske responsen fra test.php til KS 
+Må sendes som tekst - IKKE skjermbilde! 
+OBS! Faktisk fødselsnummer må fjernes fra teksten! 
+
+5. Test på nytt
+Test pålogging i nettlesere fra flere produsenter - Google Chrome, Apple Safari, Microsoft Internet Explorer, Mozilla Firefox, Opera etc. 
+Dere sjekker at profilen stemmer overens med det som er forventet. 
+Hvis dere får feil i profilen, tar dere kontakt med KS, via opprettet helpdesk-sak i innledense prosess. 
+
+6. Meld i fra når ok
+Gi skriftlig beskjed til KS når alt er OK, slik at saken kan avsluttes.   
+  
+  
 ## Azure AD
 1. Logg inn i Azure AD portalen (https://aad.portal.azure.com)
 
