@@ -43,5 +43,4 @@ Når data har kommet inn kan kunde logge inn og bekrefte at dataene ser riktig u
 2. Gå til Basic SAML Configuration
 ![image (7)](https://user-images.githubusercontent.com/85100070/120184144-f031e880-c210-11eb-9dde-a442e8df21d4.png)
 
-
 3. Velg deretter "Single Sign on", og 
