@@ -37,6 +37,6 @@ Når data har kommet inn kan kunde logge inn og bekrefte at dataene ser riktig u
 7. Når testingen er ferdig og alt ser bra ut i LAB kan vi sette opp APIet i prod.
 
 
-Single sign On (SSO)
+## Single sign On (SSO)
 
 Azure AD
