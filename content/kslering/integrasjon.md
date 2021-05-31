@@ -16,10 +16,10 @@ Med bakrgunn i dette skjemaet, opprettes en sak hos KS. All skriftlig kommunikas
 
 Saksbehandler i KS-læring kan kalle inn til et teamsmøte mellom de som skal utføre det tekniske arbeidet på begge sider, hvis ønskelig. En slik henvendelse tas via saken som ble opprettet under punkt 1
 
-3.	Utvikler hos kommunen leverer endepunktene som de har utviklet, til KS-læring (via saken som ble opprettet under punkt 1)
+3. Utvikler hos kommunen leverer endepunktene som de har utviklet, til KS-læring (via saken som ble opprettet under punkt 1)
 Her må KS Læring få URLene til de obligatoriske endepuntkene. Bekreft at IP 18.185.188.40 og 18.197.107.188 er whitelisted. Hvis kommunen har satt opp Basic Auth så må vi få brukernavn og passord.
 
-4. KS læring tester alle endepunktene via curl i serveren
+4.KS læring tester alle endepunktene via curl i serveren
 
 Først testes forbindelse og hvorvidt dataene ser riktige ut. Data sammenlignes med det som står i swagger for å finne åpenbare feil.
 Eks: curl -u brukernavn:passord https://test.kommune.no/api/ksl/v3/organisation
@@ -31,7 +31,7 @@ KS legger til endepunktene Authority og Organisation i LAB og lar cron jobben kj
 Når data er på plass må vi bekrefte med bestiller at org strukturen ser riktig ut før vi begynner med Person og Employee_position
 
 
-6.	KS Læring tester endepunktene Person og Employee_position
+6. KS Læring tester endepunktene Person og Employee_position
 Når kunden/kommunen har bekreftet at organisasjonsstrukturen i LAB er riktig kan vi gå over til å teste Person og Employee_position.
 Lage dokumentasjon på snapshot
 NB! Disse endpunktene inneholder fødselsnummer så tekniker i KS må opprette en backup av databasen før testingen starter opp. 
@@ -42,10 +42,10 @@ Når data har kommet inn kan kunde logge inn og bekrefte at dataene ser riktig u
 
 
 ## Single sign On (SSO)
-1.0 Bestilling
+1. Bestilling
 Kommune / IKT samarbeidet sender bestilling med meta-datalenke. Gjerne i forbindelse med sak spm er opprettet under bestilling av HR API.
 
-2.0 Grunnoppsett
+2. Grunnoppsett
 
 Sertifikater
 Manuelt importere rot-sertifikatet til KS fra lenke https://www.commfides.com/wp-content/uploads/2017/09/cpnrootcasha256class3.zip. Rot-sertifikatet skal installeres i mappen Trusted Root Certificates Authorities, Microsoft AD FS kan komme til å foreslå Intermediate Certification Authorities.
@@ -57,17 +57,17 @@ Sette opp relying party trust basert på provider meta-data link tilsendt i e-po
   
 4. Testing
 
-4a. Teste en pålogging via test-lenke 
+  4a. Teste en pålogging via test-lenke 
 Logg inn via SSO, klikk på linken under. Bytt ut <id> med kommunenavn. 
 https://www.kslaring.no/auth/saml2/login.php?idp=<id> 
 Hvis det er feil i sertifikat, så får dere en "SAML2 exception: responder"-feil fra KS Læring. Dere må sjekke at nedlastet root-sertifikat er riktig installert og på riktig server hos dere. 
 Hvis det er feil i claims, så får dere «You have logged in succesfully but we could not find your 'eksempel' attribute to associate you to an account in Moodle.» i KS Læring, men får en feilmelding om feil mapping/attributt. Forsett til steg 3b, sjekk av attributter, via tilsendt lenke for dette. 
 
-4b. 
+  4b. 
 – Når du er innlogget, klikk på linken under for å sjekke liste over attributter: (hos kommunen)
 https://www.kslaring.no/auth/saml2/test.php 
 
-4c - Send den faktiske responsen fra test.php til KS 
+  4c. Send den faktiske responsen fra test.php til KS 
 Må sendes som tekst - IKKE skjermbilde! 
 OBS! Faktisk fødselsnummer må fjernes fra teksten! 
 
