@@ -4,7 +4,7 @@ date: 2020-10-16
 ---
 SIDEN ER UNDER UTVIKLING
 
-[create an anchor](## Prosedyre for KS Læring HR API)
+## Prosedyre for KS Læring HR API
 
 1.Kommunens representant sender inn en bestilling via bestillingsskjemaet
 https://skjema.kf.no/FormsEngine/?wizardId=5497&externalid=ks
