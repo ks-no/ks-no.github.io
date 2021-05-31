@@ -39,7 +39,9 @@ Når data har kommet inn kan kunde logge inn og bekrefte at dataene ser riktig u
 
 ## Azure AD
 1. Logg inn i Azure AD portalen (https://aad.portal.azure.com)
-![alt text](https://github.com/ks-no/ks-no.github.io/blob/source/content/kslering/image%20(7).png)
 
 2. Gå til Basic SAML Configuration
+![alt text](https://github.com/ks-no/ks-no.github.io/blob/source/content/kslering/image%20(7).png)
+
+
 3. Velg deretter "Single Sign on", og 
