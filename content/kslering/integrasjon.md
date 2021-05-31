@@ -13,6 +13,7 @@ Med bakgrunn i dette skjemaet, opprettes en sak hos KS. All skriftlig kommunikas
 
 2.Teknisk dokumentasjon til kommune og utvikler
 [ks-hrdataapi_v3-20200128.pdf](https://github.com/ks-no/ks-no.github.io/files/6569985/ks-hrdataapi_v3-20200128.pdf)
+[Presentasjon API.pptx](https://github.com/ks-no/ks-no.github.io/files/6570229/Presentasjon.API.pptx)
 
 Saksbehandler i KS-læring kan kalle inn til et teamsmøte mellom de som skal utføre det tekniske arbeidet på begge sider, hvis ønskelig. En slik henvendelse tas via saken som ble opprettet under punkt 1
 
