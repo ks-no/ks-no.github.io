@@ -1,6 +1,6 @@
 ---
 title: KS læring
-date: 2020-10-16
+date: 2021-05-31
 ---
 
 Her kommer dokumentasjon på KS læring
