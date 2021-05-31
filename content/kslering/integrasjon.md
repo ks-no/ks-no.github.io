@@ -3,7 +3,6 @@ title: KS læring integrasjon
 date: 2020-10-16
 ---
 SIDEN ER UNDER UTVIKLING
-Detaljert teknisk dokumentasjon for ansatte i KS Læring, ligger i Confluence
 
 ## Prosedyre for KS Læring HR API
 
