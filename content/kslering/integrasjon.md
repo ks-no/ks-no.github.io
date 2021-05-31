@@ -16,7 +16,6 @@ Med bakgrunn i dette skjemaet, opprettes en sak hos KS. All skriftlig kommunikas
 
 Saksbehandler i KS-læring kan kalle inn til et teamsmøte mellom de som skal utføre det tekniske arbeidet på begge sider, hvis ønskelig. En slik henvendelse tas via saken som ble opprettet under punkt 1
 
-3. 
 3. Utvikler hos kommunen leverer endepunktene som de har utviklet, til KS-læring (via saken som ble opprettet under punkt 1)
 Her må KS Læring få URLene til de obligatoriske endepuntkene. Bekreft at IP 18.185.188.40 og 18.197.107.188 er whitelisted. Hvis kommunen har satt opp Basic Auth så må vi få brukernavn og passord.
 
@@ -59,18 +58,18 @@ Sette opp relying party trust basert på provider meta-data link tilsendt i e-po
 4. Testing
 
   4a. Teste en pålogging via test-lenke 
-Logg inn via SSO, klikk på linken under. Bytt ut <id> med kommunenavn. 
-https://www.kslaring.no/auth/saml2/login.php?idp=<id> 
-Hvis det er feil i sertifikat, så får dere en "SAML2 exception: responder"-feil fra KS Læring. Dere må sjekke at nedlastet root-sertifikat er riktig installert og på riktig server hos dere. 
-Hvis det er feil i claims, så får dere «You have logged in succesfully but we could not find your 'eksempel' attribute to associate you to an account in Moodle.» i KS Læring, men får en feilmelding om feil mapping/attributt. Forsett til steg 3b, sjekk av attributter, via tilsendt lenke for dette. 
+  Logg inn via SSO, klikk på linken under. Bytt ut <id> med kommunenavn. 
+  https://www.kslaring.no/auth/saml2/login.php?idp=<id> 
+  Hvis det er feil i sertifikat, så får dere en "SAML2 exception: responder"-feil fra KS Læring. Dere må sjekke at nedlastet root-sertifikat er riktig installert og på riktig  server hos dere. 
+  Hvis det er feil i claims, så får dere «You have logged in succesfully but we could not find your 'eksempel' attribute to associate you to an account in Moodle.» i KS Læring,  men får en feilmelding om feil mapping/attributt. Forsett til steg 3b, sjekk av attributter, via tilsendt lenke for dette. 
 
   4b. 
-– Når du er innlogget, klikk på linken under for å sjekke liste over attributter: (hos kommunen)
-https://www.kslaring.no/auth/saml2/test.php 
+  –  Når du er innlogget, klikk på linken under for å sjekke liste over attributter: (hos kommunen)
+  https://www.kslaring.no/auth/saml2/test.php 
 
   4c. Send den faktiske responsen fra test.php til KS 
-Må sendes som tekst - IKKE skjermbilde! 
-OBS! Faktisk fødselsnummer må fjernes fra teksten! 
+  Må sendes som tekst - IKKE skjermbilde! 
+  OBS! Faktisk fødselsnummer må fjernes fra teksten! 
 
 5. Test på nytt
 Test pålogging i nettlesere fra flere produsenter - Google Chrome, Apple Safari, Microsoft Internet Explorer, Mozilla Firefox, Opera etc. 
