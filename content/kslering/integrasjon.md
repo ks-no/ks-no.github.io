@@ -5,7 +5,7 @@ date: 2020-10-16
 
 Dokumentasjon på integrajsoner mot KS læring kommer her.
 
-##Prosedyre for KS Læring HR API
+## Prosedyre for KS Læring HR API
 
 1. Kommunens representant sender inn en bestilling via tilleggstjenesteskjemaet
 https://skjema.kf.no/FormsEngine/?wizardId=5497&externalid=ks
