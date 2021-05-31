@@ -11,7 +11,7 @@ Detaljert teknisk dokumentasjon for ansatte i KS Læring, ligger i Confluence
 https://skjema.kf.no/FormsEngine/?wizardId=5497&externalid=ks
 Med bakrgunn i dette skjemaet, opprettes en sak hos KS. All skriftlig kommunikasjon går via den saken.
 
-2. Saksbehandler i KS-læring, kaller inn til et temasmøte mellom de som skal utføre det tekniske arbeidet på begge sider. Der gjennomgås sentrale momenter for oppsett av integrasjon.
+2. Saksbehandler i KS-læring, kaller inn til et teamsmøte mellom de som skal utføre det tekniske arbeidet på begge sider. Der gjennomgås sentrale momenter for oppsett av integrasjon.
 
 3.	Utvikler hos kommunen leverer endepunktene som de har utviklet, til KS-læring (via saken som ble opprettet under punkt 1)
 Her må KS Læring få URLene til de obligatoriske endepuntkene. Bekreft at IP 18.185.188.40 og 18.197.107.188 er whitelisted. Hvis kommunen har satt opp Basic Auth så må vi få brukernavn og passord.
