@@ -2,7 +2,7 @@
 title: KS læring integrasjon
 date: 2020-10-16
 ---
-
+SIDEN ER UNDER UTVIKLING
 Detaljert teknisk dokumentasjon for ansatte i KS Læring, ligger i Confluence
 
 ## Prosedyre for KS Læring HR API
@@ -38,3 +38,6 @@ Når data har kommet inn kan kunde logge inn og bekrefte at dataene ser riktig u
 ## Single sign On (SSO)
 
 ## Azure AD
+1. Logg inn i Azure AD portalen (https://aad.portal.azure.com)
+2. Gå til Basic SAML Configuration
+3. Velg deretter "Single Sign on", og 
