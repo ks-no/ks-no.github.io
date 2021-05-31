@@ -56,7 +56,7 @@ Logout URL: https://www.kslaring.no/auth/saml2/sp/saml2-logout.php/www.kslaring.
 
 ![image (7)](https://user-images.githubusercontent.com/85100070/120184144-f031e880-c210-11eb-9dde-a442e8df21d4.png)
 
-3. Velg deretter "Single Sign on", og 
+3. Velg deretter "Single Sign on"
 ![image (8)](https://user-images.githubusercontent.com/85100070/120185592-b3ff8780-c212-11eb-904c-54e4e96191cc.png)
 
 4. 
