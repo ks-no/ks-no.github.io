@@ -55,13 +55,14 @@ Manuelt importere rot-sertifikatet til KS fra lenke https://www.commfides.com/wp
 
 Relaying party trust
 Sette opp relying party trust basert på provider meta-data link tilsendt i e-post. Eks: https://www.kslaring.no/auth/saml2/sp/metadata.php?idp=<kommunenavn>
+Merk at det kan hende kommunesamarbeidet sitt navn skal stå istedet for kommunenavn, etter idp=
 
 3.Oppsett i KS Læring (utføres av KS)
   
 4.Testing
 
   4a. Teste en pålogging via test-lenke 
-  Logg inn via SSO, klikk på linken under. Bytt ut <id> med kommunenavn. 
+  Logg inn via SSO, klikk på linken under. Bytt ut <id> med kommunenavn/kommunesamarbeid. 
   https://www.kslaring.no/auth/saml2/login.php?idp=<id> 
   Hvis det er feil i sertifikat, så får dere en "SAML2 exception: responder"-feil fra KS Læring. Dere må sjekke at nedlastet root-sertifikat er riktig installert og på riktig  server hos dere. 
   Hvis det er feil i claims, så får dere «You have logged in succesfully but we could not find your 'eksempel' attribute to associate you to an account in Moodle.» i KS Læring,  men får en feilmelding om feil mapping/attributt. Forsett til steg 3b, sjekk av attributter, via tilsendt lenke for dette. 
