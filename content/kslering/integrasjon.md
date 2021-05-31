@@ -39,4 +39,4 @@ Når data har kommet inn kan kunde logge inn og bekrefte at dataene ser riktig u
 
 ## Single sign On (SSO)
 
-Azure AD
+## Azure AD
