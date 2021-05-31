@@ -42,9 +42,10 @@ Når data har kommet inn kan kunde logge inn og bekrefte at dataene ser riktig u
 
 
 ## Single sign On (SSO)
+1.0 Bestilling
 Kommune / IKT samarbeidet sender bestilling med meta-datalenke. Gjerne i forbindelse med sak spm er opprettet under bestilling av HR API.
 
-Grunnoppsett
+2.0 Grunnoppsett
 
 Sertifikater
 Manuelt importere rot-sertifikatet til KS fra lenke https://www.commfides.com/wp-content/uploads/2017/09/cpnrootcasha256class3.zip. Rot-sertifikatet skal installeres i mappen Trusted Root Certificates Authorities, Microsoft AD FS kan komme til å foreslå Intermediate Certification Authorities.
