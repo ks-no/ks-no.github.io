@@ -2,7 +2,7 @@
 title: KS læring integrasjon
 date: 2020-10-16
 ---
-SIDEN ER UNDER UTVIKLING
+*SIDEN ER UNDER UTVIKLING*
 
 ## Prosedyre for KS Læring HR API
 
