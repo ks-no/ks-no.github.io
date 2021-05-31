@@ -7,7 +7,7 @@ Detaljert teknisk dokumentasjon for ansatte i KS Læring, ligger i Confluence
 
 ## Prosedyre for KS Læring HR API
 
-1. Kommunens representant sender inn en bestilling via tilleggstjenesteskjemaet
+1. Kommunens representant sender inn en bestilling via skjemaet
 https://skjema.kf.no/FormsEngine/?wizardId=5497&externalid=ks
 Med bakrgunn i dette skjemaet, opprettes en sak hos KS. All skriftlig kommunikasjon går via den saken.
 
