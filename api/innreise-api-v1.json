@@ -23,6 +23,81 @@
     "description" : "API for å hente innreiser fra HDIR"
   } ],
   "paths" : {
+    "/innreise/api/v1/hentAntallInnreiser" : {
+      "post" : {
+        "tags" : [ "Innreise" ],
+        "description" : "Hente antall innreiser for gitt søkekriterie. Søkefelt må inneholde kommunenummer.",
+        "operationId" : "hentAntallInnreiser",
+        "parameters" : [ {
+          "name" : "fiksOrg",
+          "in" : "query",
+          "schema" : {
+            "pattern" : "[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}",
+            "type" : "string"
+          }
+        }, {
+          "name" : "tjeneste",
+          "in" : "query",
+          "schema" : {
+            "type" : "string",
+            "description" : "Tjeneste",
+            "enum" : [ "INNREISE", "INNREISEOPPFOLGING" ]
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/InnreiserAntallRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/InnreiserAntall"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Bad request",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Ikke autentisert",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Systemfeil",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/innreise/api/v1/hentInnreiser" : {
       "post" : {
         "tags" : [ "Innreise" ],
@@ -104,6 +179,75 @@
   },
   "components" : {
     "schemas" : {
+      "InnreiserAntall" : {
+        "required" : [ "antall" ],
+        "type" : "object",
+        "properties" : {
+          "antall" : {
+            "type" : "integer",
+            "description" : "Antall innreiser basert på filter",
+            "format" : "int32"
+          }
+        },
+        "description" : "Inneholder informasjon om antall innreiser basert på uttrekk"
+      },
+      "ErrorMessage" : {
+        "type" : "object",
+        "properties" : {
+          "timestamp" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "status" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "error" : {
+            "type" : "string"
+          },
+          "errorId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "path" : {
+            "type" : "string"
+          },
+          "originalPath" : {
+            "type" : "string"
+          },
+          "message" : {
+            "type" : "string"
+          },
+          "errorCode" : {
+            "type" : "string"
+          },
+          "errorJson" : {
+            "type" : "string"
+          }
+        }
+      },
+      "InnreiserAntallRequest" : {
+        "required" : [ "kommunenr" ],
+        "type" : "object",
+        "properties" : {
+          "kommunenr" : {
+            "pattern" : "^\\d{4}$",
+            "type" : "string",
+            "description" : "Kommunenummer"
+          },
+          "fraDato" : {
+            "type" : "string",
+            "description" : "Fra dato. Default er Date.MIN",
+            "format" : "date-time"
+          },
+          "tilDato" : {
+            "type" : "string",
+            "description" : "Til dato. Default er Date.Now()",
+            "format" : "date-time"
+          }
+        },
+        "description" : "Filter for å få ut antall innreiser"
+      },
       "Innreiser" : {
         "required" : [ "a_reference_code" ],
         "type" : "object",
@@ -331,41 +475,6 @@
           "hotel_municipality_number" : {
             "type" : "string",
             "description" : "Kommunenummer der karantenehotellet ligger. Utledet fra a_q_hotel_destination_id"
-          }
-        }
-      },
-      "ErrorMessage" : {
-        "type" : "object",
-        "properties" : {
-          "timestamp" : {
-            "type" : "integer",
-            "format" : "int64"
-          },
-          "status" : {
-            "type" : "integer",
-            "format" : "int32"
-          },
-          "error" : {
-            "type" : "string"
-          },
-          "errorId" : {
-            "type" : "string",
-            "format" : "uuid"
-          },
-          "path" : {
-            "type" : "string"
-          },
-          "originalPath" : {
-            "type" : "string"
-          },
-          "message" : {
-            "type" : "string"
-          },
-          "errorCode" : {
-            "type" : "string"
-          },
-          "errorJson" : {
-            "type" : "string"
           }
         }
       },
