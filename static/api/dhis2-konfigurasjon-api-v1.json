@@ -23,6 +23,9 @@
     "name" : "Dhis2KonfigurasjonBrukere",
     "description" : "API for konfigurasjon av DHIS2"
   }, {
+    "name" : "Dhis2KonfigurasjonInnreise",
+    "description" : "API for henting av innreiser for DHIS2"
+  }, {
     "name" : "Dhis2KonfigurasjonKlinikermelding",
     "description" : "API for sending av klinikermelding for DHIS2"
   }, {
@@ -104,6 +107,88 @@
         }
       }
     },
+    "/dhis2-konfigurasjon/api/v1/brukere/{fiksOrganisasjonId}/tilganger/{brukerId}" : {
+      "post" : {
+        "tags" : [ "Dhis2KonfigurasjonBrukere" ],
+        "description" : "Gir en bruker tilgang i DHIS2 for gitt Fiks-organisasjon",
+        "operationId" : "opprettTilgang",
+        "parameters" : [ {
+          "name" : "fiksOrganisasjonId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        }, {
+          "name" : "brukerId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "pattern" : "^[A-Za-z][A-Za-z0-9]{10}$",
+            "type" : "string"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/OpprettTilgangRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "default" : {
+            "description" : "default response",
+            "content" : {
+              "*/*" : { }
+            }
+          }
+        }
+      },
+      "delete" : {
+        "tags" : [ "Dhis2KonfigurasjonBrukere" ],
+        "description" : "Fjerner tilgang for en bruker i DHIS2 for gitt Fiks-organisasjon",
+        "operationId" : "fjernTilgang",
+        "parameters" : [ {
+          "name" : "fiksOrganisasjonId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        }, {
+          "name" : "brukerId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "pattern" : "^[A-Za-z][A-Za-z0-9]{10}$",
+            "type" : "string"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "*/*" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/FjernTilgangRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "default" : {
+            "description" : "default response",
+            "content" : {
+              "*/*" : { }
+            }
+          }
+        }
+      }
+    },
     "/dhis2-konfigurasjon/api/v1/brukere/{id}" : {
       "put" : {
         "tags" : [ "Dhis2KonfigurasjonBrukere" ],
@@ -157,6 +242,584 @@
               "application/json" : {
                 "schema" : {
                   "$ref" : "#/components/schemas/OpprettBrukerResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/dhis2-konfigurasjon/api/v1/innreise/synkroniser/status" : {
+      "post" : {
+        "tags" : [ "Dhis2KonfigurasjonInnreise" ],
+        "description" : "Henter prøvesvar synkroniseringsstatus for kommune",
+        "operationId" : "innreiseStatus",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "type" : "string"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "ok",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ProvesvarStatus"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/dhis2-konfigurasjon/api/v1/innreise/org" : {
+      "post" : {
+        "tags" : [ "Dhis2KonfigurasjonInnreise" ],
+        "description" : "Trigger innreise import",
+        "operationId" : "org",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "type" : "boolean"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "description" : "ok",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "properties" : {
+                    "links" : {
+                      "uniqueItems" : true,
+                      "type" : "array",
+                      "items" : {
+                        "type" : "object",
+                        "properties" : {
+                          "title" : {
+                            "type" : "string"
+                          },
+                          "uri" : {
+                            "type" : "string",
+                            "format" : "uri"
+                          },
+                          "uriBuilder" : {
+                            "type" : "object"
+                          },
+                          "rel" : {
+                            "type" : "string"
+                          },
+                          "rels" : {
+                            "type" : "array",
+                            "items" : {
+                              "type" : "string"
+                            }
+                          },
+                          "type" : {
+                            "type" : "string"
+                          },
+                          "params" : {
+                            "type" : "object",
+                            "additionalProperties" : {
+                              "type" : "string"
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "statusInfo" : {
+                      "type" : "object",
+                      "properties" : {
+                        "family" : {
+                          "type" : "string",
+                          "enum" : [ "INFORMATIONAL", "SUCCESSFUL", "REDIRECTION", "CLIENT_ERROR", "SERVER_ERROR", "OTHER" ]
+                        },
+                        "statusCode" : {
+                          "type" : "integer",
+                          "format" : "int32"
+                        },
+                        "reasonPhrase" : {
+                          "type" : "string"
+                        }
+                      }
+                    },
+                    "mediaType" : {
+                      "type" : "object",
+                      "properties" : {
+                        "type" : {
+                          "type" : "string"
+                        },
+                        "subtype" : {
+                          "type" : "string"
+                        },
+                        "parameters" : {
+                          "type" : "object",
+                          "additionalProperties" : {
+                            "type" : "string"
+                          }
+                        },
+                        "wildcardType" : {
+                          "type" : "boolean"
+                        },
+                        "wildcardSubtype" : {
+                          "type" : "boolean"
+                        }
+                      }
+                    },
+                    "allowedMethods" : {
+                      "uniqueItems" : true,
+                      "type" : "array",
+                      "items" : {
+                        "type" : "string"
+                      }
+                    },
+                    "cookies" : {
+                      "type" : "object",
+                      "additionalProperties" : {
+                        "type" : "object",
+                        "properties" : {
+                          "name" : {
+                            "type" : "string"
+                          },
+                          "value" : {
+                            "type" : "string"
+                          },
+                          "version" : {
+                            "type" : "integer",
+                            "format" : "int32"
+                          },
+                          "path" : {
+                            "type" : "string"
+                          },
+                          "domain" : {
+                            "type" : "string"
+                          },
+                          "comment" : {
+                            "type" : "string"
+                          },
+                          "maxAge" : {
+                            "type" : "integer",
+                            "format" : "int32"
+                          },
+                          "expiry" : {
+                            "type" : "string",
+                            "format" : "date-time"
+                          },
+                          "secure" : {
+                            "type" : "boolean"
+                          },
+                          "httpOnly" : {
+                            "type" : "boolean"
+                          }
+                        }
+                      }
+                    },
+                    "entityTag" : {
+                      "type" : "object",
+                      "properties" : {
+                        "value" : {
+                          "type" : "string"
+                        },
+                        "weak" : {
+                          "type" : "boolean"
+                        }
+                      }
+                    },
+                    "stringHeaders" : {
+                      "type" : "object",
+                      "additionalProperties" : {
+                        "type" : "array",
+                        "items" : {
+                          "type" : "string"
+                        }
+                      }
+                    },
+                    "lastModified" : {
+                      "type" : "string",
+                      "format" : "date-time"
+                    },
+                    "date" : {
+                      "type" : "string",
+                      "format" : "date-time"
+                    },
+                    "headers" : {
+                      "type" : "object",
+                      "additionalProperties" : {
+                        "type" : "array",
+                        "items" : {
+                          "type" : "object"
+                        }
+                      }
+                    },
+                    "length" : {
+                      "type" : "integer",
+                      "format" : "int32"
+                    },
+                    "location" : {
+                      "type" : "string",
+                      "format" : "uri"
+                    },
+                    "language" : {
+                      "type" : "object",
+                      "properties" : {
+                        "script" : {
+                          "type" : "string"
+                        },
+                        "country" : {
+                          "type" : "string"
+                        },
+                        "variant" : {
+                          "type" : "string"
+                        },
+                        "extensionKeys" : {
+                          "uniqueItems" : true,
+                          "type" : "array",
+                          "items" : {
+                            "type" : "string"
+                          }
+                        },
+                        "unicodeLocaleAttributes" : {
+                          "uniqueItems" : true,
+                          "type" : "array",
+                          "items" : {
+                            "type" : "string"
+                          }
+                        },
+                        "unicodeLocaleKeys" : {
+                          "uniqueItems" : true,
+                          "type" : "array",
+                          "items" : {
+                            "type" : "string"
+                          }
+                        },
+                        "iso3Language" : {
+                          "type" : "string"
+                        },
+                        "iso3Country" : {
+                          "type" : "string"
+                        },
+                        "displayLanguage" : {
+                          "type" : "string"
+                        },
+                        "displayScript" : {
+                          "type" : "string"
+                        },
+                        "displayCountry" : {
+                          "type" : "string"
+                        },
+                        "displayVariant" : {
+                          "type" : "string"
+                        },
+                        "displayName" : {
+                          "type" : "string"
+                        },
+                        "language" : {
+                          "type" : "string"
+                        }
+                      }
+                    },
+                    "metadata" : {
+                      "type" : "object",
+                      "additionalProperties" : {
+                        "type" : "array",
+                        "items" : {
+                          "type" : "object"
+                        }
+                      }
+                    },
+                    "status" : {
+                      "type" : "integer",
+                      "format" : "int32"
+                    },
+                    "entity" : {
+                      "type" : "object"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/dhis2-konfigurasjon/api/v1/innreise/provesvar/synkroniser" : {
+      "post" : {
+        "tags" : [ "Dhis2KonfigurasjonInnreise" ],
+        "description" : "Starter prøvesvar synkronisering for kommune",
+        "operationId" : "provesvarSynk",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "type" : "string"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "204" : {
+            "description" : "ok",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "properties" : {
+                    "links" : {
+                      "uniqueItems" : true,
+                      "type" : "array",
+                      "items" : {
+                        "type" : "object",
+                        "properties" : {
+                          "title" : {
+                            "type" : "string"
+                          },
+                          "uri" : {
+                            "type" : "string",
+                            "format" : "uri"
+                          },
+                          "uriBuilder" : {
+                            "type" : "object"
+                          },
+                          "rel" : {
+                            "type" : "string"
+                          },
+                          "rels" : {
+                            "type" : "array",
+                            "items" : {
+                              "type" : "string"
+                            }
+                          },
+                          "type" : {
+                            "type" : "string"
+                          },
+                          "params" : {
+                            "type" : "object",
+                            "additionalProperties" : {
+                              "type" : "string"
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "statusInfo" : {
+                      "type" : "object",
+                      "properties" : {
+                        "family" : {
+                          "type" : "string",
+                          "enum" : [ "INFORMATIONAL", "SUCCESSFUL", "REDIRECTION", "CLIENT_ERROR", "SERVER_ERROR", "OTHER" ]
+                        },
+                        "statusCode" : {
+                          "type" : "integer",
+                          "format" : "int32"
+                        },
+                        "reasonPhrase" : {
+                          "type" : "string"
+                        }
+                      }
+                    },
+                    "mediaType" : {
+                      "type" : "object",
+                      "properties" : {
+                        "type" : {
+                          "type" : "string"
+                        },
+                        "subtype" : {
+                          "type" : "string"
+                        },
+                        "parameters" : {
+                          "type" : "object",
+                          "additionalProperties" : {
+                            "type" : "string"
+                          }
+                        },
+                        "wildcardType" : {
+                          "type" : "boolean"
+                        },
+                        "wildcardSubtype" : {
+                          "type" : "boolean"
+                        }
+                      }
+                    },
+                    "allowedMethods" : {
+                      "uniqueItems" : true,
+                      "type" : "array",
+                      "items" : {
+                        "type" : "string"
+                      }
+                    },
+                    "cookies" : {
+                      "type" : "object",
+                      "additionalProperties" : {
+                        "type" : "object",
+                        "properties" : {
+                          "name" : {
+                            "type" : "string"
+                          },
+                          "value" : {
+                            "type" : "string"
+                          },
+                          "version" : {
+                            "type" : "integer",
+                            "format" : "int32"
+                          },
+                          "path" : {
+                            "type" : "string"
+                          },
+                          "domain" : {
+                            "type" : "string"
+                          },
+                          "comment" : {
+                            "type" : "string"
+                          },
+                          "maxAge" : {
+                            "type" : "integer",
+                            "format" : "int32"
+                          },
+                          "expiry" : {
+                            "type" : "string",
+                            "format" : "date-time"
+                          },
+                          "secure" : {
+                            "type" : "boolean"
+                          },
+                          "httpOnly" : {
+                            "type" : "boolean"
+                          }
+                        }
+                      }
+                    },
+                    "entityTag" : {
+                      "type" : "object",
+                      "properties" : {
+                        "value" : {
+                          "type" : "string"
+                        },
+                        "weak" : {
+                          "type" : "boolean"
+                        }
+                      }
+                    },
+                    "stringHeaders" : {
+                      "type" : "object",
+                      "additionalProperties" : {
+                        "type" : "array",
+                        "items" : {
+                          "type" : "string"
+                        }
+                      }
+                    },
+                    "lastModified" : {
+                      "type" : "string",
+                      "format" : "date-time"
+                    },
+                    "date" : {
+                      "type" : "string",
+                      "format" : "date-time"
+                    },
+                    "headers" : {
+                      "type" : "object",
+                      "additionalProperties" : {
+                        "type" : "array",
+                        "items" : {
+                          "type" : "object"
+                        }
+                      }
+                    },
+                    "length" : {
+                      "type" : "integer",
+                      "format" : "int32"
+                    },
+                    "location" : {
+                      "type" : "string",
+                      "format" : "uri"
+                    },
+                    "language" : {
+                      "type" : "object",
+                      "properties" : {
+                        "script" : {
+                          "type" : "string"
+                        },
+                        "country" : {
+                          "type" : "string"
+                        },
+                        "variant" : {
+                          "type" : "string"
+                        },
+                        "extensionKeys" : {
+                          "uniqueItems" : true,
+                          "type" : "array",
+                          "items" : {
+                            "type" : "string"
+                          }
+                        },
+                        "unicodeLocaleAttributes" : {
+                          "uniqueItems" : true,
+                          "type" : "array",
+                          "items" : {
+                            "type" : "string"
+                          }
+                        },
+                        "unicodeLocaleKeys" : {
+                          "uniqueItems" : true,
+                          "type" : "array",
+                          "items" : {
+                            "type" : "string"
+                          }
+                        },
+                        "iso3Language" : {
+                          "type" : "string"
+                        },
+                        "iso3Country" : {
+                          "type" : "string"
+                        },
+                        "displayLanguage" : {
+                          "type" : "string"
+                        },
+                        "displayScript" : {
+                          "type" : "string"
+                        },
+                        "displayCountry" : {
+                          "type" : "string"
+                        },
+                        "displayVariant" : {
+                          "type" : "string"
+                        },
+                        "displayName" : {
+                          "type" : "string"
+                        },
+                        "language" : {
+                          "type" : "string"
+                        }
+                      }
+                    },
+                    "metadata" : {
+                      "type" : "object",
+                      "additionalProperties" : {
+                        "type" : "array",
+                        "items" : {
+                          "type" : "object"
+                        }
+                      }
+                    },
+                    "status" : {
+                      "type" : "integer",
+                      "format" : "int32"
+                    },
+                    "entity" : {
+                      "type" : "object"
+                    }
+                  }
                 }
               }
             }
@@ -678,7 +1341,7 @@
       "post" : {
         "tags" : [ "Dhis2KonfigurasjonOrganisasjoner" ],
         "description" : "Gir en bruker tilgang i DHIS2 for gitt Fiks-organisasjon",
-        "operationId" : "opprettTilgang",
+        "operationId" : "opprettTilgang_1",
         "parameters" : [ {
           "name" : "fiksOrganisasjonId",
           "in" : "path",
@@ -718,7 +1381,7 @@
       "delete" : {
         "tags" : [ "Dhis2KonfigurasjonOrganisasjoner" ],
         "description" : "Fjerner tilgang for en bruker i DHIS2 for gitt Fiks-organisasjon",
-        "operationId" : "fjernTilgang",
+        "operationId" : "fjernTilgang_1",
         "parameters" : [ {
           "name" : "fiksOrganisasjonId",
           "in" : "path",
@@ -856,6 +1519,62 @@
         }
       }
     },
+    "/dhis2-konfigurasjon/api/v1/organisasjoner/{fiksOrganisasjonId}/tilganger/innreiseoppfolging" : {
+      "get" : {
+        "tags" : [ "Dhis2KonfigurasjonOrganisasjoner" ],
+        "description" : "Henter alle tilganger på gitt Fiks-organisasjon fra DHIS2",
+        "operationId" : "getTilgangerInnreise",
+        "parameters" : [ {
+          "name" : "fiksOrganisasjonId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "default" : {
+            "description" : "default response",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Tilganger"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/dhis2-konfigurasjon/api/v1/organisasjoner/{fiksOrganisasjonId}/tilganger/smittesporing" : {
+      "get" : {
+        "tags" : [ "Dhis2KonfigurasjonOrganisasjoner" ],
+        "description" : "Henter alle tilganger på gitt Fiks-organisasjon fra DHIS2",
+        "operationId" : "getTilgangerSmittesporing",
+        "parameters" : [ {
+          "name" : "fiksOrganisasjonId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "default" : {
+            "description" : "default response",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Tilganger"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/dhis2-konfigurasjon/api/v1/person/sokperson" : {
       "post" : {
         "tags" : [ "Dhis2KonfigurasjonPersonSok" ],
@@ -898,7 +1617,7 @@
       "post" : {
         "tags" : [ "Dhis2KonfigurasjonProvesvar" ],
         "description" : "Sjekker om kommunen har aktivert prøvesvar-tjenesten",
-        "operationId" : "harTilgangTilProvesok",
+        "operationId" : "harTilgang",
         "requestBody" : {
           "content" : {
             "application/json" : {
@@ -937,6 +1656,44 @@
         "tags" : [ "Dhis2KonfigurasjonProvesvar" ],
         "description" : "Søker etter prøvesvar for en person",
         "operationId" : "sok",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/SokParameter"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "401" : {
+            "description" : "Ikke tilgang",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "200" : {
+            "description" : "Prøvesvar for person",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ProvesvarResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/dhis2-konfigurasjon/api/v1/provesvar/sok" : {
+      "post" : {
+        "tags" : [ "Dhis2KonfigurasjonProvesvar" ],
+        "description" : "Søker etter prøvesvar for en person",
+        "operationId" : "sokPerson",
         "requestBody" : {
           "content" : {
             "application/json" : {
@@ -1124,7 +1881,7 @@
             "type" : "array",
             "items" : {
               "type" : "string",
-              "enum" : [ "LESE_SKRIVE", "LESE", "ANDRE" ]
+              "enum" : [ "LESE_SKRIVE", "LESE" ]
             }
           },
           "brukergrupper" : {
@@ -1132,14 +1889,7 @@
             "type" : "array",
             "items" : {
               "type" : "string",
-              "enum" : [ "INNREISEOPPFOLGING", "SMITTESPORING", "SMITTESPORING_ANALYSE", "ADMIN" ]
-            }
-          },
-          "teiSearchOrganisationUnits" : {
-            "uniqueItems" : true,
-            "type" : "array",
-            "items" : {
-              "$ref" : "#/components/schemas/KommuneModel"
+              "enum" : [ "INNREISEOPPFOLGING", "SMITTESPORING" ]
             }
           },
           "organisationUnits" : {
@@ -1149,26 +1899,19 @@
               "$ref" : "#/components/schemas/KommuneModel"
             }
           },
-          "dataViewOrganisationUnits" : {
-            "uniqueItems" : true,
-            "type" : "array",
-            "items" : {
-              "$ref" : "#/components/schemas/KommuneModel"
-            }
+          "harTilgangTilFlereBrukergrupper" : {
+            "type" : "boolean"
+          },
+          "harTilgangTilFlereKommuner" : {
+            "type" : "boolean"
           },
           "harTilgangTilAlt" : {
             "type" : "boolean"
           },
-          "girTilgangTilAnnetProgram" : {
+          "vilGiTilgangTilAnnenBrukergruppe" : {
             "type" : "boolean"
           },
-          "girTilgangTilAnnenKommune" : {
-            "type" : "boolean"
-          },
-          "flereGrupper" : {
-            "type" : "boolean"
-          },
-          "flereKommuner" : {
+          "vilGiTilgangTilAnnenKommune" : {
             "type" : "boolean"
           }
         }
@@ -1194,13 +1937,21 @@
       "BrukerTilgangSok" : {
         "type" : "object",
         "properties" : {
-          "fnr" : {
-            "pattern" : "^[0-9]{11}$",
+          "brukerId" : {
             "type" : "string"
           },
           "brukergruppe" : {
             "type" : "string",
-            "enum" : [ "INNREISEOPPFOLGING", "SMITTESPORING", "SMITTESPORING_ANALYSE", "ADMIN" ]
+            "enum" : [ "INNREISEOPPFOLGING", "SMITTESPORING" ]
+          }
+        }
+      },
+      "FjernTilgangRequest" : {
+        "type" : "object",
+        "properties" : {
+          "brukergruppe" : {
+            "type" : "string",
+            "enum" : [ "INNREISEOPPFOLGING", "SMITTESPORING" ]
           }
         }
       },
@@ -1259,6 +2010,38 @@
           "telefonnummer" : {
             "pattern" : "^[+]?[0-9]+([- ][0-9]+)*$",
             "type" : "string"
+          }
+        }
+      },
+      "OpprettTilgangRequest" : {
+        "type" : "object",
+        "properties" : {
+          "rolle" : {
+            "type" : "string",
+            "enum" : [ "LESE_SKRIVE", "LESE" ]
+          }
+        }
+      },
+      "ProvesvarStatus" : {
+        "type" : "object",
+        "properties" : {
+          "kommunenr" : {
+            "type" : "string"
+          },
+          "provesvarAktivert" : {
+            "type" : "boolean"
+          },
+          "harTilgangTilProvesvar" : {
+            "type" : "boolean"
+          },
+          "innreiseSistOppdatert" : {
+            "type" : "string"
+          },
+          "innreiseProvesvarSistOppdatert" : {
+            "type" : "string"
+          },
+          "kanStarteNyProvesvarSynk" : {
+            "type" : "boolean"
           }
         }
       },
@@ -1749,15 +2532,6 @@
           },
           "ansvarligLegeArbeidssted" : {
             "type" : "string"
-          }
-        }
-      },
-      "OpprettTilgangRequest" : {
-        "type" : "object",
-        "properties" : {
-          "rolle" : {
-            "type" : "string",
-            "enum" : [ "LESE_SKRIVE", "LESE" ]
           }
         }
       },
