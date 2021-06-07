@@ -12,7 +12,7 @@ Med bakgrunn i dette skjemaet, opprettes en sak hos KS. All skriftlig kommunikas
 
 2. Teknisk dokumentasjon til kommune og utvikler
 
-[ks-hrdataapi_v3-20200128.pdf](https://github.com/ks-no/ks-no.github.io/files/6569985/ks-hrdataapi_v3-20200128.pdf)
+[ks-hrdataapi_v3-20200128.pdf](https://github.com/ks-no/ks-no.github.io/files/6569985/ks-hrdataapi_v3-20200128.pdf) Dette dokumentet inneholder teknisk beskrivelse av KS HR API. Beskrivelsen er utarbeidet av Catalyst.
 
 [Presentasjon API.pptx](https://github.com/ks-no/ks-no.github.io/files/6570229/Presentasjon.API.pptx)
 
