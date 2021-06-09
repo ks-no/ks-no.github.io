@@ -21,7 +21,7 @@ Saksbehandler i KS-læring kan kalle inn til et teamsmøte mellom de som skal ut
 3. Utvikler hos kommunen leverer endepunktene som de har utviklet, til KS-læring (via saken som ble opprettet under punkt 1)
 Her må KS Læring få URLene til de obligatoriske endepunktene. Bekreft at IP 18.185.188.40 (jumpserver for lab-miljøet) og 18.197.107.188 (jumpserver for prod-miljøet) er whitelisted. 
 
-Loginmetode: Basic Auth med brukernavn og passord.
+**bold** Loginmetode: Basic Auth med brukernavn og passord.
 
 4. KS læring tester alle endepunktene via curl i serveren
 
