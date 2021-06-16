@@ -92,7 +92,7 @@ Dette er eksempel på oppbygging av en gyldig request med multipart
 ```
 POST /tjenester/api/forsendelse/v1/sendForsendelse HTTP/1.1
 Host: svarut.fiks.test.ks.no
-Authorization: Basic QXVkdW5UZXN0ZXJBdnNlbmRlcjpkMmUyZWY4MS02ZDI0LTRjNTctYWZhYi1mZTAxMmJhZGJjZTk=
+Authorization: Basic QXVkdW5UZXN0ZXJBdnNlbmRlcjpk.....
 Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
 
 ------WebKitFormBoundary7MA4YWxkTrZu0gW
