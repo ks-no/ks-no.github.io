@@ -83,6 +83,8 @@ Gi skriftlig beskjed til KS når alt er OK, slik at saken kan avsluttes.
   
   
 ## Azure AD
+[Se brukerveiledning her] (https://github.com/ks-no/ks-no.github.io/blob/source/content/kslering/KS%20L%C3%A6ring%20SSO%20oppsett%20(002).pdf)
+  
 1. Logg inn i Azure AD portalen (https://aad.portal.azure.com)
 
 2. Gå til Basic SAML Configuration
