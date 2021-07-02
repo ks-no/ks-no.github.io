@@ -85,27 +85,5 @@ Gi skriftlig beskjed til KS når alt er OK, slik at saken kan avsluttes.
 ## Azure AD
 Se detaljert brukerveiledning her: [KS læring oppsett (002).pdf](https://github.com/ks-no/ks-no.github.io/blob/source/content/kslering/KS%20L%C3%A6ring%20SSO%20oppsett%20(002).pdf) 
   
-1. Logg inn i Azure AD portalen (https://aad.portal.azure.com)
 
-2. Gå til Basic SAML Configuration
-
-Entidy ID: https://www.kslaring.no/auth/saml2/sp/metadata.php
-
-Reply URL: https://www.kslaring.no/auth/saml2/sp/saml2/-acs.php/www.kslaring.no
-
-Logout URL: https://www.kslaring.no/auth/saml2/sp/saml2-logout.php/www.kslaring.no
-
-![image (7)](https://user-images.githubusercontent.com/85100070/120184144-f031e880-c210-11eb-9dde-a442e8df21d4.png)
-
-3. Velg deretter "Single Sign on"
-![image (8) red](https://user-images.githubusercontent.com/85100070/120189557-ca5c1200-c217-11eb-808c-065144ab5159.png)
-
-4. 
-![image (9)](https://user-images.githubusercontent.com/85100070/120188533-887e9c00-c216-11eb-8c65-c215f1b0d332.png)
-
-5. 
-![image (10)](https://user-images.githubusercontent.com/85100070/120188771-d0052800-c216-11eb-9a40-e8668624c650.png)
-
-6. 
-![image (11)](https://user-images.githubusercontent.com/85100070/120188786-d6939f80-c216-11eb-8025-be8e50f7bc7e.png)
 
