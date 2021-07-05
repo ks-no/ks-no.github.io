@@ -109,11 +109,17 @@ Konfigurere SSO med SAML for KS læring
 * Logout Url: https://www.kslaring.no/auth/saml2/sp/saml2-logout.php/www.kslaring.no 
 
 
-Om du synker brukere fra on-prem AD, så må Azure AD Connect konfigureres slik at employeenumber attributet blir synket til Azure AD før neste steg kan gjennomføres.
+NB: Om du synker brukere fra on-prem AD, så må Azure AD Connect konfigureres slik at employeenumber attributet blir synket til Azure AD før neste steg kan gjennomføres.
 Dette er beskrevet i denne artikkelen:
 https://docs.microsoft.com/en-us/answers/questions/87509/how-do-i-sync-employee-number-attribute-from-onpre.html 
 
+![image](https://user-images.githubusercontent.com/85100070/124442809-64662b80-dd7d-11eb-8202-88c01acbcdaa.png)
 
+  ![image](https://user-images.githubusercontent.com/85100070/124442828-692adf80-dd7d-11eb-9d6b-cf394b241925.png)
+
+  ![image](https://user-images.githubusercontent.com/85100070/124442840-6c25d000-dd7d-11eb-89be-9a296ebeb89b.png)
+
+  **App Federation Metadata Url må sendes over til KS**
 
   
 
