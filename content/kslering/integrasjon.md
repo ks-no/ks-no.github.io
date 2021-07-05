@@ -89,5 +89,32 @@ Konfigurere SSO med SAML for KS læring
   
 1. Logg på https://portal.azure.com med en bruker med tilstrekkelig rettigheter til å opprette Enterprise applikasjoner.
   ![image](https://user-images.githubusercontent.com/85100070/124441985-93c86880-dd7c-11eb-9779-a44c6caaa795.png)
+  
+  ![image](https://user-images.githubusercontent.com/85100070/124442074-a6db3880-dd7c-11eb-8079-e5eb5a0f5bfd.png)
+
+  ![image](https://user-images.githubusercontent.com/85100070/124442105-ae024680-dd7c-11eb-8a19-0898cc88f206.png)
+
+  ![image](https://user-images.githubusercontent.com/85100070/124442152-ba869f00-dd7c-11eb-8261-afba55bb79db.png)
+  
+  ![image](https://user-images.githubusercontent.com/85100070/124442175-c1adad00-dd7c-11eb-8356-f7145d6e22be.png)
+
+  ![image](https://user-images.githubusercontent.com/85100070/124442200-c70af780-dd7c-11eb-8d31-5527aad05cbc.png)
+  
+  ![image](https://user-images.githubusercontent.com/85100070/124442232-ce320580-dd7c-11eb-8051-7ddb16f0d2ab.png)
+
+  ![image](https://user-images.githubusercontent.com/85100070/124442253-d38f5000-dd7c-11eb-9ff3-6400036229cb.png)
+
+* Identifier (Entity ID): https://www.kslaring.no/auth/saml2/sp/metadata.php
+* Reply URL (Assertion Consumer Service URL): https://www.kslaring.no/auth/saml2/sp/saml2-acs.php/www.kslaring.no
+* Logout Url: https://www.kslaring.no/auth/saml2/sp/saml2-logout.php/www.kslaring.no 
+
+
+Om du synker brukere fra on-prem AD, så må Azure AD Connect konfigureres slik at employeenumber attributet blir synket til Azure AD før neste steg kan gjennomføres.
+Dette er beskrevet i denne artikkelen:
+https://docs.microsoft.com/en-us/answers/questions/87509/how-do-i-sync-employee-number-attribute-from-onpre.html 
+
+
+
+  
 
 
