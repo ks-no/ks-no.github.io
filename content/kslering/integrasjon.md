@@ -113,7 +113,7 @@ NB: Om du synker brukere fra on-prem AD, så må Azure AD Connect konfigureres s
 Dette er beskrevet i denne artikkelen:
 https://docs.microsoft.com/en-us/answers/questions/87509/how-do-i-sync-employee-number-attribute-from-onpre.html 
 
-![image](https://user-images.githubusercontent.com/85100070/124442809-64662b80-dd7d-11eb-8202-88c01acbcdaa.png)
+- [x] ![image](https://user-images.githubusercontent.com/85100070/124442809-64662b80-dd7d-11eb-8202-88c01acbcdaa.png)
 
   ![image](https://user-images.githubusercontent.com/85100070/124442828-692adf80-dd7d-11eb-9d6b-cf394b241925.png)
 
