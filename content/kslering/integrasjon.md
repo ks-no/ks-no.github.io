@@ -121,6 +121,11 @@ https://docs.microsoft.com/en-us/answers/questions/87509/how-do-i-sync-employee-
 
   **App Federation Metadata Url må sendes over til KS**
 
+  ![image](https://user-images.githubusercontent.com/85100070/124443030-9bd4d800-dd7d-11eb-9916-3e0f596a73e9.png)
+
+  * Legg til rettigheter til de som skal benytte SSO mot KS læring
+  ![image](https://user-images.githubusercontent.com/85100070/124443067-a8593080-dd7d-11eb-92b5-1fb1980507bd.png)
+
   
 
 
