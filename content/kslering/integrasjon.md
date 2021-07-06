@@ -85,7 +85,7 @@ Gi skriftlig beskjed til KS når alt er OK, slik at saken kan avsluttes.
 ## Azure AD
 **Konfigurere SSO med SAML for KS læring**
 
-  Se brukerveildeningen i pdf-format her: [KS læring SSO Azure oppsett.pdf](https://github.com/ks-no/ks-no.github.io/blob/source/content/kslering/KS%20L%C3%A6ring%20SSO%20Azure%20oppsett.pdf) 
+  Se brukerveildeningen i pdf-format her: [KS læring SSO Azure oppsett2.pdf](https://github.com/ks-no/ks-no.github.io/blob/source/content/kslering/KS%20L%C3%A6ring%20SSO%20Azure%20oppsett2.pdf) 
   
 * Logg på https://portal.azure.com med en bruker med tilstrekkelig rettigheter til å opprette Enterprise applikasjoner.
   
