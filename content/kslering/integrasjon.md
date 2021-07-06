@@ -110,7 +110,7 @@ Gi skriftlig beskjed til KS når alt er OK, slik at saken kan avsluttes.
 * Logout Url: https://www.kslaring.no/auth/saml2/sp/saml2-logout.php/www.kslaring.no 
 
 
-NB: Om du synker brukere fra on-prem AD, så må Azure AD Connect konfigureres slik at employeenumber attributet blir synket til Azure AD før neste steg kan gjennomføres.
+NB: Hvis du synker brukere fra on-prem AD, så må Azure AD Connect konfigureres slik at employeenumber attributet blir synket til Azure AD før neste steg kan gjennomføres.
 Dette er beskrevet i denne artikkelen:
 https://docs.microsoft.com/en-us/answers/questions/87509/how-do-i-sync-employee-number-attribute-from-onpre.html 
 
@@ -119,15 +119,15 @@ https://docs.microsoft.com/en-us/answers/questions/87509/how-do-i-sync-employee-
 
 ![image](https://user-images.githubusercontent.com/85100070/124573345-bffdeb00-de49-11eb-97d7-4770554cdf86.png)
 
-  ![image](https://user-images.githubusercontent.com/85100070/124442840-6c25d000-dd7d-11eb-89be-9a296ebeb89b.png)
+![image](https://user-images.githubusercontent.com/85100070/124581372-584b9e00-de51-11eb-8379-fb8e2e0d73f4.png)
 
   **App Federation Metadata Url må sendes over til KS**
 
-  ![image](https://user-images.githubusercontent.com/85100070/124443030-9bd4d800-dd7d-11eb-9916-3e0f596a73e9.png)
+![image](https://user-images.githubusercontent.com/85100070/124443030-9bd4d800-dd7d-11eb-9916-3e0f596a73e9.png)
 
   * Legg til rettigheter til de som skal benytte SSO mot KS læring
   
-  ![image](https://user-images.githubusercontent.com/85100070/124443067-a8593080-dd7d-11eb-92b5-1fb1980507bd.png)
+![image](https://user-images.githubusercontent.com/85100070/124443067-a8593080-dd7d-11eb-92b5-1fb1980507bd.png)
 
   
 
