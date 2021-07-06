@@ -88,21 +88,22 @@ Gi skriftlig beskjed til KS når alt er OK, slik at saken kan avsluttes.
   Se brukerveildeningen i pdf-format her: [KS læring SSO Azure oppsett2.pdf](https://github.com/ks-no/ks-no.github.io/blob/source/content/kslering/KS%20L%C3%A6ring%20SSO%20Azure%20oppsett2.pdf) 
   
 * Logg på https://portal.azure.com med en bruker med tilstrekkelig rettigheter til å opprette Enterprise applikasjoner.
-  
-![image](https://user-images.githubusercontent.com/85100070/124441985-93c86880-dd7c-11eb-9779-a44c6caaa795.png)
-  
-![image](https://user-images.githubusercontent.com/85100070/124442074-a6db3880-dd7c-11eb-8079-e5eb5a0f5bfd.png)
+![image](https://user-images.githubusercontent.com/85100070/124573054-79a88c00-de49-11eb-842e-588f152bedfd.png)
 
-![image](https://user-images.githubusercontent.com/85100070/124442105-ae024680-dd7c-11eb-8a19-0898cc88f206.png)
+ ![image](https://user-images.githubusercontent.com/85100070/124573083-81683080-de49-11eb-9285-600f9d434007.png)
 
-![image](https://user-images.githubusercontent.com/85100070/124442152-ba869f00-dd7c-11eb-8261-afba55bb79db.png)
-  
-![image](https://user-images.githubusercontent.com/85100070/124442175-c1adad00-dd7c-11eb-8356-f7145d6e22be.png)
+![image](https://user-images.githubusercontent.com/85100070/124573110-888f3e80-de49-11eb-8ec5-cf2ecb933667.png)
 
-  
-![image](https://user-images.githubusercontent.com/85100070/124442232-ce320580-dd7c-11eb-8051-7ddb16f0d2ab.png)
+![image](https://user-images.githubusercontent.com/85100070/124573132-8fb64c80-de49-11eb-9d83-8ac79b018fe1.png)
 
-![image](https://user-images.githubusercontent.com/85100070/124442253-d38f5000-dd7c-11eb-9ff3-6400036229cb.png)
+![image](https://user-images.githubusercontent.com/85100070/124573159-947b0080-de49-11eb-992e-1a2008e06831.png)
+
+![image](https://user-images.githubusercontent.com/85100070/124573181-99d84b00-de49-11eb-8418-aa005f8dda9c.png)
+
+![image](https://user-images.githubusercontent.com/85100070/124573217-9fce2c00-de49-11eb-98e6-461a51cbfc4c.png)
+
+![image](https://user-images.githubusercontent.com/85100070/124573247-a492e000-de49-11eb-8cec-c0ea9c95ba0f.png)
+
 
 * Identifier (Entity ID): https://www.kslaring.no/auth/saml2/sp/metadata.php
 * Reply URL (Assertion Consumer Service URL): https://www.kslaring.no/auth/saml2/sp/saml2-acs.php/www.kslaring.no
@@ -113,9 +114,10 @@ NB: Om du synker brukere fra on-prem AD, så må Azure AD Connect konfigureres s
 Dette er beskrevet i denne artikkelen:
 https://docs.microsoft.com/en-us/answers/questions/87509/how-do-i-sync-employee-number-attribute-from-onpre.html 
 
-- [x] ![image](https://user-images.githubusercontent.com/85100070/124442809-64662b80-dd7d-11eb-8202-88c01acbcdaa.png)
+![image](https://user-images.githubusercontent.com/85100070/124573327-baa0a080-de49-11eb-807d-8d44842ea9dd.png)
 
-  ![image](https://user-images.githubusercontent.com/85100070/124442828-692adf80-dd7d-11eb-9d6b-cf394b241925.png)
+
+![image](https://user-images.githubusercontent.com/85100070/124573345-bffdeb00-de49-11eb-97d7-4770554cdf86.png)
 
   ![image](https://user-images.githubusercontent.com/85100070/124442840-6c25d000-dd7d-11eb-89be-9a296ebeb89b.png)
 
