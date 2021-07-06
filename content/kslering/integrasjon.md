@@ -99,7 +99,7 @@ Gi skriftlig beskjed til KS når alt er OK, slik at saken kan avsluttes.
   
 ![image](https://user-images.githubusercontent.com/85100070/124442175-c1adad00-dd7c-11eb-8356-f7145d6e22be.png)
 
-![image](https://user-images.githubusercontent.com/85100070/124442200-c70af780-dd7c-11eb-8d31-5527aad05cbc.png)
+![image](https://user-images.githubusercontent.com/85100070/124572242-cb9ce200-de48-11eb-910d-2b486d15c40a.png)
   
 ![image](https://user-images.githubusercontent.com/85100070/124442232-ce320580-dd7c-11eb-8051-7ddb16f0d2ab.png)
 
