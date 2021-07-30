@@ -49,6 +49,15 @@ Hvis noe er galt med forespørselen, altså den er ugyldig, så skal mottaker se
 ##Serverfeil
 Ved serverfeil hos mottaker skal det sendes en `no.ks.fiks.kvittering.serverfeil.v1` tilbake til sender.
 
+#Testing
+Det er opprettet en test-applikasjon, **fiks-protokoll-validator**, som kjører i KS sitt testmiljø. Med denne kan man teste protokollene mot sitt eget testmiljø ved å sende ferdige meldinger til den aktuelle FIKS-IO kontoen. 
+Fiks-protokoll-validator vil validere svaret den får tilbake via FIKS-IO og gi en pekepinn på om implementasjon fungerer som det skal.
+Applikasjonen er kun tilgjengelig i KS test-miljø: https://forvaltning.fiks.test.ks.no/fiks-validator/#/
+
+Koden for validatoren er tilgjengelig på [github](https://github.com/ks-no/fiks-protokoll-validator). 
+
+
+
 
 
 
