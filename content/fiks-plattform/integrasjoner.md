@@ -23,7 +23,7 @@ Etter organisasjonen er opprettet må den autoriseres for å kunne handle på ve
 
 ## Hvordan få tilgang i produksjon
 
-1. Bestill virksomhetsertifikat fra comfides (https://www.commfides.com/commfides-virksomhetssertifikat/) eller buypass (https://www.buypass.no/produkter/virksomhetssertifikat-esegl), hvis dere ikke har et.
+1. Bestill virksomhetsertifikat fra comfides (https://www.commfides.com/commfides-virksomhetssertifikat/) eller buypass ( https://www.buypass.no/produkter/virksomhetssertifikat-esegl ), hvis dere ikke har et.
 1. Send orgnr til oss (hovedorgnr til organisasjonen) det som ligger i virksomhetsertifikatet. fiks-utvikling@ks.no og si dere trenger tilgang til fiks.
 1. Bestill tilgang til Maskinporten/Idporten hos difi. For personinnlogga websider må du ha idporten, for applikasjoner der du ikke er logget inn via idporten må en ha maskinporten.
   * For å opprette tilgang må en bruke selvbetjening: https://samarbeid.difi.no/felleslosninger/maskinporten/ta-i-bruk-maskinporten/2-selvbetjening
