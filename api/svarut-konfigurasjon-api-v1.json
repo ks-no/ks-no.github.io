@@ -550,28 +550,48 @@
         }
       }
     },
-    "/svarut-konfigurasjon/api/v1/konto/forsidePdfPreview" : {
-      "post" : {
+    "/svarut-konfigurasjon/api/v1/konto/{kontoId}/forsidePdfPreview" : {
+      "get" : {
         "tags" : [ "Konto" ],
         "description" : "Returnerer forhåndsvisning av PDF",
         "operationId" : "getForsidePreview",
-        "requestBody" : {
-          "content" : {
-            "application/json" : {
-              "schema" : {
-                "$ref" : "#/components/schemas/ForsideKonfigurasjonJson"
-              }
-            }
-          },
-          "required" : true
-        },
+        "parameters" : [ {
+          "name" : "kontoId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
         "responses" : {
           "200" : {
             "description" : "Forhåndsvisning av PDF",
             "content" : {
               "application/pdf" : {
                 "schema" : {
-                  "type" : "string"
+                  "type" : "string",
+                  "format" : "binary"
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Kontoid ikke funnet",
+            "content" : {
+              "application/pdf" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Systemfeil",
+            "content" : {
+              "application/pdf" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
                 }
               }
             }
@@ -696,11 +716,11 @@
     "/svarut-konfigurasjon/api/v1/konto/isAuthenticated" : {
       "get" : {
         "tags" : [ "Konto" ],
-        "description" : "Autentiserer SvarUt konto",
+        "description" : "Setter servicepassord for konto",
         "operationId" : "isAuthenticated",
         "responses" : {
           "200" : {
-            "description" : "Autentisere SvarUt konto"
+            "description" : "Autentisere for SvarUt konto"
           },
           "401" : {
             "description" : "Ikke autentisert",
@@ -736,21 +756,6 @@
           "schema" : {
             "type" : "string",
             "format" : "uuid"
-          }
-        }, {
-          "name" : "privilegie",
-          "in" : "query",
-          "schema" : {
-            "type" : "array",
-            "items" : {
-              "type" : "string"
-            }
-          }
-        }, {
-          "name" : "avsender",
-          "in" : "query",
-          "schema" : {
-            "type" : "string"
           }
         } ],
         "responses" : {
@@ -1577,7 +1582,7 @@
         }
       },
       "SvarUtKonto" : {
-        "required" : [ "aktivert", "altinnAktiv", "avsender", "fiksOrgId", "gyldig", "id", "sdpAktiv", "visningsnavn" ],
+        "required" : [ "aktivert", "altinnAktiv", "avsender", "fiksOrgId", "id", "sdpAktiv", "visningsnavn" ],
         "type" : "object",
         "properties" : {
           "id" : {
@@ -1609,10 +1614,6 @@
           "aktivert" : {
             "type" : "boolean",
             "description" : "Konto status"
-          },
-          "gyldig" : {
-            "type" : "boolean",
-            "description" : "Gyldig dersom konto har gyldig forsidekonfigurasjon og printkonfigurasjon"
           },
           "forside" : {
             "$ref" : "#/components/schemas/ForsideKonfigurasjon"
@@ -1707,37 +1708,6 @@
           "passord" : {
             "type" : "string",
             "format" : "uuid"
-          }
-        }
-      },
-      "ForsideKonfigurasjonJson" : {
-        "required" : [ "avsender", "postnummer", "poststed" ],
-        "type" : "object",
-        "properties" : {
-          "avsender" : {
-            "type" : "string"
-          },
-          "orgid" : {
-            "type" : "string"
-          },
-          "adresselinje1" : {
-            "type" : "string"
-          },
-          "adresselinje2" : {
-            "type" : "string"
-          },
-          "adresselinje3" : {
-            "type" : "string"
-          },
-          "postnummer" : {
-            "pattern" : "(^\\d{4}$)|",
-            "type" : "string"
-          },
-          "poststed" : {
-            "type" : "string"
-          },
-          "forsidetekst" : {
-            "type" : "string"
           }
         }
       },
@@ -1944,7 +1914,7 @@
         "description" : "Setter servicepassord på konto"
       },
       "OpprettKontoRequest" : {
-        "required" : [ "fiksOrgId", "visningsnavn" ],
+        "required" : [ "fiksOrgId", "forside", "print", "visningsnavn" ],
         "type" : "object",
         "properties" : {
           "fiksOrgId" : {
@@ -1970,9 +1940,6 @@
           },
           "print" : {
             "$ref" : "#/components/schemas/OppdaterPrintKonfigurasjonReqest"
-          },
-          "varsling" : {
-            "$ref" : "#/components/schemas/OppdaterVarslingKonfigurasjonReqest"
           },
           "metadata" : {
             "$ref" : "#/components/schemas/Metadata"
