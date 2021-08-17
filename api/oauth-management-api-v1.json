@@ -1,0 +1,162 @@
+{
+  "openapi" : "3.0.1",
+  "info" : {
+    "title" : "KS Fiks: OAuth Token Service",
+    "description" : "Fiks OAuth Token",
+    "contact" : {
+      "name" : "Fiks-brukerstøtte",
+      "url" : "https://ks-no.github.io/",
+      "email" : "fiks-utvikling@ks.no"
+    },
+    "version" : "v1"
+  },
+  "servers" : [ {
+    "url" : "https://api.fiks.test.ks.no",
+    "description" : "KS Fiks API host",
+    "variables" : { }
+  } ],
+  "tags" : [ {
+    "name" : "Client",
+    "description" : "API for konfigurasjon av OAuth-klienter"
+  }, {
+    "name" : "Token",
+    "description" : "API for management av OAuth-tokens"
+  } ],
+  "paths" : {
+    "/management/clients" : {
+      "post" : {
+        "tags" : [ "Client" ],
+        "summary" : "Oppretter en ny OAuth-klient",
+        "operationId" : "create",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/ClientCreateRequestV1"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Den opprettede klienten",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ClientCreateResponseV1"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/management/clients/{clientId}" : {
+      "delete" : {
+        "tags" : [ "Client" ],
+        "summary" : "Sletter en eksisterende OAuth-klient",
+        "operationId" : "delete",
+        "parameters" : [ {
+          "name" : "clientId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "default" : {
+            "description" : "default response",
+            "content" : {
+              "*/*" : { }
+            }
+          }
+        }
+      }
+    },
+    "/management/tokens/{clientId}/tokens" : {
+      "get" : {
+        "tags" : [ "Token" ],
+        "summary" : "Henter tokens for gitt klient",
+        "operationId" : "getTokens",
+        "parameters" : [ {
+          "name" : "clientId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Liste over genererte tokens",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Tokens"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components" : {
+    "schemas" : {
+      "ClientCreateResponseV1" : {
+        "required" : [ "fiksOrganisasjonId", "id", "tokenLifetime" ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "fiksOrganisasjonId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "tokenLifetime" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        }
+      },
+      "ClientCreateRequestV1" : {
+        "required" : [ "fiksOrganisasjonId" ],
+        "type" : "object",
+        "properties" : {
+          "fiksOrganisasjonId" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        }
+      },
+      "Token" : {
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "revoked" : {
+            "type" : "boolean"
+          }
+        }
+      },
+      "Tokens" : {
+        "type" : "object",
+        "properties" : {
+          "tokens" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Token"
+            }
+          }
+        }
+      }
+    }
+  }
+}
