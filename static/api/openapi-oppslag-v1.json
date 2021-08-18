@@ -21,7 +21,7 @@
         "parameters" : [ {
           "name" : "dokumentId",
           "in" : "query",
-          "description" : "Id for dokumentet (formatert som <fiksOrgId>_<integrasjonId>_<meldingId>)",
+          "description" : "Id for dokumentet (formatert som <fiksOrgId>_<integrasjonId>_<meldingVersjon>_<meldingId>)",
           "required" : true,
           "schema" : {
             "type" : "string"
@@ -154,6 +154,32 @@
   },
   "components" : {
     "schemas" : {
+      "AdresseV1" : {
+        "type" : "object",
+        "properties" : {
+          "navn" : {
+            "type" : "string"
+          },
+          "adresselinje1" : {
+            "type" : "string"
+          },
+          "adresselinje2" : {
+            "type" : "string"
+          },
+          "adresselinje3" : {
+            "type" : "string"
+          },
+          "poststed" : {
+            "type" : "string"
+          },
+          "postnummer" : {
+            "type" : "string"
+          },
+          "land" : {
+            "type" : "string"
+          }
+        }
+      },
       "ByggesakDokumentV1" : {
         "type" : "object",
         "properties" : {
@@ -248,26 +274,52 @@
           }
         }
       },
-      "FakturaBelopV1" : {
+      "FakturaKontaktInformasjonV1" : {
         "type" : "object",
         "properties" : {
-          "kroner" : {
-            "type" : "integer",
-            "format" : "int32"
+          "navn" : {
+            "type" : "string"
           },
-          "ore" : {
-            "type" : "integer",
-            "format" : "int32"
+          "telefonnummer" : {
+            "type" : "string"
+          },
+          "epost" : {
+            "type" : "string"
+          },
+          "fritekst" : {
+            "type" : "string"
+          },
+          "adresse" : {
+            "$ref" : "#/components/schemas/AdresseV1"
+          }
+        }
+      },
+      "FakturaLenkeV1" : {
+        "type" : "object",
+        "properties" : {
+          "tittel" : {
+            "type" : "string"
+          },
+          "url" : {
+            "type" : "string"
           }
         }
       },
       "FakturaPdfV1" : {
         "type" : "object",
         "properties" : {
+          "url" : {
+            "type" : "string"
+          }
+        }
+      },
+      "FakturaVedleggV1" : {
+        "type" : "object",
+        "properties" : {
           "tittel" : {
             "type" : "string"
           },
-          "lenke" : {
+          "url" : {
             "type" : "string"
           }
         }
@@ -366,6 +418,21 @@
           },
           "ledetekst" : {
             "type" : "string"
+          }
+        }
+      },
+      "HistoriskFakturaV1" : {
+        "type" : "object",
+        "properties" : {
+          "tittel" : {
+            "type" : "string"
+          },
+          "url" : {
+            "type" : "string"
+          },
+          "fakturaDato" : {
+            "type" : "string",
+            "format" : "date"
           }
         }
       },
@@ -574,7 +641,8 @@
               "format" : "date"
             },
             "status" : {
-              "type" : "string"
+              "type" : "string",
+              "enum" : [ "BETALT", "IKKE_BETALT", "INKASSOVARSEL", "SENDT_INKASSO", "INKASSO" ]
             },
             "fakturaMottaker" : {
               "type" : "string"
@@ -583,13 +651,28 @@
               "type" : "string"
             },
             "belop" : {
-              "$ref" : "#/components/schemas/FakturaBelopV1"
+              "type" : "number",
+              "format" : "double"
             },
             "gebyr" : {
-              "$ref" : "#/components/schemas/FakturaBelopV1"
+              "type" : "number",
+              "format" : "double"
+            },
+            "renter" : {
+              "type" : "number",
+              "format" : "double"
+            },
+            "andreOmkostninger" : {
+              "type" : "number",
+              "format" : "double"
             },
             "totalbelop" : {
-              "$ref" : "#/components/schemas/FakturaBelopV1"
+              "type" : "number",
+              "format" : "double"
+            },
+            "utestaendeBelop" : {
+              "type" : "number",
+              "format" : "double"
             },
             "kontonummer" : {
               "type" : "string"
@@ -601,13 +684,47 @@
               "type" : "string"
             },
             "forsendelseskanal" : {
-              "type" : "string"
+              "type" : "string",
+              "enum" : [ "AVTALEGIRO", "EFAKTURA", "POST", "EPOST", "DIGIPOST", "EBOKS" ]
+            },
+            "faktura" : {
+              "$ref" : "#/components/schemas/FakturaPdfV1"
+            },
+            "fakturahistorikk" : {
+              "type" : "array",
+              "items" : {
+                "$ref" : "#/components/schemas/HistoriskFakturaV1"
+              }
+            },
+            "vedlegg" : {
+              "type" : "array",
+              "items" : {
+                "$ref" : "#/components/schemas/FakturaVedleggV1"
+              }
             },
             "lenker" : {
               "type" : "array",
               "items" : {
-                "$ref" : "#/components/schemas/FakturaPdfV1"
+                "$ref" : "#/components/schemas/FakturaLenkeV1"
               }
+            },
+            "kontaktinformasjon" : {
+              "$ref" : "#/components/schemas/FakturaKontaktInformasjonV1"
+            },
+            "kontaktinformasjonInkasso" : {
+              "$ref" : "#/components/schemas/FakturaKontaktInformasjonV1"
+            },
+            "kanBetales" : {
+              "type" : "boolean"
+            },
+            "korrigert" : {
+              "type" : "boolean"
+            },
+            "sendtTilEkstern" : {
+              "type" : "boolean"
+            },
+            "beskrivelse" : {
+              "type" : "string"
             }
           }
         } ]

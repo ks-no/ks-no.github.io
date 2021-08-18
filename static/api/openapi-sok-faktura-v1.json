@@ -1,0 +1,488 @@
+{
+  "openapi" : "3.0.1",
+  "info" : {
+    "title" : "KS Fiks: Innsyn Faktura-søk service",
+    "contact" : {
+      "name" : "Fiks-brukerstøtte",
+      "url" : "https://ks-no.github.io/",
+      "email" : "fiks-utvikling@ks.no"
+    },
+    "version" : "v1"
+  },
+  "servers" : [ {
+    "url" : "https://api.fiks.test.ks.no/"
+  } ],
+  "paths" : {
+    "/innsyn-sok/api/v1/faktura/sok" : {
+      "post" : {
+        "tags" : [ "FakturaSok" ],
+        "summary" : "Søk",
+        "operationId" : "fakturaSok",
+        "parameters" : [ {
+          "name" : "term",
+          "in" : "query",
+          "description" : "Søkeord",
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "fra",
+          "in" : "query",
+          "description" : "Index for det første søketreffet som skal returneres",
+          "schema" : {
+            "type" : "integer",
+            "format" : "int32",
+            "default" : 0
+          }
+        }, {
+          "name" : "antall",
+          "in" : "query",
+          "description" : "Antall søketreff som skal returneres",
+          "schema" : {
+            "type" : "integer",
+            "format" : "int32",
+            "default" : 50
+          }
+        }, {
+          "name" : "sortering",
+          "in" : "query",
+          "description" : "Skal søkeresultatet sorteres på dato heller enn relevans? Relevans-basert sortering er default",
+          "schema" : {
+            "type" : "string",
+            "enum" : [ "DATO_ASC", "DATO_DESC", "RELEVANS" ]
+          }
+        }, {
+          "name" : "akseptertMeldingVersjon",
+          "in" : "query",
+          "description" : "Akseptert melding-versjon. Kan settes flere ganger. Innsyn vil nedgradere treff på høyere versjon til den høyeste av de aksepterte versjonen (om det er oppgitt flere på samme dokumenttype)",
+          "schema" : {
+            "uniqueItems" : true,
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "enum" : [ "fakturaV1", "saksmappeV1", "journalpostV1", "forsendelseV1", "forsendelseV2", "byggesakV1", "matrikkelenhetV1", "innsendtskjemaV1", "skjemakladdV1", "kommunaltjenesteV1" ]
+            }
+          }
+        }, {
+          "name" : "onBehalfOf",
+          "in" : "query",
+          "description" : "Organisasjonsnummer for organisasjonen dette søket skal utføres på vegne av. Krever at autentisert bruker har rettigheter til å agere på vegne av denne organisasjonen.",
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "requestBody" : {
+          "description" : "Filtere som begrenser resultatsettet",
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/FakturaFilter"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "default" : {
+            "description" : "default response",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/FakturaSokeresultat"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components" : {
+    "schemas" : {
+      "AdresseV1" : {
+        "type" : "object",
+        "properties" : {
+          "navn" : {
+            "type" : "string"
+          },
+          "adresselinje1" : {
+            "type" : "string"
+          },
+          "adresselinje2" : {
+            "type" : "string"
+          },
+          "adresselinje3" : {
+            "type" : "string"
+          },
+          "poststed" : {
+            "type" : "string"
+          },
+          "postnummer" : {
+            "type" : "string"
+          },
+          "land" : {
+            "type" : "string"
+          }
+        }
+      },
+      "ArstallAggregering" : {
+        "type" : "object",
+        "properties" : {
+          "arstall" : {
+            "type" : "string"
+          },
+          "antallTreff" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        }
+      },
+      "FakturaAggregeringer" : {
+        "type" : "object",
+        "properties" : {
+          "fiksOrganisasjon" : {
+            "uniqueItems" : true,
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/FiksOrganisasjonAggregering"
+            }
+          },
+          "fakturastatus" : {
+            "uniqueItems" : true,
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/FakturastatusAggregering"
+            }
+          },
+          "arstall" : {
+            "uniqueItems" : true,
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/ArstallAggregering"
+            }
+          }
+        }
+      },
+      "FakturaKontaktInformasjonV1" : {
+        "type" : "object",
+        "properties" : {
+          "navn" : {
+            "type" : "string"
+          },
+          "telefonnummer" : {
+            "type" : "string"
+          },
+          "epost" : {
+            "type" : "string"
+          },
+          "fritekst" : {
+            "type" : "string"
+          },
+          "adresse" : {
+            "$ref" : "#/components/schemas/AdresseV1"
+          }
+        }
+      },
+      "FakturaLenkeV1" : {
+        "type" : "object",
+        "properties" : {
+          "tittel" : {
+            "type" : "string"
+          },
+          "url" : {
+            "type" : "string"
+          }
+        }
+      },
+      "FakturaPdfV1" : {
+        "type" : "object",
+        "properties" : {
+          "url" : {
+            "type" : "string"
+          }
+        }
+      },
+      "FakturaSokeresultat" : {
+        "type" : "object",
+        "properties" : {
+          "antallTreff" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "treffMedHoyereInnloggingsniva" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "treff" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/MeldingV1FakturaV1"
+            }
+          },
+          "forespurtFra" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "forespurtAntall" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "aggregeringer" : {
+            "$ref" : "#/components/schemas/FakturaAggregeringer"
+          }
+        }
+      },
+      "FakturaVedleggV1" : {
+        "type" : "object",
+        "properties" : {
+          "tittel" : {
+            "type" : "string"
+          },
+          "url" : {
+            "type" : "string"
+          }
+        }
+      },
+      "FakturastatusAggregering" : {
+        "type" : "object",
+        "properties" : {
+          "status" : {
+            "type" : "string"
+          },
+          "antallTreff" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        }
+      },
+      "FiksOrganisasjon" : {
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "visningsnavn" : {
+            "type" : "string"
+          }
+        }
+      },
+      "FiksOrganisasjonAggregering" : {
+        "type" : "object",
+        "properties" : {
+          "fiksOrg" : {
+            "$ref" : "#/components/schemas/FiksOrganisasjon"
+          },
+          "antallTreff" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        }
+      },
+      "Forelder" : {
+        "type" : "object",
+        "properties" : {
+          "type" : {
+            "type" : "string",
+            "enum" : [ "faktura", "saksmappe", "journalpost", "byggesak", "innsendtskjema", "skjemakladd", "matrikkelenhet", "kommunaltjeneste", "forsendelse" ]
+          },
+          "dokumentId" : {
+            "type" : "string"
+          }
+        }
+      },
+      "HistoriskFakturaV1" : {
+        "type" : "object",
+        "properties" : {
+          "tittel" : {
+            "type" : "string"
+          },
+          "url" : {
+            "type" : "string"
+          },
+          "fakturaDato" : {
+            "type" : "string",
+            "format" : "date"
+          }
+        }
+      },
+      "MeldingV1FakturaV1" : {
+        "type" : "object",
+        "properties" : {
+          "meldingId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "dokumentId" : {
+            "type" : "string"
+          },
+          "sikkerhetsniva" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "fiksOrganisasjon" : {
+            "$ref" : "#/components/schemas/FiksOrganisasjon"
+          },
+          "sorteringDato" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "korrelasjonId" : {
+            "type" : "string"
+          },
+          "forelder" : {
+            "$ref" : "#/components/schemas/Forelder"
+          },
+          "eksternRef" : {
+            "type" : "string"
+          },
+          "meldingMetadata" : {
+            "$ref" : "#/components/schemas/fakturaV1"
+          },
+          "score" : {
+            "type" : "number",
+            "format" : "float"
+          }
+        }
+      },
+      "fakturaV1" : {
+        "type" : "object",
+        "properties" : {
+          "tittel" : {
+            "type" : "string"
+          },
+          "fakturaDato" : {
+            "type" : "string",
+            "format" : "date"
+          },
+          "forfallDato" : {
+            "type" : "string",
+            "format" : "date"
+          },
+          "status" : {
+            "type" : "string",
+            "enum" : [ "BETALT", "IKKE_BETALT", "INKASSOVARSEL", "SENDT_INKASSO", "INKASSO" ]
+          },
+          "fakturaMottaker" : {
+            "type" : "string"
+          },
+          "betalesTil" : {
+            "type" : "string"
+          },
+          "belop" : {
+            "type" : "number",
+            "format" : "double"
+          },
+          "gebyr" : {
+            "type" : "number",
+            "format" : "double"
+          },
+          "renter" : {
+            "type" : "number",
+            "format" : "double"
+          },
+          "andreOmkostninger" : {
+            "type" : "number",
+            "format" : "double"
+          },
+          "totalbelop" : {
+            "type" : "number",
+            "format" : "double"
+          },
+          "utestaendeBelop" : {
+            "type" : "number",
+            "format" : "double"
+          },
+          "kontonummer" : {
+            "type" : "string"
+          },
+          "kid" : {
+            "type" : "string"
+          },
+          "fakturanummer" : {
+            "type" : "string"
+          },
+          "forsendelseskanal" : {
+            "type" : "string",
+            "enum" : [ "AVTALEGIRO", "EFAKTURA", "POST", "EPOST", "DIGIPOST", "EBOKS" ]
+          },
+          "faktura" : {
+            "$ref" : "#/components/schemas/FakturaPdfV1"
+          },
+          "fakturahistorikk" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/HistoriskFakturaV1"
+            }
+          },
+          "vedlegg" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/FakturaVedleggV1"
+            }
+          },
+          "lenker" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/FakturaLenkeV1"
+            }
+          },
+          "kontaktinformasjon" : {
+            "$ref" : "#/components/schemas/FakturaKontaktInformasjonV1"
+          },
+          "kontaktinformasjonInkasso" : {
+            "$ref" : "#/components/schemas/FakturaKontaktInformasjonV1"
+          },
+          "kanBetales" : {
+            "type" : "boolean"
+          },
+          "korrigert" : {
+            "type" : "boolean"
+          },
+          "sendtTilEkstern" : {
+            "type" : "boolean"
+          },
+          "beskrivelse" : {
+            "type" : "string"
+          },
+          "versjon" : {
+            "type" : "string",
+            "enum" : [ "fakturaV1", "saksmappeV1", "journalpostV1", "forsendelseV1", "forsendelseV2", "byggesakV1", "matrikkelenhetV1", "innsendtskjemaV1", "skjemakladdV1", "kommunaltjenesteV1" ]
+          },
+          "type" : {
+            "type" : "string",
+            "enum" : [ "faktura", "saksmappe", "journalpost", "byggesak", "innsendtskjema", "skjemakladd", "matrikkelenhet", "kommunaltjeneste", "forsendelse" ]
+          }
+        },
+        "description" : "Faktura"
+      },
+      "FakturaFilter" : {
+        "type" : "object",
+        "properties" : {
+          "fiksOrganisasjon" : {
+            "uniqueItems" : true,
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "format" : "uuid"
+            }
+          },
+          "status" : {
+            "uniqueItems" : true,
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "enum" : [ "BETALT", "IKKE_BETALT", "INKASSOVARSEL", "SENDT_INKASSO", "INKASSO" ]
+            }
+          },
+          "arstall" : {
+            "uniqueItems" : true,
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          }
+        }
+      }
+    }
+  }
+}

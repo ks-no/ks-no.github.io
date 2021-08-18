@@ -85,6 +85,7 @@ Et eksempel er vist under:
   "mimetype": "application/pdf",
   "ttl": 86400,
   "sikkerhetsniva": 3,
+  "korrelasjonsid": "fa315d73-7ed0-4192-99d1-4049f47e2200"
   "eksponertFor": [
     { "type": "PERSON", "fnr": "12345679810" },
     { "type": "INTEGRASJON", "id": "249e3fde-e3d8-435e-835f-16a432598c10" },
@@ -99,6 +100,7 @@ Et eksempel er vist under:
 - TTL - Hvor mange sekunder etter opplasting dokumentet skal være tilgjengelig. Ved utløp blir dokumentet utilgjengeliggjort og slettes.
 - Sikkerhetsniva - Sikkerhetsnivå som skal kreves ved nedlasting av dokument. Ved nivå 4 kreves kryptering hos klient før opplasting.
 Se https://eid.difi.no/nb/sikkerhet-og-informasjonskapsler/ulike-sikkerhetsniva
+- Korrelasjonsid - Id som kan brukes til å indikere at flere dokumenter hører sammen. Feltet er ikke påkrevd.
 - Eksponert for - Liste over aktører som skal ha tilgang til å laste ned dokumentet. Kan være følgende typer:
     - Person - Eksponeres for en persons fødselsnummer. En gyldig ID-porten innlogging for en person med dette 
     fødselsnummeret vil ha lov til å laste ned dokumentet.
@@ -124,6 +126,26 @@ Public-keyen kan hentes med en GET-request mot følgende endepunkt:
 - Test: ``https://api.fiks.test.ks.no/dokumentlager/api/v1/public-key``
 - Prod: ``https://api.fiks.ks.no/dokumentlager/api/v1/public-key``
 
+##### Responskoder
+- 201 Created - Dokumentet ble lastet opp. 
+  Body inneholder metadata:
+  ```json
+  {
+    "id": "5636b391-41e7-4504-ab3c-1f3df122b483",
+    "dokumentnavn": "dokument.pdf",
+    "mimeType": "application/pdf",
+    "ukryptertStorrelse": 29765,
+    "kryptertStorrelse": 30680
+  }
+  ```
+
+  Url for personnedlasting returneres i Location-header:
+  `Location: https://minside.kommune.no/dokumentlager/nedlasting/5636b391-41e7-4504-ab3c-1f3df122b483`
+- 400 Bad Request - Request er ikke i henhold til spesifikasjonen.
+- 403 Forbidden - Integrasjonen har ikke nødvendige tilganger til å laste opp dokumenter på spesifisert konto og organisasjon.
+- 404 Not Found - Fant ingen konto med spesifisert id for organisasjonen.
+- 410 Gone - Konto er slettet.
+
 ##### Eksempel (cURL)
 
 ```bash
@@ -144,3 +166,25 @@ Dette gjøres med en DELETE-request mot følgende URL:
 - Test: ``https://api.fiks.test.ks.no/dokumentlager/api/v1/{fiksOrganisasjonId}/kontoer/{kontoId}/dokumenter/{dokumentId}``
 - Prod: ``https://api.fiks.ks.no/dokumentlager/api/v1/{fiksOrganisasjonId}/kontoer/{kontoId}/dokumenter/{dokumentId}``
 
+##### Responskoder
+- 200 OK - Dokumentet med spesifisert id ble slettet. Tom body.
+- 400 Bad Request - Request er ikke i henhold til spesifikasjonen.
+- 403 Forbidden - Integrasjonen har ikke nødvendige tilganger til å slette dokumenter på spesifisert konto og organisasjon.
+- 404 Not Found - Fant ikke et dokument med oppgitt id, eller spesifisert konto og organisasjon.
+- 410 Gone - Dokumentet er allerede slettet, eller konto er slettet.
+
+#### Feilmeldinger
+Feilmeldinger (HTTP status 4xx og 5xx) returnerer body på følgende format:
+```json
+{
+  "timestamp": 1620041021710,
+  "status": 400,
+  "error": "Bad Request",
+  "errorId": "3c313e30-e5ee-47c9-8a33-cabffc999f0b",
+  "path": "/dokumentlager/api/v1/d9444a65-396e-4092-af2a-55fa090dbd59/kontoer/db00967c-d57f-4f4d-aa9b-ba1faa20ce22/dokumenter/",
+  "originalPath": null,
+  "message": "Beskrivelse av feilen",
+  "errorCode": "",
+  "errorJson": null
+}
+```

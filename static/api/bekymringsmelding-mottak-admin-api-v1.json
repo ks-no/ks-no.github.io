@@ -62,8 +62,7 @@
           "description" : "Antall siste dager det skal søkes etter",
           "schema" : {
             "type" : "integer",
-            "format" : "int32",
-            "default" : 60
+            "format" : "int32"
           }
         }, {
           "name" : "fra",
@@ -104,10 +103,7 @@
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "type" : "array",
-                  "items" : {
-                    "$ref" : "#/components/schemas/MeldingApiModel"
-                  }
+                  "$ref" : "#/components/schemas/MeldingResultApiModel"
                 }
               }
             }
@@ -179,13 +175,123 @@
             "content" : {
               "application/json" : {
                 "schema" : {
+                  "$ref" : "#/components/schemas/StatistikkBydelResultApiModel"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/bekymringsmelding/api/v1/admin/statistikk/skjematyper" : {
+      "get" : {
+        "tags" : [ "Bekymringsmelding admin" ],
+        "description" : "Henter statistikk for skjematyper",
+        "operationId" : "getStatistikkSkjematyper",
+        "parameters" : [ {
+          "name" : "sisteDager",
+          "in" : "query",
+          "schema" : {
+            "type" : "integer",
+            "format" : "int32"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Statistikk for skjematyper hentet",
+            "content" : {
+              "application/json" : {
+                "schema" : {
                   "type" : "array",
                   "items" : {
-                    "$ref" : "#/components/schemas/StatistikkBydelApiModel"
+                    "$ref" : "#/components/schemas/StatistikkSkjematypeApiModel"
                   }
                 }
               }
             }
+          }
+        }
+      }
+    },
+    "/bekymringsmelding/api/v1/admin/status/{bekymringsmeldingId}/{state}" : {
+      "put" : {
+        "tags" : [ "Bekymringsmelding admin" ],
+        "description" : "Oppdaterer status på en ordre",
+        "operationId" : "oppdaterStatusByBekymringsmeldingId",
+        "parameters" : [ {
+          "name" : "bekymringsmeldingId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        }, {
+          "name" : "state",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "204" : {
+            "description" : "Status oppdatert"
+          },
+          "400" : {
+            "description" : "Feil meldingstype for ordre tilhørende angitt meldingId."
+          }
+        }
+      }
+    },
+    "/bekymringsmelding/api/v1/admin/status" : {
+      "post" : {
+        "tags" : [ "Bekymringsmelding admin" ],
+        "description" : "Oppdaterer status på en ordre",
+        "operationId" : "oppdaterStatusByMeldingId",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/StatusModel"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "204" : {
+            "description" : "Status oppdatert"
+          },
+          "400" : {
+            "description" : "Feil meldingstype for ordre tilhørende angitt meldingId."
+          }
+        }
+      }
+    },
+    "/bekymringsmelding/api/v1/admin/send/{bekymringsmeldingId}" : {
+      "post" : {
+        "tags" : [ "Bekymringsmelding admin" ],
+        "description" : "Sender en bestemt ordre på nytt til fagsystem eller print basert på ID",
+        "operationId" : "sendOrdreById",
+        "parameters" : [ {
+          "name" : "bekymringsmeldingId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "400" : {
+            "description" : "Ordre er allerede levert"
+          },
+          "404" : {
+            "description" : "Ingen ordre funnet"
+          },
+          "204" : {
+            "description" : "Send ordre."
           }
         }
       }
@@ -218,7 +324,7 @@
             "type" : "string",
             "format" : "uuid"
           },
-          "feilmelding" : {
+          "beskrivelse" : {
             "type" : "string"
           }
         }
@@ -253,11 +359,31 @@
           }
         }
       },
+      "MeldingResultApiModel" : {
+        "required" : [ "meldinger", "totaltAntallTreff" ],
+        "type" : "object",
+        "properties" : {
+          "totaltAntallTreff" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "meldinger" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/MeldingApiModel"
+            }
+          }
+        }
+      },
       "StatistikkApiModel" : {
-        "required" : [ "antallBekymringsmeldingerTotalt", "antallIkkeBekreftetFagsystem", "antallIkkeLevertPost", "antallIkkeSendt", "antallLevertFagsystemSisteDager", "antallLevertPrintSisteDager", "antallOffentligBekymringsmeldingerSisteDager", "antallPrivateBekymringsmeldingerSisteDager", "sisteDager" ],
+        "required" : [ "antallBekymringsmeldingerTotalt", "antallIkkeBekreftetFagsystem", "antallIkkeLevertPost", "antallIkkeSendt", "antallLevertFiksIOSisteDager", "antallLevertManuellMottakSisteDager", "antallLevertPrintSisteDager", "antallLevertSvarinnSisteDager", "antallOffentligBekymringsmeldingerSisteDager", "antallPrivateBekymringsmeldingerSisteDager", "antallUbekreftedeBekymringsmeldingerTotalt", "sisteDager" ],
         "type" : "object",
         "properties" : {
           "antallBekymringsmeldingerTotalt" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "antallUbekreftedeBekymringsmeldingerTotalt" : {
             "type" : "integer",
             "format" : "int32"
           },
@@ -273,7 +399,15 @@
             "type" : "integer",
             "format" : "int32"
           },
-          "antallLevertFagsystemSisteDager" : {
+          "antallLevertFiksIOSisteDager" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "antallLevertManuellMottakSisteDager" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "antallLevertSvarinnSisteDager" : {
             "type" : "integer",
             "format" : "int32"
           },
@@ -325,7 +459,7 @@
         }
       },
       "StatistikkBydelApiModel" : {
-        "required" : [ "bydelRessursId", "bydelsnavn", "fiksOrgId", "kontaktinformasjon", "statistikk", "varseleposter" ],
+        "required" : [ "bydelRessursId", "bydelsnavn", "fiksOrgId", "kontaktinformasjon", "kontoType", "statistikk", "varseleposter" ],
         "type" : "object",
         "properties" : {
           "bydelsnavn" : {
@@ -342,6 +476,9 @@
             "type" : "string",
             "format" : "uuid"
           },
+          "kontoType" : {
+            "type" : "string"
+          },
           "varseleposter" : {
             "type" : "array",
             "items" : {
@@ -353,21 +490,79 @@
           }
         }
       },
+      "StatistikkBydelResultApiModel" : {
+        "required" : [ "statistikkBydeler", "totaltAntallTreff" ],
+        "type" : "object",
+        "properties" : {
+          "totaltAntallTreff" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "statistikkBydeler" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/StatistikkBydelApiModel"
+            }
+          }
+        }
+      },
       "StatistikkEnkelApiModel" : {
-        "required" : [ "antallBekymringsmeldingerTotalt", "antallLevertFagsystem", "antallLevertPrint" ],
+        "required" : [ "antallBekymringsmeldingerTotalt", "antallLevertFagsystem", "antallLevertPrint", "antallUbekreftedeBekymringsmeldingerTotalt" ],
         "type" : "object",
         "properties" : {
           "antallBekymringsmeldingerTotalt" : {
             "type" : "integer",
             "format" : "int32"
           },
-          "antallLevertPrint" : {
+          "antallUbekreftedeBekymringsmeldingerTotalt" : {
             "type" : "integer",
             "format" : "int32"
           },
           "antallLevertFagsystem" : {
             "type" : "integer",
             "format" : "int32"
+          },
+          "antallLevertPrint" : {
+            "type" : "integer",
+            "format" : "int32"
+          }
+        }
+      },
+      "StatistikkSkjematypeApiModel" : {
+        "required" : [ "antallBekymringsmeldingerTotalt", "antallOffentligBekymringsmeldinger", "antallPrivatBekymringsmeldinger", "dato" ],
+        "type" : "object",
+        "properties" : {
+          "antallBekymringsmeldingerTotalt" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "antallPrivatBekymringsmeldinger" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "antallOffentligBekymringsmeldinger" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "dato" : {
+            "type" : "string"
+          }
+        }
+      },
+      "StatusModel" : {
+        "required" : [ "fiksIoKonto", "meldingId", "meldingstype" ],
+        "type" : "object",
+        "properties" : {
+          "meldingId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "meldingstype" : {
+            "type" : "string"
+          },
+          "fiksIoKonto" : {
+            "type" : "string",
+            "format" : "uuid"
           }
         }
       }

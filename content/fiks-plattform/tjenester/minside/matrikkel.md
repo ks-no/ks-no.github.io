@@ -1,7 +1,7 @@
 ---
 title: Matrikkel
 date: 2019-08-14
-aliases: [/fiks-platform/tjenester/matrikkel]
+aliases: [/fiks-platform/tjenester/matrikkel, /fiks-plattform/tjenester/matrikkel]
 ---
 
 **STATUS: under utvikling**

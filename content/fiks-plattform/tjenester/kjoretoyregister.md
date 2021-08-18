@@ -5,7 +5,7 @@ aliases: [/fiks-platform/tjenester/kjoretoyregister]
 ---
 
 ### Hva er Fiks Kjøretøyregister
-Fiks Kjøretøyregister er en tjeneste for å gjøre oppslag i Statens Vegvesen sitt [Kjøretøy register](https://vegvesen.github.io/ak-api/) (Autosys). Fiks Kjøretøyregister speiler [Kjøretøyoppslag](https://vegvesen.github.io/ak-api/api/#kjoretoyoppslag) tjenesten til Statens Vegvesen på Fiks plattformen. Den gjør det mulig å slå opp et eller flere kjøretøy basert på *kjennemerke*, *kuid* (svv-identifikator), eller *understellsnummer*. Oppslaget vil gi informasjon om kjøretøyet og eierforhold på nåværende tidspunkt, eller på et spesifisert tidspunkt som angis i søket.  
+Fiks Kjøretøyregister er en tjeneste for å gjøre oppslag i Statens Vegvesen sitt [Kjøretøy register](https://vegvesen.github.io/ak-api/) (Autosys). Fiks Kjøretøyregister speiler [Kjøretøyoppslag](https://vegvesen.github.io/ak-api/api/#kjoretoyoppslag) og [Kjøretøysøk](https://vegvesen.github.io/ak-api/api/#kjoretoysok) tjenestene til Statens Vegvesen på Fiks plattformen. Den gjør det mulig å slå opp et eller flere kjøretøy basert på *kjennemerke*, *kuid* (svv-identifikator), eller *understellsnummer*. Oppslaget vil gi informasjon om kjøretøyet og eierforhold på nåværende tidspunkt, eller på et spesifisert tidspunkt som angis i søket.  
 
 ### Hvordan tar jeg i bruk Fiks Kjøretøyregister
 
@@ -36,4 +36,10 @@ Oppslag på *understellsummer* utføres med en `GET` request. Oppslag på *kjenn
 ]
 ```
 
+For kjøretøysøk gjøres det en `GET` request med query parameter. F.eks for å søke på eier-navn:
+
+  * `/rest/distribusjon/kjoretoy/v2.0/sok/eiernavn?navn=[navn]`
+
 I test miljøet (`https://api.fiks.test.ks.no/kjoretoyregister/api/{fixOrgId}`) går alle api kall mot et syntetisk datasett hos SVV (https://vegvesen.github.io/ak-api/envs/#sisdinky). Informasjon om kjøretøy som inngår i det syntetiske datasettet finnes [her](https://vegvesen.github.io/ak-api/filer/testdata-sisdinky.xlsx).
+
+Hvis du opplever feil som blir returnert med json fra SVV med f.eks en svvguid kan en kontakte akfsupport@vegvesen.no.

@@ -1,7 +1,7 @@
 ---
 title: Kommunale Tjenester
 date: 2019-08-14
-aliases: [/fiks-platform/tjenester/kommunaletjenester]
+aliases: [/fiks-platform/tjenester/kommunaletjenester, /fiks-plattform/tjenester/kommunaletjenester]
 ---
 
 Mange kommuner som tar i bruk Fiks Minside har eksisterende innbyggerrettede tjenester, enten egenutviklet eller innkjøpt fra leverandør. "Kommunale tjenester" lar kommunen eksponere disse tjenestene for sine innbyggere på minside.kommune.no, som illustrert i skjermbildet under:

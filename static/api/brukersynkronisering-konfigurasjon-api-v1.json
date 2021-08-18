@@ -1,0 +1,237 @@
+{
+  "openapi" : "3.0.1",
+  "info" : {
+    "title" : "KS fiks: brukersynkronisering konfigurasjon service",
+    "description" : "Konfigurasjon av brukersynkrionisering",
+    "contact" : {
+      "name" : "KS fiks brukerstøtte",
+      "url" : "https://www.ks.no/fagomrader/digitalisering/utviklingsprosjekter",
+      "email" : "fiks-utvikling@ks.no"
+    },
+    "version" : "v1"
+  },
+  "servers" : [ {
+    "url" : "https://api.fiks.ks.no",
+    "description" : "KS Fiks API host",
+    "variables" : { }
+  }, {
+    "url" : "https://api.test.fiks.ks.no",
+    "description" : "KS Fiks TEST API host",
+    "variables" : { }
+  } ],
+  "tags" : [ {
+    "name" : "brukersynkronisering-konfigurasjon"
+  } ],
+  "paths" : {
+    "/brukersynkronisering/konfigurasjon/api/v1/konfigurasjon/{fiksOrgId}" : {
+      "get" : {
+        "tags" : [ "brukersynkronisering-konfigurasjon" ],
+        "description" : "Gir oversikt over hvilke produsenter som er konfigurert",
+        "operationId" : "produsenter",
+        "parameters" : [ {
+          "name" : "fiksOrgId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/Produsent"
+                  }
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Ikke konfigurert"
+          },
+          "401" : {
+            "description" : "Ikke tilgang",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post" : {
+        "tags" : [ "brukersynkronisering-konfigurasjon" ],
+        "description" : "Oppretter konfigurasjon for en produsent",
+        "operationId" : "opprettProdusent",
+        "parameters" : [ {
+          "name" : "fiksOrgId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/NyProdusentRequest"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "headers" : {
+              "Location" : {
+                "description" : "URI til den nye ressursen",
+                "style" : "simple"
+              }
+            },
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Produsent"
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Fant ikke gitt produsent"
+          },
+          "401" : {
+            "description" : "Ikke tilgang",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/brukersynkronisering/konfigurasjon/api/v1/konfigurasjon/{fiksOrgId}/{tjenesteId}" : {
+      "delete" : {
+        "tags" : [ "brukersynkronisering-konfigurasjon" ],
+        "description" : "Sletter konfigurasjon for produsent",
+        "operationId" : "slettProdusent",
+        "parameters" : [ {
+          "name" : "fiksOrgId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        }, {
+          "name" : "tjenesteId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "204" : {
+            "description" : "OK"
+          },
+          "404" : {
+            "description" : "Fant ikke gitt produsent"
+          },
+          "401" : {
+            "description" : "Ikke tilgang",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components" : {
+    "schemas" : {
+      "Id" : {
+        "type" : "object",
+        "properties" : {
+          "fiksOrgId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "id" : {
+            "type" : "string"
+          }
+        }
+      },
+      "Produsent" : {
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "$ref" : "#/components/schemas/Id"
+          },
+          "navn" : {
+            "type" : "string"
+          }
+        }
+      },
+      "ErrorMessage" : {
+        "type" : "object",
+        "properties" : {
+          "timestamp" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "status" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "error" : {
+            "type" : "string"
+          },
+          "errorId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "path" : {
+            "type" : "string"
+          },
+          "originalPath" : {
+            "type" : "string"
+          },
+          "message" : {
+            "type" : "string"
+          },
+          "errorCode" : {
+            "type" : "string"
+          },
+          "errorJson" : {
+            "type" : "string"
+          }
+        }
+      },
+      "NyProdusentRequest" : {
+        "type" : "object",
+        "properties" : {
+          "beskrivelse" : {
+            "type" : "string"
+          }
+        }
+      }
+    }
+  }
+}

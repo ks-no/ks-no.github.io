@@ -1,0 +1,558 @@
+{
+  "openapi" : "3.0.1",
+  "info" : {
+    "title" : "KS Fiks: eSignering service",
+    "description" : "eSigneringstjenesten",
+    "contact" : {
+      "name" : "Fiks brukerstøtte",
+      "url" : "https://www.ks.no/fagomrader/digitalisering/utviklingsprosjekter",
+      "email" : "fiks@ks.no"
+    },
+    "version" : "v1"
+  },
+  "servers" : [ {
+    "url" : "https://api.fiks.ks.no",
+    "description" : "KS Fiks API host",
+    "variables" : { }
+  }, {
+    "url" : "https://api.fiks.test.ks.no",
+    "description" : "KS Fiks TEST API host",
+    "variables" : { }
+  } ],
+  "tags" : [ {
+    "name" : "esignering-signering",
+    "description" : "API for å håndtere funksjonalitet rundt konfigurasjon av Folkeregister"
+  } ],
+  "paths" : {
+    "/esignering/api/v1/signering/{fiksOrgId}/{signingId}" : {
+      "get" : {
+        "tags" : [ "esignering-signering" ],
+        "description" : "Laster ned signert dokument. Dokumentet er ZIP-et.",
+        "operationId" : "getSignedDocument",
+        "parameters" : [ {
+          "name" : "fiksOrgId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        }, {
+          "name" : "signingId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Returnerer zip-fil som inneholder signert dokument.",
+            "content" : {
+              "application/octet-stream" : {
+                "schema" : {
+                  "type" : "string",
+                  "format" : "byte"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/esignering/api/v1/signering/{fiksOrgId}/{signingId}/mottatt" : {
+      "put" : {
+        "tags" : [ "esignering-signering" ],
+        "operationId" : "bekreftet",
+        "parameters" : [ {
+          "name" : "fiksOrgId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        }, {
+          "name" : "signingId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "default" : {
+            "description" : "default response",
+            "content" : {
+              "*/*" : { }
+            }
+          }
+        }
+      }
+    },
+    "/esignering/api/v1/signering/opprett" : {
+      "post" : {
+        "tags" : [ "esignering-signering" ],
+        "description" : "Oppretter et signeringsoppdrag",
+        "operationId" : "oppretterSigneringsoppdrag",
+        "requestBody" : {
+          "content" : {
+            "multipart/form-data" : {
+              "schema" : {
+                "type" : "object",
+                "properties" : {
+                  "signeringsoppdrag" : {
+                    "$ref" : "#/components/schemas/SigneringsoppdragRequest"
+                  },
+                  "dokument" : {
+                    "$ref" : "#/components/schemas/FormDataBodyPart"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "description" : "beskrivelse...",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/SigneringsoppdragResponse"
+                }
+              }
+            }
+          },
+          "502" : {
+            "description" : "Alle 5xx feil fra ekstern tjeneste sendes videre som 502."
+          }
+        }
+      }
+    },
+    "/esignering/api/v1/signering/{fiksOrgId}/{signingId}/status" : {
+      "get" : {
+        "tags" : [ "esignering-signering" ],
+        "operationId" : "status",
+        "parameters" : [ {
+          "name" : "fiksOrgId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        }, {
+          "name" : "signingId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "default" : {
+            "description" : "default response",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/StatusResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components" : {
+    "schemas" : {
+      "SigneringsoppdragResponse" : {
+        "type" : "object",
+        "properties" : {
+          "signeringsid" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "signeringsurl" : {
+            "type" : "string"
+          }
+        }
+      },
+      "SigneringsoppdragRequest" : {
+        "required" : [ "autentiseringsnivaa", "landingssidesurl", "mottakerFnr", "paaVegneAvFiksOrgId", "signaturtype", "tittel" ],
+        "type" : "object",
+        "properties" : {
+          "mottakerFnr" : {
+            "type" : "string",
+            "description" : "Fødselsnummer på personen som skal motta signeringsoppdraget"
+          },
+          "tittel" : {
+            "maxLength" : 80,
+            "minLength" : 0,
+            "type" : "string",
+            "description" : "Tittel på signeringsoppdraget. Må begrensens til maks 80 tegn."
+          },
+          "melding" : {
+            "maxLength" : 220,
+            "minLength" : 0,
+            "type" : "string",
+            "description" : "Melding til mottaker. Må begrensens til maks 220 tegn."
+          },
+          "paaVegneAvFiksOrgId" : {
+            "type" : "string",
+            "description" : "UUID på FiksOrg som er avsender. FiksOrgId må ha eierskap til organiasasjonsnummeret som sendes inn, se paaVegneAvOrganisasjonsnummer.",
+            "format" : "uuid"
+          },
+          "autentiseringsnivaa" : {
+            "type" : "string",
+            "description" : "Skriv inn hvilket autentiseringsnivå som vedkommende som skal signere dokumentet må bruke.",
+            "enum" : [ "TRE", "FIRE" ]
+          },
+          "signaturtype" : {
+            "type" : "string",
+            "description" : "Ved AVANSERT_SIGNATUR skjer signering med BankID. Det er en sterk knytning mellom identifiseringshandling og dokument som skal signeres.\nved AUTENTISERT_SIGNATUR autentiseres brukeren i ID-porten. IDporten vet ikke noe om at innloggingen er tilknyttet en signeringsseremoni.\nOffentlige virksomheter bruker ofte autentisert signatur, da den er rimeligere enn avansert signatur.\nFor mer informasjon se https://signering-docs.readthedocs.io/en/latest/signaturtype.html",
+            "enum" : [ "AUTENTISERT_SIGNATUR", "AVANSERT_SIGNATUR" ]
+          },
+          "landingssidesurl" : {
+            "type" : "string",
+            "description" : "URL hvor den som har signert skal sendes til (http videresending) etter signeringsoppdraget er utført, avvist eller det har oppstått en feil."
+          },
+          "referanse" : {
+            "type" : "string",
+            "description" : "Valgfri referanse som kan sendes med forespørselen."
+          }
+        },
+        "description" : "Filen som skal signeres kan maksimalt være 3 MB (3 145 728 bytes) stor. PDF-versjoner som støttes er PDF 1.1-1.7, se https://signering-docs.readthedocs.io/en/latest/opprette-oppdrag.html"
+      },
+      "BodyPart" : {
+        "type" : "object",
+        "properties" : {
+          "contentDisposition" : {
+            "$ref" : "#/components/schemas/ContentDisposition"
+          },
+          "entity" : {
+            "type" : "object"
+          },
+          "headers" : {
+            "type" : "object",
+            "properties" : {
+              "empty" : {
+                "type" : "boolean"
+              }
+            },
+            "additionalProperties" : {
+              "type" : "array",
+              "items" : {
+                "type" : "string"
+              }
+            }
+          },
+          "mediaType" : {
+            "type" : "object",
+            "properties" : {
+              "type" : {
+                "type" : "string"
+              },
+              "subtype" : {
+                "type" : "string"
+              },
+              "parameters" : {
+                "type" : "object",
+                "additionalProperties" : {
+                  "type" : "string"
+                }
+              },
+              "wildcardType" : {
+                "type" : "boolean"
+              },
+              "wildcardSubtype" : {
+                "type" : "boolean"
+              }
+            }
+          },
+          "messageBodyWorkers" : {
+            "$ref" : "#/components/schemas/MessageBodyWorkers"
+          },
+          "parent" : {
+            "$ref" : "#/components/schemas/MultiPart"
+          },
+          "providers" : {
+            "type" : "object"
+          },
+          "parameterizedHeaders" : {
+            "type" : "object",
+            "properties" : {
+              "empty" : {
+                "type" : "boolean"
+              }
+            },
+            "additionalProperties" : {
+              "type" : "array",
+              "items" : {
+                "$ref" : "#/components/schemas/ParameterizedHeader"
+              }
+            }
+          }
+        }
+      },
+      "ContentDisposition" : {
+        "type" : "object",
+        "properties" : {
+          "type" : {
+            "type" : "string"
+          },
+          "parameters" : {
+            "type" : "object",
+            "additionalProperties" : {
+              "type" : "string"
+            }
+          },
+          "fileName" : {
+            "type" : "string"
+          },
+          "creationDate" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "modificationDate" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "readDate" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "size" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        }
+      },
+      "FormDataBodyPart" : {
+        "type" : "object",
+        "properties" : {
+          "contentDisposition" : {
+            "$ref" : "#/components/schemas/ContentDisposition"
+          },
+          "entity" : {
+            "type" : "object"
+          },
+          "headers" : {
+            "type" : "object",
+            "properties" : {
+              "empty" : {
+                "type" : "boolean"
+              }
+            },
+            "additionalProperties" : {
+              "type" : "array",
+              "items" : {
+                "type" : "string"
+              }
+            }
+          },
+          "mediaType" : {
+            "type" : "object",
+            "properties" : {
+              "type" : {
+                "type" : "string"
+              },
+              "subtype" : {
+                "type" : "string"
+              },
+              "parameters" : {
+                "type" : "object",
+                "additionalProperties" : {
+                  "type" : "string"
+                }
+              },
+              "wildcardType" : {
+                "type" : "boolean"
+              },
+              "wildcardSubtype" : {
+                "type" : "boolean"
+              }
+            }
+          },
+          "messageBodyWorkers" : {
+            "$ref" : "#/components/schemas/MessageBodyWorkers"
+          },
+          "parent" : {
+            "$ref" : "#/components/schemas/MultiPart"
+          },
+          "providers" : {
+            "type" : "object"
+          },
+          "formDataContentDisposition" : {
+            "$ref" : "#/components/schemas/FormDataContentDisposition"
+          },
+          "simple" : {
+            "type" : "boolean"
+          },
+          "name" : {
+            "type" : "string"
+          },
+          "value" : {
+            "type" : "string"
+          },
+          "parameterizedHeaders" : {
+            "type" : "object",
+            "properties" : {
+              "empty" : {
+                "type" : "boolean"
+              }
+            },
+            "additionalProperties" : {
+              "type" : "array",
+              "items" : {
+                "$ref" : "#/components/schemas/ParameterizedHeader"
+              }
+            }
+          }
+        }
+      },
+      "FormDataContentDisposition" : {
+        "type" : "object",
+        "properties" : {
+          "type" : {
+            "type" : "string"
+          },
+          "parameters" : {
+            "type" : "object",
+            "additionalProperties" : {
+              "type" : "string"
+            }
+          },
+          "fileName" : {
+            "type" : "string"
+          },
+          "creationDate" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "modificationDate" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "readDate" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "size" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "name" : {
+            "type" : "string"
+          }
+        }
+      },
+      "MessageBodyWorkers" : {
+        "type" : "object"
+      },
+      "MultiPart" : {
+        "type" : "object",
+        "properties" : {
+          "contentDisposition" : {
+            "$ref" : "#/components/schemas/ContentDisposition"
+          },
+          "entity" : {
+            "type" : "object"
+          },
+          "headers" : {
+            "type" : "object",
+            "properties" : {
+              "empty" : {
+                "type" : "boolean"
+              }
+            },
+            "additionalProperties" : {
+              "type" : "array",
+              "items" : {
+                "type" : "string"
+              }
+            }
+          },
+          "mediaType" : {
+            "type" : "object",
+            "properties" : {
+              "type" : {
+                "type" : "string"
+              },
+              "subtype" : {
+                "type" : "string"
+              },
+              "parameters" : {
+                "type" : "object",
+                "additionalProperties" : {
+                  "type" : "string"
+                }
+              },
+              "wildcardType" : {
+                "type" : "boolean"
+              },
+              "wildcardSubtype" : {
+                "type" : "boolean"
+              }
+            }
+          },
+          "messageBodyWorkers" : {
+            "$ref" : "#/components/schemas/MessageBodyWorkers"
+          },
+          "parent" : {
+            "$ref" : "#/components/schemas/MultiPart"
+          },
+          "providers" : {
+            "type" : "object"
+          },
+          "bodyParts" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/BodyPart"
+            }
+          },
+          "parameterizedHeaders" : {
+            "type" : "object",
+            "properties" : {
+              "empty" : {
+                "type" : "boolean"
+              }
+            },
+            "additionalProperties" : {
+              "type" : "array",
+              "items" : {
+                "$ref" : "#/components/schemas/ParameterizedHeader"
+              }
+            }
+          }
+        }
+      },
+      "ParameterizedHeader" : {
+        "type" : "object",
+        "properties" : {
+          "value" : {
+            "type" : "string"
+          },
+          "parameters" : {
+            "type" : "object",
+            "additionalProperties" : {
+              "type" : "string"
+            }
+          }
+        }
+      },
+      "StatusResponse" : {
+        "type" : "object",
+        "properties" : {
+          "value" : {
+            "type" : "string",
+            "enum" : [ "NOT_STARTED", "IN_PROGRESS", "COMPLETED_SUCCESSFULLY", "FAILED" ]
+          }
+        }
+      }
+    }
+  }
+}
