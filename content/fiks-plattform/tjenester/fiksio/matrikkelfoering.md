@@ -1,6 +1,6 @@
 ---
 title: Fiks IO Matrikkelføring
-date: 2020-04-28
+date: 2021-08-18
 ---
 
 Fiks IO Matrikkelføring er en tjeneste for å overføre grunnlag til matrikkelføring fra eByggesak til Matrikkelklienter. 
@@ -14,7 +14,7 @@ Denne løsningen benytter [FIKS IO](https://ks-no.github.io/fiks-platform/tjenes
 ## Hvordan ta i bruk Fiks IO Matrikkelføring
 For at eByggesak eller annet fagsystem skal få tilgang til å sende grunnlag for matrikkelføring til matrikkelklienter, så må kommunen aktivere tjenesten Fiks IO i [Fiks Konfigurasjon](https://forvaltning.fiks.ks.no/fiks-konfigurasjon/tjenester).
 
-Aktuell matrikkelklient må aktiveres for å kunne svare på meldingsprotokoll ```no.ks.fiks.matrikkelfoering.v1```
+Aktuell matrikkelklient må aktiveres for å kunne svare på meldingsprotokoll ```no.ks.fiks.matrikkelfoering.v2```
 
 ## Flyt
 
@@ -34,25 +34,25 @@ Fiks IO.
 
 
 ## Fiks IO meldingsprotokoll for matrikkelføring
-Meldingsprotokoll som matrikkelklient må støtte ```no.ks.fiks.matrikkelfoering.v1```
+Meldingsprotokoll som matrikkelklient må støtte ```no.ks.fiks.matrikkelfoering.v2```
 
 Fra eByggesak/fagsystem: 
-- Grunnlag til matrikkelføring: ```no.ks.fiks.matrikkelfoering.grunnlag.v1```  [Datamodell matrikkelfoering.xsd](/files/matrikkelfoering.xsd)
+- Grunnlag til matrikkelføring: ```no.ks.fiks.matrikkelfoering.grunnlag.v2```  [Datamodell matrikkelfoering010621.xsd](/files/matrikkelfoering010621.xsd)
 
 Fra matrikkelklienter: 
 - Mottak vellykket: ```no.ks.fiks.matrikkelfoering.mottatt.v1```
 - Mottak feilet: ```no.ks.fiks.matrikkelfoering.feil.v1```
 - Kvittering på føring i matrikkelen:
-```no.ks.fiks.matrikkelfoering.kvittering.v1``` [Datamodell MatrikkelFoeringsRespons.xsd](/files/MatrikkelFoeringsRespons.xsd)
+```no.ks.fiks.matrikkelfoering.kvittering.v2``` [Datamodell kvitteringmatrikkelfoering010621.xsd](/files/kvitteringmatrikkelfoering010621.xsd)
 
 ## Datamodell for meldinger
 ![fiks_matrikkelfoering_datamodell_grunnlag](/images/datamodell_grunnlag.png "Matrikkelføring datamodell grunnlag")
 
-```no.ks.fiks.matrikkelfoering.grunnlag.v1``` [Datamodell matrikkelfoering.xsd](/files/matrikkelfoering.xsd)
+```no.ks.fiks.matrikkelfoering.grunnlag.v2``` [Datamodell matrikkelfoering010621.xsd](/files/matrikkelfoering010621.xsd)
 
 ![fiks_matrikkelfoering_datamodell_kvittering](/images/datamodell_kvittering.png "Matrikkelføring datamodell kvittering")
 
-```no.ks.fiks.matrikkelfoering.kvittering.v1``` [Datamodell MatrikkelFoeringsRespons.xsd](/files/MatrikkelFoeringsRespons.xsd)
+```no.ks.fiks.matrikkelfoering.kvittering.v2``` [Datamodell kvitteringmatrikkelfoering010621.xsd](/files/kvitteringmatrikkelfoering010621.xsd)
 
 ## Overføring av filer
 
@@ -117,11 +117,11 @@ Nivå 4:
 For å finne hvilke konto en skal sende meldinger til så kan en slå opp dette i adresse katalogen til FIKS IO
 
 ```csharp
-var kontoliste = client.Lookup(new LookupRequest("ORG_NO.987654321", "no.ks.fiks.matrikkelfoering.v1", 3));
+var kontoliste = client.Lookup(new LookupRequest("ORG_NO.987654321", "no.ks.fiks.matrikkelfoering.v2", 3));
 ```
 
 ```csharp
-var kontoliste = client.Lookup(new LookupRequest("KOMM.3817", "no.ks.fiks.matrikkelfoering.v1", 3));
+var kontoliste = client.Lookup(new LookupRequest("KOMM.3817", "no.ks.fiks.matrikkelfoering.v2", 3));
 ```
 ## Videresending av grunnlag som skal føres i en annen matrikkelklient
 
@@ -140,7 +140,7 @@ Kodeeksempel på sending av melding med grunnlag for matrikkelføring
 var messageRequest = new MeldingRequest(
             mottakerKontoId: receiverId,
             avsenderKontoId: senderId,
-            meldingType: "no.ks.fiks.matrikkelfoering.grunnlag.v1"); 
+            meldingType: "no.ks.fiks.matrikkelfoering.grunnlag.v2"); 
 
 List<IPayload> payloads = new List<IPayload>();
 payloads.Add(new StringPayload(jsonPayload, "index.json"));
@@ -179,7 +179,7 @@ index.json innhold
 byggesak.xml innhold
 ```xml
 <?xml version="1.0" encoding="utf-8"?>
-<Byggesak xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://rep.geointegrasjon.no/Matrikkel/foering/v1">
+<Byggesak xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://rep.geointegrasjon.no/Matrikkel/foering/v2">
   <tittel>Rammesøknad for enebolig i Byggestedgate 1</tittel>
   <saksnummer>
     <saksaar>2018</saksaar>
@@ -212,7 +212,7 @@ byggesak.xml innhold
 
 ```xml
 <?xml version="1.0" encoding="utf-8"?>
-<Byggesak xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://rep.geointegrasjon.no/Matrikkel/foering/v1">
+<Byggesak xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://rep.geointegrasjon.no/Matrikkel/foering/v2">
   <systemId xsi:nil="true" />
   <tittel>Rammesøknad for oppføring av 5 tomannsboliger</tittel>
   <saksnummer>
