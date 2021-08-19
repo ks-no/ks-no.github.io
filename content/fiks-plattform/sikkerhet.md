@@ -5,19 +5,30 @@ aliases: [/fiks-platform/sikkerhet]
 ---
 
 Denne siden gir en generell innføring i hvordan personvern og informasjonssikkerhet (sikkerhet) er ivaretatt i Fiks-plattformen. 
-Under beskrives generelle retningslinjer for hvordan vi har sikret tjenestene.
+Under beskrives hvordan vi har sikret tjenestene på en ovordnet nivå.
+
+### Generelt om sikkerhet
+Ivaretakelse av digital sikkerhet i nasjonale felleskomponenter og andre samfunnskritiske systemer som leveres av virksomheter i offentlig sektor, må ha et særskilt fokus. Med økt fokus på innebygget personvern og informasjonssikkerhet blir Fiks-plattformen stadig bedre sikret, og er i seg selv å anse som et godt sikringstiltak for kommunal sektor.
+
+KS Fiks har for noen av tjenestene utarbeidet en utfylt mal for risikovurdering av hele verdikjeden, dvs. fra kommunens forretningskritiske prosesser til innbyggeren. Målet med denne risikovurderingen er å hjelpe kommunen med å få gjennomført en slik risikovurdering. 
+
+På samme måte har KS også påbegynt en vurdering av personvernkonsekvenser (DPIA) ved bruk av tjenesten, som kommunene kan velge å benytte.
+
+Den enkelte digitale fellestjeneste avtalefestes ved et eget tjenestevedlegg til den grunnleggende avtalen om tilknytning og bruk av Fiks-plattformen.
 
 ### Styringsystem for personvern og informasjonssikkerhet
 Avdeling for digitale fellestjenester har etablert og jobber etter et eget styringssystem for personvern og informasjonssikkerhet. Styringssystemet bygger på anerkjente standarder som ISO27001, ISO27701 og NSMs grunnprinsipper for IKT-sikkerhet. For full beskrivelse av styringsssystem og risiko- og sårbarhetsanalyser for den enkelte tjeneste, se [sikkerhetsdokumentasjon på forvaltning.fiks.ks.no](https://forvaltning.fiks.ks.no/sikkerhet-dokumentasjon/). Tilgangen der er begrenset til personer som er administrator for en organisasjon i Fiks-plattformen.
 
-### Sikkerhet i utvikling
+### Overordnet om teknologiske sikringstiltak
+Digdirs fellestjenester ID-porten og maskinporten benyttes til autentisering, og benyttes som identitetsbærer i hele Fiks-plattformen. ID- og maskinporten-tokens benyttes også som grunnlag for plattformens gjennom-gående autorisasjonslag, som benyttes på tvers av alle tjenester.  Gjennom faste prinsipper og komponenter oppnår plattformen er veletablert og godt testet funksjonalitet for autentisering og autorisasjon.
 
-### Sikkerhet i produksjon
+Utvikling av Fiks-plattformen følger prinsippene for innebygget personvern med grunnleggende opplæring i personvern og informasjonssikkerhet, avdekking av krav til personvern og informasjonssikkerhet ved systematisk arbeid med DPIA og ROS, sikker design vha. trusselmodellering og STRIDE, sikker koding med bruk av statisk kodeanalyse, automatisk oppdatering av sårbare avhengigheter, sikkerhetstesting på flere nivåer med enhetstesting, integrasjonstesting og akseptansetesting samt automatisert bygging og produksjonssetting som kun gjennomføres etter at tester og kvalitetskriterier er oppfylt.
 
-#### Leverandøroppfølging
+### Opplæring
+Alle i KS' avdeling for digitale fellestjenester får grunnleggende opplæring i personvern og informasjonssikkerhet. Alle utviklere vil jevnlig få opplæring og trening i sikker utvikling.
 
 ### Autentisering og autorisering
-Fiks-plattformen benytter ID-porten og Maskinporten fra Digitaliseringsdirektoratet (digdir) for autentisering av brukere. Spesifikke mekanismer for autentisering og autorisering avhenger av kontekst: 
+Fiks-plattformens tjenester benytter som hovedregel ID-porten og Maskinporten fra Digitaliseringsdirektoratet (digdir) for autentisering av brukere. Spesifikke mekanismer for autentisering og autorisering avhenger av kontekst: 
 
 #### Privatpersoner
 Dette kan for eksempel være en innbygger som finner barnehagesøknaden sin i Fiks Innsyn.
@@ -45,12 +56,30 @@ Integrasjoner autentiseres gjennom to mekanismer: for det første trenger man en
 
 Autorisering av integrasjoner gjøres på bakgrunn av privilegier tildelt i Fiks-konfigurasjon. Hver Fiks-organisasjon må eksplisitt si at en integrasjon skal ha tilgang til sine systemer, for eksempel ved å gi svarut integrasjonen tilgang til en kommunes Fiks Innsyn tjeneste.
 
-En slik autorisasjon kan når som helst trekkes tilbake. 
+En slik autorisasjon kan når som helst trekkes tilbake.
+
+### Sterk autentisering (to-faktor)
+Sterk autentisering benyttes som standard.
+
+### Arkitektur- og trusselmodellering
+Alle komponenter i Fiks-plattformen blir analysert og risikovurdert underveis som en del av utviklingsprosessen. Resultatet er at alle komponenter i Fiks-plattformen er analysert for å analysere angrepsflaten, finne mulige problemer og gjøre tiltak for å demme opp for avdekkede svakheter. Metodisk gjøres det først en arkitekturmodellering og deretter en STRIDE-analyse.
+
+### Tredjepartsbiblioteker (open source)
+For å sikre oss som best vi kan at ikke vi drar med oss kjente feil inn i egne tjenester benytter vi en av dagens beste løsninger for dette, github sine sikkerhetstjenester "Github Security Advisories", "Security Alerts" og "Automated pull requests for security updates".
 
 ### Beskyttelse av data (kryptering)
-All kommunikasjon mellom Fiks-plattformen og integrasjoner/personer er kryptert med TLS. All data som lagres på disk er endten individuelt kryptert (for eksempel gjennom sikker lagring i Fiks Dokumentlager), eller lagres på krypterte filsystemer.
+All kommunikasjon mellom Fiks-plattformen og integrasjoner/personer er kryptert med TLS. All data som lagres på disk er enten individuelt kryptert (for eksempel gjennom sikker lagring i Fiks Dokumentlager), eller lagres på krypterte filsystemer.
 
-### Audit logging
+### Sporbarhet (sikkerhetslogg/audit logging)
 Selv om grunnprinsippet er at det bare er innbyggeren selv som har tilgang til sine data vil noen tjenester gjør data om en person tilgjengelig for andre, for eksempel når en kommuneansatt gjør ett oppslag mot et nasjonalt register. I slike tilfeller vil dette bli dokumentert i tjenstebeskrivelsen, autorisert eksplisitt i Fiks-konfigurasjon, og underlagt audit-logging, slik at det blir mulig å se hvem som har hatt tilgang til hvilke data når, og under hvilken lovhjemmel tilgangen ble oppnådd.
 
 Denne loggen vil, der det er nødvendig, gjøres tilgjengelig for administrator i Fiks-organisasjonen.
+
+### Drift av Fiks-plattformen
+Alle tjenester i Fiks-plattformen går gjennom både ingressfiltrering, WAF (web application firewall) og overvåkes av operative sikkerhetssentre i flere lag. Datasentrene Fiks-plattformen kjører på er begge ISO27001-sertifisert og det blir gjennomført årlige revisjoner av informasjonssikkerhet og personvern. Revisjonene blir gjennomført av tredjeparts revisorer etter revisjonsstandardene ISAE-3402 og ISAE-3000. Driftsmiljøet overvåkes av driftsleverandørens eget sikkerhetsoperasjonssenter og NorCERT.
+
+#### Test- og utviklingsmiljø
+All utvikling av Fiks-plattformen foregår i et eget test- og utviklingsnett (heretter testmiljøet). I testmiljøet benyttes kun testdata, dvs. at dette mijøet ikke inneholder kundedata. I testmiljøet skal det kun benyttes anonymiserte, avidentifiserte eller samtykkebaserte data. Alle endringer kjøres først ut i test- og utviklingsmiljøet, før det settes i produksjon. I testmiljøet kjøres blant annet akseptansetest før en vesentlig endring går i produksjon. Testmiljøet er også benyttet i forbindeles med tilgjengeliggjøring av og integrasjon mellom Fiks-plattformen og DHIS2 covid-19.
+
+### Leverandøroppfølging
+Alle leverandørene til KS følges opp med hensyn til ivaretakelse av informasjonssikkerhet og personvern og revideres i henhold til NSMs grunnprinsipper. 

@@ -1,6 +1,6 @@
 ---
 title: Digisos
-date: 2019-11-01
+date: 2020-10-27
 aliases: [/fiks-platform/tjenester/digisos/]
 ---
 
@@ -26,7 +26,7 @@ Digisos består av flere komponenter fra Fiks-plattformen, der Fiks Digisos er h
 - Fiks Digisos API: API for innsending av søknader fra nav.no og innsending av saksoppdateriger fra kommunenes fagsystemer.
 - Fiks Dokumentlager: Brukes for lagring av krypterte søknader og saksoppdateringer, der innbyggeren får tilgang til sine dokumenter sendt over Digisos API-et.
 - Fiks IO: Brukes som leveringskanal for søknader fra NAV til kommunene, som er en sikker kanal for maskin-til-maskin integrasjon, hvor søknadene blir meldingskryptert med mottakers offentlige nøkkel.
-- SvarUt: Brukes som en alternativ leveringskanal for søknader fra NAV til kommunene, med leveranse med print dersom kommunens fagsystem ikke klarer å motta digitale forsendelser.
+- SvarUt/SvarInn: Brukes som en alternativ leveringskanal for søknader fra NAV til kommunene, med leveranse med print dersom kommunens fagsystem ikke klarer å motta digitale forsendelser via SvarInn.
 
 ### Flyt
 
@@ -34,15 +34,15 @@ Digisos består av flere komponenter fra Fiks-plattformen, der Fiks Digisos er h
 2. Fiks Digisos mottar søknaden.
     1. Søknadsfilen legges i Fiks Dokumentlager, og innbyggeren autoriseres for tilgang.
     2. Fiks Digisos henter valgt leveransekanal for søknaden fra kommunens konfigurasjon, enten anbefalt kanal 2a) Fiks IO med SvarUt som alternativ eller 2b) Bare SvarUt.
-        - a. Fiks IO - Kommunens konfigurasjon inneholder en konto-id som blir brukt som mottaker. Digisos-meldingene vil bli validert før de sendes til denne kontoen via Fiks IO. Dersom den oppgitte kontoen ikke støtter digisos-meldinger, vil søknaden bli sendt til SvarUt.
-        - b. SvarUt - Søknaden sendes til SvarUt enten fordi den er valgt som eneste leveransekanal, eller fordi kommunen ikke kan motta digisos-meldinger gjennom Fiks IO (se punkt 6).
+        - a. Fiks IO - Kommunens konfigurasjon inneholder en konto-id som blir brukt som mottaker. Digisos-meldingene vil bli validert før de sendes til denne kontoen via Fiks IO. Den vil være tilgjengelig for henting fra Fiks IO-køen i en fastsatt periode. Dersom den oppgitte kontoen ikke støtter digisos-meldinger eller om kommunen ikke bekrefter mottak før denne perioden går ut vil meldingen bli trukket og alternativ kanal SvarUt benyttes for levering av søknaden (se punkt 5).
+        - b. SvarUt/SvarInn - Søknaden sendes til SvarUt til kommunenes SvarInn mottakersystem, enten fordi den er valgt som eneste leveransekanal, eller fordi kommunen ikke kan motta digisos-meldinger gjennom Fiks IO (se punkt 5).
     3. Fiks returnerer 202 ACCEPTED på http-kallet fra NAV. Dette markerer ansvarsoverføring fra NAV til Fiks, som fra nå garanterer at saken leveres til kommune for behandling.
-3. Kommunen mottar meldingen gjennom Fiks IO. Den vil være tilgjengelig i køen i en fastsatt periode. Om kommunen ikke bekrefter mottak før denne perioden går ut vil meldingen bli trukket og alternativ kanal benyttes (se punkt 6).
-4. Søknanded opprettes i kommunalt fagsystem.
-5. Det kommunale fagsystemet bekrefter mottak av søknaden og oppdaterer status i Fiks Digisos.
+3. Søknanden opprettes i kommunalt fagsystem etter vellykket mottak via Fiks IO eller SvarInn.
+4. Det kommunale fagsystemet bekrefter mottak av søknaden og oppdaterer status i Fiks Digisos.
     1. Evt. nye filer legges til saken, autorisert for innbygger.
     2. Saken er tilgjengelig for innbygger på nav.no.
-6. Om fagsystemet avviser eller unnlater å bekrefte mottak av saken via Fiks IO vil SvarUt benyttes som alternativ kanal, der det inkluderes en fil som inneholder både NAV og Fiks Digisos sin id for saken. I praksis betyr dette at meldingen blir sendt til kommunens Altinn-konto, evt. sendt til print og postlagt.     
+5. Om fagsystemet avviser eller unnlater å bekrefte mottak av saken via Fiks IO vil SvarUt benyttes som alternativ kanal, der det inkluderes en fil som inneholder både NAV og Fiks Digisos sin id for saken. I praksis betyr dette at meldingen blir sendt til kommunens SvarInn mottakersystem, evt. sendt til print og postlagt ved problemer med mottak til kommunens fagsystem.
+6. Søknader mottatt via SvarUt kan også manuelt lastes ned av kommunen via SvarUt-brukergrensesnittet.
 
 ![fiks_digisos](/images/fiks_digisos.png "Fiks Digisos")
 

@@ -72,7 +72,7 @@ For å sende en melding i Fiks IO må man kjenne konto-id'en til mottakeren, men
 
 Adresser opprettes og forvaltes gjennom Fiks Konfigrasjon. Katalogen gir også mulighet for å laste opp en offentlig nøkkel i form av et X509 sertifikat. Dette sertifikatet blir benyttet for å kryptere meldinger sendt til kontoen, slik at de kan dekrypteres med den private delen av nøkkelen ved mottak.
 
-Fiks Organisasjoner kan gjøre oppslag i registrerte adresser gjennom [katalog-api'et](https://editor.swagger.io/?url=https://github.com/ks-no/ks-no.github.io/blob/source/static/api/fiksio-katalog-api-v1.json). 
+Fiks Organisasjoner kan gjøre oppslag i registrerte adresser gjennom [katalog-api'et](https://editor.swagger.io/?url=https://ks-no.github.io/api/fiksio-katalog-api-v1.json). 
 
 Merk at bruk av dette api'et i stede for manuell innhenting av sertifikater kan gi noe redusert sikkerhet. Se "Sikkerhet" for detaljer.
 
@@ -82,6 +82,9 @@ Som nevnt over har Fiks IO i utgangspunktet ingen formening om hva innholdet i e
 Digisos bruker som nevnt over meldingsprotokollen "no.nav.digisos.fagsystem.v1", som er beskrevet i mer detalj under [Fiks Digisos](https://ks-no.github.io/fiks-plattform/tjenester/digisos/#fiks-io-meldingsprotokoll).
 
 Ta kontakt med fiks@ks.no om du ønsker å etablere eller gjøre endringer i en protokoll.
+
+#### Standardmeldingstyper
+I tillegg til meldinger definert i protokollkatalogen det er også definert en standard meldingstype som blir sendt når utløpstiden for en melding løper ut uten at meldingen er behandlet av mottaker. Meldingstypen er `no.ks.fiks.kvittering.tidsavbrudd`. Denne meldingstypen bør håndteres av alle klienter for å følge opp meldinger som ikke er mottatt. Disse meldingene inneholder ingen innhold, men kun headere deriblant `svar-til` som vil være en referanse til den opprinnelige meldingen (melding-id).
 
 ### Håndtering av store filer
 Fiks IO støtter sending av store filer ved at alle meldinger større enn 5 megabyte mellomlagres i Fiks Dokumentlager, i en dedikert konto som opprettes sammen med Fiks IO kontoen. En referanse til denne lagrede filen blir så sendt over AMQP. Filer sendt på slik måte får en time-to-live i dokumentlager lik time-to-live for meldingen + 24 timer. Etter dette vil de automatisk slettes.

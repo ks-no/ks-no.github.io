@@ -69,23 +69,34 @@
             "type" : "array",
             "items" : {
               "type" : "string",
-              "enum" : [ "Akseptert", "LevertLeverandor", "LevertPostgang", "FeiletUnderSendingTilLeverandor" ]
+              "enum" : [ "Akseptert", "LevertLeverandor", "LevertPostgang", "Avbrutt" ]
             }
           }
         }, {
-          "name" : "visFra",
+          "name" : "side",
           "in" : "query",
           "schema" : {
+            "minimum" : 1,
             "type" : "integer",
-            "format" : "int64"
+            "format" : "int64",
+            "default" : 1
           }
         }, {
-          "name" : "maksTreff",
+          "name" : "maksPerSide",
           "in" : "query",
           "schema" : {
+            "minimum" : 1,
             "type" : "integer",
             "format" : "int64",
             "default" : 10000
+          }
+        }, {
+          "name" : "sortering",
+          "in" : "query",
+          "schema" : {
+            "type" : "string",
+            "enum" : [ "OPPRETTET_FALLENDE", "STATUS_FALLENDE", "AVSENDER_FALLENDE", "OPPRETTET_STIGENDE", "STATUS_STIGENDE", "AVSENDER_STIGENDE" ],
+            "default" : "OPPRETTET_FALLENDE"
           }
         } ],
         "responses" : {
@@ -222,7 +233,7 @@
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/JobbTreff"
+                  "$ref" : "#/components/schemas/JobbBeskrivelse"
                 }
               }
             }
@@ -253,47 +264,16 @@
   },
   "components" : {
     "schemas" : {
-      "EksternRef" : {
+      "BulkOppdateringOppsummering" : {
         "type" : "object",
         "properties" : {
-          "ref" : {
-            "type" : "string",
-            "format" : "uuid"
-          },
-          "avsenderKonto" : {
-            "type" : "string",
-            "format" : "uuid"
-          }
-        }
-      },
-      "JobbTreff" : {
-        "type" : "object",
-        "properties" : {
-          "eksternRef" : {
-            "$ref" : "#/components/schemas/EksternRef"
-          },
-          "status" : {
-            "type" : "string",
-            "enum" : [ "Akseptert", "LevertLeverandor", "LevertPostgang", "FeiletUnderSendingTilLeverandor" ]
-          },
-          "mottatt" : {
-            "type" : "string",
-            "format" : "date-time"
-          }
-        }
-      },
-      "TreffListe" : {
-        "type" : "object",
-        "properties" : {
-          "fra" : {
+          "antallAvbrutt" : {
             "type" : "integer",
-            "format" : "int64"
+            "format" : "int32"
           },
-          "treff" : {
-            "type" : "array",
-            "items" : {
-              "$ref" : "#/components/schemas/JobbTreff"
-            }
+          "antallSattLevert" : {
+            "type" : "integer",
+            "format" : "int32"
           }
         }
       },
@@ -329,19 +309,6 @@
           },
           "errorJson" : {
             "type" : "string"
-          }
-        }
-      },
-      "BulkOppdateringOppsummering" : {
-        "type" : "object",
-        "properties" : {
-          "antallAvbrutt" : {
-            "type" : "integer",
-            "format" : "int32"
-          },
-          "antallSattLevert" : {
-            "type" : "integer",
-            "format" : "int32"
           }
         }
       },
@@ -383,6 +350,19 @@
         },
         "description" : "En bulk oppdatering av print jobber"
       },
+      "EksternRef" : {
+        "type" : "object",
+        "properties" : {
+          "ref" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "avsenderKonto" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        }
+      },
       "SettLevert" : {
         "required" : [ "bekreftetLevert", "eksternRef" ],
         "type" : "object",
@@ -398,6 +378,117 @@
           }
         },
         "description" : "Operasjon for å sette en jobb som manuelt levert"
+      },
+      "Hendelselogg" : {
+        "type" : "object",
+        "properties" : {
+          "hendelser" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/LoggetHendelse"
+            }
+          }
+        }
+      },
+      "JobbBeskrivelse" : {
+        "type" : "object",
+        "properties" : {
+          "eksternRef" : {
+            "$ref" : "#/components/schemas/EksternRef"
+          },
+          "status" : {
+            "type" : "string",
+            "enum" : [ "Akseptert", "LevertLeverandor", "LevertPostgang", "Avbrutt" ]
+          },
+          "mottatt" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "oppdatert" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "fiksOrgId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "navnFiksOrg" : {
+            "type" : "string"
+          },
+          "navnAvsenderKonto" : {
+            "type" : "string"
+          },
+          "advarsel" : {
+            "type" : "boolean"
+          },
+          "hendelselogg" : {
+            "$ref" : "#/components/schemas/Hendelselogg"
+          }
+        }
+      },
+      "LoggetHendelse" : {
+        "type" : "object",
+        "properties" : {
+          "tidspunkt" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "beskrivelse" : {
+            "type" : "string"
+          }
+        }
+      },
+      "JobbTreff" : {
+        "type" : "object",
+        "properties" : {
+          "eksternRef" : {
+            "$ref" : "#/components/schemas/EksternRef"
+          },
+          "status" : {
+            "type" : "string",
+            "enum" : [ "Akseptert", "LevertLeverandor", "LevertPostgang", "Avbrutt" ]
+          },
+          "mottatt" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "oppdatert" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "fiksOrgId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "navnFiksOrg" : {
+            "type" : "string"
+          },
+          "navnAvsenderKonto" : {
+            "type" : "string"
+          },
+          "advarsel" : {
+            "type" : "boolean"
+          }
+        }
+      },
+      "TreffListe" : {
+        "type" : "object",
+        "properties" : {
+          "fra" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "totaltAntallTreff" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "treff" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/JobbTreff"
+            }
+          }
+        }
       }
     }
   }

@@ -5,8 +5,8 @@
     "description" : "Kommunale tjenester service",
     "contact" : {
       "name" : "Fiks brukerstøtte",
-      "url" : "https://www.ks.no/fagomrader/digitalisering/utviklingsprosjekter/",
-      "email" : "fiks@ks.no"
+      "url" : "https://ks-no.github.io/fiks-plattform/tjenester/kommunaletjenester/",
+      "email" : "fiks-utvikling@ks.no"
     },
     "version" : "v1"
   },
@@ -20,76 +20,6 @@
     "description" : "API for kommunale tjenester"
   } ],
   "paths" : {
-    "/kommunale-tjenester/api/v1/administrasjon/{fiksOrgId}/tjenester" : {
-      "get" : {
-        "tags" : [ "kommunaleTjenesterAdministrasjon" ],
-        "description" : "Henter kommunale tjenester for spesifisert kommune",
-        "operationId" : "getTjenester",
-        "parameters" : [ {
-          "name" : "fiksOrgId",
-          "in" : "path",
-          "required" : true,
-          "schema" : {
-            "type" : "string",
-            "format" : "uuid"
-          }
-        } ],
-        "responses" : {
-          "200" : {
-            "description" : "Tjenester for spesifisert fiks-organisasjon",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "type" : "array",
-                  "items" : {
-                    "$ref" : "#/components/schemas/TjenesteApiModel"
-                  }
-                }
-              }
-            }
-          },
-          "404" : {
-            "description" : "Ingen urler ble funnet for det oppgitte kommunenr"
-          }
-        }
-      },
-      "post" : {
-        "tags" : [ "kommunaleTjenesterAdministrasjon" ],
-        "description" : "Opprett ny tjeneste",
-        "operationId" : "opprettTjeneste",
-        "parameters" : [ {
-          "name" : "fiksOrgId",
-          "in" : "path",
-          "required" : true,
-          "schema" : {
-            "type" : "string",
-            "format" : "uuid"
-          }
-        } ],
-        "requestBody" : {
-          "content" : {
-            "application/json" : {
-              "schema" : {
-                "$ref" : "#/components/schemas/OpprettTjenesteRequest"
-              }
-            }
-          },
-          "required" : true
-        },
-        "responses" : {
-          "200" : {
-            "description" : "Id for opprettet tjeneste",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/OpprettTjenesteResponse"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
     "/kommunale-tjenester/api/v1/administrasjon/{fiksOrgId}/tjenester/{tjenesteId}" : {
       "get" : {
         "tags" : [ "kommunaleTjenesterAdministrasjon" ],
@@ -192,6 +122,76 @@
           }
         }
       }
+    },
+    "/kommunale-tjenester/api/v1/administrasjon/{fiksOrgId}/tjenester" : {
+      "get" : {
+        "tags" : [ "kommunaleTjenesterAdministrasjon" ],
+        "description" : "Henter kommunale tjenester for spesifisert kommune",
+        "operationId" : "getTjenester",
+        "parameters" : [ {
+          "name" : "fiksOrgId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Tjenester for spesifisert fiks-organisasjon",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/TjenesteApiModel"
+                  }
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Ingen urler ble funnet for det oppgitte kommunenr"
+          }
+        }
+      },
+      "post" : {
+        "tags" : [ "kommunaleTjenesterAdministrasjon" ],
+        "description" : "Opprett ny tjeneste",
+        "operationId" : "opprettTjeneste",
+        "parameters" : [ {
+          "name" : "fiksOrgId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/OpprettTjenesteRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Id for opprettet tjeneste",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/OpprettTjenesteResponse"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components" : {
@@ -222,6 +222,28 @@
           }
         }
       },
+      "OppdaterTjenesteRequest" : {
+        "required" : [ "forside", "lenke", "rettetMot", "tittel" ],
+        "type" : "object",
+        "properties" : {
+          "tittel" : {
+            "type" : "string"
+          },
+          "lenke" : {
+            "maxLength" : 2000,
+            "minLength" : 0,
+            "pattern" : "https?:\\/\\/.*",
+            "type" : "string"
+          },
+          "forside" : {
+            "type" : "boolean"
+          },
+          "rettetMot" : {
+            "type" : "string",
+            "enum" : [ "PERSONER", "ORGANISASJONER", "PERSONER_OG_ORGANISASJONER" ]
+          }
+        }
+      },
       "OpprettTjenesteResponse" : {
         "required" : [ "id" ],
         "type" : "object",
@@ -240,28 +262,10 @@
             "type" : "string"
           },
           "lenke" : {
+            "maxLength" : 2000,
+            "minLength" : 0,
             "pattern" : "https?:\\/\\/.*",
             "type" : "string"
-          },
-          "rettetMot" : {
-            "type" : "string",
-            "enum" : [ "PERSONER", "ORGANISASJONER", "PERSONER_OG_ORGANISASJONER" ]
-          }
-        }
-      },
-      "OppdaterTjenesteRequest" : {
-        "required" : [ "forside", "lenke", "rettetMot", "tittel" ],
-        "type" : "object",
-        "properties" : {
-          "tittel" : {
-            "type" : "string"
-          },
-          "lenke" : {
-            "pattern" : "https?:\\/\\/.*",
-            "type" : "string"
-          },
-          "forside" : {
-            "type" : "boolean"
           },
           "rettetMot" : {
             "type" : "string",
