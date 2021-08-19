@@ -37,22 +37,22 @@ Fiks IO.
 Meldingsprotokoll som matrikkelklient må støtte ```no.ks.fiks.matrikkelfoering.v2```
 
 Fra eByggesak/fagsystem: 
-- Grunnlag til matrikkelføring: ```no.ks.fiks.matrikkelfoering.grunnlag.v2```  [Datamodell matrikkelfoering010621.xsd](/files/matrikkelfoering010621.xsd)
+- Grunnlag til matrikkelføring: ```no.ks.fiks.matrikkelfoering.grunnlag.v2```  [Datamodell matrikkelfoeringv2.xsd](/files/matrikkelfoeringv2.xsd)
 
 Fra matrikkelklienter: 
 - Mottak vellykket: ```no.ks.fiks.matrikkelfoering.mottatt.v1```
 - Mottak feilet: ```no.ks.fiks.matrikkelfoering.feil.v1```
 - Kvittering på føring i matrikkelen:
-```no.ks.fiks.matrikkelfoering.kvittering.v2``` [Datamodell kvitteringmatrikkelfoering010621.xsd](/files/kvitteringmatrikkelfoering010621.xsd)
+```no.ks.fiks.matrikkelfoering.kvittering.v2``` [Datamodell kvitteringmatrikkelfoeringv2.xsd](/files/kvitteringmatrikkelfoeringv2.xsd)
 
 ## Datamodell for meldinger
 ![fiks_matrikkelfoering_datamodell_grunnlag](/images/datamodell_grunnlag.png "Matrikkelføring datamodell grunnlag")
 
-```no.ks.fiks.matrikkelfoering.grunnlag.v2``` [Datamodell matrikkelfoering010621.xsd](/files/matrikkelfoering010621.xsd)
+```no.ks.fiks.matrikkelfoering.grunnlag.v2``` [Datamodell matrikkelfoeringv2.xsd](/files/matrikkelfoeringv2.xsd)
 
 ![fiks_matrikkelfoering_datamodell_kvittering](/images/datamodell_kvittering.png "Matrikkelføring datamodell kvittering")
 
-```no.ks.fiks.matrikkelfoering.kvittering.v2``` [Datamodell kvitteringmatrikkelfoering010621.xsd](/files/kvitteringmatrikkelfoering010621.xsd)
+```no.ks.fiks.matrikkelfoering.kvittering.v2``` [Datamodell kvitteringmatrikkelfoeringv2.xsd](/files/kvitteringmatrikkelfoeringv2.xsd)
 
 ## Overføring av filer
 
