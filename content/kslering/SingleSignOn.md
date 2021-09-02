@@ -1,7 +1,7 @@
 ## Single sign On (SSO)
 1. Bestilling
 
-Kommune / IKT samarbeidet sender bestilling med meta-datalenke. Gjerne i forbindelse med sak spm er opprettet under bestilling av HR API.
+Kommune / IKT samarbeidet sender bestilling med meta-datalenke. Gjerne i forbindelse med sak som er opprettet under bestilling av HR API.
 
 2. Grunnoppsett
 
