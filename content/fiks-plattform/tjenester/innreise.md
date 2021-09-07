@@ -1,10 +1,7 @@
 ---
 title: Innreiseregister fra Helsedirektoratet
-date: 2021-04-27
+date: 2021-09-07
 ---
-
-### Status
-Tjenesten er foreløpig bare tilgjengelig i test-miljøet til KS, ikke prod. 
 
 ### Formål
 KS har sammen med Helsedirektoratet (HDIR) utviklet et API som gjør det mulig å hente informasjon om innreisende elektronisk fra HDIR sitt 
