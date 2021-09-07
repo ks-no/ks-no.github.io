@@ -23,6 +23,151 @@
     "name" : "brukersynkronisering-konfigurasjon"
   } ],
   "paths" : {
+    "/brukersynkronisering/konfigurasjon/api/v1/konfigurasjon/{fiksOrgId}/{klientId}/tokens" : {
+      "get" : {
+        "tags" : [ "brukersynkronisering-konfigurasjon" ],
+        "description" : "Gir oversikt over aktive tokens per klient",
+        "operationId" : "listActiveTokens",
+        "parameters" : [ {
+          "name" : "fiksOrgId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        }, {
+          "name" : "klientId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ActiveTokens"
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Ukjent klient"
+          },
+          "401" : {
+            "description" : "Ikke tilgang",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post" : {
+        "tags" : [ "brukersynkronisering-konfigurasjon" ],
+        "description" : "Gir oversikt over hvilke tokens som er generert per clientId",
+        "operationId" : "createToken",
+        "parameters" : [ {
+          "name" : "fiksOrgId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        }, {
+          "name" : "klientId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/NewToken"
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Ukjent klient"
+          },
+          "401" : {
+            "description" : "Ikke tilgang",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/brukersynkronisering/konfigurasjon/api/v1/konfigurasjon/{fiksOrgId}/{klientId}/tokens/{id}" : {
+      "delete" : {
+        "tags" : [ "brukersynkronisering-konfigurasjon" ],
+        "description" : "Tilbakekaller gitt token. Når dette er gjort kan man ikke lengre bruke tokenet",
+        "operationId" : "revokeToken",
+        "parameters" : [ {
+          "name" : "fiksOrgId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        }, {
+          "name" : "klientId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "*/*" : {
+              "schema" : {
+                "type" : "string",
+                "format" : "uuid"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "204" : {
+            "description" : "Ok"
+          },
+          "401" : {
+            "description" : "Ikke tilgang",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/brukersynkronisering/konfigurasjon/api/v1/konfigurasjon/{fiksOrgId}" : {
       "get" : {
         "tags" : [ "brukersynkronisering-konfigurasjon" ],
@@ -121,7 +266,7 @@
         }
       }
     },
-    "/brukersynkronisering/konfigurasjon/api/v1/konfigurasjon/{fiksOrgId}/{tjenesteId}" : {
+    "/brukersynkronisering/konfigurasjon/api/v1/konfigurasjon/{fiksOrgId}/{kildeId}" : {
       "delete" : {
         "tags" : [ "brukersynkronisering-konfigurasjon" ],
         "description" : "Sletter konfigurasjon for kilde",
@@ -135,7 +280,7 @@
             "format" : "uuid"
           }
         }, {
-          "name" : "tjenesteId",
+          "name" : "kildeId",
           "in" : "path",
           "required" : true,
           "schema" : {
@@ -166,26 +311,35 @@
   },
   "components" : {
     "schemas" : {
-      "Id" : {
+      "NewToken" : {
+        "required" : [ "token", "type" ],
         "type" : "object",
         "properties" : {
-          "fiksOrgId" : {
+          "access_token" : {
             "type" : "string",
-            "format" : "uuid"
+            "writeOnly" : true
           },
-          "id" : {
-            "type" : "string"
-          }
-        }
-      },
-      "Kilde" : {
-        "type" : "object",
-        "properties" : {
-          "id" : {
-            "$ref" : "#/components/schemas/Id"
+          "token_type" : {
+            "type" : "string",
+            "writeOnly" : true
           },
-          "navn" : {
+          "expires_in" : {
+            "type" : "integer",
+            "format" : "int64",
+            "writeOnly" : true
+          },
+          "scope" : {
             "type" : "string"
+          },
+          "token" : {
+            "type" : "string"
+          },
+          "type" : {
+            "type" : "string"
+          },
+          "expiresIn" : {
+            "type" : "integer",
+            "format" : "int64"
           }
         }
       },
@@ -220,6 +374,54 @@
             "type" : "string"
           },
           "errorJson" : {
+            "type" : "string"
+          }
+        }
+      },
+      "ActiveTokens" : {
+        "required" : [ "tokens" ],
+        "type" : "object",
+        "properties" : {
+          "tokens" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Token"
+            }
+          }
+        }
+      },
+      "Token" : {
+        "required" : [ "id", "revoked" ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "revoked" : {
+            "type" : "boolean"
+          }
+        }
+      },
+      "Id" : {
+        "type" : "object",
+        "properties" : {
+          "fiksOrgId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "id" : {
+            "type" : "string"
+          }
+        }
+      },
+      "Kilde" : {
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "$ref" : "#/components/schemas/Id"
+          },
+          "navn" : {
             "type" : "string"
           }
         }
