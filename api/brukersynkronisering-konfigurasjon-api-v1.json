@@ -20,12 +20,14 @@
     "variables" : { }
   } ],
   "tags" : [ {
-    "name" : "brukersynkronisering-konfigurasjon"
+    "name" : "token"
+  }, {
+    "name" : "kilde"
   } ],
   "paths" : {
     "/brukersynkronisering/konfigurasjon/api/v1/konfigurasjon/{fiksOrgId}/{klientId}/tokens" : {
       "get" : {
-        "tags" : [ "brukersynkronisering-konfigurasjon" ],
+        "tags" : [ "token" ],
         "description" : "Gir oversikt over aktive tokens per klient",
         "operationId" : "listActiveTokens",
         "parameters" : [ {
@@ -72,7 +74,7 @@
         }
       },
       "post" : {
-        "tags" : [ "brukersynkronisering-konfigurasjon" ],
+        "tags" : [ "token" ],
         "description" : "Gir oversikt over hvilke tokens som er generert per clientId",
         "operationId" : "createToken",
         "parameters" : [ {
@@ -121,7 +123,7 @@
     },
     "/brukersynkronisering/konfigurasjon/api/v1/konfigurasjon/{fiksOrgId}/{klientId}/tokens/{id}" : {
       "delete" : {
-        "tags" : [ "brukersynkronisering-konfigurasjon" ],
+        "tags" : [ "token" ],
         "description" : "Tilbakekaller gitt token. N??r dette er gjort kan man ikke lengre bruke tokenet",
         "operationId" : "revokeToken",
         "parameters" : [ {
@@ -168,7 +170,7 @@
     },
     "/brukersynkronisering/konfigurasjon/api/v1/konfigurasjon/{fiksOrgId}/{kildeId}" : {
       "get" : {
-        "tags" : [ "brukersynkronisering-konfigurasjon" ],
+        "tags" : [ "kilde" ],
         "description" : "Viser enkelt kilde",
         "operationId" : "kilde",
         "parameters" : [ {
@@ -223,7 +225,7 @@
         }
       },
       "delete" : {
-        "tags" : [ "brukersynkronisering-konfigurasjon" ],
+        "tags" : [ "kilde" ],
         "description" : "Sletter konfigurasjon for kilde",
         "operationId" : "slettKilde",
         "parameters" : [ {
@@ -265,7 +267,7 @@
     },
     "/brukersynkronisering/konfigurasjon/api/v1/konfigurasjon/{fiksOrgId}" : {
       "get" : {
-        "tags" : [ "brukersynkronisering-konfigurasjon" ],
+        "tags" : [ "kilde" ],
         "description" : "Gir oversikt over hvilke kilder som er konfigurert",
         "operationId" : "kilder",
         "parameters" : [ {
@@ -307,7 +309,7 @@
         }
       },
       "post" : {
-        "tags" : [ "brukersynkronisering-konfigurasjon" ],
+        "tags" : [ "kilde" ],
         "description" : "Oppretter konfigurasjon for en kilde",
         "operationId" : "opprettKilde",
         "parameters" : [ {
@@ -377,7 +379,7 @@
           "type" : {
             "type" : "string"
           },
-          "expiresIn" : {
+          "expiresInSeconds" : {
             "type" : "integer",
             "format" : "int64"
           },
@@ -434,7 +436,7 @@
         }
       },
       "Token" : {
-        "required" : [ "id", "revoked" ],
+        "required" : [ "createdAt", "expiresAt", "id", "revoked" ],
         "type" : "object",
         "properties" : {
           "id" : {
@@ -443,10 +445,23 @@
           },
           "revoked" : {
             "type" : "boolean"
+          },
+          "createdAt" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "expiresAt" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "revokedAt" : {
+            "type" : "string",
+            "format" : "date-time"
           }
         }
       },
       "Id" : {
+        "required" : [ "fiksOrgId", "id" ],
         "type" : "object",
         "properties" : {
           "fiksOrgId" : {
@@ -459,6 +474,7 @@
         }
       },
       "Kilde" : {
+        "required" : [ "id", "navn", "oidcClientId" ],
         "type" : "object",
         "properties" : {
           "id" : {
@@ -474,6 +490,7 @@
         }
       },
       "NyKilde" : {
+        "required" : [ "eksternInstansId", "id", "navn", "oidcClientId", "scimEndepunkt" ],
         "type" : "object",
         "properties" : {
           "id" : {
@@ -489,15 +506,23 @@
           "scimEndepunkt" : {
             "type" : "string",
             "format" : "uri"
+          },
+          "eksternInstansId" : {
+            "type" : "string"
           }
         }
       },
       "NyKildeRequest" : {
-        "required" : [ "beskrivelse" ],
+        "required" : [ "eksternInstansId", "navn" ],
         "type" : "object",
         "properties" : {
-          "beskrivelse" : {
-            "type" : "string"
+          "navn" : {
+            "type" : "string",
+            "description" : "Menneskelesbart navn p?? kildesystemet"
+          },
+          "eksternInstansId" : {
+            "type" : "string",
+            "description" : "Id som identifiserer unikt en instans av kildesystemet. For Azure AD skal det oppgies TennantId"
           }
         }
       }
