@@ -208,8 +208,8 @@ Henter liste med informasjon om dokumentene til en forsendelse.
 | adresse1   | String  | Adresselinje1    |                |
 | adresse2   | String  | Adresselinje2    |                |
 | adresse3   | String  | Adresselinje3    |                |
-| postSted   | String  | Poststed         | Må være utfylt, 4 tall for norske adresser, gjelder ikke ved kun digital forsendelse |
-| postNummer | String  | Postnummer       |                |
+| postSted   | String  | Poststed         |                |
+| postNummer | String  | Postnummer       | Må være utfylt, 4 tall for norske adresser, gjelder ikke ved kun digital forsendelse |
 | land       | String  | Land             | Må være utfylt, gjelder ikke ved kun digital forsendelse |
 
 #### DigitalAdresse
