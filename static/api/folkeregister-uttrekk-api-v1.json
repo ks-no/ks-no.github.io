@@ -173,6 +173,59 @@
       }
     },
     "/folkeregister/api/v1/uttrekk/{fiksOrgId}/oppvekst" : {
+      "get" : {
+        "tags" : [ "uttrekk" ],
+        "description" : "Henter oppvekstuttrekk man har tilgang tilh??rende gitt organisasjon",
+        "operationId" : "listUttrekkOppvekst",
+        "parameters" : [ {
+          "name" : "fiksOrgId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        }, {
+          "name" : "status",
+          "in" : "query",
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "enum" : [ "OPPRETTET", "HOS_SKATT", "FERDIG_SKATT", "FERDIG", "FEILET" ]
+            }
+          }
+        }, {
+          "name" : "rolleId",
+          "in" : "query",
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "201" : {
+            "description" : "OK",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/UttrekkOppvekstListResponse"
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Ikke tilgang",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      },
       "post" : {
         "tags" : [ "uttrekk" ],
         "description" : "Oppretter oppvekstuttrekk for angitte f??dselsnumre for en organisasjon",
@@ -360,6 +413,45 @@
           },
           "404" : {
             "description" : "Det finnes ikke noe utrekk med den gitte uttrekkId-en",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete" : {
+        "tags" : [ "uttrekk" ],
+        "operationId" : "slettUttrekkOppvekst",
+        "parameters" : [ {
+          "name" : "fiksOrgId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        }, {
+          "name" : "uttrekkId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK"
+          },
+          "204" : {
+            "description" : "No Content"
+          },
+          "403" : {
+            "description" : "Ikke tilgang",
             "content" : {
               "application/json" : {
                 "schema" : {
@@ -723,6 +815,116 @@
           }
         }
       },
+      "FerdigOppvekstUttrekk" : {
+        "required" : [ "autorisasjonRolleId", "dokumentlagerId", "id", "innbyggereHentet", "opprettet", "rolleId", "sistOppdatert", "uttrekkDefinisjon" ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "rolleId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "autorisasjonRolleId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "dokumentlagerId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "innbyggereHentet" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "opprettet" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "sistOppdatert" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "beskrivelse" : {
+            "type" : "string"
+          },
+          "uttrekkDefinisjon" : {
+            "$ref" : "#/components/schemas/UttrekkOppvekstDefinisjon"
+          }
+        }
+      },
+      "UttrekkOppvekstDefinisjon" : {
+        "required" : [ "foedselsnumre" ],
+        "type" : "object",
+        "properties" : {
+          "foedselsnumre" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          }
+        }
+      },
+      "UttrekkOppvekstListResponse" : {
+        "required" : [ "ferdige", "uttrekkIGang" ],
+        "type" : "object",
+        "properties" : {
+          "ferdige" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/FerdigOppvekstUttrekk"
+            }
+          },
+          "uttrekkIGang" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/UttrekkOppvekstStatusResponse"
+            }
+          }
+        }
+      },
+      "UttrekkOppvekstStatusResponse" : {
+        "required" : [ "fiksOrg", "id", "innbyggereHentet", "opprettet", "rolleId", "sistOppdatert", "uttrekkDefinisjon", "uttrekkStatus" ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "fiksOrg" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "rolleId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "uttrekkStatus" : {
+            "type" : "string",
+            "enum" : [ "OPPRETTET", "HOS_SKATT", "FERDIG_SKATT", "FERDIG", "FEILET" ]
+          },
+          "innbyggereHentet" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "opprettet" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "sistOppdatert" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "beskrivelse" : {
+            "type" : "string"
+          },
+          "uttrekkDefinisjon" : {
+            "$ref" : "#/components/schemas/UttrekkOppvekstDefinisjon"
+          }
+        }
+      },
       "UttrekkFerdig" : {
         "required" : [ "dokumentlagerId", "id", "nedlastingUrl" ],
         "type" : "object",
@@ -836,58 +1038,6 @@
             "items" : {
               "type" : "string"
             }
-          }
-        }
-      },
-      "UttrekkOppvekstDefinisjon" : {
-        "required" : [ "foedselsnumre" ],
-        "type" : "object",
-        "properties" : {
-          "foedselsnumre" : {
-            "type" : "array",
-            "items" : {
-              "type" : "string"
-            }
-          }
-        }
-      },
-      "UttrekkOppvekstStatusResponse" : {
-        "required" : [ "fiksOrg", "id", "innbyggereHentet", "opprettet", "rolleId", "sistOppdatert", "uttrekkDefinisjon", "uttrekkStatus" ],
-        "type" : "object",
-        "properties" : {
-          "id" : {
-            "type" : "string",
-            "format" : "uuid"
-          },
-          "fiksOrg" : {
-            "type" : "string",
-            "format" : "uuid"
-          },
-          "rolleId" : {
-            "type" : "string",
-            "format" : "uuid"
-          },
-          "uttrekkStatus" : {
-            "type" : "string",
-            "enum" : [ "OPPRETTET", "HOS_SKATT", "FERDIG_SKATT", "FERDIG", "FEILET" ]
-          },
-          "innbyggereHentet" : {
-            "type" : "integer",
-            "format" : "int64"
-          },
-          "opprettet" : {
-            "type" : "string",
-            "format" : "date-time"
-          },
-          "sistOppdatert" : {
-            "type" : "string",
-            "format" : "date-time"
-          },
-          "beskrivelse" : {
-            "type" : "string"
-          },
-          "uttrekkDefinisjon" : {
-            "$ref" : "#/components/schemas/UttrekkOppvekstDefinisjon"
           }
         }
       },
