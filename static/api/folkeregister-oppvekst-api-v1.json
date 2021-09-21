@@ -1,0 +1,495 @@
+{
+  "openapi" : "3.0.1",
+  "info" : {
+    "title" : "KS Fiks folkeregister oppvekst",
+    "description" : "Folkregister oppvekst",
+    "contact" : {
+      "name" : "Fiks brukerst??tte",
+      "url" : "https://www.ks.no/fagomrader/digitalisering/utviklingsprosjekter",
+      "email" : "fiks-utvikling@ks.no"
+    },
+    "version" : "v1"
+  },
+  "servers" : [ {
+    "url" : "https://api.fiks.ks.no",
+    "description" : "KS Fiks API host",
+    "variables" : { }
+  }, {
+    "url" : "https://api.test.fiks.ks.no",
+    "description" : "KS Fiks TEST API host",
+    "variables" : { }
+  } ],
+  "tags" : [ {
+    "name" : "oppvekst",
+    "description" : "API for ?? h??ndtere funksjonalitet rundt oppvekst fra folkeregisteret"
+  } ],
+  "paths" : {
+    "/folkeregister/api/v1/oppvekst/{fiksOrgId}/oppvekst" : {
+      "get" : {
+        "tags" : [ "oppvekst" ],
+        "description" : "Henter oppvekstuttrekk man har tilgang tilh??rende gitt organisasjon",
+        "operationId" : "listUttrekkOppvekst",
+        "parameters" : [ {
+          "name" : "fiksOrgId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        }, {
+          "name" : "status",
+          "in" : "query",
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "enum" : [ "OPPRETTET", "HOS_SKATT", "FERDIG_SKATT", "FERDIG", "FEILET" ]
+            }
+          }
+        }, {
+          "name" : "rolleId",
+          "in" : "query",
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "201" : {
+            "description" : "OK",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/UttrekkOppvekstListResponse"
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Ikke tilgang",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post" : {
+        "tags" : [ "oppvekst" ],
+        "description" : "Oppretter oppvekstuttrekk for angitte f??dselsnumre for en organisasjon",
+        "operationId" : "opprettOppvekst",
+        "parameters" : [ {
+          "name" : "fiksOrgId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/OpprettOppvekstUttrekk"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "201" : {
+            "description" : "Opprettet",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/UttrekkRef"
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Ikke tilgang",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/folkeregister/api/v1/oppvekst/{fiksOrgId}/oppvekst/{uttrekkId}" : {
+      "get" : {
+        "tags" : [ "oppvekst" ],
+        "description" : "Henter status p?? uttrekk for oppvekst",
+        "operationId" : "statusOppvekst",
+        "parameters" : [ {
+          "name" : "fiksOrgId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        }, {
+          "name" : "uttrekkId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "201" : {
+            "description" : "OK",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/UttrekkStatusResponse"
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Ikke tilgang",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Det finnes ikke noe utrekk med den gitte uttrekkId-en",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete" : {
+        "tags" : [ "oppvekst" ],
+        "operationId" : "slettUttrekkOppvekst",
+        "parameters" : [ {
+          "name" : "fiksOrgId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        }, {
+          "name" : "uttrekkId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK"
+          },
+          "204" : {
+            "description" : "No Content"
+          },
+          "403" : {
+            "description" : "Ikke tilgang",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components" : {
+    "schemas" : {
+      "FerdigOppvekstUttrekk" : {
+        "required" : [ "autorisasjonRolleId", "dokumentlagerId", "id", "innbyggereHentet", "opprettet", "rolleId", "sistOppdatert", "uttrekkDefinisjon" ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "rolleId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "autorisasjonRolleId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "dokumentlagerId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "innbyggereHentet" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "opprettet" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "sistOppdatert" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "beskrivelse" : {
+            "type" : "string"
+          },
+          "uttrekkDefinisjon" : {
+            "$ref" : "#/components/schemas/UttrekkOppvekstDefinisjon"
+          }
+        }
+      },
+      "UttrekkOppvekstDefinisjon" : {
+        "required" : [ "foedselsnumre" ],
+        "type" : "object",
+        "properties" : {
+          "foedselsnumre" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          }
+        }
+      },
+      "UttrekkOppvekstListResponse" : {
+        "required" : [ "ferdige", "uttrekkIGang" ],
+        "type" : "object",
+        "properties" : {
+          "ferdige" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/FerdigOppvekstUttrekk"
+            }
+          },
+          "uttrekkIGang" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/UttrekkOppvekstStatusResponse"
+            }
+          }
+        }
+      },
+      "UttrekkOppvekstStatusResponse" : {
+        "required" : [ "fiksOrg", "id", "innbyggereHentet", "opprettet", "rolleId", "sistOppdatert", "uttrekkDefinisjon", "uttrekkStatus" ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "fiksOrg" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "rolleId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "uttrekkStatus" : {
+            "type" : "string",
+            "enum" : [ "OPPRETTET", "HOS_SKATT", "FERDIG_SKATT", "FERDIG", "FEILET" ]
+          },
+          "innbyggereHentet" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "opprettet" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "sistOppdatert" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "beskrivelse" : {
+            "type" : "string"
+          },
+          "uttrekkDefinisjon" : {
+            "$ref" : "#/components/schemas/UttrekkOppvekstDefinisjon"
+          }
+        }
+      },
+      "ErrorMessage" : {
+        "type" : "object",
+        "properties" : {
+          "timestamp" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "status" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "error" : {
+            "type" : "string"
+          },
+          "errorId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "path" : {
+            "type" : "string"
+          },
+          "originalPath" : {
+            "type" : "string"
+          },
+          "message" : {
+            "type" : "string"
+          },
+          "errorCode" : {
+            "type" : "string"
+          },
+          "errorJson" : {
+            "type" : "string"
+          }
+        }
+      },
+      "UttrekkRef" : {
+        "required" : [ "fiksOrgId", "uttrekkId" ],
+        "type" : "object",
+        "properties" : {
+          "fiksOrgId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "uttrekkId" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        }
+      },
+      "OpprettOppvekstUttrekk" : {
+        "required" : [ "foedselsnumre", "rolleId" ],
+        "type" : "object",
+        "properties" : {
+          "rolleId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "foedselsnumre" : {
+            "maxItems" : 2147483647,
+            "minItems" : 1,
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          }
+        }
+      },
+      "AarIntervall" : {
+        "type" : "object",
+        "properties" : {
+          "fraAar" : {
+            "minimum" : 0,
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "tilAar" : {
+            "type" : "integer",
+            "format" : "int32"
+          }
+        }
+      },
+      "UttrekkDefinisjon" : {
+        "required" : [ "status" ],
+        "type" : "object",
+        "properties" : {
+          "status" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "enum" : [ "AKTIV", "BOSATT", "UTFLYTTET", "DOED", "INAKTIV" ]
+            }
+          },
+          "bostedskommune" : {
+            "type" : "string"
+          },
+          "oppholdskommune" : {
+            "type" : "string"
+          },
+          "foedt" : {
+            "$ref" : "#/components/schemas/AarIntervall"
+          },
+          "doed" : {
+            "$ref" : "#/components/schemas/AarIntervall"
+          },
+          "kjoenn" : {
+            "type" : "string",
+            "enum" : [ "MANN", "KVINNE" ]
+          },
+          "statsborgerskap" : {
+            "type" : "string"
+          },
+          "sivilstand" : {
+            "type" : "string",
+            "enum" : [ "UGIFT", "GIFT", "ENKE_ELLER_ENKEMANN", "SKILT", "SEPARERT", "PARTNER", "SEPARERT_PARTNER", "SKILT_PARTNER", "GJENLEVENDE_PARTNER" ]
+          }
+        }
+      },
+      "UttrekkStatusResponse" : {
+        "required" : [ "fiksOrg", "id", "innbyggereHentet", "opprettet", "rolleId", "sistOppdatert", "uttrekkDefinisjon", "uttrekkStatus" ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "fiksOrg" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "rolleId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "uttrekkStatus" : {
+            "type" : "string",
+            "enum" : [ "OPPRETTET", "HOS_SKATT", "FERDIG_SKATT", "FERDIG", "FEILET" ]
+          },
+          "innbyggereHentet" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "opprettet" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "sistOppdatert" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "beskrivelse" : {
+            "type" : "string"
+          },
+          "uttrekkDefinisjon" : {
+            "$ref" : "#/components/schemas/UttrekkDefinisjon"
+          }
+        }
+      }
+    }
+  }
+}
