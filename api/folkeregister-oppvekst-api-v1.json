@@ -2,7 +2,7 @@
   "openapi" : "3.0.1",
   "info" : {
     "title" : "KS Fiks folkeregister oppvekst",
-    "description" : "Folkregister oppvekst",
+    "description" : "Folkeregister oppvekst",
     "contact" : {
       "name" : "Fiks brukerst??tte",
       "url" : "https://www.ks.no/fagomrader/digitalisering/utviklingsprosjekter",
@@ -24,11 +24,11 @@
     "description" : "API for ?? h??ndtere funksjonalitet rundt oppvekst fra folkeregisteret"
   } ],
   "paths" : {
-    "/folkeregister/api/v1/oppvekst/{fiksOrgId}/oppvekst" : {
+    "/folkeregister/api/v1/oppvekst/{fiksOrgId}/{rolleId}" : {
       "get" : {
         "tags" : [ "oppvekst" ],
-        "description" : "Henter oppvekstuttrekk man har tilgang tilh??rende gitt organisasjon",
-        "operationId" : "listUttrekkOppvekst",
+        "description" : "Henter oppvekstuttrekk for angitt f??dselsnumre",
+        "operationId" : "getUttrekkOppvekst",
         "parameters" : [ {
           "name" : "fiksOrgId",
           "in" : "path",
@@ -36,64 +36,9 @@
           "schema" : {
             "type" : "string",
             "format" : "uuid"
-          }
-        }, {
-          "name" : "status",
-          "in" : "query",
-          "schema" : {
-            "type" : "array",
-            "items" : {
-              "type" : "string",
-              "enum" : [ "OPPRETTET", "HOS_SKATT", "FERDIG_SKATT", "FERDIG", "FEILET" ]
-            }
           }
         }, {
           "name" : "rolleId",
-          "in" : "query",
-          "schema" : {
-            "type" : "string",
-            "format" : "uuid"
-          }
-        } ],
-        "responses" : {
-          "201" : {
-            "description" : "OK",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/UttrekkOppvekstListResponse"
-                }
-              }
-            }
-          },
-          "403" : {
-            "description" : "Ikke tilgang",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/ErrorMessage"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/folkeregister/api/v1/oppvekst/{fiksOrgId}/oppvekst/{uttrekkId}" : {
-      "get" : {
-        "tags" : [ "oppvekst" ],
-        "description" : "Henter status p?? uttrekk for oppvekst",
-        "operationId" : "statusOppvekst",
-        "parameters" : [ {
-          "name" : "fiksOrgId",
-          "in" : "path",
-          "required" : true,
-          "schema" : {
-            "type" : "string",
-            "format" : "uuid"
-          }
-        }, {
-          "name" : "uttrekkId",
           "in" : "path",
           "required" : true,
           "schema" : {
@@ -101,29 +46,32 @@
             "format" : "uuid"
           }
         } ],
+        "requestBody" : {
+          "content" : {
+            "*/*" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/OpprettOppvekstUttrekk"
+              }
+            }
+          },
+          "required" : true
+        },
         "responses" : {
-          "201" : {
+          "200" : {
             "description" : "OK",
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/UttrekkStatusResponse"
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/Person"
+                  }
                 }
               }
             }
           },
           "403" : {
             "description" : "Ikke tilgang",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/ErrorMessage"
-                }
-              }
-            }
-          },
-          "404" : {
-            "description" : "Det finnes ikke noe utrekk med den gitte uttrekkId-en",
             "content" : {
               "application/json" : {
                 "schema" : {
@@ -138,113 +86,452 @@
   },
   "components" : {
     "schemas" : {
-      "FerdigOppvekstUttrekk" : {
-        "required" : [ "autorisasjonRolleId", "dokumentlagerId", "id", "innbyggereHentet", "opprettet", "rolleId", "sistOppdatert", "uttrekkDefinisjon" ],
+      "Adressenummer" : {
         "type" : "object",
         "properties" : {
-          "id" : {
-            "type" : "string",
-            "format" : "uuid"
-          },
-          "rolleId" : {
-            "type" : "string",
-            "format" : "uuid"
-          },
-          "autorisasjonRolleId" : {
-            "type" : "string",
-            "format" : "uuid"
-          },
-          "dokumentlagerId" : {
-            "type" : "string",
-            "format" : "uuid"
-          },
-          "innbyggereHentet" : {
-            "type" : "integer",
-            "format" : "int64"
-          },
-          "opprettet" : {
-            "type" : "string",
-            "format" : "date-time"
-          },
-          "sistOppdatert" : {
-            "type" : "string",
-            "format" : "date-time"
-          },
-          "beskrivelse" : {
+          "husnummer" : {
             "type" : "string"
           },
-          "uttrekkDefinisjon" : {
-            "$ref" : "#/components/schemas/UttrekkOppvekstDefinisjon"
+          "husbokstav" : {
+            "type" : "string"
           }
         }
       },
-      "UttrekkOppvekstDefinisjon" : {
-        "required" : [ "foedselsnumre" ],
+      "Bostedsadresse" : {
         "type" : "object",
         "properties" : {
-          "foedselsnumre" : {
+          "vegadresse" : {
+            "$ref" : "#/components/schemas/Vegadresse"
+          },
+          "adressegradering" : {
+            "type" : "string"
+          },
+          "matrikkeladresse" : {
+            "$ref" : "#/components/schemas/Matrikkeladresse"
+          },
+          "ukjentBosted" : {
+            "$ref" : "#/components/schemas/UkjentBosted"
+          },
+          "adresseIdentifikatorFraMatrikkelen" : {
+            "type" : "string"
+          },
+          "naerAdresseIdentifikatorFraMatrikkelen" : {
+            "type" : "string"
+          },
+          "flyttedato" : {
+            "type" : "string"
+          },
+          "skolekrets" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "grunnkrets" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "kirkekrets" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "stemmekrets" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        }
+      },
+      "DeltBosted" : {
+        "type" : "object",
+        "properties" : {
+          "adresseIdentifikatorFraMatrikkelen" : {
+            "type" : "string"
+          },
+          "adressegradering" : {
+            "type" : "string"
+          },
+          "matrikkeladresse" : {
+            "$ref" : "#/components/schemas/Matrikkeladresse"
+          },
+          "naerAdresseIdentifikatorFraMatrikkelen" : {
+            "type" : "string"
+          },
+          "sluttdatoForKontrakt" : {
+            "type" : "string"
+          },
+          "startdatoForKontrakt" : {
+            "type" : "string"
+          },
+          "ukjentBosted" : {
+            "$ref" : "#/components/schemas/UkjentBosted"
+          },
+          "vegadresse" : {
+            "$ref" : "#/components/schemas/Vegadresse"
+          }
+        }
+      },
+      "Familierelasjon" : {
+        "type" : "object",
+        "properties" : {
+          "familierelasjonPerson" : {
+            "type" : "string"
+          },
+          "familierelasjonRolle" : {
+            "type" : "string",
+            "enum" : [ "MOR", "FAR", "MEDMOR" ]
+          }
+        }
+      },
+      "Foreldreansvarlig" : {
+        "type" : "object",
+        "properties" : {
+          "ansvar" : {
+            "type" : "string",
+            "enum" : [ "FELLES", "MOR", "FAR", "MEDMOR", "ANDRE", "UKJENT" ]
+          },
+          "identifikasjonsnummer" : {
+            "$ref" : "#/components/schemas/Identifikasjonsnummer"
+          },
+          "personstatus" : {
+            "type" : "string",
+            "enum" : [ "BOSATT", "UTFLYTTET", "FORSVUNNET", "DOED", "OPPHOERT", "FOEDSELSREGISTRERT", "MIDLERTIDIG", "INAKTIV", "IKKE_BOSATT", "AKTIV" ]
+          },
+          "navn" : {
+            "$ref" : "#/components/schemas/Navn"
+          },
+          "statsborgerskap" : {
+            "type" : "string"
+          },
+          "kjoenn" : {
+            "type" : "string",
+            "enum" : [ "MANN", "KVINNE" ]
+          },
+          "bostedsadresse" : {
+            "$ref" : "#/components/schemas/Bostedsadresse"
+          },
+          "oppholdsadresse" : {
+            "$ref" : "#/components/schemas/Oppholdsadresse"
+          },
+          "postadresse" : {
+            "$ref" : "#/components/schemas/Postadresse"
+          },
+          "foedsel" : {
+            "type" : "string"
+          }
+        }
+      },
+      "Identifikasjonsnummer" : {
+        "type" : "object",
+        "properties" : {
+          "foedselsEllerDNummer" : {
+            "type" : "string"
+          },
+          "identifikatortype" : {
+            "type" : "string"
+          }
+        }
+      },
+      "Matrikkeladresse" : {
+        "type" : "object",
+        "properties" : {
+          "adressetilleggsnavn" : {
+            "type" : "string"
+          },
+          "bruksenhetsnummer" : {
+            "type" : "string"
+          },
+          "bruksenhetstype" : {
+            "type" : "string"
+          },
+          "coAdressenavn" : {
+            "type" : "string"
+          },
+          "matrikkelnummer" : {
+            "$ref" : "#/components/schemas/Matrikkelnummer"
+          },
+          "poststed" : {
+            "$ref" : "#/components/schemas/Poststed"
+          },
+          "undernummer" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        }
+      },
+      "Matrikkelnummer" : {
+        "type" : "object",
+        "properties" : {
+          "bruksnummer" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "festenummer" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "gaardsnummer" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "kommunenummer" : {
+            "type" : "string"
+          }
+        }
+      },
+      "Navn" : {
+        "type" : "object",
+        "properties" : {
+          "fornavn" : {
+            "type" : "string"
+          },
+          "mellomnavn" : {
+            "type" : "string"
+          },
+          "etternavn" : {
+            "type" : "string"
+          }
+        }
+      },
+      "Oppholdsadresse" : {
+        "type" : "object",
+        "properties" : {
+          "vegadresse" : {
+            "$ref" : "#/components/schemas/Vegadresse"
+          },
+          "adressegradering" : {
+            "type" : "string"
+          },
+          "matrikkeladresse" : {
+            "$ref" : "#/components/schemas/Matrikkeladresse"
+          },
+          "adresseIdentifikatorFraMatrikkelen" : {
+            "type" : "string"
+          },
+          "utenlandskAdresse" : {
+            "$ref" : "#/components/schemas/UtenlandskAdresse"
+          }
+        }
+      },
+      "Person" : {
+        "type" : "object",
+        "properties" : {
+          "identifikasjonsnummer" : {
+            "$ref" : "#/components/schemas/Identifikasjonsnummer"
+          },
+          "tidligereIdentifikasjonsnummer" : {
+            "$ref" : "#/components/schemas/Identifikasjonsnummer"
+          },
+          "dufNummer" : {
+            "type" : "string"
+          },
+          "foedselsdato" : {
+            "type" : "string"
+          },
+          "personstatus" : {
+            "type" : "string",
+            "enum" : [ "BOSATT", "UTFLYTTET", "FORSVUNNET", "DOED", "OPPHOERT", "FOEDSELSREGISTRERT", "MIDLERTIDIG", "INAKTIV", "IKKE_BOSATT", "AKTIV" ]
+          },
+          "foreldreansvarstype" : {
+            "type" : "string",
+            "enum" : [ "FELLES", "MOR", "FAR", "MEDMOR", "ANDRE", "UKJENT" ]
+          },
+          "kjoenn" : {
+            "type" : "string",
+            "enum" : [ "MANN", "KVINNE" ]
+          },
+          "navn" : {
+            "$ref" : "#/components/schemas/Navn"
+          },
+          "statsborgerskap" : {
+            "type" : "string"
+          },
+          "adressebeskyttelse" : {
+            "type" : "string"
+          },
+          "bostedsadresse" : {
+            "$ref" : "#/components/schemas/Bostedsadresse"
+          },
+          "oppholdsadresse" : {
+            "$ref" : "#/components/schemas/Oppholdsadresse"
+          },
+          "deltBosted" : {
+            "$ref" : "#/components/schemas/DeltBosted"
+          },
+          "postadresse" : {
+            "$ref" : "#/components/schemas/Postadresse"
+          },
+          "foreldreansvarlige" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Foreldreansvarlig"
+            }
+          },
+          "familierelasjoner" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Familierelasjon"
+            }
+          }
+        }
+      },
+      "Postadresse" : {
+        "type" : "object",
+        "properties" : {
+          "postboksadresse" : {
+            "$ref" : "#/components/schemas/Postboksadresse"
+          },
+          "vegadresseForPost" : {
+            "$ref" : "#/components/schemas/VegadresseForPost"
+          },
+          "frittFormat" : {
+            "$ref" : "#/components/schemas/PostadresseFrittFormat"
+          },
+          "adressegradering" : {
+            "type" : "string"
+          },
+          "adresseIdentifikatorFraMatrikkelen" : {
+            "type" : "string"
+          }
+        }
+      },
+      "PostadresseFrittFormat" : {
+        "type" : "object",
+        "properties" : {
+          "adresselinje" : {
             "type" : "array",
             "items" : {
               "type" : "string"
             }
+          },
+          "poststed" : {
+            "$ref" : "#/components/schemas/Poststed"
           }
         }
       },
-      "UttrekkOppvekstListResponse" : {
-        "required" : [ "ferdige", "uttrekkIGang" ],
+      "Postboksadresse" : {
         "type" : "object",
         "properties" : {
-          "ferdige" : {
-            "type" : "array",
-            "items" : {
-              "$ref" : "#/components/schemas/FerdigOppvekstUttrekk"
-            }
-          },
-          "uttrekkIGang" : {
-            "type" : "array",
-            "items" : {
-              "$ref" : "#/components/schemas/UttrekkOppvekstStatusResponse"
-            }
-          }
-        }
-      },
-      "UttrekkOppvekstStatusResponse" : {
-        "required" : [ "fiksOrg", "id", "innbyggereHentet", "opprettet", "rolleId", "sistOppdatert", "uttrekkDefinisjon", "uttrekkStatus" ],
-        "type" : "object",
-        "properties" : {
-          "id" : {
-            "type" : "string",
-            "format" : "uuid"
-          },
-          "fiksOrg" : {
-            "type" : "string",
-            "format" : "uuid"
-          },
-          "rolleId" : {
-            "type" : "string",
-            "format" : "uuid"
-          },
-          "uttrekkStatus" : {
-            "type" : "string",
-            "enum" : [ "OPPRETTET", "HOS_SKATT", "FERDIG_SKATT", "FERDIG", "FEILET" ]
-          },
-          "innbyggereHentet" : {
-            "type" : "integer",
-            "format" : "int64"
-          },
-          "opprettet" : {
-            "type" : "string",
-            "format" : "date-time"
-          },
-          "sistOppdatert" : {
-            "type" : "string",
-            "format" : "date-time"
-          },
-          "beskrivelse" : {
+          "postbokseier" : {
             "type" : "string"
           },
-          "uttrekkDefinisjon" : {
-            "$ref" : "#/components/schemas/UttrekkOppvekstDefinisjon"
+          "postboks" : {
+            "type" : "string"
+          },
+          "poststed" : {
+            "$ref" : "#/components/schemas/Poststed"
+          }
+        }
+      },
+      "Poststed" : {
+        "type" : "object",
+        "properties" : {
+          "poststedsnavn" : {
+            "type" : "string"
+          },
+          "postnummer" : {
+            "type" : "string"
+          }
+        }
+      },
+      "UkjentBosted" : {
+        "type" : "object",
+        "properties" : {
+          "kommune" : {
+            "type" : "string"
+          }
+        }
+      },
+      "UtenlandskAdresse" : {
+        "type" : "object",
+        "properties" : {
+          "adressenavn" : {
+            "type" : "string"
+          },
+          "boenhet" : {
+            "type" : "string"
+          },
+          "byEllerStedsnavn" : {
+            "type" : "string"
+          },
+          "bygning" : {
+            "type" : "string"
+          },
+          "coAdressenavn" : {
+            "type" : "string"
+          },
+          "distriktsnavn" : {
+            "type" : "string"
+          },
+          "etasjenummer" : {
+            "type" : "string"
+          },
+          "landkode" : {
+            "type" : "string"
+          },
+          "postboks" : {
+            "type" : "string"
+          },
+          "postkode" : {
+            "type" : "string"
+          },
+          "region" : {
+            "type" : "string"
+          }
+        }
+      },
+      "Vegadresse" : {
+        "type" : "object",
+        "properties" : {
+          "adressenavn" : {
+            "type" : "string"
+          },
+          "coAdressenavn" : {
+            "type" : "string"
+          },
+          "adressenummer" : {
+            "$ref" : "#/components/schemas/Adressenummer"
+          },
+          "poststed" : {
+            "$ref" : "#/components/schemas/Poststed"
+          },
+          "kommunenummer" : {
+            "type" : "string"
+          },
+          "bruksenhetsnummer" : {
+            "type" : "string"
+          },
+          "bruksenhetstype" : {
+            "type" : "string"
+          },
+          "adressekode" : {
+            "type" : "string"
+          },
+          "adressetilleggsnavn" : {
+            "type" : "string"
+          }
+        }
+      },
+      "VegadresseForPost" : {
+        "type" : "object",
+        "properties" : {
+          "adressenavn" : {
+            "type" : "string"
+          },
+          "coAdressenavn" : {
+            "type" : "string"
+          },
+          "adressenummer" : {
+            "$ref" : "#/components/schemas/Adressenummer"
+          },
+          "poststed" : {
+            "$ref" : "#/components/schemas/Poststed"
+          },
+          "adressekode" : {
+            "type" : "string"
+          },
+          "adressetilleggsnavn" : {
+            "type" : "string"
+          },
+          "bruksenhetsnummer" : {
+            "type" : "string"
           }
         }
       },
@@ -283,93 +570,17 @@
           }
         }
       },
-      "AarIntervall" : {
+      "OpprettOppvekstUttrekk" : {
+        "required" : [ "foedselsnumre" ],
         "type" : "object",
         "properties" : {
-          "fraAar" : {
-            "minimum" : 0,
-            "type" : "integer",
-            "format" : "int32"
-          },
-          "tilAar" : {
-            "type" : "integer",
-            "format" : "int32"
-          }
-        }
-      },
-      "UttrekkDefinisjon" : {
-        "required" : [ "status" ],
-        "type" : "object",
-        "properties" : {
-          "status" : {
+          "foedselsnumre" : {
+            "maxItems" : 2147483647,
+            "minItems" : 1,
             "type" : "array",
             "items" : {
-              "type" : "string",
-              "enum" : [ "AKTIV", "BOSATT", "UTFLYTTET", "DOED", "INAKTIV" ]
+              "type" : "string"
             }
-          },
-          "bostedskommune" : {
-            "type" : "string"
-          },
-          "oppholdskommune" : {
-            "type" : "string"
-          },
-          "foedt" : {
-            "$ref" : "#/components/schemas/AarIntervall"
-          },
-          "doed" : {
-            "$ref" : "#/components/schemas/AarIntervall"
-          },
-          "kjoenn" : {
-            "type" : "string",
-            "enum" : [ "MANN", "KVINNE" ]
-          },
-          "statsborgerskap" : {
-            "type" : "string"
-          },
-          "sivilstand" : {
-            "type" : "string",
-            "enum" : [ "UGIFT", "GIFT", "ENKE_ELLER_ENKEMANN", "SKILT", "SEPARERT", "PARTNER", "SEPARERT_PARTNER", "SKILT_PARTNER", "GJENLEVENDE_PARTNER" ]
-          }
-        }
-      },
-      "UttrekkStatusResponse" : {
-        "required" : [ "fiksOrg", "id", "innbyggereHentet", "opprettet", "rolleId", "sistOppdatert", "uttrekkDefinisjon", "uttrekkStatus" ],
-        "type" : "object",
-        "properties" : {
-          "id" : {
-            "type" : "string",
-            "format" : "uuid"
-          },
-          "fiksOrg" : {
-            "type" : "string",
-            "format" : "uuid"
-          },
-          "rolleId" : {
-            "type" : "string",
-            "format" : "uuid"
-          },
-          "uttrekkStatus" : {
-            "type" : "string",
-            "enum" : [ "OPPRETTET", "HOS_SKATT", "FERDIG_SKATT", "FERDIG", "FEILET" ]
-          },
-          "innbyggereHentet" : {
-            "type" : "integer",
-            "format" : "int64"
-          },
-          "opprettet" : {
-            "type" : "string",
-            "format" : "date-time"
-          },
-          "sistOppdatert" : {
-            "type" : "string",
-            "format" : "date-time"
-          },
-          "beskrivelse" : {
-            "type" : "string"
-          },
-          "uttrekkDefinisjon" : {
-            "$ref" : "#/components/schemas/UttrekkDefinisjon"
           }
         }
       }
