@@ -6,29 +6,32 @@ date: 2021-07-29
 > Tjenesten er under utvikling/testing/pilotering
 
 Fiks Arkiv er en asynkron protokoll over Fiks IO eller andre transportmekanismer for å søke, arkivere og hente data fra et arkiv.
-For implementasjonseksempler, brukerhistorier og teknisk dokumentasjon les mer på github repoet [fiks-arkiv](https://github.com/ks-no/fiks-arkiv).
+For implementasjonseksempler, brukerhistorier og teknisk dokumentasjon les mer i wiki på github repoet [fiks-arkiv](https://github.com/ks-no/fiks-arkiv/wiki).
 
 
 ## Meldinger
 Hver melding består av en zip fil ASIC-E som inneholder `arkivmelding.xml` eller `sok.xml` og tilhørende vedlegg som er definert i xml filen.
 Hver melding kan ikke overskride 5GB.
 
-KS har gjort tilgjengelig nuget pakken (.NET) `KS.Fiks.IO.Arkiv.Client` for at man skal enklere kunne bygge `arkivmelding.xml`. Koden er tilgjengelig på github [her]() og tilgjengelig for bruk i prosjekter på [nuget.org](https://www.nuget.org/packages/KS.Fiks.IO.Arkiv.Client/).
+KS har gjort tilgjengelig nuget pakken (.NET) `KS.Fiks.IO.Arkiv.Client` for at man skal enklere kunne bygge `arkivmelding.xml` vha . Koden er tilgjengelig på github [her](https://github.com/ks-no/fiks-arkiv-client-dotnet) og tilgjengelig for bruk i prosjekter på [nuget.org](https://www.nuget.org/packages/KS.Fiks.IO.Arkiv.Client/).
 
 Et tilsvarende bibliotek for Java kommer senere.
 
 For mer informasjon rundt meldingsformatet **arkivmelding** kan man lese om definisjonen [her](https://docs.digdir.no/eformidling_nm_arkivmeldingen.html) hos Digdir.
+XSD schema for meldingsformatene er tilgjengelig nuget i pakken `KS.Fiks.IO.Arkiv.Client` og kan også finnes på github [her](https://github.com/ks-no/fiks-arkiv-client-dotnet/tree/main/KS.Fiks.IO.Arkiv.Client/Schema)
 
 ## Søk etter data
 Kommer
 
 ## Arkivering
-For å arkivere data må en bruke meldingsformatet `arkivmelding.xml`. 
+For å arkivere data må en bruke meldingsformatet `arkivmelding.xml`. Se **arkivmelding.xsd** for definsjon av meldingsformatet. 
 TTL på en arkivering kan gjerne settes til 1 time eller til flere dager.
 Når arkivering er mottat i arkiv skal det komme en mottat melding tilbake av typen `no.ks.fiks.gi.arkivintegrasjon.mottatt.v1`.
-Når arkivering er arkivert til arkivet skal det komme en kvitteringsmelding tilbake av typen `no.ks.fiks.gi.arkivintegrasjon.kvittering.v1`.
+Når arkivering er arkivert til arkivet skal det komme en **arkivmelding** tilbake i meldingsformatet `arkivmelding-kvittering.xml` av typen `no.ks.fiks.gi.arkivintegrasjon.kvittering.v1`. Se **arkivmeldingKvittering.xsd** for definisjon av meldingsformatet på kvitteringsmelding. 
 
 Meldingstyper er tilgjengelig i klient biblioteket på Github [her](https://github.com/ks-no/fiks-arkiv-client-dotnet/blob/main/KS.Fiks.IO.Arkiv.Client/Models/ArkivintegrasjonMeldingTypeV1.cs).
+
+![arkivmelding_med_kvittering_ok](/images/arkivmelding_med_kvittering_ok.png "Arkivmelding med kvittering")
 
 ## Hente data
 
@@ -43,8 +46,12 @@ Tilsvarende feilmeldingstyper er også tilgjengelig for Java i biblioteket `fiks
 Hvis utløpstiden for en melding løper ut uten at meldingen er behandlet av mottaker vil man få en melding av meldingstypen `no.ks.fiks.kvittering.tidsavbrudd` tilbake.
 Denne meldingstypen bør håndteres av alle klienter for å følge opp meldinger som ikke er mottatt. Disse meldingene inneholder ingen innhold, men kun headere deriblant `svar-til` som vil være en referanse til den opprinnelige meldingen (melding-id).
 
+![arkivmelding_med_tidsavbrudd](/images/arkivmelding_med_tidsavbrudd.png "Arkivmelding med tidsavbrudd")
+
 ### Ugyldig forespørsel
 Hvis noe er galt med forespørselen, altså den er ugyldig, så skal mottaker sende en `no.ks.fiks.kvittering.ugyldigforespørsel.v1` tilbake til sender.
+
+![arkivmelding_med_ugyldigforesporsel](/images/arkivmelding_med_ugyldigforesporsel.png "Arkivmelding med ugyldig forespørsel")
 
 ### Serverfeil
 Ved serverfeil hos mottaker skal det sendes en `no.ks.fiks.kvittering.serverfeil.v1` tilbake til sender.
