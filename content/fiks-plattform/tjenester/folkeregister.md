@@ -59,6 +59,9 @@ I dokumentasjonen til API-et til FREG står det `Dersom part ikke oppgis vil ret
 | Test (Integrasjon) | https://api.fiks.test.ks.no  |
 | Produksjon         | https://api.fiks.ks.no       |
 
+Vi tilbyr et API som speiler FREG og et API som er tilpasset 0-16-uttrekk.
+
+## FREG-API
 Våre API er en speiling av FREG og vi tilbyr derfor ikke egne OpenAPI/Swagger-dokumentasjon. [Klikk her for FREG sin Swagger-dokumentasjon.](https://app.swaggerhub.com/organizations/Skatteetaten_FREG)
 
 Les mer om hvordan tjenestene virker hos Skatteetaten:
@@ -75,9 +78,9 @@ URL-sti for Fiks sitt proxy-api er på formen:
 - ```ROLLE_ID``` - Id for rollen som brukes
 - ```FREG_RESSURS``` - URL-sti for oppslag/uttrekk/hendelser fra skatteetatens api, på formen med eksempel ```v1/personer/{personidentifikator}```
 
-Merk at dette er URL-stien som skal brukes uavhengig av om fagsystemet bruker api for offentlig med hjemmel eller offentlig uten hjemmel, da det er rollen som definerer hvilken som blir brukt. 
+Merk at dette er URL-stien som skal brukes uavhengig av om fagsystemet bruker api for offentlig med hjemmel eller offentlig uten hjemmel, da det er rollen som definerer hvilken som blir brukt.
 
-## Eksempel på bruk av API-et
+### Eksempel på bruk av API-et
 Eksempelet er utført med httpie: `http --pretty format GET https://api.fiks.test.ks.no/folkeregister/api/v1/<ROLLE_ID>/v1/personer/06076301709?part=bostedsadresse Accept: application/json IntegrasjonId:<INTEGRASJONSID> Authorization:Bearer <JWT_TOKEN_FRA_MASKINPORTEN> IntegrasjonPassord:<INTEGRASJONSPASSORD>`
 ```json
 {
@@ -116,6 +119,28 @@ Eksempelet er utført med httpie: `http --pretty format GET https://api.fiks.tes
 	}]
 }
 ```
+
+### 0-16-uttrekk API
+OpenAPI/Swagger-dokumentasjon for 0-16-uttrekk finner man [her](https://editor.swagger.io/?url=https://ks-no.github.io/api/folkeregister-oppvekst-api-v1.json).
+
+Dette API har spesifikke krav for rollen som brukes. Bruksområde skal være «Søk etter person» og følgende informasjonselementer for «Personbasis» og «Relasjon utvidet» må være valgt:
+
+Personbasis:
+* Fødselsnummer eller d-nummer
+* Personstatus
+* Fødsel
+* Statsborgerskap
+* Kjønn
+* Navn
+* Bostedsadresse
+* Oppholdsadresse
+* Delt bosted
+* Postadresse
+
+Relasjon utvidet:
+* Familierelasjon
+* Familieansvar
+
 
 ## Kontakt
 Tekniske spørsmål og henvendelser kan rettes til fiks-utvikling@ks.no, øvrige henvendelser kan rettes til modernisertfolkeregister@ks.no
