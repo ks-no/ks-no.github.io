@@ -143,4 +143,4 @@ Relasjon utvidet:
 
 
 ## Kontakt
-Tekniske spørsmål og henvendelser kan rettes til fiks-utvikling@ks.no, øvrige henvendelser kan rettes til modernisertfolkeregister@ks.no
+Tekniske spørsmål og henvendelser kan rettes til fiks-utvikling@ks.no, øvrige henvendelser kan rettes til fiks@ks.no
