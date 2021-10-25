@@ -167,16 +167,17 @@ Henter liste med informasjon om dokumentene til en forsendelse.
 | niva                | Integer             |             |            |
 
 #### DokumentMetadata
-| Felt           | Type    | Beskrivelse | Validering |
-| -------------- | ------- | ----------- | ---------- |
-| mimeType       | String  |             |            |
-| filnavn        | String  |             |            |
-| kanSigneres    | Boolean | Bare en fil kan signeres og skal være av type PDF | Validerer at maks ett dokument pr forsendelse har flagget slått på |
-| sizeInBytes    | Long    |             |            |
-| sha256hash     | String  |             |            |
-| dokumentType   | String  |             |            |
-| nedlasningsUrl | String  |             |            |
-| signeringsUrl  | String  |             |            |
+| Felt           | Type          | Beskrivelse | Validering |
+| -------------- | ------------- | ----------- | ---------- |
+| mimeType       | String        |             |            |
+| filnavn        | String        |             |            |
+| kanSigneres    | Boolean       | Bare en fil kan signeres og skal være av type PDF | Validerer at maks ett dokument pr forsendelse har flagget slått på |
+| sizeInBytes    | Long          |             |            |
+| sha256hash     | String        |             |            |
+| dokumentType   | String        |             |            |
+| nedlasningsUrl | String        |             |            |
+| signeringsUrl  | String        |             |            |
+| ekstraMetadata | List\<Entry\> |             |            |
 
 #### HendelsesLogg
 | Felt      | Type   | Beskrivelse | Validering |
@@ -263,6 +264,8 @@ Se OrganisasjonDigitalAdresse og PersonDigitalAdresse
 | data                   | DataHandler    | Fildata |  |
 | giroarkSider           | Set<\Integer\> | Liste med sidetall som skal printes på gult giroark. Digital versjon vil få grått giroark. Første side er 1. |  |
 | ekskluderesFraUtskrift | Boolean        | Dette dokumentet blir ikke med i utskrift av forsendelsen. Brukes til filer som kun er interessant for digital levering. F.eks xml, video eller lyd filer |  |
+| ekstraMetadata         | List\<Entry\>  | Brukes til andre data som avsender vil ha med i forsendelsen | |
+
 
 #### Lenke
 | Felt      | Type   | Beskrivelse                            | Validering                                                                                      |
