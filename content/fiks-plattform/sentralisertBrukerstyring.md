@@ -65,3 +65,7 @@ I så fall går du inn på den _Enterprise application_-instansen du laget tidlg
 1. Under _Supported Attributes_, velg _Edit attribute list for customapsso_
 1. I bunnen av listen, legg til nytt element av typen _String_ med verdi   `urn:ietf:params:scim:schemas:extension:ks:personidentifikasjon:1.0:foedselsnummer`. Dette er det feltet vi forventer å få inn fødselsnummeret i.  
 1. Du kan nå mappe det feltet du har valgt å legge fødselsnummer i din AD tennant til det nye fødselsnummerfeltet.  
+
+![Azure AD provisioning mapping](/images/sd_7.png)
+
+![Azure AD provisioning mapping custom](/images/sd_8.png)
