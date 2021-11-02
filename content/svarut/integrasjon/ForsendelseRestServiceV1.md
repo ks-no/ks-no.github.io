@@ -22,7 +22,7 @@ baseurl: /tjenester/api/forsendelse/v1
 | /startNyForsendelse                  |POST           |                             | ForsendelsesId                    | Genererer forsendelsesid som brukes sammen med sendForsendelseMedId.                        |
 | /{id}/sendForsendelse                |POST           | Forsendelse, ForsendelsesId | ForsendelsesId                    | Se sendForsendelse.                                                                         |
 | /{id}/status                         |GET           | ForsendelsesId              | ForsendelsesStatus                | Henter status for en forsendelse.                                                           |
-| /{id}/dokuemntMetadata             |GET           | ForsendelsesId              | List\<DokumentMetadata\>          | Henter liste med informasjon om dokumentene til en forsendelse.                             |
+| /{id}/dokumentMetadata             |GET           | ForsendelsesId              | List\<DokumentMetadata\>          | Henter liste med informasjon om dokumentene til en forsendelse.                             |
 | /{id}/historikk                   |GET    | ForsendelsesId              | ForsendelsesHistorikk             | Henter historikk for en forsendelse, tilsvarer ekspederingsloggen i forsendelsesoversikten. |
 | /{id}/signeringhistorikk          |GET          | ForsendelsesId              | SigneringsHistorikk               | Henter signeringshistorikk (logg) på en forsendelse som er markert for signering.           |
 | /{id}/settLest                |POST              | LestAv                      |                                   | Benyttes for å sette status til lest når dokumentet har blitt lest utenfor vårt system.     |
