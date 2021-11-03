@@ -472,7 +472,7 @@
           "content" : {
             "application/json" : {
               "schema" : {
-                "$ref" : "#/components/schemas/ManuellForsendelse"
+                "$ref" : "#/components/schemas/ManuellForsendelseRequest"
               }
             }
           }
@@ -517,10 +517,10 @@
     "/api/v1/manuell-forsendelse" : {
       "get" : {
         "tags" : [ "manuell-forsendelse" ],
-        "description" : "Hent manuell forsendelser basert på filter",
-        "operationId" : "hentForsendelserForAvsender",
+        "description" : "Hent manuell forsendelser tilknyttet Konto",
+        "operationId" : "hentForsendelserTilknyttetKonto",
         "parameters" : [ {
-          "name" : "avsenderId",
+          "name" : "kontoId",
           "in" : "query",
           "schema" : {
             "type" : "string",
@@ -571,7 +571,7 @@
           "content" : {
             "application/json" : {
               "schema" : {
-                "$ref" : "#/components/schemas/ManuellForsendelse"
+                "$ref" : "#/components/schemas/ManuellForsendelseRequest"
               }
             }
           }
@@ -634,15 +634,6 @@
             "format" : "uuid"
           }
         } ],
-        "requestBody" : {
-          "content" : {
-            "application/json" : {
-              "schema" : {
-                "$ref" : "#/components/schemas/ManuellForsendelse"
-              }
-            }
-          }
-        },
         "responses" : {
           "200" : {
             "description" : "Hent status for manuell forsendelse",
@@ -876,18 +867,50 @@
             "format" : "uuid"
           }
         } ],
-        "requestBody" : {
-          "content" : {
-            "application/json" : {
-              "schema" : {
-                "$ref" : "#/components/schemas/ManuellForsendelse"
-              }
-            }
-          }
-        },
         "responses" : {
           "204" : {
             "description" : "Start manuell forsendelse"
+          },
+          "401" : {
+            "description" : "Ingen tilgang",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Systemfeil",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/manuell-forsendelse/{manuellForsendelseId}/stopp" : {
+      "post" : {
+        "tags" : [ "manuell-forsendelse" ],
+        "description" : "Starter manuell forsendelse",
+        "operationId" : "stoppManuellForsendelse",
+        "parameters" : [ {
+          "name" : "manuellForsendelseId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "204" : {
+            "description" : "Stopp manuell forsendelse"
           },
           "401" : {
             "description" : "Ingen tilgang",
@@ -1106,16 +1129,16 @@
           "fletteForsendelse" : {
             "type" : "boolean",
             "description" : "Fletteforsendelse"
+          },
+          "kunDigitalLevering" : {
+            "type" : "boolean",
+            "description" : "Kun digital levering"
           }
         }
       },
       "Printkonfigurasjon" : {
         "type" : "object",
         "properties" : {
-          "kunDigitalLevering" : {
-            "type" : "boolean",
-            "description" : "Kun digital levering"
-          },
           "tosidig" : {
             "type" : "boolean",
             "description" : "Tosidig"
@@ -1139,7 +1162,7 @@
           "status" : {
             "type" : "string",
             "description" : "Manuell Forsendelse status",
-            "enum" : [ "PAABEGYNT", "UNDER_SENDING", "FERDIG", "FEIL" ]
+            "enum" : [ "UNDER_ARBEID", "STARTET", "STOPPET", "FERDIG", "FEIL" ]
           },
           "fremdrift" : {
             "type" : "number",
@@ -1148,7 +1171,7 @@
           }
         }
       },
-      "ManuellForsendelse" : {
+      "ManuellForsendelseRequest" : {
         "required" : [ "avsender" ],
         "type" : "object",
         "properties" : {
@@ -1170,10 +1193,6 @@
           "fletteForsendelse" : {
             "type" : "boolean",
             "description" : "Fletteforsendelse"
-          },
-          "status" : {
-            "type" : "string",
-            "description" : "Status for forsendelsen"
           }
         }
       }
