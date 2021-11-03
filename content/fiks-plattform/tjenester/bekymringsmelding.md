@@ -112,14 +112,16 @@ hvor:
 
 - url
 
-  - Privat bekymringsmelding test: ``https://api.fiks.test.ks.no/bekymringsmelding/api/v1/mottak/fagsystem/{fiksOrgId}/{kommunenummer}/{bydelsnummer}/privat``
+  - Privat bekymringsmelding test: ``https://api.fiks.test.ks.no/bekymringsmelding/api/v1/mottak/fagsystem/{fraFiksOrgId}/{kommunenummer}/{bydelsnummer}/privat``
 
-  - Offentlig bekymringsmelding test: ``https://api.fiks.test.ks.no/bekymringsmelding/api/v1/mottak/fagsystem/{fiksOrgId}/{kommunenummer}/{bydelsnummer}/offentlig``
+  - Offentlig bekymringsmelding test: ``https://api.fiks.test.ks.no/bekymringsmelding/api/v1/mottak/fagsystem/{fraFiksOrgId}/{kommunenummer}/{bydelsnummer}/offentlig``
 
-  - Privat bekymringsmelding prod: ``https://api.fiks.ks.no/bekymringsmelding/api/v1/mottak/fagsystem/{fiksOrgId}/{kommunenummer}/{bydelsnummer}/privat``
+  - Privat bekymringsmelding prod: ``https://api.fiks.ks.no/bekymringsmelding/api/v1/mottak/fagsystem/{fraFiksOrgId}/{kommunenummer}/{bydelsnummer}/privat``
 
-  - Offentlig bekymringsmelding prod: ``https://api.fiks.ks.no/bekymringsmelding/api/v1/mottak/fagsystem/{fiksOrgId}/{kommunenummer}/{bydelsnummer}/offentlig``
-
+  - Offentlig bekymringsmelding prod: ``https://api.fiks.ks.no/bekymringsmelding/api/v1/mottak/fagsystem/{fraFiksOrgId}/{kommunenummer}/{bydelsnummer}/offentlig``
+- Url-param fraFiksOrgId: Fiks Organisasjon ID til organisasjonen som fagsystemet sender meldinger på vegne av
+- Url-param kommunenummer: Kommunenummer man sender til
+- Url-param bydelsnummer: Bydelsnummer man sender til
 - integrasjonsId: Integrasjonsid i form av en UUID
 - integrasjonPassord: Integrasjonspassord
 - token: Gyldig aksesstoken fra maskinporten
