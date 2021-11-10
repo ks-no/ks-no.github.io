@@ -1,0 +1,172 @@
+{
+  "openapi" : "3.0.1",
+  "info" : {
+    "title" : "KS Fiks: Protokoll",
+    "description" : "Fiks Protokoll service",
+    "contact" : {
+      "name" : "Fiks-brukerstøtte",
+      "url" : "https://ks-no.github.io/",
+      "email" : "fiks-utvikling@ks.no"
+    },
+    "version" : "v1"
+  },
+  "servers" : [ {
+    "url" : "https://api.fiks.ks.no",
+    "description" : "KS Fiks API host",
+    "variables" : { }
+  } ],
+  "tags" : [ {
+    "name" : "Protokoll",
+    "description" : "API for bruk av Fiks Protokoll"
+  } ],
+  "paths" : {
+    "/api/v1/protokoll/{fiksOrgId}/kontoer" : {
+      "post" : {
+        "operationId" : "opprettKonto",
+        "parameters" : [ {
+          "name" : "fiksOrgId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "*/*" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/ProtokollKontoRequest"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "201" : {
+            "description" : "Oppretter ny protokoll konto"
+          },
+          "401" : {
+            "description" : "Ingen tilgang",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Ugyldig data for opprettelse protokoll konto",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Systemfeil",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/protokoll/ping" : {
+      "post" : {
+        "operationId" : "ping",
+        "responses" : {
+          "200" : {
+            "description" : "Ok"
+          }
+        }
+      }
+    }
+  },
+  "components" : {
+    "schemas" : {
+      "ErrorMessage" : {
+        "type" : "object",
+        "properties" : {
+          "timestamp" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "status" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "error" : {
+            "type" : "string"
+          },
+          "errorId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "path" : {
+            "type" : "string"
+          },
+          "originalPath" : {
+            "type" : "string"
+          },
+          "message" : {
+            "type" : "string"
+          },
+          "errorCode" : {
+            "type" : "string"
+          },
+          "errorJson" : {
+            "type" : "string"
+          }
+        }
+      },
+      "ProtokollKontoRequest" : {
+        "required" : [ "beskrivelse", "eposter", "navn", "offentligNokkel", "orgNr", "protokollKontoType", "protokollTilgjengelighetsType" ],
+        "type" : "object",
+        "properties" : {
+          "orgNr" : {
+            "pattern" : "^[0-9]{9}$",
+            "type" : "string",
+            "description" : "Orgnummer for oppretting av integrasjon"
+          },
+          "navn" : {
+            "type" : "string",
+            "description" : "Navn på konto"
+          },
+          "beskrivelse" : {
+            "type" : "string",
+            "description" : "Beskrivelse av konto"
+          },
+          "eposter" : {
+            "type" : "array",
+            "description" : "Kontakt eposter",
+            "items" : {
+              "type" : "string",
+              "description" : "Kontakt eposter"
+            }
+          },
+          "protokollTilgjengelighetsType" : {
+            "type" : "string",
+            "description" : "Tilgjengelighetstype for protokollkonto",
+            "enum" : [ "KUN_EGEN_ORG", "ALLE_ORG", "AUTOAKSEPT" ]
+          },
+          "protokollKontoType" : {
+            "type" : "string",
+            "description" : "Kontotype for protokoll",
+            "enum" : [ "ARKIV", "ARKIVERING", "ARKIV_SOK", "POLITISK_BEHANDLING_ARKIV", "POLITISK_BEHANDLING_ARKIVERING" ]
+          },
+          "offentligNokkel" : {
+            "type" : "string",
+            "description" : "offentlig nokkel fiksIo"
+          }
+        }
+      }
+    }
+  }
+}
