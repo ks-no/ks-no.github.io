@@ -38,6 +38,8 @@ Klientbibliotek laget i java finnes her: https://github.com/ks-no/svarut-rest-kl
 Datamodellene for rest servicen, finne si json spec i java klient biblioteket: https://github.com/ks-no/svarut-rest-klient/tree/master/svarut-rest-klient/json
 Disse json spec filene kan brukes av alle. De blir løpende oppdatert om vi legge til nye felt, og de kan få bedre validering etter hvert, som vi oppdager mangler.
 
+### Feilmeldinger
+[Beskrivelse av feilmeldinger](../../fiks-plattform/integrasjoner/#feilmeldinger)
 
 ### VIKTIG!
 /sendForsendelse bør ha readtimeout på 16min. SvarUT har Timeout på 15min. SvarUt kan ta i mot ganske store filer, derfor er denne timeouten så høg. 
