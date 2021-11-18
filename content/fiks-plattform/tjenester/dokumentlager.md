@@ -174,4 +174,4 @@ Dette gjøres med en DELETE-request mot følgende URL:
 - 410 Gone - Dokumentet er allerede slettet, eller konto er slettet.
 
 #### Feilmeldinger
-[Beskrivelse av feilmeldinger](../integrasjoner/#feilmeldinger) 
+[Beskrivelse av feilmeldinger](../../integrasjoner/#feilmeldinger) 
