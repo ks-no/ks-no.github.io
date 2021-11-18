@@ -78,3 +78,29 @@ I tillegg må integrasjonen autoriseres for tilgang til en spesifikk tjeneste. H
 
 Dette gjelder også for integrasjoner som leveres som en del av Fiks-plattformen. Skal SvarUt kunne indeksere forsendelse i Fiks Innsyn må også her kommunen eksplisitt autorisere dette.
 
+## Feilmeldinger
+
+De fleste REST API-ene returnerer feilmeldinger på følgende format:
+```json
+{
+  "timestamp": 1637218198035,
+  "status": 400,
+  "error": "Bad Request",
+  "errorId": "3389ad1b-afa4-42e1-b6f8-76f63e560ad5",
+  "path": "/tjeneste/api/v1/ressurs/123456",
+  "originalPath": "/tjeneste/api/v1/ressurs",
+  "message": "Beskrivelse av feilen",
+  "errorCode": "FEILKODE",
+  "errorJson": {"antall":13}
+}
+```
+
+- `timestamp` - Tidspunktet feilen oppstod i millisekunder siden epoch.
+- `status` - HTTP-statuskode, f.eks. 400 eller 500.
+- `error` - Beskrivelse av HTTP-statuskoden, f.eks. Bad Request eller Internal Server Error.
+- `errorId` - Intern id som brukes til å finne informasjon relatert til feilen under feilsøking.
+- `path` - Path requesten ble gjort mot.
+- `originalPath` - Vil i sjeldne feilsituasjoner være noe annet enn det som er satt i path, og ellers ikke være satt.
+- `message` - Menneskelig lesbar beskrivelse av feilen som oppstod.
+- `errorCode` - Tjenestespesifikk feilkode for maskinell tolkning. Vil i de fleste situasjoner ikke være satt.
+- `errorJson` - Detaljer knyttet til errorCode i JSON-format.
