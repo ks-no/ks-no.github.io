@@ -174,17 +174,4 @@ Dette gjøres med en DELETE-request mot følgende URL:
 - 410 Gone - Dokumentet er allerede slettet, eller konto er slettet.
 
 #### Feilmeldinger
-Feilmeldinger (HTTP status 4xx og 5xx) returnerer body på følgende format:
-```json
-{
-  "timestamp": 1620041021710,
-  "status": 400,
-  "error": "Bad Request",
-  "errorId": "3c313e30-e5ee-47c9-8a33-cabffc999f0b",
-  "path": "/dokumentlager/api/v1/d9444a65-396e-4092-af2a-55fa090dbd59/kontoer/db00967c-d57f-4f4d-aa9b-ba1faa20ce22/dokumenter/",
-  "originalPath": null,
-  "message": "Beskrivelse av feilen",
-  "errorCode": "",
-  "errorJson": null
-}
-```
+[Beskrivelse av feilmeldinger](../integrasjoner/#feilmeldinger) 
