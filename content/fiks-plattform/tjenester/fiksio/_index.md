@@ -107,3 +107,4 @@ Følgende headere er definert i meldingsutvekslingen.
 | type | Meldingstype |
 | dokumentlager-id | ID til eventuell fil lagret i Dokumentlager |
 | svar-til | Hvis meldingen er svar på en tidligere Fiks IO-melding, vil svar-til referere til den |
+| svar-til-type | På `no.ks.fiks.kvittering.tidsavbrudd` meldinger legges typen til den opprinnelige meldingen |
