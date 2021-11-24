@@ -78,6 +78,22 @@ Hvis søk forespørsel har satt *responsType* = *"noekler"* kan søket returnere
 | Hent journalpost resultat      | `no.ks.fiks.gi.arkiv.v1.basis.journalpost.hent.resultat`       |
 | Hent dokumentfil resultat      | `no.ks.fiks.gi.arkiv.v1.basis.dokumentfil.hent.resultat`       |
 
+**Hent mappe**:
+
+Meldingsformatet for hent mappe er definert i xsd schema [**mappeHent.xsd**](https://github.com/ks-no/fiks-arkiv-client-dotnet/blob/main/KS.Fiks.IO.Arkiv.Client/Schema/mappeHent.xsd). 
+Resultatet skal sendes tilbake som typen `no.ks.fiks.gi.arkiv.v1.basis.mappe.hent.resultat` med meldingsformatet definert i ??
+
+**Hent journalpost**:
+
+Meldingsformatet for hent mappe er definert i xsd schema [**journalpostHent.xsd**](https://github.com/ks-no/fiks-arkiv-client-dotnet/blob/main/KS.Fiks.IO.Arkiv.Client/Schema/journalpostHent.xsd).
+Resultatet skal sendes tilbake som typen `no.ks.fiks.gi.arkiv.v1.basis.journalpost.hent.resultat` med meldingsformatet definert i ??
+
+**Hent dokumentfil**:
+
+Meldingsformatet for hent mappe er definert i xsd schema [**dokumentfilHent.xsd**](https://github.com/ks-no/fiks-arkiv-client-dotnet/blob/main/KS.Fiks.IO.Arkiv.Client/Schema/dokumentfilHent.xsd).
+Resultatet skal sendes tilbake som typen `no.ks.fiks.gi.arkiv.v1.basis.dokumentfil.hent.resultat` med meldingsformatet definert i ??
+
+
 ## Standardmeldingstyper
 Som svar kan man få andre standardmeldinger. 
 Feilmeldingstyper for FIKS-IO plattformen er tilgjengelig i nuget pakken `KS.Fiks.IO.Client` for .NET. Se koden på  [github](https://github.com/ks-no/fiks-io-client-dotnet/blob/master/KS.Fiks.IO.Client/Models/Feilmelding/FeilmeldingMeldingTypeV1.cs) eller hent pakken på [nuget](https://www.nuget.org/packages/KS.Fiks.IO.Client/).
