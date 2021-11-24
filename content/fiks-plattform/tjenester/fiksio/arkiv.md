@@ -85,12 +85,12 @@ Resultatet skal sendes tilbake som typen `no.ks.fiks.arkiv.v1.basis.mappe.hent.r
 
 **Hent journalpost**:
 
-Meldingsformatet for hent mappe er definert i xsd schema [**journalpostHent.xsd**](https://github.com/ks-no/fiks-arkiv-client-dotnet/blob/main/KS.Fiks.IO.Arkiv.Client/Schema/journalpostHent.xsd).
+Meldingsformatet for hent journalpost er definert i xsd schema [**journalpostHent.xsd**](https://github.com/ks-no/fiks-arkiv-client-dotnet/blob/main/KS.Fiks.IO.Arkiv.Client/Schema/journalpostHent.xsd).
 Resultatet skal sendes tilbake som typen `no.ks.fiks.arkiv.v1.basis.journalpost.hent.resultat` med meldingsformatet definert i ??
 
 **Hent dokumentfil**:
 
-Meldingsformatet for hent mappe er definert i xsd schema [**dokumentfilHent.xsd**](https://github.com/ks-no/fiks-arkiv-client-dotnet/blob/main/KS.Fiks.IO.Arkiv.Client/Schema/dokumentfilHent.xsd).
+Meldingsformatet for hent dokumentfil er definert i xsd schema [**dokumentfilHent.xsd**](https://github.com/ks-no/fiks-arkiv-client-dotnet/blob/main/KS.Fiks.IO.Arkiv.Client/Schema/dokumentfilHent.xsd).
 Resultatet skal sendes tilbake som typen `no.ks.fiks.arkiv.v1.basis.dokumentfil.hent.resultat` med meldingsformatet definert i ??
 
 
