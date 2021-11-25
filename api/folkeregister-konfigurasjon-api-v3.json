@@ -22,6 +22,9 @@
   "tags" : [ {
     "name" : "folkeregister-konfigurasjon",
     "description" : "API for å håndtere funksjonalitet rundt konfigurasjon av folkeregister"
+  }, {
+    "name" : "tilganger",
+    "description" : "API rundt det å håndtere tilganger til roller"
   } ],
   "paths" : {
     "/folkeregister/api/v3/konfigurasjon/{fiksOrgId}/roller/{rolleId}/aktiver" : {
@@ -835,6 +838,37 @@
           }
         }
       }
+    },
+    "/folkeregister/api/v3/konfigurasjon/tilganger/{fiksOrgId}" : {
+      "get" : {
+        "tags" : [ "folkeregister-konfigurasjon", "tilganger" ],
+        "description" : "Henter liste over tilganger gitt til alle roller som er definert",
+        "operationId" : "tilgangerForFiksOrg",
+        "parameters" : [ {
+          "name" : "fiksOrgId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/RolleOversikt"
+                }
+              },
+              "text/csv" : {
+                "example" : "\n                Rollenavn,Person\n                \"Rollen vår\",\n                ,01017012345\n            "
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components" : {
@@ -1093,7 +1127,7 @@
         }
       },
       "TilgangListe" : {
-        "required" : [ "eksterneBrukere", "eksterneGrupper" ],
+        "required" : [ "eksterneBrukere", "eksterneGrupper", "integrasjoner", "personer" ],
         "type" : "object",
         "properties" : {
           "integrasjoner" : {
@@ -1405,6 +1439,47 @@
           "rolleId" : {
             "type" : "string",
             "format" : "uuid"
+          }
+        }
+      },
+      "RolleMedNavn" : {
+        "required" : [ "fiksOrgId", "navn" ],
+        "type" : "object",
+        "properties" : {
+          "fiksOrgId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "navn" : {
+            "type" : "string"
+          }
+        }
+      },
+      "RolleMedTilgangListe" : {
+        "required" : [ "rolle", "tilganger" ],
+        "type" : "object",
+        "properties" : {
+          "rolle" : {
+            "$ref" : "#/components/schemas/RolleMedNavn"
+          },
+          "tilganger" : {
+            "$ref" : "#/components/schemas/TilgangListe"
+          }
+        }
+      },
+      "RolleOversikt" : {
+        "required" : [ "roller" ],
+        "type" : "object",
+        "properties" : {
+          "fiksOrgId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "roller" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/RolleMedTilgangListe"
+            }
           }
         }
       }
