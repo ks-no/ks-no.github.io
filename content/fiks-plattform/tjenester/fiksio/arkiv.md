@@ -25,12 +25,18 @@ XSD schema for meldingsformatene er tilgjengelig nuget i pakken `KS.Fiks.IO.Arki
 
 |   Type    | Navn |
 | ----------- | ----------- |
-| Arkiver melding      | `no.ks.fiks.arkiv.v1.basis.arkivmelding`       |
+| Arkiver melding      | `no.ks.fiks.arkiv.v1.arkivmelding`       |
 | Mottat melding      | `no.ks.fiks.arkiv.v1.mottatt`       |
 | Kvittering på arkivering  | `no.ks.fiks.arkiv.v1.kvittering`        |
 
 For å arkivere data må en bruke meldingsformatet `arkivmelding.xml`. Se xsd schema [**arkivmelding.xsd**](https://github.com/ks-no/fiks-arkiv-client-dotnet/blob/main/KS.Fiks.IO.Arkiv.Client/Schema/arkivmelding.xsd) for definsjon av meldingsformatet. 
-TTL på en arkivering kan gjerne settes til 1 time eller til flere dager.
+
+### Time To Live (TTL)
+TTL på en arkivering kan gjerne settes til 1 time eller til flere dager. Man bør sette en fornuftig TTL basert på hvert use-case. 
+
+Husk også at det er viktig å ikke forsøke å sende en melding på nytt **før** TTL er gått ut pluss litt ekstra tid. Dette er for å ikke fylle køen med duplikater. Hvis TTL går ut på tid og melding ikke har blitt hentet av mottaker får man en `tidsavbrudd` melding tilbake.
+
+### Mottatt og kvittering
 Når arkivering er mottat i arkiv skal det komme en mottat melding tilbake av typen `no.ks.fiks.arkiv.v1.mottatt`.
 Når arkivering er arkivert til arkivet skal det komme en **arkivmelding** tilbake i meldingsformatet `arkivmelding-kvittering.xml` av typen `no.ks.fiks.arkiv.v1.kvittering`. Se [**arkivmeldingKvittering.xsd**](https://github.com/ks-no/fiks-arkiv-client-dotnet/blob/main/KS.Fiks.IO.Arkiv.Client/Schema/arkivmeldingKvittering.xsd) for definisjon av meldingsformatet på kvitteringsmelding. 
 
@@ -70,28 +76,28 @@ Hvis søk forespørsel har satt *responsType* = *"noekler"* kan søket returnere
 
 |   Type    | Navn |
 | ----------- | ----------- |
-| Hent mappe      | `no.ks.fiks.arkiv.v1.basis.mappe.hent`       |
-| Hent journalpost      | `no.ks.fiks.arkiv.v1.basis.journalpost.hent`       |
-| Hent dokumentfil  | `no.ks.fiks.arkiv.v1.basis.dokumentfil.hent`        |
+| Hent mappe      | `no.ks.fiks.arkiv.v1.mappe.hent`       |
+| Hent journalpost      | `no.ks.fiks.arkiv.v1.journalpost.hent`       |
+| Hent dokumentfil  | `no.ks.fiks.arkiv.v1.dokumentfil.hent`        |
 | Mottat melding      | `no.ks.fiks.arkiv.v1.mottatt`       |
-| Hent mappe resultat      | `no.ks.fiks.arkiv.v1.basis.mappe.hent.resultat`       |
-| Hent journalpost resultat      | `no.ks.fiks.arkiv.v1.basis.journalpost.hent.resultat`       |
-| Hent dokumentfil resultat      | `no.ks.fiks.arkiv.v1.basis.dokumentfil.hent.resultat`       |
+| Hent mappe resultat      | `no.ks.fiks.arkiv.v1.mappe.hent.resultat`       |
+| Hent journalpost resultat      | `no.ks.fiks.arkiv.v1.journalpost.hent.resultat`       |
+| Hent dokumentfil resultat      | `no.ks.fiks.arkiv.v1.dokumentfil.hent.resultat`       |
 
 **Hent mappe**:
 
 Meldingsformatet for hent mappe er definert i xsd schema [**mappeHent.xsd**](https://github.com/ks-no/fiks-arkiv-client-dotnet/blob/main/KS.Fiks.IO.Arkiv.Client/Schema/mappeHent.xsd). 
-Resultatet skal sendes tilbake som typen `no.ks.fiks.arkiv.v1.basis.mappe.hent.resultat` med meldingsformatet definert i ??
+Resultatet skal sendes tilbake som typen `no.ks.fiks.arkiv.v1.mappe.hent.resultat` med meldingsformatet definert i ??
 
 **Hent journalpost**:
 
 Meldingsformatet for hent journalpost er definert i xsd schema [**journalpostHent.xsd**](https://github.com/ks-no/fiks-arkiv-client-dotnet/blob/main/KS.Fiks.IO.Arkiv.Client/Schema/journalpostHent.xsd).
-Resultatet skal sendes tilbake som typen `no.ks.fiks.arkiv.v1.basis.journalpost.hent.resultat` med meldingsformatet definert i ??
+Resultatet skal sendes tilbake som typen `no.ks.fiks.arkiv.v1.journalpost.hent.resultat` med meldingsformatet definert i ??
 
 **Hent dokumentfil**:
 
 Meldingsformatet for hent dokumentfil er definert i xsd schema [**dokumentfilHent.xsd**](https://github.com/ks-no/fiks-arkiv-client-dotnet/blob/main/KS.Fiks.IO.Arkiv.Client/Schema/dokumentfilHent.xsd).
-Resultatet skal sendes tilbake som typen `no.ks.fiks.arkiv.v1.basis.dokumentfil.hent.resultat` med meldingsformatet definert i ??
+Resultatet skal sendes tilbake som typen `no.ks.fiks.arkiv.v1.dokumentfil.hent.resultat` med meldingsformatet definert i ??
 
 
 ## Standardmeldingstyper
@@ -102,6 +108,8 @@ Tilsvarende feilmeldingstyper er også tilgjengelig for Java i biblioteket `fiks
 ### Tidsavbrudd
 Hvis utløpstiden for en melding løper ut uten at meldingen er behandlet av mottaker vil man få en melding av meldingstypen `no.ks.fiks.kvittering.tidsavbrudd` tilbake.
 Denne meldingstypen bør håndteres av alle klienter for å følge opp meldinger som ikke er mottatt. Disse meldingene inneholder ingen innhold, men kun headere deriblant `svar-til` som vil være en referanse til den opprinnelige meldingen (melding-id).
+
+**NB:**
 
 ![arkivmelding_med_tidsavbrudd](/images/arkivmelding_med_tidsavbrudd.png "Arkivmelding med tidsavbrudd")
 
