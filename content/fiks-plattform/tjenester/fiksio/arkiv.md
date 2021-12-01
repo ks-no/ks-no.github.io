@@ -26,7 +26,7 @@ XSD schema for meldingsformatene er tilgjengelig nuget i pakken `KS.Fiks.IO.Arki
 |   Type    | Navn |
 | ----------- | ----------- |
 | Arkiver melding      | `no.ks.fiks.arkiv.v1.arkivmelding`       |
-| Mottat melding      | `no.ks.fiks.arkiv.v1.mottatt`       |
+| Mottatt melding      | `no.ks.fiks.arkiv.v1.mottatt`       |
 | Kvittering på arkivering  | `no.ks.fiks.arkiv.v1.kvittering`        |
 
 For å arkivere data må en bruke meldingsformatet `arkivmelding.xml`. Se xsd schema [**arkivmelding.xsd**](https://github.com/ks-no/fiks-arkiv-client-dotnet/blob/main/KS.Fiks.IO.Arkiv.Client/Schema/arkivmelding.xsd) for definsjon av meldingsformatet. 
@@ -50,14 +50,11 @@ Meldingstyper og schema xsd-filer er tilgjengelig i klient biblioteket på Githu
 |   Type    | Navn |
 | ----------- | ----------- |
 | Søk melding      | `no.ks.fiks.arkiv.v1.sok`       |
-| Mottat melding      | `no.ks.fiks.arkiv.v1.mottatt`       |
 | Søkeresultat utvidet  | `no.ks.fiks.arkiv.v1.sok.resultat.utvidet`        |
 | Søkeresultat minimum  | `no.ks.fiks.arkiv.v1.sok.resultat.minimum`        |
 | Søkeresultat nøkler  | `no.ks.fiks.arkiv.v1.sok.resultat.noekler`        |
 
 Meldingsformatet for søk er definert i xsd schema [**sok.xsd**](https://github.com/ks-no/fiks-arkiv-client-dotnet/blob/main/KS.Fiks.IO.Arkiv.Client/Schema/sok.xsd). I meldingsformatet **sok.xml** kan man definere om man ønsker et resultat tilbake av typen utvidet, minimum eller noekler.
-
-Når man har mottat en søk melding skal det sendes en mottat melding tilbake til avsender før man prosesserer og sender resultatet. 
 
 **Søkeresultat utvidet**:
 
@@ -79,7 +76,6 @@ Hvis søk forespørsel har satt *responsType* = *"noekler"* kan søket returnere
 | Hent mappe      | `no.ks.fiks.arkiv.v1.mappe.hent`       |
 | Hent journalpost      | `no.ks.fiks.arkiv.v1.journalpost.hent`       |
 | Hent dokumentfil  | `no.ks.fiks.arkiv.v1.dokumentfil.hent`        |
-| Mottat melding      | `no.ks.fiks.arkiv.v1.mottatt`       |
 | Hent mappe resultat      | `no.ks.fiks.arkiv.v1.mappe.hent.resultat`       |
 | Hent journalpost resultat      | `no.ks.fiks.arkiv.v1.journalpost.hent.resultat`       |
 | Hent dokumentfil resultat      | `no.ks.fiks.arkiv.v1.dokumentfil.hent.resultat`       |
@@ -87,17 +83,17 @@ Hvis søk forespørsel har satt *responsType* = *"noekler"* kan søket returnere
 **Hent mappe**:
 
 Meldingsformatet for hent mappe er definert i xsd schema [**mappeHent.xsd**](https://github.com/ks-no/fiks-arkiv-client-dotnet/blob/main/KS.Fiks.IO.Arkiv.Client/Schema/mappeHent.xsd). 
-Resultatet skal sendes tilbake som typen `no.ks.fiks.arkiv.v1.mappe.hent.resultat` med meldingsformatet definert i ??
+Resultatet skal sendes tilbake som typen `no.ks.fiks.arkiv.v1.mappe.hent.resultat`. 
 
 **Hent journalpost**:
 
 Meldingsformatet for hent journalpost er definert i xsd schema [**journalpostHent.xsd**](https://github.com/ks-no/fiks-arkiv-client-dotnet/blob/main/KS.Fiks.IO.Arkiv.Client/Schema/journalpostHent.xsd).
-Resultatet skal sendes tilbake som typen `no.ks.fiks.arkiv.v1.journalpost.hent.resultat` med meldingsformatet definert i ??
+Resultatet skal sendes tilbake som typen `no.ks.fiks.arkiv.v1.journalpost.hent.resultat`.
 
 **Hent dokumentfil**:
 
 Meldingsformatet for hent dokumentfil er definert i xsd schema [**dokumentfilHent.xsd**](https://github.com/ks-no/fiks-arkiv-client-dotnet/blob/main/KS.Fiks.IO.Arkiv.Client/Schema/dokumentfilHent.xsd).
-Resultatet skal sendes tilbake som typen `no.ks.fiks.arkiv.v1.dokumentfil.hent.resultat` med meldingsformatet definert i ??
+Resultatet skal sendes tilbake som typen `no.ks.fiks.arkiv.v1.dokumentfil.hent.resultat`.
 
 
 ## Standardmeldingstyper
