@@ -20,22 +20,85 @@ Et tilsvarende bibliotek for Java kommer senere.
 For mer informasjon rundt meldingsformatet **arkivmelding** kan man lese om definisjonen [her](https://docs.digdir.no/eformidling_nm_arkivmeldingen.html) hos Digdir.
 XSD schema for meldingsformatene er tilgjengelig nuget i pakken `KS.Fiks.IO.Arkiv.Client` og kan også finnes på github [her](https://github.com/ks-no/fiks-arkiv-client-dotnet/tree/main/KS.Fiks.IO.Arkiv.Client/Schema)
 
-## Søk etter data
-Kommer
-
 ## Arkivering
-For å arkivere data må en bruke meldingsformatet `arkivmelding.xml`. Se **arkivmelding.xsd** for definsjon av meldingsformatet. 
-TTL på en arkivering kan gjerne settes til 1 time eller til flere dager.
-Når arkivering er mottat i arkiv skal det komme en mottat melding tilbake av typen `no.ks.fiks.gi.arkivintegrasjon.mottatt.v1`.
-Når arkivering er arkivert til arkivet skal det komme en **arkivmelding** tilbake i meldingsformatet `arkivmelding-kvittering.xml` av typen `no.ks.fiks.gi.arkivintegrasjon.kvittering.v1`. Se **arkivmeldingKvittering.xsd** for definisjon av meldingsformatet på kvitteringsmelding. 
+**Meldingstyper:** 
 
-Meldingstyper er tilgjengelig i klient biblioteket på Github [her](https://github.com/ks-no/fiks-arkiv-client-dotnet/blob/main/KS.Fiks.IO.Arkiv.Client/Models/ArkivintegrasjonMeldingTypeV1.cs).
+|   Type    | Navn |
+| ----------- | ----------- |
+| Arkiver melding      | `no.ks.fiks.arkiv.v1.arkivmelding`       |
+| Mottat melding      | `no.ks.fiks.arkiv.v1.mottatt`       |
+| Kvittering på arkivering  | `no.ks.fiks.arkiv.v1.kvittering`        |
+
+For å arkivere data må en bruke meldingsformatet `arkivmelding.xml`. Se xsd schema [**arkivmelding.xsd**](https://github.com/ks-no/fiks-arkiv-client-dotnet/blob/main/KS.Fiks.IO.Arkiv.Client/Schema/arkivmelding.xsd) for definsjon av meldingsformatet. 
+
+### Time To Live (TTL)
+TTL på en arkivering kan gjerne settes til 1 time eller til flere dager. Man bør sette en fornuftig TTL basert på hvert use-case. 
+
+Husk også at det er viktig å ikke forsøke å sende en melding på nytt **før** TTL er gått ut pluss litt ekstra tid. Dette er for å ikke fylle køen med duplikater. Hvis TTL går ut på tid og melding ikke har blitt hentet av mottaker får man en `tidsavbrudd` melding tilbake.
+
+### Mottatt og kvittering
+Når arkivering er mottat i arkiv skal det komme en mottat melding tilbake av typen `no.ks.fiks.arkiv.v1.mottatt`.
+Når arkivering er arkivert til arkivet skal det komme en **arkivmelding** tilbake i meldingsformatet `arkivmelding-kvittering.xml` av typen `no.ks.fiks.arkiv.v1.kvittering`. Se [**arkivmeldingKvittering.xsd**](https://github.com/ks-no/fiks-arkiv-client-dotnet/blob/main/KS.Fiks.IO.Arkiv.Client/Schema/arkivmeldingKvittering.xsd) for definisjon av meldingsformatet på kvitteringsmelding. 
+
+Meldingstyper og schema xsd-filer er tilgjengelig i klient biblioteket på Github [her](https://github.com/ks-no/fiks-arkiv-client-dotnet/blob/main/KS.Fiks.IO.Arkiv.Client/Models/ArkivintegrasjonMeldingTypeV1.cs).
 
 ![arkivmelding_med_kvittering_ok](/images/arkivmelding_med_kvittering_ok.png "Arkivmelding med kvittering")
 
-## Hente data
+## Søk etter data
+**Meldingstyper:** 
 
-Kommer
+|   Type    | Navn |
+| ----------- | ----------- |
+| Søk melding      | `no.ks.fiks.arkiv.v1.sok`       |
+| Mottat melding      | `no.ks.fiks.arkiv.v1.mottatt`       |
+| Søkeresultat utvidet  | `no.ks.fiks.arkiv.v1.sok.resultat.utvidet`        |
+| Søkeresultat minimum  | `no.ks.fiks.arkiv.v1.sok.resultat.minimum`        |
+| Søkeresultat nøkler  | `no.ks.fiks.arkiv.v1.sok.resultat.noekler`        |
+
+Meldingsformatet for søk er definert i xsd schema [**sok.xsd**](https://github.com/ks-no/fiks-arkiv-client-dotnet/blob/main/KS.Fiks.IO.Arkiv.Client/Schema/sok.xsd). I meldingsformatet **sok.xml** kan man definere om man ønsker et resultat tilbake av typen utvidet, minimum eller noekler.
+
+Når man har mottat en søk melding skal det sendes en mottat melding tilbake til avsender før man prosesserer og sender resultatet. 
+
+**Søkeresultat utvidet**:
+
+Hvis søk forespørsel har satt *responsType* = *"utvidet"*  kan søket returnere et utvidet resultat med maksimalt mengde felter tilgjengelig gjennom søk. Se [**sokeresultatUtvidet.xsd**](https://github.com/ks-no/fiks-arkiv-client-dotnet/blob/main/KS.Fiks.IO.Arkiv.Client/Schema/sokeresultatUtvidet.xsd) for definisjon av returmelding.
+
+**Søkeresultat minimum**:
+
+Hvis søk forespørsel har satt *responsType* = *"minimum"* kan søket returnere et mer begrenset resultat tilgjengelig gjennom søk. Se [**sokeresultatMinimum.xsd**](https://github.com/ks-no/fiks-arkiv-client-dotnet/blob/main/KS.Fiks.IO.Arkiv.Client/Schema/sokeresultatMinimum.xsd)
+
+**Søkeresultat nøkler**:
+
+Hvis søk forespørsel har satt *responsType* = *"noekler"* kan søket returnere bare tilgjengelige nøkler. Se [**sokeresultatNoekler.xsd**](https://github.com/ks-no/fiks-arkiv-client-dotnet/blob/main/KS.Fiks.IO.Arkiv.Client/Schema/sokeresultatNoekler.xsd)
+
+## Hente data
+**Meldingstyper:**
+
+|   Type    | Navn |
+| ----------- | ----------- |
+| Hent mappe      | `no.ks.fiks.arkiv.v1.mappe.hent`       |
+| Hent journalpost      | `no.ks.fiks.arkiv.v1.journalpost.hent`       |
+| Hent dokumentfil  | `no.ks.fiks.arkiv.v1.dokumentfil.hent`        |
+| Mottat melding      | `no.ks.fiks.arkiv.v1.mottatt`       |
+| Hent mappe resultat      | `no.ks.fiks.arkiv.v1.mappe.hent.resultat`       |
+| Hent journalpost resultat      | `no.ks.fiks.arkiv.v1.journalpost.hent.resultat`       |
+| Hent dokumentfil resultat      | `no.ks.fiks.arkiv.v1.dokumentfil.hent.resultat`       |
+
+**Hent mappe**:
+
+Meldingsformatet for hent mappe er definert i xsd schema [**mappeHent.xsd**](https://github.com/ks-no/fiks-arkiv-client-dotnet/blob/main/KS.Fiks.IO.Arkiv.Client/Schema/mappeHent.xsd). 
+Resultatet skal sendes tilbake som typen `no.ks.fiks.arkiv.v1.mappe.hent.resultat` med meldingsformatet definert i ??
+
+**Hent journalpost**:
+
+Meldingsformatet for hent journalpost er definert i xsd schema [**journalpostHent.xsd**](https://github.com/ks-no/fiks-arkiv-client-dotnet/blob/main/KS.Fiks.IO.Arkiv.Client/Schema/journalpostHent.xsd).
+Resultatet skal sendes tilbake som typen `no.ks.fiks.arkiv.v1.journalpost.hent.resultat` med meldingsformatet definert i ??
+
+**Hent dokumentfil**:
+
+Meldingsformatet for hent dokumentfil er definert i xsd schema [**dokumentfilHent.xsd**](https://github.com/ks-no/fiks-arkiv-client-dotnet/blob/main/KS.Fiks.IO.Arkiv.Client/Schema/dokumentfilHent.xsd).
+Resultatet skal sendes tilbake som typen `no.ks.fiks.arkiv.v1.dokumentfil.hent.resultat` med meldingsformatet definert i ??
+
 
 ## Standardmeldingstyper
 Som svar kan man få andre standardmeldinger. 
@@ -45,6 +108,8 @@ Tilsvarende feilmeldingstyper er også tilgjengelig for Java i biblioteket `fiks
 ### Tidsavbrudd
 Hvis utløpstiden for en melding løper ut uten at meldingen er behandlet av mottaker vil man få en melding av meldingstypen `no.ks.fiks.kvittering.tidsavbrudd` tilbake.
 Denne meldingstypen bør håndteres av alle klienter for å følge opp meldinger som ikke er mottatt. Disse meldingene inneholder ingen innhold, men kun headere deriblant `svar-til` som vil være en referanse til den opprinnelige meldingen (melding-id).
+
+**NB:**
 
 ![arkivmelding_med_tidsavbrudd](/images/arkivmelding_med_tidsavbrudd.png "Arkivmelding med tidsavbrudd")
 
