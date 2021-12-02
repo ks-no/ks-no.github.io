@@ -178,6 +178,7 @@ Henter liste med informasjon om dokumentene til en forsendelse.
 | nedlasningsUrl | String        |             |            |
 | signeringsUrl  | String        |             |            |
 | ekstraMetadata | List\<Entry\> |             |            |
+| inneholderPersonsensitivInformasjon | Boolean |             |            |
 
 #### HendelsesLogg
 | Felt      | Type   | Beskrivelse | Validering |
@@ -265,6 +266,7 @@ Se OrganisasjonDigitalAdresse og PersonDigitalAdresse
 | giroarkSider           | Set<\Integer\> | Liste med sidetall som skal printes på gult giroark. Digital versjon vil få grått giroark. Første side er 1. |  |
 | ekskluderesFraUtskrift | Boolean        | Dette dokumentet blir ikke med i utskrift av forsendelsen. Brukes til filer som kun er interessant for digital levering. F.eks xml, video eller lyd filer |  |
 | ekstraMetadata         | List\<Entry\>  | Brukes til andre data som avsender vil ha med i forsendelsen | |
+| inneholderPersonsensitivInformasjon | Boolean | Brukes for å gjøre mottaker oppmerksom på at dokumentet kan inneholde sensitiv informasjon | |
 
 
 #### Lenke
