@@ -26,8 +26,8 @@ XSD schema for meldingsformatene er tilgjengelig nuget i pakken `KS.Fiks.IO.Arki
 |   Type    | Navn |
 | ----------- | ----------- |
 | Arkiver melding      | `no.ks.fiks.arkiv.v1.arkivering.arkivmelding`       |
-| Mottatt melding      | `no.ks.fiks.arkiv.v1.arkivering.mottatt`       |
-| Kvittering på arkivering  | `no.ks.fiks.arkiv.v1.arkivering.kvittering`        |
+| Mottatt melding      | `no.ks.fiks.arkiv.v1.arkivering.arkivmelding.mottatt`       |
+| Kvittering på arkivering  | `no.ks.fiks.arkiv.v1.arkivering.arkivmelding.kvittering`        |
 
 For å arkivere data må en bruke meldingsformatet `arkivmelding.xml`. Se xsd schema [**arkivmelding.xsd**](https://github.com/ks-no/fiks-arkiv-client-dotnet/blob/main/KS.Fiks.IO.Arkiv.Client/Schema/arkivmelding.xsd) for definsjon av meldingsformatet. 
 
@@ -37,8 +37,8 @@ TTL på en arkivering kan gjerne settes til minutter, timer eller til flere dage
 Husk også at det er viktig å ikke forsøke å sende en melding på nytt **før** TTL er gått ut pluss litt ekstra tid. Dette er for å ikke fylle køen med duplikater. Hvis TTL går ut på tid og melding ikke har blitt hentet av mottaker får man en `tidsavbrudd` melding tilbake.
 
 ### Mottatt og kvittering
-Når arkivering melding er mottat skal mottaker persistere meldingen, sende `ack` tilbake til Fiks-IO og så sende melding tilbake av typen `no.ks.fiks.arkiv.v1.arkivering.mottatt`. Sending av `ack` tilbake til Fiks-IO sørger for at meldingen blir tatt bort fra køen.   
-Når arkivering er arkivert til arkivet skal det komme en **arkivmelding** tilbake i meldingsformatet `arkivmelding-kvittering.xml` av typen `no.ks.fiks.arkiv.v1.arkivering.kvittering`. Se [**arkivmeldingKvittering.xsd**](https://github.com/ks-no/fiks-arkiv-client-dotnet/blob/main/KS.Fiks.IO.Arkiv.Client/Schema/arkivmeldingKvittering.xsd) for definisjon av meldingsformatet på kvitteringsmelding. 
+Når arkivering melding er mottat skal mottaker persistere meldingen, sende `ack` tilbake til Fiks-IO og så sende melding tilbake av typen `no.ks.fiks.arkiv.v1.arkivering.arkivmelding.mottatt`. Sending av `ack` tilbake til Fiks-IO sørger for at meldingen blir tatt bort fra køen.   
+Når arkivering er arkivert til arkivet skal det komme en **arkivmelding** tilbake i meldingsformatet `arkivmelding-kvittering.xml` av typen `no.ks.fiks.arkiv.v1.arkivering.arkivmelding.kvittering`. Se [**arkivmeldingKvittering.xsd**](https://github.com/ks-no/fiks-arkiv-client-dotnet/blob/main/KS.Fiks.IO.Arkiv.Client/Schema/arkivmeldingKvittering.xsd) for definisjon av meldingsformatet på kvitteringsmelding. 
 
 Meldingstyper og schema xsd-filer er tilgjengelig i klient biblioteket på Github [her](https://github.com/ks-no/fiks-arkiv-client-dotnet/blob/main/KS.Fiks.IO.Arkiv.Client/Models/ArkivintegrasjonMeldingTypeV1.cs).
 
