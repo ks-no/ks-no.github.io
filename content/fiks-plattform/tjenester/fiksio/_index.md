@@ -1,6 +1,6 @@
 ---
 title: Fiks IO
-date: 2019-07-26
+date: 2021-12-17
 aliases: [/fiks-platform/tjenester/fiksio]
 ---
 
@@ -83,8 +83,22 @@ Digisos bruker som nevnt over meldingsprotokollen "no.nav.digisos.fagsystem.v1",
 
 Ta kontakt med fiks@ks.no om du ønsker å etablere eller gjøre endringer i en protokoll.
 
-#### Standardmeldingstyper
-I tillegg til meldinger definert i protokollkatalogen det er også definert en standard meldingstype som blir sendt når utløpstiden for en melding løper ut uten at meldingen er behandlet av mottaker. Meldingstypen er `no.ks.fiks.kvittering.tidsavbrudd`. Denne meldingstypen bør håndteres av alle klienter for å følge opp meldinger som ikke er mottatt. Disse meldingene inneholder ingen innhold, men kun headere deriblant `svar-til` som vil være en referanse til den opprinnelige meldingen (melding-id).
+### Standardmeldingstyper
+
+#### Tidsavbrudd
+I tillegg til meldinger definert i protokollkatalogen det er også definert en standard meldingstype som forteller at meldingens ttl har utløpt uten at mottaker har mottat den. Meldingstypen er `no.ks.fiks.kvittering.tidsavbrudd`. Denne meldingen blir sendt til avsender når originalmeldingen kommer fremst i køen til mottaker. Dette betyr at meldingen ikke trenger å komme når ttl utløper men kan komme en stund senere.
+Hvis mottaker er nede og ikke leser meldinger og første melding har ttl på 2 timer. Vil ikke meldinger bak denne trigge tidsavbrudd melding før 2 timer meldingen som er først utløper. 
+
+Disse meldingene inneholder ingen body, men kun headere deriblant `svar-til` som vil være en referanse til den opprinnelige meldingen (melding-id), `svar-til-type` som inneholder den originale typen på meldingen som har utløpt.
+
+#### Ugyldig forespørsel
+Hvis noe er galt med forespørselen, altså den er ugyldig, så skal mottaker sende en `no.ks.fiks.kvittering.ugyldigforespoersel.v1` tilbake til sender. Json [schema](https://github.com/ks-no/fiks-io-client-dotnet/blob/master/KS.Fiks.IO.Client/Schema/no.ks.fiks.kvittering.ugyldigforespoersel.v1.schema.json) følger med i .net pakken for Fiks-IO-client.
+
+![arkivmelding_med_ugyldigforesporsel](/images/arkivmelding_med_ugyldigforesporsel.png "Arkivmelding med ugyldig forespørsel")
+
+#### Serverfeil
+Ved serverfeil hos mottaker skal det sendes en `no.ks.fiks.kvittering.serverfeil.v1` tilbake til sender. Json [schema](https://github.com/ks-no/fiks-io-client-dotnet/blob/master/KS.Fiks.IO.Client/Schema/no.ks.fiks.kvittering.serverfeil.v1.schema.json) følger med i .net pakken for Fiks-IO-client.
+
 
 ### Håndtering av store filer
 Fiks IO støtter sending av store filer ved at alle meldinger større enn 5 megabyte mellomlagres i Fiks Dokumentlager, i en dedikert konto som opprettes sammen med Fiks IO kontoen. En referanse til denne lagrede filen blir så sendt over AMQP. Filer sendt på slik måte får en time-to-live i dokumentlager lik time-to-live for meldingen + 24 timer. Etter dette vil de automatisk slettes.

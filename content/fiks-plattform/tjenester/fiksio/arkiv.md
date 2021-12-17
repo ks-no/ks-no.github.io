@@ -34,7 +34,7 @@ For å arkivere data må en bruke meldingsformatet `arkivmelding.xml`. Se xsd sc
 ### Time To Live (TTL)
 TTL på en arkivering kan gjerne settes til minutter, timer eller til flere dager. Man bør sette en fornuftig TTL basert på hvert use-case. 
 
-Husk også at det er viktig å ikke forsøke å sende en melding på nytt **før** TTL er gått ut pluss litt ekstra tid. Dette er for å ikke fylle køen med duplikater. Hvis TTL går ut på tid og melding ikke har blitt hentet av mottaker får man en `tidsavbrudd` melding tilbake.
+Husk også at det er viktig å ikke forsøke å sende en melding på nytt **før** TTL er gått ut pluss litt ekstra tid. Dette er for å ikke fylle køen med duplikater. Hvis TTL går ut på tid og melding ikke har blitt hentet av mottaker får man en `tidsavbrudd` melding tilbake. se [Tidsavbrudd](../#tidsavbrudd)
 
 ### Mottatt og kvittering
 Når arkivering melding er mottat skal mottaker persistere meldingen, sende `ack` tilbake til Fiks-IO og så sende melding tilbake av typen `no.ks.fiks.arkiv.v1.arkivering.arkivmelding.mottatt`. Sending av `ack` tilbake til Fiks-IO sørger for at meldingen blir tatt bort fra køen.   
@@ -104,6 +104,8 @@ Tilsvarende feilmeldingstyper er også tilgjengelig for Java i biblioteket `fiks
 ### Tidsavbrudd
 Hvis utløpstiden for en melding løper ut vil man få en melding av meldingstypen `no.ks.fiks.kvittering.tidsavbrudd` tilbake. Det betyr at mottaker ikke har markert meldingen som mottatt til Fiks-IO (ack).
 Denne meldingstypen bør håndteres av alle klienter for å følge opp meldinger som ikke er mottatt. Disse meldingene inneholder ingen innhold, men kun headere deriblant `svar-til` som vil være en referanse til den opprinnelige meldingen (melding-id).
+
+se [Tidsavbrudd](../#tidsavbrudd)
 
 **NB:**
 
