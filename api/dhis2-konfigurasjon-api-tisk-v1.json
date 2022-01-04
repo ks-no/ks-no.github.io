@@ -225,6 +225,10 @@
                           "uriBuilder" : {
                             "type" : "object"
                           },
+                          "uri" : {
+                            "type" : "string",
+                            "format" : "uri"
+                          },
                           "rel" : {
                             "type" : "string"
                           },
@@ -237,18 +241,14 @@
                           "title" : {
                             "type" : "string"
                           },
+                          "type" : {
+                            "type" : "string"
+                          },
                           "params" : {
                             "type" : "object",
                             "additionalProperties" : {
                               "type" : "string"
                             }
-                          },
-                          "uri" : {
-                            "type" : "string",
-                            "format" : "uri"
-                          },
-                          "type" : {
-                            "type" : "string"
                           }
                         }
                       }
@@ -281,6 +281,47 @@
                       "type" : "array",
                       "items" : {
                         "type" : "string"
+                      }
+                    },
+                    "cookies" : {
+                      "type" : "object",
+                      "additionalProperties" : {
+                        "type" : "object",
+                        "properties" : {
+                          "name" : {
+                            "type" : "string"
+                          },
+                          "value" : {
+                            "type" : "string"
+                          },
+                          "version" : {
+                            "type" : "integer",
+                            "format" : "int32"
+                          },
+                          "path" : {
+                            "type" : "string"
+                          },
+                          "domain" : {
+                            "type" : "string"
+                          },
+                          "comment" : {
+                            "type" : "string"
+                          },
+                          "maxAge" : {
+                            "type" : "integer",
+                            "format" : "int32"
+                          },
+                          "expiry" : {
+                            "type" : "string",
+                            "format" : "date-time"
+                          },
+                          "secure" : {
+                            "type" : "boolean"
+                          },
+                          "httpOnly" : {
+                            "type" : "boolean"
+                          }
+                        }
                       }
                     },
                     "entityTag" : {
@@ -336,63 +377,6 @@
                         }
                       }
                     },
-                    "metadata" : {
-                      "type" : "object",
-                      "additionalProperties" : {
-                        "type" : "array",
-                        "items" : {
-                          "type" : "object"
-                        }
-                      }
-                    },
-                    "status" : {
-                      "type" : "integer",
-                      "format" : "int32"
-                    },
-                    "entity" : {
-                      "type" : "object"
-                    },
-                    "cookies" : {
-                      "type" : "object",
-                      "additionalProperties" : {
-                        "type" : "object",
-                        "properties" : {
-                          "name" : {
-                            "type" : "string"
-                          },
-                          "value" : {
-                            "type" : "string"
-                          },
-                          "version" : {
-                            "type" : "integer",
-                            "format" : "int32"
-                          },
-                          "path" : {
-                            "type" : "string"
-                          },
-                          "domain" : {
-                            "type" : "string"
-                          },
-                          "comment" : {
-                            "type" : "string"
-                          },
-                          "maxAge" : {
-                            "type" : "integer",
-                            "format" : "int32"
-                          },
-                          "expiry" : {
-                            "type" : "string",
-                            "format" : "date-time"
-                          },
-                          "secure" : {
-                            "type" : "boolean"
-                          },
-                          "httpOnly" : {
-                            "type" : "boolean"
-                          }
-                        }
-                      }
-                    },
                     "length" : {
                       "type" : "integer",
                       "format" : "int32"
@@ -404,9 +388,6 @@
                     "language" : {
                       "type" : "object",
                       "properties" : {
-                        "displayName" : {
-                          "type" : "string"
-                        },
                         "script" : {
                           "type" : "string"
                         },
@@ -455,10 +436,29 @@
                         "displayVariant" : {
                           "type" : "string"
                         },
+                        "displayName" : {
+                          "type" : "string"
+                        },
                         "language" : {
                           "type" : "string"
                         }
                       }
+                    },
+                    "metadata" : {
+                      "type" : "object",
+                      "additionalProperties" : {
+                        "type" : "array",
+                        "items" : {
+                          "type" : "object"
+                        }
+                      }
+                    },
+                    "status" : {
+                      "type" : "integer",
+                      "format" : "int32"
+                    },
+                    "entity" : {
+                      "type" : "object"
                     }
                   }
                 }
@@ -729,6 +729,74 @@
         "tags" : [ "Selvregistrering" ],
         "description" : "Hent data om personens barn",
         "operationId" : "barnPersonalia",
+        "parameters" : [ {
+          "name" : "kommunenr",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "pattern" : "^\\d{4}$",
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/PersonaliaResponse"
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Ikke autentisert",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Not Found",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "409" : {
+            "description" : "Conflict",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "502" : {
+            "description" : "Bad gateway",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/dhis2-konfigurasjon/api/v1/registrer/mulige-naerkontakt-indekser/{kommunenr}" : {
+      "get" : {
+        "tags" : [ "Selvregistrering" ],
+        "description" : "Hent data om personen ifm nærkontaktregistrering",
+        "operationId" : "naerkontaktIndeksPersonalia",
         "parameters" : [ {
           "name" : "kommunenr",
           "in" : "path",
@@ -2027,6 +2095,47 @@
           "kanRegistreres" : {
             "type" : "boolean",
             "description" : "Kan registreres"
+          }
+        }
+      },
+      "MuligNaerkontaktIndeks" : {
+        "type" : "object",
+        "properties" : {
+          "navn" : {
+            "type" : "string",
+            "description" : "Navn"
+          },
+          "kanRegistrere" : {
+            "type" : "boolean",
+            "description" : "Angir om personen har tilgang til å registrere nærkontakter"
+          },
+          "kommunenummer" : {
+            "type" : "string",
+            "description" : "Kommunenummer"
+          },
+          "kommunenavn" : {
+            "type" : "string",
+            "description" : "Navn på kommune"
+          },
+          "identifikator" : {
+            "type" : "string",
+            "description" : "Id på person"
+          }
+        },
+        "description" : "Opplysninger om barn til innlogget bruker ifm nærkontaktregistrering"
+      },
+      "MuligNaerkontaktIndekser" : {
+        "type" : "object",
+        "properties" : {
+          "selv" : {
+            "$ref" : "#/components/schemas/MuligNaerkontaktIndeks"
+          },
+          "barn" : {
+            "type" : "array",
+            "description" : "Opplysninger om barn til innlogget bruker ifm nærkontaktregistrering",
+            "items" : {
+              "$ref" : "#/components/schemas/MuligNaerkontaktIndeks"
+            }
           }
         }
       },
