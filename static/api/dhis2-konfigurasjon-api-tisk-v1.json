@@ -222,6 +222,9 @@
                       "items" : {
                         "type" : "object",
                         "properties" : {
+                          "title" : {
+                            "type" : "string"
+                          },
                           "uri" : {
                             "type" : "string",
                             "format" : "uri"
@@ -238,7 +241,7 @@
                               "type" : "string"
                             }
                           },
-                          "title" : {
+                          "type" : {
                             "type" : "string"
                           },
                           "params" : {
@@ -246,9 +249,6 @@
                             "additionalProperties" : {
                               "type" : "string"
                             }
-                          },
-                          "type" : {
-                            "type" : "string"
                           }
                         }
                       }
@@ -360,39 +360,6 @@
                         }
                       }
                     },
-                    "lastModified" : {
-                      "type" : "string",
-                      "format" : "date-time"
-                    },
-                    "date" : {
-                      "type" : "string",
-                      "format" : "date-time"
-                    },
-                    "headers" : {
-                      "type" : "object",
-                      "additionalProperties" : {
-                        "type" : "array",
-                        "items" : {
-                          "type" : "object"
-                        }
-                      }
-                    },
-                    "metadata" : {
-                      "type" : "object",
-                      "additionalProperties" : {
-                        "type" : "array",
-                        "items" : {
-                          "type" : "object"
-                        }
-                      }
-                    },
-                    "status" : {
-                      "type" : "integer",
-                      "format" : "int32"
-                    },
-                    "entity" : {
-                      "type" : "object"
-                    },
                     "length" : {
                       "type" : "integer",
                       "format" : "int32"
@@ -405,6 +372,9 @@
                       "type" : "object",
                       "properties" : {
                         "displayName" : {
+                          "type" : "string"
+                        },
+                        "language" : {
                           "type" : "string"
                         },
                         "script" : {
@@ -454,11 +424,41 @@
                         },
                         "displayVariant" : {
                           "type" : "string"
-                        },
-                        "language" : {
-                          "type" : "string"
                         }
                       }
+                    },
+                    "lastModified" : {
+                      "type" : "string",
+                      "format" : "date-time"
+                    },
+                    "date" : {
+                      "type" : "string",
+                      "format" : "date-time"
+                    },
+                    "headers" : {
+                      "type" : "object",
+                      "additionalProperties" : {
+                        "type" : "array",
+                        "items" : {
+                          "type" : "object"
+                        }
+                      }
+                    },
+                    "metadata" : {
+                      "type" : "object",
+                      "additionalProperties" : {
+                        "type" : "array",
+                        "items" : {
+                          "type" : "object"
+                        }
+                      }
+                    },
+                    "status" : {
+                      "type" : "integer",
+                      "format" : "int32"
+                    },
+                    "entity" : {
+                      "type" : "object"
                     }
                   }
                 }
@@ -1140,16 +1140,25 @@
         }
       }
     },
-    "/dhis2-konfigurasjon/api/v1/registrer/naerkontakt" : {
+    "/dhis2-konfigurasjon/api/v1/registrer/naerkontakt/{kommunenr}" : {
       "post" : {
         "tags" : [ "Selvregistrering" ],
         "description" : "Registrer nærkontakt",
-        "operationId" : "registrerKontakt",
+        "operationId" : "registrerNaerkontakt",
+        "parameters" : [ {
+          "name" : "kommunenr",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "pattern" : "^\\d{4}$",
+            "type" : "string"
+          }
+        } ],
         "requestBody" : {
           "content" : {
             "application/json" : {
               "schema" : {
-                "$ref" : "#/components/schemas/OpprettKontaktRequest"
+                "$ref" : "#/components/schemas/RegistrerNaerkontaktRequest"
               }
             }
           }
@@ -1447,15 +1456,15 @@
           "fodselsdato" : {
             "type" : "string"
           },
+          "sisteKontaktDato" : {
+            "type" : "string"
+          },
           "ugyldigeFelter" : {
             "uniqueItems" : true,
             "type" : "array",
             "items" : {
               "type" : "string"
             }
-          },
-          "sisteKontaktDato" : {
-            "type" : "string"
           },
           "empty" : {
             "type" : "boolean"
@@ -2251,17 +2260,17 @@
           }
         }
       },
-      "OpprettKontaktRequest" : {
-        "required" : [ "kontaktdato", "relasjonstype" ],
+      "RegistrerNaerkontaktRequest" : {
+        "required" : [ "indekser", "kontaktdato", "kontaktform" ],
         "type" : "object",
         "properties" : {
-          "uid" : {
-            "type" : "string",
-            "description" : "Referanse-verdi"
-          },
-          "fnr" : {
-            "type" : "string",
-            "description" : "Fødselsnummer"
+          "indekser" : {
+            "type" : "array",
+            "description" : "Id til indekser",
+            "items" : {
+              "type" : "string",
+              "description" : "Id til indekser"
+            }
           },
           "fornavn" : {
             "type" : "string",
@@ -2271,46 +2280,38 @@
             "type" : "string",
             "description" : "Etternavn"
           },
-          "adresse" : {
-            "type" : "string",
-            "description" : "Adresse"
-          },
-          "epost" : {
-            "type" : "string",
-            "description" : "Epost"
-          },
           "telefonnummer" : {
             "type" : "string",
             "description" : "Telefonnummer"
           },
-          "relasjonstype" : {
+          "fnr" : {
+            "type" : "string",
+            "description" : "Fødselsnummer"
+          },
+          "kontaktform" : {
             "type" : "string",
             "description" : "Type relasjon med smittede",
             "enum" : [ "SAMME_HUSSTAND", "ANNET", "BARNEHAGE_SKOLE", "HELSEINSTITUSJON", "HJEMMEBESOK", "SERVICENAERING", "SOSIAL", "UNVIERSITET_JOBB" ]
           },
-          "kjonn" : {
-            "type" : "string",
-            "description" : "Kjønn"
-          },
           "kontaktdato" : {
             "type" : "string",
-            "description" : "Dato for siste(?) kontakt. Format: yyyy-MM-dd"
+            "description" : "Dato for siste kontakt. Format: yyyy-MM-dd"
           },
           "fodselsdato" : {
             "type" : "string",
             "description" : "Fodselsdato. Format: yyyy-MM-dd"
           },
-          "paarorendeFornavn" : {
+          "foresattFornavn" : {
             "type" : "string",
             "description" : "Fornavn til pårørende"
           },
-          "paarorendeEtternavn" : {
+          "foresattEtternavn" : {
             "type" : "string",
             "description" : "Etternavn til pårørende"
           },
-          "paarorendeTelefonnummer" : {
+          "foresattTelefonnummer" : {
             "type" : "string",
-            "description" : "Telefonnummer"
+            "description" : "Telefonnummer til pårørende"
           }
         }
       },
