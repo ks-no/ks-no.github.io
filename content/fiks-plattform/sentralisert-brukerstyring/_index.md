@@ -9,7 +9,7 @@ Sentralisert brukerstyring er en ny funksjon som skal gjøre det lettere å hån
 For å kunne støtte mange forskjellige tilgangsstyringssystemer har vi valgt å bygge på SCIM2 standarden. Denne støttes av alle store leverandører av _identity management_-plattformer inkludert Microsoft Azure AD, Google m.fl. I første fase har vi lagt oss på en slags minimumsimplementasjon av standarden og støtter synkronisering av brukere og grupper. Mer om SCIM2-standarden finner du i [RFC-7642](https://tools.ietf.org/html/rfc7642), [RFC-7643](https://tools.ietf.org/html/rfc7643), [RFC-7644](https://tools.ietf.org/html/rfc7644) og på [SCIM2 nettstedet](http://www.simplecloud.info/). Kort fortalt støtter vi oppretting, oppdatering (med _PATCH_) og sletting av brukere og grupper.  
 
 Under utvikling av vårt SCIM2 endepunkt har vi hovedsaklig testet mot Microsoft Azure AD, men siden det bygger på en åpen standard er det ingenting i veien for å bruke andre baksystemer. Vi har tilgjengelig et testmiljø dersom noen ønsker å teste enten med egenutviklet integrasjon eller med programvare fra andre etablerte leverandører.
-![Systemskisse sentralisert brukerstyring](/images/sentralisert_brukerstyring_overordnet.png). 
+![Systemskisse sentralisert brukerstyring](/images/sentralisert_brukerstyring_generell.png). 
 
 Ønsker du å teste oppsett med Azure AD? [Sjekk denne guiden](azure.md)
 
