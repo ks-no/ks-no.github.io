@@ -62,9 +62,11 @@ Grupper er en enkel struktur og krever ingen extension skjema for å fungere med
 ```
 
 
-## Hvilke tjenester er støttet 
+## Hvilke tjenester på Fiks-plattformen er støttet?
 Målet er å støtte alle tjenester på Fiks-plattformen som er i direkte bruk av ansatte i kommunal sektor. I første omgang har vi begynt med [Fiks folkeregister](/tjenester/folkeregister/) slik at man kan knytte synkroniserte grupper og brukere til roller.
 
 ### Fiks folkeregister
 For å kunne bruke sentralisert brukerstyring med Fiks folkeregister må dette aktiveres av en tjenesteadministrator i Fiks forvaltning konfigurasjon. Når det aktiveres kan man få lastet ned en Excelfil med oversikt over alle personbrukere som har tilganger til de rollene man har opprettet. For å unngå at man har to livsløp for personbrukere vil alle disse tilgangene bli fjernet når man aktiverer sentralisert brukerstyring og man må da passe på at alle de brukerene som skal ha tilgang får dette også etterpå. Når sentralisert brukerstyring er aktivert vil man derfor kun kunne gi tilganger til grupper eller brukere man har synkronisert til oss.
+![Dialog for aktivering av sentralisert brukerstyring i konfigurasjon av Fiks folkeregister](/images/sd_aktivere_folkeregister.png)
+
 Integrasjoner blir ikke berørt av dette siden de ikke inngår i sentralisert brukerstyring. 
