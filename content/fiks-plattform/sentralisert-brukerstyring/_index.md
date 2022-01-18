@@ -14,7 +14,7 @@ Under utvikling av vårt SCIM2 endepunkt har vi hovedsaklig testet mot Microsoft
 Ønsker du å teste oppsett med Azure AD? [Sjekk denne guiden](./azure/)
 
 ## Hva kreves for å sette det opp?
-For å kunne starte synkronisering av grupper og brukere til Fiks-plattformen må en person som har adminrettigheter til kommunenes konfigurasjon opprette en nytt kildesystem og få generert et token til bruk for autentisering. Deretter kan man starte synkronisering fra sitt baksystem.  
+For å kunne starte synkronisering av grupper og brukere til Fiks-plattformen må en person som har adminrettigheter til kommunenes konfigurasjon opprette et nytt kildesystem og få generert et token til bruk for autentisering. Deretter kan man starte synkronisering fra sitt baksystem.  
 
 ### Autentisering mot SCIM endepunktet
 I første omgang støttes autentisering med langtlevende (6 mnd) Bearer token. Dette var også det eneste som var støttet på det tidspunktet vi utviklet denne funksjonen. På sikt satser vi på også å støtte egen OAUTH2 client flow mot vårt eget OAUTH endepunkt. Tokenet får man første gang når man oppretter kildesystemet i Fiks forvaltning konfigurasjon. Det er også der man kan generere nytt token for eksisterende kildesystem.
