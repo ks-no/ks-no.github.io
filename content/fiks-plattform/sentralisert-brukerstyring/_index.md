@@ -11,7 +11,7 @@ For å kunne støtte mange forskjellige tilgangsstyringssystemer har vi valgt å
 Under utvikling av vårt SCIM2 endepunkt har vi hovedsaklig testet mot Microsoft Azure AD, men siden det bygger på en åpen standard er det ingenting i veien for å bruke andre baksystemer. Vi har tilgjengelig et testmiljø dersom noen ønsker å teste enten med egenutviklet integrasjon eller med programvare fra andre etablerte leverandører.
 ![Systemskisse sentralisert brukerstyring](/images/sentralisert_brukerstyring_generell.png). 
 
-Ønsker du å teste oppsett med Azure AD? [Sjekk denne guiden](azure.md)
+Ønsker du å teste oppsett med Azure AD? [Sjekk denne guiden](./azure/)
 
 ## Hva kreves for å sette det opp?
 For å kunne starte synkronisering av grupper og brukere til Fiks-plattformen må en person som har adminrettigheter til kommunenes konfigurasjon opprette en nytt kildesystem og få generert et token til bruk for autentisering. Deretter kan man starte synkronisering fra sitt baksystem.  
@@ -66,7 +66,10 @@ Grupper er en enkel struktur og krever ingen extension skjema for å fungere med
 Målet er å støtte alle tjenester på Fiks-plattformen som er i direkte bruk av ansatte i kommunal sektor. I første omgang har vi begynt med [Fiks folkeregister](/tjenester/folkeregister/) slik at man kan knytte synkroniserte grupper og brukere til roller.
 
 ### Fiks folkeregister
-For å kunne bruke sentralisert brukerstyring med Fiks folkeregister må dette aktiveres av en tjenesteadministrator i Fiks forvaltning konfigurasjon. Når det aktiveres kan man få lastet ned en Excelfil med oversikt over alle personbrukere som har tilganger til de rollene man har opprettet. For å unngå at man har to livsløp for personbrukere vil alle disse tilgangene bli fjernet når man aktiverer sentralisert brukerstyring og man må da passe på at alle de brukerene som skal ha tilgang får dette også etterpå. Når sentralisert brukerstyring er aktivert vil man derfor kun kunne gi tilganger til grupper eller brukere man har synkronisert til oss.
+For å kunne bruke sentralisert brukerstyring med Fiks folkeregister må dette aktiveres av en tjenesteadministrator i Fiks forvaltning konfigurasjon. Når det aktiveres kan man først få lastet ned en Excelfil med oversikt over alle personbrukere som har tilganger til de rollene man har opprettet. Går man så videre og trykker på knappen slettes alle de eksisterende persontilgangene. Det er defor viktig at man sørger for at de personer som skal ha tilgang er synkronisert over til oss slik at man kan gi de tilgang til de rollene de trenger enten via medlemskap i en gruppe eller brukertilgang. Integrasjoner blir ikke berørt av dette siden de ikke inngår i sentralisert brukerstyring.
 ![Dialog for aktivering av sentralisert brukerstyring i konfigurasjon av Fiks folkeregister](/images/sd_aktivere_folkeregister.png)
 
-Integrasjoner blir ikke berørt av dette siden de ikke inngår i sentralisert brukerstyring. 
+Når sentralisert brukerstyring er aktivert vil det være enklere enn tidligere å gi tilgang da man enten kan velge gruppe fra en liste eller søke i navnet på synkroniserte brukere.
+![Dialog for å gi tilgang til ekstern bruker](/images/sd_folkeregister_ekstern_bruker.png)
+![Dialog for å gi tilgang til ekstern gruppe](/images/sd_folkeregister_ekstern_gruppe.png)
+
