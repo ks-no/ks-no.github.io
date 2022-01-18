@@ -23,7 +23,6 @@ I første omgang støttes autentisering med langtlevende (6 mnd) Bearer token. D
 
 ### Fødselsnummer for ID-porten autentisering av sluttbrukere
 Siden Fiks forvaltning krever ID-porten pålogging, må synkroniserte brukere også inkludere fødselsnummeret til brukeren. For å støtte overføring av fødselsnummer til oss har vi laget et eget SCIM2 extension schema (_urn:ietf:params:scim:schemas:extension:ks:personidentifikasjon_). Se eksempel under på bruker med dette extension schemaet på: 
-
 ```json
 {
   "schemas": [
@@ -45,23 +44,21 @@ Siden Fiks forvaltning krever ID-porten pålogging, må synkroniserte brukere og
       }
 }
 ```
-
 Det er fullt mulig å synkronisere brukere uten fødselsnummer, men du vil da ikke kunne gi de tilganger på plattformen.
 
 ### Grupper
 Grupper er en enkel struktur og krever ingen extension skjema for å fungere med Fiks-plattformen. Eksempel på gruppe:
-
 ```json
-   {
-     "schemas": ["urn:ietf:params:scim:schemas:core:2.0:Group"],
-     "id": "e9e30dba-f08f-4109-8486-d5c6a331660a",
-     "displayName": "Saksbehandlere eiendom",
-     "members": [
-       {
-         "value": "1d17878e-1433-4d65-a9cf-5588274ae286"
-       }
-     ]
-   }
+{
+    "schemas": ["urn:ietf:params:scim:schemas:core:2.0:Group"],
+    "id": "e9e30dba-f08f-4109-8486-d5c6a331660a",
+    "displayName": "Saksbehandlere eiendom",
+    "members": [
+        {
+            "value": "1d17878e-1433-4d65-a9cf-5588274ae286"
+        }
+    ]
+}
 ```
 
 
