@@ -1,0 +1,153 @@
+{
+  "openapi" : "3.0.1",
+  "info" : {
+    "title" : "KS Fiks: Vaksineliste",
+    "contact" : {
+      "name" : "Fiks brukerstøtte",
+      "url" : "https://ks-no.github.io/",
+      "email" : "fiks-utvikling@ks.no"
+    },
+    "version" : "v1"
+  },
+  "servers" : [ {
+    "url" : "https://api.fiks.ks.no",
+    "description" : "KS Fiks API host",
+    "variables" : { }
+  }, {
+    "url" : "https://api.test.fiks.ks.no",
+    "description" : "KS Fiks TEST API host",
+    "variables" : { }
+  } ],
+  "tags" : [ {
+    "name" : "Vaksineliste",
+    "description" : "API for å generere vaksineliste basert på informasjon fra Folkeregister og FHI/Sysvak"
+  } ],
+  "paths" : {
+    "/vaksineliste/api/v1/{fiksOrgnr}" : {
+      "post" : {
+        "tags" : [ "Vaksineliste" ],
+        "description" : "Generere vaksineliste fra en kommune ved å hente innbyggere fra folkeregister og deretter hente vaksineregister basert på innbyggerlista.",
+        "operationId" : "hentVaksineliste",
+        "parameters" : [ {
+          "name" : "fiksOrgnr",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/VaksinelisteRequest"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK"
+          },
+          "400" : {
+            "description" : "Bad request",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Ikke autentisert",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Systemfeil",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components" : {
+    "schemas" : {
+      "ErrorMessage" : {
+        "type" : "object",
+        "properties" : {
+          "timestamp" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "status" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "error" : {
+            "type" : "string"
+          },
+          "errorId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "path" : {
+            "type" : "string"
+          },
+          "originalPath" : {
+            "type" : "string"
+          },
+          "message" : {
+            "type" : "string"
+          },
+          "errorCode" : {
+            "type" : "string"
+          },
+          "errorJson" : {
+            "type" : "string"
+          }
+        }
+      },
+      "AarIntervall" : {
+        "type" : "object",
+        "properties" : {
+          "fraAar" : {
+            "minimum" : 0,
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "tilAar" : {
+            "type" : "integer",
+            "format" : "int32"
+          }
+        }
+      },
+      "VaksinelisteRequest" : {
+        "required" : [ "kommunenr" ],
+        "type" : "object",
+        "properties" : {
+          "kommunenr" : {
+            "pattern" : "^\\d{4}$",
+            "type" : "string"
+          },
+          "foedt" : {
+            "$ref" : "#/components/schemas/AarIntervall"
+          }
+        }
+      }
+    }
+  }
+}
