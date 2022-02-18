@@ -1,6 +1,6 @@
 ---
 title: Folkeregister
-date: 2020-11-19
+date: 2022-02-18
 ---
 
 ## Fiks folkeregister
@@ -136,10 +136,16 @@ Personbasis:
 * Oppholdsadresse
 * Delt bosted
 * Postadresse
+* Adressebeskyttelse
+
+Identitetsgrunnlag utvidet:
+* Utenlandsk personidentifikasjon
 
 Relasjon utvidet:
 * Familierelasjon
 * Familieansvar
+
+Historiske data
 
 
 ## Kontakt
