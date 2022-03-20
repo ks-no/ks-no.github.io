@@ -89,3 +89,11 @@ https://docs.microsoft.com/en-us/answers/questions/87509/how-do-i-sync-employee-
   * Legg til rettigheter til de som skal benytte SSO mot KS læring
   
 ![image](https://user-images.githubusercontent.com/85100070/124443067-a8593080-dd7d-11eb-92b5-1fb1980507bd.png)
+
+## Innlogging uten fødselsnummer
+Hvis kommunen ønsker innlogging SSO uten fødselsnummer må de ta kontakt med fiks på fiks@ks.no
+Vi bruker da en annen identifikator, fortrinnsvis en <id>@<fiksorgiden>. 
+
+Når en ikke bruker fødselsnummer som id på brukeren, vil innlogginger med idporten resultere i en annen bruker. 
+Hvis du logger inn med idporten vil du få en bruker som er identifisert med fødselsnummer, hvis du bruker SSO vil du få en bruker som har id <id>@<fiksordid>.
+Disse 2 brukerene vil være helt forskjellige brukere og ikke dele hvilken kurs som er tatt.
