@@ -20,6 +20,25 @@ Et tilsvarende bibliotek for Java kommer senere.
 For mer informasjon rundt meldingsformatet **arkivmelding** kan man lese om definisjonen [her](https://docs.digdir.no/eformidling_nm_arkivmeldingen.html) hos Digdir.
 XSD schema for meldingsformatene er tilgjengelig nuget i pakken `KS.Fiks.IO.Arkiv.Client` og kan også finnes på github [her](https://github.com/ks-no/fiks-arkiv-client-dotnet/tree/main/KS.Fiks.IO.Arkiv.Client/Schema)
 
+### Asynkrone meldinger og retry
+Siden denne protokollen er asynkron betyr det at man må ta forbehold om at man kanskje ikke får svar på en melding som ble sendt. 
+Det kan være mange ulike årsaker til dette som f.eks. at mottaker midlertidig feilet ved persistering eller andre tekniske feil. 
+Men det kan også være at mottaker faktisk har lagret arkivmelding som den skal, men det er mottat og kvitteringsmelding tilbake til avsender som aldri kom fram. 
+
+Avsender må da velge om man skal gjøre nytt forsøk på å sende melding. 
+Når man sender en melding til Fiks IO så vil meldingen få en unik id hver gang. 
+Dermed kan det i noen tilfeller kanskje være vanskelig for mottaker å vite at dette er en melding som sendes på nytt. 
+
+Dette løses ved at meldinger til Fiks IO kan gis en id med navnet **klientMeldingId** for å markere at det er en unik melding fra avsender, som man kan gjenbrukes ved nytt forsøk.
+Mottaker kan da sende mottatt og kvittering på nytt.
+
+
+Det kan være lurt at man tar med seg noen kjøreregler for sending og retry av meldinger:
+- Ha et maks antall forsøk på å sende meldinger på nytt
+- Ikke forsøk å sende en melding på nytt før TTL har gått ut. Gjerne med litt ekstra tid for å ikke "plage" mottaker.
+- Bruk klientMeldingId på alle meldinger. Både ved første forsøk og retry. Dette kan gjøre det lettere å gjenkjenne duplikate meldinger hos mottaker.
+
+
 ## Arkivering
 **Meldingstyper:** 
 
@@ -41,7 +60,7 @@ TTL på en arkivering kan gjerne settes til minutter, timer eller til flere dage
 Husk også at det er viktig å ikke forsøke å sende en melding på nytt **før** TTL er gått ut pluss litt ekstra tid. Dette er for å ikke fylle køen med duplikater. Hvis TTL går ut på tid og melding ikke har blitt hentet av mottaker får man en `tidsavbrudd` melding tilbake. se [Tidsavbrudd](../#tidsavbrudd)
 
 ### Mottatt og kvittering
-Når arkivering melding er mottat skal mottaker persistere meldingen, sende `ack` tilbake til Fiks-IO og så sende melding tilbake av typen `no.ks.fiks.arkiv.v1.arkivering.arkivmelding.mottatt`. Sending av `ack` tilbake til Fiks-IO sørger for at meldingen blir tatt bort fra køen.   
+Når arkivering melding er mottatt skal mottaker persistere meldingen, sende `ack` tilbake til Fiks-IO og så sende melding tilbake av typen `no.ks.fiks.arkiv.v1.arkivering.arkivmelding.mottatt`. Sending av `ack` tilbake til Fiks-IO sørger for at meldingen blir tatt bort fra køen.   
 Når arkivering er arkivert til arkivet skal det komme en **arkivmelding** tilbake i meldingsformatet `arkivmelding-kvittering.xml` av typen `no.ks.fiks.arkiv.v1.arkivering.arkivmelding.kvittering`. Se [**arkivmeldingKvittering.xsd**](https://github.com/ks-no/fiks-arkiv-client-dotnet/blob/main/KS.Fiks.IO.Arkiv.Client/Schema/arkivmeldingKvittering.xsd) for definisjon av meldingsformatet på kvitteringsmelding. 
 
 Meldingstyper og schema xsd-filer er tilgjengelig i klient biblioteket på Github [her](https://github.com/ks-no/fiks-arkiv-client-dotnet/blob/main/KS.Fiks.IO.Arkiv.Client/Models/ArkivintegrasjonMeldingTypeV1.cs).
@@ -99,6 +118,22 @@ Resultatet skal sendes tilbake som meldingstypen `no.ks.fiks.arkiv.v1.journalpos
 Meldingsformatet for hent dokumentfil er definert i xsd schema [**dokumentfilHent.xsd**](https://github.com/ks-no/fiks-arkiv-client-dotnet/blob/main/KS.Fiks.IO.Arkiv.Client/Schema/dokumentfilHent.xsd) og sendes som meldingstypen no.ks.fiks.arkiv.v1.innsyn.dokumentfil.hent.
 Resultatet skal sendes tilbake som typen `no.ks.fiks.arkiv.v1.dokumentfil.hent.resultat`. Merk at det er ikke noe xsd schema for resultat da det ikke er noe behov for meta-data for dokumenfilen. Dokumentfilen kommer som payload i Fiks-IO meldingen med meldingsypen `no.ks.fiks.arkiv.v1.dokumentfil.hent.resultat`.
 
+## Oppdatering
+**Meldingstyper:**
+
+|   Type    | Navn |
+| ----------- | ----------- |
+| Arkivmelding oppdatering      | `no.ks.fiks.arkiv.v1.arkivering.arkivmelding.oppdater`       |
+| Arkivmelding oppdatering kvittering      | `no.ks.fiks.arkiv.v1.arkivering.arkivmelding.oppdater.kvittering`       |
+| Mottatt melding      | `no.ks.fiks.arkiv.v1.arkivering.arkivmelding.mottatt`       |
+
+**Arkivmelding oppdatering**:
+
+Meldingsformatet for arkivmelding oppdatering er definert i xsd schema [**arkivmeldingOppdatering.xsd**](https://github.com/ks-no/fiks-arkiv-client-dotnet/blob/main/KS.Fiks.IO.Arkiv.Client/Schema/arkivmeldingOppdatering.xsd) og sendes som meldingstypen `no.ks.fiks.arkiv.v1.arkivering.arkivmelding.oppdater`.
+
+### Mottatt og kvittering
+Når arkivering oppdatering melding er mottatt skal mottaker persistere meldingen, sende `ack` tilbake til Fiks-IO og så sende melding tilbake av typen `no.ks.fiks.arkiv.v1.arkivering.arkivmelding.mottatt`. Sending av `ack` tilbake til Fiks-IO sørger for at meldingen blir tatt bort fra køen.   
+Når oppdatering er gjennomført i arkivet skal det komme en kvittering tilbake uten innhold, av typen `no.ks.fiks.arkiv.v1.arkivering.arkivmelding.oppdatering.kvittering`. 
 
 ## Standardmeldingstyper
 Som svar kan man få andre standardmeldinger. 
