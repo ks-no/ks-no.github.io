@@ -12,20 +12,20 @@
     <title>Fiks Arkiv :: KS Fiks</title>
 
     
-    <link href="/css/nucleus.css?1648039582" rel="stylesheet">
-    <link href="/css/fontawesome-all.min.css?1648039582" rel="stylesheet">
-    <link href="/css/hybrid.css?1648039582" rel="stylesheet">
-    <link href="/css/featherlight.min.css?1648039582" rel="stylesheet">
-    <link href="/css/perfect-scrollbar.min.css?1648039582" rel="stylesheet">
-    <link href="/css/auto-complete.css?1648039582" rel="stylesheet">
-    <link href="/css/atom-one-dark-reasonable.css?1648039582" rel="stylesheet">
-    <link href="/css/theme.css?1648039582" rel="stylesheet">
-    <link href="/css/hugo-theme.css?1648039582" rel="stylesheet">
+    <link href="/css/nucleus.css?1648113497" rel="stylesheet">
+    <link href="/css/fontawesome-all.min.css?1648113497" rel="stylesheet">
+    <link href="/css/hybrid.css?1648113497" rel="stylesheet">
+    <link href="/css/featherlight.min.css?1648113497" rel="stylesheet">
+    <link href="/css/perfect-scrollbar.min.css?1648113497" rel="stylesheet">
+    <link href="/css/auto-complete.css?1648113497" rel="stylesheet">
+    <link href="/css/atom-one-dark-reasonable.css?1648113497" rel="stylesheet">
+    <link href="/css/theme.css?1648113497" rel="stylesheet">
+    <link href="/css/hugo-theme.css?1648113497" rel="stylesheet">
     
-      <link href="/css/theme-ks.css?1648039582" rel="stylesheet">
+      <link href="/css/theme-ks.css?1648113497" rel="stylesheet">
     
 
-    <script src="/js/jquery-3.3.1.min.js?1648039582"></script>
+    <script src="/js/jquery-3.3.1.min.js?1648113497"></script>
 
     <style>
       :root #header + #content > #left > #rlblock_left{
@@ -52,14 +52,14 @@
     <span data-search-clear=""><i class="fas fa-times"></i></span>
 </div>
 
-<script type="text/javascript" src="/js/lunr.min.js?1648039582"></script>
-<script type="text/javascript" src="/js/auto-complete.js?1648039582"></script>
+<script type="text/javascript" src="/js/lunr.min.js?1648113497"></script>
+<script type="text/javascript" src="/js/auto-complete.js?1648113497"></script>
 <script type="text/javascript">
     
         var baseurl = "\/";
     
 </script>
-<script type="text/javascript" src="/js/search.js?1648039582"></script>
+<script type="text/javascript" src="/js/search.js?1648113497"></script>
 
     
   </div>
@@ -1322,7 +1322,11 @@
     <div class="wrapper">
 <nav id="TableOfContents">
   <ul>
-    <li><a href="#meldinger">Meldinger</a></li>
+    <li><a href="#meldinger">Meldinger</a>
+      <ul>
+        <li><a href="#asynkrone-meldinger-og-retry">Asynkrone meldinger og retry</a></li>
+      </ul>
+    </li>
     <li><a href="#arkivering">Arkivering</a>
       <ul>
         <li><a href="#begrensninger-og-regler-for-arkivering">Begrensninger og regler for arkivering</a></li>
@@ -1332,6 +1336,11 @@
     </li>
     <li><a href="#søk-etter-data">Søk etter data</a></li>
     <li><a href="#hente-data">Hente data</a></li>
+    <li><a href="#oppdatering">Oppdatering</a>
+      <ul>
+        <li><a href="#mottatt-og-kvittering-1">Mottatt og kvittering</a></li>
+      </ul>
+    </li>
     <li><a href="#standardmeldingstyper">Standardmeldingstyper</a>
       <ul>
         <li><a href="#tidsavbrudd">Tidsavbrudd</a></li>
@@ -1377,6 +1386,21 @@ Hver melding kan ikke overskride 5GB.</p>
 <p>Et tilsvarende bibliotek for Java kommer senere.</p>
 <p>For mer informasjon rundt meldingsformatet <strong>arkivmelding</strong> kan man lese om definisjonen <a href="https://docs.digdir.no/eformidling_nm_arkivmeldingen.html">her</a> hos Digdir.
 XSD schema for meldingsformatene er tilgjengelig nuget i pakken <code>KS.Fiks.IO.Arkiv.Client</code> og kan også finnes på github <a href="https://github.com/ks-no/fiks-arkiv-client-dotnet/tree/main/KS.Fiks.IO.Arkiv.Client/Schema">her</a></p>
+<h3 id="asynkrone-meldinger-og-retry">Asynkrone meldinger og retry</h3>
+<p>Siden denne protokollen er asynkron betyr det at man må ta forbehold om at man kanskje ikke får svar på en melding som ble sendt.
+Det kan være mange ulike årsaker til dette som f.eks. at mottaker midlertidig feilet ved persistering eller andre tekniske feil.
+Men det kan også være at mottaker faktisk har lagret arkivmelding som den skal, men det er mottat og kvitteringsmelding tilbake til avsender som aldri kom fram.</p>
+<p>Avsender må da velge om man skal gjøre nytt forsøk på å sende melding.
+Når man sender en melding til Fiks IO så vil meldingen få en unik id hver gang.
+Dermed kan det i noen tilfeller kanskje være vanskelig for mottaker å vite at dette er en melding som sendes på nytt.</p>
+<p>Dette løses ved at meldinger til Fiks IO kan gis en id med navnet <strong>klientMeldingId</strong> for å markere at det er en unik melding fra avsender, som man kan gjenbrukes ved nytt forsøk.
+Mottaker kan da sende mottatt og kvittering på nytt.</p>
+<p>Det kan være lurt at man tar med seg noen kjøreregler for sending og retry av meldinger:</p>
+<ul>
+<li>Ha et maks antall forsøk på å sende meldinger på nytt</li>
+<li>Ikke forsøk å sende en melding på nytt før TTL har gått ut. Gjerne med litt ekstra tid for å ikke &ldquo;plage&rdquo; mottaker.</li>
+<li>Bruk klientMeldingId på alle meldinger. Både ved første forsøk og retry. Dette kan gjøre det lettere å gjenkjenne duplikate meldinger hos mottaker.</li>
+</ul>
 <h2 id="arkivering">Arkivering</h2>
 <p><strong>Meldingstyper:</strong></p>
 <table>
@@ -1411,7 +1435,7 @@ XSD schema for meldingsformatene er tilgjengelig nuget i pakken <code>KS.Fiks.IO
 <p>TTL på en arkivering kan gjerne settes til minutter, timer eller til flere dager. Man bør sette en fornuftig TTL basert på hvert use-case.</p>
 <p>Husk også at det er viktig å ikke forsøke å sende en melding på nytt <strong>før</strong> TTL er gått ut pluss litt ekstra tid. Dette er for å ikke fylle køen med duplikater. Hvis TTL går ut på tid og melding ikke har blitt hentet av mottaker får man en <code>tidsavbrudd</code> melding tilbake. se <a href="../#tidsavbrudd">Tidsavbrudd</a></p>
 <h3 id="mottatt-og-kvittering">Mottatt og kvittering</h3>
-<p>Når arkivering melding er mottat skal mottaker persistere meldingen, sende <code>ack</code> tilbake til Fiks-IO og så sende melding tilbake av typen <code>no.ks.fiks.arkiv.v1.arkivering.arkivmelding.mottatt</code>. Sending av <code>ack</code> tilbake til Fiks-IO sørger for at meldingen blir tatt bort fra køen.<br>
+<p>Når arkivering melding er mottatt skal mottaker persistere meldingen, sende <code>ack</code> tilbake til Fiks-IO og så sende melding tilbake av typen <code>no.ks.fiks.arkiv.v1.arkivering.arkivmelding.mottatt</code>. Sending av <code>ack</code> tilbake til Fiks-IO sørger for at meldingen blir tatt bort fra køen.<br>
 Når arkivering er arkivert til arkivet skal det komme en <strong>arkivmelding</strong> tilbake i meldingsformatet <code>arkivmelding-kvittering.xml</code> av typen <code>no.ks.fiks.arkiv.v1.arkivering.arkivmelding.kvittering</code>. Se <a href="https://github.com/ks-no/fiks-arkiv-client-dotnet/blob/main/KS.Fiks.IO.Arkiv.Client/Schema/arkivmeldingKvittering.xsd"><strong>arkivmeldingKvittering.xsd</strong></a> for definisjon av meldingsformatet på kvitteringsmelding.</p>
 <p>Meldingstyper og schema xsd-filer er tilgjengelig i klient biblioteket på Github <a href="https://github.com/ks-no/fiks-arkiv-client-dotnet/blob/main/KS.Fiks.IO.Arkiv.Client/Models/ArkivintegrasjonMeldingTypeV1.cs">her</a>.</p>
 <p><img src="/images/arkivmelding_med_kvittering_ok.png" alt="arkivmelding_med_kvittering_ok" title="Arkivmelding med kvittering"></p>
@@ -1495,6 +1519,35 @@ Resultatet skal sendes tilbake som meldingstypen <code>no.ks.fiks.arkiv.v1.journ
 <p><strong>Hent dokumentfil</strong>:</p>
 <p>Meldingsformatet for hent dokumentfil er definert i xsd schema <a href="https://github.com/ks-no/fiks-arkiv-client-dotnet/blob/main/KS.Fiks.IO.Arkiv.Client/Schema/dokumentfilHent.xsd"><strong>dokumentfilHent.xsd</strong></a> og sendes som meldingstypen no.ks.fiks.arkiv.v1.innsyn.dokumentfil.hent.
 Resultatet skal sendes tilbake som typen <code>no.ks.fiks.arkiv.v1.dokumentfil.hent.resultat</code>. Merk at det er ikke noe xsd schema for resultat da det ikke er noe behov for meta-data for dokumenfilen. Dokumentfilen kommer som payload i Fiks-IO meldingen med meldingsypen <code>no.ks.fiks.arkiv.v1.dokumentfil.hent.resultat</code>.</p>
+<h2 id="oppdatering">Oppdatering</h2>
+<p><strong>Meldingstyper:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Navn</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Arkivmelding oppdatering</td>
+<td><code>no.ks.fiks.arkiv.v1.arkivering.arkivmelding.oppdater</code></td>
+</tr>
+<tr>
+<td>Arkivmelding oppdatering kvittering</td>
+<td><code>no.ks.fiks.arkiv.v1.arkivering.arkivmelding.oppdater.kvittering</code></td>
+</tr>
+<tr>
+<td>Mottatt melding</td>
+<td><code>no.ks.fiks.arkiv.v1.arkivering.arkivmelding.mottatt</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Arkivmelding oppdatering</strong>:</p>
+<p>Meldingsformatet for arkivmelding oppdatering er definert i xsd schema <a href="https://github.com/ks-no/fiks-arkiv-client-dotnet/blob/main/KS.Fiks.IO.Arkiv.Client/Schema/arkivmeldingOppdatering.xsd"><strong>arkivmeldingOppdatering.xsd</strong></a> og sendes som meldingstypen <code>no.ks.fiks.arkiv.v1.arkivering.arkivmelding.oppdater</code>.</p>
+<h3 id="mottatt-og-kvittering-1">Mottatt og kvittering</h3>
+<p>Når arkivering oppdatering melding er mottatt skal mottaker persistere meldingen, sende <code>ack</code> tilbake til Fiks-IO og så sende melding tilbake av typen <code>no.ks.fiks.arkiv.v1.arkivering.arkivmelding.mottatt</code>. Sending av <code>ack</code> tilbake til Fiks-IO sørger for at meldingen blir tatt bort fra køen.<br>
+Når oppdatering er gjennomført i arkivet skal det komme en kvittering tilbake uten innhold, av typen <code>no.ks.fiks.arkiv.v1.arkivering.arkivmelding.oppdatering.kvittering</code>.</p>
 <h2 id="standardmeldingstyper">Standardmeldingstyper</h2>
 <p>Som svar kan man få andre standardmeldinger.
 Feilmeldingstyper for FIKS-IO plattformen er tilgjengelig i nuget pakken <code>KS.Fiks.IO.Client</code> for .NET. Se koden på  <a href="https://github.com/ks-no/fiks-io-client-dotnet/blob/master/KS.Fiks.IO.Client/Models/Feilmelding/FeilmeldingMeldingTypeV1.cs">github</a> eller hent pakken på <a href="https://www.nuget.org/packages/KS.Fiks.IO.Client/">nuget</a>.
@@ -2459,19 +2512,19 @@ Applikasjonen er kun tilgjengelig i KS test-miljø: <a href="https://forvaltning
     <div style="left: -1000px; overflow: scroll; position: absolute; top: -1000px; border: none; box-sizing: content-box; height: 200px; margin: 0px; padding: 0px; width: 200px;">
       <div style="border: none; box-sizing: content-box; height: 200px; margin: 0px; padding: 0px; width: 200px;"></div>
     </div>
-    <script src="/js/clipboard.min.js?1648039582"></script>
-    <script src="/js/perfect-scrollbar.min.js?1648039582"></script>
-    <script src="/js/perfect-scrollbar.jquery.min.js?1648039582"></script>
-    <script src="/js/jquery.sticky.js?1648039582"></script>
-    <script src="/js/featherlight.min.js?1648039582"></script>
-    <script src="/js/highlight.pack.js?1648039582"></script>
+    <script src="/js/clipboard.min.js?1648113497"></script>
+    <script src="/js/perfect-scrollbar.min.js?1648113497"></script>
+    <script src="/js/perfect-scrollbar.jquery.min.js?1648113497"></script>
+    <script src="/js/jquery.sticky.js?1648113497"></script>
+    <script src="/js/featherlight.min.js?1648113497"></script>
+    <script src="/js/highlight.pack.js?1648113497"></script>
     <script>hljs.initHighlightingOnLoad();</script>
-    <script src="/js/modernizr.custom-3.6.0.js?1648039582"></script>
-    <script src="/js/learn.js?1648039582"></script>
-    <script src="/js/hugo-learn.js?1648039582"></script>
+    <script src="/js/modernizr.custom-3.6.0.js?1648113497"></script>
+    <script src="/js/learn.js?1648113497"></script>
+    <script src="/js/hugo-learn.js?1648113497"></script>
 
-    <link href="/mermaid/mermaid.css?1648039582" rel="stylesheet" />
-    <script src="/mermaid/mermaid.js?1648039582"></script>
+    <link href="/mermaid/mermaid.css?1648113497" rel="stylesheet" />
+    <script src="/mermaid/mermaid.js?1648113497"></script>
     <script>
         mermaid.initialize({ startOnLoad: true });
     </script>
