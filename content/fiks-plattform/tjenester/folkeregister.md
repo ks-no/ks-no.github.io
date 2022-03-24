@@ -56,8 +56,8 @@ I dokumentasjonen til API-et til FREG står det `Dersom part ikke oppgis vil ret
 
 | Miljø              | URL                          |
 | ------------------ | ---------------------------- |
-| Test (Integrasjon) | https://api.fiks.test.ks.no  |
-| Produksjon         | https://api.fiks.ks.no       |
+| Test (Integrasjon) | http&#8203;s://api.fiks.test.ks.no  |
+| Produksjon         | http&#8203;s://api.fiks.ks.no       |
 
 Vi tilbyr et API som speiler FREG og et API som er tilpasset 0-16-uttrekk.
 
