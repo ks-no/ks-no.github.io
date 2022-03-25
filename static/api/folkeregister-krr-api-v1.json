@@ -1,0 +1,193 @@
+{
+  "openapi" : "3.0.1",
+  "info" : {
+    "title" : "KS Fiks folkeregister krr",
+    "description" : "Folkeregister krr",
+    "contact" : {
+      "name" : "Fiks brukerstøtte",
+      "url" : "https://www.ks.no/fagomrader/digitalisering/utviklingsprosjekter",
+      "email" : "fiks-utvikling@ks.no"
+    },
+    "version" : "v1"
+  },
+  "servers" : [ {
+    "url" : "https://api.fiks.ks.no",
+    "description" : "KS Fiks API host",
+    "variables" : { }
+  }, {
+    "url" : "https://api.fiks.test.ks.no",
+    "description" : "KS Fiks TEST API host",
+    "variables" : { }
+  } ],
+  "tags" : [ {
+    "name" : "krr",
+    "description" : "API for å håndtere funksjonalitet rundt kontakt- og reservasjonsregisteret fra folkeregisteret"
+  } ],
+  "paths" : {
+    "/folkeregister/api/v1/krr/{rolleId}/person" : {
+      "post" : {
+        "tags" : [ "krr" ],
+        "description" : "Henter krruttrekk for angitt fødselsnummer",
+        "operationId" : "postPerson",
+        "parameters" : [ {
+          "name" : "rolleId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/KrrSoekDefinisjon"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/KrrDefinisjon"
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Ikke tilgang",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Ingen treff",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components" : {
+    "schemas" : {
+      "KrrDefinisjon" : {
+        "required" : [ "epost", "fnr", "kanVarsles", "reservert", "tlf" ],
+        "type" : "object",
+        "properties" : {
+          "fnr" : {
+            "type" : "string"
+          },
+          "epost" : {
+            "$ref" : "#/components/schemas/KrrEpostDefinisjon"
+          },
+          "tlf" : {
+            "$ref" : "#/components/schemas/KrrTlfDefinisjon"
+          },
+          "status" : {
+            "type" : "string"
+          },
+          "reservert" : {
+            "type" : "boolean"
+          },
+          "kanVarsles" : {
+            "type" : "boolean"
+          }
+        }
+      },
+      "KrrEpostDefinisjon" : {
+        "required" : [ "adresse" ],
+        "type" : "object",
+        "properties" : {
+          "adresse" : {
+            "type" : "string"
+          },
+          "sistOppdatert" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "sistVerifisert" : {
+            "type" : "string",
+            "format" : "date-time"
+          }
+        }
+      },
+      "KrrTlfDefinisjon" : {
+        "required" : [ "nummer" ],
+        "type" : "object",
+        "properties" : {
+          "nummer" : {
+            "type" : "string"
+          },
+          "sistOppdatert" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "sistVerifisert" : {
+            "type" : "string",
+            "format" : "date-time"
+          }
+        }
+      },
+      "ErrorMessage" : {
+        "type" : "object",
+        "properties" : {
+          "timestamp" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "status" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "error" : {
+            "type" : "string"
+          },
+          "errorId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "path" : {
+            "type" : "string"
+          },
+          "originalPath" : {
+            "type" : "string"
+          },
+          "message" : {
+            "type" : "string"
+          },
+          "errorCode" : {
+            "type" : "string"
+          },
+          "errorJson" : {
+            "type" : "string"
+          }
+        }
+      },
+      "KrrSoekDefinisjon" : {
+        "required" : [ "fnr" ],
+        "type" : "object",
+        "properties" : {
+          "fnr" : {
+            "pattern" : "^[0-9]{11}$",
+            "type" : "string"
+          }
+        }
+      }
+    }
+  }
+}
