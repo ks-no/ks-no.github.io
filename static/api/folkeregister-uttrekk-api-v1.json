@@ -90,7 +90,7 @@
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/UttrekkListResponse"
+                  "$ref" : "#/components/schemas/InnbyggerlisterResponse"
                 }
               }
             }
@@ -136,7 +136,7 @@
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/UttrekkFerdig"
+                  "$ref" : "#/components/schemas/InnbyggerlisteFerdig"
                 }
               }
             }
@@ -146,7 +146,64 @@
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/UttrekkRef"
+                  "$ref" : "#/components/schemas/InnbyggerlisteRef"
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Ikke tilgang",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/folkeregister/api/v1/uttrekk/{fiksOrgId}/soek" : {
+      "post" : {
+        "tags" : [ "uttrekk" ],
+        "description" : "Oppretter uttrekk for en organisasjon basert på et personsøk",
+        "operationId" : "opprettFraSoek",
+        "parameters" : [ {
+          "name" : "fiksOrgId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/OpprettInnbyggerlisteFraSoek"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/InnbyggerlisteFerdig"
+                }
+              }
+            }
+          },
+          "201" : {
+            "description" : "Opprettet",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/InnbyggerlisteRef"
                 }
               }
             }
@@ -192,7 +249,7 @@
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/UttrekkStatusResponse"
+                  "$ref" : "#/components/schemas/InnbyggerlisteStatusResponse"
                 }
               }
             }
@@ -475,15 +532,19 @@
             "type" : "integer",
             "format" : "int32"
           }
-        }
+        },
+        "description" : "Fødselsår, fra og med, til og med"
       },
-      "FerdigUttrekk" : {
-        "required" : [ "autorisasjonRolleId", "dokumentlagerId", "id", "innbyggereHentet", "opprettet", "rolleId", "sistOppdatert", "uttrekkDefinisjon" ],
+      "FerdigInnbyggerliste" : {
+        "required" : [ "autorisasjonRolleId", "dokumentlagerId", "id", "innbyggereHentet", "kilde", "opprettet", "rolleId", "sistOppdatert" ],
         "type" : "object",
         "properties" : {
           "id" : {
             "type" : "string",
             "format" : "uuid"
+          },
+          "beskrivelse" : {
+            "type" : "string"
           },
           "rolleId" : {
             "type" : "string",
@@ -493,27 +554,243 @@
             "type" : "string",
             "format" : "uuid"
           },
-          "dokumentlagerId" : {
+          "opprettet" : {
             "type" : "string",
-            "format" : "uuid"
+            "format" : "date-time"
           },
           "innbyggereHentet" : {
             "type" : "integer",
             "format" : "int64"
           },
+          "sistOppdatert" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "kilde" : {
+            "type" : "string",
+            "enum" : [ "UTTREKK", "SOEK" ]
+          },
+          "dokumentlagerId" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        },
+        "readOnly" : true,
+        "discriminator" : {
+          "propertyName" : "kilde",
+          "mapping" : {
+            "UTTREKK" : "#/components/schemas/FerdigInnbyggerlisteFraInnbyggerliste",
+            "SOEK" : "#/components/schemas/FerdigInnbyggerlisteFraSoek"
+          }
+        }
+      },
+      "FerdigInnbyggerlisteFraInnbyggerliste" : {
+        "required" : [ "autorisasjonRolleId", "dokumentlagerId", "id", "innbyggereHentet", "kilde", "opprettet", "rolleId", "sistOppdatert", "uttrekkDefinisjon" ],
+        "type" : "object",
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/FerdigInnbyggerliste"
+        }, {
+          "type" : "object",
+          "properties" : {
+            "uttrekkDefinisjon" : {
+              "$ref" : "#/components/schemas/UttrekkDefinisjon"
+            }
+          }
+        } ]
+      },
+      "FerdigInnbyggerlisteFraSoek" : {
+        "required" : [ "autorisasjonRolleId", "dokumentlagerId", "id", "innbyggereHentet", "kilde", "opprettet", "rolleId", "sistOppdatert", "uttrekkDefinisjon" ],
+        "type" : "object",
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/FerdigInnbyggerliste"
+        }, {
+          "type" : "object",
+          "properties" : {
+            "uttrekkDefinisjon" : {
+              "$ref" : "#/components/schemas/PersonSoekDefinisjon"
+            }
+          }
+        } ]
+      },
+      "InnbyggerlisteFraSoekResponse" : {
+        "required" : [ "fiksOrg", "id", "innbyggereHentet", "innbyggerlisteStatus", "kilde", "opprettet", "rolleId", "sistOppdatert", "uttrekkDefinisjon" ],
+        "type" : "object",
+        "readOnly" : true,
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/InnbyggerlisteStatusResponse"
+        }, {
+          "type" : "object",
+          "properties" : {
+            "uttrekkDefinisjon" : {
+              "$ref" : "#/components/schemas/PersonSoekDefinisjon"
+            }
+          }
+        } ]
+      },
+      "InnbyggerlisteFraUttrekkResponse" : {
+        "required" : [ "fiksOrg", "id", "innbyggereHentet", "innbyggerlisteStatus", "kilde", "opprettet", "rolleId", "sistOppdatert", "uttrekkDefinisjon" ],
+        "type" : "object",
+        "readOnly" : true,
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/InnbyggerlisteStatusResponse"
+        }, {
+          "type" : "object",
+          "properties" : {
+            "uttrekkDefinisjon" : {
+              "$ref" : "#/components/schemas/UttrekkDefinisjon"
+            }
+          }
+        } ]
+      },
+      "InnbyggerlisteStatusResponse" : {
+        "required" : [ "fiksOrg", "id", "innbyggereHentet", "innbyggerlisteStatus", "kilde", "opprettet", "rolleId", "sistOppdatert" ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "beskrivelse" : {
+            "type" : "string"
+          },
+          "rolleId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
           "opprettet" : {
             "type" : "string",
             "format" : "date-time"
+          },
+          "fiksOrg" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "innbyggerlisteStatus" : {
+            "type" : "string",
+            "enum" : [ "OPPRETTET", "HOS_SKATT", "FERDIG_SKATT", "FERDIG", "FEILET" ]
+          },
+          "innbyggereHentet" : {
+            "type" : "integer",
+            "format" : "int64"
           },
           "sistOppdatert" : {
             "type" : "string",
             "format" : "date-time"
           },
-          "beskrivelse" : {
-            "type" : "string"
+          "kilde" : {
+            "type" : "string",
+            "enum" : [ "UTTREKK", "SOEK" ]
+          }
+        },
+        "readOnly" : true,
+        "discriminator" : {
+          "propertyName" : "kilde",
+          "mapping" : {
+            "UTTREKK" : "#/components/schemas/InnbyggerlisteFraUttrekkResponse",
+            "SOEK" : "#/components/schemas/InnbyggerlisteFraSoekResponse"
+          }
+        }
+      },
+      "InnbyggerlisterResponse" : {
+        "required" : [ "feilede", "ferdige" ],
+        "type" : "object",
+        "properties" : {
+          "ferdige" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/FerdigInnbyggerliste"
+            }
           },
-          "uttrekkDefinisjon" : {
-            "$ref" : "#/components/schemas/UttrekkDefinisjon"
+          "feilede" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/InnbyggerlisteStatusResponse"
+            }
+          },
+          "igang" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/InnbyggerlisteStatusResponse"
+            }
+          }
+        }
+      },
+      "PersonSoekDefinisjon" : {
+        "required" : [ "rolleId" ],
+        "type" : "object",
+        "properties" : {
+          "rolleId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "navn" : {
+            "type" : "string",
+            "description" : "Et eller flere hele ord fra personnavnet, skilt med mellomrom."
+          },
+          "kjoenn" : {
+            "type" : "string",
+            "enum" : [ "MANN", "KVINNE" ]
+          },
+          "foedselsdato" : {
+            "type" : "integer",
+            "description" : "Fødselsdato (YYYYMMDD)",
+            "format" : "int32"
+          },
+          "foedt" : {
+            "$ref" : "#/components/schemas/AarIntervall"
+          },
+          "adressenavn" : {
+            "type" : "string",
+            "description" : "Minst 3 tegn fra begynnelsen av gatenavn"
+          },
+          "husnummer" : {
+            "type" : "string",
+            "description" : "Husnummer, med eller uten bokstav"
+          },
+          "postnummer" : {
+            "type" : "string",
+            "description" : "Filtrerer treff på postnummer (4 siffer)"
+          },
+          "kommunenummer" : {
+            "type" : "string",
+            "description" : "Filtrerer treff på kommunenummer (4 siffer)"
+          },
+          "fylkesnummer" : {
+            "type" : "string",
+            "description" : "Filtrerer treff på fylkesnummer (2 siffer)"
+          },
+          "inkluderOppholdsadresse" : {
+            "type" : "boolean",
+            "description" : "Treffer oppholdsasdresse i tillegg til bostedsadresse. Default: false"
+          },
+          "soekFonetisk" : {
+            "type" : "boolean",
+            "description" : "Søk også på lignende navn. Default: false"
+          },
+          "inkluderDoede" : {
+            "type" : "boolean",
+            "description" : "Treffer også døde personer. Default: false"
+          },
+          "inkluderHistoriskeNavnOgAdresser" : {
+            "type" : "boolean",
+            "description" : "Styrer håndtering av historikk. Default: 'false'. Påvirker kun navn og adresse - for andre opplysninger søkes det alltid kun på gjeldende."
+          },
+          "maksTreff" : {
+            "type" : "integer",
+            "description" : "Maksimalt antall treff å returnere. Maks 10.000.",
+            "format" : "int32"
+          },
+          "parts" : {
+            "type" : "array",
+            "description" : "Parts brukt for dataminimering",
+            "items" : {
+              "type" : "string",
+              "description" : "Parts brukt for dataminimering"
+            }
+          },
+          "fiksVisHemmeligeAdresser" : {
+            "type" : "boolean",
+            "description" : "Skal hemmelige adresser vises. Default: false"
           }
         }
       },
@@ -559,71 +836,7 @@
           }
         }
       },
-      "UttrekkListResponse" : {
-        "required" : [ "ferdige", "uttrekkFeilede", "uttrekkIGang" ],
-        "type" : "object",
-        "properties" : {
-          "ferdige" : {
-            "type" : "array",
-            "items" : {
-              "$ref" : "#/components/schemas/FerdigUttrekk"
-            }
-          },
-          "uttrekkIGang" : {
-            "type" : "array",
-            "items" : {
-              "$ref" : "#/components/schemas/UttrekkStatusResponse"
-            }
-          },
-          "uttrekkFeilede" : {
-            "type" : "array",
-            "items" : {
-              "$ref" : "#/components/schemas/UttrekkStatusResponse"
-            }
-          }
-        }
-      },
-      "UttrekkStatusResponse" : {
-        "required" : [ "fiksOrg", "id", "innbyggereHentet", "opprettet", "rolleId", "sistOppdatert", "uttrekkDefinisjon", "uttrekkStatus" ],
-        "type" : "object",
-        "properties" : {
-          "id" : {
-            "type" : "string",
-            "format" : "uuid"
-          },
-          "fiksOrg" : {
-            "type" : "string",
-            "format" : "uuid"
-          },
-          "rolleId" : {
-            "type" : "string",
-            "format" : "uuid"
-          },
-          "uttrekkStatus" : {
-            "type" : "string",
-            "enum" : [ "OPPRETTET", "HOS_SKATT", "FERDIG_SKATT", "FERDIG", "FEILET" ]
-          },
-          "innbyggereHentet" : {
-            "type" : "integer",
-            "format" : "int64"
-          },
-          "opprettet" : {
-            "type" : "string",
-            "format" : "date-time"
-          },
-          "sistOppdatert" : {
-            "type" : "string",
-            "format" : "date-time"
-          },
-          "beskrivelse" : {
-            "type" : "string"
-          },
-          "uttrekkDefinisjon" : {
-            "$ref" : "#/components/schemas/UttrekkDefinisjon"
-          }
-        }
-      },
-      "UttrekkFerdig" : {
+      "InnbyggerlisteFerdig" : {
         "required" : [ "dokumentlagerId", "id", "nedlastingUrl" ],
         "type" : "object",
         "properties" : {
@@ -640,15 +853,15 @@
           }
         }
       },
-      "UttrekkRef" : {
-        "required" : [ "fiksOrgId", "uttrekkId" ],
+      "InnbyggerlisteRef" : {
+        "required" : [ "fiksOrgId", "ref" ],
         "type" : "object",
         "properties" : {
           "fiksOrgId" : {
             "type" : "string",
             "format" : "uuid"
           },
-          "uttrekkId" : {
+          "ref" : {
             "type" : "string",
             "format" : "uuid"
           }
@@ -737,6 +950,33 @@
             "items" : {
               "type" : "string"
             }
+          }
+        }
+      },
+      "OpprettInnbyggerlisteFraSoek" : {
+        "required" : [ "soek" ],
+        "type" : "object",
+        "properties" : {
+          "soek" : {
+            "$ref" : "#/components/schemas/PersonSoekDefinisjon"
+          },
+          "beskrivelse" : {
+            "type" : "string"
+          },
+          "visHemmeligeAdresser" : {
+            "type" : "boolean"
+          },
+          "minimering" : {
+            "type" : "array",
+            "description" : "Parts/opplysninger brukt for dataminimering",
+            "items" : {
+              "type" : "string",
+              "description" : "Parts/opplysninger brukt for dataminimering"
+            }
+          },
+          "eksportFormat" : {
+            "type" : "string",
+            "enum" : [ "EGENDEFINERT", "VAKSINE" ]
           }
         }
       },
