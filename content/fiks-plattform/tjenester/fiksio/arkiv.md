@@ -13,12 +13,12 @@ For implementasjonseksempler, brukerhistorier og teknisk dokumentasjon les mer i
 Hver melding består av en zip fil ASIC-E som inneholder `arkivmelding.xml` eller `sok.xml` og tilhørende vedlegg som er definert i xml filen.
 Hver melding kan ikke overskride 5GB.
 
-KS har gjort tilgjengelig nuget pakken (.NET) `KS.Fiks.IO.Arkiv.Client` for at man skal enklere kunne bygge `arkivmelding.xml` vha . Koden er tilgjengelig på github [her](https://github.com/ks-no/fiks-arkiv-client-dotnet) og tilgjengelig for bruk i prosjekter på [nuget.org](https://www.nuget.org/packages/KS.Fiks.IO.Arkiv.Client/).
+KS har gjort tilgjengelig nuget pakken (.NET) `KS.Fiks.IO.Arkiv.Client` for at man skal enklere kunne bygge `arkivmelding.xml` vha (mangler!!). Koden er tilgjengelig på github [her](https://github.com/ks-no/fiks-arkiv-client-dotnet) og tilgjengelig for bruk i prosjekter på [nuget.org](https://www.nuget.org/packages/KS.Fiks.IO.Arkiv.Client/).
 
 Et tilsvarende bibliotek for Java kommer senere.
 
 For mer informasjon rundt meldingsformatet **arkivmelding** kan man lese om definisjonen [her](https://docs.digdir.no/eformidling_nm_arkivmeldingen.html) hos Digdir.
-XSD schema for meldingsformatene er tilgjengelig nuget i pakken `KS.Fiks.IO.Arkiv.Client` og kan også finnes på github [her](https://github.com/ks-no/fiks-arkiv-client-dotnet/tree/main/KS.Fiks.IO.Arkiv.Client/Schema)
+XSD schema for meldingsformatene er tilgjengelig i nuget pakken `KS.Fiks.IO.Arkiv.Client` og kan også finnes på github [her](https://github.com/ks-no/fiks-arkiv-client-dotnet/tree/main/KS.Fiks.IO.Arkiv.Client/Schema)
 
 ### Asynkrone meldinger og retry
 Siden denne protokollen er asynkron betyr det at man må ta forbehold om at man kanskje ikke får svar på en melding som ble sendt. 
@@ -55,13 +55,15 @@ For å arkivere data må en bruke meldingsformatet `arkivmelding.xml`. Se xsd sc
 - En foreldermappe kan ikke inneholde registreringer. Altså en mappe som inneholder andre mapper skal bare inneholde mapper.
 
 ### Time To Live (TTL)
+(Når blir denne?)
 TTL på en arkivering kan gjerne settes til minutter, timer eller til flere dager. Man bør sette en fornuftig TTL basert på hvert use-case. 
 
 Husk også at det er viktig å ikke forsøke å sende en melding på nytt **før** TTL er gått ut pluss litt ekstra tid. Dette er for å ikke fylle køen med duplikater. Hvis TTL går ut på tid og melding ikke har blitt hentet av mottaker får man en `tidsavbrudd` melding tilbake. se [Tidsavbrudd](../#tidsavbrudd)
 
 ### Mottatt og kvittering
-Når arkivering melding er mottatt skal mottaker persistere meldingen og sende `ack` tilbake til Fiks-IO. Hvis meldingen er gyldig som arkivmelding skal man så sende melding tilbake av typen `no.ks.fiks.arkiv.v1.arkivering.arkivmelding.mottatt`. Hvis meldingen ikke er gyldig, f.eks at den ikke validerer i henhold til schema, så sender man en `no.ks.fiks.kvittering.ugyldigforespoersel.v1` melding tilbake (se mer om feilmeldinger lenger nede). Sending av `ack` tilbake til Fiks-IO sørger for at meldingen blir tatt bort fra køen.   
-Når arkivering er arkivert til arkivet skal det komme en **arkivmelding** tilbake i meldingsformatet `arkivmelding-kvittering.xml` av typen `no.ks.fiks.arkiv.v1.arkivering.arkivmelding.kvittering`. Se [**arkivmeldingKvittering.xsd**](https://github.com/ks-no/fiks-arkiv-client-dotnet/blob/main/KS.Fiks.IO.Arkiv.Client/Schema/arkivmeldingKvittering.xsd) for definisjon av meldingsformatet på kvitteringsmelding. 
+(utvide med når mottatt/ack/kvittering skal bli sendt)
+Når arkivering melding er mottatt skal mottaker persistere meldingen og sende `ack`(kvittering? er det arkivmeldingmottat?) tilbake til Fiks-IO. Hvis meldingen er gyldig som arkivmelding skal man så sende melding tilbake av typen `no.ks.fiks.arkiv.v1.arkivering.arkivmelding.mottatt`. Hvis meldingen ikke er gyldig, f.eks at den ikke validerer i henhold til schema, så sender man en `no.ks.fiks.kvittering.ugyldigforespoersel.v1` melding tilbake (se mer om feilmeldinger lenger nede). Sending av `ack` tilbake til Fiks-IO sørger for at meldingen blir tatt bort fra køen.   
+Når arkivering er arkivert til arkivet skal det komme en **arkivmelding** tilbake i meldingsformatet `arkivmelding-kvittering.xml` av typen `no.ks.fiks.arkiv.v1.arkivering.arkivmelding.kvittering`. Se [**arkivmeldingKvittering.xsd**](https://github.com/ks-no/fiks-arkiv-client-dotnet/blob/main/KS.Fiks.IO.Arkiv.Client/Schema/arkivmeldingKvittering.xsd) for definisjon av meldingsformatet på kvitteringsmelding. (skille på syntaktisk korrekt melding og "ulovlig" melding pga feil brukertilgang) (inneholder kvittering mulighet for feilmelding?)
 
 Meldingstyper og schema xsd-filer er tilgjengelig i klient biblioteket på Github [her](https://github.com/ks-no/fiks-arkiv-client-dotnet/blob/main/KS.Fiks.IO.Arkiv.Client/Models/ArkivintegrasjonMeldingTypeV1.cs).
 
@@ -108,12 +110,12 @@ Hvis søk forespørsel har satt *responsType* = *"noekler"* kan søket returnere
 Meldingsformatet for hent mappe er definert i xsd schema [**mappeHent.xsd**](https://github.com/ks-no/fiks-arkiv-client-dotnet/blob/main/KS.Fiks.IO.Arkiv.Client/Schema/mappeHent.xsd) og sendes som meldingstypen `no.ks.fiks.arkiv.v1.innsyn.mappe.hent`. 
 Resultatet skal sendes tilbake som meldingstypen `no.ks.fiks.arkiv.v1.mappe.hent.resultat` og formatet er definert i xsd schema  [**mappeHentResultat.xsd**](https://github.com/ks-no/fiks-arkiv-client-dotnet/blob/main/KS.Fiks.IO.Arkiv.Client/Schema/mappeHentResultat.xsd). 
 
-**Hent journalpost**:
+**Hent journalpost**: (metadata for dokumentfil kommer sammen med journalpost, presisere)
 
 Meldingsformatet for hent journalpost er definert i xsd schema [**journalpostHent.xsd**](https://github.com/ks-no/fiks-arkiv-client-dotnet/blob/main/KS.Fiks.IO.Arkiv.Client/Schema/journalpostHent.xsd) og sendes som meldingstypen no.ks.fiks.arkiv.v1.innsyn.journalpost.hent.
 Resultatet skal sendes tilbake som meldingstypen `no.ks.fiks.arkiv.v1.journalpost.hent.resultat` og formatet er definert i xsd schema  [**journalpostHentResultat.xsd**](https://github.com/ks-no/fiks-arkiv-client-dotnet/blob/main/KS.Fiks.IO.Arkiv.Client/Schema/journalpostHentResultat.xsd)..
 
-**Hent dokumentfil**:
+**Hent dokumentfil**: (metadata kommer ikke med)
 
 Meldingsformatet for hent dokumentfil er definert i xsd schema [**dokumentfilHent.xsd**](https://github.com/ks-no/fiks-arkiv-client-dotnet/blob/main/KS.Fiks.IO.Arkiv.Client/Schema/dokumentfilHent.xsd) og sendes som meldingstypen no.ks.fiks.arkiv.v1.innsyn.dokumentfil.hent.
 Resultatet skal sendes tilbake som typen `no.ks.fiks.arkiv.v1.dokumentfil.hent.resultat`. Merk at det er ikke noe xsd schema for resultat da det ikke er noe behov for meta-data for dokumenfilen. Dokumentfilen kommer som payload i Fiks-IO meldingen med meldingsypen `no.ks.fiks.arkiv.v1.dokumentfil.hent.resultat`.
@@ -124,8 +126,8 @@ Resultatet skal sendes tilbake som typen `no.ks.fiks.arkiv.v1.dokumentfil.hent.r
 |   Type    | Navn |
 | ----------- | ----------- |
 | Arkivmelding oppdatering      | `no.ks.fiks.arkiv.v1.arkivering.arkivmelding.oppdater`       |
-| Arkivmelding oppdatering kvittering      | `no.ks.fiks.arkiv.v1.arkivering.arkivmelding.oppdater.kvittering`       |
 | Mottatt melding      | `no.ks.fiks.arkiv.v1.arkivering.arkivmelding.mottatt`       |
+| Arkivmelding oppdatering kvittering      | `no.ks.fiks.arkiv.v1.arkivering.arkivmelding.oppdater.kvittering`       |
 
 **Arkivmelding oppdatering**:
 
@@ -151,8 +153,8 @@ se [Tidsavbrudd](../#tidsavbrudd)
 ![arkivmelding_med_tidsavbrudd](/images/arkivmelding_med_tidsavbrudd.png "Arkivmelding med tidsavbrudd")
 
 ### Ugyldig forespørsel
-Hvis noe er galt med forespørselen, altså den er ugyldig, så skal mottaker sende en `no.ks.fiks.kvittering.ugyldigforespoersel.v1` tilbake til sender. Json [schema](https://github.com/ks-no/fiks-io-client-dotnet/blob/master/KS.Fiks.IO.Client/Schema/no.ks.fiks.kvittering.ugyldigforespoersel.v1.schema.json) følger med i .net pakken for Fiks-IO-client. 
-
+Hvis noe er galt med forespørselen, altså den er ugyldig, så skal mottaker sende en `no.ks.fiks.kvittering.ugyldigforespoersel.v1` tilbake til sender. Json [schema](https://github.com/ks-no/fiks-io-client-dotnet/blob/master/KS.Fiks.IO.Client/Schema/no.ks.fiks.kvittering.ugyldigforespoersel.v1.schema.json) (tegning stemmer ikke med beskrivelse over. mottat før ugyldig ) følger med i .net pakken for Fiks-IO-client. 
+(stemmer ikke med dokumentasjon over)
 ![arkivmelding_med_ugyldigforesporsel](/images/arkivmelding_med_ugyldigforesporsel.png "Arkivmelding med ugyldig forespørsel")
 
 ### Serverfeil
