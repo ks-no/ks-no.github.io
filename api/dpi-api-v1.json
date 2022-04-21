@@ -1,0 +1,148 @@
+{
+  "openapi" : "3.0.1",
+  "info" : {
+    "title" : "KS Fiks: DPI Config",
+    "contact" : {
+      "name" : "Fiks brukerstøtte",
+      "url" : "https://ks-no.github.io/",
+      "email" : "fiks-utvikling@ks.no"
+    },
+    "version" : "v1"
+  },
+  "servers" : [ {
+    "url" : "https://api.fiks.ks.no",
+    "description" : "KS Fiks API host",
+    "variables" : { }
+  }, {
+    "url" : "https://api.test.fiks.ks.no",
+    "description" : "KS Fiks TEST API host",
+    "variables" : { }
+  } ],
+  "tags" : [ {
+    "name" : "DPI Config",
+    "description" : "API for å verifisere om orgnummer har fått riktig scope på maskinporten-token"
+  } ],
+  "paths" : {
+    "/dpi/api/v1/verifiser/{kontoId}/{orgnr}" : {
+      "get" : {
+        "tags" : [ "DPI Config" ],
+        "description" : "Sjekke om maskinportenscope digitalpostinnbygger:send er satt for organisasjonsnummer",
+        "operationId" : "sjekkMaskinportenscope",
+        "parameters" : [ {
+          "name" : "kontoId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        }, {
+          "name" : "orgnr",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "pattern" : "^[0-9]{9}$",
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/DelegertRettighet"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Bad request",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Ikke autentisert",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Systemfeil",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components" : {
+    "schemas" : {
+      "DelegertRettighet" : {
+        "required" : [ "delegeringIAltinn" ],
+        "type" : "object",
+        "properties" : {
+          "delegeringIAltinn" : {
+            "type" : "string",
+            "description" : "Har kommune delegert rettighet?",
+            "enum" : [ "DELEGERT", "IKKE_DELEGERT", "UKJENT" ]
+          },
+          "feilmelding" : {
+            "type" : "string",
+            "description" : "Inneholder feilmelding dersom vi ikke klarer å finne ut om kommunen har delegert rettighet eller ikke"
+          }
+        },
+        "description" : "Delegert rettighet i Altinn"
+      },
+      "ErrorMessage" : {
+        "type" : "object",
+        "properties" : {
+          "timestamp" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "status" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "error" : {
+            "type" : "string"
+          },
+          "errorId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "path" : {
+            "type" : "string"
+          },
+          "originalPath" : {
+            "type" : "string"
+          },
+          "message" : {
+            "type" : "string"
+          },
+          "errorCode" : {
+            "type" : "string"
+          },
+          "errorJson" : {
+            "type" : "string"
+          }
+        }
+      }
+    }
+  }
+}
