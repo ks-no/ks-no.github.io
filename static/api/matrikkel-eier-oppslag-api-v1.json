@@ -1,0 +1,215 @@
+{
+  "openapi" : "3.0.1",
+  "info" : {
+    "title" : "KS Fiks: Matrikkel oppslag",
+    "description" : "KS Fiks: Matrikkel oppslag",
+    "contact" : {
+      "name" : "Fiks brukerstøtte",
+      "url" : "https://ks-no.github.io/",
+      "email" : "fiks@ks.no"
+    },
+    "version" : "v1"
+  },
+  "servers" : [ {
+    "url" : "http://matrikkel-eier:8080",
+    "description" : "Cluster internal service URI",
+    "variables" : { }
+  } ],
+  "tags" : [ {
+    "name" : "MatrikkelEierOppslag",
+    "description" : "API oppslag i matrikkelen"
+  } ],
+  "paths" : {
+    "/matrikkel-eier/api/v1/{fiksOrgId}/finn-eiendommer" : {
+      "post" : {
+        "tags" : [ "MatrikkelEierOppslag" ],
+        "description" : "Finn eiendommer for person eller organisasjon",
+        "operationId" : "finnEiendommer",
+        "parameters" : [ {
+          "name" : "fiksOrgId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/EierApiModel"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "default" : {
+            "description" : "default response",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/EiendommerSokeresultatApiModel"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/matrikkel-eier/api/v1/{fiksOrgId}/finn-eiere" : {
+      "post" : {
+        "tags" : [ "MatrikkelEierOppslag" ],
+        "description" : "Finn eiere for matrikkelenheter",
+        "operationId" : "finnEiere",
+        "parameters" : [ {
+          "name" : "fiksOrgId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "uniqueItems" : true,
+                "type" : "array",
+                "items" : {
+                  "$ref" : "#/components/schemas/MatrikkelnummerApiModel"
+                }
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "default" : {
+            "description" : "default response",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/SokeresultatApiModel"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components" : {
+    "schemas" : {
+      "AdresseApiModel" : {
+        "type" : "object",
+        "properties" : {
+          "veg" : {
+            "type" : "string"
+          },
+          "nummer" : {
+            "type" : "string"
+          },
+          "bokstav" : {
+            "type" : "string"
+          }
+        }
+      },
+      "EiendommerSokeresultatApiModel" : {
+        "type" : "object",
+        "properties" : {
+          "matrikler" : {
+            "uniqueItems" : true,
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/MatrikkelApiModel"
+            }
+          }
+        }
+      },
+      "MatrikkelApiModel" : {
+        "required" : [ "adresser", "matrikkelnummer" ],
+        "type" : "object",
+        "properties" : {
+          "matrikkelnummer" : {
+            "$ref" : "#/components/schemas/MatrikkelnummerApiModel"
+          },
+          "adresser" : {
+            "uniqueItems" : true,
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/AdresseApiModel"
+            }
+          }
+        }
+      },
+      "MatrikkelnummerApiModel" : {
+        "required" : [ "bruksnummer", "festenummer", "gardsnummer", "kommunenummer", "seksjonsnummer" ],
+        "type" : "object",
+        "properties" : {
+          "kommunenummer" : {
+            "pattern" : "^\\d*$",
+            "type" : "string"
+          },
+          "gardsnummer" : {
+            "pattern" : "^\\d*$",
+            "type" : "string"
+          },
+          "bruksnummer" : {
+            "pattern" : "^\\d*$",
+            "type" : "string"
+          },
+          "festenummer" : {
+            "pattern" : "^\\d*$",
+            "type" : "string"
+          },
+          "seksjonsnummer" : {
+            "pattern" : "^\\d*$",
+            "type" : "string"
+          }
+        }
+      },
+      "EierApiModel" : {
+        "type" : "object",
+        "properties" : {
+          "type" : {
+            "type" : "string",
+            "enum" : [ "JURIDISK_PERSON", "FYSISK_PERSON" ]
+          },
+          "verdi" : {
+            "type" : "string"
+          }
+        }
+      },
+      "EnhetResultatApiModel" : {
+        "type" : "object",
+        "properties" : {
+          "matrikkelnummer" : {
+            "$ref" : "#/components/schemas/MatrikkelnummerApiModel"
+          },
+          "eiere" : {
+            "uniqueItems" : true,
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/EierApiModel"
+            }
+          }
+        }
+      },
+      "SokeresultatApiModel" : {
+        "type" : "object",
+        "properties" : {
+          "enhetResultater" : {
+            "uniqueItems" : true,
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/EnhetResultatApiModel"
+            }
+          }
+        }
+      }
+    }
+  }
+}
