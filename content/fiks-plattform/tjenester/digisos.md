@@ -260,6 +260,19 @@ Det er ingen returtype på dette endepunktet.
 
 Ved feil ved opplasting får man 400 Bad Request når multipart-requesten ikke er definert med riktige data.
 
+### Innsending av søknad med mellomlagring
+
+For å sende inn søknad og ettersendelse med mellomlagring av vedlegg er det laget et nytt api: 
+[(api-spec)](https://editor.swagger.io/?url=https://ks-no.github.io/api/digisos-mellomlagring-api-v1.json
+
+Her bruker man en multipart request på samme måte som ved innsending av søknad, men det skal kun legges ved en enkelt fil. Om det er flere vedlegg må de lastes opp en om gangen. Hver request må da bruke den samme ```{navEkseternRefId}```. Vedleggene kan deretter lastes ned eller slettes fra mellomlageret ved bruk av dette api'et.
+
+Når det er klart for å sende inn søknad eller ettersendelse brukes v2 av Søknad api'et
+https://editor.swagger.io/?url=https://ks-no.github.io/api/digisos-api-v2.json
+
+Dette fungerer på samme måte som det gamle api'et for søknad, men uten vedlegg. Vedleggene bil nå hentes fra mellomlager, knyttet til ```{navEkseternRefId}``` som
+oppgis her, og som ble benyttet til mellomlagring. Når innsending er ferdig, vil alle filene knyttet til denne ```{navEkseternRefId}``` slettes fra mellomlagring.
+
 ### Henting av filer
 Soknad api [(api-spec)](https://editor.swagger.io/?url=https://ks-no.github.io/api/digisos-api-v1.json)
 
