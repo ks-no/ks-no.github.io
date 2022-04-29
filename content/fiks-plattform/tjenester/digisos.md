@@ -262,7 +262,7 @@ Ved feil ved opplasting får man 400 Bad Request når multipart-requesten ikke e
 
 ### Innsending av søknad med mellomlagring
 
-![digisos_mellomlagring](../images/digisos_midlertidig_lagring.png "Fiks Digisos Mellomlagring")
+![digisos_mellomlagring](../../images/digisos_midlertidig_lagring.png "Fiks Digisos Mellomlagring")
 
 For å sende inn søknad og ettersendelse med mellomlagring av vedlegg er det laget et nytt api: 
 [(api-spec)](https://editor.swagger.io/?url=https://ks-no.github.io/api/digisos-mellomlagring-api-v1.json
