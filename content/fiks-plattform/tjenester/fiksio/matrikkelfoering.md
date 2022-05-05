@@ -36,7 +36,7 @@ Fiks IO.
 ## Fiks IO meldingsprotokoll for matrikkelføring
 Meldingsprotokoll som matrikkelklient må støtte ```no.ks.fiks.matrikkelfoering.v2```
 
-Fiks-IO har støtte for headere på meldinger og for å markere en melding som unik skal man sette headeren 'klientMeldingId' med en unik id. Men denne id'en skal brukes igjen for alle meldinger som forsøkes på nytt. 
+Fiks-IO har støtte for headere på meldinger. For å markere en melding som unik skal man sette headeren 'klientMeldingId' med en unik id. Men denne id'en skal brukes igjen for alle meldinger som forsøkes på nytt. 
 Dette er for at mottaker skal kunne se at dette er en melding som har vært forsøkt tidligere og kan håndtere meldingen korrekt. Se kode eksempel lenger nede for hvordan man setter 'klientMeldingId'. 
 
 Fra eByggesak/fagsystem: 
