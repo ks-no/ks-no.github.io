@@ -844,6 +844,69 @@
         }
       }
     },
+    "/protokoll/api/v1/konfigurasjon/{fiksOrgId}/systemer/{systemId}/koer/{koId}/system-sok" : {
+      "post" : {
+        "tags" : [ "Protokoll-konfigurasjon" ],
+        "description" : "Søk etter systemer som køen kan gi tilgang til",
+        "operationId" : "systemSok",
+        "parameters" : [ {
+          "name" : "fiksOrgId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        }, {
+          "name" : "systemId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        }, {
+          "name" : "koId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/ProtokollSystemSokRequest"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Systemer fra søkeresultat som køen kan gi tilgang til.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ProtokollSystemSokResponse"
+                }
+              }
+            }
+          },
+          "default" : {
+            "description" : "Noe gikk galt",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/protokoll/api/v1/konfigurasjon/{fiksOrgId}/systemer/{systemId}/koer/{koId}/info" : {
       "put" : {
         "tags" : [ "Protokoll-konfigurasjon" ],
@@ -1330,7 +1393,8 @@
             "type" : "string",
             "description" : "Beskrivelse av system"
           }
-        }
+        },
+        "description" : "Systemer som ble funnet av søk"
       },
       "UpdateProtokollKoInfoResponse" : {
         "required" : [ "beskrivelse", "id", "navn" ],
@@ -1403,6 +1467,50 @@
           "beskrivelse" : {
             "type" : "string",
             "description" : "Beskrivelse av protokoll"
+          }
+        }
+      },
+      "ProtokollSystemSokResponse" : {
+        "required" : [ "systemer" ],
+        "type" : "object",
+        "properties" : {
+          "systemer" : {
+            "type" : "array",
+            "description" : "Systemer som ble funnet av søk",
+            "items" : {
+              "$ref" : "#/components/schemas/ProtokollSystemInfoResponse"
+            }
+          }
+        }
+      },
+      "ProtokollSystemSokFilterRequest" : {
+        "type" : "object",
+        "properties" : {
+          "fiksOrgIder" : {
+            "type" : "array",
+            "description" : "Liste over fiksOrgIder som systemet må være eid av",
+            "items" : {
+              "type" : "string",
+              "description" : "Liste over fiksOrgIder som systemet må være eid av",
+              "format" : "uuid"
+            }
+          },
+          "stotterKo" : {
+            "type" : "boolean",
+            "description" : "Returnerer kun systemer som støtter køen som søker (default: true)"
+          }
+        },
+        "description" : "Filter for søk etter protokollsystem"
+      },
+      "ProtokollSystemSokRequest" : {
+        "type" : "object",
+        "properties" : {
+          "filter" : {
+            "$ref" : "#/components/schemas/ProtokollSystemSokFilterRequest"
+          },
+          "term" : {
+            "type" : "string",
+            "description" : "Søketerm på kønavn, købeskrivelse, systemnavn og/eller systembeskrivelse"
           }
         }
       },
