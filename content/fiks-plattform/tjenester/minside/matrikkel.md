@@ -1,6 +1,6 @@
 ---
 title: Matrikkel
-date: 2019-08-14
+date: 2022-05-06
 aliases: [/fiks-platform/tjenester/matrikkel, /fiks-plattform/tjenester/matrikkel]
 ---
 
