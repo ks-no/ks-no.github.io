@@ -17,14 +17,12 @@ Hver melding kan ikke overskride 5GB.
 For mer informasjon rundt meldingsformatet **arkivmelding** kan man lese om definisjonen [her](https://docs.digdir.no/eformidling_nm_arkivmeldingen.html) hos Digdir.
 XSD skjema for meldingsformatene er tilgjengelig for nedlasting på github prosjektet [fiks-arkiv-specification](https://github.com/ks-no/fiks-arkiv-specification) eller i bibliotek for .NET og Java. Dette spesifikasjonsprosjektet brukes som felles kilde for bygging av bibliotek/moduler for .NET og Java.
 
-
 ### .NET bibliotek
 
 KS har gjort tilgjengelig nuget pakken `KS.Fiks.Arkiv.Models.V1` som inneholder modeller for at man skal enklere kunne bygge `arkivmelding.xml` i henhold til spesifikasjon. 
 Modellene er generert av XSD skjema fra github prosjektet [fiks-arkiv-specification](https://github.com/ks-no/fiks-arkiv-specification). XSD skjemane følger også med i pakken. Koden er tilgjengelig på github [her](https://github.com/ks-no/fiks-arkiv-models-dotnet/tree/main/KS.Fiks.Arkiv.Models.V1) og er tilgjengelig for nedlasting og bruk i prosjekter på [nuget.org](https://www.nuget.org/packages/KS.Fiks.Arkiv.Models.V1/).
 
 I tillegg er det en pakke laget for "forenklet arkivering", `KS.Fiks.Arkiv.Forenklet.Arkivering.V1`, som inneholder forenklete metoder for å bygge arkivmelding for diverse brukstilfeller. Denne bruker modellene fra `KS.Fiks.Arkiv.Models.V1` til byggingen av arkivmelding. Koden er tilgjengelig på github [her](https://github.com/ks-no/fiks-arkiv-forenklet-arkivering-dotnet) og er også tilgjengelig for bruk i prosjekter på [nuget.org](https://www.nuget.org/packages/KS.Fiks.Arkiv.Forenklet.Arkivering.V1/)
-
 
 ### Java bibliotek
 Tilsvarende som for .NET finnes det tilgjengelige moduler på Maven Central. Prosjektet er tilgjengelig på github [her](https://github.com/ks-no/fiks-arkiv-client-java).
@@ -34,13 +32,6 @@ Modulen [fiks-arkiv-api](https://search.maven.org/artifact/no.ks.fiks/fiks-arkiv
 Modulen [fiks-arkiv-forenklet-arkivering](https://search.maven.org/artifact/no.ks.fiks/fiks-arkiv-forenklet-arkivering) tilsvarer pakken i .NET for "forenklet arkivering" og inneholder buildere for forenklet oppbygging av gyldig arkivmelding.
 
 XSD skjema fra [fiks-arkiv-specification](https://github.com/ks-no/fiks-arkiv-specification) er inkludert i jar under schemas.v1
-
-
-
-
-
-
-
 
 ### Asynkrone meldinger og retry
 
