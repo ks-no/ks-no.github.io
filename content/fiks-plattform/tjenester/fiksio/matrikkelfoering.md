@@ -36,6 +36,9 @@ Fiks IO.
 ## Fiks IO meldingsprotokoll for matrikkelføring
 Meldingsprotokoll som matrikkelklient må støtte ```no.ks.fiks.matrikkelfoering.v2```
 
+Fiks-IO har støtte for headere på meldinger. For å markere en melding som unik skal man sette headeren 'klientMeldingId' med en unik id. Men denne id'en skal brukes igjen for alle meldinger som forsøkes på nytt. 
+Dette er for at mottaker skal kunne se at dette er en melding som har vært forsøkt tidligere og kan håndtere meldingen korrekt. Se kode eksempel lenger nede for hvordan man setter 'klientMeldingId'. 
+
 Fra eByggesak/fagsystem: 
 - Grunnlag til matrikkelføring: ```no.ks.fiks.matrikkelfoering.grunnlag.v2```  [Datamodell matrikkelfoeringv2.xsd](/files/matrikkelfoeringv2.xsd)
 
@@ -134,12 +137,14 @@ Hvis matrikkelfører finner ut at en melding skal registreres ved bruk av en ann
 
 ## Eksempel 1 - viser eksempel på en nivå 1 melding
 
-Kodeeksempel på sending av melding med grunnlag for matrikkelføring
+Kodeeksempel på sending av melding med grunnlag for matrikkelføring. 
+Fiks-IO klienten støtter å sette 'klientMeldingId' som egen parameter og legger dette til i headeren.
 
 ```csharp
 var messageRequest = new MeldingRequest(
             mottakerKontoId: receiverId,
             avsenderKontoId: senderId,
+            klientMeldingId: klientMeldingId,
             meldingType: "no.ks.fiks.matrikkelfoering.grunnlag.v2"); 
 
 List<IPayload> payloads = new List<IPayload>();
