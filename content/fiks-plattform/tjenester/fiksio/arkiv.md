@@ -17,21 +17,57 @@ Hver melding kan ikke overskride 5GB.
 For mer informasjon rundt meldingsformatet **arkivmelding** kan man lese om definisjonen [her](https://docs.digdir.no/eformidling_nm_arkivmeldingen.html) hos Digdir.
 XSD skjema for meldingsformatene er tilgjengelig for nedlasting på github prosjektet [fiks-arkiv-specification](https://github.com/ks-no/fiks-arkiv-specification) eller i bibliotek for .NET og Java. Dette spesifikasjonsprosjektet brukes som felles kilde for bygging av bibliotek/moduler for .NET og Java.
 
-### .NET bibliotek
+### .NET bibliotek og prosjekter
+
+**Nuget pakker:**
+
+|   Type    | Navn | Github
+| ----------- | ----------- | ----------- | 
+| Modeller og XSD skjema | [`KS.Fiks.Arkiv.Models.V1`](https://www.nuget.org/packages/KS.Fiks.Arkiv.Models.V1/)  | https://github.com/ks-no/fiks-arkiv-models-dotnet |
+| Felles modeller og skjema      | [`KS.Fiks.Protokoller.V1`](https://www.nuget.org/packages/KS.Fiks.Protokoller.V1/)  | https://github.com/ks-no/fiks-protokoller-dotnet |
+| Forenklet arkivering  | [`KS.Fiks.Arkiv.Forenklet.Arkivering.V1`](https://www.nuget.org/packages/KS.Fiks.Arkiv.Forenklet.Arkivering.V1/)  | https://github.com/ks-no/fiks-arkiv-forenklet-arkivering-dotnet |
+
+**Modeller og XSD skjema**
 
 KS har gjort tilgjengelig nuget pakken `KS.Fiks.Arkiv.Models.V1` som inneholder modeller for at man skal enklere kunne bygge `arkivmelding.xml` i henhold til spesifikasjon. 
-Modellene er generert av XSD skjema fra github prosjektet [fiks-arkiv-specification](https://github.com/ks-no/fiks-arkiv-specification). XSD skjemane følger også med i pakken. Koden er tilgjengelig på github [her](https://github.com/ks-no/fiks-arkiv-models-dotnet/tree/main/KS.Fiks.Arkiv.Models.V1) og er tilgjengelig for nedlasting og bruk i prosjekter på [nuget.org](https://www.nuget.org/packages/KS.Fiks.Arkiv.Models.V1/).
+Modellene er generert av XSD skjema fra github prosjektet [fiks-arkiv-specification](https://github.com/ks-no/fiks-arkiv-specification). XSD skjemane følger også med i pakken. Koden er tilgjengelig på github [her](https://github.com/ks-no/fiks-arkiv-models-dotnet/) og er tilgjengelig for nedlasting og bruk i prosjekter på [nuget.org](https://www.nuget.org/packages/KS.Fiks.Arkiv.Models.V1/).
 
-I tillegg er det en pakke laget for "forenklet arkivering", `KS.Fiks.Arkiv.Forenklet.Arkivering.V1`, som inneholder forenklete metoder for å bygge arkivmelding for diverse brukstilfeller. Denne bruker modellene fra `KS.Fiks.Arkiv.Models.V1` til byggingen av arkivmelding. Koden er tilgjengelig på github [her](https://github.com/ks-no/fiks-arkiv-forenklet-arkivering-dotnet) og er også tilgjengelig for bruk i prosjekter på [nuget.org](https://www.nuget.org/packages/KS.Fiks.Arkiv.Forenklet.Arkivering.V1/)
+**Felles modeller og skjema**
 
-### Java bibliotek
+For ressurser som er felles for alle Fiks protokoller, altså som ikke bare gjelder for Fiks Arkiv, er det opprettet et eget [github](https://github.com/ks-no/fiks-protokoller-dotnet) prosjekt og [nuget](https://www.nuget.org/packages/KS.Fiks.Protokoller.V1/) pakken `KS.Fiks.Protokoller.V1`. Her finner man blant annet modeller og skjema for felles feilmeldinger som `ugyldigforespørsel` og `serverfeil`. 
+
+**Forenklet arkivering**
+
+Det er laget en pakke for "forenklet arkivering", `KS.Fiks.Arkiv.Forenklet.Arkivering.V1`, som inneholder forenklete metoder for å bygge arkivmelding for diverse brukstilfeller. Denne bruker modellene fra `KS.Fiks.Arkiv.Models.V1` til byggingen av arkivmelding. Koden er tilgjengelig på github [her](https://github.com/ks-no/fiks-arkiv-forenklet-arkivering-dotnet) og er også tilgjengelig for bruk i prosjekter på [nuget.org](https://www.nuget.org/packages/KS.Fiks.Arkiv.Forenklet.Arkivering.V1/)
+
+**Integrasjonstester**
+
+Det er laget et prosjekt som inneholder integrasjonstester som tester at et arkiv som har implementert Fiks Arkiv protokollen fungerer som forventet i meldings-utvekslinger. F.eks. at arkivet kan ta i mot og lagre en ny journalpost, oppdatere journalposten, og levere den oppdaterte journalposten på en hent-melding.
+Github prosjektet er [her](https://github.com/ks-no/fiks-arkiv-integration-tests-dotnet) og kan lastes ned og brukes for testing. Det oppfordres til å bidra med enda flere tester. 
+
+### Java bibliotek og prosjekter
+
+**Maven**
+
+|   Type    | Navn | Github
+| ----------- | ----------- | ----------- | 
+| Modeller og XSD skjema | [`fiks-arkiv`](https://github.com/ks-no/fiks-arkiv-client-java)       | https://github.com/ks-no/fiks-arkiv-client-java |
+| Felles modeller og skjema      | *kommer snart*      | *kommer snart*|
+| Forenklet arkivering  | [`fiks-arkiv-forenklet-arkivering`](https://search.maven.org/artifact/no.ks.fiks/fiks-arkiv-forenklet-arkivering)  | https://github.com/ks-no/fiks-arkiv-client-java |
+
 Tilsvarende som for .NET finnes det tilgjengelige moduler på Maven Central. Prosjektet er tilgjengelig på github [her](https://github.com/ks-no/fiks-arkiv-client-java).
 
-Modulen [fiks-arkiv-api](https://search.maven.org/artifact/no.ks.fiks/fiks-arkiv-api) inneholder autogenerert typer, definert i skjema prosjektet [fiks-arkiv-specification](https://github.com/ks-no/fiks-arkiv-specification).
+**Modeller og XSD skjema**
 
-Modulen [fiks-arkiv-forenklet-arkivering](https://search.maven.org/artifact/no.ks.fiks/fiks-arkiv-forenklet-arkivering) tilsvarer pakken i .NET for "forenklet arkivering" og inneholder buildere for forenklet oppbygging av gyldig arkivmelding.
+Modulen [`fiks-arkiv-api`](https://search.maven.org/artifact/no.ks.fiks/fiks-arkiv-api) inneholder autogenerert typer, definert i skjema prosjektet [`fiks-arkiv-specification`](https://github.com/ks-no/fiks-arkiv-specification). XSD skjema fra [`fiks-arkiv-specification`](https://github.com/ks-no/fiks-arkiv-specification) er inkludert i jar under schemas.v1
 
-XSD skjema fra [fiks-arkiv-specification](https://github.com/ks-no/fiks-arkiv-specification) er inkludert i jar under schemas.v1
+**Felles modeller og skjema**
+
+*Kommer snart for java*
+
+**Forenklet arkivering**
+
+Modulen [`fiks-arkiv-forenklet-arkivering`](https://search.maven.org/artifact/no.ks.fiks/fiks-arkiv-forenklet-arkivering) tilsvarer pakken i .NET for "forenklet arkivering" og inneholder buildere for forenklet oppbygging av gyldig arkivmelding. XSD skjema fra [fiks-arkiv-specification](https://github.com/ks-no/fiks-arkiv-specification) er inkludert i jar under schemas.v1
 
 ### Asynkrone meldinger og retry
 
@@ -179,10 +215,16 @@ Ved serverfeil hos mottaker skal det sendes en `no.ks.fiks.kvittering.serverfeil
 
 Når en melding er mottatt skal mottaker persistere meldingen og sende `ack` tilbake til Fiks-IO. Sending av `ack` tilbake til Fiks-IO sørger for at meldingen blir tatt bort fra køen. Hvis `ack` for en melding uteblir vil meldingen blir forsøkt sendt på nytt inntil TTL gjør at meldingen utgår.
 
-## Testing
+## Testing av meldingsutveksling
 
-Det er opprettet en test-applikasjon, **fiks-protokoll-validator**, som kjører i KS sitt testmiljø. Med denne kan man teste protokollene mot sitt eget testmiljø ved å sende ferdige meldinger til den aktuelle FIKS-IO kontoen.
-Fiks-protokoll-validator vil validere svaret den får tilbake via FIKS-IO og gi en pekepinn på om implementasjon fungerer som det skal.
+Det er opprettet en test-applikasjon, **fiks-protokoll-validator**, som kjører i KS sitt testmiljø. Med denne kan man teste protokollene mot sitt eget arkiv-testmiljø ved å sende ferdige meldinger til den aktuelle FIKS-IO kontoen.
+Fiks-protokoll-validator vil validere svaret den får tilbake via Fiks-IO og gi en pekepinn på om implementasjon fungerer som det skal.
 Applikasjonen er kun tilgjengelig i KS test-miljø: [fiks-validator](https://forvaltning.fiks.test.ks.no/fiks-validator/#/)
 
 Koden for validatoren er tilgjengelig på [github](https://github.com/ks-no/fiks-protokoll-validator).
+
+### Integrasjonstester
+
+Som tidligere nevnt er det også laget et .NET prosjekt som inneholder integrasjonstester som tester at et arkiv som har implementert Fiks Arkiv protokollen fungerer som forventet i meldings-utvekslinger.
+Github prosjektet finner man [her](https://github.com/ks-no/fiks-arkiv-integration-tests-dotnet). 
+
