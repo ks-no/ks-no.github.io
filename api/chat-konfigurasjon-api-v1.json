@@ -27,11 +27,83 @@
     "description" : "API for konfigurering av rolle for folkeregisteroppslag"
   } ],
   "paths" : {
-    "/chat-konfigurasjon/api/v1/brukere" : {
+    "/chat-konfigurasjon/api/v1/{fiksOrgId}/finnbruker" : {
+      "get" : {
+        "tags" : [ "Chat konfigurasjon" ],
+        "description" : "Finn bruker",
+        "operationId" : "hentBruker",
+        "parameters" : [ {
+          "name" : "fiksOrgId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/BrukerRequest"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Response!",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/BrukerResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/chat-konfigurasjon/api/v1/{fiksOrg}/brukere" : {
+      "get" : {
+        "tags" : [ "Chat konfigurasjon" ],
+        "description" : "Hent alle brukere for organisasjonen",
+        "operationId" : "hentBrukere",
+        "parameters" : [ {
+          "name" : "fiksOrg",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Response!",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/BrukereResponse"
+                }
+              }
+            }
+          }
+        }
+      },
       "post" : {
         "tags" : [ "Chat konfigurasjon" ],
         "summary" : "Oppretter en ny bruker for organisasjonen med gitt fødselsnummer",
         "operationId" : "opprettBruker",
+        "parameters" : [ {
+          "name" : "fiksOrg",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
         "requestBody" : {
           "content" : {
             "application/json" : {
@@ -44,6 +116,51 @@
         "responses" : {
           "200" : {
             "description" : "Bruker opprettet",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/OpprettBrukerResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/chat-konfigurasjon/api/v1/{fiksOrg}/brukere/{brukerId}" : {
+      "post" : {
+        "tags" : [ "Chat konfigurasjon" ],
+        "description" : "Oppdaterer en bruker",
+        "operationId" : "oppdaterBruker",
+        "parameters" : [ {
+          "name" : "fiksOrg",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        }, {
+          "name" : "brukerId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/OppdaterBrukerRequest"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Response!",
             "content" : {
               "application/json" : {
                 "schema" : {
@@ -133,6 +250,60 @@
   },
   "components" : {
     "schemas" : {
+      "BrukerResponse" : {
+        "required" : [ "fnr", "id" ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string",
+            "description" : "Id til bruker"
+          },
+          "fnr" : {
+            "type" : "string",
+            "description" : "Fødselsnummer til bruker"
+          },
+          "epost" : {
+            "type" : "string",
+            "description" : "Epost til bruker"
+          },
+          "navn" : {
+            "type" : "string",
+            "description" : "Navn til bruker"
+          },
+          "grupper" : {
+            "type" : "array",
+            "description" : "Grupper som bruker tilhører i denne fiksOrg",
+            "items" : {
+              "type" : "string",
+              "description" : "Grupper som bruker tilhører i denne fiksOrg"
+            }
+          }
+        }
+      },
+      "BrukerRequest" : {
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string",
+            "description" : "Id til bruker"
+          },
+          "fnr" : {
+            "type" : "string",
+            "description" : "Fødselsnummer til bruker"
+          }
+        }
+      },
+      "BrukereResponse" : {
+        "type" : "object",
+        "properties" : {
+          "brukere" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/BrukerResponse"
+            }
+          }
+        }
+      },
       "OpprettBrukerResponse" : {
         "required" : [ "id" ],
         "type" : "object",
@@ -140,6 +311,24 @@
           "id" : {
             "type" : "string",
             "description" : "Id for opprettet bruker"
+          }
+        }
+      },
+      "OppdaterBrukerRequest" : {
+        "required" : [ "id" ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string",
+            "description" : "Id til bruker"
+          },
+          "epost" : {
+            "type" : "string",
+            "description" : "Epost til bruker"
+          },
+          "navn" : {
+            "type" : "string",
+            "description" : "Navn til bruker"
           }
         }
       },
