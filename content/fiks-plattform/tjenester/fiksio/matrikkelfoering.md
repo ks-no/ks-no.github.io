@@ -32,21 +32,85 @@ Fiks IO.
 - Når tiltaket er matrikkelført / ført i FKB, sender Matrikkelklienten en kvitteringsmelding tilbake til eByggesak via Fiks IO.
 - eByggesak mottar kvitteringsmeldingen via Fiks IO og oppretter milepæl for matrikkelføring i saken
 
+### Flyt for status meldinger 
+Fagsystem kan sende status forespørsel for en innsendt matrikkelføring med meldingstypen `no.ks.fiks.matrikkelfoering.status.v2`. 
+Matrikkelsystem svarer da med status med meldingstypen `no.ks.fiks.matrikkelfoering.statussvar.v2`. 
+For at dette skal fungere krever protokollen at det blir sendt unik klientMeldingId header (se eksempel lenger nede) på alle `no.ks.fiks.matrikkelfoering.grunnlag.v2` meldinger.
+
+Eksempel på status:
+```xml
+<StatusMatrikkel xmlns=http://rep.geointegrasjon.no/Matrikkel/foeringstatus/v2>
+    <klientMeldingId>02c5187a-5bd7-43a0-a99c-aa5e8bcc0cd3</klientMeldingId> 
+    <svarMedKvittering>true</svarMedKvittering>
+</StatusMatrikkel>
+```
+
+Her sender klient id på meldingen den forespør om status på, samt at det er et flagg svarMedKvittering (default=false) som kan brukes til å be matrikkelsystemet sende kvitteringsdokumentet på nytt, så sant meldingen allerede er kvittert.
+
+Eksempel på svar hvor meldingen er ukjent for matrikkelsystemet:
+
+```xml
+<StatusMatrikkelSvar xmlns=http://rep.geointegrasjon.no/Matrikkel/foeringstatussvar/v2>
+    <klientMeldingId>02c5187a-5bd7-43a0-a99c-aa5e8bcc0cd3</klientMeldingId>
+    <statusBehandling>IkkeMottatt</statusBehandling>
+</StatusMatrikkelSvar>
+```
+
+klientMeldingId er her ikke kjent og da svarer vi med status **IkkeMottatt**. Da kan man anta at meldingen ikke er sendt eller den er tapt, da må man sende grunnlag-melding for å starte prosessen. Mulige verdier for statusBehandling er **Mottatt**, **IkkeMottatt**, **Feil** og **Kvittert**. Feil vil bety at meldingen som ble sendt fra sakssystem ikke var gyldig, kvittert betyr at meldingen er ferdig behandlet ved at den er ført i matrikkel (eller ikke). **Mottatt** er mellomstadie som forteller at meldingen er under behandling, slik at man slipper å sende på nytt.
+
+Eksempel på statussvar der meldingen er mottatt, men ennå ikke kvittert (en status den kan ligge i veldig lang tid uten at det nødvendigvis betyr at noe er feil):
+
+```xml
+<StatusMatrikkelSvar xmlns=http://rep.geointegrasjon.no/Matrikkel/foeringstatussvar/v2>
+    <klientMeldingId>02c5187a-5bd7-43a0-a99c-aa5e8bcc0cd3</klientMeldingId>
+    <statusBehandling>Mottatt</statusBehandling>
+    <meldingId>02c5187a-5bd7-43a0-a99c-aa5e8bcc0cd4</meldingId>   
+</StatusMatrikkelSvar>
+```
+
+Her får man også tilbake den faktiske meldingId-en som meldingen hadde fra fiksio.
+
+Siste eksempel, der meldingen er kvittert:
+
+```xml
+<StatusMatrikkelSvar xmlns=http://rep.geointegrasjon.no/Matrikkel/foeringstatussvar/v2>
+    <klientMeldingId>02c5187a-5bd7-43a0-a99c-aa5e8bcc0cd3</klientMeldingId>
+    <statusBehandling>Mottatt</statusBehandling>
+    <meldingId>02c5187a-5bd7-43a0-a99c-aa5e8bcc0cd4</meldingId>
+    <statusKvittering>IkkeForespurt</statusKvittering>
+</StatusMatrikkelSvar>
+```
+
+
+Her følger det med en **statusKvittering**. Den vil gjenspeile **svarMedKvittering**-elementet i forespørselen, og kan være **IkkeForespurt**, **Vedlagt** eller **Utloept**. De to første korresponderer til false/true på **svarMedKvittering**. 
+**Utloept** brukes der kvittering er sendt, og **svarMedKvittering** er true, men samtidig at dokumentet ikke lenger er lagret på matrikkelsystem-siden pga. f.eks. at det blir slettet etter en stund.
+
+
+
 
 ## Fiks IO meldingsprotokoll for matrikkelføring
-Meldingsprotokoll som matrikkelklient må støtte ```no.ks.fiks.matrikkelfoering.v2```
+Meldingsprotokoll som matrikkelklient må støtte er ```no.ks.fiks.matrikkelfoering.v2```
 
 Fiks-IO har støtte for headere på meldinger. For å markere en melding som unik skal man sette headeren 'klientMeldingId' med en unik id. Men denne id'en skal brukes igjen for alle meldinger som forsøkes på nytt. 
 Dette er for at mottaker skal kunne se at dette er en melding som har vært forsøkt tidligere og kan håndtere meldingen korrekt. Se kode eksempel lenger nede for hvordan man setter 'klientMeldingId'. 
 
-Fra eByggesak/fagsystem: 
-- Grunnlag til matrikkelføring: ```no.ks.fiks.matrikkelfoering.grunnlag.v2```  [Datamodell matrikkelfoeringv2.xsd](/files/matrikkelfoeringv2.xsd)
+### Meldinger
 
-Fra matrikkelklienter: 
-- Mottak vellykket: ```no.ks.fiks.matrikkelfoering.mottatt.v1```
-- Mottak feilet: ```no.ks.fiks.matrikkelfoering.feil.v1```
-- Kvittering på føring i matrikkelen:
-```no.ks.fiks.matrikkelfoering.kvittering.v2``` [Datamodell kvitteringmatrikkelfoeringv2.xsd](/files/kvitteringmatrikkelfoeringv2.xsd)
+**Fra eByggesak/fagsystem:**
+
+|    Type     |     Navn    |  Skjema    |
+| ----------- | ----------- |----------- |
+| Grunnlag til matrikkelføring    | `no.ks.fiks.matrikkelfoering.grunnlag.v2`       | [Datamodell matrikkelfoeringv2.xsd](/files/matrikkelfoeringv2.xsd) |
+| Forespørsel om status    | `no.ks.fiks.matrikkelfoering.status.v2`       | [Datamodell matrikkelfoeringstatusv2.xsd](/files/matrikkelfoeringstatusv2.xsd) |
+
+**Fra matrikkelklienter:**
+
+|    Type     |     Navn    |  Skjema    |
+| ----------- | ----------- |----------- |
+| Mottak vellykket | `no.ks.fiks.matrikkelfoering.mottatt.v1` | Ingen payload |
+| Mottak feilet | `no.ks.fiks.matrikkelfoering.feil.v1` | Ikke noe definert skjema |
+| Kvittering på føring i matrikkelen | `no.ks.fiks.matrikkelfoering.kvittering.v2` | [Datamodell kvitteringmatrikkelfoeringv2.xsd](/files/kvitteringmatrikkelfoeringv2.xsd) |
+| Svar på forespørsel om status | `no.ks.fiks.matrikkelfoering.statussvar.v2` | [Datamodell matrikkelfoeringstatussvarv2.xsd](/files/matrikkelfoeringstatussvarv2.xsd) |
 
 ## Datamodell for meldinger
 ![fiks_matrikkelfoering_datamodell_grunnlag](/images/datamodell_grunnlag.png "Matrikkelføring datamodell grunnlag")
@@ -138,7 +202,7 @@ Hvis matrikkelfører finner ut at en melding skal registreres ved bruk av en ann
 ## Eksempel 1 - viser eksempel på en nivå 1 melding
 
 Kodeeksempel på sending av melding med grunnlag for matrikkelføring. 
-Fiks-IO klienten støtter å sette 'klientMeldingId' som egen parameter og legger dette til i headeren.
+Fiks-IO klienten støtter å sette egne headere og som tidligere nevnt skal 'klientMeldingId' settes som parameter slik at den komme med i headeren.
 
 ```csharp
 var messageRequest = new MeldingRequest(
