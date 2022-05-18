@@ -34,7 +34,8 @@ Fiks IO.
 
 ### Flyt for status meldinger 
 Fagsystem kan sende status forespørsel for en innsendt matrikkelføring med meldingstypen `no.ks.fiks.matrikkelfoering.status.v2`. 
-Matrikkelsystem svarer da med status med meldingstypen `no.ks.fiks.matrikkelfoering.statussvar.v2`. For at dette skal fungere krever protokollen at det blir sendt unik klientMeldingId header (som tidligere nevnt) på alle `no.ks.fiks.matrikkelfoering.grunnlag.v2` meldinger.
+Matrikkelsystem svarer da med status med meldingstypen `no.ks.fiks.matrikkelfoering.statussvar.v2`. 
+For at dette skal fungere krever protokollen at det blir sendt unik klientMeldingId header (se eksempel lenger nede) på alle `no.ks.fiks.matrikkelfoering.grunnlag.v2` meldinger.
 
 Eksempel på status:
 ```xml
