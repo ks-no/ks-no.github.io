@@ -33,9 +33,9 @@ Fiks IO.
 - eByggesak mottar kvitteringsmeldingen via Fiks IO og oppretter milepæl for matrikkelføring i saken
 
 ### Flyt for status meldinger 
-Fagsystem kan sende status forespørsel for en innsendt matrikkelføring med meldingstypen `no.ks.fiks.matrikkelfoering.status.v2`. 
-Matrikkelsystem svarer da med status med meldingstypen `no.ks.fiks.matrikkelfoering.statussvar.v2`. 
-For at dette skal fungere krever protokollen at det blir sendt unik klientMeldingId header (se eksempel lenger nede) på alle `no.ks.fiks.matrikkelfoering.grunnlag.v2` meldinger.
+Fagsystem kan sende status forespørsel for en innsendt matrikkelføring med meldingstypen `no.ks.fiks.matrikkelfoering.v2.status`. 
+Matrikkelsystem svarer da med status med meldingstypen `no.ks.fiks.matrikkelfoering.v2.statussvar`. 
+For at dette skal fungere krever protokollen at det blir sendt unik klientMeldingId header (se eksempel lenger nede) på alle `no.ks.fiks.matrikkelfoering.v2.grunnlag` meldinger.
 
 Eksempel på status:
 ```xml
@@ -100,26 +100,26 @@ Dette er for at mottaker skal kunne se at dette er en melding som har vært fors
 
 |    Type     |     Navn    |  Skjema    |
 | ----------- | ----------- |----------- |
-| Grunnlag til matrikkelføring    | `no.ks.fiks.matrikkelfoering.grunnlag.v2`       | [Datamodell matrikkelfoeringv2.xsd](/files/matrikkelfoeringv2.xsd) |
-| Forespørsel om status    | `no.ks.fiks.matrikkelfoering.status.v2`       | [Datamodell matrikkelfoeringstatusv2.xsd](/files/matrikkelfoeringstatusv2.xsd) |
+| Grunnlag til matrikkelføring    | `no.ks.fiks.matrikkelfoering.v2.grunnlag`       | [Datamodell matrikkelfoeringv2.xsd](/files/matrikkelfoeringv2.xsd) |
+| Forespørsel om status    | `no.ks.fiks.matrikkelfoering.v2.status`       | [Datamodell matrikkelfoeringstatusv2.xsd](/files/matrikkelfoeringstatusv2.xsd) |
 
 **Fra matrikkelklienter:**
 
 |    Type     |     Navn    |  Skjema    |
 | ----------- | ----------- |----------- |
-| Mottak vellykket | `no.ks.fiks.matrikkelfoering.mottatt.v1` | Ingen payload |
-| Mottak feilet | `no.ks.fiks.matrikkelfoering.feil.v1` | Ikke noe definert skjema |
-| Kvittering på føring i matrikkelen | `no.ks.fiks.matrikkelfoering.kvittering.v2` | [Datamodell kvitteringmatrikkelfoeringv2.xsd](/files/kvitteringmatrikkelfoeringv2.xsd) |
-| Svar på forespørsel om status | `no.ks.fiks.matrikkelfoering.statussvar.v2` | [Datamodell matrikkelfoeringstatussvarv2.xsd](/files/matrikkelfoeringstatussvarv2.xsd) |
+| Mottak vellykket | `no.ks.fiks.matrikkelfoering.v2.mottatt` | Ingen payload |
+| Mottak feilet | `no.ks.fiks.matrikkelfoering.v2.ugyldigforespoersel` | <skjema kommer> |
+| Kvittering på føring i matrikkelen | `no.ks.fiks.matrikkelfoering.v2.kvittering` | [Datamodell kvitteringmatrikkelfoeringv2.xsd](/files/kvitteringmatrikkelfoeringv2.xsd) |
+| Svar på forespørsel om status | `no.ks.fiks.matrikkelfoering.v2.statussvar` | [Datamodell matrikkelfoeringstatussvarv2.xsd](/files/matrikkelfoeringstatussvarv2.xsd) |
 
 ## Datamodell for meldinger
 ![fiks_matrikkelfoering_datamodell_grunnlag](/images/datamodell_grunnlag.png "Matrikkelføring datamodell grunnlag")
 
-```no.ks.fiks.matrikkelfoering.grunnlag.v2``` [Datamodell matrikkelfoeringv2.xsd](/files/matrikkelfoeringv2.xsd)
+```no.ks.fiks.matrikkelfoering.v2.grunnlag``` [Datamodell matrikkelfoeringv2.xsd](/files/matrikkelfoeringv2.xsd)
 
 ![fiks_matrikkelfoering_datamodell_kvittering](/images/datamodell_kvittering.png "Matrikkelføring datamodell kvittering")
 
-```no.ks.fiks.matrikkelfoering.kvittering.v2``` [Datamodell kvitteringmatrikkelfoeringv2.xsd](/files/kvitteringmatrikkelfoeringv2.xsd)
+```no.ks.fiks.matrikkelfoering.v2.kvittering``` [Datamodell kvitteringmatrikkelfoeringv2.xsd](/files/kvitteringmatrikkelfoeringv2.xsd)
 
 ## Overføring av filer
 
@@ -209,7 +209,7 @@ var messageRequest = new MeldingRequest(
             mottakerKontoId: receiverId,
             avsenderKontoId: senderId,
             klientMeldingId: klientMeldingId,
-            meldingType: "no.ks.fiks.matrikkelfoering.grunnlag.v2"); 
+            meldingType: "no.ks.fiks.matrikkelfoering.v2.grunnlag"); 
 
 List<IPayload> payloads = new List<IPayload>();
 payloads.Add(new StringPayload(jsonPayload, "index.json"));
