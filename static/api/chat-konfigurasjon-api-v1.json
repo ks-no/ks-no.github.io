@@ -27,6 +27,70 @@
     "description" : "API for konfigurering av rolle for folkeregisteroppslag"
   } ],
   "paths" : {
+    "/chat-konfigurasjon/api/v1/{fiksOrgId}/grupper" : {
+      "get" : {
+        "tags" : [ "Chat konfigurasjon" ],
+        "description" : "Finne grupper knytta mot fiksOrg",
+        "operationId" : "finnGrupper",
+        "parameters" : [ {
+          "name" : "fiksOrgId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Grupper",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/GrupperResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post" : {
+        "tags" : [ "Chat konfigurasjon" ],
+        "description" : "Opprette gruppe for fiksOrg",
+        "operationId" : "opprettGruppe",
+        "parameters" : [ {
+          "name" : "fiksOrgId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/OpprettGruppeRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Gruppe",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/GruppeResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/chat-konfigurasjon/api/v1/{fiksOrgId}/brukere/sok" : {
       "post" : {
         "tags" : [ "Chat konfigurasjon" ],
@@ -48,11 +112,12 @@
                 "$ref" : "#/components/schemas/BrukerRequest"
               }
             }
-          }
+          },
+          "required" : true
         },
         "responses" : {
           "200" : {
-            "description" : "Response!",
+            "description" : "Bruker",
             "content" : {
               "application/json" : {
                 "schema" : {
@@ -80,7 +145,7 @@
         } ],
         "responses" : {
           "200" : {
-            "description" : "Response!",
+            "description" : "Alle brukere for organisasjon",
             "content" : {
               "application/json" : {
                 "schema" : {
@@ -111,7 +176,8 @@
                 "$ref" : "#/components/schemas/OpprettBrukerRequest"
               }
             }
-          }
+          },
+          "required" : true
         },
         "responses" : {
           "200" : {
@@ -164,7 +230,7 @@
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/OpprettBrukerResponse"
+                  "$ref" : "#/components/schemas/BrukerResponse"
                 }
               }
             }
@@ -250,14 +316,45 @@
   },
   "components" : {
     "schemas" : {
+      "GruppeResponse" : {
+        "required" : [ "fiksOrgId", "id", "navn" ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string",
+            "description" : "Id på gruppe",
+            "format" : "uuid"
+          },
+          "fiksOrgId" : {
+            "type" : "string",
+            "description" : "FiksOrgId knytta til",
+            "format" : "uuid"
+          },
+          "navn" : {
+            "type" : "string",
+            "description" : "Navn på gruppe"
+          }
+        }
+      },
+      "GrupperResponse" : {
+        "type" : "object",
+        "properties" : {
+          "grupper" : {
+            "type" : "array",
+            "description" : "Grupper",
+            "items" : {
+              "$ref" : "#/components/schemas/GruppeResponse"
+            }
+          }
+        }
+      },
       "BrukerResponse" : {
         "required" : [ "fnr", "id" ],
         "type" : "object",
         "properties" : {
           "id" : {
             "type" : "string",
-            "description" : "Id til bruker",
-            "format" : "uuid"
+            "description" : "Id til bruker"
           },
           "fnr" : {
             "type" : "string",
@@ -305,16 +402,6 @@
           }
         }
       },
-      "OpprettBrukerResponse" : {
-        "required" : [ "id" ],
-        "type" : "object",
-        "properties" : {
-          "id" : {
-            "type" : "string",
-            "description" : "Id for opprettet bruker"
-          }
-        }
-      },
       "OppdaterBrukerRequest" : {
         "required" : [ "id" ],
         "type" : "object",
@@ -330,6 +417,28 @@
           "navn" : {
             "type" : "string",
             "description" : "Navn til bruker"
+          },
+          "fnr" : {
+            "type" : "string",
+            "description" : "Fødselsnummer til bruker"
+          },
+          "grupper" : {
+            "type" : "array",
+            "description" : "Grupper som bruker tilhører i denne fiksOrg",
+            "items" : {
+              "type" : "string",
+              "description" : "Grupper som bruker tilhører i denne fiksOrg"
+            }
+          }
+        }
+      },
+      "OpprettBrukerResponse" : {
+        "required" : [ "id" ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string",
+            "description" : "Id for opprettet bruker"
           }
         }
       },
@@ -338,10 +447,23 @@
         "type" : "object",
         "properties" : {
           "fnr" : {
+            "pattern" : "^[0-9]{11}$",
             "type" : "string",
             "description" : "Fødselsnummer for bruker som skal opprettes"
           }
-        }
+        },
+        "description" : "Skal opprette bruker"
+      },
+      "OpprettGruppeRequest" : {
+        "required" : [ "navn" ],
+        "type" : "object",
+        "properties" : {
+          "navn" : {
+            "type" : "string",
+            "description" : "Navn på gruppe"
+          }
+        },
+        "description" : "Opprette gruppe"
       },
       "AktivertRolle" : {
         "required" : [ "id" ],
