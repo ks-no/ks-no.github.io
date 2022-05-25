@@ -130,7 +130,7 @@ Her følger det med en **statusKvittering**. Den vil gjenspeile **svarMedKvitter
 Meldingen `no.ks.fiks.matrikkelfoering.v2.grunnlag` vil  inneholde en **byggesak.xml** fil som er matrikkelføringen, eventuelle vedlegg og en **index.json** fil som beskriver innholdet i hele meldingen.
 Filen **index.json** har følgende struktur:
 
-```json
+```javascript
 [
   {
     "dokumenttype": "Byggesak", // Dokumenttype fra Arkivlett - Se tabell nedenfor
