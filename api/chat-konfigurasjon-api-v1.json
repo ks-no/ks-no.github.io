@@ -27,6 +27,102 @@
     "description" : "API for konfigurering av rolle for folkeregisteroppslag"
   } ],
   "paths" : {
+    "/chat-konfigurasjon/api/v1/{fiksOrg}/brukere" : {
+      "get" : {
+        "tags" : [ "Chat konfigurasjon" ],
+        "description" : "Hent alle brukere for organisasjonen",
+        "operationId" : "hentBrukere",
+        "parameters" : [ {
+          "name" : "fiksOrg",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Alle brukere for organisasjon",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/BrukerResponse"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post" : {
+        "tags" : [ "Chat konfigurasjon" ],
+        "summary" : "Oppretter en ny bruker for organisasjonen med gitt fødselsnummer",
+        "operationId" : "opprettBruker",
+        "parameters" : [ {
+          "name" : "fiksOrg",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/OpprettBrukerRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Bruker opprettet",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/OpprettBrukerResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch" : {
+        "tags" : [ "Chat konfigurasjon" ],
+        "summary" : "Legger til/fjerner bruker fra grupper. Om dette er eneste gruppe som bruker er tilknyttet, slettes brukeren.",
+        "operationId" : "endreGrupperPåBruker",
+        "parameters" : [ {
+          "name" : "fiksOrg",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/OppdaterGruppeForBrukerRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Bruker er lagt til/fjernet fra gruppe(r)"
+          }
+        }
+      }
+    },
     "/chat-konfigurasjon/api/v1/{fiksOrgId}/grupper" : {
       "get" : {
         "tags" : [ "Chat konfigurasjon" ],
@@ -47,7 +143,10 @@
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/GrupperResponse"
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/GruppeResponse"
+                  }
                 }
               }
             }
@@ -157,70 +256,6 @@
               "application/json" : {
                 "schema" : {
                   "$ref" : "#/components/schemas/BrukerResponse"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/chat-konfigurasjon/api/v1/{fiksOrg}/brukere" : {
-      "get" : {
-        "tags" : [ "Chat konfigurasjon" ],
-        "description" : "Hent alle brukere for organisasjonen",
-        "operationId" : "hentBrukere",
-        "parameters" : [ {
-          "name" : "fiksOrg",
-          "in" : "path",
-          "required" : true,
-          "schema" : {
-            "type" : "string",
-            "format" : "uuid"
-          }
-        } ],
-        "responses" : {
-          "200" : {
-            "description" : "Alle brukere for organisasjon",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/BrukereResponse"
-                }
-              }
-            }
-          }
-        }
-      },
-      "post" : {
-        "tags" : [ "Chat konfigurasjon" ],
-        "summary" : "Oppretter en ny bruker for organisasjonen med gitt fødselsnummer",
-        "operationId" : "opprettBruker",
-        "parameters" : [ {
-          "name" : "fiksOrg",
-          "in" : "path",
-          "required" : true,
-          "schema" : {
-            "type" : "string",
-            "format" : "uuid"
-          }
-        } ],
-        "requestBody" : {
-          "content" : {
-            "application/json" : {
-              "schema" : {
-                "$ref" : "#/components/schemas/OpprettBrukerRequest"
-              }
-            }
-          },
-          "required" : true
-        },
-        "responses" : {
-          "200" : {
-            "description" : "Bruker opprettet",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/OpprettBrukerResponse"
                 }
               }
             }
@@ -351,6 +386,32 @@
   },
   "components" : {
     "schemas" : {
+      "OppdaterGruppeForBrukerRequest" : {
+        "required" : [ "id" ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string",
+            "description" : "Fødselsnummer til bruker"
+          },
+          "nyeGrupper" : {
+            "type" : "array",
+            "description" : "Gruppe som bruker skal legges til i",
+            "items" : {
+              "type" : "string",
+              "description" : "Gruppe som bruker skal legges til i"
+            }
+          },
+          "fjernGrupper" : {
+            "type" : "array",
+            "description" : "Gruppe som bruker skal fjernes fra",
+            "items" : {
+              "type" : "string",
+              "description" : "Gruppe som bruker skal fjernes fra"
+            }
+          }
+        }
+      },
       "GruppeResponse" : {
         "required" : [ "fiksOrgId", "id", "navn" ],
         "type" : "object",
@@ -369,29 +430,14 @@
             "type" : "string",
             "description" : "Navn på gruppe"
           }
-        }
-      },
-      "GrupperResponse" : {
-        "type" : "object",
-        "properties" : {
-          "grupper" : {
-            "type" : "array",
-            "description" : "Grupper",
-            "items" : {
-              "$ref" : "#/components/schemas/GruppeResponse"
-            }
-          }
-        }
+        },
+        "description" : "Gruppe"
       },
       "BrukerResponse" : {
-        "required" : [ "fnr", "id" ],
+        "required" : [ "id" ],
         "type" : "object",
         "properties" : {
           "id" : {
-            "type" : "string",
-            "description" : "Id til bruker"
-          },
-          "fnr" : {
             "type" : "string",
             "description" : "Fødselsnummer til bruker"
           },
@@ -416,36 +462,17 @@
       "BrukerRequest" : {
         "type" : "object",
         "properties" : {
-          "id" : {
-            "type" : "string",
-            "description" : "Id til bruker"
-          },
           "fnr" : {
             "type" : "string",
             "description" : "Fødselsnummer til bruker"
           }
         }
       },
-      "BrukereResponse" : {
-        "type" : "object",
-        "properties" : {
-          "brukere" : {
-            "type" : "array",
-            "items" : {
-              "$ref" : "#/components/schemas/BrukerResponse"
-            }
-          }
-        }
-      },
       "OppdaterBrukerRequest" : {
-        "required" : [ "fnr", "id" ],
+        "required" : [ "id" ],
         "type" : "object",
         "properties" : {
           "id" : {
-            "type" : "string",
-            "description" : "Id til bruker"
-          },
-          "fnr" : {
             "type" : "string",
             "description" : "Fødselsnummer til bruker"
           },
@@ -459,7 +486,7 @@
           },
           "gruppe" : {
             "type" : "string",
-            "description" : "Grupper som bruker skal legges til i"
+            "description" : "Gruppe som bruker skal legges til i"
           }
         }
       },
@@ -474,10 +501,10 @@
         }
       },
       "OpprettBrukerRequest" : {
-        "required" : [ "fnr" ],
+        "required" : [ "id" ],
         "type" : "object",
         "properties" : {
-          "fnr" : {
+          "id" : {
             "pattern" : "^[0-9]{11}$",
             "type" : "string",
             "description" : "Fødselsnummer for bruker som skal opprettes"
