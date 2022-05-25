@@ -133,16 +133,16 @@ Filen **index.json** har følgende struktur:
 ```json
 [
   {
-    "dokumenttype": "Byggesak", # Dokumenttype fra Arkivlett - Se tabell 
+    "dokumenttype": "Byggesak", // Dokumenttype fra Arkivlett - Se tabell nedenfor
     "tittel": "Underlag for matrikkelføring", 
-    "dokumentnummer": 1, # Dette tilsvarer index for denne filen i payloads for Fiks IO meldingen 
-    "filnavn": "byggesak.xml" # Filnavn i Fiks IO meldingen
+    "dokumentnummer": 1, // Dette tilsvarer index for denne filen i payloads for Fiks IO meldingen 
+    "filnavn": "byggesak.xml" // Filnavn i Fiks IO meldingen
   },
   {
-    "dokumenttype": "KART", # Dokumenttype fra Arkivlett - Se tabell 
+    "dokumenttype": "KART", // Dokumenttype fra Arkivlett - Se tabell nedenfor
     "tittel": "Situasjonsplan",
-    "dokumentnummer": 2, # Dette tilsvarer index for denne filen i payloads for Fiks IO meldingen
-    "filnavn": "DokSitplan.pdf" # Filnavn i Fiks IO meldingen
+    "dokumentnummer": 2, // Dette tilsvarer index for denne filen i payloads for Fiks IO meldingen
+    "filnavn": "DokSitplan.pdf" // Filnavn i Fiks IO meldingen
   },
 ]
 ```
