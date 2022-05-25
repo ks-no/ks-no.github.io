@@ -3,18 +3,58 @@ title: Fiks IO Matrikkelføring
 date: 2021-08-18
 ---
 
-Fiks IO Matrikkelføring er en tjeneste for å overføre grunnlag til matrikkelføring fra eByggesak til Matrikkelklienter. 
+Fiks Matrikkelføring er en asynkron protokoll over Fiks IO for å overføre grunnlag til matrikkelføring fra eByggesak til Matrikkelklienter. 
 Den er tilsvarende løsningen som er etablert på Fiks SvarUt/SvarInn http://geointegrasjon.no/nytt-grensesnitt-ebyggesak-og-matrikkel/.
-Denne løsningen benytter [FIKS IO](https://ks-no.github.io/fiks-platform/tjenester/fiksio/) for maskin til maskin integrasjon 
+Denne løsningen benytter altså [Fiks IO](https://ks-no.github.io/fiks-platform/tjenester/fiksio/) for maskin til maskin integrasjon. 
 
 ## Løsningskonsept
 
 ![fiks_matrikkelfoering](/images/matrikkelfoering_skisse.png "Fiks IO Matrikkelføring")
 
-## Hvordan ta i bruk Fiks IO Matrikkelføring
+## Hvordan ta i bruk Fiks Matrikkelføring
 For at eByggesak eller annet fagsystem skal få tilgang til å sende grunnlag for matrikkelføring til matrikkelklienter, så må kommunen aktivere tjenesten Fiks IO i [Fiks Konfigurasjon](https://forvaltning.fiks.ks.no/fiks-konfigurasjon/tjenester).
 
-Aktuell matrikkelklient må aktiveres for å kunne svare på meldingsprotokoll ```no.ks.fiks.matrikkelfoering.v2```
+Aktuell matrikkelklient må aktiveres for å kunne svare med meldinger på meldingsprotokoll ```no.ks.fiks.matrikkelfoering.v2```
+
+## Meldinger med Fiks IO for Fiks Matrikkelføring
+
+Meldingsprotokoll som matrikkelklient må støtte er ```no.ks.fiks.matrikkelfoering.v2```
+
+Hver melding i Fiks IO består av en zip fil ASIC-E som inneholder protokollmeldingen (f.eks. byggesak.xml eller status.xml) i xml format og eventuelt tilhørende vedlegg.
+For protokollmeldingen `no.ks.fiks.matrikkelfoering.v2.grunnlag` skal det følge med en `index.json` fil som beskriver hva hver enkelt fil er i Fiks IO meldingen. Se avsnittet om "Overføring av filer" med tilhørende tabell lenger nede for forklaring på sammenhengen mellom filer og `index.json`.
+
+Hver melding kan ikke overskride 5GB totalt, med protokollmelding og vedlegg.
+
+Fiks-IO har støtte for headere på meldinger. For å markere en melding som unik skal man sette headeren `klientMeldingId` med en unik id. Denne id'en skal brukes igjen for alle meldinger som forsøkes på nytt. 
+Dette er for at mottaker skal kunne se at dette er en melding som har vært forsøkt tidligere og kan håndtere meldingen korrekt. Se kode eksempel lenger nede for hvordan man setter `klientMeldingId`. 
+
+### Meldinger
+
+**Fra eByggesak/fagsystem:**
+
+|    Type     |     Navn    |   Skjema    |   Filer    |
+| ----------- | ----------- |----------- |----------- |
+| Grunnlag til matrikkelføring    | `no.ks.fiks.matrikkelfoering.v2.grunnlag`       | [no.ks.fiks.matrikkelfoering.v2.grunnlag.xsd](https://github.com/ks-no/fiks-matrikkelfoering-specification/blob/main/Schema/V2/no.ks.fiks.matrikkelfoering.v2.grunnlag.xsd) | `byggesak.xml`, `index.json` + evt vedlegg |
+| Forespørsel om status    | `no.ks.fiks.matrikkelfoering.v2.status`       | [no.ks.fiks.matrikkelfoering.v2.status.xsd](https://github.com/ks-no/fiks-matrikkelfoering-specification/blob/main/Schema/V2/no.ks.fiks.matrikkelfoering.v2.status.xsd) | `status.xml` |
+
+**Fra matrikkelklienter:**
+
+|    Type     |     Navn    |  Skjema    |  Filer    |
+| ----------- | ----------- |----------- |----------- |
+| Mottak vellykket | `no.ks.fiks.matrikkelfoering.v2.mottatt` | Ingen payload | Ingen fil |
+| Mottak feilet - Ugyldig forespørsel | `no.ks.fiks.matrikkelfoering.v2.feilmelding.ugyldigforespoersel` | [no.ks.fiks.matrikkelfoering.v2.feilmelding.ugyldigforespoersel.xsd](https://github.com/ks-no/fiks-matrikkelfoering-specification/blob/main/Schema/V2/no.ks.fiks.matrikkelfoering.v2.feilmelding.ugyldigforespoersel.xsd) | `feilmelding.xml` |
+| Mottak feilet - Serverfeil | `no.ks.fiks.matrikkelfoering.v2.feilmelding.serverfeil` | [no.ks.fiks.matrikkelfoering.v2.feilmelding.serverfeil.xsd](https://github.com/ks-no/fiks-matrikkelfoering-specification/blob/main/Schema/V2/no.ks.fiks.matrikkelfoering.v2.feilmelding.serverfeil.xsd) | `feilmelding.xml` |
+| Kvittering på føring i matrikkelen | `no.ks.fiks.matrikkelfoering.v2.kvittering` | [no.ks.fiks.matrikkelfoering.v2.kvittering.xsd](https://github.com/ks-no/fiks-matrikkelfoering-specification/blob/main/Schema/V2/no.ks.fiks.matrikkelfoering.v2.kvittering.xsd) | `kvittering.xml` |
+| Svar på forespørsel om status | `no.ks.fiks.matrikkelfoering.v2.statussvar` | [no.ks.fiks.matrikkelfoering.v2.statussvar.xsd](/https://github.com/ks-no/fiks-matrikkelfoering-specification/blob/main/Schema/V2/no.ks.fiks.matrikkelfoering.v2.statussvar.xsd) | `statussvar.xml` |
+
+## Datamodell for meldinger
+![fiks_matrikkelfoering_datamodell_grunnlag](/images/datamodell_grunnlag.png "Matrikkelføring datamodell grunnlag")
+
+[`no.ks.fiks.matrikkelfoering.v2.grunnlag.xsd`](https://github.com/ks-no/fiks-matrikkelfoering-specification/blob/main/Schema/V2/no.ks.fiks.matrikkelfoering.v2.grunnlag.xsd)
+
+![fiks_matrikkelfoering_datamodell_kvittering](/images/datamodell_kvittering.png "Matrikkelføring datamodell kvittering")
+
+[`no.ks.fiks.matrikkelfoering.v2.kvittering.xsd`](https://github.com/ks-no/fiks-matrikkelfoering-specification/blob/main/Schema/V2/no.ks.fiks.matrikkelfoering.v2.kvittering.xsd)
 
 ## Flyt
 
@@ -25,16 +65,15 @@ Aktuell matrikkelklient må aktiveres for å kunne svare på meldingsprotokoll `
 - Før vedtaket fattes, kontrollerer eByggesak at saken har tilstrekkelig data og tegninger til matrikkelføringen.
 - Når vedtak er fattet i eByggesak, kontrollerer eByggesak om tiltaket skal matrikkelføres.
 - Hvis tiltaket (tiltakene) skal matrikkelføres, bygger eByggesak opp en datastruktur for matrikkelføringen som består av data fra saksbehandlingen, matrikkelinformasjon og tegninger som ligger til grunn for vedtaket.
-- eByggesak sender deretter denne datastrukturen og tegningene til Matrikkelklienten ved hjelp av
-Fiks IO.
+- eByggesak sender deretter denne datastrukturen og tegningene til Matrikkelklienten ved hjelp av Fiks IO.
 - Matrikkelklienten mottar datastruktur og tegninger ved hjelp av Fiks IO.
 - Matrikkelfører fører tiltaket i Matrikkel / FKB. Her skisseres det også muligheter for at Matrikkelklienten basert på et regelsett kan matrikkelføre enkelte tiltak automatisk.
 - Når tiltaket er matrikkelført / ført i FKB, sender Matrikkelklienten en kvitteringsmelding tilbake til eByggesak via Fiks IO.
 - eByggesak mottar kvitteringsmeldingen via Fiks IO og oppretter milepæl for matrikkelføring i saken
 
-### Flyt for status meldinger 
-Fagsystem kan sende status forespørsel for en innsendt matrikkelføring med meldingstypen `no.ks.fiks.matrikkelfoering.v2.status`. 
-Matrikkelsystem svarer da med status med meldingstypen `no.ks.fiks.matrikkelfoering.v2.statussvar`. 
+### Flyt for status meldinger
+Fagsystem kan sende status forespørsel for en innsendt matrikkelføring med meldingstypen `no.ks.fiks.matrikkelfoering.v2.status`.
+Matrikkelsystem svarer da med status med meldingstypen `no.ks.fiks.matrikkelfoering.v2.statussvar`.
 For at dette skal fungere krever protokollen at det blir sendt unik klientMeldingId header (se eksempel lenger nede) på alle `no.ks.fiks.matrikkelfoering.v2.grunnlag` meldinger.
 
 Eksempel på status:
@@ -82,46 +121,31 @@ Siste eksempel, der meldingen er kvittert:
 ```
 
 
-Her følger det med en **statusKvittering**. Den vil gjenspeile **svarMedKvittering**-elementet i forespørselen, og kan være **IkkeForespurt**, **Vedlagt** eller **Utloept**. De to første korresponderer til false/true på **svarMedKvittering**. 
+Her følger det med en **statusKvittering**. Den vil gjenspeile **svarMedKvittering**-elementet i forespørselen, og kan være **IkkeForespurt**, **Vedlagt** eller **Utloept**. De to første korresponderer til false/true på **svarMedKvittering**.
 **Utloept** brukes der kvittering er sendt, og **svarMedKvittering** er true, men samtidig at dokumentet ikke lenger er lagret på matrikkelsystem-siden pga. f.eks. at det blir slettet etter en stund.
 
 
-
-
-## Fiks IO meldingsprotokoll for matrikkelføring
-Meldingsprotokoll som matrikkelklient må støtte er ```no.ks.fiks.matrikkelfoering.v2```
-
-Fiks-IO har støtte for headere på meldinger. For å markere en melding som unik skal man sette headeren 'klientMeldingId' med en unik id. Men denne id'en skal brukes igjen for alle meldinger som forsøkes på nytt. 
-Dette er for at mottaker skal kunne se at dette er en melding som har vært forsøkt tidligere og kan håndtere meldingen korrekt. Se kode eksempel lenger nede for hvordan man setter 'klientMeldingId'. 
-
-### Meldinger
-
-**Fra eByggesak/fagsystem:**
-
-|    Type     |     Navn    |  Skjema    |
-| ----------- | ----------- |----------- |
-| Grunnlag til matrikkelføring    | `no.ks.fiks.matrikkelfoering.v2.grunnlag`       | [Datamodell matrikkelfoeringv2.xsd](/files/matrikkelfoeringv2.xsd) |
-| Forespørsel om status    | `no.ks.fiks.matrikkelfoering.v2.status`       | [Datamodell matrikkelfoeringstatusv2.xsd](/files/matrikkelfoeringstatusv2.xsd) |
-
-**Fra matrikkelklienter:**
-
-|    Type     |     Navn    |  Skjema    |
-| ----------- | ----------- |----------- |
-| Mottak vellykket | `no.ks.fiks.matrikkelfoering.v2.mottatt` | Ingen payload |
-| Mottak feilet | `no.ks.fiks.matrikkelfoering.v2.ugyldigforespoersel` | <skjema kommer> |
-| Kvittering på føring i matrikkelen | `no.ks.fiks.matrikkelfoering.v2.kvittering` | [Datamodell kvitteringmatrikkelfoeringv2.xsd](/files/kvitteringmatrikkelfoeringv2.xsd) |
-| Svar på forespørsel om status | `no.ks.fiks.matrikkelfoering.v2.statussvar` | [Datamodell matrikkelfoeringstatussvarv2.xsd](/files/matrikkelfoeringstatussvarv2.xsd) |
-
-## Datamodell for meldinger
-![fiks_matrikkelfoering_datamodell_grunnlag](/images/datamodell_grunnlag.png "Matrikkelføring datamodell grunnlag")
-
-```no.ks.fiks.matrikkelfoering.v2.grunnlag``` [Datamodell matrikkelfoeringv2.xsd](/files/matrikkelfoeringv2.xsd)
-
-![fiks_matrikkelfoering_datamodell_kvittering](/images/datamodell_kvittering.png "Matrikkelføring datamodell kvittering")
-
-```no.ks.fiks.matrikkelfoering.v2.kvittering``` [Datamodell kvitteringmatrikkelfoeringv2.xsd](/files/kvitteringmatrikkelfoeringv2.xsd)
-
 ## Overføring av filer
+
+Meldingen `no.ks.fiks.matrikkelfoering.v2.grunnlag` vil  inneholde en **byggesak.xml** fil som er matrikkelføringen, eventuelle vedlegg og en **index.json** fil som beskriver innholdet i hele meldingen.
+Filen **index.json** har følgende struktur:
+
+```json
+[
+  {
+    "dokumenttype": "Byggesak", # Dokumenttype fra Arkivlett - Se tabell 
+    "tittel": "Underlag for matrikkelføring", 
+    "dokumentnummer": 1, # Dette tilsvarer index for denne filen i payloads for Fiks IO meldingen 
+    "filnavn": "byggesak.xml" # Filnavn i Fiks IO meldingen
+  },
+  {
+    "dokumenttype": "KART", # Dokumenttype fra Arkivlett - Se tabell 
+    "tittel": "Situasjonsplan",
+    "dokumentnummer": 2, # Dette tilsvarer index for denne filen i payloads for Fiks IO meldingen
+    "filnavn": "DokSitplan.pdf" # Filnavn i Fiks IO meldingen
+  },
+]
+```
 
 Vedleggstyper fra Fellestjenester bygg(FtB) som brukes i overføringen ref https://dibk.atlassian.net/wiki/spaces/FB/pages/270139400/Vedlegg
 
@@ -202,7 +226,7 @@ Hvis matrikkelfører finner ut at en melding skal registreres ved bruk av en ann
 ## Eksempel 1 - viser eksempel på en nivå 1 melding
 
 Kodeeksempel på sending av melding med grunnlag for matrikkelføring. 
-Fiks-IO klienten støtter å sette egne headere og som tidligere nevnt skal 'klientMeldingId' settes som parameter slik at den komme med i headeren.
+Fiks-IO klienten støtter å sette egne headere og som tidligere nevnt skal `klientMeldingId` settes som parameter slik at den komme med i headeren.
 
 ```csharp
 var messageRequest = new MeldingRequest(
