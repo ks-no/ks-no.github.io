@@ -21,10 +21,9 @@ Aktuell matrikkelklient må aktiveres for å kunne svare med meldinger på meldi
 Meldingsprotokoll som matrikkelklient må støtte er ```no.ks.fiks.matrikkelfoering.v2```
 
 Hver melding i Fiks IO består av en zip fil ASIC-E som inneholder protokollmeldingen (f.eks. byggesak.xml eller status.xml) i xml format og eventuelt tilhørende vedlegg.
-For protokollmeldingen `no.ks.fiks.matrikkelfoering.v2.grunnlag` skal det følge med en `indeks.json` fil som beskriver hva fil er i Fiks IO meldingen. Se avsnittet om "Overføring av filer" med tilhørende tabell lenger nede for forklaring på sammenhengen mellom filer og `indeks.json`.
+For protokollmeldingen `no.ks.fiks.matrikkelfoering.v2.grunnlag` skal det følge med en `index.json` fil som beskriver hva hver enkelt fil er i Fiks IO meldingen. Se avsnittet om "Overføring av filer" med tilhørende tabell lenger nede for forklaring på sammenhengen mellom filer og `index.json`.
 
 Hver melding kan ikke overskride 5GB totalt, med protokollmelding og vedlegg.
-
 
 Fiks-IO har støtte for headere på meldinger. For å markere en melding som unik skal man sette headeren `klientMeldingId` med en unik id. Denne id'en skal brukes igjen for alle meldinger som forsøkes på nytt. 
 Dette er for at mottaker skal kunne se at dette er en melding som har vært forsøkt tidligere og kan håndtere meldingen korrekt. Se kode eksempel lenger nede for hvordan man setter `klientMeldingId`. 
@@ -35,7 +34,7 @@ Dette er for at mottaker skal kunne se at dette er en melding som har vært fors
 
 |    Type     |     Navn    |   Skjema    |   Filer    |
 | ----------- | ----------- |----------- |----------- |
-| Grunnlag til matrikkelføring    | `no.ks.fiks.matrikkelfoering.v2.grunnlag`       | [no.ks.fiks.matrikkelfoering.v2.grunnlag.xsd](https://github.com/ks-no/fiks-matrikkelfoering-specification/blob/main/Schema/V2/no.ks.fiks.matrikkelfoering.v2.grunnlag.xsd) | `byggesak.xml`, `indeks.json` + evt vedlegg |
+| Grunnlag til matrikkelføring    | `no.ks.fiks.matrikkelfoering.v2.grunnlag`       | [no.ks.fiks.matrikkelfoering.v2.grunnlag.xsd](https://github.com/ks-no/fiks-matrikkelfoering-specification/blob/main/Schema/V2/no.ks.fiks.matrikkelfoering.v2.grunnlag.xsd) | `byggesak.xml`, `index.json` + evt vedlegg |
 | Forespørsel om status    | `no.ks.fiks.matrikkelfoering.v2.status`       | [no.ks.fiks.matrikkelfoering.v2.status.xsd](https://github.com/ks-no/fiks-matrikkelfoering-specification/blob/main/Schema/V2/no.ks.fiks.matrikkelfoering.v2.status.xsd) | `status.xml` |
 
 **Fra matrikkelklienter:**
@@ -66,8 +65,7 @@ Dette er for at mottaker skal kunne se at dette er en melding som har vært fors
 - Før vedtaket fattes, kontrollerer eByggesak at saken har tilstrekkelig data og tegninger til matrikkelføringen.
 - Når vedtak er fattet i eByggesak, kontrollerer eByggesak om tiltaket skal matrikkelføres.
 - Hvis tiltaket (tiltakene) skal matrikkelføres, bygger eByggesak opp en datastruktur for matrikkelføringen som består av data fra saksbehandlingen, matrikkelinformasjon og tegninger som ligger til grunn for vedtaket.
-- eByggesak sender deretter denne datastrukturen og tegningene til Matrikkelklienten ved hjelp av
-  Fiks IO.
+- eByggesak sender deretter denne datastrukturen og tegningene til Matrikkelklienten ved hjelp av Fiks IO.
 - Matrikkelklienten mottar datastruktur og tegninger ved hjelp av Fiks IO.
 - Matrikkelfører fører tiltaket i Matrikkel / FKB. Her skisseres det også muligheter for at Matrikkelklienten basert på et regelsett kan matrikkelføre enkelte tiltak automatisk.
 - Når tiltaket er matrikkelført / ført i FKB, sender Matrikkelklienten en kvitteringsmelding tilbake til eByggesak via Fiks IO.
@@ -129,26 +127,25 @@ Her følger det med en **statusKvittering**. Den vil gjenspeile **svarMedKvitter
 
 ## Overføring av filer
 
-Meldingen `no.ks.fiks.matrikkelfoering.v2.grunnlag` vil  inneholde en **byggesak.xml** fil som er matrikkelføringen, eventuelle vedlegg og en **indeks.json** fil som beskriver innholdet i hele meldingen.
-Filen **indeks.json** har følgende struktur:
+Meldingen `no.ks.fiks.matrikkelfoering.v2.grunnlag` vil  inneholde en **byggesak.xml** fil som er matrikkelføringen, eventuelle vedlegg og en **index.json** fil som beskriver innholdet i hele meldingen.
+Filen **index.json** har følgende struktur:
 
 ```json
 [
   {
     "dokumenttype": "Byggesak", # Dokumenttype fra Arkivlett - Se tabell 
     "tittel": "Underlag for matrikkelføring", 
-    "dokumentnummer": 1, # Dette tilsvarer indeks for denne filen i payloads for Fiks IO meldingen 
+    "dokumentnummer": 1, # Dette tilsvarer index for denne filen i payloads for Fiks IO meldingen 
     "filnavn": "byggesak.xml" # Filnavn i Fiks IO meldingen
   },
   {
     "dokumenttype": "KART", # Dokumenttype fra Arkivlett - Se tabell 
     "tittel": "Situasjonsplan",
-    "dokumentnummer": 2, # Dette tilsvarer indeks for denne filen i payloads for Fiks IO meldingen
+    "dokumentnummer": 2, # Dette tilsvarer index for denne filen i payloads for Fiks IO meldingen
     "filnavn": "DokSitplan.pdf" # Filnavn i Fiks IO meldingen
   },
 ]
 ```
-
 
 Vedleggstyper fra Fellestjenester bygg(FtB) som brukes i overføringen ref https://dibk.atlassian.net/wiki/spaces/FB/pages/270139400/Vedlegg
 
@@ -239,7 +236,7 @@ var messageRequest = new MeldingRequest(
             meldingType: "no.ks.fiks.matrikkelfoering.v2.grunnlag"); 
 
 List<IPayload> payloads = new List<IPayload>();
-payloads.Add(new StringPayload(jsonPayload, "indeks.json"));
+payloads.Add(new StringPayload(jsonPayload, "index.json"));
 payloads.Add(new StringPayload(payload, "byggesak.xml"));
 payloads.Add(new FilePayload("DokSitplan.pdf"));
 payloads.Add(new FilePayload("DokTegning.pdf"));
