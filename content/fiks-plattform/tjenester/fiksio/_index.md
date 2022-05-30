@@ -91,7 +91,7 @@ Hvis mottaker er nede og ikke leser meldinger og første melding har ttl på 2 t
 
 Disse meldingene inneholder ingen body, men kun headere deriblant `svar-til` som vil være en referanse til den opprinnelige meldingen (melding-id), `svar-til-type` som inneholder den originale typen på meldingen som har utløpt.
 
-__NB! Siden utløp av meldinger ikke vil fungere godt om det ligger flere meldinger på kø vil denne funksjonaliteten fases ut snart. I stedet vil man få en [serverfeil](#Serverfeil) når en melding er avvist tre ganger__
+__NB! Siden utløp av meldinger ikke vil fungere godt om det ligger flere meldinger på kø vil denne funksjonaliteten fases ut snart. I stedet vil man få en [serverfeil](#serverfeil) når en melding er avvist tre ganger__
 
 #### Ugyldig forespørsel
 Hvis noe er galt med forespørselen, altså den er ugyldig, så skal mottaker sende en `no.ks.fiks.kvittering.ugyldigforespoersel.v1` tilbake til sender. Json [schema](https://github.com/ks-no/fiks-io-client-dotnet/blob/master/KS.Fiks.IO.Client/Schema/no.ks.fiks.kvittering.ugyldigforespoersel.v1.schema.json) følger med i .net pakken for Fiks-IO-client.
