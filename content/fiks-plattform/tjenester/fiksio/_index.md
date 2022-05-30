@@ -85,11 +85,13 @@ Ta kontakt med fiks@ks.no om du ønsker å etablere eller gjøre endringer i en 
 
 ### Standardmeldingstyper
 
-#### Tidsavbrudd
+#### Tidsavbrudd (under utfasing)
 I tillegg til meldinger definert i protokollkatalogen det er også definert en standard meldingstype som forteller at meldingens ttl har utløpt uten at mottaker har mottat den. Meldingstypen er `no.ks.fiks.kvittering.tidsavbrudd`. Denne meldingen blir sendt til avsender når originalmeldingen kommer fremst i køen til mottaker. Dette betyr at meldingen ikke trenger å komme når ttl utløper men kan komme en stund senere.
 Hvis mottaker er nede og ikke leser meldinger og første melding har ttl på 2 timer. Vil ikke meldinger bak denne trigge tidsavbrudd melding før 2 timer meldingen som er først utløper. 
 
 Disse meldingene inneholder ingen body, men kun headere deriblant `svar-til` som vil være en referanse til den opprinnelige meldingen (melding-id), `svar-til-type` som inneholder den originale typen på meldingen som har utløpt.
+
+__NB! Siden utløp av meldinger ikke vil fungere godt om det ligger flere meldinger på kø vil denne funksjonaliteten fases ut snart. I stedet vil man få en [serverfeil](#Serverfeil) når en melding er avvist tre ganger__
 
 #### Ugyldig forespørsel
 Hvis noe er galt med forespørselen, altså den er ugyldig, så skal mottaker sende en `no.ks.fiks.kvittering.ugyldigforespoersel.v1` tilbake til sender. Json [schema](https://github.com/ks-no/fiks-io-client-dotnet/blob/master/KS.Fiks.IO.Client/Schema/no.ks.fiks.kvittering.ugyldigforespoersel.v1.schema.json) følger med i .net pakken for Fiks-IO-client.
