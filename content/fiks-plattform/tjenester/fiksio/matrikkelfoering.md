@@ -133,13 +133,13 @@ Filen **index.json** har følgende struktur:
 ```javascript
 [
   {
-    "dokumenttype": "Byggesak", // Dokumenttype fra Arkivlett - Se tabell nedenfor
+    "dokumenttype": "Byggesak", // Vedleggstype - Se eksempel tabell nedenfor
     "tittel": "Underlag for matrikkelføring", 
     "dokumentnummer": 1, // Dette tilsvarer index for denne filen i payloads for Fiks IO meldingen 
     "filnavn": "byggesak.xml" // Filnavn i Fiks IO meldingen
   },
   {
-    "dokumenttype": "KART", // Dokumenttype fra Arkivlett - Se tabell nedenfor
+    "dokumenttype": "Situasjonsplan", // Vedleggstype - Se eksempel tabell nedenfor
     "tittel": "Situasjonsplan",
     "dokumentnummer": 2, // Dette tilsvarer index for denne filen i payloads for Fiks IO meldingen
     "filnavn": "DokSitplan.pdf" // Filnavn i Fiks IO meldingen
@@ -147,27 +147,26 @@ Filen **index.json** har følgende struktur:
 ]
 ```
 
-Vedleggstyper fra Fellestjenester bygg(FtB) som brukes i overføringen ref https://dibk.atlassian.net/wiki/spaces/FB/pages/270139400/Vedlegg
-
-Dokumenttyper ihht Arkivlett anbefales https://www.ks.no/fagomrader/digitalisering/felleslosninger/verktoykasse-plan--og-byggesak/enklere-tilgang-til-kommunale-byggesaksarkiv/
+Vedleggstyper er definert [her](https://register.geonorge.no/kodelister/byggesoknad/vedlegg-og-underskjema/vedlegg) på Geonorge.
 
 
-| Tittel        | Vedleggstype(FtB) | Dokumenttype fra Arkivlett  |
-| ------------- |-------------------| ----------------------------|
-| Situasjonsplan      | Situasjonsplan | KART |
-| Tegning eksisterende plan | TegningEksisterendePlan | TEGNING |
-| Tegning ny plan | TegningNyPlan | TEGNING |
-|  Tegning eksisterende snitt | TegningEksisterendeSnitt | TEGNING |
-|  Tegning nytt snitt | TegningNyttSnitt | TEGNING |
-|  Tegning eksisterende fasade | TegningEksisterendeFasade | TEGNING |
-|  Tegning eksisterende snitt | TegningEksisterendeSnitt | TEGNING |
-|  Tegning ny fasade | TegningNyFasade | TEGNING |
-|  ByggesaksBIM | ByggesaksBIM | TEGNING |
-|  Tegning eksisterende snitt | TegningEksisterendeSnitt | TEGNING |
-|  Tegning eksisterende snitt | TegningEksisterendeSnitt | TEGNING |
-|  Matrikkelføring XML | Byggesak | Byggesak |
+Her er noen eksempler hentet derfra:
 
-I tillegg til Arkivlett dokumenttyper benyttes dokumenttype Byggesak for overføring av datamodell beskrevet i dette dokumentet.
+| Tittel        | Vedleggstype | 
+| ------------- |--------------|
+| Situasjonsplan      | Situasjonsplan |
+| Tegning eksisterende plan | TegningEksisterendePlan |
+| Tegning ny plan | TegningNyPlan |
+|  Tegning eksisterende snitt | TegningEksisterendeSnitt |
+|  Tegning nytt snitt | TegningNyttSnitt |
+|  Tegning eksisterende fasade | TegningEksisterendeFasade |
+|  Tegning eksisterende snitt | TegningEksisterendeSnitt |
+|  Tegning ny fasade | TegningNyFasade |
+|  ByggesaksBIM | ByggesaksBIM |
+|  Tegning eksisterende snitt | TegningEksisterendeSnitt |
+|  Tegning eksisterende snitt | TegningEksisterendeSnitt |
+|  Matrikkelføring XML | Byggesak |
+
 
 ## Nivå på grunnlaget til matrikkelføring
 Det er definert 4 trappetrinn/nivå i løsningskonseptet som illustrerer hvor godt et tiltak er tilrettelagt for effektiv
@@ -204,16 +203,7 @@ Nivå 4:
 - Overføringen inneholder i tillegg digital situasjonsplan.
 - Gir Matrikkelfører informasjon om delelinjer / grensejusteringer ved Delesaker.
 
-## Oppslag på kontoer som støtter meldingsprotokoll for matrikkelføring
-For å finne hvilke konto en skal sende meldinger til så kan en slå opp dette i adresse katalogen til FIKS IO
 
-```csharp
-var kontoliste = client.Lookup(new LookupRequest("ORG_NO.987654321", "no.ks.fiks.matrikkelfoering.v2", 3));
-```
-
-```csharp
-var kontoliste = client.Lookup(new LookupRequest("KOMM.3817", "no.ks.fiks.matrikkelfoering.v2", 3));
-```
 ## Videresending av grunnlag som skal føres i en annen matrikkelklient
 
 Hvis matrikkelfører finner ut at en melding skal registreres ved bruk av en annen matrikkelklient så kan denne meldingen videresendes. Det skal da brukes egne headere for å angi hvilken opprinnelig konto og hvilken opprinnelig meldingsid som skal besvares med mottatt melding, evt feilmelding og kvitteringsmelding. 
