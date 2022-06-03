@@ -245,13 +245,13 @@ index.json innhold
     "filnavn": "byggesak.xml"
   },
   {
-    "dokumenttype": "KART",
+    "dokumenttype": "Situasjonsplan",
     "tittel": "Situasjonsplan",
     "dokumentnummer": 2,
     "filnavn": "DokSitplan.pdf"
   },
   {
-    "dokumenttype": "TEGNING",
+    "dokumenttype": "TegningNyFasade",
     "tittel": "Tegning ny fasade",
     "dokumentnummer": 3,
     "filnavn": "DokTegning.pdf"
