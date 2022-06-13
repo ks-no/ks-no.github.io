@@ -218,11 +218,11 @@ Altså vil de ha en *no.ks.fiks.arkiv.v1.feilmelding* prefix for denne protokoll
 
 ### Feilmeldingstyper
 
-| Type                                | Navn                                                               |
-|-------------------------------------|--------------------------------------------------------------------|
-| Ugyldigforespørsel                  | `no.ks.fiks.arkiv.v1.feilmelding.ugyldigforespørsel`               |
-| Mottatt melding                     | `no.ks.fiks.arkiv.v1.feilmelding.serverfeil`                       |
-| Arkivmelding oppdatering kvittering | `no.ks.fiks.arkiv.v1.feilmelding.` |
+| Type               | Navn                                                 |
+|--------------------|------------------------------------------------------|
+| Ugyldigforespørsel | `no.ks.fiks.arkiv.v1.feilmelding.ugyldigforespørsel` |
+| Serverfeil         | `no.ks.fiks.arkiv.v1.feilmelding.serverfeil`         |
+| Ikkefunnet         | `no.ks.fiks.arkiv.v1.feilmelding.ikkefunnet`         |
 
 
 ### Ugyldig forespørsel
