@@ -22,7 +22,10 @@
     "name" : "varslingKonfigurasjon",
     "description" : "API for å håndtere funksjonalitet vedr. konfigurasjon av varsling"
   }, {
-    "name" : "Varsling",
+    "name" : "Sms",
+    "description" : "API for å håndtere funksjonalitet for sending av sms og epost "
+  }, {
+    "name" : "Utsending",
     "description" : "API for å håndtere funksjonalitet for sending av sms og epost "
   } ],
   "paths" : {
@@ -691,9 +694,133 @@
         }
       }
     },
-    "/varsling/api/v1/send/{kontoId}/{utsendelseId}/xls/mottakere/duplikat" : {
+    "/varsling/api/v1/sms/{kontoId}/sms/{smsId}" : {
       "get" : {
-        "tags" : [ "Varsling" ],
+        "tags" : [ "Sms" ],
+        "description" : "Henter status på sms",
+        "operationId" : "hentStatus",
+        "parameters" : [ {
+          "name" : "kontoId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        }, {
+          "name" : "smsId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Status for sms",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/SmsRespons"
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Ingen tilgang",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Ingen sms",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Systemfeil",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/varsling/api/v1/sms/{kontoId}/sms" : {
+      "post" : {
+        "tags" : [ "Sms" ],
+        "description" : "Sender sms",
+        "operationId" : "sendSms",
+        "parameters" : [ {
+          "name" : "kontoId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/SmsMeldingRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Send sms",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/SmsId"
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Ingen tilgang",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Systemfeil",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/varsling/api/v1/utsending/{kontoId}/{utsendelseId}/xls/mottakere/duplikat" : {
+      "get" : {
+        "tags" : [ "Utsending" ],
         "description" : "Henter duplikate mottakere XLS",
         "operationId" : "hentDuplikateMottakereXls",
         "parameters" : [ {
@@ -730,9 +857,9 @@
         }
       }
     },
-    "/varsling/api/v1/send/xls/mottakere/mal" : {
+    "/varsling/api/v1/utsending/xls/mottakere/mal" : {
       "get" : {
-        "tags" : [ "Varsling" ],
+        "tags" : [ "Utsending" ],
         "description" : "Henter XLS mal for sms mottakere",
         "operationId" : "hentMottakerXlsMal",
         "responses" : {
@@ -752,9 +879,9 @@
         }
       }
     },
-    "/varsling/api/v1/send/{kontoId}/{utsendelseId}/mottakere" : {
+    "/varsling/api/v1/utsending/{kontoId}/{utsendelseId}/mottakere" : {
       "get" : {
-        "tags" : [ "Varsling" ],
+        "tags" : [ "Utsending" ],
         "description" : "Henter mottakere på utsendelse",
         "operationId" : "hentMottakere",
         "parameters" : [ {
@@ -821,7 +948,7 @@
         }
       },
       "put" : {
-        "tags" : [ "Varsling" ],
+        "tags" : [ "Utsending" ],
         "description" : "Legger til mottaker på utsendelse",
         "operationId" : "leggTilMottaker",
         "parameters" : [ {
@@ -894,75 +1021,9 @@
         }
       }
     },
-    "/varsling/api/v1/send/{kontoId}/sms/{smsId}" : {
+    "/varsling/api/v1/utsending/{kontoId}/{utsendelseId}" : {
       "get" : {
-        "tags" : [ "Varsling" ],
-        "description" : "Henter status på sms",
-        "operationId" : "hentStatus",
-        "parameters" : [ {
-          "name" : "kontoId",
-          "in" : "path",
-          "required" : true,
-          "schema" : {
-            "type" : "string",
-            "format" : "uuid"
-          }
-        }, {
-          "name" : "smsId",
-          "in" : "path",
-          "required" : true,
-          "schema" : {
-            "type" : "string",
-            "format" : "uuid"
-          }
-        } ],
-        "responses" : {
-          "200" : {
-            "description" : "Status for sms",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/SmsRespons"
-                }
-              }
-            }
-          },
-          "403" : {
-            "description" : "Ingen tilgang",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/ErrorMessage"
-                }
-              }
-            }
-          },
-          "404" : {
-            "description" : "Ingen sms",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/ErrorMessage"
-                }
-              }
-            }
-          },
-          "500" : {
-            "description" : "Systemfeil",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/ErrorMessage"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/varsling/api/v1/send/{kontoId}/{utsendelseId}" : {
-      "get" : {
-        "tags" : [ "Varsling" ],
+        "tags" : [ "Utsending" ],
         "description" : "Henter utsendelse",
         "operationId" : "hentUtsendelse",
         "parameters" : [ {
@@ -1026,9 +1087,9 @@
         }
       },
       "put" : {
-        "tags" : [ "Varsling" ],
+        "tags" : [ "Utsending" ],
         "description" : "Oppdaterer sms tekst på utsendelse",
-        "operationId" : "oppdaterSmsTekst",
+        "operationId" : "oppdaterSmsTekstForUtsendelse",
         "parameters" : [ {
           "name" : "kontoId",
           "in" : "path",
@@ -1079,9 +1140,9 @@
         }
       }
     },
-    "/varsling/api/v1/send/{kontoId}/{utsendelseId}/xls/mottakere" : {
+    "/varsling/api/v1/utsending/{kontoId}/{utsendelseId}/xls/mottakere" : {
       "post" : {
-        "tags" : [ "Varsling" ],
+        "tags" : [ "Utsending" ],
         "description" : "Laster opp mottakere fra xls",
         "operationId" : "lastOppMottakereFraXls",
         "parameters" : [ {
@@ -1118,9 +1179,9 @@
         }
       }
     },
-    "/varsling/api/v1/send/{kontoId}" : {
+    "/varsling/api/v1/utsending/{kontoId}" : {
       "post" : {
-        "tags" : [ "Varsling" ],
+        "tags" : [ "Utsending" ],
         "description" : "Oppretter utsendelse",
         "operationId" : "opprettUtsendelse",
         "parameters" : [ {
@@ -1176,9 +1237,9 @@
         }
       }
     },
-    "/varsling/api/v1/send/{kontoId}/mottakere" : {
+    "/varsling/api/v1/utsending/{kontoId}/mottakere" : {
       "post" : {
-        "tags" : [ "Varsling" ],
+        "tags" : [ "Utsending" ],
         "description" : "Oppretter utsendelse med liste av mottakere",
         "operationId" : "opprettUtsendelseMedListeAvMottakere",
         "parameters" : [ {
@@ -1246,67 +1307,9 @@
         }
       }
     },
-    "/varsling/api/v1/send/{kontoId}/sms" : {
-      "post" : {
-        "tags" : [ "Varsling" ],
-        "description" : "Sender sms",
-        "operationId" : "sendSms",
-        "parameters" : [ {
-          "name" : "kontoId",
-          "in" : "path",
-          "required" : true,
-          "schema" : {
-            "type" : "string",
-            "format" : "uuid"
-          }
-        } ],
-        "requestBody" : {
-          "content" : {
-            "application/json" : {
-              "schema" : {
-                "$ref" : "#/components/schemas/SmsMeldingRequest"
-              }
-            }
-          },
-          "required" : true
-        },
-        "responses" : {
-          "200" : {
-            "description" : "Send sms",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/SmsId"
-                }
-              }
-            }
-          },
-          "403" : {
-            "description" : "Ingen tilgang",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/ErrorMessage"
-                }
-              }
-            }
-          },
-          "500" : {
-            "description" : "Systemfeil",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/ErrorMessage"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/varsling/api/v1/send/{kontoId}/{utsendelseId}/mottakere/duplikater" : {
+    "/varsling/api/v1/utsending/{kontoId}/{utsendelseId}/mottakere/duplikater" : {
       "delete" : {
-        "tags" : [ "Varsling" ],
+        "tags" : [ "Utsending" ],
         "description" : "Slett duplikate mottakere",
         "operationId" : "slettDuplikateMottakere",
         "parameters" : [ {
@@ -1343,9 +1346,9 @@
         }
       }
     },
-    "/varsling/api/v1/send/{kontoId}/{utsendelseId}/mottakere/ugyldigtlf" : {
+    "/varsling/api/v1/utsending/{kontoId}/{utsendelseId}/mottakere/ugyldigtlf" : {
       "delete" : {
-        "tags" : [ "Varsling" ],
+        "tags" : [ "Utsending" ],
         "description" : "Slett mottakere uten telefonnummer",
         "operationId" : "slettMottakereMedUgyldigTelefonnummer",
         "parameters" : [ {
@@ -1382,9 +1385,9 @@
         }
       }
     },
-    "/varsling/api/v1/send/{kontoId}/{utsendelseId}/mottakere/utentlf" : {
+    "/varsling/api/v1/utsending/{kontoId}/{utsendelseId}/mottakere/utentlf" : {
       "delete" : {
-        "tags" : [ "Varsling" ],
+        "tags" : [ "Utsending" ],
         "description" : "Slett mottakere uten telefonnummer",
         "operationId" : "slettMottakereUtenTelefonnummer",
         "parameters" : [ {
@@ -1573,6 +1576,54 @@
           }
         }
       },
+      "SmsRespons" : {
+        "required" : [ "id", "status" ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string",
+            "description" : "Id på meldingen",
+            "format" : "uuid"
+          },
+          "status" : {
+            "type" : "string",
+            "description" : "Status på sms meldingen",
+            "enum" : [ "MOTTATT", "SENDT", "IKKE_SENDT", "IKKE_LEVERT", "LEVERT", "UKJENT" ]
+          }
+        }
+      },
+      "SmsId" : {
+        "required" : [ "id" ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string",
+            "description" : "Id på sms melding",
+            "format" : "uuid"
+          }
+        }
+      },
+      "SmsMeldingRequest" : {
+        "required" : [ "tekst" ],
+        "type" : "object",
+        "properties" : {
+          "tekst" : {
+            "maxLength" : 1600,
+            "minLength" : 0,
+            "type" : "string",
+            "description" : "Sms tekst. Max 1600 tegn"
+          },
+          "fnr" : {
+            "pattern" : "^[0-9]{11}$",
+            "type" : "string",
+            "description" : "Fødselsnummer til mottaker"
+          },
+          "telefonnummer" : {
+            "type" : "string",
+            "description" : "Telefonnummer til mottaker"
+          }
+        }
+      },
       "MottakerRespons" : {
         "required" : [ "leveranseStatusSms", "telefonnummerStatus", "utsendelseId" ],
         "type" : "object",
@@ -1603,22 +1654,6 @@
           }
         }
       },
-      "SmsRespons" : {
-        "required" : [ "id", "status" ],
-        "type" : "object",
-        "properties" : {
-          "id" : {
-            "type" : "string",
-            "description" : "Id på meldingen",
-            "format" : "uuid"
-          },
-          "status" : {
-            "type" : "string",
-            "description" : "Status på sms meldingen",
-            "enum" : [ "MOTTATT", "SENDT", "IKKE_SENDT", "IKKE_LEVERT", "LEVERT", "UKJENT" ]
-          }
-        }
-      },
       "UtsendelseRespons" : {
         "required" : [ "kontoId", "krrBehandlet", "smsTekst", "status", "utsendelseId" ],
         "type" : "object",
@@ -1644,7 +1679,7 @@
           "status" : {
             "type" : "string",
             "description" : "Status på utsendelsen",
-            "enum" : [ "OPPRETTET", "STARTET", "STOPPET", "FERDIG", "FEIL" ]
+            "enum" : [ "STARTET", "STOPPET", "FERDIG", "OPPRETTET" ]
           }
         }
       },
@@ -1680,38 +1715,6 @@
             "type" : "string",
             "description" : "Id til utsendelse",
             "format" : "uuid"
-          }
-        }
-      },
-      "SmsId" : {
-        "required" : [ "id" ],
-        "type" : "object",
-        "properties" : {
-          "id" : {
-            "type" : "string",
-            "description" : "Id på sms melding",
-            "format" : "uuid"
-          }
-        }
-      },
-      "SmsMeldingRequest" : {
-        "required" : [ "tekst" ],
-        "type" : "object",
-        "properties" : {
-          "tekst" : {
-            "maxLength" : 1600,
-            "minLength" : 0,
-            "type" : "string",
-            "description" : "Sms tekst. Max 1600 tegn"
-          },
-          "fnr" : {
-            "pattern" : "^[0-9]{11}$",
-            "type" : "string",
-            "description" : "Fødselsnummer til mottaker"
-          },
-          "telefonnummer" : {
-            "type" : "string",
-            "description" : "Telefonnummer til mottaker"
           }
         }
       }
