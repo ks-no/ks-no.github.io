@@ -71,6 +71,48 @@
         }
       }
     },
+    "/varsling/deliveryreport/batch" : {
+      "post" : {
+        "tags" : [ "varslingDeliveryReport" ],
+        "description" : "Mottar delivery report",
+        "operationId" : "receiveDeliveryReportForBatch",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/DeliveryReport"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Motta delivery report for sms på batch"
+          },
+          "401" : {
+            "description" : "Ingen tilgang",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Systemfeil",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/varsling/api/v1/konfigurasjon/{fiksOrgId}/kontoer/{kontoId}/aktiver" : {
       "put" : {
         "tags" : [ "varslingKonfigurasjon" ],
@@ -364,7 +406,7 @@
       },
       "post" : {
         "tags" : [ "varslingKonfigurasjon" ],
-        "description" : "Oppretter konto under varslingstjenesten",
+        "description" : "Oppretter konto under meldingstjenesten",
         "operationId" : "opprettKonto",
         "parameters" : [ {
           "name" : "fiksOrgId",
@@ -387,7 +429,7 @@
         },
         "responses" : {
           "201" : {
-            "description" : "Opprett konto under varslingtjeneste",
+            "description" : "Opprett konto for varsling",
             "content" : {
               "application/json" : {
                 "schema" : {
@@ -818,6 +860,110 @@
         }
       }
     },
+    "/varsling/api/v1/utsending/{kontoId}/{utsendelseId}/avbryt" : {
+      "put" : {
+        "tags" : [ "Utsending" ],
+        "description" : "Avbryter utsendelse",
+        "operationId" : "avbrytUtsendelse",
+        "parameters" : [ {
+          "name" : "kontoId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        }, {
+          "name" : "utsendelseId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Avbryt utsendelse"
+          },
+          "403" : {
+            "description" : "Ingen tilgang",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Systemfeil",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/varsling/api/v1/utsending/{kontoId}/{utsendelseId}/avsender" : {
+      "put" : {
+        "tags" : [ "Utsending" ],
+        "description" : "Endrer avsender på utsendelse",
+        "operationId" : "endreAvsender",
+        "parameters" : [ {
+          "name" : "kontoId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        }, {
+          "name" : "utsendelseId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/UpdateAvsenderRequest"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Endre avsender på utsendelse",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/UtsendelseRespons"
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Systemfeil",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/varsling/api/v1/utsending/{kontoId}/{utsendelseId}/xls/mottakere/duplikat" : {
       "get" : {
         "tags" : [ "Utsending" ],
@@ -978,8 +1124,8 @@
           }
         },
         "responses" : {
-          "204" : {
-            "description" : "Legger til mottaker på utsendelse",
+          "200" : {
+            "description" : "Legg til mottaker på utsendelse",
             "content" : {
               "application/json" : {
                 "schema" : {
@@ -1307,6 +1453,55 @@
         }
       }
     },
+    "/varsling/api/v1/utsending/{kontoId}/{utsendelseId}/send" : {
+      "post" : {
+        "tags" : [ "Utsending" ],
+        "description" : "Sender utsendelse",
+        "operationId" : "sendUtsendelse",
+        "parameters" : [ {
+          "name" : "kontoId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        }, {
+          "name" : "utsendelseId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Send utsendelse"
+          },
+          "403" : {
+            "description" : "Ingen tilgang",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Systemfeil",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/varsling/api/v1/utsending/{kontoId}/{utsendelseId}/mottakere/duplikater" : {
       "delete" : {
         "tags" : [ "Utsending" ],
@@ -1493,7 +1688,7 @@
         }
       },
       "KontoRespons" : {
-        "required" : [ "aktivert", "avsender", "fiksOrgId", "kontoId", "navn" ],
+        "required" : [ "aktivert", "avsender", "fiksOrgId", "kontoId", "navn", "tjeneste" ],
         "type" : "object",
         "properties" : {
           "kontoId" : {
@@ -1567,6 +1762,8 @@
             "description" : "Navn eller telefonnummer til avsender."
           },
           "konteringskode" : {
+            "maxLength" : 20,
+            "minLength" : 0,
             "type" : "string",
             "description" : "Avsender konteringskode"
           },
@@ -1588,7 +1785,7 @@
           "status" : {
             "type" : "string",
             "description" : "Status på sms meldingen",
-            "enum" : [ "MOTTATT", "SENDT", "IKKE_SENDT", "IKKE_LEVERT", "LEVERT", "UKJENT" ]
+            "enum" : [ "OPPRETTET", "SENDT", "IKKE_SENDT", "IKKE_LEVERT", "LEVERT", "UKJENT" ]
           }
         }
       },
@@ -1624,6 +1821,51 @@
           }
         }
       },
+      "UtsendelseRespons" : {
+        "required" : [ "avsender", "kontoId", "krrBehandlet", "smsTekst", "status", "utsendelseId" ],
+        "type" : "object",
+        "properties" : {
+          "utsendelseId" : {
+            "type" : "string",
+            "description" : "Id på utsendelsen",
+            "format" : "uuid"
+          },
+          "avsender" : {
+            "type" : "string",
+            "description" : "Avsender på utsendelsen"
+          },
+          "kontoId" : {
+            "type" : "string",
+            "description" : "AvsenderId til utsendelse",
+            "format" : "uuid"
+          },
+          "smsTekst" : {
+            "type" : "string",
+            "description" : "Sms tekst til utsendelse"
+          },
+          "krrBehandlet" : {
+            "type" : "boolean",
+            "description" : "Om utsendelsen er ferdig krr behandlet"
+          },
+          "status" : {
+            "type" : "string",
+            "description" : "Status på utsendelsen",
+            "enum" : [ "STARTET", "AVBRUTT", "FERDIG", "OPPRETTET", "KLAR_FOR_UTSENDING" ]
+          }
+        }
+      },
+      "UpdateAvsenderRequest" : {
+        "required" : [ "avsender" ],
+        "type" : "object",
+        "properties" : {
+          "avsender" : {
+            "maxLength" : 11,
+            "minLength" : 2,
+            "type" : "string",
+            "description" : "Avsendernavn"
+          }
+        }
+      },
       "MottakerRespons" : {
         "required" : [ "leveranseStatusSms", "telefonnummerStatus", "utsendelseId" ],
         "type" : "object",
@@ -1651,35 +1893,6 @@
             "type" : "string",
             "description" : "Leveransestatus på sms",
             "enum" : [ "SENDT", "IKKE_SENDT" ]
-          }
-        }
-      },
-      "UtsendelseRespons" : {
-        "required" : [ "kontoId", "krrBehandlet", "smsTekst", "status", "utsendelseId" ],
-        "type" : "object",
-        "properties" : {
-          "utsendelseId" : {
-            "type" : "string",
-            "description" : "Id på utsendelsen",
-            "format" : "uuid"
-          },
-          "kontoId" : {
-            "type" : "string",
-            "description" : "AvsenderId til utsendelse",
-            "format" : "uuid"
-          },
-          "smsTekst" : {
-            "type" : "string",
-            "description" : "Sms tekst til utsendelse"
-          },
-          "krrBehandlet" : {
-            "type" : "boolean",
-            "description" : "Om utsendelsen er ferdig krr behandlet"
-          },
-          "status" : {
-            "type" : "string",
-            "description" : "Status på utsendelsen",
-            "enum" : [ "STARTET", "STOPPET", "FERDIG", "OPPRETTET" ]
           }
         }
       },
