@@ -37,7 +37,7 @@ Se brukerveildeningen i pdf-format her: https://portal.fiks.ks.no/wp-content/upl
 * Reply URL (Assertion Consumer Service URL): https://www.kslaring.no/auth/saml2/sp/saml2-acs.php/www.kslaring.no
 * Logout Url: https://www.kslaring.no/auth/saml2/sp/saml2-logout.php/www.kslaring.no
 ## Innlogging uten fødselsnummer (valgfri identifikator)
-Identifikator blir fortrinnsvis bygget opp slik: <id>@<fiksorgiden>.
+Identifikator blir fortrinnsvis bygget opp slik: "id"@"fiksorgiden".
 Se brukerveildeningen i pdf-format her: https://portal.fiks.ks.no/wp-content/uploads/2022/06/SSO-uten-fodselsnummer-220622.pdf
 Når en ikke bruker fødselsnummer som id på brukeren, vil innlogginger med idporten resultere i en annen bruker.
 Hvis du logger inn med idporten vil du få en bruker som er identifisert med fødselsnummer, hvis du bruker SSO vil du få en bruker som har id <id>@<fiksordid>.
