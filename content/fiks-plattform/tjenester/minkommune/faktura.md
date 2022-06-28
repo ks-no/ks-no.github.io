@@ -1,6 +1,7 @@
 ---
-title: MinSide - Faktura
-date: 2019-04-28
+title: Min kommune - Faktura
+date: 2022-06-28
+aliases: [/fiks-plattform/tjenester/minside/faktura/]
 ---
 
 Faktura består av flere tjenester som sammen lager faktura visningen.
@@ -33,7 +34,7 @@ Dette er under utvikling, enten kan kommentar sendes via eDialog/SvarUT eller vi
 ### Betalingsutsettelse - under utvikling
 Funksjonaliteten skal gi mulighet til å velge betalingsutsettelse på en faktura for innbyggere som ikke kan betale regningen i tide.
 
-Det vil bli laget en protokoll for Fiks IO som vil kunne sende en forespørsel om betalingsutsettelse til fakturasystem, fakturasystem må svare tilbake om det er innvilget eller ikke, innen 10 sekund. Dette skjer mens brukeren venter på minside. 
+Det vil bli laget en protokoll for Fiks IO som vil kunne sende en forespørsel om betalingsutsettelse til fakturasystem, fakturasystem må svare tilbake om det er innvilget eller ikke, innen 10 sekund. Dette skjer mens brukeren venter på min kommune. 
 
 ### Dele opp betaling i flere avdrag - under vurdering
 

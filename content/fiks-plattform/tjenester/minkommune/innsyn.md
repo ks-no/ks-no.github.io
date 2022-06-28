@@ -1,18 +1,18 @@
 ---
 title: Innsyn
-date: 2019-08-16
-aliases: [/fiks-platform/tjenester/innsyn, /fiks-plattform/tjenester/innsyn]
+date: 2022-06-28
+aliases: [/fiks-platform/tjenester/innsyn, /fiks-plattform/tjenester/innsyn, /fiks-plattform/tjenester/minside/innsyn/]
 ---
 
 Norske kommuner har mengder av informasjon om sine innbyggere. Denne informasjonen er spredd rundt i arkiver, fagsystemer, dokumentlagre og eksterne skyløsninger. Fiks Innsyn lagrer metadata som beskriver denne informasjonen, og gjør den tilgjengelig for innbyggeren via en kraftig søkemotor. 
 
 ### Hvordan tar man i bruk Fiks Innsyn?
-En kommune kan bruke Fiks Innsyn for å gjøre kommunal informasjon (forsendelser, byggesaker, eiendommer, fakturaer osv) tilgjengelig for innbyggere, endten på minside.kommune.no eller i kommunens eksisterende løsninger.
+En kommune kan bruke Fiks Innsyn for å gjøre kommunal informasjon (forsendelser, byggesaker, eiendommer, fakturaer osv) tilgjengelig for innbyggere, endten på min.kommune.no eller i kommunens eksisterende løsninger.
 ![minside_integrasjoner](/images/innsyn_konfigurasjon_integrasjoner.png "Innsyn integrasjoner")
 
 Uansett er første steg å sørge for metadata som beskriver informasjonen finnes i søkemotoren. Dette gjøres ved å legge til datakilder i konfigurasjonen av [innsyntjenesten](https://forvaltning.fiks.ks.no/fiks-konfigurasjon/tjenester/innsyn) på forvaltning.fiks.ks.no. i form av integrasjoner. Dette kan være "nøkkelklare" integrasjoner levert av KS eller tredjepartsleverandører, for eksempel forsendelser fra SvarUt eller byggesaker fra GeoMatikk, eller integrasjoner kommunen lager selv. I skjermbildet over har en kommune lagt til SvarUt integrasjonen som kilde for innsyn, som gjør at alle forsendelser fra SvarUt-avsendere spesifisert i integrasjonens konfigurasjon blir tilgjengelig i "Post fra kommunen" på minside.kommune.no.  
 
-Hvis kommunen benytter minside.kommune.no er nå alt klart: innloggede innbyggere vil se sine meldinger i "Post fra kommunen" og andre innsyn-drevede tjenester. 
+Hvis kommunen benytter min.kommune.no er nå alt klart: innloggede innbyggere vil se sine meldinger i "Post fra kommunen" og andre innsyn-drevede tjenester. 
 
 Hvis kommunen benytter en egen minside-løsning må også søket mot Fiks Innsyn gjøres via en integrasjon, som legges til på samme måte som datakilde-integrasjonene over. I noen tilfeller vil det finnes nøkkelklare leverandør-integrasjoner for dette, i andre må kommunen lage en egen integrasjon som leverandøren kan benytte. Kontakt leverandør for å avklare dette.
 
@@ -20,11 +20,11 @@ Hvis kommunen benytter en egen minside-løsning må også søket mot Fiks Innsyn
 ![minside_sok](https://www.lucidchart.com/publicSegments/view/db355c1a-7955-4c4a-8ccf-ccd7e64424fd/image.png "Innsyn")
 Tjenesten består av tre hovedkomponenter:
  
- * _Innsyn-webapplikasjoner_, et sett med SPA (Single Page Applications) på minside.kommune.no som innbyggere benytter for å søke i innsynsdatabasen. Eksempler er "Post fra kommunen", "Byggesaker", osv.
+ * _Innsyn-webapplikasjoner_, et sett med SPA (Single Page Applications) på min.kommune.no som innbyggere benytter for å søke i innsynsdatabasen. Eksempler er "Post fra kommunen", "Byggesaker", osv.
  * _Innsyn-søk_, søkemotoren som utgjør back-end for webappliasjonene. Støtter fritekstsøk og score-rangerte resultater. 
  * _Innsyn-indexer_, en indekseringstjeneste som integrasjoner kan benytte for å laste opp metadata om informasjonen kommunen sitter på: hendelser, fakturaer, saker, journalposter, forsendelser, osv.  
 
-Søk i innsyn gjøres via applikasjonene på minside.kommune.no, eller direkte via et REST grensesnitt. Uansett baserer autentisering seg på innlogging via ID-Porten. En autentisert innbygger autoriserers for å lese en melding på en av fire måter:
+Søk i innsyn gjøres via applikasjonene på min.kommune.no, eller direkte via et REST grensesnitt. Uansett baserer autentisering seg på innlogging via ID-Porten. En autentisert innbygger autoriserers for å lese en melding på en av fire måter:
 
 * Meldingen er eksponert for innbyggerens fødselsnummer
 * Innbyggeren har rollene "post/arkiv" eller "kommunale tjenester" i Altinn for organisasjonsnummeret meldingen er eksponert for
@@ -111,7 +111,7 @@ Mange meldingstyper vil referere til filer i eksterne systemer, som for eksempel
 
 ### Uvikling av integrasjoner for å søke i innsyn
 #### Gjennomføring av søk 
-Hvis kommunen benytter minside.kommune.no er det ikke behov for å utvikle noen egne integrasjoner for søk, men det kan ofte være aktuelt å søke i Innsyn fra annen løsning, for eksempel for å få "Post fra kommunen" fram på kommunens eksisterende minside-løsning. 
+Hvis kommunen benytter min.kommune.no er det ikke behov for å utvikle noen egne integrasjoner for søk, men det kan ofte være aktuelt å søke i Innsyn fra annen løsning, for eksempel for å få "Post fra kommunen" fram på kommunens eksisterende minside-løsning. 
 
 Innsyn tilbyr følgende søke-api'er for eksterne integrasjoner:
 
