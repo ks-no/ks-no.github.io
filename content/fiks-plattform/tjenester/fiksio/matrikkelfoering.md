@@ -45,7 +45,7 @@ Dette er for at mottaker skal kunne se at dette er en melding som har vært fors
 | Mottak feilet - Ugyldig forespørsel | `no.ks.fiks.matrikkelfoering.v2.feilmelding.ugyldigforespoersel` | [no.ks.fiks.matrikkelfoering.v2.feilmelding.ugyldigforespoersel.xsd](https://github.com/ks-no/fiks-matrikkelfoering-specification/blob/main/Schema/V2/no.ks.fiks.matrikkelfoering.v2.feilmelding.ugyldigforespoersel.xsd) | `feilmelding.xml` |
 | Mottak feilet - Serverfeil | `no.ks.fiks.matrikkelfoering.v2.feilmelding.serverfeil` | [no.ks.fiks.matrikkelfoering.v2.feilmelding.serverfeil.xsd](https://github.com/ks-no/fiks-matrikkelfoering-specification/blob/main/Schema/V2/no.ks.fiks.matrikkelfoering.v2.feilmelding.serverfeil.xsd) | `feilmelding.xml` |
 | Kvittering på føring i matrikkelen | `no.ks.fiks.matrikkelfoering.v2.kvittering` | [no.ks.fiks.matrikkelfoering.v2.kvittering.xsd](https://github.com/ks-no/fiks-matrikkelfoering-specification/blob/main/Schema/V2/no.ks.fiks.matrikkelfoering.v2.kvittering.xsd) | `kvittering.xml` |
-| Svar på forespørsel om status | `no.ks.fiks.matrikkelfoering.v2.statussvar` | [no.ks.fiks.matrikkelfoering.v2.statussvar.xsd](/https://github.com/ks-no/fiks-matrikkelfoering-specification/blob/main/Schema/V2/no.ks.fiks.matrikkelfoering.v2.statussvar.xsd) | `statussvar.xml` |
+| Svar på forespørsel om status | `no.ks.fiks.matrikkelfoering.v2.statussvar` | [no.ks.fiks.matrikkelfoering.v2.statussvar.xsd](https://github.com/ks-no/fiks-matrikkelfoering-specification/blob/main/Schema/V2/no.ks.fiks.matrikkelfoering.v2.statussvar.xsd) | `statussvar.xml` |
 
 ## Datamodell for meldinger
 ![fiks_matrikkelfoering_datamodell_grunnlag](/images/datamodell_grunnlag.png "Matrikkelføring datamodell grunnlag")
