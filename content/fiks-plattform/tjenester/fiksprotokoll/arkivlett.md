@@ -1,12 +1,12 @@
 ---
-title: Fiks IO Arkivlett Byggesak
+title: Fiks Arkivlett Byggesak
 date: 2020-05-12
 ---
 
 > Tjenesten er under utvikling/testing/pilotering
 
-Fiks IO Arkivlett Byggesak er en tjeneste for å spørre etter relevante dokumenter i en byggesak.
-Løsningen benytter [FIKS IO](https://ks-no.github.io/fiks-platform/tjenester/fiksio/) for maskin til maskin integrasjon 
+Fiks Arkivlett Byggesak er en tjeneste for å spørre etter relevante dokumenter i en byggesak.
+Løsningen benytter [FIKS Protokoll](https://ks-no.github.io/fiks-platform/tjenester/fiksprotokoll) for definisjon av meldingstyper, og [FIKS IO](https://ks-no.github.io/fiks-platform/tjenester/fiksprotokoll/fiksio/) for maskin til maskin integrasjon 
 
 Løsningen vil typisk kunne brukes av et søknadssystem for byggesaker til å finne tidligere tegninger eller vedtak på en eiendom som er relevant for videre tiltak på eiendommen.
 
@@ -14,7 +14,7 @@ Løsningen vil typisk kunne brukes av et søknadssystem for byggesaker til å fi
 
 ![fiks_arkivlett](/images/arkivlett_skisse.png "Fiks IO Arkivlett")
 
-## Hvordan ta i bruk Fiks IO Arkivlett Byggesak
+## Hvordan ta i bruk Fiks Arkivlett Byggesak
 For at søknadssystem for byggesaker skal få tilgang til å sende forespørsel om byggesaker på en eiendom til arkivet, så må kommunen aktivere tjenesten Fiks IO i [Fiks Konfigurasjon](https://forvaltning.fiks.ks.no/fiks-konfigurasjon/tjenester).
 
 Aktuellt system for mottak av arkivlett meldinger må aktiveres for å kunne svare på meldingsprotokoll ```no.dibk.arkivlett.byggesak.v1```
@@ -29,7 +29,7 @@ Avklares nærmere i pilot
 
 
 ## Flyt
-![fiks_arkivlett_flyt](/images/arkivlett_flyt.png "Fiks IO Arkivlett")
+![fiks_arkivlett_flyt](/images/arkivlett_flyt.png "Fiks Arkivlett")
 
 - Søknadssystem sjekker om valgt kommune har system som støtter meldingsprotokollen for arkivlett i kontokatalogen
 - Hvis kommune har system som støtter arkivlett kan forespørsel sendes

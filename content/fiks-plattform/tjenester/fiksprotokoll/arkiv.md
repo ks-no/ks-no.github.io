@@ -5,7 +5,7 @@ date: 2021-07-29
 
 > Tjenesten er under utvikling/testing/pilotering
 
-Fiks Arkiv er en asynkron protokoll over Fiks IO eller andre transportmekanismer for å søke, arkivere og hente data fra et arkiv.
+Fiks Arkiv er en asynkron protokoll over Fiks IO eller andre transportmekanismer for å søke, arkivere og hente data fra et arkiv. Fiks Protokoll benyttes for meldingstype definisjon på konto.
 For implementasjonseksempler, brukerhistorier og teknisk dokumentasjon les mer i wiki på github repoet [fiks-arkiv](https://github.com/ks-no/fiks-arkiv/wiki).
 
 ## Meldinger
