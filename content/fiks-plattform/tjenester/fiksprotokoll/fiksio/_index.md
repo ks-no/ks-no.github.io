@@ -6,6 +6,8 @@ aliases: [/fiks-platform/tjenester/fiksio]
 
 Fiks IO er en kanal for sikker maskin-til-maskin integrasjon. Denne kanalen kan benyttes for å bygge prosesser på tvers av systemer og organisasjoner, for eksempel når et fagsystem skal arkivere et dokument i et arkivsystem eller spørre om informasjon som er lagret i et annet system.
 
+Meldingstyper defineres i [Fiks Protokoll](https://ks-no.github.io/fiks-plattform/tjenester/fiksprotokoll)
+
 Fiks IO tilbyr:
 
 * _Rask leveranse_: ved hjelp av kø-basert arkitektur ([AMQP)](https://en.wikipedia.org/wiki/Advanced_Message_Queuing_Protocol) kan Fiks IO levere meldinger raskt, stort sett på under ett sekund plus eventuelt overføring av data. Dette oppnås ved at meldinger nå sendes til det mottakende fagystemet i det øyeblikket de ankommer (push), i stede for at fagsystemet må hente meldingen (pull).
@@ -16,6 +18,8 @@ Fiks IO tilbyr:
 * _Sending av store filer_: Fiks IO integrerer mot [Fiks Dokumentlager]({{< ref "dokumentlager.md" >}}) for å støtte sending av store filer, helt opp til dokumentlagers grense på fem gigabyte. 
 
 ### Hvordan tar man i bruk Fiks IO?
+[Fiks Protokoll](https://ks-no.github.io/fiks-plattform/tjenester/fiksprotokoll) oppretter Fiks IO konto og administrere meldingstyper. Dersom Fiks Protokoll benyttes, er det ikke behov for å sette opp egen Fiks IO konto. Protokoll Konto vil være en utvidelse av Fiks IO konto, og kan benyttes for å sette opp Fiks IO klient.
+
 Fiks IO baserer seg på at organisasjoner benytter Fiks Konfigurasjon for å opprette en eller flere _kontoer_. Andre organisasjoner kan så sende meldinger til disse kontoene, som mottaker kan lese ved å koble seg til io.fiks.ks.no. 
 
 For å gjøre det lettere å finne en konto, og vite hvilke meldingstyper systemet som benytter kontoen kan håndtere kan man konfigurere _adresser_. Adresser består av en eller flere organisasjonsnummer, meldingsprotokoller og sikkerhetsnivåer. Avsendere kan så slå opp i Fiks IOs katalogtjeneste for å finne f.eks. hvilken konto som skal motta digisos meldinger med sikkerhetsnivå fire for Bergen kommune. 
@@ -110,12 +114,12 @@ Klientene er tilgjengelig i [Java](https://github.com/ks-no/fiks-io-klient-java)
 ### Headere
 Følgende headere er definert i meldingsutvekslingen.
 
-| Header | Beskrivelse |
-|---|---|
-| avsender-id | Avsenders Fiks IO-konto |
-| melding-id | Meldingens ID |
-| avsender-navn | Navnet på avsenderkonto |
-| type | Meldingstype |
-| dokumentlager-id | ID til eventuell fil lagret i Dokumentlager |
-| svar-til | Hvis meldingen er svar på en tidligere Fiks IO-melding, vil svar-til referere til den |
+| Header | Beskrivelse                                                                                  |
+|---|----------------------------------------------------------------------------------------------|
+| avsender-id | Avsenders Fiks IO-konto eller Protokoll konto                                                |
+| melding-id | Meldingens ID                                                                                |
+| avsender-navn | Navnet på avsenderkonto                                                                      |
+| type | Meldingstype                                                                                 |
+| dokumentlager-id | ID til eventuell fil lagret i Dokumentlager                                                  |
+| svar-til | Hvis meldingen er svar på en tidligere Fiks IO-melding, vil svar-til referere til den        |
 | svar-til-type | På `no.ks.fiks.kvittering.tidsavbrudd` meldinger legges typen til den opprinnelige meldingen |
