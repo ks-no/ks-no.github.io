@@ -8,7 +8,7 @@ Fiks Protokoll er en meldingstandard for meldinger som sendes over [Fiks IO](htt
 
 ### Hvordan tar man i bruk Fiks Protokoll?
 Fiks protokoll administreres i Fiks Forvaltning og via API.
-![fiks protokoll](https://ks-no.github.io/images/forvaltning-protokoll-system-create.png "Opprett system")
+![fiks protokoll](https://ks-no.github.io/fiks-plattform/images/forvaltning-protokoll-system-create.png "Opprett system")
 
 Når system er opprettet, kan kontoer og tilganger administreres i Fiks forvaltning, og API.
 API autorisering skjer på fiks plattformen med et access token fra Maskinporten basert på organisasjonesn virksomhetssertifikat som beskrevet under [Integrasjonsutvikling](https://ks-no.github.io/fiks-plattform/integrasjonser.md).
@@ -23,7 +23,7 @@ Etter at Fiks Protokoll er satt opp, benyttes [Fiks IO](https://ks-no.github.io/
 Konto opprettes i forvaltning eller via API.
 Når konto opprettes må en ha tilgjengelig offentlig nøkkel i PEM format. Denne benyttes for kryptering av meldinger som skal mottas.
 Forvalting:
-![fiks protokoll](https://ks-no.github.io/images/forvaltning-protokoll-system-create.png "Opprett system")
+![fiks protokoll](https://ks-no.github.io/fiks-plattform/images/forvaltning-protokoll-system-create.png "Opprett system")
 
 API:
 `POST /fiks-protokoll/api/v1/konfigurasjon/{fiksOrgId}/systemer/{systemId}/kontoer`
