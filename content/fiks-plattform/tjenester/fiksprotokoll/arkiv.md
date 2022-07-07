@@ -21,12 +21,13 @@ XSD skjema for meldingsformatene er tilgjengelig for nedlasting på github prosj
 
 **Prosjekter og evt nuget pakker:**
 
-| Type                     | Nuget                                                                                                            | Github |
-|--------------------------|------------------------------------------------------------------------------------------------------------------| ----------- | 
-| Modeller og XSD skjema   | [`KS.Fiks.Arkiv.Models.V1`](https://www.nuget.org/packages/KS.Fiks.Arkiv.Models.V1/)                             | https://github.com/ks-no/fiks-arkiv-models-dotnet |
-| Forenklet arkivering     | [`KS.Fiks.Arkiv.Forenklet.Arkivering.V1`](https://www.nuget.org/packages/KS.Fiks.Arkiv.Forenklet.Arkivering.V1/) | https://github.com/ks-no/fiks-arkiv-forenklet-arkivering-dotnet |
-| Fiks protokoll validator | -                                                                                                                | https://github.com/ks-no/fiks-protokoll-validator |
-| Valideringstester        | -                                                                                                                | https://github.com/ks-no/fiks-arkiv-integration-tests-dotnet |
+| Type                                | Nuget                                                                                                            | Github                                                          |
+|-------------------------------------|------------------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------| 
+| XSD skjema, protokoll spesifikasjon | -                                                                                                                | https://github.com/ks-no/fiks-arkiv-specification               |
+| Modeller basert på XSD skjema       | [`KS.Fiks.Arkiv.Models.V1`](https://www.nuget.org/packages/KS.Fiks.Arkiv.Models.V1/)                             | https://github.com/ks-no/fiks-arkiv-models-dotnet               |
+| Forenklet arkivering                | [`KS.Fiks.Arkiv.Forenklet.Arkivering.V1`](https://www.nuget.org/packages/KS.Fiks.Arkiv.Forenklet.Arkivering.V1/) | https://github.com/ks-no/fiks-arkiv-forenklet-arkivering-dotnet |
+| Fiks protokoll validator            | -                                                                                                                | https://github.com/ks-no/fiks-protokoll-validator               |
+| Valideringstester                   | -                                                                                                                | https://github.com/ks-no/fiks-arkiv-integration-tests-dotnet    |
 
 **Modeller og XSD skjema**
 

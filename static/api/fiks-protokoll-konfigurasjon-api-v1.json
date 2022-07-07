@@ -978,6 +978,69 @@
         }
       }
     },
+    "/fiks-protokoll/api/v1/konfigurasjon/{fiksOrgId}/systemer/{systemId}/kontoer/{kontoId}/pem" : {
+      "put" : {
+        "tags" : [ "Protokoll-konfigurasjon" ],
+        "description" : "Oppdater offentlig nøkkel på konto ",
+        "operationId" : "updateKontoPem",
+        "parameters" : [ {
+          "name" : "fiksOrgId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        }, {
+          "name" : "systemId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        }, {
+          "name" : "kontoId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/UpdateOffentligNokkelRequest"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Oppdater offentlig nøkkel på konto",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/OffentligNokkelResponse"
+                }
+              }
+            }
+          },
+          "default" : {
+            "description" : "Noe gikk galt",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/fiks-protokoll/api/v1/konfigurasjon/{fiksOrgId}/systemer/{systemId}/info" : {
       "put" : {
         "tags" : [ "Protokoll-konfigurasjon" ],
@@ -1087,61 +1150,6 @@
           }
         }
       }
-    },
-    "/fiks-protokoll/api/v1/konfigurasjon/{fiksOrgId}/systemer/{systemId}/pem" : {
-      "put" : {
-        "tags" : [ "Protokoll-konfigurasjon" ],
-        "description" : "Oppdater offentlig nøkkel på system ",
-        "operationId" : "updateSystemPem",
-        "parameters" : [ {
-          "name" : "fiksOrgId",
-          "in" : "path",
-          "required" : true,
-          "schema" : {
-            "type" : "string",
-            "format" : "uuid"
-          }
-        }, {
-          "name" : "systemId",
-          "in" : "path",
-          "required" : true,
-          "schema" : {
-            "type" : "string",
-            "format" : "uuid"
-          }
-        } ],
-        "requestBody" : {
-          "content" : {
-            "application/json" : {
-              "schema" : {
-                "$ref" : "#/components/schemas/UpdateOffentligNokkelRequest"
-              }
-            }
-          }
-        },
-        "responses" : {
-          "200" : {
-            "description" : "Oppdater offentlig nøkkel på system",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/ProtokollSystemResponse"
-                }
-              }
-            }
-          },
-          "default" : {
-            "description" : "Noe gikk galt",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/ErrorMessage"
-                }
-              }
-            }
-          }
-        }
-      }
     }
   },
   "components" : {
@@ -1229,39 +1237,6 @@
         },
         "description" : "FiksOrg til eier av systemet"
       },
-      "OffentligNokkelResponse" : {
-        "required" : [ "nokkel", "valid" ],
-        "type" : "object",
-        "properties" : {
-          "nokkel" : {
-            "type" : "string"
-          },
-          "validFrom" : {
-            "type" : "string",
-            "format" : "date-time"
-          },
-          "validTo" : {
-            "type" : "string",
-            "format" : "date-time"
-          },
-          "serial" : {
-            "type" : "string"
-          },
-          "subjectDN" : {
-            "type" : "string"
-          },
-          "issuerDN" : {
-            "type" : "string"
-          },
-          "valid" : {
-            "type" : "boolean"
-          },
-          "statusMessage" : {
-            "type" : "string"
-          }
-        },
-        "description" : "Offentlig nøkkel"
-      },
       "PartResponse" : {
         "required" : [ "avsenderMeldingstyper", "beskrivelse", "mottakerMeldingstyper", "navn", "protokollnavn", "protokollversjon", "stottedeParter" ],
         "type" : "object",
@@ -1334,7 +1309,7 @@
         "description" : "Kontoer"
       },
       "ProtokollSystemResponse" : {
-        "required" : [ "beskrivelse", "eposter", "id", "integrasjonId", "kontoer", "navn", "offentligNokkel", "orgnummer", "tilgangTilKontoer" ],
+        "required" : [ "beskrivelse", "eposter", "id", "integrasjonId", "kontoer", "navn", "offentlig", "orgnummer", "tilgangTilKontoer" ],
         "type" : "object",
         "properties" : {
           "id" : {
@@ -1382,8 +1357,9 @@
               "$ref" : "#/components/schemas/EksternProtokollKontoResponse"
             }
           },
-          "offentligNokkel" : {
-            "$ref" : "#/components/schemas/OffentligNokkelResponse"
+          "offentlig" : {
+            "type" : "boolean",
+            "description" : "Begrenser synlighet utover egen organisasjon"
           }
         }
       },
@@ -1423,7 +1399,7 @@
         }
       },
       "CreateProtokollKontoRequest" : {
-        "required" : [ "beskrivelse", "navn", "part", "stottetProtokollNavn", "stottetProtokollVersjon" ],
+        "required" : [ "beskrivelse", "navn", "offentligNokkel", "part", "stottetProtokollNavn", "stottetProtokollVersjon" ],
         "type" : "object",
         "properties" : {
           "navn" : {
@@ -1445,6 +1421,10 @@
           "part" : {
             "type" : "string",
             "description" : "Part kontoen implementerer"
+          },
+          "offentligNokkel" : {
+            "type" : "string",
+            "description" : "Offentlig nøkkel"
           }
         }
       },
@@ -1462,7 +1442,7 @@
         }
       },
       "CreateProtokollSystemRequest" : {
-        "required" : [ "beskrivelse", "eposter", "navn", "offentligNokkel", "orgnummer" ],
+        "required" : [ "beskrivelse", "eposter", "navn", "orgnummer" ],
         "type" : "object",
         "properties" : {
           "orgnummer" : {
@@ -1486,9 +1466,10 @@
               "description" : "Kontakteposter"
             }
           },
-          "offentligNokkel" : {
-            "type" : "string",
-            "description" : "Offentlig nøkkel"
+          "offentlig" : {
+            "type" : "boolean",
+            "description" : "Offentlig, styrer om systemet skal være synling for andre Fiks organisasjoner",
+            "default" : false
           }
         }
       },
@@ -1624,8 +1605,50 @@
           }
         }
       },
+      "OffentligNokkelResponse" : {
+        "required" : [ "nokkel", "valid" ],
+        "type" : "object",
+        "properties" : {
+          "nokkel" : {
+            "type" : "string"
+          },
+          "validFrom" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "validTo" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "serial" : {
+            "type" : "string"
+          },
+          "subjectDN" : {
+            "type" : "string"
+          },
+          "issuerDN" : {
+            "type" : "string"
+          },
+          "valid" : {
+            "type" : "boolean"
+          },
+          "statusMessage" : {
+            "type" : "string"
+          }
+        }
+      },
+      "UpdateOffentligNokkelRequest" : {
+        "required" : [ "offentligNokkel" ],
+        "type" : "object",
+        "properties" : {
+          "offentligNokkel" : {
+            "type" : "string",
+            "description" : "Offentlig nøkkel"
+          }
+        }
+      },
       "UpdateSystemInfoRequest" : {
-        "required" : [ "beskrivelse", "eposter", "navn" ],
+        "required" : [ "beskrivelse", "eposter", "navn", "offentlig" ],
         "type" : "object",
         "properties" : {
           "navn" : {
@@ -1643,6 +1666,10 @@
               "type" : "string",
               "description" : "Kontakteposter"
             }
+          },
+          "offentlig" : {
+            "type" : "boolean",
+            "description" : "Begrenser synlighet utover egen organisasjon"
           }
         }
       },
@@ -1654,16 +1681,6 @@
             "pattern" : "^[0-9]{9}$",
             "type" : "string",
             "description" : "Organisasjonsnummer"
-          }
-        }
-      },
-      "UpdateOffentligNokkelRequest" : {
-        "required" : [ "offentligNokkel" ],
-        "type" : "object",
-        "properties" : {
-          "offentligNokkel" : {
-            "type" : "string",
-            "description" : "Offentlig nøkkel"
           }
         }
       }
