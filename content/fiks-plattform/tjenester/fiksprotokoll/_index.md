@@ -11,7 +11,7 @@ Fiks protokoll administreres i Fiks Forvaltning og via API.
 ![fiks protokoll](https://ks-no.github.io/fiks-plattform/images/forvaltning-protokoll-system-create.png "Opprett system")
 
 Når system er opprettet, kan kontoer og tilganger administreres i Fiks forvaltning, og API.
-API autorisering skjer på fiks plattformen med et access token fra Maskinporten basert på organisasjonesn virksomhetssertifikat som beskrevet under [Integrasjonsutvikling](https://ks-no.github.io/fiks-plattform/integrasjonser.md).
+API autorisering skjer på fiks plattformen med et access token fra Maskinporten basert på organisasjonesn virksomhetssertifikat som beskrevet under [Integrasjonsutvikling](https://ks-no.github.io/fiks-plattform/integrasjoner/).
 
 Bruk integrasjonsid og integrasjonspassord som blir opprettet under opprettelse av Protokoll System.
 
