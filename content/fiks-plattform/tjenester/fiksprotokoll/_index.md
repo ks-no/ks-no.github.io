@@ -4,7 +4,7 @@ date: 2022-07-05
 aliases: [/fiks-platform/tjenester/fiksprotokoll]
 ---
 
-Fiks Protokoll er en meldingstandard for meldinger som sendes over Fiks IO, for sikker maskin-til-maskin integrasjon
+Fiks Protokoll er en meldingstandard for meldinger som sendes over [Fiks IO](https://ks-no.github.io/fiks-plattform/tjenester/fiksprotokoll/fiksio), for sikker maskin-til-maskin integrasjon
 
 ### Hvordan tar man i bruk Fiks Protokoll?
 Fiks protokoll administreres i Fiks Forvaltning og via API.
@@ -51,7 +51,7 @@ En kan legge inn forespørsel om tilgang til konto, for system. Ved hjelp av API
 
 
 ### Gi tilgang til system
-Tilganger tildeles Protokoll system fra konto. Konto kan gi annet system tilgan til å sende meldinger til konto en oppretter tilgang fra. 
+Tilganger tildeles Protokoll system fra konto. Konto kan gi annet system tilgang til å sende meldinger til konto en oppretter tilgang fra. 
 
 Når system opprettes vil systemet kun være synlig for kontoer under egen organisasjon. Dersom systemet skal være synlig for kontoer utenfor egen organisasjon, må _Tilgjengelig for andre organisasjoner_ slås på.
 

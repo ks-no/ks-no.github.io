@@ -6,7 +6,7 @@ aliases: [/fiks-platform/tjenester/fiksio]
 
 Fiks IO er en kanal for sikker maskin-til-maskin integrasjon. Denne kanalen kan benyttes for å bygge prosesser på tvers av systemer og organisasjoner, for eksempel når et fagsystem skal arkivere et dokument i et arkivsystem eller spørre om informasjon som er lagret i et annet system.
 
-Meldingstyper defineres av [Fiks Protokoll](https://ks-no.github.io/fiks-plattform/tjenester/fiksprotokoll)
+Meldingstyper defineres i [Fiks Protokoll](https://ks-no.github.io/fiks-plattform/tjenester/fiksprotokoll)
 
 Fiks IO tilbyr:
 
