@@ -22,6 +22,9 @@
     "name" : "varslingKonfigurasjon",
     "description" : "API for å håndtere funksjonalitet vedr. konfigurasjon av varsling"
   }, {
+    "name" : "UtsendingRapport",
+    "description" : "API for å håndtere funksjonalitet for sending av sms og epost "
+  }, {
     "name" : "Sms",
     "description" : "API for å håndtere funksjonalitet for sending av sms og epost "
   }, {
@@ -406,7 +409,7 @@
       },
       "post" : {
         "tags" : [ "varslingKonfigurasjon" ],
-        "description" : "Oppretter konto under meldingstjenesten",
+        "description" : "Oppretter konto under Fiks Melding",
         "operationId" : "opprettKonto",
         "parameters" : [ {
           "name" : "fiksOrgId",
@@ -788,6 +791,111 @@
               "application/json" : {
                 "schema" : {
                   "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Systemfeil",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/varsling/api/v1/utsending/rapport/sok/xls" : {
+      "get" : {
+        "tags" : [ "UtsendingRapport" ],
+        "description" : "Henter rapporter til xls",
+        "operationId" : "exportRapporter",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/RapportSearchCriteria"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Hent utsendelse rapporter xls"
+          },
+          "500" : {
+            "description" : "Systemfeil",
+            "content" : {
+              "application/octet-stream" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/varsling/api/v1/utsending/rapport/{utsendelseId}/tlfliste" : {
+      "get" : {
+        "tags" : [ "UtsendingRapport" ],
+        "description" : "Henter tlfliste for utsendelse",
+        "operationId" : "exportTlfliste",
+        "parameters" : [ {
+          "name" : "utsendelseId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Hent telefonliste xls"
+          },
+          "500" : {
+            "description" : "Systemfeil",
+            "content" : {
+              "application/octet-stream" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/varsling/api/v1/utsending/rapport/sok" : {
+      "get" : {
+        "tags" : [ "UtsendingRapport" ],
+        "description" : "Henter rapporter",
+        "operationId" : "hentRapporter",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/RapportSearchCriteria"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Hent utsendelse rapporter",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/Rapport"
+                  }
                 }
               }
             }
@@ -1300,11 +1408,11 @@
         }
       }
     },
-    "/varsling/api/v1/utsending/{kontoId}/{utsendelseId}/xls/mottakere" : {
-      "post" : {
+    "/varsling/api/v1/utsending/{kontoId}" : {
+      "get" : {
         "tags" : [ "Utsending" ],
-        "description" : "Laster opp mottakere fra xls",
-        "operationId" : "lastOppMottakereFraXls",
+        "description" : "Henter utsendelser for konto",
+        "operationId" : "hentUtsendelserForKonto",
         "parameters" : [ {
           "name" : "kontoId",
           "in" : "path",
@@ -1313,21 +1421,20 @@
             "type" : "string",
             "format" : "uuid"
           }
-        }, {
-          "name" : "utsendelseId",
-          "in" : "path",
-          "required" : true,
-          "schema" : {
-            "type" : "string",
-            "format" : "uuid"
-          }
         } ],
         "responses" : {
-          "204" : {
-            "description" : "XLS mottakere mal"
+          "200" : {
+            "description" : "Hent utsendelser for konto",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/UtsendelseRespons"
+                }
+              }
+            }
           },
-          "default" : {
-            "description" : "Noe gikk galt",
+          "500" : {
+            "description" : "Systemfeil",
             "content" : {
               "application/json" : {
                 "schema" : {
@@ -1337,12 +1444,10 @@
             }
           }
         }
-      }
-    },
-    "/varsling/api/v1/utsending/{kontoId}" : {
+      },
       "post" : {
         "tags" : [ "Utsending" ],
-        "description" : "Oppretter utsendelse",
+        "description" : "Henter utsendelser for konto",
         "operationId" : "opprettUtsendelse",
         "parameters" : [ {
           "name" : "kontoId",
@@ -1354,8 +1459,8 @@
           }
         } ],
         "responses" : {
-          "201" : {
-            "description" : "Opprett utsendelse",
+          "200" : {
+            "description" : "Hent utsendelser",
             "content" : {
               "application/json" : {
                 "schema" : {
@@ -1386,6 +1491,45 @@
           },
           "500" : {
             "description" : "Systemfeil",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/varsling/api/v1/utsending/{kontoId}/{utsendelseId}/xls/mottakere" : {
+      "post" : {
+        "tags" : [ "Utsending" ],
+        "description" : "Laster opp mottakere fra xls",
+        "operationId" : "lastOppMottakereFraXls",
+        "parameters" : [ {
+          "name" : "kontoId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        }, {
+          "name" : "utsendelseId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "204" : {
+            "description" : "XLS mottakere mal"
+          },
+          "default" : {
+            "description" : "Noe gikk galt",
             "content" : {
               "application/json" : {
                 "schema" : {
@@ -1807,6 +1951,94 @@
           "tjeneste" : {
             "type" : "string",
             "description" : "Tjeneste som skal benytte konto"
+          }
+        }
+      },
+      "RapportSearchCriteria" : {
+        "type" : "object",
+        "properties" : {
+          "fritekst" : {
+            "type" : "string",
+            "description" : "Fritekst for søk etter meldinger"
+          },
+          "datoFra" : {
+            "type" : "string",
+            "description" : "Innsendt dato fra",
+            "format" : "date-time"
+          },
+          "datoTil" : {
+            "type" : "string",
+            "description" : "Innsendt dato til",
+            "format" : "date-time"
+          },
+          "kontoNavn" : {
+            "type" : "string",
+            "description" : "Kontonavn til avsender"
+          },
+          "telefonnummer" : {
+            "type" : "string",
+            "description" : "Telefonnummer på mottaker"
+          }
+        }
+      },
+      "Rapport" : {
+        "required" : [ "antallMeldinger", "antallMottakere", "antallSmsFeilet", "antallSmsLevert", "antallSmsSendt", "avsender", "datoSendt", "kontoNavn", "navn", "tekst", "utsendelseId" ],
+        "type" : "object",
+        "properties" : {
+          "utsendelseId" : {
+            "type" : "string",
+            "description" : "Id på utsendelsen",
+            "format" : "uuid"
+          },
+          "navn" : {
+            "type" : "string",
+            "description" : "Navn på utsendelsen"
+          },
+          "kontoNavn" : {
+            "type" : "string",
+            "description" : "Navn på kontoen til avsender"
+          },
+          "avsender" : {
+            "type" : "string",
+            "description" : "Avsenders navn eller telefonnummer"
+          },
+          "konteringskode" : {
+            "type" : "string",
+            "description" : "Konteringskode satt på utsendelsen"
+          },
+          "tekst" : {
+            "type" : "string",
+            "description" : "Sms tekst på utsendelsen"
+          },
+          "datoSendt" : {
+            "type" : "string",
+            "description" : "Dato for sending",
+            "format" : "date-time"
+          },
+          "antallMottakere" : {
+            "type" : "integer",
+            "description" : "Totalt antall mottakere på utsendelsen",
+            "format" : "int32"
+          },
+          "antallMeldinger" : {
+            "type" : "integer",
+            "description" : "Antall meldinger",
+            "format" : "int32"
+          },
+          "antallSmsSendt" : {
+            "type" : "integer",
+            "description" : "Antall sms sendt",
+            "format" : "int32"
+          },
+          "antallSmsLevert" : {
+            "type" : "integer",
+            "description" : "Antall sms levert til mottaker",
+            "format" : "int32"
+          },
+          "antallSmsFeilet" : {
+            "type" : "integer",
+            "description" : "Antall sms feilet",
+            "format" : "int32"
           }
         }
       },
