@@ -1125,6 +1125,45 @@
         }
       }
     },
+    "/varsling/api/v1/utsending/{kontoId}/{utsendelseId}/xls/mottakere/ikkeGyldig" : {
+      "get" : {
+        "tags" : [ "Utsending" ],
+        "description" : "Henter ikke-gyldige mottakere XLS",
+        "operationId" : "hentIkkeGyldigeMottakereXls",
+        "parameters" : [ {
+          "name" : "utsendelseId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        }, {
+          "name" : "kontoId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "XLS duplikate mottakere"
+          },
+          "500" : {
+            "description" : "Systemfeil",
+            "content" : {
+              "application/octet-stream" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/varsling/api/v1/utsending/xls/mottakere/mal" : {
       "get" : {
         "tags" : [ "Utsending" ],
@@ -1541,6 +1580,45 @@
         }
       }
     },
+    "/varsling/api/v1/utsending/{kontoId}/{utsendelseId}/xls/mottakereMedFeil" : {
+      "post" : {
+        "tags" : [ "Utsending" ],
+        "description" : "Laster opp mottakere med feil fra xls. Denne operasjonen vil slette alle eksisterende feil (Inkludert duplikat)",
+        "operationId" : "lastOppMottakereMedFeilFraXls",
+        "parameters" : [ {
+          "name" : "kontoId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        }, {
+          "name" : "utsendelseId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "204" : {
+            "description" : "XLS mottakere mal"
+          },
+          "default" : {
+            "description" : "Noe gikk galt",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/varsling/api/v1/utsending/{kontoId}/mottakere" : {
       "post" : {
         "tags" : [ "Utsending" ],
@@ -1685,6 +1763,45 @@
         "responses" : {
           "204" : {
             "description" : "Sletter duplikate mottakere"
+          },
+          "default" : {
+            "description" : "Noe gikk galt",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/varsling/api/v1/utsending/{kontoId}/{utsendelseId}/mottakere/ikkegyldigmottaker" : {
+      "delete" : {
+        "tags" : [ "Utsending" ],
+        "description" : "Slett mottakere som ikke er markert GYLDIG (Etterlate 1 av hver duplikat)",
+        "operationId" : "slettMottakereIkkeGyldig",
+        "parameters" : [ {
+          "name" : "kontoId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        }, {
+          "name" : "utsendelseId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "204" : {
+            "description" : "Sletter ugyldige mottakere, mottakere uten telefonnummer og duplikat"
           },
           "default" : {
             "description" : "Noe gikk galt",
@@ -2121,7 +2238,7 @@
         }
       },
       "UtsendelseRespons" : {
-        "required" : [ "avsender", "klarTilUtsendelse", "kontoId", "navn", "smsTekst", "status", "utsendelseId" ],
+        "required" : [ "avsender", "klarTilUtsendelse", "kontoId", "navn", "opprettetDato", "smsTekst", "status", "utsendelseId" ],
         "type" : "object",
         "properties" : {
           "utsendelseId" : {
@@ -2158,6 +2275,11 @@
             "type" : "string",
             "description" : "Status på utsendelsen",
             "enum" : [ "STARTET", "AVBRUTT", "FERDIG", "OPPRETTET", "KLAR_FOR_UTSENDING" ]
+          },
+          "opprettetDato" : {
+            "type" : "string",
+            "description" : "Dato når utsendelsen ble opprettet",
+            "format" : "date-time"
           }
         }
       },
