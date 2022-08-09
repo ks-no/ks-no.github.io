@@ -94,71 +94,21 @@
         }
       }
     },
-    "/chat-konfigurasjon/api/v1/{fiksOrg}/brukere" : {
-      "get" : {
-        "tags" : [ "Chat konfigurasjon" ],
-        "description" : "Hent alle brukere for organisasjonen",
-        "operationId" : "hentBrukere",
-        "parameters" : [ {
-          "name" : "fiksOrg",
-          "in" : "path",
-          "required" : true,
-          "schema" : {
-            "type" : "string",
-            "format" : "uuid"
-          }
-        } ],
-        "responses" : {
-          "200" : {
-            "description" : "Alle brukere for organisasjon",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "type" : "array",
-                  "items" : {
-                    "$ref" : "#/components/schemas/BrukerResponse"
-                  }
-                }
-              }
-            }
-          }
-        }
-      },
-      "post" : {
-        "tags" : [ "Chat konfigurasjon" ],
-        "summary" : "Oppretter en ny bruker for organisasjonen med gitt fødselsnummer",
-        "operationId" : "opprettBruker",
-        "parameters" : [ {
-          "name" : "fiksOrg",
-          "in" : "path",
-          "required" : true,
-          "schema" : {
-            "type" : "string",
-            "format" : "uuid"
-          }
-        } ],
-        "requestBody" : {
-          "content" : {
-            "application/json" : {
-              "schema" : {
-                "$ref" : "#/components/schemas/OpprettBrukerRequest"
-              }
-            }
-          },
-          "required" : true
-        },
-        "responses" : {
-          "204" : {
-            "description" : "Bruker opprettet"
-          }
-        }
-      },
+    "/chat-konfigurasjon/api/v1/{fiksOrg}/brukere/{id}" : {
       "delete" : {
         "tags" : [ "Chat konfigurasjon" ],
         "summary" : "Fjerner bruker fra fiksOrg. Om dette er eneste fiksOrg som bruker er tilknyttet, slettes brukeren.",
         "operationId" : "fjernBrukerFraFiksOrg",
         "parameters" : [ {
           "name" : "fiksOrg",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        }, {
+          "name" : "id",
           "in" : "path",
           "required" : true,
           "schema" : {
@@ -194,6 +144,14 @@
             "type" : "string",
             "format" : "uuid"
           }
+        }, {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
         } ],
         "requestBody" : {
           "content" : {
@@ -222,7 +180,7 @@
     "/chat-konfigurasjon/api/v1/{fiksOrgId}/grupper/{gruppeId}" : {
       "delete" : {
         "tags" : [ "Chat konfigurasjon" ],
-        "description" : "Fjerne gruppe for fiksOrg",
+        "description" : "Fjerne gruppe for fiksOrg. Dersom det er siste gruppe på fiksOrg som skal slettes, må DELETE-endepunkt for bruker i stedet benyttes",
         "operationId" : "fjernGruppe",
         "parameters" : [ {
           "name" : "fiksOrgId",
@@ -244,6 +202,73 @@
         "responses" : {
           "204" : {
             "description" : "Gruppe er fjernet"
+          }
+        }
+      }
+    },
+    "/chat-konfigurasjon/api/v1/{fiksOrg}/brukere" : {
+      "get" : {
+        "tags" : [ "Chat konfigurasjon" ],
+        "description" : "Hent alle brukere for organisasjonen",
+        "operationId" : "hentBrukere",
+        "parameters" : [ {
+          "name" : "fiksOrg",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Alle brukere for organisasjon",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/BrukerResponse"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post" : {
+        "tags" : [ "Chat konfigurasjon" ],
+        "summary" : "Oppretter en ny bruker for organisasjonen med gitt fødselsnummer",
+        "operationId" : "opprettBrukerForFiksOrg",
+        "parameters" : [ {
+          "name" : "fiksOrg",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/OpprettBrukerRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Id til bruker som er opprettet",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/OpprettBrukerResponse"
+                }
+              }
+            }
           }
         }
       }
@@ -386,10 +411,10 @@
         "description" : "Gruppe"
       },
       "FjernBrukerRequest" : {
-        "required" : [ "id" ],
+        "required" : [ "fnr" ],
         "type" : "object",
         "properties" : {
-          "id" : {
+          "fnr" : {
             "pattern" : "^[0-9]{11}$",
             "type" : "string",
             "description" : "Fødselsnummer for bruker som skal fjernes"
@@ -398,10 +423,14 @@
         "description" : "Skal fjerne bruker fra fiksOrg"
       },
       "BrukerResponse" : {
-        "required" : [ "id" ],
+        "required" : [ "fnr", "id" ],
         "type" : "object",
         "properties" : {
           "id" : {
+            "type" : "string",
+            "description" : "Id til bruker"
+          },
+          "fnr" : {
             "type" : "string",
             "description" : "Fødselsnummer til bruker"
           },
@@ -420,10 +449,10 @@
         }
       },
       "OppdaterBrukerRequest" : {
-        "required" : [ "id" ],
+        "required" : [ "fnr" ],
         "type" : "object",
         "properties" : {
-          "id" : {
+          "fnr" : {
             "pattern" : "^[0-9]{11}$",
             "type" : "string",
             "description" : "Fødselsnummer til bruker"
@@ -450,11 +479,26 @@
           }
         }
       },
-      "OpprettBrukerRequest" : {
-        "required" : [ "id" ],
+      "OpprettBrukerResponse" : {
+        "required" : [ "fnr", "id" ],
         "type" : "object",
         "properties" : {
           "id" : {
+            "type" : "string",
+            "description" : "Id for bruker som er opprettet"
+          },
+          "fnr" : {
+            "type" : "string",
+            "description" : "Fødselsnummer for bruker som er opprettet"
+          }
+        },
+        "description" : "Opprettet bruker"
+      },
+      "OpprettBrukerRequest" : {
+        "required" : [ "fnr" ],
+        "type" : "object",
+        "properties" : {
+          "fnr" : {
             "pattern" : "^[0-9]{11}$",
             "type" : "string",
             "description" : "Fødselsnummer for bruker som skal opprettes"
