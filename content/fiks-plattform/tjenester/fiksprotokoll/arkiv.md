@@ -97,7 +97,7 @@ Når en melding er mottatt skal mottaker persistere meldingen og sende `ack` til
 
 En `ack` melding må ikke forveksles med `mottatt`meldingene som sendes tilbake i noen tilfeller. En `mottatt`melding er en melding tilbake til avsender, en `ack`melding er **kun** en beskjed tilbake til køen om å fjerne meldingen.
 
-Hvis `ack` for en melding uteblir vil meldingen bli værende på køen inntil den er blitt hentet 3 ganger uten å få en `ack` tilbake. Da vil Fiks-IO sende en `no.ks.fiks.io.feilmelding.serverfeil` melding tilbake til avsender. Med andre ord er det viktig at man sender `ack` når man vellykket har hentet en melding. 
+Hvis `ack` for en melding uteblir vil meldingen bli værende på køen inntil den er blitt hentet 3 ganger uten å få en `ack` tilbake. Da vil Fiks-IO sende en `no.ks.fiks.io.feilmelding.serverfeil.v1` melding tilbake til avsender. Med andre ord er det viktig at man sender `ack` når man vellykket har hentet en melding. 
 
 OBS: Dette erstatter tidligere TTL-håndtering på Fiks-IO køene. Det vil ikke lenger sendes noen `tidsavbrudd` meldinger basert på TTL. 
 
