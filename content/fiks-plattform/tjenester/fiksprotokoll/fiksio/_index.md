@@ -95,11 +95,7 @@ Hvis mottaker er nede og ikke leser meldinger og første melding har ttl på 2 t
 
 Disse meldingene inneholder ingen body, men kun headere deriblant `svar-til` som vil være en referanse til den opprinnelige meldingen (melding-id), `svar-til-type` som inneholder den originale typen på meldingen som har utløpt.
 
-__NB! Siden utløp av meldinger ikke vil fungere godt om det ligger flere meldinger på kø vil denne funksjonaliteten fases ut snart. I stedet vil man få en [serverfeil](#serverfeil) når en melding er avvist tre ganger__
-
-#### Serverfeil
-Ved serverfeil hos mottaker skal det sendes en `no.ks.fiks.io.feilmelding.serverfeil` tilbake til sender. Json [schema](https://github.com/ks-no/fiks-io-client-dotnet/blob/master/KS.Fiks.IO.Client/Schema/no.ks.fiks.kvittering.serverfeil.v1.schema.json) følger med i .net pakken for Fiks-IO-client.
-
+__NB! Siden utløp av meldinger ikke vil fungere godt om det ligger flere meldinger på kø vil denne funksjonaliteten fases ut snart. I stedet vil man få en `no.ks.fiks.io.feilmelding.serverfeil.v1` når en melding er avvist tre ganger__
 
 ### Håndtering av store filer
 Fiks IO støtter sending av store filer ved at alle meldinger større enn 5 megabyte mellomlagres i Fiks Dokumentlager, i en dedikert konto som opprettes sammen med Fiks IO kontoen. En referanse til denne lagrede filen blir så sendt over AMQP. Filer sendt på slik måte får en time-to-live i dokumentlager lik time-to-live for meldingen + 24 timer. Etter dette vil de automatisk slettes.
