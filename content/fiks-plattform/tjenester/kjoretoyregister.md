@@ -43,4 +43,4 @@ For kjøretøysøk gjøres det en `GET` request med query parameter. F.eks for �
 
 I test miljøet (`https://api.fiks.test.ks.no/kjoretoyregister/api/{fixOrgId}`) går alle api kall mot et syntetisk datasett hos SVV (https://autosys-kjoretoy-api.atlas.vegvesen.no/api-ui/index-kjoretoyoppslag.html#testmiljo).
 
-Hvis du opplever feil som blir returnert med json fra SVV med f.eks en svvguid kan en kontakte akfsupport@vegvesen.no.
+Hvis du opplever feil som blir returnert med json fra SVV med f.eks en svvguid kan en kontakte api-kjoretoy@vegvesen.no.
