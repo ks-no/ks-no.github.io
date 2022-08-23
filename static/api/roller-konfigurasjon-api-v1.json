@@ -1,122 +1,352 @@
 {
-  "openapi" : "3.0.1",
-  "info" : {
-    "title" : "KS FIKS: Roller konfigurasjon service",
-    "description" : "Roller konfigurasjontjeneste",
-    "contact" : {
-      "name" : "Fiks brukerstøtte",
-      "url" : "https://www.ks.no/fagomrader/digitalisering/utviklingsprosjekter",
-      "email" : "fiks-utvikling@ks.no"
+  "openapi": "3.0.3",
+  "info": {
+    "title": "KS FIKS: Roller konfigurasjon service",
+    "description": "Roller konfigurasjon service",
+    "contact": {
+      "name": "KS Fiks brukerstøtte",
+      "url": "https://www.ks.no/fagomrader/digitalisering/utviklingsprosjekter",
+      "email": "fiks-utvikling@ks.no"
     },
-    "version" : "v1"
+    "version": "v1"
   },
-  "servers" : [ {
-    "url" : "https://api.fiks.ks.no",
-    "description" : "KS Fiks API host",
-    "variables" : { }
-  }, {
-    "url" : "https://api.test.fiks.ks.no",
-    "description" : "KS Fiks TEST API host",
-    "variables" : { }
-  } ],
-  "tags" : [ {
-    "name" : "roller-konfigurasjon",
-    "description" : "API for demoformål"
-  } ],
-  "paths" : {
-    "/roller-konfigurasjon/api/v1/integrasjon" : {
-      "get" : {
-        "tags" : [ "roller-konfigurasjon" ],
-        "description" : "Standard service informasjon som kun skal være tilgjengelig for integrasjoner",
-        "operationId" : "integrasjon",
-        "responses" : {
-          "200" : {
-            "description" : "Informasjon om tjeneste",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/ServiceInformation"
+  "servers": [
+    {
+      "url": "https://api.fiks.ks.no",
+      "description": "KS Fiks API host",
+      "variables": {}
+    },
+    {
+      "url": "https://api.fiks.test.ks.no",
+      "description": "KS Fiks TEST API host",
+      "variables": {}
+    }
+  ],
+  "paths": {
+    "/roller/api/v1/konfigurasjon/{fiksOrgId}/rolle": {
+      "post": {
+        "operationId": "opprettRolle",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "fiksOrgId",
+            "description": "Id til organisasjonen som skal eie rollen",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RolleDefinisjon"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Opprettet",
+            "links": {
+              "self": {
+                "operationRef": "hentRolle",
+                "parameters": {
+                  "id": "$request.path.id"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Ugyldig rolle",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "https://ks-no.github.io/api/fiks-common.json#/components/schemas/ErrorMessage"
                 }
               }
             }
           }
-        }
+        },
+        "tags": [
+          "konfigurasjon"
+        ]
       }
     },
-    "/roller-konfigurasjon/api/v1/integrasjonPerson" : {
-      "get" : {
-        "tags" : [ "roller-konfigurasjon" ],
-        "description" : "Standard service informasjon som kun skal være tilgjengelig for integrasjon som representerer en person",
-        "operationId" : "integrasjonPerson",
-        "responses" : {
-          "200" : {
-            "description" : "Informasjon om tjeneste",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/ServiceInformation"
+    "/roller/api/v1/konfigurasjon/{fiksOrgId}/rolle/{id}": {
+      "get": {
+        "operationId": "hentRolle",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "fiksOrgId",
+            "description": "Id til organisasjonen som eier rollen",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "uuid"
+            }
+          },
+          {
+            "in": "path",
+            "name": "id",
+            "description": "Id til rollen som skal hentes",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Finner rollen",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Rolle"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Mangler tilgang til rollen",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "https://ks-no.github.io/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Rollen finnes ikke",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "https://ks-no.github.io/api/fiks-common.json#/components/schemas/ErrorMessage"
                 }
               }
             }
           }
-        }
-      }
-    },
-    "/roller-konfigurasjon/api/v1/person" : {
-      "get" : {
-        "tags" : [ "roller-konfigurasjon" ],
-        "description" : "Standard service informasjon som kun skal være tilgjengelig for personer",
-        "operationId" : "person",
-        "responses" : {
-          "200" : {
-            "description" : "Informasjon om tjeneste",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/ServiceInformation"
+        },
+        "tags": [
+          "konfigurasjon",
+          "oppslag"
+        ]
+      },
+      "delete": {
+        "operationId": "slettRolle",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "fiksOrgId",
+            "description": "Id til organisasjonen som eier rollen",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "uuid"
+            }
+          },
+          {
+            "in": "path",
+            "name": "id",
+            "description": "Id til rollen som skal slettes",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Sletting utført"
+          },
+          "401": {
+            "description": "Mangler tilgang til rollen",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "https://ks-no.github.io/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Rollen finnes ikke",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "https://ks-no.github.io/api/fiks-common.json#/components/schemas/ErrorMessage"
                 }
               }
             }
           }
-        }
-      }
-    },
-    "/roller-konfigurasjon/api/v1" : {
-      "get" : {
-        "tags" : [ "roller-konfigurasjon" ],
-        "description" : "Standard service informasjon som skal være tilgjengelig for ALLE med gyldig token",
-        "operationId" : "standard",
-        "responses" : {
-          "200" : {
-            "description" : "Informasjon om tjeneste",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/ServiceInformation"
-                }
-              }
-            }
-          }
-        }
+        },
+        "tags": [
+          "konfigurasjon"
+        ]
       }
     }
   },
-  "components" : {
-    "schemas" : {
-      "ServiceInformation" : {
-        "type" : "object",
-        "properties" : {
-          "apiName" : {
-            "type" : "string"
+  "components": {
+    "securitySchemes": {
+      "fiksBearerToken": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    },
+    "schemas": {
+      "RolleDefinisjon": {
+        "type": "object",
+        "required": [
+          "navn",
+          "beskrivelse",
+          "aktiv",
+          "registre"
+        ],
+        "properties": {
+          "navn": {
+            "type": "string"
           },
-          "apiVersion" : {
-            "type" : "string"
+          "beskrivelse": {
+            "type": "string"
           },
-          "authorizationDescription" : {
-            "type" : "string",
-            "enum" : [ "ALLE", "INTEGRASJON", "PERSON", "PERSON_INTEGRASJON", "ORG_ADMIN" ]
+          "tjeneste":{
+            "description": "Brukes for roller som er opprettet av en annen tjeneste som bare kan endres av den gitte tjenesten",
+            "type": "string"
+          },
+          "registre": {
+            "type": "object",
+            "minProperties": 1,
+            "properties": {
+              "folkeregister": {
+                "$ref": "#/components/schemas/FolkeregisterDefinisjon"
+              },
+              "summertSkattegrunnlag": {
+                "$ref": "#/components/schemas/SummertSkattegrunnlagDefinisjon"
+              },
+              "kontaktregister": {
+                "$ref": "#/components/schemas/KontaktregisterDefinisjon"
+              }
+            }
           }
         }
+      },
+      "Rolle": {
+        "type": "object",
+        "required": [
+          "id",
+          "aktiv"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "aktiv": {
+            "type": "boolean"
+          }
+        },
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/RolleDefinisjon"
+          }
+        ]
+      },
+      "FolkeregisterDefinisjon": {
+        "type": "object",
+        "properties": {
+          "tjenesteomraade": {
+            "$ref": "#/components/schemas/FolkeregisterTjenesteomraade"
+          },
+          "bruksomraade": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FolkeregisterBruksomraade"
+            },
+            "minItems": 1,
+            "uniqueItems": true
+          },
+          "kanHenteTaushetsbelagtInfo": {
+            "type": "boolean",
+            "readOnly": true
+          },
+          "dataminimering": {
+            "$ref": "#/components/schemas/DataminimeringDefinisjon"
+          }
+        }
+      },
+      "DataminimeringDefinisjon": {
+        "type": "object",
+        "properties": {
+          "felt": {
+            "type": "array",
+            "uniqueItems": true,
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "SummertSkattegrunnlagDefinisjon": {
+        "type": "object",
+        "properties": {
+          "rettighetspakker": {
+            "type": "array",
+            "items": {
+              "uniqueItems": true,
+              "$ref": "#/components/schemas/SummertSkattegrunnlagRettighetspakke"
+            }
+          }
+        }
+      },
+      "SummertSkattegrunnlagRettighetspakke": {
+        "type": "string",
+        "enum": [
+          "KOMMUNEFORELDREBETALING",
+          "KOMMUNEBOLIGSOSIALEFORMAAL",
+          "KOMMUNEPERSONLIGASSISTANSE"
+        ]
+      },
+      "KontaktregisterDefinisjon": {
+        "type": "object",
+        "properties": {}
+      },
+      "FolkeregisterTjenesteomraade": {
+        "type": "string",
+        "enum": [
+          "BARNEVERN",
+          "HELSE",
+          "GRAVFERDSMYNDIGHET",
+          "OMSORG",
+          "OPPVEKST",
+          "BARNEHAGE",
+          "SKATTEOPPKREVER",
+          "SOSIAL",
+          "TEKNISK",
+          "STOTTE",
+          "INNBYGGERTJENESTER",
+          "NAERINGSLIV",
+          "VALG",
+          "INNFORDRING_INNKREVING",
+          "INNVANDRING_OG_INTEGRERING",
+          "SAMFUNNSSIKKERHET",
+          "DEMOKRATI_AAPENHET"
+        ]
+      },
+      "FolkeregisterBruksomraade": {
+        "type": "string",
+        "enum": [
+          "INNBYGGERLISTE",
+          "SOEK",
+          "HENDELSER"
+        ]
       }
     }
   }
