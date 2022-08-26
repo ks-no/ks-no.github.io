@@ -1,0 +1,784 @@
+{
+  "openapi" : "3.0.1",
+  "info" : {
+    "title" : "KS Fiks: Fiks Smittevern Konfigurasjon Service",
+    "contact" : {
+      "name" : "Fiks brukerstøtte",
+      "url" : "https://ks-no.github.io/",
+      "email" : "fiks-utvikling@ks.no"
+    },
+    "version" : "v1"
+  },
+  "servers" : [ {
+    "url" : "https://api.fiks.ks.no",
+    "description" : "KS Fiks API host",
+    "variables" : { }
+  }, {
+    "url" : "https://api.test.fiks.ks.no",
+    "description" : "KS Fiks TEST API host",
+    "variables" : { }
+  } ],
+  "tags" : [ {
+    "name" : "Dhis2KonfigurasjonBrukere",
+    "description" : "API for konfigurasjon av DHIS2"
+  }, {
+    "name" : "Dhis2KonfigurasjonOrganisasjoner",
+    "description" : "API for konfigurasjon av Fiks smittevern"
+  } ],
+  "paths" : {
+    "/smittevern-konfigurasjon/api/v1/brukere/sok" : {
+      "post" : {
+        "tags" : [ "Dhis2KonfigurasjonBrukere" ],
+        "description" : "Søker etter en bruker i DHIS2",
+        "operationId" : "brukerSok",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/BrukerSok"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "default" : {
+            "description" : "default response",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/BrukerSokResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/smittevern-konfigurasjon/api/v1/brukere/{fiksOrganisasjonId}/sok" : {
+      "post" : {
+        "tags" : [ "Dhis2KonfigurasjonBrukere" ],
+        "description" : "Søker etter en bruker i DHIS2",
+        "operationId" : "brukerSok2",
+        "parameters" : [ {
+          "name" : "fiksOrganisasjonId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/BrukerSok"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "default" : {
+            "description" : "default response",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/BrukerSokResultat"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/smittevern-konfigurasjon/api/v1/brukere/{fiksOrganisasjonId}/tilganger/{brukerId}/{brukergruppe}/{typeEndring}" : {
+      "get" : {
+        "tags" : [ "Dhis2KonfigurasjonBrukere" ],
+        "description" : "Søker etter en bruker i DHIS2",
+        "operationId" : "brukerSokTilganger",
+        "parameters" : [ {
+          "name" : "brukergruppe",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "enum" : [ "ANNEN_SYKDOM", "TUBERKULOSE" ]
+          }
+        }, {
+          "name" : "brukerId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "pattern" : "^[A-Za-z][A-Za-z0-9]{10}$",
+            "type" : "string"
+          }
+        }, {
+          "name" : "fiksOrganisasjonId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        }, {
+          "name" : "typeEndring",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "enum" : [ "OPPRETT", "SLETT" ]
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/BrukerTilgangResponse"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Problem med fiksOrg i input",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Mangler tilgang til å utføre handlingen",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Ikke autentisert",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/smittevern-konfigurasjon/api/v1/brukere/{fiksOrganisasjonId}/tilganger/{brukerId}/{brukergruppe}" : {
+      "put" : {
+        "tags" : [ "Dhis2KonfigurasjonBrukere" ],
+        "description" : "Gir en bruker tilgang i DHIS2 for gitt Fiks-organisasjon",
+        "operationId" : "opprettTilgang",
+        "parameters" : [ {
+          "name" : "fiksOrganisasjonId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        }, {
+          "name" : "brukerId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "pattern" : "^[A-Za-z][A-Za-z0-9]{10}$",
+            "type" : "string"
+          }
+        }, {
+          "name" : "brukergruppe",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "enum" : [ "ANNEN_SYKDOM", "TUBERKULOSE" ]
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/BrukerTilgangResponse"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Problem med fiksOrg i input",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Mangler tilgang til å utføre handlingen",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Ikke autentisert",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete" : {
+        "tags" : [ "Dhis2KonfigurasjonBrukere" ],
+        "description" : "Fjerner tilgang for en bruker i DHIS2 for gitt Fiks-organisasjon",
+        "operationId" : "fjernTilgang",
+        "parameters" : [ {
+          "name" : "fiksOrganisasjonId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        }, {
+          "name" : "brukerId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "pattern" : "^[A-Za-z][A-Za-z0-9]{10}$",
+            "type" : "string"
+          }
+        }, {
+          "name" : "brukergruppe",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "enum" : [ "ANNEN_SYKDOM", "TUBERKULOSE" ]
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/BrukerTilgangResponse"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Problem med fiksOrg i input",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Mangler tilgang til å utføre handlingen",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Ikke autentisert",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Fant ikke bruker",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/smittevern-konfigurasjon/api/v1/brukere/{id}" : {
+      "put" : {
+        "tags" : [ "Dhis2KonfigurasjonBrukere" ],
+        "description" : "Oppdaterer en eksisterende bruker i DHIS2.",
+        "operationId" : "oppdaterBruker",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/OppdaterBrukerRequest"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "default" : {
+            "description" : "default response",
+            "content" : {
+              "*/*" : { }
+            }
+          }
+        }
+      }
+    },
+    "/smittevern-konfigurasjon/api/v1/brukere/{fiksOrganisasjonId}" : {
+      "post" : {
+        "tags" : [ "Dhis2KonfigurasjonBrukere" ],
+        "description" : "Oppretter en bruker i Fiks Smittevern",
+        "operationId" : "opprettBruker",
+        "parameters" : [ {
+          "name" : "fiksOrganisasjonId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/OpprettBrukerRequest"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "default" : {
+            "description" : "default response",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/OpprettBrukerResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/smittevern-konfigurasjon/api/v1/organisasjoner/{fiksOrganisasjonId}" : {
+      "get" : {
+        "tags" : [ "Dhis2KonfigurasjonOrganisasjoner" ],
+        "description" : "Henter informasjon for en organisasjon",
+        "operationId" : "getOrganisasjon",
+        "parameters" : [ {
+          "name" : "fiksOrganisasjonId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "default" : {
+            "description" : "default response",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Organisasjon"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put" : {
+        "tags" : [ "Dhis2KonfigurasjonOrganisasjoner" ],
+        "description" : "Oppdaterer informasjon for en organisasjon",
+        "operationId" : "oppdaterOrganisasjon",
+        "parameters" : [ {
+          "name" : "fiksOrganisasjonId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/OppdaterOrganisasjonRequest"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "default" : {
+            "description" : "default response",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Organisasjon"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/smittevern-konfigurasjon/api/v1/organisasjoner/{fiksOrganisasjonId}/tilganger/{brukergruppe}" : {
+      "get" : {
+        "tags" : [ "Dhis2KonfigurasjonOrganisasjoner" ],
+        "description" : "Henter alle tilganger for gitt brukergruppe på gitt Fiks-organisasjon fra DHIS2",
+        "operationId" : "getTilganger",
+        "parameters" : [ {
+          "name" : "fiksOrganisasjonId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        }, {
+          "name" : "brukergruppe",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "enum" : [ "ANNEN_SYKDOM", "TUBERKULOSE" ]
+          }
+        } ],
+        "responses" : {
+          "default" : {
+            "description" : "default response",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Tilganger"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components" : {
+    "schemas" : {
+      "Bruker" : {
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string"
+          },
+          "fornavn" : {
+            "type" : "string"
+          },
+          "etternavn" : {
+            "type" : "string"
+          },
+          "tilganger" : {
+            "$ref" : "#/components/schemas/Tilganger"
+          }
+        }
+      },
+      "BrukerSokResponse" : {
+        "type" : "object",
+        "properties" : {
+          "treff" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Bruker"
+            }
+          }
+        }
+      },
+      "Tilganger" : {
+        "type" : "object",
+        "properties" : {
+          "tilganger" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Tilgang"
+            }
+          }
+        }
+      },
+      "BrukerSok" : {
+        "type" : "object",
+        "properties" : {
+          "fnr" : {
+            "pattern" : "^[0-9]{11}$",
+            "type" : "string"
+          }
+        }
+      },
+      "BrukerSokResultat" : {
+        "type" : "object",
+        "properties" : {
+          "status" : {
+            "type" : "string",
+            "enum" : [ "UKJENT", "FINNES", "FINNES_I_EKSTERN_ORG" ]
+          },
+          "id" : {
+            "type" : "string"
+          },
+          "fornavn" : {
+            "type" : "string"
+          },
+          "etternavn" : {
+            "type" : "string"
+          },
+          "moduler" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/ModulTilgang"
+            }
+          }
+        }
+      },
+      "BrukerTilgangResponse" : {
+        "type" : "object",
+        "properties" : {
+          "tilgangResponse" : {
+            "type" : "string",
+            "enum" : [ "OK", "WARNING", "ERROR" ]
+          },
+          "message" : {
+            "type" : "string"
+          },
+          "tilgangsEndring" : {
+            "type" : "string",
+            "enum" : [ "LEGGE_TIL_BRUKERGRUPPE", "LEGGE_TIL_KOMMUNE", "LEGGE_TIL_KOMMUNE_OG_BRUKERGRUPPE", "FJERNE_BRUKERGRUPPE", "FJERNE_KOMMUNE", "FJERNE_KOMMUNE_OG_BRUKERGRUPPE", "INGEN_ENDRING", "HAR_ALLEREDE_TILGANGEN", "HAR_IKKE_TILGANGEN" ]
+          },
+          "sideeffekter" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/EkstraTilgangForOrg"
+            }
+          }
+        },
+        "description" : "Inneholder informasjon om tilgangsendring, kan endringen gjennomføres eller ikke."
+      },
+      "EkstraTilgangForOrg" : {
+        "type" : "object",
+        "properties" : {
+          "orgNavn" : {
+            "type" : "string"
+          },
+          "brukergruppe" : {
+            "type" : "string",
+            "enum" : [ "ANNEN_SYKDOM", "TUBERKULOSE" ]
+          }
+        }
+      },
+      "ModulTilgang" : {
+        "type" : "object",
+        "properties" : {
+          "navn" : {
+            "type" : "string",
+            "enum" : [ "TUBERKULOSE", "ANNEN_SYKDOM" ]
+          },
+          "tilgang" : {
+            "$ref" : "#/components/schemas/BrukerTilgangResponse"
+          }
+        }
+      },
+      "ErrorMessage" : {
+        "type" : "object",
+        "properties" : {
+          "timestamp" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "status" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "error" : {
+            "type" : "string"
+          },
+          "errorId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "path" : {
+            "type" : "string"
+          },
+          "originalPath" : {
+            "type" : "string"
+          },
+          "message" : {
+            "type" : "string"
+          },
+          "errorCode" : {
+            "type" : "string"
+          },
+          "errorJson" : {
+            "type" : "string"
+          }
+        }
+      },
+      "OppdaterBrukerRequest" : {
+        "required" : [ "tilganger" ],
+        "type" : "object",
+        "properties" : {
+          "fornavn" : {
+            "maxLength" : 160,
+            "minLength" : 2,
+            "type" : "string"
+          },
+          "etternavn" : {
+            "maxLength" : 160,
+            "minLength" : 2,
+            "type" : "string"
+          },
+          "tilganger" : {
+            "$ref" : "#/components/schemas/Tilganger"
+          }
+        }
+      },
+      "OpprettBrukerResponse" : {
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string"
+          },
+          "tilganger" : {
+            "$ref" : "#/components/schemas/Tilganger"
+          }
+        }
+      },
+      "OpprettBrukerRequest" : {
+        "required" : [ "tilganger" ],
+        "type" : "object",
+        "properties" : {
+          "fnr" : {
+            "pattern" : "^[0-9]{11}$",
+            "type" : "string"
+          },
+          "fornavn" : {
+            "maxLength" : 160,
+            "minLength" : 2,
+            "type" : "string"
+          },
+          "etternavn" : {
+            "maxLength" : 160,
+            "minLength" : 2,
+            "type" : "string"
+          },
+          "tilganger" : {
+            "$ref" : "#/components/schemas/Tilganger"
+          }
+        }
+      },
+      "Modul" : {
+        "type" : "object",
+        "properties" : {
+          "navn" : {
+            "type" : "string"
+          },
+          "aktiv" : {
+            "type" : "boolean"
+          }
+        }
+      },
+      "Organisasjon" : {
+        "type" : "object",
+        "properties" : {
+          "fiksOrganisasjonId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "epost" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          },
+          "tuberkulose" : {
+            "$ref" : "#/components/schemas/Modul"
+          },
+          "annenSykdom" : {
+            "$ref" : "#/components/schemas/Modul"
+          },
+          "provesvarTilgjengelig" : {
+            "type" : "boolean"
+          },
+          "vaksineTilgjengelig" : {
+            "type" : "boolean"
+          },
+          "klinikermeldingTilgjengelig" : {
+            "type" : "boolean"
+          }
+        }
+      },
+      "Tilgang" : {
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string"
+          },
+          "fornavn" : {
+            "type" : "string"
+          },
+          "etternavn" : {
+            "type" : "string"
+          },
+          "rolle" : {
+            "type" : "string",
+            "enum" : [ "LESE_SKRIVE", "LESE" ]
+          }
+        }
+      },
+      "OppdaterOrganisasjonRequest" : {
+        "type" : "object",
+        "properties" : {
+          "epost" : {
+            "maxItems" : 100,
+            "minItems" : 0,
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          }
+        }
+      }
+    }
+  }
+}
