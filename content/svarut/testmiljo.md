@@ -23,7 +23,7 @@ Digipost/eBoks går i test mot Digipost og eBoks test miljø.
 Digipost: https://qaoffentlig.digipost.no/
 eBoks: http://demo2-www.e-boks.no/default.aspx
 
-For å sette at bruker skal bruke digital postkasse må dette gjøres i Kontakt og reservasjonsregisteret ver1: https://brukerprofil-ver1.difi.no/minprofil/
+For å sette at bruker skal bruke digital postkasse må dette gjøres i Kontakt og reservasjonsregisteret ver1 og ver2: https://brukerprofil-ver1.difi.no/minprofil/ og https://brukerprofil-ver2.difi.no/minprofil/
 
 ### Minid innlogging
 Alle testbrukere dere får fra oss har minid innlogging. Her anbefaler vi at dere setter tlfnr og epost slik at brukeren kan låses opp om noen skulle sperre den med feilede innloggingsforsøk.
