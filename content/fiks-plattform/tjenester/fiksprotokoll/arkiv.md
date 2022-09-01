@@ -142,19 +142,30 @@ Les mer om disse feilmeldingene lenger nede under [feilmeldingstyper](#Feilmeldi
 | Søkeresultat minimum  | `no.ks.fiks.arkiv.v1.innsyn.sok.resultat.minimum`        |
 | Søkeresultat nøkler  | `no.ks.fiks.arkiv.v1.innsyn.sok.resultat.noekler`        |
 
-Meldingsformatet for søk er definert i xsd schema [**sok.xsd**](https://github.com/ks-no/fiks-arkiv-specification/blob/main/Schema/V1/sok.xsd). I meldingsformatet **sok.xml** kan man definere om man ønsker et resultat tilbake av typen utvidet, minimum eller noekler.
+Meldingsformatet for søk er definert i xsd schema [**sok.xsd**](https://github.com/ks-no/fiks-arkiv-specification/blob/main/Schema/V1/sok.xsd). 
+I meldingsformatet **sok.xml** definerer man hva man søker etter, hvilke returobjekter (journalposter eller mapper f.eks.) man ønsker, sortering og responstype.
+
+### Bbox
+For søk på saksmappe kan man søke på saker med koordinater innenfor et område ved hjelp av søkefelt typen `bbox`.
+Når man bruker bbox til søk så setter man to koordinater, nedreVenstre og oevreHoeyre, som da definerer en boks hvor man ønsker å finne saker som treffer innenfor dette området.
+Dermed gir det kun mening å bruke **equals** som parameter når man bruker bbox. Er noe bare delvis innenfor området skal det være treff.
+Feltet `koordinatsystem` i bbox definerer hvilket koordinatsystem man ønsker å gjøre et bbox søk med. Feltet `koordinatsystem` er en string med formatet "EPSG:" + 4-6 siffer som sier hvilket system som ønskes at skal brukes.
+Støttes ikke koordinatsystemet skal man få en ugyldigforespørsel tilbake. 
+
+### Responsttype
+Feltet `responstype` sier noe om hvor mye data man ønsker å få tilbake på søketreffet, som da er utvidet, minimum eller noekler.
 
 ### Søkeresultat utvidet
 
-Hvis søk forespørsel har satt *responsType* = *"utvidet"*  kan søket returnere et utvidet resultat med maksimalt mengde felter tilgjengelig gjennom søk. Se [**sokeresultatUtvidet.xsd**](https://github.com/ks-no/fiks-arkiv-specification/blob/main/Schema/V1/sokeresultatUtvidet.xsd) for definisjon av returmelding.
+Hvis søk forespørsel har satt *responstype* = *"utvidet"*  kan søket returnere et utvidet resultat med maksimalt mengde felter tilgjengelig gjennom søk. Se [**sokeresultatUtvidet.xsd**](https://github.com/ks-no/fiks-arkiv-specification/blob/main/Schema/V1/sokeresultatUtvidet.xsd) for definisjon av returmelding.
 
 ### Søkeresultat minimum
 
-Hvis søk forespørsel har satt *responsType* = *"minimum"* kan søket returnere et mer begrenset resultat tilgjengelig gjennom søk. Se [**sokeresultatMinimum.xsd**](https://github.com/ks-no/fiks-arkiv-specification/blob/main/Schema/V1/sokeresultatMinimum.xsd)
+Hvis søk forespørsel har satt *responstype* = *"minimum"* kan søket returnere et mer begrenset resultat tilgjengelig gjennom søk. Se [**sokeresultatMinimum.xsd**](https://github.com/ks-no/fiks-arkiv-specification/blob/main/Schema/V1/sokeresultatMinimum.xsd)
 
 ### Søkeresultat nøkler
 
-Hvis søk forespørsel har satt *responsType* = *"noekler"* kan søket returnere bare tilgjengelige nøkler. Se [**sokeresultatNoekler.xsd**](https://github.com/ks-no/fiks-arkiv-specification/blob/main/Schema/V1/sokeresultatNoekler.xsd)
+Hvis søk forespørsel har satt *responstype* = *"noekler"* kan søket returnere bare tilgjengelige nøkler. Se [**sokeresultatNoekler.xsd**](https://github.com/ks-no/fiks-arkiv-specification/blob/main/Schema/V1/sokeresultatNoekler.xsd)
 
 ### Feilmeldinger for søk
 Hvis søket ikke er gyldig, f.eks at den ikke validerer i henhold til schema, så sender man en `no.ks.fiks.arkiv.v1.feilmelding.ugyldigforespoersel` melding tilbake. Ved interne feil som gjør at man ikke får håndtert meldingen sendes `no.ks.fiks.arkiv.v1.feilmelding.serverfeil` tilbake.
