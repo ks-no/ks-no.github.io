@@ -1,7 +1,7 @@
 {
   "openapi" : "3.0.1",
   "info" : {
-    "title" : "KS Fiks: Fiks Smittevern Konfigurasjon Service",
+    "title" : "KS Fiks: Smittevern Konfigurasjon Service",
     "contact" : {
       "name" : "Fiks brukerstøtte",
       "url" : "https://ks-no.github.io/",
@@ -19,18 +19,27 @@
     "variables" : { }
   } ],
   "tags" : [ {
-    "name" : "Dhis2KonfigurasjonBrukere",
-    "description" : "API for konfigurasjon av DHIS2"
+    "name" : "SmittevernKonfigurasjonBrukere",
+    "description" : "API for konfigurasjon av Smittevern"
   }, {
-    "name" : "Dhis2KonfigurasjonOrganisasjoner",
+    "name" : "SmittevernKonfigurasjonOrganisasjoner",
     "description" : "API for konfigurasjon av Fiks smittevern"
   } ],
   "paths" : {
-    "/smittevern-konfigurasjon/api/v1/brukere/sok" : {
+    "/smittevern-konfigurasjon/api/v1/organisasjoner/{fiksOrgId}/sok" : {
       "post" : {
-        "tags" : [ "Dhis2KonfigurasjonBrukere" ],
-        "description" : "Søker etter en bruker i DHIS2",
+        "tags" : [ "SmittevernKonfigurasjonBrukere" ],
+        "description" : "Søker etter en bruker i Fiks smittevern for Fiksorg",
         "operationId" : "brukerSok",
+        "parameters" : [ {
+          "name" : "fiksOrgId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
         "requestBody" : {
           "content" : {
             "application/json" : {
@@ -54,57 +63,12 @@
         }
       }
     },
-    "/smittevern-konfigurasjon/api/v1/brukere/{fiksOrganisasjonId}/sok" : {
-      "post" : {
-        "tags" : [ "Dhis2KonfigurasjonBrukere" ],
-        "description" : "Søker etter en bruker i DHIS2",
-        "operationId" : "brukerSok2",
-        "parameters" : [ {
-          "name" : "fiksOrganisasjonId",
-          "in" : "path",
-          "required" : true,
-          "schema" : {
-            "type" : "string",
-            "format" : "uuid"
-          }
-        } ],
-        "requestBody" : {
-          "content" : {
-            "application/json" : {
-              "schema" : {
-                "$ref" : "#/components/schemas/BrukerSok"
-              }
-            }
-          }
-        },
-        "responses" : {
-          "default" : {
-            "description" : "default response",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/BrukerSokResultat"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/smittevern-konfigurasjon/api/v1/brukere/{fiksOrganisasjonId}/tilganger/{brukerId}/{brukergruppe}/{typeEndring}" : {
+    "/smittevern-konfigurasjon/api/v1/organisasjoner/{fiksOrganisasjonId}/brukere/{brukerId}/tilganger" : {
       "get" : {
-        "tags" : [ "Dhis2KonfigurasjonBrukere" ],
-        "description" : "Søker etter en bruker i DHIS2",
+        "tags" : [ "SmittevernKonfigurasjonBrukere" ],
+        "description" : "Søker etter tilgangene til en bruker i Fiks smittevern",
         "operationId" : "brukerSokTilganger",
         "parameters" : [ {
-          "name" : "brukergruppe",
-          "in" : "path",
-          "required" : true,
-          "schema" : {
-            "type" : "string",
-            "enum" : [ "ANNEN_SYKDOM", "TUBERKULOSE" ]
-          }
-        }, {
           "name" : "brukerId",
           "in" : "path",
           "required" : true,
@@ -119,14 +83,6 @@
           "schema" : {
             "type" : "string",
             "format" : "uuid"
-          }
-        }, {
-          "name" : "typeEndring",
-          "in" : "path",
-          "required" : true,
-          "schema" : {
-            "type" : "string",
-            "enum" : [ "OPPRETT", "SLETT" ]
           }
         } ],
         "responses" : {
@@ -173,81 +129,9 @@
         }
       }
     },
-    "/smittevern-konfigurasjon/api/v1/brukere/{fiksOrganisasjonId}/tilganger/{brukerId}/{brukergruppe}" : {
-      "put" : {
-        "tags" : [ "Dhis2KonfigurasjonBrukere" ],
-        "description" : "Gir en bruker tilgang i DHIS2 for gitt Fiks-organisasjon",
-        "operationId" : "opprettTilgang",
-        "parameters" : [ {
-          "name" : "fiksOrganisasjonId",
-          "in" : "path",
-          "required" : true,
-          "schema" : {
-            "type" : "string",
-            "format" : "uuid"
-          }
-        }, {
-          "name" : "brukerId",
-          "in" : "path",
-          "required" : true,
-          "schema" : {
-            "pattern" : "^[A-Za-z][A-Za-z0-9]{10}$",
-            "type" : "string"
-          }
-        }, {
-          "name" : "brukergruppe",
-          "in" : "path",
-          "required" : true,
-          "schema" : {
-            "type" : "string",
-            "enum" : [ "ANNEN_SYKDOM", "TUBERKULOSE" ]
-          }
-        } ],
-        "responses" : {
-          "200" : {
-            "description" : "OK",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/BrukerTilgangResponse"
-                }
-              }
-            }
-          },
-          "400" : {
-            "description" : "Problem med fiksOrg i input",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/ErrorMessage"
-                }
-              }
-            }
-          },
-          "401" : {
-            "description" : "Mangler tilgang til å utføre handlingen",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/ErrorMessage"
-                }
-              }
-            }
-          },
-          "403" : {
-            "description" : "Ikke autentisert",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/ErrorMessage"
-                }
-              }
-            }
-          }
-        }
-      },
+    "/smittevern-konfigurasjon/api/v1/organisasjoner/{fiksOrganisasjonId}/brukere/{brukerId}/brukergrupper/{brukergruppe}/tilganger" : {
       "delete" : {
-        "tags" : [ "Dhis2KonfigurasjonBrukere" ],
+        "tags" : [ "SmittevernKonfigurasjonBrukere" ],
         "description" : "Fjerner tilgang for en bruker i DHIS2 for gitt Fiks-organisasjon",
         "operationId" : "fjernTilgang",
         "parameters" : [ {
@@ -331,8 +215,8 @@
     },
     "/smittevern-konfigurasjon/api/v1/brukere/{id}" : {
       "put" : {
-        "tags" : [ "Dhis2KonfigurasjonBrukere" ],
-        "description" : "Oppdaterer en eksisterende bruker i DHIS2.",
+        "tags" : [ "SmittevernKonfigurasjonBrukere" ],
+        "description" : "Oppdaterer en eksisterende bruker i Fiks smittevern.",
         "operationId" : "oppdaterBruker",
         "parameters" : [ {
           "name" : "id",
@@ -361,20 +245,11 @@
         }
       }
     },
-    "/smittevern-konfigurasjon/api/v1/brukere/{fiksOrganisasjonId}" : {
+    "/smittevern-konfigurasjon/api/v1/brukere" : {
       "post" : {
-        "tags" : [ "Dhis2KonfigurasjonBrukere" ],
-        "description" : "Oppretter en bruker i Fiks Smittevern",
+        "tags" : [ "SmittevernKonfigurasjonBrukere" ],
+        "description" : "Oppretter en bruker i Fiks smittevern",
         "operationId" : "opprettBruker",
-        "parameters" : [ {
-          "name" : "fiksOrganisasjonId",
-          "in" : "path",
-          "required" : true,
-          "schema" : {
-            "type" : "string",
-            "format" : "uuid"
-          }
-        } ],
         "requestBody" : {
           "content" : {
             "application/json" : {
@@ -398,9 +273,153 @@
         }
       }
     },
+    "/smittevern-konfigurasjon/api/v1/organisasjoner/{fiksOrganisasjonId}/brukere/{brukerId}/brukergrupper/{brukergruppe}/tilgang" : {
+      "put" : {
+        "tags" : [ "SmittevernKonfigurasjonBrukere" ],
+        "description" : "Gir en bruker tilgang i Fiks smittevern for gitt Fiks-organisasjon",
+        "operationId" : "opprettTilgang",
+        "parameters" : [ {
+          "name" : "fiksOrganisasjonId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        }, {
+          "name" : "brukerId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "pattern" : "^[A-Za-z][A-Za-z0-9]{10}$",
+            "type" : "string"
+          }
+        }, {
+          "name" : "brukergruppe",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "enum" : [ "ANNEN_SYKDOM", "TUBERKULOSE" ]
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/BrukerTilgangResponse"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Problem med fiksOrg i input",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Mangler tilgang til å utføre handlingen",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Ikke autentisert",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/smittevern-konfigurasjon/api/v1/organisasjoner/{fiksOrganisasjonId}/moduler/{modul}" : {
+      "put" : {
+        "tags" : [ "SmittevernKonfigurasjonOrganisasjoner" ],
+        "description" : "Oppdaterer informasjon for en organisasjon",
+        "operationId" : "aktiverModul",
+        "parameters" : [ {
+          "name" : "fiksOrganisasjonId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        }, {
+          "name" : "modul",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "enum" : [ "ANNEN_SYKDOM", "TUBERKULOSE" ]
+          }
+        } ],
+        "responses" : {
+          "default" : {
+            "description" : "default response",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Organisasjon"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete" : {
+        "tags" : [ "SmittevernKonfigurasjonOrganisasjoner" ],
+        "description" : "Oppdaterer informasjon for en organisasjon",
+        "operationId" : "deaktiverModul",
+        "parameters" : [ {
+          "name" : "fiksOrganisasjonId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        }, {
+          "name" : "modul",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "enum" : [ "ANNEN_SYKDOM", "TUBERKULOSE" ]
+          }
+        } ],
+        "responses" : {
+          "default" : {
+            "description" : "default response",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Organisasjon"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/smittevern-konfigurasjon/api/v1/organisasjoner/{fiksOrganisasjonId}" : {
       "get" : {
-        "tags" : [ "Dhis2KonfigurasjonOrganisasjoner" ],
+        "tags" : [ "SmittevernKonfigurasjonOrganisasjoner" ],
         "description" : "Henter informasjon for en organisasjon",
         "operationId" : "getOrganisasjon",
         "parameters" : [ {
@@ -426,7 +445,7 @@
         }
       },
       "put" : {
-        "tags" : [ "Dhis2KonfigurasjonOrganisasjoner" ],
+        "tags" : [ "SmittevernKonfigurasjonOrganisasjoner" ],
         "description" : "Oppdaterer informasjon for en organisasjon",
         "operationId" : "oppdaterOrganisasjon",
         "parameters" : [ {
@@ -461,10 +480,10 @@
         }
       }
     },
-    "/smittevern-konfigurasjon/api/v1/organisasjoner/{fiksOrganisasjonId}/tilganger/{brukergruppe}" : {
+    "/smittevern-konfigurasjon/api/v1/organisasjoner/{fiksOrganisasjonId}/tilganger" : {
       "get" : {
-        "tags" : [ "Dhis2KonfigurasjonOrganisasjoner" ],
-        "description" : "Henter alle tilganger for gitt brukergruppe på gitt Fiks-organisasjon fra DHIS2",
+        "tags" : [ "SmittevernKonfigurasjonOrganisasjoner" ],
+        "description" : "Henter alle brukere på gitt Fiks-organisasjon fra Fiks smittevern",
         "operationId" : "getTilganger",
         "parameters" : [ {
           "name" : "fiksOrganisasjonId",
@@ -474,14 +493,6 @@
             "type" : "string",
             "format" : "uuid"
           }
-        }, {
-          "name" : "brukergruppe",
-          "in" : "path",
-          "required" : true,
-          "schema" : {
-            "type" : "string",
-            "enum" : [ "ANNEN_SYKDOM", "TUBERKULOSE" ]
-          }
         } ],
         "responses" : {
           "default" : {
@@ -489,7 +500,7 @@
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/Tilganger"
+                  "$ref" : "#/components/schemas/Brukere"
                 }
               }
             }
@@ -500,7 +511,7 @@
   },
   "components" : {
     "schemas" : {
-      "Bruker" : {
+      "BrukerSokResponse" : {
         "type" : "object",
         "properties" : {
           "id" : {
@@ -512,29 +523,14 @@
           "etternavn" : {
             "type" : "string"
           },
-          "tilganger" : {
-            "$ref" : "#/components/schemas/Tilganger"
-          }
-        }
-      },
-      "BrukerSokResponse" : {
-        "type" : "object",
-        "properties" : {
-          "treff" : {
+          "harTilgangIDenneOrganisasjon" : {
+            "type" : "boolean"
+          },
+          "moduler" : {
             "type" : "array",
             "items" : {
-              "$ref" : "#/components/schemas/Bruker"
-            }
-          }
-        }
-      },
-      "Tilganger" : {
-        "type" : "object",
-        "properties" : {
-          "tilganger" : {
-            "type" : "array",
-            "items" : {
-              "$ref" : "#/components/schemas/Tilgang"
+              "type" : "string",
+              "enum" : [ "ANNEN_SYKDOM", "TUBERKULOSE" ]
             }
           }
         }
@@ -548,33 +544,13 @@
           }
         }
       },
-      "BrukerSokResultat" : {
-        "type" : "object",
-        "properties" : {
-          "status" : {
-            "type" : "string",
-            "enum" : [ "UKJENT", "FINNES", "FINNES_I_EKSTERN_ORG" ]
-          },
-          "id" : {
-            "type" : "string"
-          },
-          "fornavn" : {
-            "type" : "string"
-          },
-          "etternavn" : {
-            "type" : "string"
-          },
-          "moduler" : {
-            "type" : "array",
-            "items" : {
-              "$ref" : "#/components/schemas/ModulTilgang"
-            }
-          }
-        }
-      },
       "BrukerTilgangResponse" : {
         "type" : "object",
         "properties" : {
+          "brukergruppe" : {
+            "type" : "string",
+            "enum" : [ "ANNEN_SYKDOM", "TUBERKULOSE" ]
+          },
           "tilgangResponse" : {
             "type" : "string",
             "enum" : [ "OK", "WARNING", "ERROR" ]
@@ -604,18 +580,6 @@
           "brukergruppe" : {
             "type" : "string",
             "enum" : [ "ANNEN_SYKDOM", "TUBERKULOSE" ]
-          }
-        }
-      },
-      "ModulTilgang" : {
-        "type" : "object",
-        "properties" : {
-          "navn" : {
-            "type" : "string",
-            "enum" : [ "TUBERKULOSE", "ANNEN_SYKDOM" ]
-          },
-          "tilgang" : {
-            "$ref" : "#/components/schemas/BrukerTilgangResponse"
           }
         }
       },
@@ -654,8 +618,45 @@
           }
         }
       },
+      "BrukerSokTilgangResultat" : {
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string"
+          },
+          "fornavn" : {
+            "type" : "string"
+          },
+          "etternavn" : {
+            "type" : "string"
+          },
+          "harTilgangerIAndreOrg" : {
+            "type" : "boolean"
+          },
+          "moduler" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/ModulTilgang"
+            }
+          }
+        }
+      },
+      "ModulTilgang" : {
+        "type" : "object",
+        "properties" : {
+          "navn" : {
+            "type" : "string",
+            "enum" : [ "ANNEN_SYKDOM", "TUBERKULOSE" ]
+          },
+          "kanOpprette" : {
+            "type" : "boolean"
+          },
+          "opprettet" : {
+            "type" : "boolean"
+          }
+        }
+      },
       "OppdaterBrukerRequest" : {
-        "required" : [ "tilganger" ],
         "type" : "object",
         "properties" : {
           "fornavn" : {
@@ -667,9 +668,6 @@
             "maxLength" : 160,
             "minLength" : 2,
             "type" : "string"
-          },
-          "tilganger" : {
-            "$ref" : "#/components/schemas/Tilganger"
           }
         }
       },
@@ -678,14 +676,10 @@
         "properties" : {
           "id" : {
             "type" : "string"
-          },
-          "tilganger" : {
-            "$ref" : "#/components/schemas/Tilganger"
           }
         }
       },
       "OpprettBrukerRequest" : {
-        "required" : [ "tilganger" ],
         "type" : "object",
         "properties" : {
           "fnr" : {
@@ -701,19 +695,16 @@
             "maxLength" : 160,
             "minLength" : 2,
             "type" : "string"
-          },
-          "tilganger" : {
-            "$ref" : "#/components/schemas/Tilganger"
           }
         }
       },
-      "Modul" : {
+      "Moduler" : {
         "type" : "object",
         "properties" : {
-          "navn" : {
-            "type" : "string"
+          "tuberkulose" : {
+            "type" : "boolean"
           },
-          "aktiv" : {
+          "andreSykdommer" : {
             "type" : "boolean"
           }
         }
@@ -731,24 +722,23 @@
               "type" : "string"
             }
           },
-          "tuberkulose" : {
-            "$ref" : "#/components/schemas/Modul"
-          },
-          "annenSykdom" : {
-            "$ref" : "#/components/schemas/Modul"
-          },
-          "provesvarTilgjengelig" : {
-            "type" : "boolean"
-          },
-          "vaksineTilgjengelig" : {
-            "type" : "boolean"
-          },
-          "klinikermeldingTilgjengelig" : {
-            "type" : "boolean"
+          "moduler" : {
+            "$ref" : "#/components/schemas/Moduler"
           }
         }
       },
-      "Tilgang" : {
+      "Brukere" : {
+        "type" : "object",
+        "properties" : {
+          "brukere" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/OrganisasjonsBruker"
+            }
+          }
+        }
+      },
+      "OrganisasjonsBruker" : {
         "type" : "object",
         "properties" : {
           "id" : {
@@ -760,9 +750,8 @@
           "etternavn" : {
             "type" : "string"
           },
-          "rolle" : {
-            "type" : "string",
-            "enum" : [ "LESE_SKRIVE", "LESE" ]
+          "moduler" : {
+            "$ref" : "#/components/schemas/Moduler"
           }
         }
       },
