@@ -26,20 +26,11 @@
     "description" : "API for konfigurasjon av Fiks smittevern"
   } ],
   "paths" : {
-    "/smittevern-konfigurasjon/api/v1/organisasjoner/{fiksOrgId}/sok" : {
+    "/smittevern-konfigurasjon/api/v1/brukere/sok" : {
       "post" : {
         "tags" : [ "SmittevernKonfigurasjonBrukere" ],
         "description" : "Søker etter en bruker i Fiks smittevern for Fiksorg",
         "operationId" : "brukerSok",
-        "parameters" : [ {
-          "name" : "fiksOrgId",
-          "in" : "path",
-          "required" : true,
-          "schema" : {
-            "type" : "string",
-            "format" : "uuid"
-          }
-        } ],
         "requestBody" : {
           "content" : {
             "application/json" : {
@@ -63,11 +54,11 @@
         }
       }
     },
-    "/smittevern-konfigurasjon/api/v1/organisasjoner/{fiksOrganisasjonId}/brukere/{brukerId}/tilganger" : {
+    "/smittevern-konfigurasjon/api/v1/brukere/{brukerId}/organisasjoner/{fiksOrganisasjonId}" : {
       "get" : {
         "tags" : [ "SmittevernKonfigurasjonBrukere" ],
-        "description" : "Søker etter tilgangene til en bruker i Fiks smittevern",
-        "operationId" : "brukerSokTilganger",
+        "description" : "Finner informasjon om en bruker i Fiks smittevern",
+        "operationId" : "hentBruker",
         "parameters" : [ {
           "name" : "brukerId",
           "in" : "path",
@@ -127,12 +118,48 @@
             }
           }
         }
-      }
-    },
-    "/smittevern-konfigurasjon/api/v1/organisasjoner/{fiksOrganisasjonId}/brukere/{brukerId}/brukergrupper/{brukergruppe}/tilganger" : {
+      },
+      "put" : {
+        "tags" : [ "SmittevernKonfigurasjonBrukere" ],
+        "description" : "Oppdaterer en eksisterende bruker i Fiks smittevern.",
+        "operationId" : "oppdaterBruker",
+        "parameters" : [ {
+          "name" : "brukerId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "fiksOrganisasjonId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/OppdaterBrukerRequest"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "default" : {
+            "description" : "default response",
+            "content" : {
+              "*/*" : { }
+            }
+          }
+        }
+      },
       "delete" : {
         "tags" : [ "SmittevernKonfigurasjonBrukere" ],
-        "description" : "Fjerner tilgang for en bruker i DHIS2 for gitt Fiks-organisasjon",
+        "description" : "Fjerner en bruker i DHIS2 for gitt Fiks-organisasjon",
         "operationId" : "fjernTilgang",
         "parameters" : [ {
           "name" : "fiksOrganisasjonId",
@@ -149,14 +176,6 @@
           "schema" : {
             "pattern" : "^[A-Za-z][A-Za-z0-9]{10}$",
             "type" : "string"
-          }
-        }, {
-          "name" : "brukergruppe",
-          "in" : "path",
-          "required" : true,
-          "schema" : {
-            "type" : "string",
-            "enum" : [ "ANNEN_SYKDOM", "TUBERKULOSE" ]
           }
         } ],
         "responses" : {
@@ -213,43 +232,20 @@
         }
       }
     },
-    "/smittevern-konfigurasjon/api/v1/brukere/{id}" : {
-      "put" : {
-        "tags" : [ "SmittevernKonfigurasjonBrukere" ],
-        "description" : "Oppdaterer en eksisterende bruker i Fiks smittevern.",
-        "operationId" : "oppdaterBruker",
-        "parameters" : [ {
-          "name" : "id",
-          "in" : "path",
-          "required" : true,
-          "schema" : {
-            "type" : "string"
-          }
-        } ],
-        "requestBody" : {
-          "content" : {
-            "application/json" : {
-              "schema" : {
-                "$ref" : "#/components/schemas/OppdaterBrukerRequest"
-              }
-            }
-          }
-        },
-        "responses" : {
-          "default" : {
-            "description" : "default response",
-            "content" : {
-              "*/*" : { }
-            }
-          }
-        }
-      }
-    },
-    "/smittevern-konfigurasjon/api/v1/brukere" : {
+    "/smittevern-konfigurasjon/api/v1/brukere/organisasjoner/{fiksOrganisasjonId}" : {
       "post" : {
         "tags" : [ "SmittevernKonfigurasjonBrukere" ],
         "description" : "Oppretter en bruker i Fiks smittevern",
         "operationId" : "opprettBruker",
+        "parameters" : [ {
+          "name" : "fiksOrganisasjonId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
         "requestBody" : {
           "content" : {
             "application/json" : {
@@ -266,80 +262,6 @@
               "application/json" : {
                 "schema" : {
                   "$ref" : "#/components/schemas/OpprettBrukerResponse"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/smittevern-konfigurasjon/api/v1/organisasjoner/{fiksOrganisasjonId}/brukere/{brukerId}/brukergrupper/{brukergruppe}/tilgang" : {
-      "put" : {
-        "tags" : [ "SmittevernKonfigurasjonBrukere" ],
-        "description" : "Gir en bruker tilgang i Fiks smittevern for gitt Fiks-organisasjon",
-        "operationId" : "opprettTilgang",
-        "parameters" : [ {
-          "name" : "fiksOrganisasjonId",
-          "in" : "path",
-          "required" : true,
-          "schema" : {
-            "type" : "string",
-            "format" : "uuid"
-          }
-        }, {
-          "name" : "brukerId",
-          "in" : "path",
-          "required" : true,
-          "schema" : {
-            "pattern" : "^[A-Za-z][A-Za-z0-9]{10}$",
-            "type" : "string"
-          }
-        }, {
-          "name" : "brukergruppe",
-          "in" : "path",
-          "required" : true,
-          "schema" : {
-            "type" : "string",
-            "enum" : [ "ANNEN_SYKDOM", "TUBERKULOSE" ]
-          }
-        } ],
-        "responses" : {
-          "200" : {
-            "description" : "OK",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/BrukerTilgangResponse"
-                }
-              }
-            }
-          },
-          "400" : {
-            "description" : "Problem med fiksOrg i input",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/ErrorMessage"
-                }
-              }
-            }
-          },
-          "401" : {
-            "description" : "Mangler tilgang til å utføre handlingen",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/ErrorMessage"
-                }
-              }
-            }
-          },
-          "403" : {
-            "description" : "Ikke autentisert",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/ErrorMessage"
                 }
               }
             }
@@ -480,7 +402,7 @@
         }
       }
     },
-    "/smittevern-konfigurasjon/api/v1/organisasjoner/{fiksOrganisasjonId}/tilganger" : {
+    "/smittevern-konfigurasjon/api/v1/organisasjoner/{fiksOrganisasjonId}/brukere" : {
       "get" : {
         "tags" : [ "SmittevernKonfigurasjonOrganisasjoner" ],
         "description" : "Henter alle brukere på gitt Fiks-organisasjon fra Fiks smittevern",
@@ -526,7 +448,7 @@
           "harTilgangIDenneOrganisasjon" : {
             "type" : "boolean"
           },
-          "moduler" : {
+          "tilgang" : {
             "type" : "array",
             "items" : {
               "type" : "string",
@@ -541,6 +463,10 @@
           "fnr" : {
             "pattern" : "^[0-9]{11}$",
             "type" : "string"
+          },
+          "fiksOrg" : {
+            "type" : "string",
+            "format" : "uuid"
           }
         }
       },
