@@ -82,7 +82,7 @@
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/BrukerTilgangResponse"
+                  "$ref" : "#/components/schemas/HentBrukerResultat"
                 }
               }
             }
@@ -232,6 +232,35 @@
         }
       }
     },
+    "/smittevern-konfigurasjon/api/v1/brukere/{brukerId}/organisasjoner/{fiksOrganisasjonId}/importer" : {
+      "put" : {
+        "operationId" : "importerBrukerTilNyKommune",
+        "parameters" : [ {
+          "name" : "brukerId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "fiksOrganisasjonId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "default" : {
+            "description" : "default response",
+            "content" : {
+              "application/json" : { }
+            }
+          }
+        }
+      }
+    },
     "/smittevern-konfigurasjon/api/v1/brukere/organisasjoner/{fiksOrganisasjonId}" : {
       "post" : {
         "tags" : [ "SmittevernKonfigurasjonBrukere" ],
@@ -269,7 +298,7 @@
         }
       }
     },
-    "/smittevern-konfigurasjon/api/v1/organisasjoner/{fiksOrganisasjonId}/moduler/{modul}" : {
+    "/smittevern-konfigurasjon/api/v1/organisasjoner/{fiksOrganisasjonId}/moduler/{tilgang}" : {
       "put" : {
         "tags" : [ "SmittevernKonfigurasjonOrganisasjoner" ],
         "description" : "Oppdaterer informasjon for en organisasjon",
@@ -283,7 +312,7 @@
             "format" : "uuid"
           }
         }, {
-          "name" : "modul",
+          "name" : "tilgang",
           "in" : "path",
           "required" : true,
           "schema" : {
@@ -303,7 +332,9 @@
             }
           }
         }
-      },
+      }
+    },
+    "/smittevern-konfigurasjon/api/v1/organisasjoner/{fiksOrganisasjonId}/tilganger/{tilgang}" : {
       "delete" : {
         "tags" : [ "SmittevernKonfigurasjonOrganisasjoner" ],
         "description" : "Oppdaterer informasjon for en organisasjon",
@@ -317,7 +348,7 @@
             "format" : "uuid"
           }
         }, {
-          "name" : "modul",
+          "name" : "tilgang",
           "in" : "path",
           "required" : true,
           "schema" : {
@@ -445,15 +476,33 @@
           "etternavn" : {
             "type" : "string"
           },
-          "harTilgangIDenneOrganisasjon" : {
-            "type" : "boolean"
+          "brukerStatus" : {
+            "type" : "string",
+            "enum" : [ "EKSISTERER_FOR_DENNE_ORG", "EKSISTERER_FOR_ANNEN_ORG", "NY_BRUKER" ]
           },
-          "tilgang" : {
+          "eksterneTilganger" : {
             "type" : "array",
             "items" : {
-              "type" : "string",
-              "enum" : [ "ANNEN_SYKDOM", "TUBERKULOSE" ]
+              "$ref" : "#/components/schemas/Tilgangstype"
             }
+          },
+          "kommunensTilganger" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Tilgangstype"
+            }
+          }
+        }
+      },
+      "Tilgangstype" : {
+        "type" : "object",
+        "properties" : {
+          "navn" : {
+            "type" : "string",
+            "enum" : [ "ANNEN_SYKDOM", "TUBERKULOSE" ]
+          },
+          "aktiv" : {
+            "type" : "boolean"
           }
         }
       },
@@ -544,7 +593,7 @@
           }
         }
       },
-      "BrukerSokTilgangResultat" : {
+      "HentBrukerResultat" : {
         "type" : "object",
         "properties" : {
           "id" : {
@@ -555,9 +604,6 @@
           },
           "etternavn" : {
             "type" : "string"
-          },
-          "harTilgangerIAndreOrg" : {
-            "type" : "boolean"
           },
           "moduler" : {
             "type" : "array",
@@ -594,6 +640,25 @@
             "maxLength" : 160,
             "minLength" : 2,
             "type" : "string"
+          },
+          "tilgangsEndring" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/TilgangsEndringRequest"
+            }
+          }
+        }
+      },
+      "TilgangsEndringRequest" : {
+        "type" : "object",
+        "properties" : {
+          "navn" : {
+            "type" : "string",
+            "enum" : [ "ANNEN_SYKDOM", "TUBERKULOSE" ]
+          },
+          "endringsType" : {
+            "type" : "string",
+            "enum" : [ "OPPRETT", "SLETT" ]
           }
         }
       },
@@ -621,6 +686,13 @@
             "maxLength" : 160,
             "minLength" : 2,
             "type" : "string"
+          },
+          "tilganger" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "enum" : [ "ANNEN_SYKDOM", "TUBERKULOSE" ]
+            }
           }
         }
       },
