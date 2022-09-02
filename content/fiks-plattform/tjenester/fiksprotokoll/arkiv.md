@@ -142,30 +142,31 @@ Les mer om disse feilmeldingene lenger nede under [feilmeldingstyper](#Feilmeldi
 | Søkeresultat minimum  | `no.ks.fiks.arkiv.v1.innsyn.sok.resultat.minimum`        |
 | Søkeresultat nøkler  | `no.ks.fiks.arkiv.v1.innsyn.sok.resultat.noekler`        |
 
-Meldingsformatet for søk er definert i xsd schema [**sok.xsd**](https://github.com/ks-no/fiks-arkiv-specification/blob/main/Schema/V1/sok.xsd). 
+Meldingsformatet for søk er definert i xsd schema [**sok.xsd**](https://github.com/ks-no/fiks-arkiv-specification/blob/main/Schema/V1/no.ks.fiks.arkiv.v1.innsyn.sok.xsd). 
 I meldingsformatet **sok.xml** definerer man hva man søker etter, hvilke returobjekter (journalposter eller mapper f.eks.) man ønsker, sortering og responstype.
 
 ### Bbox
-For søk på saksmappe kan man søke på saker med koordinater innenfor et område ved hjelp av søkefelt typen `bbox`.
+For søk på saksmappe kan man søke på saker med koordinater innenfor et område ved hjelp av søkefeltet av typen `bbox`.
 Når man bruker bbox til søk så setter man to koordinater, nedreVenstre og oevreHoeyre, som da definerer en boks hvor man ønsker å finne saker som treffer innenfor dette området.
 Dermed gir det kun mening å bruke **equals** som parameter når man bruker bbox. Er noe bare delvis innenfor området skal det være treff.
 Feltet `koordinatsystem` i bbox definerer hvilket koordinatsystem man ønsker å gjøre et bbox søk med. Feltet `koordinatsystem` er en string med formatet "EPSG:" + 4-6 siffer som sier hvilket system som ønskes at skal brukes.
-Støttes ikke koordinatsystemet skal man få en ugyldigforespørsel tilbake. 
+Se [her](https://register.geonorge.no/epsg-koder) for liste med EPSG-koder. 
+Støttes ikke koordinatsystemet skal man få en ugyldigforespørsel melding tilbake. 
 
 ### Responsttype
 Feltet `responstype` sier noe om hvor mye data man ønsker å få tilbake på søketreffet, som da er utvidet, minimum eller noekler.
 
 ### Søkeresultat utvidet
 
-Hvis søk forespørsel har satt *responstype* = *"utvidet"*  kan søket returnere et utvidet resultat med maksimalt mengde felter tilgjengelig gjennom søk. Se [**sokeresultatUtvidet.xsd**](https://github.com/ks-no/fiks-arkiv-specification/blob/main/Schema/V1/sokeresultatUtvidet.xsd) for definisjon av returmelding.
+Hvis søk forespørsel har satt *responstype* = *"utvidet"*  kan søket returnere et utvidet resultat med maksimalt mengde felter tilgjengelig gjennom søk. Se [**no.ks.fiks.arkiv.v1.innsyn.sok.resultat.utvidet.xsd**](https://github.com/ks-no/fiks-arkiv-specification/blob/main/Schema/V1/no.ks.fiks.arkiv.v1.innsyn.sok.resultat.utvidet.xsd) for definisjon av returmelding.
 
 ### Søkeresultat minimum
 
-Hvis søk forespørsel har satt *responstype* = *"minimum"* kan søket returnere et mer begrenset resultat tilgjengelig gjennom søk. Se [**sokeresultatMinimum.xsd**](https://github.com/ks-no/fiks-arkiv-specification/blob/main/Schema/V1/sokeresultatMinimum.xsd)
+Hvis søk forespørsel har satt *responstype* = *"minimum"* kan søket returnere et mer begrenset resultat tilgjengelig gjennom søk. Se [**no.ks.fiks.arkiv.v1.innsyn.sok.resultat.minimum.xsd**](https://github.com/ks-no/fiks-arkiv-specification/blob/main/Schema/V1/no.ks.fiks.arkiv.v1.innsyn.sok.resultat.minimum.xsd)
 
 ### Søkeresultat nøkler
 
-Hvis søk forespørsel har satt *responstype* = *"noekler"* kan søket returnere bare tilgjengelige nøkler. Se [**sokeresultatNoekler.xsd**](https://github.com/ks-no/fiks-arkiv-specification/blob/main/Schema/V1/sokeresultatNoekler.xsd)
+Hvis søk forespørsel har satt *responstype* = *"noekler"* kan søket returnere bare tilgjengelige nøkler. Se [**no.ks.fiks.arkiv.v1.innsyn.sok.resultat.noekler.xsd**](https://github.com/ks-no/fiks-arkiv-specification/blob/main/Schema/V1/no.ks.fiks.arkiv.v1.innsyn.sok.resultat.noekler.xsd)
 
 ### Feilmeldinger for søk
 Hvis søket ikke er gyldig, f.eks at den ikke validerer i henhold til schema, så sender man en `no.ks.fiks.arkiv.v1.feilmelding.ugyldigforespoersel` melding tilbake. Ved interne feil som gjør at man ikke får håndtert meldingen sendes `no.ks.fiks.arkiv.v1.feilmelding.serverfeil` tilbake.
@@ -175,29 +176,29 @@ Les mer om disse feilmeldingene lenger nede under [feilmeldingstyper](#Feilmeldi
 
 ### Meldingstyper:
 
-|   Type    | Navn |
-| ----------- | ----------- |
-| Hent mappe      | `no.ks.fiks.arkiv.v1.innsyn.mappe.hent`       |
-| Hent journalpost      | `no.ks.fiks.arkiv.v1.innsyn.journalpost.hent`       |
-| Hent dokumentfil  | `no.ks.fiks.arkiv.v1.innsyn.dokumentfil.hent`        |
-| Hent mappe resultat      | `no.ks.fiks.arkiv.v1.innsyn.mappe.hent.resultat`       |
-| Hent journalpost resultat      | `no.ks.fiks.arkiv.v1.innsyn.journalpost.hent.resultat`       |
-| Hent dokumentfil resultat      | `no.ks.fiks.arkiv.v1.innsyn.dokumentfil.hent.resultat`       |
+| Type                       | Navn                                                    |
+|----------------------------|---------------------------------------------------------|
+| Hent mappe                 | `no.ks.fiks.arkiv.v1.innsyn.mappe.hent`                 |
+| Hent registrering          | `no.ks.fiks.arkiv.v1.innsyn.registrering.hent`          |
+| Hent dokumentfil           | `no.ks.fiks.arkiv.v1.innsyn.dokumentfil.hent`           |
+| Hent mappe resultat        | `no.ks.fiks.arkiv.v1.innsyn.mappe.hent.resultat`        |
+| Hent registrering resultat | `no.ks.fiks.arkiv.v1.innsyn.registrering.hent.resultat` |
+| Hent dokumentfil resultat  | `no.ks.fiks.arkiv.v1.innsyn.dokumentfil.hent.resultat`  |
 
 ### Hent mappe:
 
-Meldingsformatet for hent mappe er definert i xsd schema [**mappeHent.xsd**](https://github.com/ks-no/fiks-arkiv-specification/blob/main/Schema/V1/mappeHent.xsd) og sendes som meldingstypen `no.ks.fiks.arkiv.v1.innsyn.mappe.hent`.
-Resultatet skal sendes tilbake som meldingstypen `no.ks.fiks.arkiv.v1.mappe.hent.resultat` og formatet er definert i xsd schema  [**mappeHentResultat.xsd**](https://github.com/ks-no/fiks-arkiv-specification/blob/main/Schema/V1/mappeHentResultat.xsd).
+Meldingsformatet for hent mappe er definert i xsd schema [**no.ks.fiks.arkiv.v1.innsyn.mappe.hent.xsd**](https://github.com/ks-no/fiks-arkiv-specification/blob/main/Schema/V1/no.ks.fiks.arkiv.v1.innsyn.mappe.hent.xsd) og sendes som meldingstypen `no.ks.fiks.arkiv.v1.innsyn.mappe.hent`.
+Resultatet skal sendes tilbake som meldingstypen `no.ks.fiks.arkiv.v1.mappe.hent.resultat` og formatet er definert i xsd schema  [**no.ks.fiks.arkiv.v1.innsyn.mappe.hent.resultat.xsd**](https://github.com/ks-no/fiks-arkiv-specification/blob/main/Schema/V1/no.ks.fiks.arkiv.v1.innsyn.mappe.hent.resultat.xsd).
 
 ### Hent journalpost:
 
-Meldingsformatet for hent journalpost er definert i xsd schema [**journalpostHent.xsd**](https://github.com/ks-no/fiks-arkiv-specification/blob/main/Schema/V1/journalpostHent.xsd) og sendes som meldingstypen no.ks.fiks.arkiv.v1.innsyn.journalpost.hent.
-Resultatet skal sendes tilbake som meldingstypen `no.ks.fiks.arkiv.v1.journalpost.hent.resultat` og formatet er definert i xsd schema  [**journalpostHentResultat.xsd**](https://github.com/ks-no/fiks-arkiv-specification/blob/main/Schema/V1/journalpostHentResultat.xsd).
+Meldingsformatet for hent journalpost er definert i xsd schema [**no.ks.fiks.arkiv.v1.registrering.hent.xsd**](https://github.com/ks-no/fiks-arkiv-specification/blob/main/Schema/V1/no.ks.fiks.arkiv.v1.registrering.hent.xsd) og sendes som meldingstypen `no.ks.fiks.arkiv.v1.innsyn.registrering.hent`.
+Resultatet skal sendes tilbake som meldingstypen `no.ks.fiks.arkiv.v1.registrering.hent.resultat` og formatet er definert i xsd schema  [**no.ks.fiks.arkiv.v1.registrering.hent.resultat.xsd**](https://github.com/ks-no/fiks-arkiv-specification/blob/main/Schema/V1/no.ks.fiks.arkiv.v1.registrering.hent.resultat.xsd).
 
 ### Hent dokumentfil:
 
-Meldingsformatet for hent dokumentfil er definert i xsd schema [**dokumentfilHent.xsd**](https://github.com/ks-no/fiks-arkiv-specification/blob/main/Schema/V1/dokumentfilHent.xsd) og sendes som meldingstypen no.ks.fiks.arkiv.v1.innsyn.dokumentfil.hent.
-Resultatet skal sendes tilbake som typen `no.ks.fiks.arkiv.v1.dokumentfil.hent.resultat`. Merk at det er ikke noe xsd schema for resultat da det ikke er noe behov for meta-data for dokumenfilen. Ønsker man meta-data for et dokument må **hent journalpost brukes**. Dokumentfilen kommer som payload i Fiks-IO meldingen med meldingsypen `no.ks.fiks.arkiv.v1.dokumentfil.hent.resultat`.
+Meldingsformatet for hent dokumentfil er definert i xsd schema [**no.ks.fiks.arkiv.v1.innsyn.dokumentfil.hent.xsd**](https://github.com/ks-no/fiks-arkiv-specification/blob/main/Schema/V1/no.ks.fiks.arkiv.v1.innsyn.dokumentfil.hent.xsd) og sendes som meldingstypen `no.ks.fiks.arkiv.v1.innsyn.dokumentfil.hent`.
+Resultatet skal sendes tilbake som typen `no.ks.fiks.arkiv.v1.dokumentfil.hent.resultat`. Merk at det er ikke noe xsd schema for resultat da det ikke er noe behov for meta-data for dokumenfilen. Ønsker man meta-data for et dokument må **hent registrering brukes**. Dokumentfilen kommer som payload i Fiks-IO meldingen med meldingsypen `no.ks.fiks.arkiv.v1.dokumentfil.hent.resultat`.
 
 ### Feilmeldinger for hent meldinger
 Hvis hent meldingen ikke er gyldig, f.eks at den ikke validerer i henhold til schema, så sender man en `no.ks.fiks.arkiv.v1.feilmelding.ugyldigforespoersel` melding tilbake. 
@@ -217,7 +218,7 @@ Les mer om disse feilmeldingene lenger nede under [feilmeldingstyper](#Feilmeldi
 
 ### Arkivmelding oppdatering:
 
-Meldingsformatet for arkivmelding oppdatering er definert i xsd schema [**arkivmeldingOppdatering.xsd**](https://github.com/ks-no/fiks-arkiv-specification/blob/main/Schema/V1/arkivmeldingOppdatering.xsd) og sendes som meldingstypen `no.ks.fiks.arkiv.v1.arkivering.arkivmelding.oppdater`.
+Meldingsformatet for arkivmelding oppdatering er definert i xsd schema [**no.ks.fiks.arkiv.v1.arkivering.arkivmelding.oppdater.xsd**](https://github.com/ks-no/fiks-arkiv-specification/blob/main/Schema/V1/no.ks.fiks.arkiv.v1.arkivering.arkivmelding.oppdater.xsd) og sendes som meldingstypen `no.ks.fiks.arkiv.v1.arkivering.arkivmelding.oppdater`.
 
 ### Feilmeldinger for oppdater meldinger
 Hvis oppdater meldingen ikke er gyldig, f.eks at den ikke validerer i henhold til schema, så sender man en no.ks.fiks.arkiv.v1.feilmelding.ugyldigforespoersel melding tilbake. Ved interne feil som gjør at man ikke får håndtert meldingen sendes no.ks.fiks.arkiv.v1.feilmelding.serverfeil tilbake og hvis det blir forsøkt å oppdatere noe som ikke eksisterer i arkivet leveres det tilbake en no.ks.fiks.arkiv.v1.feilmelding.ikkefunnet melding. Les mer om disse feilmeldingene lenger nede under [feilmeldingstyper](#Feilmeldingstyper)
@@ -239,12 +240,12 @@ Altså vil de ha en *no.ks.fiks.arkiv.v1.feilmelding* prefix for denne protokoll
 
 ### Ugyldig forespørsel
 
-Hvis noe er galt med forespørselen, altså den er ugyldig, så skal mottaker sende en `no.ks.fiks.kvittering.ugyldigforespoersel.v1` tilbake til sender. Json [schema](https://github.com/ks-no/fiks-io-client-dotnet/blob/master/KS.Fiks.IO.Client/Schema/no.ks.fiks.kvittering.ugyldigforespoersel.v1.schema.json) følger med i .NET pakken for Fiks-IO-client.
+Hvis noe er galt med forespørselen, altså den er ugyldig, så skal mottaker sende en `no.ks.fiks.arkiv.v1.feilmelding.ugyldigforespoersel` tilbake til sender. Xsd [schema](https://github.com/ks-no/fiks-arkiv-specification/blob/main/Schema/V1/no.ks.fiks.arkiv.v1.feilmelding.ugyldigforespoersel.xsd) følger med i Fiks-Arkiv models nuget pakken.
 ![arkivmelding_med_ugyldigforesporsel](/images/arkivmelding_med_ugyldigforesporsel.png "Arkivmelding med ugyldig forespørsel")
 
 ### Serverfeil
 
-Ved serverfeil hos mottaker skal det sendes en `no.ks.fiks.kvittering.serverfeil.v1` tilbake til sender. Json [schema](https://github.com/ks-no/fiks-io-client-dotnet/blob/master/KS.Fiks.IO.Client/Schema/no.ks.fiks.kvittering.serverfeil.v1.schema.json) følger med i .net pakken for Fiks-IO-client.
+Ved serverfeil hos mottaker skal det sendes en `no.ks.fiks.arkiv.v1.feilmelding.serverfeil` tilbake til sender. Xsd [schema](https://github.com/ks-no/fiks-arkiv-specification/blob/main/Schema/V1/no.ks.fiks.arkiv.v1.feilmelding.serverfeil.xsd) følger med i Fiks-Arkiv models nuget pakken.
 
 ### Ikkefunnet
 
