@@ -467,59 +467,80 @@
   "components" : {
     "schemas" : {
       "BrukerSokResponse" : {
+        "required" : [ "brukerStatus" ],
+        "type" : "object",
+        "properties" : {
+          "brukerStatus" : {
+            "type" : "string",
+            "description" : "Status for bruker knyttet mot kommune",
+            "enum" : [ "FINNES_I_EGEN_ORG", "FINNES_I_EKSTERN_ORG", "IKKE_I_BRUK" ]
+          },
+          "eksternBruker" : {
+            "$ref" : "#/components/schemas/EksternBruker"
+          },
+          "eksisterendeBruker" : {
+            "$ref" : "#/components/schemas/EksisterendeBruker"
+          }
+        },
+        "description" : "Bruker-informasjon som er funnet. Dersom bruker ikke finnes i systemet, returneres bare objekt med brukerStatus = NY_BRUKER"
+      },
+      "EksisterendeBruker" : {
+        "type" : "object",
+        "properties" : {
+          "fornavn" : {
+            "type" : "string",
+            "description" : "Fornavn til bruker"
+          },
+          "etternavn" : {
+            "type" : "string",
+            "description" : "Etternavn til bruker"
+          }
+        },
+        "description" : "Bruker som er opprettet for annen organisasjon"
+      },
+      "EksternBruker" : {
         "type" : "object",
         "properties" : {
           "id" : {
-            "type" : "string"
+            "type" : "string",
+            "description" : "Id til Dhis2-bruker"
           },
           "fornavn" : {
-            "type" : "string"
+            "type" : "string",
+            "description" : "Fornavn til bruker"
           },
           "etternavn" : {
-            "type" : "string"
-          },
-          "brukerStatus" : {
             "type" : "string",
-            "enum" : [ "EKSISTERER_FOR_DENNE_ORG", "EKSISTERER_FOR_ANNEN_ORG", "NY_BRUKER" ]
+            "description" : "Etternavn til bruker"
           },
-          "eksterneTilganger" : {
+          "tilganger" : {
             "type" : "array",
+            "description" : "Tilganger som bruker har for annen kommune",
             "items" : {
-              "$ref" : "#/components/schemas/Tilgangstype"
-            }
-          },
-          "kommunensTilganger" : {
-            "type" : "array",
-            "items" : {
-              "$ref" : "#/components/schemas/Tilgangstype"
+              "type" : "string",
+              "description" : "Tilganger som bruker har for annen kommune",
+              "enum" : [ "ANNEN_SYKDOM", "TUBERKULOSE" ]
             }
           }
-        }
-      },
-      "Tilgangstype" : {
-        "type" : "object",
-        "properties" : {
-          "navn" : {
-            "type" : "string",
-            "enum" : [ "ANNEN_SYKDOM", "TUBERKULOSE" ]
-          },
-          "aktiv" : {
-            "type" : "boolean"
-          }
-        }
+        },
+        "description" : "Bruker som er opprettet for annen organisasjon"
       },
       "BrukerSok" : {
+        "required" : [ "fiksOrg", "fnr" ],
         "type" : "object",
         "properties" : {
           "fnr" : {
             "pattern" : "^[0-9]{11}$",
-            "type" : "string"
+            "type" : "string",
+            "description" : "Fødselsnummer til bruker"
           },
           "fiksOrg" : {
             "type" : "string",
+            "description" : "Fiks organisasjonsnummer som søket er knyttet til",
             "format" : "uuid"
           }
-        }
+        },
+        "description" : "Søker etter bruker for gitt fiksOrg"
       },
       "BrukerTilgangResponse" : {
         "type" : "object",
@@ -599,36 +620,45 @@
         "type" : "object",
         "properties" : {
           "id" : {
-            "type" : "string"
+            "type" : "string",
+            "description" : "Dhis2 brukerId"
           },
           "fornavn" : {
-            "type" : "string"
+            "type" : "string",
+            "description" : "Fornavn til bruker"
           },
           "etternavn" : {
-            "type" : "string"
+            "type" : "string",
+            "description" : "Etternavn til bruker"
           },
           "moduler" : {
             "type" : "array",
+            "description" : "Alle tilganger som finnes, med informasjon om tilgang er aktivert og om tilgang er aktivert for kommune",
             "items" : {
               "$ref" : "#/components/schemas/ModulTilgang"
             }
           }
-        }
+        },
+        "description" : "Informasjon om bruker i Fiks Smittevern sammen med informasjon om alle tilganger i Fiks smittevern, om de er aktive for bruker og om tilgangene er aktivert for kommune"
       },
       "ModulTilgang" : {
         "type" : "object",
         "properties" : {
-          "navn" : {
+          "tilgang" : {
             "type" : "string",
+            "description" : "Type tilgang",
             "enum" : [ "ANNEN_SYKDOM", "TUBERKULOSE" ]
           },
           "kanOpprette" : {
-            "type" : "boolean"
+            "type" : "boolean",
+            "description" : "Kan denne tilgangen opprettes for kommunen?"
           },
           "opprettet" : {
-            "type" : "boolean"
+            "type" : "boolean",
+            "description" : "Er tilgang allerede opprettet?"
           }
-        }
+        },
+        "description" : "Tilgang i Dhis2."
       },
       "OppdaterBrukerRequest" : {
         "type" : "object",
@@ -636,33 +666,40 @@
           "fornavn" : {
             "maxLength" : 160,
             "minLength" : 2,
-            "type" : "string"
+            "type" : "string",
+            "description" : "Fornavn til bruker"
           },
           "etternavn" : {
             "maxLength" : 160,
             "minLength" : 2,
-            "type" : "string"
+            "type" : "string",
+            "description" : "Etternavn til bruker"
           },
           "tilgangsEndring" : {
             "type" : "array",
+            "description" : "Tilgangsendring, slett eller legg til tilgang",
             "items" : {
               "$ref" : "#/components/schemas/TilgangsEndringRequest"
             }
           }
-        }
+        },
+        "description" : "Informasjon om oppdatering av bruker"
       },
       "TilgangsEndringRequest" : {
         "type" : "object",
         "properties" : {
-          "navn" : {
+          "tilgang" : {
             "type" : "string",
+            "description" : "Type tilgang",
             "enum" : [ "ANNEN_SYKDOM", "TUBERKULOSE" ]
           },
           "endringsType" : {
             "type" : "string",
+            "description" : "Endringstype",
             "enum" : [ "OPPRETT", "SLETT" ]
           }
-        }
+        },
+        "description" : "Endringsønske for tilgang"
       },
       "OpprettBrukerResponse" : {
         "type" : "object",
@@ -670,33 +707,41 @@
           "id" : {
             "type" : "string"
           }
-        }
+        },
+        "description" : "Id i Dhis2 til nylig opprettet bruker"
       },
       "OpprettBrukerRequest" : {
+        "required" : [ "tilganger" ],
         "type" : "object",
         "properties" : {
           "fnr" : {
             "pattern" : "^[0-9]{11}$",
-            "type" : "string"
+            "type" : "string",
+            "description" : "Fødselsnummer til bruker"
           },
           "fornavn" : {
             "maxLength" : 160,
             "minLength" : 2,
-            "type" : "string"
+            "type" : "string",
+            "description" : "Fornavn til bruker"
           },
           "etternavn" : {
             "maxLength" : 160,
             "minLength" : 2,
-            "type" : "string"
+            "type" : "string",
+            "description" : "Etternavn til bruker"
           },
           "tilganger" : {
             "type" : "array",
+            "description" : "Tilganger som bruker skal få",
             "items" : {
               "type" : "string",
+              "description" : "Tilganger som bruker skal få",
               "enum" : [ "ANNEN_SYKDOM", "TUBERKULOSE" ]
             }
           }
-        }
+        },
+        "description" : "Informasjon om ny bruker"
       },
       "Moduler" : {
         "type" : "object",
