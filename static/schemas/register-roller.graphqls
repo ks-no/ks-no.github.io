@@ -1,0 +1,142 @@
+type Rolle {
+    id: ID!
+    navn: String!
+    beskrivelse: String!
+    registre: Registre!
+    organisasjon: Organisasjon!
+}
+
+"""
+Brukes til oppretting av ny rolle
+"""
+input RolleDefinisjon {
+    # fiksOrgId til organisasjon som rollen skal tilhøre
+    organisasjonId: ID!
+    # rollens navn
+    navn: String!
+    # beskrivelse av rollen
+    beskrivelse: String!
+    # beskrivelse av registre som rollen skal ha tilgang til
+    registre: RegistreDefinisjon!
+}
+
+type Organisasjon {
+    # Tilsvarer fiksOrgId
+    id: ID!
+    # Navn på organisasjonen
+    navn: String!
+}
+"""
+Brukes til endringer på rolle
+"""
+input RolleEndring {
+    id: ID!
+    navn: String
+    beskrivelse: String
+    registre: RegistreDefinisjon
+}
+type Registre {
+    kontaktregister: Kontaktregister
+    folkeregister: Folkeregister
+}
+
+input RegistreDefinisjon {
+    # brukes dersom rollen skal ha tilgang til kontaktregisteret
+    kontaktregister: KontaktRegisterEndring
+    # brukes dersom rollen skal ha tilgang til folkeregisteret
+    folkeregister: FolkeregisterOpprett
+}
+
+input FolkeregisterOpprett {
+    # tjenesteområde som skal gjelde for rollen
+    tjenesteomraade: FolkeregisterTjenesteOmraadeKode!
+    # hvilke bruksområder skal rollen ha
+    bruksomraader: [FolkeregisterBruksomraadeKode!]!
+    # dersom oppgitt begrenser man felt som returneres fra rollen
+    minimering: DataminimeringEndring
+}
+
+
+type Folkeregister {
+    tjenesteomraade: FolkeregisterTjenesteOmraade!
+    bruksomraader: [FolkeregisterBruksomraade!]!
+    minimering: Dataminimering
+}
+
+type FolkeregisterTjenesteOmraade {
+    kode: FolkeregisterTjenesteOmraadeKode!
+    navn: String!
+    kanHenteTausetsbelagtInformasjon: Boolean!
+    gyldig: Boolean!
+}
+
+enum FolkeregisterTjenesteOmraadeKode{
+    BARNEVERN
+    HELSE
+    GRAVFERDSMYNDIGHET
+    OMSORG
+    OPPVEKST
+    BARNEHAGE
+    SKATTEOPPKREVER
+    SOSIAL
+    TEKNISK
+    STOTTE
+    INNBYGGERTJENESTER
+    NAERINGSLIV
+    VALG
+    INNFORDRING_INNKREVING
+    INNVANDRING_OG_INTEGRERING
+    SAMFUNNSSIKKERHET
+    DEMOKRATI_AAPENHET
+}
+
+enum FolkeregisterBruksomraadeKode {
+    INNBYGGERLISTE
+    SOEK
+    HENDELSER
+}
+
+type FolkeregisterBruksomraade {
+    kode: FolkeregisterBruksomraadeKode!
+    navn: String!
+    beskrivelse: String!
+}
+
+type Kontaktregister {
+    minimering: Dataminimering
+}
+
+input KontaktRegisterEndring {
+    # brukes for å begrense hvilke felt som skal returneres for oppslag i kontaktregisteret
+    minimering: KontaktRegisterMinimeringEndring
+}
+
+type Dataminimering {
+    felt: [String]
+}
+input KontaktRegisterMinimeringEndring {
+    # brukes for å begrense hvilke felt som skal returneres for oppslag i kontaktregisteret
+    felt: [KontaktRegisterMinimeringFelt!]
+}
+
+enum KontaktRegisterMinimeringFelt {
+    EPOST
+    TELEFON
+    DIGIAL_POSTKASSE
+}
+input DataminimeringEndring {
+    # brukes for å begrense hvilke felt som skal returneres for oppslag folkeregisteret
+    felt: [String]
+}
+
+type Mutation {
+    opprettRolle(input: RolleDefinisjon): Rolle
+    endreRolle(input: RolleEndring): Rolle
+}
+
+type Query {
+    finnTilgjengeligeRoller: [Rolle!]
+    alleTjenesteomraader: [FolkeregisterTjenesteOmraade!]!
+    alleBruksomraader: [FolkeregisterBruksomraade!]!
+    alleOrganisasjoner: [Organisasjon!]
+}
