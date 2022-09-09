@@ -26,15 +26,22 @@ type Organisasjon {
     # Navn på organisasjonen
     navn: String!
 }
+
 """
 Brukes til endringer på rolle
 """
-input RolleEndring {
+input OppdaterRolle {
     id: ID!
+    oppdateringer: OppdateringerRolle!
+}
+
+input OppdateringerRolle {
     navn: String
     beskrivelse: String
-    registre: RegistreDefinisjon
+    kontaktregister: KontaktRegisterEndring
+    folkeregister: OppdaterFolkeregister
 }
+
 type Registre {
     kontaktregister: Kontaktregister
     folkeregister: Folkeregister
@@ -55,6 +62,21 @@ input FolkeregisterOpprett {
     # dersom oppgitt begrenser man felt som returneres fra rollen
     minimering: DataminimeringEndring
 }
+
+"""
+ Brukes for å oppdatere felt på for folkeregister. Nullverdi betyr ingen endring
+"""
+input OppdaterFolkeregister {
+    # tjenesteområde som skal gjelde for rollen. En rolle må alltid være tilknyttet et tjenesteområde
+    tjenesteomraade: FolkeregisterTjenesteOmraadeKode
+
+    # hvilke bruksområder skal rollen ha. Minst en må være oppgitt. Ved oppdatering må det oppgies fullstendig sett
+    bruksomraader: [FolkeregisterBruksomraadeKode!]
+
+    # dersom oppgitt begrenser man felt som returneres fra rollen. Erstatter gjeldende minimering. Om man oppgir et tomt objekt nullstilles minimering
+    minimering: DataminimeringEndring
+}
+
 
 
 type Folkeregister {
@@ -129,9 +151,13 @@ input DataminimeringEndring {
     felt: [String!]
 }
 
+
+
+
+
 type Mutation {
     opprettRolle(input: RolleDefinisjon!): Rolle!
-    endreRolle(input: RolleEndring!): Rolle!
+    endreRolle(input: OppdaterRolle!): Rolle!
 }
 
 type Query {
@@ -140,3 +166,5 @@ type Query {
     alleBruksomraader: [FolkeregisterBruksomraade!]!
     alleOrganisasjoner: [Organisasjon!]!
 }
+
+
