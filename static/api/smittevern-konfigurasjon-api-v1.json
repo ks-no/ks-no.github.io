@@ -259,78 +259,6 @@
         }
       }
     },
-    "/smittevern-konfigurasjon/api/v1/organisasjoner/{fiksOrganisasjonId}/moduler/{tilgang}" : {
-      "put" : {
-        "tags" : [ "SmittevernKonfigurasjonOrganisasjoner" ],
-        "description" : "Oppdaterer informasjon for en organisasjon",
-        "operationId" : "aktiverModul",
-        "parameters" : [ {
-          "name" : "fiksOrganisasjonId",
-          "in" : "path",
-          "required" : true,
-          "schema" : {
-            "type" : "string",
-            "format" : "uuid"
-          }
-        }, {
-          "name" : "tilgang",
-          "in" : "path",
-          "required" : true,
-          "schema" : {
-            "type" : "string",
-            "enum" : [ "ANNEN_SYKDOM", "TUBERKULOSE" ]
-          }
-        } ],
-        "responses" : {
-          "default" : {
-            "description" : "default response",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/Organisasjon"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/smittevern-konfigurasjon/api/v1/organisasjoner/{fiksOrganisasjonId}/tilganger/{tilgang}" : {
-      "delete" : {
-        "tags" : [ "SmittevernKonfigurasjonOrganisasjoner" ],
-        "description" : "Oppdaterer informasjon for en organisasjon",
-        "operationId" : "deaktiverModul",
-        "parameters" : [ {
-          "name" : "fiksOrganisasjonId",
-          "in" : "path",
-          "required" : true,
-          "schema" : {
-            "type" : "string",
-            "format" : "uuid"
-          }
-        }, {
-          "name" : "tilgang",
-          "in" : "path",
-          "required" : true,
-          "schema" : {
-            "type" : "string",
-            "enum" : [ "ANNEN_SYKDOM", "TUBERKULOSE" ]
-          }
-        } ],
-        "responses" : {
-          "default" : {
-            "description" : "default response",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/Organisasjon"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
     "/smittevern-konfigurasjon/api/v1/organisasjoner/{fiksOrganisasjonId}/brukere" : {
       "get" : {
         "tags" : [ "SmittevernKonfigurasjonOrganisasjoner" ],
@@ -618,6 +546,7 @@
         "description" : "Informasjon om oppdatering av bruker"
       },
       "TilgangsEndringRequest" : {
+        "required" : [ "endringsType", "tilgang" ],
         "type" : "object",
         "properties" : {
           "tilgang" : {
@@ -634,10 +563,12 @@
         "description" : "Endringsønske for tilgang"
       },
       "OpprettBrukerResponse" : {
+        "required" : [ "id" ],
         "type" : "object",
         "properties" : {
           "id" : {
-            "type" : "string"
+            "type" : "string",
+            "description" : "Id til opprettet bruker"
           }
         },
         "description" : "Id i Dhis2 til nylig opprettet bruker"
@@ -675,45 +606,34 @@
         },
         "description" : "Informasjon om ny bruker"
       },
-      "Moduler" : {
-        "type" : "object",
-        "properties" : {
-          "tuberkulose" : {
-            "type" : "boolean"
-          },
-          "andreSykdommer" : {
-            "type" : "boolean"
-          }
-        }
-      },
-      "Organisasjon" : {
-        "type" : "object",
-        "properties" : {
-          "fiksOrganisasjonId" : {
-            "type" : "string",
-            "format" : "uuid"
-          },
-          "epost" : {
-            "type" : "array",
-            "items" : {
-              "type" : "string"
-            }
-          },
-          "moduler" : {
-            "$ref" : "#/components/schemas/Moduler"
-          }
-        }
-      },
       "Brukere" : {
+        "required" : [ "brukere" ],
         "type" : "object",
         "properties" : {
           "brukere" : {
             "type" : "array",
+            "description" : "Liste over brukere som er tilknyttet fiksOrg",
             "items" : {
               "$ref" : "#/components/schemas/OrganisasjonsBruker"
             }
           }
-        }
+        },
+        "description" : "Liste med brukere som er tilknyttet fiksorg"
+      },
+      "Moduler" : {
+        "required" : [ "andreSykdommer", "tuberkulose" ],
+        "type" : "object",
+        "properties" : {
+          "tuberkulose" : {
+            "type" : "boolean",
+            "description" : "Er tuberkulose aktivert"
+          },
+          "andreSykdommer" : {
+            "type" : "boolean",
+            "description" : "Er andre sykdommer aktivert"
+          }
+        },
+        "description" : "Moduler aktivert for fiksOrg i Dhis2"
       },
       "OrganisasjonsBruker" : {
         "type" : "object",
@@ -730,7 +650,31 @@
           "moduler" : {
             "$ref" : "#/components/schemas/Moduler"
           }
-        }
+        },
+        "description" : "Bruker som er tilknyttet organisasjon"
+      },
+      "Organisasjon" : {
+        "required" : [ "epost", "fiksOrganisasjonId", "moduler" ],
+        "type" : "object",
+        "properties" : {
+          "fiksOrganisasjonId" : {
+            "type" : "string",
+            "description" : "Fiks organisasjonsnummer",
+            "format" : "uuid"
+          },
+          "epost" : {
+            "type" : "array",
+            "description" : "Kontakteposter",
+            "items" : {
+              "type" : "string",
+              "description" : "Kontakteposter"
+            }
+          },
+          "moduler" : {
+            "$ref" : "#/components/schemas/Moduler"
+          }
+        },
+        "description" : "Organisasjon i DHIS2/fiksOrg"
       },
       "OppdaterOrganisasjonRequest" : {
         "type" : "object",
