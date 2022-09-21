@@ -31,7 +31,7 @@ Merk at det sammen med systemet opprettes en tilhørende integrasjon som skal br
 
 Et system kan settes opp til å konfigureres av integrasjon. Da vil den tilhørende integrasjonen få tilgang til å administrere systemet og vil kunne gjøre det samme som en administrator kan gjøre på Fiks Forvaltning (med visse unntak som sletting av system og resetting av passord)
 
-APIet for konfigurering med integrasjon er definer her: [Fiks Protokoll API](https://editor.swagger.io/?url=https://ks-no.github.io/api/fiks-protokoll-konfigurasjon-api-v1.json)
+APIet for konfigurering med integrasjon er definert her: [Fiks Protokoll API](https://editor.swagger.io/?url=https://ks-no.github.io/api/fiks-protokoll-konfigurasjon-api-v1.json)
 
 ### Fiks Protokoll Konto
 Konto opprettes i forvaltning eller via API.
@@ -54,7 +54,7 @@ Payload:
 ```
 
 ### Tilganger
-Merk: Tilgangsstyringen er ikke implementert i Fiks IO ennå i Teest, så reglene beskrevet under blir per nå ikke håndhevd. Men det vil komme før løsninger går ut i produksjon
+Merk: Tilgangsstyringen er ikke implementert i Fiks IO ennå i Test, så reglene beskrevet under blir per nå ikke håndhevet. Men det vil komme før løsninger går ut i produksjon
 
 #### Gi tilgang til system
 Tilganger tildeles Protokoll system fra konto. Konto kan gi annet system tilgang til å sende meldinger til konto en oppretter tilgang fra. 
