@@ -97,28 +97,28 @@ Kun kontoer som er parter fra samme protokoll (samme navn og versjon) og som er 
 Definisjon av `EksternProtokollKontoResponseEksternProtokollKontoResponse`:
 ```json
 {
-  {
-    "id": ID på kontoen. Det er denne IDen Fiks IO skal sende til,
-    "navn": Navn på konto,
-    "beskrivelse": Beskrivelse av konto,
-    "part": { // Definerer parten som kontoen implementerer
-      "navn": Navn på part (f.eks. arkiv.full),
-      "beskrivelse": Beskrivelse av parten,
-      "protokollnavn": Navn på protokoll (f.eks. no.ks.fiks.arkiv),
-      "protokollversjon": Protokollversjon (f.eks. v1),
-      "avsenderMeldingstyper": [
-        // Liste av meldingstyper kontoen støtter å sende
-      ],
-      "mottakerMeldingstyper": [
-        // Liste av meldingstyper kontoen støtter å motta
-      ],
-      "stottedeParter": [
-        // Liste av parter som kan sende meldinger til kontoen.
-      ]
-    },
-    "system": {
-      // Beskrivelse av systemet som eier kontoen
-    }
+  "id": "ID på kontoen. Det er denne IDen Fiks IO skal sende til",
+  "navn": "Navn på konto",
+  "beskrivelse": "Beskrivelse av konto",
+  "part": {
+    // Definerer parten som kontoen implementerer
+    "navn": "Navn på part (f.eks. arkiv.full)",
+    "beskrivelse": "Beskrivelse av parten",
+    "protokollnavn": "Navn på protokoll (f.eks. no.ks.fiks.arkiv)",
+    "protokollversjon": "Protokollversjon (f.eks. v1)",
+    "avsenderMeldingstyper": [
+      // Liste av meldingstyper kontoen støtter å sende
+    ],
+    "mottakerMeldingstyper": [
+      // Liste av meldingstyper kontoen støtter å motta
+    ],
+    "stottedeParter": [
+      // Liste av parter som kan sende meldinger til kontoen.
+    ]
+  },
+  "system": {
+    // Beskrivelse av systemet som eier kontoen
+  }
 }
 ```
 
