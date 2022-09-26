@@ -27,7 +27,7 @@ Trykk "Neste" for å komme videre
 #### Steg 4: Wizard - Sett opp integrasjon 
 For å kunne sende og motta meldinger gjennom Fiks Protokoll kreves en integrasjon. Integrasjonen brukes via maskinporten, hvor et virksomhetssertifikat identifiserer eier av integrasjonen. Virksomhetssertifikatet hører til et organisasjonsnummer som må fylles ut her. I produksjon vil det variere om dette er kommunens virksomhetssertifikat eller om det er leverandørens. 
 
-NB: Det vil ikke være mulig å bruke Fiks Protokoll i test uten et virksomhetssertifikat. Det er mulig å endre organisasjonsnummer for integrasjonen senere dersom du velger feil i dette steget.
+NB: Det vil ikke være mulig å bruke Fiks Protokoll i test uten et virksomhetssertifikat. Det er mulig å endre organisasjonsnummer for integrasjonen senere dersom du velger feil i dette steget. [Se hvordan opprette klient hos maskinporten her](/fiks-platform/difiidportenklient)
 
 Dersom du ønsker å konfigurere systemet gjennom API kan du velge dette her. Da vil det være mulig å endre på systemet og opprette kontoer uten å bruke webgrensesnittet.
 
@@ -51,7 +51,7 @@ På denne siden vises nødvendig nøkkelinformasjon.
 Trykk "Gå til system" for å gå til systemet
 ![fiks protokoll](/images/protokoll-brukerveiledning/2_wizard_4.png "Wizard ferdig")
 
-#### Steg 7: System oversikt
+#### Steg 7: Systemoversikt
 Du har nå opprettet et Protokollsystem. På landingssiden vises nøkkelinformasjon om systemet.
 
 Merk: Systemet vil kun være tilgjenglig for andre systemer i egen organisasjon. Dette kan endres under "Konfigurasjon"
