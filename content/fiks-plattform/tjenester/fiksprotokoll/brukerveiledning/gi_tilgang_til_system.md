@@ -7,7 +7,7 @@ date: 2022-09-23
 Velg systemet som skal gi tilgang. I vårt tilfelle er det Mitt fagsystem som skal ha tilgang til Mitt arkiv. Vi går derfor inn på Mitt arkiv der for å gi tilgang der. Klikk på "Mitt arkiv"
 ![fiks protokoll](/images/protokoll-brukerveiledning/4_velg_system.png "Velg system")
 #### Steg 2: Velg kontoer
-Tilganger gis til systemer på kontoer. Vi må derfor velge kontoer fanen for å finne kontoen som skal gi tilgang til et system. 
+Tilganger gis til systemer på kontoer. Vi må derfor velge "kontoer"-fanen for å finne kontoen som skal gi tilgang til et system. 
 ![fiks protokoll](/images/protokoll-brukerveiledning/4_velg_kontoer.png "Velg kontoer")
 #### Steg 3: Velg Konto
 Velg kontoen i arkivet som fagsystemet skal få tilgang til.

@@ -17,7 +17,7 @@ Klikk på "Opprett nytt system" for å opprette nytt system.
 
 #### Steg 3: Wizard - Systeminfo 
 Det vil nå åpne seg en dialog med 4 steg. I første steg skal du fylle ut:
-* Systemnavn - Navnet på systemet. Dette vil være visningsnavnet til systemet i Fiks. Dette navnet vil være synlig for andre organisasjoner som komuniserer med systemet
+* Systemnavn - Navnet på systemet. Dette vil være visningsnavnet til systemet i Fiks. Dette navnet vil være synlig for andre organisasjoner som kommunisere med systemet
 * Beskrivelse - En mer detaljert beskrivelse av systemet. Dette vil også være synlig for andre organisasjoner
 * E-post(er) for varsling - En liste (minimum en) av eposter som blir brukt for å kontakte ansvarlige for systemet
 
@@ -43,9 +43,9 @@ Trykk "Opprett Fiks Protokoll-system" for å opprette
 Systemet er nå opprettet. 
 
 På denne siden vises nødvendig nøkkelinformasjon.
-* systemId - Denne IDen representere systemet og brukes blant annet når en konto i et annet system skal gi tilgang til dette systemet og dersom systemet skal konfigureres gjennom API
-* integrasjonId - Denne IDen brukes for maskin til maskin pålogging og kreves for tilgang til API. Denne skal inn i konfigurasjonen av Fiks IO-klienten
-* integrasjonPassord - Dette passordet brukes sammen med integtasjonId og skal også inn i konfigurasjonen til Fiks IO-klienten. Det er ikke mulig å hente dette passordet igjen, men det går an å generere nytt passord senere
+* systemId - Denne IDen representerer systemet og brukes blant annet når en konto i et annet system skal gi tilgang til dette systemet og dersom systemet skal konfigureres gjennom API
+* integrasjonId - Denne IDen brukes for maskin til maskin pålogging og kreves for tilgang til API. Denne skal inn i konfigurasjonen av Fiks IO-klienten. (Klientene er tilgjengelig i [Java](https://github.com/ks-no/fiks-io-klient-java), og [.net core](https://github.com/ks-no/fiks-io-client-dotnet))
+* integrasjonPassord - Dette passordet brukes sammen med integrasjonId og skal også inn i konfigurasjonen til Fiks IO-klienten. Det er ikke mulig å hente dette passordet igjen, men det går an å generere nytt passord senere
 * systemNavn - Navnet på systemet
 * 
 Trykk "Gå til system" for å gå til systemet

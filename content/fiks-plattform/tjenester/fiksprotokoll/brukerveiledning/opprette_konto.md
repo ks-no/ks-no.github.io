@@ -16,7 +16,7 @@ Trykk på "Opprett ny konto"
 Fyll ut navn og beskrivelse. Dette vil identifisere kontoen for andre
 ![fiks protokoll](/images/protokoll-brukerveiledning/3_opprett_del1.png "Navn og beskrivelse")
 #### Steg 5: Velg protokoll
-Velg protokoll fra nedtrekksmenyen. Dette bestemmer hvilken meldingsprotokoll kontoen hører til, og den vil kun komunisere med kontoer i samme protokoll.
+Velg protokoll fra nedtrekksmenyen. Dette bestemmer hvilken meldingsprotokoll kontoen hører til, og den vil kun kommunisere med kontoer i samme protokoll.
 ![fiks protokoll](/images/protokoll-brukerveiledning/3_opprett_del2.png "Velg protokoll")
 #### Steg 6: Velg Protokollpart
 Velg protokollpart fra nedtrekksmenyen. Dette bestemmer hvilken del av protokollen kontoen representerer. F.eks. vil fagsystemet i dette tilfellet være en klient som skal arkivere. Dette bestemmer hvilke meldinger kontoen kan sende og hvilke meldinger den kan motta. Det bestemmer også hvilke kontoer innenfor protokoll den kan kommunisere med. F.eks. vil en klient kun kunne kommunisere med andre arkiv, ikke andre klienter.
