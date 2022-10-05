@@ -688,6 +688,61 @@
         }
       }
     },
+    "/fiks-protokoll/api/v1/konfigurasjon/{fiksOrgId}/systemer/{systemId}/konto-sok" : {
+      "post" : {
+        "tags" : [ "Protokoll-konfigurasjon" ],
+        "description" : "Søk etter kontoer som systemet kan forespør tilgang til",
+        "operationId" : "kontoSok",
+        "parameters" : [ {
+          "name" : "fiksOrgId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        }, {
+          "name" : "systemId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/ProtokollKontoSokRequest"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Kontoer fra søkeresultat systemet kan forespørre tilgang til",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ProtokollKontoSokResponse"
+                }
+              }
+            }
+          },
+          "default" : {
+            "description" : "Noe gikk galt",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/fiks-protokoll/api/v1/konfigurasjon/{fiksOrgId}/systemer/{systemId}/kontoer/{kontoId}/forespurteTilganger/{eksternSystemId}" : {
       "delete" : {
         "tags" : [ "Protokoll-konfigurasjon" ],
@@ -1264,7 +1319,7 @@
             "$ref" : "#/components/schemas/EksternProtokollSystemResponse"
           }
         },
-        "description" : "Kontoer systemet har tilgang på"
+        "description" : "Systemer som ble funnet av søk"
       },
       "EksternProtokollSystemResponse" : {
         "required" : [ "beskrivelse", "fiksOrg", "id", "navn" ],
@@ -1390,6 +1445,76 @@
             "description" : "Konfigureres av integrasjon"
           }
         }
+      },
+      "ProtokollKontoSokResponse" : {
+        "required" : [ "kontoer" ],
+        "type" : "object",
+        "properties" : {
+          "kontoer" : {
+            "type" : "array",
+            "description" : "Systemer som ble funnet av søk",
+            "items" : {
+              "$ref" : "#/components/schemas/EksternProtokollKontoResponse"
+            }
+          }
+        }
+      },
+      "ProtokollKontoSokFilterRequest" : {
+        "type" : "object",
+        "properties" : {
+          "fiksOrgIder" : {
+            "type" : "array",
+            "description" : "Liste over fiksOrgIder som kontoen må være eid av",
+            "items" : {
+              "type" : "string",
+              "description" : "Liste over fiksOrgIder som kontoen må være eid av",
+              "format" : "uuid"
+            }
+          },
+          "protokollFilter" : {
+            "type" : "array",
+            "description" : "Protokoller som kontoen må være del av",
+            "items" : {
+              "$ref" : "#/components/schemas/ProtokollSokFilterRequest"
+            }
+          }
+        },
+        "description" : "Filter for søk etter protokollkontoer"
+      },
+      "ProtokollKontoSokRequest" : {
+        "type" : "object",
+        "properties" : {
+          "filter" : {
+            "$ref" : "#/components/schemas/ProtokollKontoSokFilterRequest"
+          },
+          "term" : {
+            "type" : "string",
+            "description" : "Søketerm på kontonavn, kontobeskrivelse, systemnavn og/eller systembeskrivelse"
+          }
+        }
+      },
+      "ProtokollSokFilterRequest" : {
+        "required" : [ "protokollNavn", "protokollVersjon" ],
+        "type" : "object",
+        "properties" : {
+          "protokollNavn" : {
+            "type" : "string",
+            "description" : "Navn på protokoll"
+          },
+          "protokollVersjon" : {
+            "type" : "string",
+            "description" : "Versjon av protokoll"
+          },
+          "parter" : {
+            "type" : "array",
+            "description" : "Parter",
+            "items" : {
+              "type" : "string",
+              "description" : "Parter"
+            }
+          }
+        },
+        "description" : "Protokoller som kontoen må være del av"
       },
       "ProtokollSystemSokResponse" : {
         "required" : [ "systemer" ],
