@@ -31,10 +31,18 @@ type Organisasjon {
 }
 
 """
+Nøkkel som brukes til å finne en spesifikk rolle ved oppdatering
+"""
+input RolleNokkel {
+    id: ID!
+    organisasjonId: ID!
+}
+
+"""
 Brukes til endringer på rolle
 """
 input OppdaterRolle {
-    id: ID!
+    nokkel: RolleNokkel!
     oppdateringer: OppdateringerRolle!
 }
 
@@ -70,6 +78,8 @@ input FolkeregisterOpprett {
     bruksomraader: [FolkeregisterBruksomraadeKode!]!
     # dersom oppgitt begrenser man felt som returneres fra rollen
     minimering: DataminimeringEndring
+    # Skal rollen brukes i søkesiden på fiks-forvaltning?
+    kanBrukesPaSokeside: Boolean! = false
 }
 
 """
@@ -84,6 +94,9 @@ input OppdaterFolkeregister {
 
     # dersom oppgitt begrenser man felt som returneres fra rollen. Erstatter gjeldende minimering. Om man oppgir et tomt objekt nullstilles minimering
     minimering: DataminimeringEndring
+
+    # Skal rollen brukes i søkesiden på fiks-forvaltning?
+    kanBrukesPaSokeside: Boolean
 }
 
 type Folkeregister {
@@ -161,9 +174,22 @@ input KontaktRegisterMinimeringEndring {
     # brukes for å begrense hvilke felt som skal returneres for oppslag i kontaktregisteret
     felt: [KontaktRegisterMinimeringFelt!]
 }
+
+type FolkeregisterBruksomraaderListe {
+    verdier: [FolkeregisterBruksomraade!]!
+}
+
+type FolkeregisterTjenesteomraaderListe {
+    verdier: [FolkeregisterTjenesteOmraade!]!
+}
+
+type FolkeregisterGyldigeVerdier {
+    bruksomraader: FolkeregisterBruksomraaderListe
+    tjenesteomraader(inkluderUgyldige: Boolean! = false): FolkeregisterTjenesteomraaderListe
+}
+
 type GyldigeVerdier {
-    alleBruksomraader: [FolkeregisterBruksomraade!]
-    alleTjenesteomraader: [FolkeregisterTjenesteOmraade!]
+    folkeregisterVerdier: FolkeregisterGyldigeVerdier!
 }
 enum KontaktRegisterMinimeringFelt {
     EPOST
