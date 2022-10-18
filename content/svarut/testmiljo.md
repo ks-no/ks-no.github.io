@@ -20,7 +20,7 @@ Altinn går i test mot altinn sitt tt02 test miljø. https://tt02.altinn.no Her 
 
 ### Digital post
 Digipost/eBoks går i test mot Digipost og eBoks test miljø.
-Digipost: https://qaoffentlig.digipost.no/
+Digipost: https://difitest.digipost.no/
 eBoks: http://demo2-www.e-boks.no/default.aspx
 
 For å sette at bruker skal bruke digital postkasse må dette gjøres i Kontakt og reservasjonsregisteret ver1 og ver2: https://brukerprofil-ver1.difi.no/minprofil/ og https://brukerprofil-ver2.difi.no/minprofil/
