@@ -4,12 +4,12 @@ date: 2020-06-09
 aliases: [/fiks-platform/difiidportenklient]
 ---
 For å ta i bruk maskinporten må dere ha:
-- Avtale med Difi om bruk av maskinporten
+- Avtale med Digdir om bruk av maskinporten
 - Virksomhetssertifikater for test- og produksjonsmiljøet
-- Sendt e-post til fiks-utvikling@ks.no hvor dere informerer om at det er inngått en avtale med Difi om bruk av maskinporten og hvilket organisasjonsnummeret det gjelder
+- Sendt e-post til fiks-utvikling@ks.no hvor dere informerer om at det er inngått en avtale med Digdir om bruk av maskinporten og hvilket organisasjonsnummeret det gjelder
 
 # Godkjenne bruksvilkår for bruk av maskinporten
-- En må først ha godkjent bruksvilkår hos difi. Det har de fleste kommuner: https://samarbeid.digdir.no/digital-postkasse/bruksvilkar-offentlige-kunder/70
+- En må først ha godkjent bruksvilkår hos Digdir. Det har de fleste kommuner: https://samarbeid.digdir.no/digital-postkasse/bruksvilkar-offentlige-kunder/70
 
 # Virksomhetssertifikat
 - Dere må ha virksomhetsertifikat fra Commfides eller Buypass. Test sertifikat for test og vanlig for produksjon.
@@ -24,7 +24,7 @@ For å ta i bruk maskinporten må dere ha:
  ![Idporten](../images/difi-selvbetjening2.png "")
 - Sett Integrasjon for: for egen virksomhet -> integrasjonstype = maskinporten,  -> velg scopes,  Der skal du se ks:fiks i lista.
 - client_name: til et navn som passer
-- Difi-tjeneste: Maskinporten (for personinnlogging må du kontakte idporten@difi.no)
+- Digdir-tjeneste: Maskinporten (for personinnlogging må du kontakte idporten@difi.no)
 - legg til scopes: ks:fiks ( Vises ikke dette har vi ikke fått korrekt org.nr fra dere, send det til fiks-utvikling@ks.no)
 - grant_types: urn:ietf:params:oauth:grant-type:jwt-bearer må være valgt
 - token_endpoint_auth_method: private_key_jwt 
