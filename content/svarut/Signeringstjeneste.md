@@ -3,7 +3,7 @@ title: Signeringstjeneste
 date: 2017-01-01
 ---
 ## Aktivering
-Avtale om bruk av signeringstjenesten må gjøres med Difi og forutsetter at dere allerede har avtale om SDP. Når avtalene er inngått må dere aktivere tjenesten inne på [konfigurasjon](https://svarut.ks.no/konfigurasjon/#/) under SDP-fanen.
+Avtale om bruk av signeringstjenesten må gjøres med Digdir og forutsetter at dere allerede har avtale om SDP. Når avtalene er inngått må dere aktivere tjenesten inne på [konfigurasjon](https://svarut.ks.no/konfigurasjon/#/) under SDP-fanen.
 
 <a name="api"></a>
 ## API
