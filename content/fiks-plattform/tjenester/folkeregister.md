@@ -5,7 +5,7 @@ date: 2022-02-18
 
 ## Fiks folkeregister
 Fiks folkeregister er en tjeneste for å gjøre oppslag, uttrekk og hente ut hendelseslister fra Skatteetate sitt [Folkeregister](https://skatteetaten.github.io/folkeregisteret-api-dokumentasjon/) (FREG). Fiks folkeregister speiler [konsument tjenestene](https://skatteetaten.github.io/folkeregisteret-api-dokumentasjon/konsumenttjenester/) til Skatteetaten på Fiks plattformen. 
-Mer informasjon om Fiks folkeregister finner man [her](https://www.ks.no/fagomrader/digitalisering/utviklingsprosjekter/modernisert-folkeregister).
+Mer informasjon om Fiks folkeregister finner man [her](https://www.ks.no/fagomrader/digitalisering/felleslosninger/modernisert-folkeregister/).
 
 Fiks folkeregister tilbyr tilgang til folkeregisteret via
 * Søkeportal
