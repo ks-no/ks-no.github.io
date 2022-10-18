@@ -9,14 +9,14 @@ For å ta i bruk maskinporten må dere ha:
 - Sendt e-post til fiks-utvikling@ks.no hvor dere informerer om at det er inngått en avtale med Difi om bruk av maskinporten og hvilket organisasjonsnummeret det gjelder
 
 # Godkjenne bruksvilkår for bruk av maskinporten
-- En må først ha godkjent bruksvilkår hos difi. Det har de fleste kommuner: https://samarbeid.difi.no/felleslosninger/maskinporten/ta-i-bruk-maskinporten/1-planlegge-og-akseptere-bruksvilkar
+- En må først ha godkjent bruksvilkår hos difi. Det har de fleste kommuner: https://samarbeid.digdir.no/digital-postkasse/bruksvilkar-offentlige-kunder/70
 
 # Virksomhetssertifikat
 - Dere må ha virksomhetsertifikat fra Commfides eller Buypass. Test sertifikat for test og vanlig for produksjon.
 
 # Opprette maskinporten-klient
 - Husk å sende e-post til fiks-utvikling@ks.no med organisasjonsnummeret. Det er mulig å fullføre opprettelsen av maskinport-klient uten at dette er på plass, men det må etterregistreres for å få klienten til å virke på Fiks-plattformen.
-- Gå til https://selvbetjening-samarbeid.difi.no/#/
+- Gå til https://selvbetjening-samarbeid-prod.difi.no/
 - logg inn
 - velg "Gå til integrasjoner", for ver2 for test. Produksjon for prod.
  ![Idporten](../images/difi-selvbetjening1.png "")
