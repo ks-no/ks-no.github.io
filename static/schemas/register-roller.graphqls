@@ -1,13 +1,96 @@
-"""
-Beskriver en lagret rolle
-"""
-type Rolle {
+interface Rolle {
     id: ID!
     navn: String!
     beskrivelse: String!
     registre: Registre!
     organisasjon: Organisasjon!
 }
+
+"""
+Beskriver en rolle man har tilgang til å bruke
+"""
+type LagretRolle implements Rolle {
+    id: ID!
+    navn: String!
+    beskrivelse: String!
+    registre: Registre!
+    organisasjon: Organisasjon!
+}
+
+"""
+Beskriver en rolle man har tilgang til å gjøre endringer på
+"""
+type KonfigurerbarRolle implements Rolle {
+    id: ID!
+    navn: String!
+    beskrivelse: String!
+    registre: Registre!
+    organisasjon: Organisasjon!
+    ressursId: ID!
+    tilganger: RolleTilganger
+}
+
+"""
+Viser hvilke tilganger som har vært gitt en rolle
+"""
+type RolleTilganger {
+    # antall tilganger gitt per fødselsnummer
+    antallPersoner: Int!
+    # antall integrasjoner som har brukstilgang
+    antallIntegrasjoner: Int!
+    # antall eksterne grupper som har tilgang (når sentralisert brukerstyring er aktivert)
+    antallEksterneGrupper: Int!
+    # antall eksterne brukere som har tilgang (når sentralisert brukerstyring er aktivert)
+    antallEksterneBrukere: Int!
+    # integrasjoner som har fått tilgang til å bruke rollen
+    integrasjonTilganger: [IntegrasjonAktor!]
+    # tilganger som er gitt til å bruke rollen via nettsidene
+    nettsideTilganger: [NettsideAktor!]
+    # Konfigurasjonstilgang gitt eksplisitt på rollen (inkluderer ikke arvede privilegier)
+    adminTilganger: [NettsideAktor!]
+}
+
+"""
+Aktør er et en som har tilgang
+"""
+interface Aktor {
+    id: String!
+    navn: String
+}
+
+"""
+Integrasjon (systembruker)
+"""
+type IntegrasjonAktor implements Aktor {
+    id: String!
+    navn: String
+}
+
+"""
+Person identifisert med fødselsnummer. Brukes når sentralisert brukerstyring ikke er aktivert
+"""
+type PersonAktor implements Aktor {
+    id: String!
+    navn: String
+}
+
+"""
+Gruppe av brukere definert i eksternt tilgangsstyringssystem. Tilgjengelig bare når sentralisert brukerstyring er aktivert
+"""
+type EksternGruppe implements Aktor {
+    id: String!
+    navn: String
+}
+
+"""
+Bruker definert i ekstern tilgangsstyringssystem. Tilgjengelig bare når sentralisert brukerstyring er aktivert
+"""
+type EksternBruker implements Aktor {
+    id: String!
+    navn: String
+}
+
+union NettsideAktor = PersonAktor | EksternBruker | EksternGruppe
 
 """
 Brukes til oppretting av ny rolle
@@ -228,7 +311,7 @@ type Mutation {
 }
 
 type Query {
-    finnTilgjengeligeRollerForOrganisasjon(organisasjonId: ID!): [Rolle!]
+    finnKonfigurerbareRoller(organisasjonId: ID!): [KonfigurerbarRolle!]
     finnTilgjengeligeRoller: [Rolle!]!
     finnRolleMedId(organisasjonId: ID!, rolleId: ID!): Rolle
     alleHjelpeVerdier: GyldigeVerdier!
