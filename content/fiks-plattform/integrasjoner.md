@@ -14,7 +14,7 @@ Etter organisasjonen er opprettet må den autoriseres for å kunne handle på ve
 
 ## Hvordan komme i gang med utviklingen
 
-1. Bestill virksomhetssertifikat fra comfides eller buypass for test. **NB!** På grunn av krav fra DIFI/Maskinporten kan du ikke bruke _selvsignert sertifikat_ hverken i test eller produksjonsmiljø
+1. Bestill virksomhetssertifikat fra comfides eller buypass for test. **NB!** På grunn av krav fra Digdir/Maskinporten kan du ikke bruke _selvsignert sertifikat_ hverken i test eller produksjonsmiljø
 1. Vi må ha org.nr på kontoen hos ID-porten (samme som i virksomhetssertifikatet), slik at vi får gitt dere tilgang til "ks:fiks"-scopet. Sendes til fiks-utvikling@ks.no
 1. [Følg oppskrift her for å lage klient hos idporten](../difiidportenklient) 
 1. Send en e-post til fiks-utvikling@ks.no med e-postadresser som vil ha tilgang til vår Slack support-kanal. Vi liker best å ta support på Slack-chat.
@@ -25,7 +25,7 @@ Etter organisasjonen er opprettet må den autoriseres for å kunne handle på ve
 
 1. Bestill virksomhetsertifikat fra comfides (https://www.commfides.com/commfides-virksomhetssertifikat/) eller buypass ( https://www.buypass.no/produkter/virksomhetssertifikat-esegl ), hvis dere ikke har et.
 1. Send orgnr til oss (hovedorgnr til organisasjonen) det som ligger i virksomhetsertifikatet. fiks-utvikling@ks.no og si dere trenger tilgang til fiks.
-1. Bestill tilgang til Maskinporten/Idporten hos difi. For personinnlogga websider må du ha idporten, for applikasjoner der du ikke er logget inn via idporten må en ha maskinporten.
+1. Bestill tilgang til Maskinporten/Idporten hos Digdir. For personinnlogga websider må du ha idporten, for applikasjoner der du ikke er logget inn via idporten må en ha maskinporten.
   * For å opprette tilgang må en bruke selvbetjening: https://samarbeid.digdir.no/maskinporten/ta-i-bruk-maskinporten/97
   * Gå inn på https://minside-samarbeid.digdir.no/my-organisation/integrations/admin
   *  [Følg oppskrift her for å lage klient hos idporten](../difiidportenklient) 
