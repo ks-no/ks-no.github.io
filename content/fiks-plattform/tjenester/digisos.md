@@ -80,7 +80,7 @@ For ettersendelse, ```no.nav.digisos.ettersendelse.v1```, som definert i [json-s
 For ny søknad, ```no.nav.digisos.soknad.mottatt.v1```, med tom body.\
 For ettersendelse, ```no.nav.digisos.ettersendelse.mottatt.v1```, med tom body.
 
-For mer informasjon om Fiks IO, se [dokumentasjon for Fiks IO](https://ks-no.github.io/fiks-plattform/tjenester/fiksprotokoll/fiksio/)).
+For mer informasjon om Fiks IO, se [dokumentasjon for Fiks IO](https://ks-no.github.io/fiks-plattform/tjenester/fiksprotokoll/fiksio/).
 
 #### SvarInn/SvarUt
 
