@@ -5,7 +5,7 @@ date: 2021-08-18
 
 Fiks Matrikkelføring er en asynkron protokoll over Fiks IO for å overføre grunnlag til matrikkelføring fra eByggesak til Matrikkelklienter. 
 Den er tilsvarende løsningen som er etablert på Fiks SvarUt/SvarInn http://geointegrasjon.no/nytt-grensesnitt-ebyggesak-og-matrikkel/.
-Denne løsningen benytter altså [Fiks IO](https://ks-no.github.io/fiks-platform/tjenester/fiksprotokoll/fiksio/) for maskin til maskin integrasjon. 
+Denne løsningen benytter altså [Fiks IO](https://ks-no.github.io/fiks-plattform/tjenester/fiksprotokoll/fiksio/) for maskin til maskin integrasjon. 
 
 ## Løsningskonsept
 
