@@ -97,7 +97,7 @@ Når en melding er mottatt skal mottaker persistere meldingen og sende `ack` til
 
 En `ack` melding må ikke forveksles med `mottatt`meldingene som sendes tilbake i noen tilfeller. En `mottatt`melding er en melding tilbake til avsender, en `ack`melding er **kun** en beskjed tilbake til køen om å fjerne meldingen.
 
-Hvis `ack` for en melding uteblir vil meldingen bli værende på køen inntil den er blitt hentet 3 ganger uten å få en `ack` tilbake. Da vil Fiks-IO sende en `no.ks.fiks.io.feilmelding.serverfeil.v1` melding tilbake til avsender. Med andre ord er det viktig at man sender `ack` når man vellykket har hentet en melding. 
+Hvis `ack` for en melding uteblir vil meldingen bli værende på køen inntil den er blitt hentet 3 ganger uten å få en `ack` tilbake. Da vil Fiks-IO sende en `no.ks.fiks.io.feilmelding.serverfeil.v1` melding tilbake til avsender. Med andre ord er det viktig at man sender `ack` når man har hentet en melding.
 
 OBS: Dette erstatter tidligere TTL-håndtering på Fiks-IO køene. Det vil ikke lenger sendes noen `tidsavbrudd` meldinger basert på TTL. 
 
@@ -112,7 +112,7 @@ OBS: Dette erstatter tidligere TTL-håndtering på Fiks-IO køene. Det vil ikke 
 | Mottatt melding      | `no.ks.fiks.arkiv.v1.arkivering.arkivmelding.mottatt`       |
 | Kvittering på arkivering  | `no.ks.fiks.arkiv.v1.arkivering.arkivmelding.kvittering`        |
 
-For å arkivere data må en bruke meldingsformatet `arkivmelding.xml`. Se xsd schema [**arkivmelding.xsd**](https://github.com/ks-no/fiks-arkiv-specification/blob/main/Schema/V1/arkivmelding.xsd) for definsjon av meldingsformatet.
+For å arkivere data må en bruke meldingsformatet `arkivmelding.xml`. Se xsd schema [**no.ks.fiks.arkiv.v1.arkivering.arkivmelding.xsd**](https://github.com/ks-no/fiks-arkiv-specification/blob/main/Schema/V1/no.ks.fiks.arkiv.v1.arkivering.arkivmelding.xsd) for definsjon av meldingsformatet.
 
 ### Begrensninger og regler for arkivering
 
@@ -122,7 +122,7 @@ For å arkivere data må en bruke meldingsformatet `arkivmelding.xml`. Se xsd sc
 ### Mottatt og kvittering
 
 Hvis meldingen er gyldig som arkivmelding skal man så sende melding tilbake av typen `no.ks.fiks.arkiv.v1.arkivering.arkivmelding.mottatt`.
-Når arkivering er arkivert til arkivet skal det komme en **arkivmelding** tilbake i meldingsformatet `arkivmelding-kvittering.xml` av typen `no.ks.fiks.arkiv.v1.arkivering.arkivmelding.kvittering`. Se [**arkivmeldingKvittering.xsd**](https://github.com/ks-no/fiks-arkiv-specification/blob/main/Schema/V1/arkivmeldingKvittering.xsd) for definisjon av meldingsformatet på kvitteringsmelding.
+Når arkivering er arkivert til arkivet skal det komme en **arkivmelding** tilbake i meldingsformatet `arkivmelding-kvittering.xml` av typen `no.ks.fiks.arkiv.v1.arkivering.arkivmelding.kvittering`. Se [**no.ks.fiks.arkiv.v1.arkivering.arkivmelding.kvittering.xsd**](https://github.com/ks-no/fiks-arkiv-specification/blob/main/Schema/V1/no.ks.fiks.arkiv.v1.arkivering.arkivmelding.kvittering.xsd) for definisjon av meldingsformatet på kvitteringsmelding.
 
 ![arkivmelding_med_kvittering_ok](/images/arkivmelding_med_kvittering_ok.png "Arkivmelding med kvittering")
 
@@ -190,10 +190,10 @@ Les mer om disse feilmeldingene lenger nede under [feilmeldingstyper](#Feilmeldi
 Meldingsformatet for hent mappe er definert i xsd schema [**no.ks.fiks.arkiv.v1.innsyn.mappe.hent.xsd**](https://github.com/ks-no/fiks-arkiv-specification/blob/main/Schema/V1/no.ks.fiks.arkiv.v1.innsyn.mappe.hent.xsd) og sendes som meldingstypen `no.ks.fiks.arkiv.v1.innsyn.mappe.hent`.
 Resultatet skal sendes tilbake som meldingstypen `no.ks.fiks.arkiv.v1.mappe.hent.resultat` og formatet er definert i xsd schema  [**no.ks.fiks.arkiv.v1.innsyn.mappe.hent.resultat.xsd**](https://github.com/ks-no/fiks-arkiv-specification/blob/main/Schema/V1/no.ks.fiks.arkiv.v1.innsyn.mappe.hent.resultat.xsd).
 
-### Hent journalpost:
+### Hent registrering:
 
-Meldingsformatet for hent journalpost er definert i xsd schema [**no.ks.fiks.arkiv.v1.registrering.hent.xsd**](https://github.com/ks-no/fiks-arkiv-specification/blob/main/Schema/V1/no.ks.fiks.arkiv.v1.registrering.hent.xsd) og sendes som meldingstypen `no.ks.fiks.arkiv.v1.innsyn.registrering.hent`.
-Resultatet skal sendes tilbake som meldingstypen `no.ks.fiks.arkiv.v1.registrering.hent.resultat` og formatet er definert i xsd schema  [**no.ks.fiks.arkiv.v1.registrering.hent.resultat.xsd**](https://github.com/ks-no/fiks-arkiv-specification/blob/main/Schema/V1/no.ks.fiks.arkiv.v1.registrering.hent.resultat.xsd).
+Meldingsformatet for henting av registrering (f.eks. journalpost) er definert i xsd schema [**no.ks.fiks.arkiv.v1.innsyn.registrering.hent.xsd**](https://github.com/ks-no/fiks-arkiv-specification/blob/main/Schema/V1/no.ks.fiks.arkiv.v1.innsyn.registrering.hent.xsd) og sendes som meldingstypen `no.ks.fiks.arkiv.v1.innsyn.registrering.hent`.
+Resultatet skal sendes tilbake som meldingstypen `no.ks.fiks.arkiv.v1.innsyn.registrering.hent.resultat` og formatet er definert i xsd schema  [**no.ks.fiks.arkiv.v1.innsyn.registrering.hent.resultat.xsd**](https://github.com/ks-no/fiks-arkiv-specification/blob/main/Schema/V1/no.ks.fiks.arkiv.v1.innsyn.registrering.hent.resultat.xsd).
 
 ### Hent dokumentfil:
 
