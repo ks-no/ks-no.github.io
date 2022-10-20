@@ -145,6 +145,12 @@ Les mer om disse feilmeldingene lenger nede under [feilmeldingstyper](#Feilmeldi
 Meldingsformatet for søk er definert i xsd schema [**sok.xsd**](https://github.com/ks-no/fiks-arkiv-specification/blob/main/Schema/V1/no.ks.fiks.arkiv.v1.innsyn.sok.xsd). 
 I meldingsformatet **sok.xml** definerer man hva man søker etter, hvilke returobjekter (journalposter eller mapper f.eks.) man ønsker, sortering og responstype.
 
+### Søk på endret dato
+
+**Mappe**: Søk på `mappeEndretDato`. Endret dato for mappe betyr at en mappe er endret eller jounalposter er lagt til.
+
+**Registrering**: Søk på `registreringEndretDato`. Endret dato for registrering betyr at en registrering er endret eller dokumenter er lagt til eller endret. 
+
 ### Bbox
 For søk på saksmappe kan man søke på saker med koordinater innenfor et område ved hjelp av søkefeltet av typen `bbox`.
 Når man bruker bbox til søk så setter man to koordinater, nedreVenstre og oevreHoeyre, som da definerer en boks hvor man ønsker å finne saker som treffer innenfor dette området.
