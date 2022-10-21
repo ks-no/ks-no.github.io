@@ -4,7 +4,7 @@ date: 2022-06-28
 aliases: [/fiks-platform/tjenester/matrikkel, /fiks-plattform/tjenester/matrikkel, /fiks-plattform/tjenester/minside/matrikkel/]
 ---
 
-## Minside
+## Min kommune
 
 Fiks-plattformen får med denne tjenesten støtte for matrikkelinformasjon. En innbyggers eiendommmer blir eksponert på min.kommune.no, gjennom "Mine Eiendommer" og hovedsøket, og ved at Fiks Innsyn får støtte for å eksponere meldinger for eiere av en eiendom. Tilgang til denne meldingen vil da følge nye eiere av samme eiendom.
 
