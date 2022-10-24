@@ -1,8 +1,8 @@
 {
   "openapi" : "3.0.1",
   "info" : {
-    "title" : "KS SvarUt: manuell-forsendelse xls maler Service",
-    "description" : "manuell-forsendelse xls maler service",
+    "title" : "KS SvarUt: manuell-forsendelse pdf maler Service",
+    "description" : "manuell-forsendelse pdf maler service",
     "contact" : {
       "name" : "Fiks-brukerstøtte",
       "url" : "https://ks-no.github.io/",
@@ -22,8 +22,8 @@
     "name" : "manuell-forsendelse",
     "description" : "API for bruk av manuell-forsendelse"
   }, {
-    "name" : "manuell-forsendelse xls maler",
-    "description" : "API for bruk av manuell-forsendelse xls maler"
+    "name" : "manuell-forsendelse pdf maler",
+    "description" : "API for bruk av manuell-forsendelse pdf maler"
   } ],
   "paths" : {
     "/api/v1/manuell-forsendelse/{manuellForsendelseId}/filer/{filId}" : {
@@ -343,6 +343,35 @@
             }
           }
         }
+      },
+      "post" : {
+        "tags" : [ "manuell-forsendelse" ],
+        "description" : "Laster opp mottakere fra XLS mal",
+        "operationId" : "lastOppMottakerFraXls",
+        "parameters" : [ {
+          "name" : "manuellForsendelseId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Mottakere registrert"
+          },
+          "500" : {
+            "description" : "Systemfeil",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
       }
     },
     "/api/v1/manuell-forsendelse/{manuellForsendelseId}" : {
@@ -567,6 +596,28 @@
         }
       }
     },
+    "/api/v1/manuell-forsendelse/mottakere/xlsmal" : {
+      "get" : {
+        "tags" : [ "manuell-forsendelse" ],
+        "description" : "Henter XLS mal for mottakere",
+        "operationId" : "hentMottakerXlsMal",
+        "responses" : {
+          "200" : {
+            "description" : "XLS mottaker mal"
+          },
+          "500" : {
+            "description" : "Systemfeil",
+            "content" : {
+              "application/octet-stream" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/manuell-forsendelse/{manuellForsendelseId}/status" : {
       "get" : {
         "tags" : [ "manuell-forsendelse" ],
@@ -641,7 +692,7 @@
           "content" : {
             "application/json" : {
               "schema" : {
-                "$ref" : "#/components/schemas/Mottaker"
+                "$ref" : "#/components/schemas/MottakerRequest"
               }
             }
           }
@@ -758,7 +809,7 @@
           "content" : {
             "application/json" : {
               "schema" : {
-                "$ref" : "#/components/schemas/Mottaker"
+                "$ref" : "#/components/schemas/MottakerRequest"
               }
             }
           }
@@ -882,35 +933,13 @@
         }
       }
     },
-    "/api/v1/manuell-forsendelse/xls/mottakere/mal" : {
+    "/api/v1/manuell-forsendelse/maler/{malId}" : {
       "get" : {
-        "tags" : [ "manuell-forsendelse xls maler" ],
-        "description" : "Henter XLS mal for mottakere",
-        "operationId" : "hentMottakerXlsMal",
-        "responses" : {
-          "200" : {
-            "description" : "XLS mottaker mal"
-          },
-          "500" : {
-            "description" : "Systemfeil",
-            "content" : {
-              "application/octet-stream" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/ErrorMessage"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/v1/manuell-forsendelse/{manuellForsendelseId}/xls/mottakere" : {
-      "post" : {
-        "tags" : [ "manuell-forsendelse xls maler" ],
-        "description" : "Laster opp mottakere fra XLS mal",
-        "operationId" : "lastOppMottakerFraXls",
+        "tags" : [ "manuell-forsendelse pdf maler" ],
+        "description" : "Henter pdf mal",
+        "operationId" : "hentMal",
         "parameters" : [ {
-          "name" : "manuellForsendelseId",
+          "name" : "malId",
           "in" : "path",
           "required" : true,
           "schema" : {
@@ -920,7 +949,199 @@
         } ],
         "responses" : {
           "200" : {
-            "description" : "Mottakere registrert"
+            "description" : "Hent pdf mal",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/MalMetadata"
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Ingen mal",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Ingen tilgang",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Systemfeil",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put" : {
+        "tags" : [ "manuell-forsendelse pdf maler" ],
+        "description" : "Oppdater pdf mal",
+        "operationId" : "oppdaterMal",
+        "parameters" : [ {
+          "name" : "malId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/MalMetadataRequest"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "204" : {
+            "description" : "Oppdater pdf mal"
+          },
+          "403" : {
+            "description" : "Ingen tilgang",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Ugyldig data for oppdatering av pdf mal",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Systemfeil",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete" : {
+        "tags" : [ "manuell-forsendelse pdf maler" ],
+        "description" : "Sletter pdf mal",
+        "operationId" : "slettMal",
+        "parameters" : [ {
+          "name" : "malId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "204" : {
+            "description" : "Slette pdf mal"
+          },
+          "403" : {
+            "description" : "Ingen tilgang",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Ingen mal",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Systemfeil",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/manuell-forsendelse/maler" : {
+      "post" : {
+        "tags" : [ "manuell-forsendelse pdf maler" ],
+        "description" : "Lagre pdf mal",
+        "operationId" : "opprettMal",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/MalMetadataRequest"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "201" : {
+            "description" : "Opprette pdf mal",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/MalmetadataRespons"
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Ingen tilgang",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Ugyldig data for mal",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
           },
           "500" : {
             "description" : "Systemfeil",
@@ -1017,41 +1238,40 @@
         "properties" : {
           "orgNummer" : {
             "pattern" : "^[0-9]{9}$",
-            "type" : "string",
-            "description" : "orgnummer"
+            "type" : "string"
           },
           "fodselsnummer" : {
             "pattern" : "^[0-9]{11}$",
-            "type" : "string",
-            "description" : "fodselsnummer"
+            "type" : "string"
           },
           "navn" : {
-            "type" : "string",
-            "description" : "navn"
+            "type" : "string"
           },
           "adresse1" : {
-            "type" : "string",
-            "description" : "adresse1"
+            "type" : "string"
           },
           "adresse2" : {
-            "type" : "string",
-            "description" : "adresse2"
+            "type" : "string"
           },
           "adresse3" : {
-            "type" : "string",
-            "description" : "adresse3"
+            "type" : "string"
           },
           "postnummer" : {
-            "type" : "string",
-            "description" : "postnummer"
+            "type" : "string"
           },
           "poststed" : {
-            "type" : "string",
-            "description" : "poststed"
+            "type" : "string"
           },
           "land" : {
+            "type" : "string"
+          },
+          "filnavn" : {
+            "type" : "string"
+          },
+          "status" : {
             "type" : "string",
-            "description" : "land"
+            "description" : "Forsendelse status for mottaker",
+            "enum" : [ "OPPRETTET", "UNDER_UTSENDING", "SENDT", "KLARTE_IKKE_SENDE" ]
           }
         },
         "description" : "Mottaker for manuell forsendelse"
@@ -1208,6 +1428,203 @@
           "fletteForsendelse" : {
             "type" : "boolean",
             "description" : "Fletteforsendelse"
+          }
+        }
+      },
+      "MottakerRequest" : {
+        "required" : [ "navn", "postnummer" ],
+        "type" : "object",
+        "properties" : {
+          "orgNummer" : {
+            "pattern" : "^[0-9]{9}$",
+            "type" : "string"
+          },
+          "fodselsnummer" : {
+            "pattern" : "^[0-9]{11}$",
+            "type" : "string"
+          },
+          "navn" : {
+            "type" : "string"
+          },
+          "adresse1" : {
+            "type" : "string"
+          },
+          "adresse2" : {
+            "type" : "string"
+          },
+          "adresse3" : {
+            "type" : "string"
+          },
+          "postnummer" : {
+            "type" : "string"
+          },
+          "poststed" : {
+            "type" : "string"
+          },
+          "land" : {
+            "type" : "string"
+          },
+          "filnavn" : {
+            "type" : "string"
+          }
+        },
+        "description" : "Modell for å opprette mottaker tilknyttet manuell forsendelse"
+      },
+      "Box" : {
+        "type" : "object",
+        "properties" : {
+          "llx" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "lly" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "urx" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "ury" : {
+            "type" : "integer",
+            "format" : "int32"
+          }
+        },
+        "description" : "Pdf koordinater for sideseparator dersom ulikt antall sider pr forsendelse"
+      },
+      "MalMetadata" : {
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "tilgjengeligFor" : {
+            "type" : "string",
+            "enum" : [ "ALLE", "ORGANISASJON", "PRIVAT" ]
+          },
+          "fiksOrgId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "fnr" : {
+            "type" : "string"
+          },
+          "navn" : {
+            "type" : "string"
+          },
+          "mottakerbox" : {
+            "$ref" : "#/components/schemas/Box"
+          },
+          "orgfnrbox" : {
+            "$ref" : "#/components/schemas/Box"
+          },
+          "pageSpliterBox" : {
+            "$ref" : "#/components/schemas/Box"
+          },
+          "brukeexcelmapping" : {
+            "type" : "boolean"
+          },
+          "excelidcol" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "excelorgfnrcol" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "testside" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "antallsider" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "uliktAntallSider" : {
+            "type" : "boolean"
+          },
+          "ignorereUliktAntallSider" : {
+            "type" : "boolean"
+          },
+          "pageSpliterText" : {
+            "type" : "string"
+          }
+        }
+      },
+      "MalMetadataRequest" : {
+        "required" : [ "fiksOrgId", "navn", "tilgjengeligFor" ],
+        "type" : "object",
+        "properties" : {
+          "tilgjengeligFor" : {
+            "type" : "string",
+            "description" : "Hvem malen er tilgjengelig for",
+            "enum" : [ "ALLE", "ORGANISASJON", "PRIVAT" ]
+          },
+          "fiksOrgId" : {
+            "type" : "string",
+            "description" : "Fiks organisasjon id",
+            "format" : "uuid"
+          },
+          "navn" : {
+            "type" : "string",
+            "description" : "Navn på mal"
+          },
+          "mottakerbox" : {
+            "$ref" : "#/components/schemas/Box"
+          },
+          "orgfnrbox" : {
+            "$ref" : "#/components/schemas/Box"
+          },
+          "pageSpliterBox" : {
+            "$ref" : "#/components/schemas/Box"
+          },
+          "brukeexcelmapping" : {
+            "type" : "boolean",
+            "description" : "Bruke excel mapping for orgnr/fnr"
+          },
+          "excelidcol" : {
+            "type" : "integer",
+            "description" : "Kolonne i excel for referanse",
+            "format" : "int32"
+          },
+          "excelorgfnrcol" : {
+            "type" : "integer",
+            "description" : "Kolonne i excel for orgnr/fnr",
+            "format" : "int32"
+          },
+          "testside" : {
+            "type" : "integer",
+            "description" : "Side for test av bokser",
+            "format" : "int32"
+          },
+          "antallsider" : {
+            "type" : "integer",
+            "description" : "Antall sider per brev",
+            "format" : "int32"
+          },
+          "uliktAntallSider" : {
+            "type" : "boolean",
+            "description" : "Om det er ulikt antall sider per forsendelse"
+          },
+          "ignorereUliktAntallSider" : {
+            "type" : "boolean"
+          },
+          "pageSpliterText" : {
+            "type" : "string",
+            "description" : "Side-separator tekst for ulikt antall sider per forsendelse"
+          }
+        },
+        "description" : "Metadata for opprettelse av pdf mal"
+      },
+      "MalmetadataRespons" : {
+        "required" : [ "id" ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string",
+            "description" : "Id for mal",
+            "format" : "uuid"
           }
         }
       }
