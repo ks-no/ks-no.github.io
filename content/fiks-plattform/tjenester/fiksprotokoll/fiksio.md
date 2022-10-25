@@ -108,7 +108,7 @@ For å gjøre integrasjon lettere vil KS utvikle klienter som benyttes for både
 Klientene er tilgjengelig i [Java](https://github.com/ks-no/fiks-io-klient-java), og [.net core](https://github.com/ks-no/fiks-io-client-dotnet). Andre språk vil vurderes, og vi vil gjerne høre fra deg om du skriver klienter for andre språk. 
 
 ### Headere
-Følgende headere er definert i meldingsutvekslingen. Hvis man bruker Fiks-IO klienten for java eller .net som KS har laget vil man stort sett ikke trenge å forholde seg til disse da man bruker ferdig funksjonalitet for å sende og svare på meldinger.
+Følgende headere er definert i meldingsutvekslingen. Hvis man bruker Fiks-IO klienten for java eller .net som KS har laget vil man stort sett ikke trenge å forholde seg til disse da man bruker ferdig funksjonalitet for å sende og svare på meldinger. Da blir disse headerene satt for deg.
 Merk at i klientene vil kanskje navnene i modellene ikke være helt lik navn i header. F.eks. headeren `svar-til` tilsvarer `svarPaMelding` i modellen for både java og .net. 
 
 | Header | Beskrivelse                                                                                  |
