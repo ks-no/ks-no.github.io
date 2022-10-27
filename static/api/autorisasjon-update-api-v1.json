@@ -118,6 +118,45 @@
             }
           }
         }
+      },
+      "delete" : {
+        "tags" : [ "Ressurs" ],
+        "description" : "Brukes for å fjerne privilegier til samme ressurs for flere aktører samtidig",
+        "operationId" : "bulkFjernTilganger",
+        "parameters" : [ {
+          "name" : "ressurs",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/TilgangFjernBulkRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "403" : {
+            "description" : "Ugyldig tilgang",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "204" : {
+            "description" : "Tilganger tildelt"
+          }
+        }
       }
     },
     "/autorisasjon-update/api/v1/ressurs/{ressurs}/tilganger" : {
@@ -472,6 +511,36 @@
           }
         }
       },
+      "TilgangFjernBulkRequest" : {
+        "required" : [ "requests" ],
+        "type" : "object",
+        "properties" : {
+          "requests" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/TilgangRequest"
+            }
+          }
+        },
+        "description" : "Representerer en rekke autorisasjoner som ønskes fjernet"
+      },
+      "TilgangRequest" : {
+        "required" : [ "aktor", "privilegium" ],
+        "type" : "object",
+        "properties" : {
+          "aktor" : {
+            "pattern" : "^[A-Za-zæøåÆØÅ0-9_.,/\\-_ ]+$",
+            "type" : "string",
+            "description" : "Aktøren som denne forespørselen gjelder"
+          },
+          "privilegium" : {
+            "pattern" : "^[0-9A-Z_.]+$",
+            "type" : "string",
+            "description" : "Navnet på det privilegium som aktøren har eller etterspør for en gitt ressurs"
+          }
+        },
+        "description" : "Representerer en autorisasjon, som beskriver en ressurs og et privilegium som enn gitt aktør har eller ber om"
+      },
       "Tilgang" : {
         "required" : [ "aktor", "privilegium", "ressurs" ],
         "type" : "object",
@@ -516,23 +585,6 @@
           }
         },
         "description" : "Representerer en rekke autorisasjoner som ønskes tildelt"
-      },
-      "TilgangRequest" : {
-        "required" : [ "aktor", "privilegium" ],
-        "type" : "object",
-        "properties" : {
-          "aktor" : {
-            "pattern" : "^[A-Za-zæøåÆØÅ0-9_.,/\\-_ ]+$",
-            "type" : "string",
-            "description" : "Aktøren som denne forespørselen gjelder"
-          },
-          "privilegium" : {
-            "pattern" : "^[0-9A-Z_.]+$",
-            "type" : "string",
-            "description" : "Navnet på det privilegium som aktøren har eller etterspør for en gitt ressurs"
-          }
-        },
-        "description" : "Representerer en autorisasjon, som beskriver en ressurs og et privilegium som enn gitt aktør har eller ber om"
       },
       "FlyttRequest" : {
         "required" : [ "nyForeldreRessurs" ],
