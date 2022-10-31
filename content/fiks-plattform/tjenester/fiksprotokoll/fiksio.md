@@ -143,3 +143,4 @@ Merk at i klientene vil kanskje navnene i modellene ikke være helt lik navn i h
 
 Denne id er ikke påbudt men kan benyttes for å identifisere en melding som sendes på nytt fra avsender. Den skal være ny og unik for hver melding men brukes på nytt når man resender en melding. 
 Dette er i motsetning til `melding-id` som blir unik og ny for hver eneste melding, også ved resend.
+
