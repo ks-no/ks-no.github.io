@@ -10,12 +10,20 @@ For implementasjonseksempler, brukerhistorier og teknisk dokumentasjon les mer i
 
 ## Meldinger
 
-Hver melding består av en zip fil ASIC-E som inneholder `arkivmelding.xml` eller `sok.xml` og tilhørende vedlegg som er definert i xml filen.
-Hver melding kan ikke overskride 5GB.
+Hver melding består av en zip fil ASIC-E som inneholder `arkivmelding.xml` eller `sok.xml` og tilhørende vedlegg som er definert i xml filen. 
+Hver melding kan ikke overskride 5GB. Meldingene skal også ha et sett med headere som blandt annet viser hvem som er avsender, mottaker, om det er et svar på en annen melding osv.
+Headerene er definert under Fiks-IO og man kan lese mer om de [her](https://ks-no.github.io/fiks-plattform/tjenester/fiksprotokoll/fiksio/#headere)
 
 ### Meldingsformat og skjema
 For mer informasjon rundt meldingsformatet **arkivmelding** kan man lese om definisjonen [her](https://docs.digdir.no/eformidling_nm_arkivmeldingen.html) hos Digdir.
 XSD skjema for meldingsformatene er tilgjengelig for nedlasting på github prosjektet [fiks-arkiv-specification](https://github.com/ks-no/fiks-arkiv-specification) eller i bibliotek for .NET og Java. Dette spesifikasjonsprosjektet brukes som felles kilde for bygging av bibliotek/moduler for .NET og Java.
+
+**Felles prosjekter og evt nuget pakker:**
+
+| Type                                | Nuget                                                                                                            | Github                                                          |
+|-------------------------------------|------------------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------| 
+| Valideringstester                   | -                                                                                                                | https://github.com/ks-no/fiks-arkiv-integration-tests-dotnet    |
+
 
 ### .NET bibliotek og prosjekter
 
@@ -27,7 +35,8 @@ XSD skjema for meldingsformatene er tilgjengelig for nedlasting på github prosj
 | Modeller basert på XSD skjema       | [`KS.Fiks.Arkiv.Models.V1`](https://www.nuget.org/packages/KS.Fiks.Arkiv.Models.V1/)                             | https://github.com/ks-no/fiks-arkiv-models-dotnet               |
 | Forenklet arkivering                | [`KS.Fiks.Arkiv.Forenklet.Arkivering.V1`](https://www.nuget.org/packages/KS.Fiks.Arkiv.Forenklet.Arkivering.V1/) | https://github.com/ks-no/fiks-arkiv-forenklet-arkivering-dotnet |
 | Fiks protokoll validator            | -                                                                                                                | https://github.com/ks-no/fiks-protokoll-validator               |
-| Valideringstester                   | -                                                                                                                | https://github.com/ks-no/fiks-arkiv-integration-tests-dotnet    |
+| Fiks-IO klient                      | [`KS.Fiks.IO.Client`](https://www.nuget.org/packages/KS.Fiks.IO.Client/)                                         | https://github.com/ks-no/fiks-io-client-dotnet    |
+| Fiks-IO send klient                 | [`KS.Fiks.IO.Send.Client`](https://www.nuget.org/packages/KS.Fiks.IO.Send.Client/)                               | https://github.com/ks-no/fiks-io-send-client-dotnet    |
 
 **Modeller og XSD skjema**
 
@@ -44,23 +53,27 @@ Dette er en nuget-pakke for "forenklet arkivering", `KS.Fiks.Arkiv.Forenklet.Ark
 
 Dette er en applikasjon som kjører i KS sitt testmiljø. Med denne kan man teste protokollene mot sitt eget arkiv-testmiljø ved å sende ferdige meldinger med statisk XML innhold til den aktuelle FIKS-IO kontoen.
 
-**Valideringstester**
+**Fiks-IO klient**
 
-Dette prosjekter inneholder valideringstester (integrasjonstester) som tester at et arkiv som har implementert Fiks Arkiv protokollen fungerer som forventet i meldings-utvekslinger. F.eks. at arkivet kan ta i mot og lagre en ny journalpost, oppdatere journalposten, og levere den oppdaterte journalposten på en hent-melding.
-Disse testene kan gjennomføre flere meldingsutvekslinger og steg enn `Fiks protokoll validator` som kun tester å sende en melding og så sjekker svaret.
+Dette er en klient som forenkler autentisering, lytting til nye meldinger, sending av meldinger og svar på innkommende meldinger. Fiks-IO klienten forenkler meldingsutvekslingen blant annet også ved å sette korrekte headere i Fiks-IO meldingen, som f.eks. `svar-til` headeren når man svarer på en melding.
+Les mer om Fiks-IO og headerene [her](https://ks-no.github.io/fiks-plattform/tjenester/fiksprotokoll/fiksio/#headere)
 
-Testene kjøres ved at man laster ned prosjektet og kjører de lokalt. 
+**Fiks-IO send klient**
 
-Github prosjektet for validatortestene er [her](https://github.com/ks-no/fiks-arkiv-integration-tests-dotnet) og kan lastes ned og brukes for testing. Det oppfordres til å bidra med enda flere tester. 
+Denne kan brukes hvis man bare skal sende meldinger til Fiks-IO og ikke motta meldinger. Fiks-IO klienten bruker denne komponenten for sending. 
+
 
 ### Java bibliotek og prosjekter
 
 **Maven**
 
-|   Type    | Navn | Github
-| ----------- | ----------- | ----------- | 
-| Modeller og XSD skjema | [`fiks-arkiv`](https://github.com/ks-no/fiks-arkiv-client-java)       | https://github.com/ks-no/fiks-arkiv-client-java |
-| Forenklet arkivering  | [`fiks-arkiv-forenklet-arkivering`](https://search.maven.org/artifact/no.ks.fiks/fiks-arkiv-forenklet-arkivering)  | https://github.com/ks-no/fiks-arkiv-client-java |
+| Type                   | Navn                                                                                                              | Github                                          
+|------------------------|-------------------------------------------------------------------------------------------------------------------|-------------------------------------------------| 
+| Modeller og XSD skjema | [`fiks-arkiv`](https://github.com/ks-no/fiks-arkiv-client-java)                                                   | https://github.com/ks-no/fiks-arkiv-client-java |
+| Forenklet arkivering   | [`fiks-arkiv-forenklet-arkivering`](https://search.maven.org/artifact/no.ks.fiks/fiks-arkiv-forenklet-arkivering) | https://github.com/ks-no/fiks-arkiv-client-java |
+| Fiks-IO klient         | [`fiks-io-klient`](https://search.maven.org/artifact/no.ks.fiks/fiks-io-klient-java)                              | https://github.com/ks-no/fiks-io-klient         |
+| Fiks-IO send klient    | [`fiks-io-send-klient`](https://search.maven.org/artifact/no.ks.fiks/fiks-io-send-klient)                         | https://github.com/ks-no/fiks-io-send-klient    |
+
 
 Tilsvarende som for .NET finnes det tilgjengelige moduler på Maven Central. Prosjektet er tilgjengelig på github [her](https://github.com/ks-no/fiks-arkiv-client-java).
 
@@ -72,6 +85,33 @@ Modulen [`fiks-arkiv-api`](https://search.maven.org/artifact/no.ks.fiks/fiks-ark
 
 Modulen [`fiks-arkiv-forenklet-arkivering`](https://search.maven.org/artifact/no.ks.fiks/fiks-arkiv-forenklet-arkivering) tilsvarer pakken i .NET for "forenklet arkivering" og inneholder buildere for forenklet oppbygging av gyldig arkivmelding. XSD skjema fra [fiks-arkiv-specification](https://github.com/ks-no/fiks-arkiv-specification) er inkludert i jar under schemas.v1
 
+**Fiks-IO klient**
+
+Dette er en klient som forenkler autentisering, lytting til nye meldinger, sending av meldinger og svar på innkommende meldinger. Fiks-IO klienten forenkler meldingsutvekslingen blant annet også ved å sette korrekte headere i Fiks-IO meldingen, som f.eks. `svar-til` headeren når man svarer på en melding.
+Les mer om Fiks-IO og headerene [her](https://ks-no.github.io/fiks-plattform/tjenester/fiksprotokoll/fiksio/#headere)
+
+**Fiks-IO send klient**
+
+Denne kan brukes hvis man bare skal sende meldinger til Fiks-IO og ikke motta meldinger. Fiks-IO klienten bruker denne komponenten for sending.
+
+
+### Felles for .NET og Java
+
+| Type                                | Nuget                                                                                                            | Github                                                          |
+|-------------------------------------|------------------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------| 
+| Valideringstester                   | -                                                                                                                | https://github.com/ks-no/fiks-arkiv-integration-tests-dotnet    |
+
+**Valideringstester**
+
+Dette prosjekter inneholder valideringstester (integrasjonstester) som tester at et arkiv som har implementert Fiks Arkiv protokollen fungerer som forventet i meldings-utvekslinger. F.eks. at arkivet kan ta i mot og lagre en ny journalpost, oppdatere journalposten, og levere den oppdaterte journalposten på en hent-melding.
+Disse testene kan gjennomføre flere meldingsutvekslinger og steg enn `Fiks protokoll validator` som kun tester å sende en melding og så sjekker svaret.
+
+Testene kjøres ved at man laster ned prosjektet og kjører de lokalt.
+
+Github prosjektet for validatortestene er [her](https://github.com/ks-no/fiks-arkiv-integration-tests-dotnet) og kan lastes ned og brukes for testing. Det oppfordres til å bidra med enda flere tester.
+
+
+
 ### Asynkrone meldinger og retry
 
 Siden denne protokollen er asynkron betyr det at man må ta forbehold om at man kanskje ikke får svar på en melding som ble sendt.
@@ -82,7 +122,7 @@ Avsender må da velge om man skal gjøre nytt forsøk på å sende melding.
 Når man sender en melding til Fiks IO så vil meldingen få en unik id hver gang.
 Dermed kan det i noen tilfeller kanskje være vanskelig for mottaker å vite at dette er en melding som sendes på nytt.
 
-Dette løses ved at meldinger til Fiks IO kan gis en id med navnet **klientMeldingId** for å markere at det er en unik melding fra avsender, som man kan gjenbrukes ved nytt forsøk.
+Dette løses ved at meldinger til Fiks IO kan gis en header id med navnet **klientMeldingId** (les mer om headere [her](https://developers.fiks.ks.no/fiks-plattform/tjenester/fiksprotokoll/fiksio/#headere)) for å markere at det er en unik melding fra avsender, som man kan gjenbrukes ved nytt forsøk.
 Mottaker kan da sende mottatt og kvittering på nytt.
 
 Det kan være lurt at man tar med seg noen kjøreregler for sending og retry av meldinger:
@@ -101,16 +141,20 @@ Hvis `ack` for en melding uteblir vil meldingen bli værende på køen inntil de
 
 OBS: Dette erstatter tidligere TTL-håndtering på Fiks-IO køene. Det vil ikke lenger sendes noen `tidsavbrudd` meldinger basert på TTL. 
 
+### Meldingsutveksling og headere
+For at meldingsutvekslingen skal bli korrekt settes det [headere](https://developers.fiks.ks.no/fiks-plattform/tjenester/fiksprotokoll/fiksio/#headere) på meldingen. Bruker man en av Fiks-IO klientene fra KS vil man stort sett ikke trenge å gjøre noe med dette da klienten gjør det meste for deg. Dette er f.eks. `avsender-id` for å identifisere avsender, `avsender-navn` og `type` som er meldingstypen. 
+Når man sender en melding vil man få tilbake fra Fiks-IO en generert `melding-id`. Denne id følger med i header på meldingen som mottaker så setter inn i sitt eventuelle svar på meldingen i headeren `svar-til` slik at avsender av første melding ser at dette er et svar på sin opprinnelige melding.
+Dette vil Fiks-IO klienten fra KS gjøre for deg hvis man bruker `.Svar()` funksjonaliteten. Men i noen tilfeller vil det kanskje være aktuelt å gå utenfor denne funksjonaliteten og man må da sørge for at disse headerene blir korrekt selv. Les mer om headerene [her](https://developers.fiks.ks.no/fiks-plattform/tjenester/fiksprotokoll/fiksio/#headere).
 
 ## Arkivering
 
 **Meldingstyper:**
 
-|   Type    | Navn |
-| ----------- | ----------- |
-| Arkiver melding      | `no.ks.fiks.arkiv.v1.arkivering.arkivmelding`       |
-| Mottatt melding      | `no.ks.fiks.arkiv.v1.arkivering.arkivmelding.mottatt`       |
-| Kvittering på arkivering  | `no.ks.fiks.arkiv.v1.arkivering.arkivmelding.kvittering`        |
+| Type                     | Navn                                                         |
+|--------------------------|--------------------------------------------------------------|
+| Arkiver melding          | `no.ks.fiks.arkiv.v1.arkivering.arkivmelding`                |
+| Mottatt melding          | `no.ks.fiks.arkiv.v1.arkivering.arkivmelding.mottatt`        |
+| Kvittering på arkivering | `no.ks.fiks.arkiv.v1.arkivering.arkivmelding.kvittering`     |
 
 For å arkivere data må en bruke meldingsformatet `arkivmelding.xml`. Se xsd schema [**no.ks.fiks.arkiv.v1.arkivering.arkivmelding.xsd**](https://github.com/ks-no/fiks-arkiv-specification/blob/main/Schema/V1/no.ks.fiks.arkiv.v1.arkivering.arkivmelding.xsd) for definsjon av meldingsformatet.
 

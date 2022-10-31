@@ -104,19 +104,43 @@ Hvis man benytter java eller .net klienten utviklet av KS vil denne mellomlagrin
 
 ### Klienter
 For å gjøre integrasjon lettere vil KS utvikle klienter som benyttes for både sending og mottak av meldinger fra Fiks IO. 
+Det er to klienter, en Fiks-IO klient som håndterer muligheten for både å motta og sende meldinger og en Fiks-IO send-klient som man kan bruke hvis man bare skal sende meldinger.
+Fiks-IO send-klienten vil da ikke behøve amqp-kobling da den kun sender meldinger via Fiks-IO API.
 
-Klientene er tilgjengelig i [Java](https://github.com/ks-no/fiks-io-klient-java), og [.net core](https://github.com/ks-no/fiks-io-client-dotnet). Andre språk vil vurderes, og vi vil gjerne høre fra deg om du skriver klienter for andre språk. 
+
+| Klient                   | Pakkenavn | Beskrivelse                           | Github         |
+|--------------------------|-----------|---------------------------------------|----------------|
+| Fiks-IO klient Java      | fiks-io-klient-java | Klient for å motta og sende meldinger | https://github.com/ks-no/fiks-io-klient-java |
+| Fiks-IO klient .net      | KS.Fiks.IO.Client          | Klient for å motta og sende meldinger | https://github.com/ks-no/fiks-io-client-dotnet      |
+| Fiks-IO send klient Java | fiks-io-send-klient | Klient **kun** for å sende meldinger  | https://github.com/ks-no/fiks-io-send-klient                                      |
+| Fiks-IO send klient .net | KS.Fiks.IO.Send.Client          | Klient **kun** for å sende meldinger  | https://github.com/ks-no/fiks-io-send-client-dotnet                                      |
+
+Andre språk vil vurderes, og vi vil gjerne høre fra deg om du skriver klienter for andre språk. 
 
 ### Headere
-Følgende headere er definert i meldingsutvekslingen. Hvis man bruker Fiks-IO klienten for java eller .net som KS har laget vil man stort sett ikke trenge å forholde seg til disse da man bruker ferdig funksjonalitet for å sende og svare på meldinger. Da blir disse headerene satt for deg.
-Merk at i klientene vil kanskje navnene i modellene ikke være helt lik navn i header. F.eks. headeren `svar-til` tilsvarer `svarPaMelding` i modellen for både java og .net. 
 
-| Header | Beskrivelse                                                                                  |
-|---|----------------------------------------------------------------------------------------------|
-| avsender-id | Avsenders Fiks IO-konto eller Protokoll konto                                                |
-| melding-id | Meldingens ID                                                                                |
-| avsender-navn | Navnet på avsenderkonto                                                                      |
-| type | Meldingstype                                                                                 |
-| dokumentlager-id | ID til eventuell fil lagret i Dokumentlager                                                  |
-| svar-til | Hvis meldingen er svar på en tidligere Fiks IO-melding, vil svar-til referere til den        |
-| svar-til-type | På `no.ks.fiks.kvittering.tidsavbrudd` meldinger legges typen til den opprinnelige meldingen |
+Følgende headere er definert i meldingsutvekslingen. Hvis man bruker Fiks-IO klienten for java eller .net som KS har laget vil man stort sett ikke trenge å forholde seg til disse da man bruker ferdig funksjonalitet for å sende og svare på meldinger. Da blir disse headerene satt for deg.
+Merk at i klientene vil kanskje navnene i modellene ikke være helt lik navn i header. F.eks. headeren `svar-til` tilsvarer property med navn `SvarPaMelding` i modellen for både java og .net. Se tabellen under for mapping mellom header og properties. 
+
+| Header           | Property-navn i klient | Beskrivelse                                                                                                   |
+|------------------|------------------------|---------------------------------------------------------------------------------------------------------------|
+| avsender-id      | AvsenderKontoId        | Avsenders Fiks IO-konto eller Protokoll konto                                                                 |
+| melding-id       | MeldingId              | Meldingens ID. Denne skal ikke settes selv, men vil bli gitt av Fiks-IO når man sender en melding             |
+| avsender-navn    | -                      | Navnet på avsenderkonto                                                                                       | 
+| type             | MeldingType            | Meldingstype                                                                                                  | 
+| dokumentlager-id | -                      | ID til eventuell fil lagret i Dokumentlager                                                                   |
+| svar-til         | SvarPaMelding          | Hvis meldingen er svar på en tidligere Fiks IO-melding, vil svar-til referere til den meldingens `melding-id` | 
+| svar-til-type    | -                      | På `no.ks.fiks.kvittering.tidsavbrudd` meldinger legges typen til den opprinnelige meldingen i `svar-til-type` | 
+
+#### Ekstra headere
+
+| Header           | Property-navn i klient | Beskrivelse                                                    |
+|------------------|------------------------|----------------------------------------------------------------|
+| klientmelding-id | KlientMeldingId        | En  id som avsender gjenbruker ved resending av en melding |
+
+
+**klientmelding-id (KlientMeldingID)**
+
+Denne id er ikke påbudt men kan benyttes for å identifisere en melding som sendes på nytt fra avsender. Den skal være ny og unik for hver melding men brukes på nytt når man resender en melding. 
+Dette er i motsetning til `melding-id` som blir unik og ny for hver eneste melding, også ved resend.
+
