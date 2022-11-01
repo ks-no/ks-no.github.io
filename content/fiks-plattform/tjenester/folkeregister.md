@@ -143,7 +143,7 @@ Identitetsgrunnlag utvidet:
 
 Relasjon utvidet:
 * Familierelasjon
-* Familieansvar
+* Foreldreansvar
 
 Historiske data
 
