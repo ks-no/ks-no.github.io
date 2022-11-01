@@ -117,30 +117,88 @@ Fiks-IO send-klienten vil da ikke behøve amqp-kobling da den kun sender melding
 
 Andre språk vil vurderes, og vi vil gjerne høre fra deg om du skriver klienter for andre språk. 
 
-### Headere
+### Headere og properties i meldingsutvekslingen
 
-Følgende headere er definert i meldingsutvekslingen. Hvis man bruker Fiks-IO klienten for java eller .net som KS har laget vil man stort sett ikke trenge å forholde seg til disse da man bruker ferdig funksjonalitet for å sende og svare på meldinger. Da blir disse headerene satt for deg.
-Merk at i klientene vil kanskje navnene i modellene ikke være helt lik navn i header. F.eks. headeren `svar-til` tilsvarer property med navn `SvarPaMelding` i modellen for både java og .net. Se tabellen under for mapping mellom header og properties. 
+For at meldingene skal kunne sendes til korrekt mottaker og svares på er det en del faste headers eller properties man må sette. 
+Headerene er slik de ser ut i amqp mens properties er hvordan klienter og API har navngitt tilsvarende attributter. Klienter og API oversetter altså til egne property navn fra og til slik de ser ut som amqp headere.
+Merk at man har også en map med navnet "headere" som man kan sende eller man mottar med en melding. Dette er ekstra headere man kan sende ved meldingene. 
+Hvis man bruker Fiks-IO klientene for java eller .net som KS har laget vil man stort sett ikke trenge å forholde seg til headerene (altså amqp-navnene) da man bruker ferdig funksjonalitet og kodet modeller med properties for å sende og svare på meldinger. 
+Noen navn vil avvike litt mellom header og modell, som f.eks. headeren `svar-til` tilsvarer `SvarPaMelding` i koden for modellen for en melding for både java og .net. Se tabellen under for mapping mellom header og tilsvarende property navn man finner i klientkoden. 
 
-| Header           | Property-navn i klient | Beskrivelse                                                                                                   |
-|------------------|------------------------|---------------------------------------------------------------------------------------------------------------|
-| avsender-id      | AvsenderKontoId        | Avsenders Fiks IO-konto eller Protokoll konto                                                                 |
-| melding-id       | MeldingId              | Meldingens ID. Denne skal ikke settes selv, men vil bli gitt av Fiks-IO når man sender en melding             |
-| avsender-navn    | -                      | Navnet på avsenderkonto                                                                                       | 
-| type             | MeldingType            | Meldingstype                                                                                                  | 
-| dokumentlager-id | -                      | ID til eventuell fil lagret i Dokumentlager                                                                   |
-| svar-til         | SvarPaMelding          | Hvis meldingen er svar på en tidligere Fiks IO-melding, vil svar-til referere til den meldingens `melding-id` | 
-| svar-til-type    | -                      | På `no.ks.fiks.kvittering.tidsavbrudd` meldinger legges typen til den opprinnelige meldingen i `svar-til-type` | 
+| Header i amqp    | Property navn     | Beskrivelse                                                                                                    |
+|------------------|-------------------|----------------------------------------------------------------------------------------------------------------|
+| avsender-id      | AvsenderKontoId   | Avsenders Fiks IO-konto eller Protokoll konto                                                                  |
+| melding-id       | MeldingId         | Meldingens ID. Denne skal ikke settes selv, men vil bli gitt av Fiks-IO når man sender en melding              |
+| type             | MeldingType       | Meldingstype                                                                                                   | 
+| dokumentlager-id | -                 | ID til eventuell fil lagret i Dokumentlager. Relevant ved mottatt melding.                                     |
+| svar-til         | SvarPaMelding     | Hvis meldingen er svar på en tidligere Fiks IO-melding, vil svar-til referere til den meldingens `melding-id`  | 
+| svar-til-type    | -                 | På `no.ks.fiks.kvittering.tidsavbrudd` meldinger legges typen til den opprinnelige meldingen i `svar-til-type` |
+| klientmelding-id | KlientMeldingId   | En  id som avsender gjenbruker ved resending av en melding                                                     |
+| -                | Resendt           | Denne settes hvis melding har blitt resendt pga mottaker har gjort 'NackWithRequeue'                           | 
+| <ditt-navn>      | Headere (map)     | Man kan sende ved egne properties                                                                              | 
 
-#### Ekstra headere
+**Headere (map)** 
 
-| Header           | Property-navn i klient | Beskrivelse                                                    |
-|------------------|------------------------|----------------------------------------------------------------|
-| klientmelding-id | KlientMeldingId        | En  id som avsender gjenbruker ved resending av en melding |
+Her kan man sende inn i en map egendefinerte navn-verdi properties i en map som man ønsker å sende med meldingen. 
+Hvis man bruker Fiks IO klientene vil det legges på en "egendefinert-header." prefix for hver egendefinert header.
 
+**Resendt** 
+
+Resendt betyr at en melding er resendt pga mottaker har gjort en 'NackWithRequeue'. Dette er ikke en header men en status vi får fra rabbitmq. 
+
+**dokumentlager-id** 
+
+Denne får man kun hvis meldingens payload har overskredet grensen for filstørrelse og dermed blitt lagret i dokumentlageret. 
+Hvis man bruker Fiks-IO klienten i .net eller java vil man ikke trenge å forholde seg til dette da klienten forenkler dette og henter eventuelt filen fra dokumentlageret for deg.
 
 **klientmelding-id (KlientMeldingID)**
 
-Denne id er ikke påbudt men kan benyttes for å identifisere en melding som sendes på nytt fra avsender. Den skal være ny og unik for hver melding men brukes på nytt når man resender en melding. 
-Dette er i motsetning til `melding-id` som blir unik og ny for hver eneste melding, også ved resend.
+Denne id er ikke påbudt men kan benyttes for å identifisere en melding som sendes på nytt fra avsender. Den skal være ny og unik for hver melding men brukes på nytt når man resender en melding.
+Dette er i motsetning til `melding-id` som blir unik og ny for hver eneste melding, også hvis man sender en melding på nytt. Hvis man bruker Fiks IO klienten i java eller .net vil man sette denne som en vanlig property.
+Dette vil man altså ikke trenge å forholde seg til hvis man bruker de tilgjengelige Fiks IO klientene da de tolker dette atributtet for deg.
 
+#### Sending av melding
+Når man sender en melding til Fiks-IO API vil den se slik ut:
+
+```json
+{
+  "MeldingId":"00000000-0000-0000-0000-000000000000",
+  "KlientMeldingId":"xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
+  "MeldingType":"no.ks.fiks.arkiv.v1.arkivering.arkivmelding",
+  "AvsenderKontoId":"xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
+  "MottakerKontoId":"xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
+  "Ttl":"2.00:00:00",
+  "Headere":{},
+  "SvarPaMelding":null,
+  "Resendt":false
+}
+```
+
+**MeldingId** vil være en tom guid da man ikke setter den men får den som en ny og unik generert guid tilbake fra API. 
+**Headere** skal her kun inneholde eventuelt egendefinerte properties man ønsker å sende i meldingen.
+**MottakerKontoId** blir ikke til en amqp header men identifiserer hvilken kø meldingen skal til. 
+
+Svaret man får tilbake fra API ved send vil da se helt lik ut til det man sendte samt en ny generert **MeldingId**:
+
+```json
+{
+  "MeldingId": "ca544416-267a-40d4-8e4c-86d14cd0a51f",
+  "KlientMeldingId":"xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
+  "MeldingType": "no.ks.fiks.arkiv.v1.arkivering.arkivmelding",
+  "AvsenderKontoId": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
+  "MottakerKontoId": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
+  "Ttl": "2.00:00:00",
+  "Headere": {},
+  "SvarPaMelding": null,
+  "Resendt": false
+}
+```
+
+#### Mottak av melding
+
+Når man mottar en melding i Fiks-IO klienten så vil man få ferdig mappet fra amqp headere til properties i modellen `MottattMeldingMetadata` i java og .net. 
+Property **SvarPaMelding** (amqp headeren `svar-til`) vil da eventuelt inneholde den **MeldingId** den er et svar på, altså den id du fikk tildelt da du sendte opprinnelig melding.
+Er det en melding man ønsker å svare på selv kan man bruke den innebyggede Svar( ... ) funksjonaliteten i Fiks IO klienten som vil da sørge for at **SvarPaMelding** blir korrekt.
+Alternativt hvis man ikke kan bruke Svar-funksjonaliteten ut av boksen, må man sørge for å sette korrekt **MeldingId** i **SvarPaMelding** property når man sender meldingen tilbake.
+
+Hvis man ikke bruker Fiks IO klienten fra KS vil man måtte gjøre tolkning av amqp headerene selv.

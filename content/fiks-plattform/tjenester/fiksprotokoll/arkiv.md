@@ -34,7 +34,6 @@ XSD skjema for meldingsformatene er tilgjengelig for nedlasting på github prosj
 | XSD skjema, protokoll spesifikasjon | -                                                                                                                | https://github.com/ks-no/fiks-arkiv-specification               |
 | Modeller basert på XSD skjema       | [`KS.Fiks.Arkiv.Models.V1`](https://www.nuget.org/packages/KS.Fiks.Arkiv.Models.V1/)                             | https://github.com/ks-no/fiks-arkiv-models-dotnet               |
 | Forenklet arkivering                | [`KS.Fiks.Arkiv.Forenklet.Arkivering.V1`](https://www.nuget.org/packages/KS.Fiks.Arkiv.Forenklet.Arkivering.V1/) | https://github.com/ks-no/fiks-arkiv-forenklet-arkivering-dotnet |
-| Fiks protokoll validator            | -                                                                                                                | https://github.com/ks-no/fiks-protokoll-validator               |
 | Fiks-IO klient                      | [`KS.Fiks.IO.Client`](https://www.nuget.org/packages/KS.Fiks.IO.Client/)                                         | https://github.com/ks-no/fiks-io-client-dotnet    |
 | Fiks-IO send klient                 | [`KS.Fiks.IO.Send.Client`](https://www.nuget.org/packages/KS.Fiks.IO.Send.Client/)                               | https://github.com/ks-no/fiks-io-send-client-dotnet    |
 
@@ -48,10 +47,6 @@ Modellene er generert av XSD skjema fra github prosjektet [fiks-arkiv-specificat
 *Denne pakken er uferdig og vil bli utbedret når V1 av protokollen er ferdig lansert*
 
 Dette er en nuget-pakke for "forenklet arkivering", `KS.Fiks.Arkiv.Forenklet.Arkivering.V1`, som inneholder forenklete metoder for å bygge arkivmelding for diverse brukstilfeller. Denne bruker modellene fra `KS.Fiks.Arkiv.Models.V1` til byggingen av arkivmelding. Koden er tilgjengelig på github [her](https://github.com/ks-no/fiks-arkiv-forenklet-arkivering-dotnet) og er også tilgjengelig for bruk i prosjekter på [nuget.org](https://www.nuget.org/packages/KS.Fiks.Arkiv.Forenklet.Arkivering.V1/)
-
-**Fiks protokoll validator**
-
-Dette er en applikasjon som kjører i KS sitt testmiljø. Med denne kan man teste protokollene mot sitt eget arkiv-testmiljø ved å sende ferdige meldinger med statisk XML innhold til den aktuelle FIKS-IO kontoen.
 
 **Fiks-IO klient**
 
@@ -67,7 +62,7 @@ Denne kan brukes hvis man bare skal sende meldinger til Fiks-IO og ikke motta me
 
 **Maven**
 
-| Type                   | Navn                                                                                                              | Github                                          
+| Type                   | Navn                                                                                                              | Github                                          |
 |------------------------|-------------------------------------------------------------------------------------------------------------------|-------------------------------------------------| 
 | Modeller og XSD skjema | [`fiks-arkiv`](https://github.com/ks-no/fiks-arkiv-client-java)                                                   | https://github.com/ks-no/fiks-arkiv-client-java |
 | Forenklet arkivering   | [`fiks-arkiv-forenklet-arkivering`](https://search.maven.org/artifact/no.ks.fiks/fiks-arkiv-forenklet-arkivering) | https://github.com/ks-no/fiks-arkiv-client-java |
@@ -97,19 +92,22 @@ Denne kan brukes hvis man bare skal sende meldinger til Fiks-IO og ikke motta me
 
 ### Felles for .NET og Java
 
-| Type                                | Nuget                                                                                                            | Github                                                          |
-|-------------------------------------|------------------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------| 
-| Valideringstester                   | -                                                                                                                | https://github.com/ks-no/fiks-arkiv-integration-tests-dotnet    |
+| Type                              | Github                                                          | Url |
+|-----------------------------------|-----------------------------------------------------------------|-----|
+| Fiks protokoll validator          | https://github.com/ks-no/fiks-protokoll-validator               |     |
+| Valideringstester                 | https://github.com/ks-no/fiks-arkiv-integration-tests-dotnet    |     |
+
+
+**Fiks protokoll validator**
+
+Dette er en applikasjon, kodet i .net og Vue, og som kjører i KS sitt testmiljø. Ved å bruke applikasjonen som kjører i testmiljøet kan man teste protokollene mot sitt eget arkiv-testmiljø ved å sende ferdige meldinger med statisk XML innhold til den aktuelle FIKS-IO arkiv-kontoen. 
 
 **Valideringstester**
 
 Dette prosjekter inneholder valideringstester (integrasjonstester) som tester at et arkiv som har implementert Fiks Arkiv protokollen fungerer som forventet i meldings-utvekslinger. F.eks. at arkivet kan ta i mot og lagre en ny journalpost, oppdatere journalposten, og levere den oppdaterte journalposten på en hent-melding.
 Disse testene kan gjennomføre flere meldingsutvekslinger og steg enn `Fiks protokoll validator` som kun tester å sende en melding og så sjekker svaret.
 
-Testene kjøres ved at man laster ned prosjektet og kjører de lokalt.
-
-Github prosjektet for validatortestene er [her](https://github.com/ks-no/fiks-arkiv-integration-tests-dotnet) og kan lastes ned og brukes for testing. Det oppfordres til å bidra med enda flere tester.
-
+Testene er skrevet i .net og kjøres ved at man laster ned prosjektet og kjører de lokalt. Det oppfordres til å bidra med enda flere tester.
 
 
 ### Asynkrone meldinger og retry
