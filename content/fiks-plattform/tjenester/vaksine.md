@@ -18,7 +18,7 @@ Vedkommende det gjøres oppslag for må også ha blitt gitt søke-privilegiet p�
 ### Sikkerhet
 Kommunikasjonen vil være kryptert med TLS. Autentisering med HelseID og Fiks integrasjon.
 
-## Endepunkt [(api-spec)](https://editor.swagger.io/?url=https://ks-no.github.io/api/vaksine-api-v1.json)
+## Endepunkt [(api-spec)](https://editor.swagger.io/?url=https://developers.fiks.ks.no/api/vaksine-api-v1.json)
 
 For alle endepunktene hentes autentisert bruker fra access token i "Authorization"-headeren på requesten. Dette tokenet 
 må være utstedt av HelseID med aud-verdi ks:fiks, scope-verdier ks:fiks/sysvak, fhi:personoppslag/api, fhi:sysvaknett/fiks/api, fhi:sysvaknett/api, helseid://scopes/hpr/hpr_number, helseid://scopes/identity/pid og helseid://scopes/identity/security_level og nivå 4.

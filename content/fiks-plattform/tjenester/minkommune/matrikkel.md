@@ -15,4 +15,4 @@ Matrikkelinformasjon lastes på nasjonalt nivå, det er dermed ikke nødvendig f
 
 ## API
 Gjennom matrikkel-eier APIet kan det gjøres oppslag i matrikkelen. Enten for å finne hvilke eiendommer en person eller organisasjon eier, eller oppslag for å finne hvem som eier en spesifikk eiendom. En integrasjon må bli gitt MATRIKKEL.QUERY privilegiet på tjenesten Minside: Mine Eiendommer for å kunne bruke APIet.
- [API for Matrikkel-eier](https://editor.swagger.io/?url=https://ks-no.github.io/api/matrikkel-eier-oppslag-api-v1.json)
+ [API for Matrikkel-eier](https://editor.swagger.io/?url=https://developers.fiks.ks.no/api/matrikkel-eier-oppslag-api-v1.json)

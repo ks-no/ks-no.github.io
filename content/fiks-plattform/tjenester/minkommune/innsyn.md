@@ -46,7 +46,7 @@ Noen grunnleggende prinsipper for forvalting av meldinger i innsyn:
 
 #### API
 
-Meldinger til Innsyn indekseres gjennom [Innsyn Index API Versjon 2](https://editor.swagger.io/?url=https://ks-no.github.io/api/innsyn-index-api-v2.json) 
+Meldinger til Innsyn indekseres gjennom [Innsyn Index API Versjon 2](https://editor.swagger.io/?url=https://developers.fiks.ks.no/api/innsyn-index-api-v2.json) 
 
 Merk at JSON-metadata må Base64 encodes før det sendes til APIet, dette hovedsaklig for å unngå JSON escape problematikk. Gyldige verdier for "versjon"-feltet er definert i tabellen under.
 
@@ -63,7 +63,7 @@ Alle JSON-schema definisjoner finnes i følgende GitHub repository: [ks-no / fik
 Det finnes allerede en Maven-modul for Java-brukere som er deployet til Maven Central. Mer informasjon rundt dette finnes i prosjektets README på GitHub.
 
 ##### Gamle APIer
-[Versjon 1](https://editor.swagger.io/?url=https://ks-no.github.io/api/innsyn-index-api-v1.json) av innsyn index støttes fortsatt for eksisterende integrasjoner, men bør ikke benyttes for nyutvikling.
+[Versjon 1](https://editor.swagger.io/?url=https://developers.fiks.ks.no/api/innsyn-index-api-v1.json) av innsyn index støttes fortsatt for eksisterende integrasjoner, men bør ikke benyttes for nyutvikling.
 
 Hovedforskjellen fra versjon 2 er at metadata for meldingstypene er definert i API-speccen, i stedet for eksterne JSON-schemas.
 
@@ -102,7 +102,7 @@ Over tid vil json-modellen for en melding endrer seg. Innsyn løser dette ved at
 Hvis man ønsker å oppgradere eksisterende meldinger til ny versjon, for eksempel for å benytte felt som er lagt til i oppdateringen, gjøres dette gjennom _replay_; alle meldinger re-indekseres på eksisterende meldingId med ny versjon av metadata.  
 
 ##### Sletting
-Indekserte meldinger kan fjernes ved å benytte [slette-API](https://editor.swagger.io/?url=https://ks-no.github.io/api/innsyn-delete-api-v1.json). Her gjelder de samme reglene som over: en integrasjon må være autorisert for å handle på vegne av en ansvarlig organisasjon for at sletting kan gjennomføres, og en integrasjon kan bare slette meldinger den selv har indeksert.
+Indekserte meldinger kan fjernes ved å benytte [slette-API](https://editor.swagger.io/?url=https://developers.fiks.ks.no/api/innsyn-delete-api-v1.json). Her gjelder de samme reglene som over: en integrasjon må være autorisert for å handle på vegne av en ansvarlig organisasjon for at sletting kan gjennomføres, og en integrasjon kan bare slette meldinger den selv har indeksert.
 
 Merk at sletting på samme måte som indeksering ikke gjennomføres i en atomisk transaksjon: deler av meldingene i batchen kan bli slettet selv om andre feiler. 
 
@@ -115,14 +115,15 @@ Hvis kommunen benytter min.kommune.no er det ikke behov for å utvikle noen egne
 
 Innsyn tilbyr følgende søke-api'er for eksterne integrasjoner:
 
-* [Byggesak-søk](https://editor.swagger.io/?url=https://ks-no.github.io/api/openapi-sok-byggesak-v1.json)  Søk i innbyggerens byggesaker (pågående og historiske).
-* [Eiendom-søk](https://editor.swagger.io/?url=https://ks-no.github.io/api/openapi-sok-eiendom-v1.json) Søk i matrikkelenheter fra kartverket.
-* [Post-søk](https://editor.swagger.io/?url=https://ks-no.github.io/api/openapi-sok-post-v1.json) Søk i post sendt fra kommunen til inbyggeren via KS-SvarUt.
-* [Skjema-søk](https://editor.swagger.io/?url=https://ks-no.github.io/api/openapi-sok-skjema-v1.json) Søk i skjema og skjemakladder sendt fra innbyggeren til kommunen.
-* [Multi-søk](https://editor.swagger.io/?url=https://ks-no.github.io/api/openapi-sok-multi-v1.json) Samtidig søk i alle meldingstyper.
-* [Legacy-søk](https://editor.swagger.io/?url=https://ks-no.github.io/api/innsyn-sok-api-v1.json) Innsyns gamle søke-api. Dette støttes fortsatt for eksisterende integrasjoner, ved nyutvikling bør man velge et av endepunktene over.
+* [Byggesak-søk](https://editor.swagger.io/?url=https://developers.fiks.ks.no/api/openapi-sok-byggesak-v1.json)  Søk i innbyggerens byggesaker (pågående og historiske).
+* [Eiendom-søk](https://editor.swagger.io/?url=https://developers.fiks.ks.no/api/openapi-sok-eiendom-v1.json) Søk i matrikkelenheter fra kartverket.
+* [Faktura-søk](https://editor.swagger.io/?url=https://developers.fiks.ks.no/api/openapi-sok-faktura-v1.json) Søk i innbyggerens fakturaer.
+* [Post-søk](https://editor.swagger.io/?url=https://developers.fiks.ks.no/api/openapi-sok-post-v1.json) Søk i post sendt fra kommunen til inbyggeren via KS-SvarUt.
+* [Skjema-søk](https://editor.swagger.io/?url=https://developers.fiks.ks.no/api/openapi-sok-skjema-v1.json) Søk i skjema og skjemakladder sendt fra innbyggeren til kommunen.
+* [Multi-søk](https://editor.swagger.io/?url=https://developers.fiks.ks.no/api/openapi-sok-multi-v1.json) Samtidig søk i alle meldingstyper.
+* [Legacy-søk](https://editor.swagger.io/?url=https://developers.fiks.ks.no/api/openapi-sok-legacy-v1.json) Innsyns gamle søke-api. Dette støttes fortsatt for eksisterende integrasjoner, ved nyutvikling bør man velge et av endepunktene over.
 
-I tillegg til søke-apier er det mulig å benytte [Innsyn Oppslag api](https://editor.swagger.io/?url=https://ks-no.github.io/api/openapi-oppslag-v1.json) for å hente meldinger. Gjennom dette api'et kan man hente en enkeltmelding (basert på melding-id), alle meldinger som har samme korrelasjon-id, eller alle meldinger som er barn av en spesifisert forelder-melding. 
+I tillegg til søke-apier er det mulig å benytte [Innsyn Oppslag api](https://editor.swagger.io/?url=https://developers.fiks.ks.no/api/openapi-oppslag-v1.json) for å hente meldinger. Gjennom dette api'et kan man hente en enkeltmelding (basert på melding-id), alle meldinger som har samme korrelasjon-id, eller alle meldinger som er barn av en spesifisert forelder-melding. 
 
 Integrasjonen som skal utføre søk eller oppslag må benytte [integrasjon-person]({{< ref "integrasjoner.md" >}}) autentisering, dvs at de må fremvise den innloggede innbyggers ID-Porten token i kombinasjon med integrasjonId og Integrasjonpassord. I tillegg må integrasjonen ha "innsyn søk" privilegiet på den aktuelle Fiks-organisasjonen (tildelse via Innsyn konfigurasjon på forvaltning.fiks.ks.no). Søkeresultatet vil være begrenset til meldinger autorisert for den innloggede personen og eid av den aktuelle Fiks-organisasjonen.
 

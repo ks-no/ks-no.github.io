@@ -31,7 +31,7 @@ Merk at det sammen med systemet opprettes en tilhørende integrasjon som skal br
 
 Et system kan settes opp til å konfigureres av integrasjon. Da vil den tilhørende integrasjonen få tilgang til å administrere systemet og vil kunne gjøre det samme som en administrator kan gjøre på Fiks Forvaltning (med visse unntak som sletting av system og resetting av passord)
 
-APIet for konfigurering med integrasjon er definert her: [Fiks Protokoll API](https://editor.swagger.io/?url=https://ks-no.github.io/api/fiks-protokoll-konfigurasjon-api-v1.json)
+APIet for konfigurering med integrasjon er definert her: [Fiks Protokoll API](https://editor.swagger.io/?url=https://developers.fiks.ks.no/api/fiks-protokoll-konfigurasjon-api-v1.json)
 
 ### Fiks Protokoll Konto
 Konto opprettes i forvaltning eller via API.

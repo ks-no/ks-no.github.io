@@ -121,7 +121,7 @@ Eksempelet er utført med httpie: `http --pretty format GET https://api.fiks.tes
 ```
 
 ### Oppvekst-API
-OpenAPI/Swagger-dokumentasjon for oppvekst-API finner man [her](https://editor.swagger.io/?url=https://ks-no.github.io/api/folkeregister-oppvekst-api-v1.json).
+OpenAPI/Swagger-dokumentasjon for oppvekst-API finner man [her](https://editor.swagger.io/?url=https://developers.fiks.ks.no/api/folkeregister-oppvekst-api-v1.json).
 
 Dette API har spesifikke krav for rollen som brukes. Bruksområde skal være «Søk etter person» og følgende informasjonselementer for «Personbasis» og «Relasjon utvidet» må være valgt:
 

@@ -19,7 +19,7 @@ Fiks innreise gjør ingenting med dataene som blir importert fra HDIR. Datagrunn
 Hver natt vil KS importere data for de siste 10 dager fra HDIR. Siste oppdatering på dataene som ligger hos KS vil være ved midnatt samme dag. 
 Dette betyr at man ikke kan spørre etter innreiser fra dagens dato.
 
-### Integrasjon [(api-spec)](https://editor.swagger.io/?url=https://ks-no.github.io/api/innreise-api-v1.json)
+### Integrasjon [(api-spec)](https://editor.swagger.io/?url=https://developers.fiks.ks.no/api/innreise-api-v1.json)
 Autentisering skjer ved hjelp av en Integrasjon-mekanismen beskrevet [her](https://ks-no.github.io/fiks-plattform/integrasjoner/#integrasjon)
 
 En kan enten velge å sende med fiksOrgId som en del av URL'en eller la API'et ta seg av å finne tilhørende fiksOrgId til integrasjonsId'en som spør.

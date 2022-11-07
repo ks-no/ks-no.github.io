@@ -5,7 +5,7 @@ aliases: [/fiks-platform/tjenester/fullmakt]
 ---
 Tjenesten gjør det foreløpig mulig å hente fullmakter for organisasjoner, samt navn for autentisert bruker.
 
-## Endepunkter [(api-spec)](https://editor.swagger.io/?url=https://ks-no.github.io/api/fullmakt-api-v1.json)
+## Endepunkter [(api-spec)](https://editor.swagger.io/?url=https://developers.fiks.ks.no/api/fullmakt-api-v1.json)
 
 For alle endepunktene hentes autentisert bruker fra access token i "Authorization"-headeren på requesten. Dette tokenet 
 må være utstedt av ID-porten.

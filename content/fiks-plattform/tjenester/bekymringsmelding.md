@@ -62,12 +62,12 @@ Dersom fagsystemet ikke klarer å lagre bekymringsmeldingen kan man sende tilbak
 Fullstendig skjemadefinisjon med eksempler finner man [her](https://github.com/ks-no/fiks-io-bekymringsmelding-protokoll). Det anbefales at man setter ttl (time-to-live) for en Fiks IO-melding til 24 timer. Får man meldingstype ```no.ks.fiks.kvittering.tidsavbrudd```, så trenger dere ikke sende noe tilbake, da vi alltid har en fallback til brevpost. Men det anbefales at man logger det, og sier fra så vi kan feilsøke. For mer informasjon om Fiks IO, se [dokumentasjon for Fiks IO](https://ks-no.github.io/fiks-plattform/tjenester/fiksprotokoll/fiksio/). Trondheim kommune har også laget en Fiks IO-klient i Go som er spesifikt rettet mot bekymringsmelding. Den finner man [her](https://github.com/tktip/fiks-bekymringsmelding-konsument).
 
 ### Fagsystem som produsent
-Swagger-spesifikasjon for å sende inn bekymringsmeldinger via API finnes her: [Bekymringsmelding mottak fagsystem](https://editor.swagger.io/?url=https://ks-no.github.io/api/bekymringsmelding-mottak-fagsystem-api-v1.json) og [Bekymringsmelding kommune service](https://editor.swagger.io/?url=https://ks-no.github.io/api/bekymringsmelding-kommune-api-v1.json). Merk at filene som skal sendes med, sendes som multipart request. Ikke alle Swagger-genererte klienter genererer dette riktig i henhold til OpenAPI 3.0-spesifikasjonen. Du kan se et eksempel på multipartforsendelse i Java [her](#eksempel-på-innsending-java-med-jersey-client).
+Swagger-spesifikasjon for å sende inn bekymringsmeldinger via API finnes her: [Bekymringsmelding mottak fagsystem](https://editor.swagger.io/?url=https://developers.fiks.ks.no/api/bekymringsmelding-mottak-fagsystem-api-v1.json) og [Bekymringsmelding kommune service](https://editor.swagger.io/?url=https://developers.fiks.ks.no/api/bekymringsmelding-kommune-api-v1.json). Merk at filene som skal sendes med, sendes som multipart request. Ikke alle Swagger-genererte klienter genererer dette riktig i henhold til OpenAPI 3.0-spesifikasjonen. Du kan se et eksempel på multipartforsendelse i Java [her](#eksempel-på-innsending-java-med-jersey-client).
 
 Feltet "Leveringskanal", jmf JSON-skjemaene, skal settes til navn på organisasjonen (Politiet, navnet på skolen, etc.) som sender bekymringsmeldingen. Feltet "Sendingstidspunkt" forventer ISO-8601 norsk tid uten tidssone, eksempelvis "2021-11-08T09:24:45".
 
 #### Filer
-Det må sendes med to krypterte filer, en AsiC-E-fil og en PDF-fil. De offentlige nøklene som brukes ved kryptering hentes fra API-et [Bekymringsmelding mottak fagsystem](https://editor.swagger.io/?url=https://ks-no.github.io/api/bekymringsmelding-mottak-fagsystem-api-v1.json). 
+Det må sendes med to krypterte filer, en AsiC-E-fil og en PDF-fil. De offentlige nøklene som brukes ved kryptering hentes fra API-et [Bekymringsmelding mottak fagsystem](https://editor.swagger.io/?url=https://developers.fiks.ks.no/api/bekymringsmelding-mottak-fagsystem-api-v1.json). 
 
 ##### AsiC-E-fil
 AsiC-E-filen må inneholde to filer, «bekymringsmelding.json» og «bekymringsmelding.pdf». «bekymringsmelding.json» er en JSON-fil definert i JSON-skjema for [privat bekymringsmelding](https://raw.githubusercontent.com/ks-no/fiks-io-bekymringsmelding-protokoll/master/schema/domain/privat.bekymringsmelding.v1.json) eller [offentlig bekymringsmelding](https://raw.githubusercontent.com/ks-no/fiks-io-bekymringsmelding-protokoll/master/schema/domain/offentlig.bekymringsmelding.v1.json) - avhengig om meldingstypen er en privat eller offentlig bekymringsmelding. Skjemadefinisjon med eksempler finner man [her](https://github.com/ks-no/fiks-io-bekymringsmelding-protokoll). AsiC-E-filen må være kryptert med mottakersystemets offentlige nøkkel.
@@ -127,7 +127,7 @@ hvor:
 - token: Gyldig aksesstoken fra maskinporten
 
 #### Hente status for sendt bekymringsmelding
-Et fagsystem kan hente status med tilhørende historikk for sendte bekymringsmeldinger via API-et [Bekymringsmelding mottak fagsystem](https://editor.swagger.io/?url=https://ks-no.github.io/api/bekymringsmelding-mottak-fagsystem-api-v1.json).
+Et fagsystem kan hente status med tilhørende historikk for sendte bekymringsmeldinger via API-et [Bekymringsmelding mottak fagsystem](https://editor.swagger.io/?url=https://developers.fiks.ks.no/api/bekymringsmelding-mottak-fagsystem-api-v1.json).
 
 Endepunktet `/bekymringsmelding/api/v1/mottak/fagsystem/{fraFiksOrgId}/bekymringsmelding/{bekymringsmeldingId}/status` returnerer en liste av alle hendelsene for den angitte bekymringsmelding-id-en. Hver hendelse inneholder en tilstand for bekymringsmeldingen, som kan inneholde følgende verdier:
 

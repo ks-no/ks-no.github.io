@@ -122,9 +122,9 @@ For mer informasjon om SvarUt/SvarInn, se [dokumentasjon for SvarUt](https://ks-
 
 ### Sak oppdatering fra Fagsystem
  
-Fiks Digisos tilbyr en [api-spec](https://editor.swagger.io/?url=https://ks-no.github.io/api/digisos-sak-api-v1.json) for alle operasjoner utenom filopplasting, som er beskrevet under avsnittet "Opplasting av filer".
+Fiks Digisos tilbyr en [api-spec](https://editor.swagger.io/?url=https://developers.fiks.ks.no/api/digisos-sak-api-v1.json) for alle operasjoner utenom filopplasting, som er beskrevet under avsnittet "Opplasting av filer".
 
-[Sak oppdaterings api-spec](https://editor.swagger.io/?url=https://ks-no.github.io/api/digisos-sak-api-v1.json) er API-et der hvert endepunkt opererer på en angitt søknad, DigisosId, der førlgene operasjoner er tilgjengelige:
+[Sak oppdaterings api-spec](https://editor.swagger.io/?url=https://developers.fiks.ks.no/api/digisos-sak-api-v1.json) er API-et der hvert endepunkt opererer på en angitt søknad, DigisosId, der førlgene operasjoner er tilgjengelige:
 
 - Opprette en ny sak for en søker, der man får tildelt en unik DigisosId for opprettet sak.
 - Oppdatere en sak med nye hendelser, der gammel sakoppdatering vil bli erstattet med den nye.
@@ -209,7 +209,7 @@ For generell integrasjonsutvikling mot Fiks, se [Integrasjonsutvikling]({{< ref 
 
 ### Innsending av søknad
 
-Soknad api [(api-spec)](https://editor.swagger.io/?url=https://ks-no.github.io/api/digisos-api-v1.json)
+Soknad api [(api-spec)](https://editor.swagger.io/?url=https://developers.fiks.ks.no/api/digisos-api-v1.json)
 
 For innsending av søknad/ettersendelse brukes person-integrasjon autentisering med OIDC, se [Integrasjonsutvikling]({{< ref "integrasjoner.md" >}}) for mer detaljer.
 
@@ -265,7 +265,7 @@ Ved feil ved opplasting får man 400 Bad Request når multipart-requesten ikke e
 ![digisos_mellomlagring](../../images/digisos_midlertidig_lagring.png "Fiks Digisos Mellomlagring")
 
 For å sende inn søknad og ettersendelse med mellomlagring av vedlegg er det laget et nytt api: 
-[(api-spec)](https://editor.swagger.io/?url=https://ks-no.github.io/api/digisos-mellomlagring-api-v1.json
+[(api-spec)](https://editor.swagger.io/?url=https://developers.fiks.ks.no/api/digisos-mellomlagring-api-v1.json)
 
 Her bruker man en multipart request på samme måte som ved innsending av søknad, men det skal kun legges ved en enkelt fil. Om det er flere vedlegg må de lastes opp en om gangen. Hver request må da bruke den samme ```{navEkseternRefId}```. Vedleggene kan deretter lastes ned eller slettes fra mellomlageret ved bruk av dette api'et.
 
@@ -277,6 +277,6 @@ oppgis her, og som ble benyttet til mellomlagring. Når innsending er ferdig, vi
 Automatisk sletting av mellomlagrede filer for søknader som ikke er sendt inn vil komme i en senere releas.
 
 ### Henting av filer
-Soknad api [(api-spec)](https://editor.swagger.io/?url=https://ks-no.github.io/api/digisos-api-v1.json)
+Soknad api [(api-spec)](https://editor.swagger.io/?url=https://developers.fiks.ks.no/api/digisos-api-v1.json)
 
 Ved henting av søknad vil det for hver fil returneres en UUID til Fiks Dokumentlager eller en forsendelsesid og filnummer for SvarUt, der filen kan lastes ned. Filene soknad.json, vedlegg.json og digisos-soker.json vil være tilgjengelige for NAV gjennom endepunktet ```/digisos/api/v1/nav/soknader/{digisosId}/dokumenter/{dokumentlagerId}``` fra Digisos API-et, der dokumentet blir returnert som en inputstream fra HttpServletResponse. Alle andre filreferanser vil bli eksponert for søkeren, som søkeren selv må laste ned fra Fiks Dokumentlager, ```https://minside.kommune.no/dokumentlager/nedlasting/niva4/{id}```, eller fra SvarUt, ```https://svarut.ks.no/forsendelse/{forsendelseId}/{filnummer}```. 

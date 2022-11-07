@@ -21,7 +21,7 @@ Kommunen må også gi tilgang til applikasjonen sin integrasjon samt alle sluttb
 ### Sikkerhet
 Kommunikasjonen vil være kryptert med TLS. Autentisering med HelseID og Fiks integrasjon.
 
-## Endepunkt [(api-spec)](https://editor.swagger.io/?url=https://ks-no.github.io/api/provesvar-api-v1.json)
+## Endepunkt [(api-spec)](https://editor.swagger.io/?url=https://developers.fiks.ks.no/api/provesvar-api-v1.json)
 
 For alle endepunktene hentes autentisert bruker fra access token i "Authorization"-headeren på requesten. 
 Dette tokenet må være utstedt av HelseID med aud-verdier ks:fiks og fhi:labdatabase
