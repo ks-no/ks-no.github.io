@@ -96,12 +96,12 @@ __NB! Vi anbefaler ikke å sette TTL til 0 da dette betyr at mottaker må hente 
 ### Standardmeldingstyper
 
 #### Tidsavbrudd (under utfasing)
-I tillegg til meldinger definert i protokollkatalogen det er også definert en standard meldingstype som forteller at meldingens TTL har utløpt uten at mottaker har mottat den. 
+I tillegg til meldinger definert i protokollkatalogen, er det også definert en standard meldingstype som forteller at meldingens TTL har utløpt uten at mottaker har mottat den. 
 Meldingstypen er `no.ks.fiks.kvittering.tidsavbrudd`. Denne meldingen blir sendt til avsender når originalmeldingen kommer fremst i køen til mottaker og TTL er utgått. 
-Dette betyr at meldingen ikke trenger å komme når TTL utløper men kan komme en stund senere.
-Hvis mottaker er nede og ikke leser meldinger og første melding har f.eks. TTL på 2 timer. Da vil ikke meldinger bak denne, f.eks med tidsavbrudd mindre enn 2 timer, trigge tidsavbrudd-melding før meldingen som er først i køen utløper. 
+Dette betyr at meldingen ikke trenger å komme når TTL utløper, men kan komme en stund senere.
+Hvis mottaker er nede, og ikke leser meldinger, vil ikke meldinger bak denne trigge tidsavbrudd-melding før meldingen som er først i køen utløper. 
 
-Disse tidsavbrudd-meldingene inneholder ingen body, men kun headere deriblant `svar-til` som vil være en referanse til den opprinnelige meldingen (melding-id), `svar-til-type` som inneholder den originale typen på meldingen som har utløpt.
+Disse tidsavbrudd-meldingene inneholder ingen body, men kun [headere](#Headere-og-properties-i-meldingsutvekslingen).
 
 __NB! Siden utløp av meldinger ikke vil fungere godt om det ligger flere meldinger på kø vil denne funksjonaliteten fases ut snart. I stedet vil man få en `no.ks.fiks.io.feilmelding.serverfeil.v1` når en melding er avvist tre ganger__
 
