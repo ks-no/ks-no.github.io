@@ -1,8 +1,8 @@
 {
-  "openapi": "3.0.1",
+  "openapi": "3.0.3",
   "info": {
-    "title": "KS FIKS: Register konfigurasjon service",
-    "description": "Register konfigurasjon service",
+    "title": "Fiks register konfigurasjon service",
+    "description": "Konfigurasjonstjeneste for Fiks register",
     "contact": {
       "name": "KS Fiks brukerstøtte",
       "url": "https://www.ks.no/fagomrader/digitalisering/utviklingsprosjekter",
@@ -23,15 +23,30 @@
     }
   ],
   "paths": {
-    "/register/api/v1/konfigurasjon/rolle": {
+    "/register/api/v1/konfigurasjon/{fiksOrgId}/rolle": {
       "post": {
         "operationId": "opprettRolle",
+        "tags": [
+          "konfigurasjon"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "fiksOrgId",
+            "description": "Id til organisasjonen som skal eie rollen",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
         "requestBody": {
           "required": true,
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/RolleDefinisjon"
+                "$ref": "#/components/schemas/OpprettRolleDefinisjon"
               }
             }
           }
@@ -43,7 +58,16 @@
               "self": {
                 "operationRef": "hentRolle",
                 "parameters": {
+                  "fiksOrgId": "$request.path.fiksOrgId",
                   "id": "$request.path.id"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "Rollen som ble opprettet",
+                  "$ref": "#/components/schemas/LagretRolleDefinisjon"
                 }
               }
             }
@@ -53,46 +77,66 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "https://ks-no.github.io/api/fiks-common.json#/components/schemas/ErrorMessage"
-                }
-              }
-            }
-          }
-        },
-        "tags": [
-          "konfigurasjon"
-        ]
-      }
-    },
-    "/register/api/v1/konfigurasjon/rolle/{id}": {
-      "get": {
-        "operationId": "hentRolle",
-        "parameters": [{
-          "in": "path",
-          "name": "id",
-          "required": true,
-          "schema": {
-            "type": "string",
-            "pattern": "uuid"
-          }
-        }],
-        "responses": {
-          "200": {
-            "description": "Finner rollen",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Rolle"
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
                 }
               }
             }
           },
-          "401": {
-            "description": "Mangler tilgang til rollen",
+          "403": {
+            "description": "Mangler tilgang til å opprette rolle for gitt organisasjon",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "https://ks-no.github.io/api/fiks-common.json#/components/schemas/ErrorMessage"
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/register/api/v1/konfigurasjon/{fiksOrgId}/rolle/{id}": {
+      "get": {
+        "operationId": "hentRolle",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "fiksOrgId",
+            "description": "Id til organisasjonen som skal eie rollen",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "in": "path",
+            "name": "id",
+            "description": "Unik ID til den rollen man vil hente",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Fant rollen",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LagretRolleDefinisjon"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Mangler tilgang til rolle",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
                 }
               }
             }
@@ -102,13 +146,147 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "https://ks-no.github.io/api/fiks-common.json#/components/schemas/ErrorMessage"
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
                 }
               }
             }
           }
         },
-        "tags": ["konfigurasjon", "oppslag"]
+        "tags": [
+          "oppslag",
+          "konfigurasjon"
+        ]
+      },
+      "delete": {
+        "operationId": "slettRolle",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "fiksOrgId",
+            "description": "Id til organisasjonen som skal eie rollen",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "in": "path",
+            "name": "id",
+            "description": "Unik ID til den rollen man vil hente",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "tags": [
+          "konfigurasjon"
+        ],
+        "responses": {
+          "204": {
+            "description": "Sletting utført",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "Rollen slik den var ved slettetidspunktet",
+                  "$ref": "#/components/schemas/LagretRolleDefinisjon"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Har ikke tilgang til å slette rolle",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Kan ikke slette rolle som ikke finnes",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "operationId": "oppdaterRolle",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "fiksOrgId",
+            "description": "Id til organisasjonen som skal eie rollen",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "in": "path",
+            "name": "id",
+            "description": "Unik ID til den rollen man vil hente",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RolleEndring"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Emdret rolle",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LagretRolleDefinisjon"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Mangler tilgang til rolle",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Rollen finnes ikke",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "konfigurasjon"
+        ]
       }
     }
   },
@@ -121,57 +299,88 @@
       }
     },
     "schemas": {
-      "RolleDefinisjon": {
+      "OpprettRolleDefinisjon": {
         "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/RolleDefinisjon"
+          }
+        ],
         "required": [
           "navn",
           "beskrivelse",
-          "aktiv",
-          "registre"
-        ],
-        "properties": {
-          "navn": {
-            "type": "string"
-          },
-          "beskrivelse": {
-            "type": "string"
-          },
-          "aktiv": {
-            "type": "boolean"
-          },
-          "registre": {
-            "type": "object",
-            "minProperties": 1,
-            "properties": {
-              "folkeregister": {
-                "$ref": "#/components/schemas/FolkeregisterDefinisjon"
-              },
-              "summertSkattegrunnlag": {
-                "$ref": "#/components/schemas/SummertSkattegrunnlagDefinisjon"
-              },
-              "kontaktregister": {
-                "$ref": "#/components/schemas/KontaktregisterDefinisjon"
-              }
-            }
-          }
-        }
+          "registre",
+          "status"
+        ]
       },
-      "Rolle": {
+      "LagretRolleDefinisjon": {
         "type": "object",
-        "required": [
-          "id"
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/RolleDefinisjon"
+          }
         ],
         "properties": {
           "id": {
             "type": "string",
             "format": "uuid"
+          },
+          "aktiv": {
+            "type": "boolean"
           }
         },
-        "allOf": [
-          {
-            "$ref": "#/components/schemas/RolleDefinisjon"
-          }
+        "readOnly": true,
+        "required": [
+          "id",
+          "navn",
+          "beskrivelse",
+          "registre",
+          "aktiv"
         ]
+      },
+      "RolleDefinisjon": {
+        "type": "object",
+        "properties": {
+          "navn": {
+            "type": "string",
+            "pattern": "^[A-ZÆØÅa-zæøå0-9ÁáÀàÂâÉéÈèÊêÍíÌìÎîÓóÒòÔôÚúÙùÛûÝýÄäËëÏïÖöÜü,.!?\\-:;/\\\\'()&+*=%§]+[A-ZÆØÅa-zæøå0-9ÁáÀàÂâÉéÈèÊêÍíÌìÎîÓóÒòÔôÚúÙùÛûÝýÄäËëÏïÖöÜü ,.!?\\-:;/\\\\'()&+*=%§]*[A-ZÆØÅa-zæøå0-9ÁáÀàÂâÉéÈèÊêÍíÌìÎîÓóÒòÔôÚúÙùÛûÝýÄäËëÏïÖöÜü,.!?\\-:;/\\\\'()&+*=%§]+$",
+            "maxLength": 400
+          },
+          "beskrivelse": {
+            "type": "string",
+            "maxLength": 400
+          },
+          "registre": {
+            "$ref": "#/components/schemas/RegisterDefinisjon"
+          },
+          "tagger": {
+            "type": "array",
+            "uniqueItems": true,
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "navn",
+          "beskrivelse",
+          "registre"
+        ]
+      },
+      "RegisterDefinisjon": {
+        "type": "object",
+        "minProperties": 1,
+        "properties": {
+          "folkeregister": {
+            "$ref": "#/components/schemas/FolkeregisterDefinisjon"
+          },
+          "kontaktregister": {
+            "$ref": "#/components/schemas/KontaktregisterDefinisjon"
+          },
+          "summertSkattegrunnlag": {
+            "$ref": "#/components/schemas/SummertSkattegrunnlagDefinisjon"
+          }
+        }
       },
       "FolkeregisterDefinisjon": {
         "type": "object",
@@ -179,36 +388,76 @@
           "tjenesteomraade": {
             "$ref": "#/components/schemas/FolkeregisterTjenesteomraade"
           },
-          "bruksomraade": {
-            "$ref": "#/components/schemas/FolkeregisterBruksomraade"
+          "bruksomraader": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FolkeregisterBruksomraade"
+            },
+            "minItems": 1
           },
-          "kanHenteTaushetsbelagtInfo": {
+          "kanBrukesPaaSokeside": {
+            "type": "boolean"
+          },
+          "tilgangTaushetsbelagtInformasjon": {
             "type": "boolean",
             "readOnly": true
           },
-          "dataminimering": {
-            "$ref": "#/components/schemas/DataminimeringDefinisjon"
+          "minimering": {
+            "$ref": "#/components/schemas/FolkeregisterMinimeringDefinisjon"
           }
-        }
+        },
+        "required": [
+          "tjenesteomraade",
+          "bruksomraader",
+          "kanBrukesPaaSokeside",
+          "minimering"
+        ]
       },
-      "DataminimeringDefinisjon": {
+      "FolkeregisterMinimeringDefinisjon": {
+        "properties": {
+          "parts": {
+            "type": "array",
+            "uniqueItems": true,
+            "minItems": 1,
+            "items": {
+              "type": "string",
+              "pattern": "^[A-Z]+$"
+            }
+          }
+        },
+        "required": ["parts"]
+
+      },
+      "KontaktregisterDefinisjon": {
         "type": "object",
         "properties": {
-          "felt": {
+          "minimering": {
             "type": "array",
+            "minItems": 1,
             "items": {
-              "type": "string"
+              "$ref": "#/components/schemas/KontaktregisterMinimeringFelt"
             }
           }
         }
       },
       "SummertSkattegrunnlagDefinisjon": {
         "type": "object",
-        "properties": {}
+        "properties": {
+          "rettighetspakke": {
+            "$ref": "#/components/schemas/SummertSkattegrunnlagRettighetspakke"
+          }
+        },
+        "required": [
+          "rettighetspakke"
+        ]
       },
-      "KontaktregisterDefinisjon": {
-        "type": "object",
-        "properties": {}
+      "SummertSkattegrunnlagRettighetspakke": {
+        "type": "string",
+        "enum": [
+          "KOMMUNEFORELDREBETALING",
+          "KOMMUNEBOLIGSOSIALEFORMAAL",
+          "KOMMUNEPERSONLIGASSISTANSE"
+        ]
       },
       "FolkeregisterTjenesteomraade": {
         "type": "string",
@@ -229,7 +478,8 @@
           "INNFORDRING_INNKREVING",
           "INNVANDRING_OG_INTEGRERING",
           "SAMFUNNSSIKKERHET",
-          "DEMOKRATI_AAPENHET"
+          "DEMOKRATI_AAPENHET",
+          "TRAFIKK_TRANSPORT"
         ]
       },
       "FolkeregisterBruksomraade": {
@@ -239,6 +489,61 @@
           "SOEK",
           "HENDELSER"
         ]
+      },
+      "KontaktregisterMinimeringFelt": {
+        "type": "string",
+        "enum": [
+          "EPOST",
+          "TELEFON",
+          "DIGIAL_POSTKASSE"
+        ]
+      },
+      "RolleEndring": {
+        "type": "object",
+        "properties": {
+          "nyttNavn": {
+            "type": "string",
+            "pattern": "^[A-ZÆØÅa-zæøå0-9ÁáÀàÂâÉéÈèÊêÍíÌìÎîÓóÒòÔôÚúÙùÛûÝýÄäËëÏïÖöÜü,.!?\\-:;/\\\\'()&+*=%§]+[A-ZÆØÅa-zæøå0-9ÁáÀàÂâÉéÈèÊêÍíÌìÎîÓóÒòÔôÚúÙùÛûÝýÄäËëÏïÖöÜü ,.!?\\-:;/\\\\'()&+*=%§]*[A-ZÆØÅa-zæøå0-9ÁáÀàÂâÉéÈèÊêÍíÌìÎîÓóÒòÔôÚúÙùÛûÝýÄäËëÏïÖöÜü,.!?\\-:;/\\\\'()&+*=%§]+$",
+            "maxLength": 400
+          },
+          "nyBeskrivelse": {
+            "type": "string",
+            "maxLength": 400
+          },
+          "fjernTagger": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "string"
+            }
+          },
+          "nyeTagger": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "string"
+            }
+          },
+          "folkeregister": {
+            "type": "object",
+            "$ref": "#/components/schemas/OppdaterFolkeregisterdefinisjon"
+          }
+        }
+      },
+      "OppdaterFolkeregisterdefinisjon": {
+        "type": "object",
+        "properties": {
+          "nyttTjenesteomraade": {
+            "$ref": "#/components/schemas/FolkeregisterTjenesteomraade"
+          },
+          "oppdaterteBruksomraader": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "$ref": "#/components/schemas/FolkeregisterBruksomraade"
+            }
+          }
+        }
       }
     }
   }
