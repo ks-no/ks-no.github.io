@@ -210,3 +210,19 @@ Er det en melding man ønsker å svare på selv kan man bruke den innebyggede Sv
 Alternativt hvis man ikke kan bruke Svar-funksjonaliteten ut av boksen, må man sørge for å sette korrekt **MeldingId** i **SvarPaMelding** property når man sender meldingen tilbake.
 
 Hvis man ikke bruker Fiks IO klienten fra KS vil man måtte gjøre tolkning av amqp headerene selv.
+
+#### Meldingsutveksling og Fiks-IO
+
+![em fiks-io meldingsutveksling](/images/fiksio-meldingsutveksling.png)
+
+Her ser man hvordan Fiks-IO klienten, Fiks-IO API og køene henger sammen i en meldingsutveksling mellom to system.
+
+I dette eksempelet sender **System A** en melding fra Fiks-IO klienten til Fiks-IO API. Fiks-IO API putter det på køen til **System B**.
+**System B** bruker Fiks-IO klienten for å lytte på køen i Fiks-IO og mottar meldingen. **System B** gjør som **System A** og sender svar på meldingen til Fiks-IO API via Fiks-IO klienten. 
+Fiks-IO API putter svarmeldingen på køen til **System A**.
+**System A** lytter og mottar svar på meldingen på sin egen kø via Fiks-IO klienten.
+
+Merk at det er egentlig bare ett Fiks-IO API som begge systemene bruker, men det er tegnet inn som 2 forskjellige bokser for å tydeligere vise flyten.
+
+
+
