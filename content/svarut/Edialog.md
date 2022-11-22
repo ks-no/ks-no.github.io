@@ -12,7 +12,7 @@ Her kan en velge mottaker blandt alle som er registrert i SvarUt.
 
 ### eDialog med predefinert mottaker
 
-Hvis en vil linke til eDialog med ferdigutfylt mottaker kan en brukelinken https://svarut.ks.no/edialog/mottaker/<orgnr>;
+Hvis en vil linke til eDialog med ferdigutfylt mottaker kan en brukelinken https://svarut.ks.no/edialog/mottaker/&lt;orgnr>;
 Da vil det ikke være mulig å endre mottaker.
 
 
