@@ -11,14 +11,14 @@ For å benytte web-tjenesten må en bruke HTTP Basic autentication med brukernav
 
 Forsendelsesservicet tilbyr følgende funksjonalitet:
 
-| Operasjon                          | Inndata      | Utdata               | Kort beskrivelse |
-| ---------------------------------- | ------------ | -------------------- | ---------------- |
-| sendForsendelse                    | Forsendelse | forsendelsesid| Hovedtjeneste som sender inn forsendelse til ekspedering av KS-SvarUt.|
-| retrieveForsendelseStatus          | forsendelsesid | ForsendelseStatus | Henter status for en forsendelse.
-| retrieveForsendelseStatuser        | List\<forsendelsesid\> | List\<StatusResult\> | Henter status for flere forsendelseer. Returnerer liste med status, når status oppstod og forsendelseid.
-| retrieveForsendelseHistorikk       | forsendelsesid | ForsendelseHistorikk | Henter historikk for en forsendelse, tilsvarer ekspederingsloggen i forsendelsesoversikten.
-| retrieveForsendelseIdByEksternRef  | eksternref | List\<forsendelsesid\> | Henter liste med forsendelseider som har denne eksternRef.
-| setForsendelseLestAvEksterntSystem | forsendelsesid,<br/> lestAvFodselsnummer,<br/> navnPaEksterntSystem, <br />datoLest | (Ingen retur) | Benyttes for å sette status til lest når dokumentet har blitt lest utenfor vårt system.
+| Operasjon                          | Inndata                                                                             | Utdata                 | Kort beskrivelse                                                                                         |
+|------------------------------------|-------------------------------------------------------------------------------------|------------------------|----------------------------------------------------------------------------------------------------------|
+| sendForsendelse                    | Forsendelse                                                                         | forsendelsesid         | Hovedtjeneste som sender inn forsendelse til ekspedering av KS-SvarUt.                                   |
+| retrieveForsendelseStatus          | forsendelsesid                                                                      | ForsendelseStatus      | Henter status for en forsendelse.                                                                        |
+| retrieveForsendelseStatuser        | List\<forsendelsesid\>                                                              | List\<StatusResult\>   | Henter status for flere forsendelseer. Returnerer liste med status, når status oppstod og forsendelseid. |
+| retrieveForsendelseHistorikk       | forsendelsesid                                                                      | ForsendelseHistorikk   | Henter historikk for en forsendelse, tilsvarer ekspederingsloggen i forsendelsesoversikten.              |
+| retrieveForsendelseIdByEksternRef  | eksternref                                                                          | List\<forsendelsesid\> | Henter liste med forsendelseider som har denne eksternRef.                                               |
+| setForsendelseLestAvEksterntSystem | forsendelsesid,<br/> lestAvFodselsnummer,<br/> navnPaEksterntSystem, <br />datoLest | (Ingen retur)          | Benyttes for å sette status til lest når dokumentet har blitt lest utenfor vårt system.                  |
 
 Definisjonsfil (WSDL) for tjenesten finnes her https://svarut.ks.no/tjenester/forsendelseservice/ForsendelsesServiceV6?wsdl
 
@@ -224,7 +224,8 @@ Følgende metadata inkluderes:
 
 <td>svarPaForsendelseLink</td>
 
-<td colspan="2">Mottaker kan svare på forsendelse. Orgnr i svar sendes til må matche et orgnr i edialog mottakere.</td>
+<td colspan="2">Dersom dette feltet settes til true vil forsendelsen avvises om svarSendesTil ikke inneholder en gyldig adresse med organisasjonsnummer. 
+Hvis forsendelsen aksepteres og sendes digitalt, vil det genereres en lenke hvor mottaker kan sende et svar tilbake til adressen spesifisert i svarSendesTil.</td>
 
 </tr>
 

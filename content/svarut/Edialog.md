@@ -12,7 +12,7 @@ Her kan en velge mottaker blandt alle som er registrert i SvarUt.
 
 ### eDialog med predefinert mottaker
 
-Hvis en vil linke til eDialog med ferdigutfylt mottaker kan en brukelinken https://svarut.ks.no/edialog/mottaker/&lt;orgnr&gt;
+Hvis en vil linke til eDialog med ferdigutfylt mottaker kan en brukelinken https://svarut.ks.no/edialog/mottaker/<orgnr>;
 Da vil det ikke være mulig å endre mottaker.
 
 
@@ -22,7 +22,7 @@ Hvis en benytter v6 eller nyere av forsendelseservicen i SvarUt kan en sende med
 
 ![alternative text](http://www.plantuml.com/plantuml/proxy?src=https://raw.githubusercontent.com/wiki/ks-no/svarut-dokumentasjon/edialog/edialog.puml?2)
 
-1. En sender inn forsendelse med svarPaForsendelseLink = true, svarSendesTil utfylt med orgnr lik en edialogmottaker sitt orgnr.
+1. En sender inn forsendelse med svarPaForsendelseLink = true, og svarSendesTil utfylt med organisasjonsnummeret og adressen man ønsker at et svar skal sendes til.
 2. Avsender får en forsendelseid i retur.
 3. SvarUt sender vanlig varsel til SDP/Altinn med link for å kunne svare på forsendelsen.
 4. Innbygger/mottaker klikker på "svar på forsendelse" link i Altinn/SDP.
