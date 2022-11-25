@@ -1,0 +1,190 @@
+{
+  "openapi" : "3.0.1",
+  "info" : {
+    "title" : "KS Fiks: Svarut-folkeregister Konfigurasjon",
+    "description" : "Tjeneste for konfigurering av Svarut-folkeregister",
+    "contact" : {
+      "name" : "Fiks brukerstøtte",
+      "url" : "https://ks-no.github.io/",
+      "email" : "fiks-utvikling@ks.no"
+    },
+    "version" : "v1"
+  },
+  "servers" : [ {
+    "url" : "https://api.fiks.ks.no",
+    "description" : "KS Fiks API host",
+    "variables" : { }
+  }, {
+    "url" : "https://api.fiks.test.ks.no",
+    "description" : "KS Fiks TEST API host",
+    "variables" : { }
+  } ],
+  "tags" : [ {
+    "name" : "SvarutFolkeregister",
+    "description" : "API for å spørre om fnr er koblet mot død person"
+  }, {
+    "name" : "Svarut folkeregisterrolle konfigurasjon",
+    "description" : "API for konfigurering av rolle for folkeregisteroppslag for Svarut Folkeregister"
+  } ],
+  "paths" : {
+    "/svarut-folkeregister/api/v1/doedsregister/{fiksOrgId}/erPersonDoed" : {
+      "post" : {
+        "tags" : [ "SvarutFolkeregister" ],
+        "summary" : "Henter informasjon om person er registrert som død i folkeregisteret",
+        "operationId" : "erPersonDoed",
+        "parameters" : [ {
+          "name" : "fiksOrgId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/DoedPersonRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Oppslag om person er død resultat",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/DoedPersonReturn"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/svarut-folkeregister-konfigurasjon/api/v1/organisasjoner/{fiksOrgId}/folkeregister" : {
+      "get" : {
+        "tags" : [ "Svarut folkeregisterrolle konfigurasjon" ],
+        "summary" : "Henter status på om organisasjon har aktivert folkeregister for oppslag for Svarut Folkeregister",
+        "operationId" : "hentOrganisasjon",
+        "parameters" : [ {
+          "name" : "fiksOrgId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Oppslag mot folkeregister aktivert",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Organisasjon"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post" : {
+        "tags" : [ "Svarut folkeregisterrolle konfigurasjon" ],
+        "summary" : "Aktiverer folkeregister og oppretter ny folkeregister-rolle som brukes til oppslag for å populere Svarut Folkeregister",
+        "operationId" : "aktiverFolkeregister",
+        "parameters" : [ {
+          "name" : "fiksOrgId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Folkeregister-rolle opprettet aktivert",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/AktivertRolle"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete" : {
+        "tags" : [ "Svarut folkeregisterrolle konfigurasjon" ],
+        "summary" : "Deaktiverer folkeregister og sletter folkeregister-rolle som brukes til oppslag for å populere Svarut Folkeregister",
+        "operationId" : "deaktiverFolkeregister",
+        "parameters" : [ {
+          "name" : "fiksOrgId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Oppslag mot folkeregister deaktivert"
+          }
+        }
+      }
+    }
+  },
+  "components" : {
+    "schemas" : {
+      "DoedPersonReturn" : {
+        "required" : [ "status" ],
+        "type" : "object",
+        "properties" : {
+          "status" : {
+            "type" : "string",
+            "description" : "Status for oppslag på person",
+            "enum" : [ "DOED", "IKKE_DOED", "KONTO_IKKE_AKTIVERT" ]
+          }
+        },
+        "description" : "Er person død eller ikke, eller om konto ikke er aktivert enda"
+      },
+      "DoedPersonRequest" : {
+        "required" : [ "fnr" ],
+        "type" : "object",
+        "properties" : {
+          "fnr" : {
+            "pattern" : "^[0-9]{11}$",
+            "type" : "string",
+            "description" : "Fødselsnummer til mottaker"
+          }
+        }
+      },
+      "AktivertRolle" : {
+        "required" : [ "id" ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        }
+      },
+      "Organisasjon" : {
+        "required" : [ "folkeregisterStatus" ],
+        "type" : "object",
+        "properties" : {
+          "folkeregisterStatus" : {
+            "type" : "string",
+            "enum" : [ "AKTIVERT", "DEAKTIVERT", "DELVIS_AKTIVERT", "DELVIS_DEAKTIVERT" ]
+          }
+        },
+        "description" : "Informasjon om organisasjon"
+      }
+    }
+  }
+}
