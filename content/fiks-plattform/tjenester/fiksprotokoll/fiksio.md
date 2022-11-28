@@ -14,7 +14,7 @@ Fiks IO tilbyr:
 * _Svar på melding_: Fiks IO lar en mottaker svare på en spesifikk melding, f.eks. for å svare på en spørring eller å bekrefte at en forespurt handling er utført.
 * _Sikker kommunikasjon med ende-til-ende kryptering_: Fiks IO tilbyr ende-til-ende kryptering av meldinger. Merk at dette ikke gjelder alle bruks-scenarioer, se "Sikkerhet" for detaljer.
 * _Sikker identifisering av avsender_: Bruk av standard for kryptografisk signatur [(ASiC-E)](https://github.com/difi/asic) for meldinger gjør at man kan være sikker på identiteten til avsender.
-* _Levetid på meldinger_: En melding har en brukerdefinert levetid. Avsender vil få beskjed hvis en melding ikke har blitt lest av mottaker innen levetidens utløp.
+* _Levetid på meldinger_: En melding har en default levetid på 7 dager med mindre avsender setter det selv. Minste TTL (se mer om dette lenger nede) man kan sette er 1 sekund.
 * _Sending av store filer_: Fiks IO integrerer mot [Fiks Dokumentlager]({{< ref "dokumentlager.md" >}}) for å støtte sending av store filer, helt opp til dokumentlagers grense på fem gigabyte. 
 
 ### Hvordan tar man i bruk Fiks IO?
@@ -87,11 +87,8 @@ Digisos bruker som nevnt over meldingsprotokollen "no.nav.digisos.fagsystem.v1",
 
 Ta kontakt med fiks@ks.no om du ønsker å etablere eller gjøre endringer i en protokoll.
 
-### TTL (Time To Live)
-Når man sender en melding via Fiks-IO klienten kan man velge å sette TTL selv. Hvis man ikke setter TTL er defaulten 2 dager i klienten. Dette blir gjort om til millisekunder av klienten.
-
-__NB! Vi anbefaler ikke å sette TTL til 0 da dette betyr at mottaker må hente meldingen umiddelbart og hvis ikke havner den i dead-letter-queue__
-
+### Levetid på melding og TTL (Time To Live)
+Når man sender en melding via Fiks-IO klienten kan man velge å sette TTL selv på meldingen, men med minimum 1 sekund. Hvis man ikke setter TTL er defaulten 7 dager i Fiks-IO tjenesten. 
 
 ### Standardmeldingstyper
 
