@@ -6,17 +6,28 @@ date: 2021-07-29
 > Tjenesten er under utvikling/testing/pilotering
 
 Fiks Arkiv er en asynkron protokoll over Fiks IO eller andre transportmekanismer for å søke, arkivere og hente data fra et arkiv. Fiks Protokoll benyttes for meldingstype definisjon på konto.
-For implementasjonseksempler, brukerhistorier og teknisk dokumentasjon les mer i wiki på github repoet [fiks-arkiv](https://github.com/ks-no/fiks-arkiv/wiki).
+For brukerhistorier fra arbeidet som ble gjort ved kartleggingen av protokollen,  les mer i wiki på github repoet [fiks-arkiv](https://github.com/ks-no/fiks-arkiv/wiki).
+
+### Begrensninger og regler for protokollen
+- Arkivdel skal være spesifisert i arkivet og håndteres av arkivet, men protokollen støtter ikke henting av arkivdel fra arkiv. 
+ Meldingene har mulighet for å sette arkivdel men protokollen har altså ikke egen meldingstype for å hente arkivdeler.
+- Protokollen støtter ikke henting av koder som meldingstype. Vi tilbyr standard kodelister for koder i meldingene som kommer med i nuget/maven pakkene (_oversikt over kodelistene vi tilbyr kommer her snart_).  
+
 
 ## Meldinger
 
-Hver melding består av en zip fil ASIC-E som inneholder `arkivmelding.xml` eller `sok.xml` og tilhørende vedlegg som er definert i xml filen. 
+Hver melding består av en zip fil ASIC-E som inneholder f.eks. `arkivmelding.xml` eller `sok.xml` og tilhørende vedlegg som er definert i xml filen. 
 Hver melding kan ikke overskride 5GB. Meldingene skal også ha et sett med headere som blandt annet viser hvem som er avsender, mottaker, om det er et svar på en annen melding osv.
 Headerene er definert under Fiks-IO og man kan lese mer om de [her](https://ks-no.github.io/fiks-plattform/tjenester/fiksprotokoll/fiksio/#headere)
 
 ### Meldingsformat og skjema
 For mer informasjon rundt meldingsformatet **arkivmelding** kan man lese om definisjonen [her](https://docs.digdir.no/eformidling_nm_arkivmeldingen.html) hos Digdir.
 XSD skjema for meldingsformatene er tilgjengelig for nedlasting på github prosjektet [fiks-arkiv-specification](https://github.com/ks-no/fiks-arkiv-specification) eller i bibliotek for .NET og Java. Dette spesifikasjonsprosjektet brukes som felles kilde for bygging av bibliotek/moduler for .NET og Java.
+
+#### Detaljer om meldingstype
+I spesifikasjonen følger er det også en [json fil](https://github.com/ks-no/fiks-arkiv-specification/blob/main/Schema/V1/meldingstyper/meldingstyper.json) som beskriver detaljer rundt hver melding i protokollen. 
+Json-filen beskriver om meldingen har payload, filnavn på payload (`arkivmelding.xml`, `arkivmelding-kvittering.xml`, `sok.xml` osv.), hvilke meldingstyper som evt kan være et svar på denne meldingen osv.
+Den ligger [her](https://github.com/ks-no/fiks-arkiv-specification/blob/main/Schema/V1/meldingstyper/meldingstyper.json) for Fiks-Arkiv protokollen og kommer med i nuget/maven pakken for Fiks-Arkiv protokollen som leveres av KS.
 
 **Felles prosjekter og evt nuget pakker:**
 
@@ -62,12 +73,13 @@ Denne kan brukes hvis man bare skal sende meldinger til Fiks-IO og ikke motta me
 
 **Maven**
 
-| Type                   | Navn                                                                                                              | Github                                          |
-|------------------------|-------------------------------------------------------------------------------------------------------------------|-------------------------------------------------| 
-| Modeller og XSD skjema | [`fiks-arkiv`](https://github.com/ks-no/fiks-arkiv-client-java)                                                   | https://github.com/ks-no/fiks-arkiv-client-java |
-| Forenklet arkivering   | [`fiks-arkiv-forenklet-arkivering`](https://search.maven.org/artifact/no.ks.fiks/fiks-arkiv-forenklet-arkivering) | https://github.com/ks-no/fiks-arkiv-client-java |
-| Fiks-IO klient         | [`fiks-io-klient`](https://search.maven.org/artifact/no.ks.fiks/fiks-io-klient-java)                              | https://github.com/ks-no/fiks-io-klient         |
-| Fiks-IO send klient    | [`fiks-io-send-klient`](https://search.maven.org/artifact/no.ks.fiks/fiks-io-send-klient)                         | https://github.com/ks-no/fiks-io-send-klient    |
+| Type                                | Navn                                                                                                              | Github                                            |
+|-------------------------------------|-------------------------------------------------------------------------------------------------------------------|---------------------------------------------------| 
+| XSD skjema, protokoll spesifikasjon | -                                                                                                    | https://github.com/ks-no/fiks-arkiv-specification |
+| Modeller og XSD skjema              | [`fiks-arkiv`](https://github.com/ks-no/fiks-arkiv-client-java)                                                   | https://github.com/ks-no/fiks-arkiv-client-java   |
+| Forenklet arkivering                | [`fiks-arkiv-forenklet-arkivering`](https://search.maven.org/artifact/no.ks.fiks/fiks-arkiv-forenklet-arkivering) | https://github.com/ks-no/fiks-arkiv-client-java   |
+| Fiks-IO klient                      | [`fiks-io-klient`](https://search.maven.org/artifact/no.ks.fiks/fiks-io-klient-java)                              | https://github.com/ks-no/fiks-io-klient           |
+| Fiks-IO send klient                 | [`fiks-io-send-klient`](https://search.maven.org/artifact/no.ks.fiks/fiks-io-send-klient)                         | https://github.com/ks-no/fiks-io-send-klient      |
 
 
 Tilsvarende som for .NET finnes det tilgjengelige moduler på Maven Central. Prosjektet er tilgjengelig på github [her](https://github.com/ks-no/fiks-arkiv-client-java).
@@ -160,6 +172,7 @@ For å arkivere data må en bruke meldingsformatet `arkivmelding.xml`. Se xsd sc
 
 - Arkivmelding støtter ikke å registrere flere mapper i et hierarki, altså mapper i mapper, i en enkelt arkivmelding. Registrering av ny undermappe må da registreres hver for seg. Mapper kan altså bare referere til eksisterende mappe, som må da ha vært opprettet tidligere.
 - En foreldermappe kan ikke inneholde registreringer. Altså en mappe som inneholder andre mapper skal bare inneholde mapper.
+
 
 ### Mottatt og kvittering
 
