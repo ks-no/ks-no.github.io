@@ -5,9 +5,11 @@ pipeline {
   agent any
 
   stages {
-    stage('init') {
+    stage('install, build, deploy') {
       steps {
-        sh 'echo hei'
+        sh "npm ci"
+        sh "npm run build-static"
+        sh "./bin/deploy.sh"
       }
     }
   }
