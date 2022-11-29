@@ -1,6 +1,6 @@
 export default {
   github: 'https://github.com/ks-no/ks-no.github.io',
-  docsRepositoryBase: 'https://github.com/ks-no/ks-no.github.io/blob/master',
+  docsRepositoryBase: 'https://github.com/ks-no/ks-no.github.io/blob/docs-v2',
   titleSuffix: ' – KS Digitale Fellestjenester Teknisk Dokumentasjon',
   logo: (
     <>
