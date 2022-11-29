@@ -4,6 +4,7 @@ const withNextra = require('nextra')({
   unstable_staticImage: true,
 })
 module.exports = withNextra({
+  basePath: '/teknisk-dokumentasjon',
   images: {
     unoptimized: true,
   },
