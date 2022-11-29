@@ -2,6 +2,11 @@ pipeline {
   options() {
     disableConcurrentBuilds()
   }
+
+  tools {
+    nodejs "node-LTS"
+  }
+  
   agent any
 
   stages {
