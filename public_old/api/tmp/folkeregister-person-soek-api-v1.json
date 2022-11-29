@@ -1,0 +1,2081 @@
+{
+  "openapi" : "3.0.1",
+  "info" : {
+    "title" : "KS Fiks folkeregister person-soek service",
+    "description" : "Folkregister person-soek service",
+    "contact" : {
+      "name" : "Fiks brukerstøtte",
+      "url" : "https://www.ks.no/fagomrader/digitalisering/utviklingsprosjekter",
+      "email" : "fiks-utvikling@ks.no"
+    },
+    "version" : "v1"
+  },
+  "servers" : [ {
+    "url" : "https://api.fiks.ks.no",
+    "description" : "KS Fiks API host",
+    "variables" : { }
+  }, {
+    "url" : "https://api.test.fiks.ks.no",
+    "description" : "KS Fiks TEST API host",
+    "variables" : { }
+  } ],
+  "tags" : [ {
+    "name" : "person-soek",
+    "description" : "API for å håndtere funksjonalitet rundt person-soek fra folkeregisteret"
+  } ],
+  "paths" : {
+    "/folkeregister/api/v1/personer/soek/verdier" : {
+      "get" : {
+        "tags" : [ "uttrekk" ],
+        "description" : "Gyldige verdier for nøkkelfelt, til bruk i front-end",
+        "operationId" : "gyldigeVerdier",
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/GyldigeVerdierPersonSoek"
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Ikke tilgang",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/folkeregister/api/v1/personer/soek/{fiksOrgId}" : {
+      "post" : {
+        "tags" : [ "uttrekk" ],
+        "description" : "Finner ider til personer som oppfyller søkekriteriene",
+        "operationId" : "soek",
+        "parameters" : [ {
+          "name" : "fiksOrgId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/PersonSoekDefinisjon"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/PersonSoekResponse"
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Ikke tilgang",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components" : {
+    "schemas" : {
+      "GyldigeVerdierPersonSoek" : {
+        "required" : [ "kjoenn" ],
+        "type" : "object",
+        "properties" : {
+          "kjoenn" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Verdi"
+            }
+          }
+        }
+      },
+      "Verdi" : {
+        "type" : "object",
+        "properties" : {
+          "kode" : {
+            "type" : "string"
+          },
+          "visningsnavn" : {
+            "type" : "string"
+          },
+          "beskrivelse" : {
+            "type" : "string"
+          }
+        }
+      },
+      "ErrorMessage" : {
+        "type" : "object",
+        "properties" : {
+          "timestamp" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "status" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "error" : {
+            "type" : "string"
+          },
+          "errorId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "path" : {
+            "type" : "string"
+          },
+          "originalPath" : {
+            "type" : "string"
+          },
+          "message" : {
+            "type" : "string"
+          },
+          "errorCode" : {
+            "type" : "string"
+          },
+          "errorJson" : {
+            "type" : "string"
+          }
+        }
+      },
+      "AdresseIFrittFormat" : {
+        "type" : "object",
+        "properties" : {
+          "adresselinje" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          },
+          "landkode" : {
+            "type" : "string"
+          }
+        }
+      },
+      "Adressenummer" : {
+        "type" : "object",
+        "properties" : {
+          "husnummer" : {
+            "type" : "string"
+          },
+          "husbokstav" : {
+            "type" : "string"
+          }
+        }
+      },
+      "AdvokatSomKontakt" : {
+        "type" : "object",
+        "properties" : {
+          "personnavn" : {
+            "$ref" : "#/components/schemas/Personnavn"
+          },
+          "organisasjonsnavn" : {
+            "type" : "string"
+          },
+          "organisasjonsnummer" : {
+            "type" : "string"
+          }
+        }
+      },
+      "BibeholdAvNorskStatsborgerskap" : {
+        "type" : "object",
+        "properties" : {
+          "ajourholdstidspunkt" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "erGjeldende" : {
+            "type" : "boolean"
+          },
+          "kilde" : {
+            "type" : "string"
+          },
+          "aarsak" : {
+            "type" : "string"
+          },
+          "gyldighetstidspunkt" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "opphoerstidspunkt" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "bibeholdstatus" : {
+            "type" : "string",
+            "enum" : [ "harBibehold", "harIkkeLengerBibehold", "norskStatsborgerTrengerIkkeBibehold" ]
+          },
+          "datoForBibehold" : {
+            "type" : "string",
+            "format" : "date"
+          }
+        }
+      },
+      "Bostedsadresse" : {
+        "type" : "object",
+        "properties" : {
+          "ajourholdstidspunkt" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "erGjeldende" : {
+            "type" : "boolean"
+          },
+          "kilde" : {
+            "type" : "string"
+          },
+          "aarsak" : {
+            "type" : "string"
+          },
+          "gyldighetstidspunkt" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "opphoerstidspunkt" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "vegadresse" : {
+            "$ref" : "#/components/schemas/Vegadresse"
+          },
+          "matrikkeladresse" : {
+            "$ref" : "#/components/schemas/Matrikkeladresse"
+          },
+          "ukjentBosted" : {
+            "$ref" : "#/components/schemas/UkjentBosted"
+          },
+          "adresseIdentifikatorFraMatrikkelen" : {
+            "type" : "string"
+          },
+          "naerAdresseIdentifikatorFraMatrikkelen" : {
+            "type" : "string"
+          },
+          "adressegradering" : {
+            "type" : "string",
+            "enum" : [ "ugradert", "klientadresse", "fortrolig", "strengtFortrolig" ]
+          },
+          "flyttedato" : {
+            "type" : "string",
+            "format" : "date"
+          },
+          "grunnkrets" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "stemmekrets" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "skolekrets" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "kirkekrets" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        }
+      },
+      "DeltBosted" : {
+        "type" : "object",
+        "properties" : {
+          "ajourholdstidspunkt" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "erGjeldende" : {
+            "type" : "boolean"
+          },
+          "kilde" : {
+            "type" : "string"
+          },
+          "aarsak" : {
+            "type" : "string"
+          },
+          "gyldighetstidspunkt" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "opphoerstidspunkt" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "vegadresse" : {
+            "$ref" : "#/components/schemas/Vegadresse"
+          },
+          "matrikkeladresse" : {
+            "$ref" : "#/components/schemas/Matrikkeladresse"
+          },
+          "ukjentBosted" : {
+            "$ref" : "#/components/schemas/UkjentBosted"
+          },
+          "startdatoForKontrakt" : {
+            "type" : "string",
+            "format" : "date"
+          },
+          "sluttdatoForKontrakt" : {
+            "type" : "string",
+            "format" : "date"
+          },
+          "adresseIdentifikatorFraMatrikkelen" : {
+            "type" : "string"
+          },
+          "naerAdresseIdentifikatorFraMatrikkelen" : {
+            "type" : "string"
+          },
+          "adressegradering" : {
+            "type" : "string",
+            "enum" : [ "ugradert", "klientadresse", "fortrolig", "strengtFortrolig" ]
+          }
+        }
+      },
+      "Doedsfall" : {
+        "type" : "object",
+        "properties" : {
+          "ajourholdstidspunkt" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "erGjeldende" : {
+            "type" : "boolean"
+          },
+          "kilde" : {
+            "type" : "string"
+          },
+          "aarsak" : {
+            "type" : "string"
+          },
+          "gyldighetstidspunkt" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "opphoerstidspunkt" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "doedsdato" : {
+            "type" : "string",
+            "format" : "date"
+          }
+        }
+      },
+      "FalskIdentitet" : {
+        "type" : "object",
+        "properties" : {
+          "ajourholdstidspunkt" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "erGjeldende" : {
+            "type" : "boolean"
+          },
+          "kilde" : {
+            "type" : "string"
+          },
+          "aarsak" : {
+            "type" : "string"
+          },
+          "gyldighetstidspunkt" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "opphoerstidspunkt" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "rettIdentitetVedOpplysninger" : {
+            "$ref" : "#/components/schemas/IdentifiserendeInformasjon"
+          },
+          "rettIdentitetErUkjent" : {
+            "type" : "boolean"
+          },
+          "rettIdentitetVedIdentifikasjonsnummer" : {
+            "type" : "string"
+          },
+          "erFalsk" : {
+            "type" : "boolean"
+          }
+        }
+      },
+      "Familierelasjon" : {
+        "type" : "object",
+        "properties" : {
+          "ajourholdstidspunkt" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "erGjeldende" : {
+            "type" : "boolean"
+          },
+          "kilde" : {
+            "type" : "string"
+          },
+          "aarsak" : {
+            "type" : "string"
+          },
+          "gyldighetstidspunkt" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "opphoerstidspunkt" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "relatertPerson" : {
+            "type" : "string"
+          },
+          "relatertPersonUtenFolkeregisteridentifikator" : {
+            "$ref" : "#/components/schemas/RelatertBiPerson"
+          },
+          "relatertPersonsRolle" : {
+            "type" : "string",
+            "enum" : [ "mor", "far", "medmor", "barn", "soesken", "ektefelleEllerPartner", "doedfoedtBarn" ]
+          },
+          "minRolleForPerson" : {
+            "type" : "string",
+            "enum" : [ "mor", "far", "medmor", "barn", "soesken", "ektefelleEllerPartner", "doedfoedtBarn" ]
+          }
+        }
+      },
+      "Feilmelding" : {
+        "type" : "object",
+        "properties" : {
+          "feilmelding" : {
+            "type" : "string"
+          }
+        }
+      },
+      "Foedsel" : {
+        "type" : "object",
+        "properties" : {
+          "ajourholdstidspunkt" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "erGjeldende" : {
+            "type" : "boolean"
+          },
+          "kilde" : {
+            "type" : "string"
+          },
+          "aarsak" : {
+            "type" : "string"
+          },
+          "gyldighetstidspunkt" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "opphoerstidspunkt" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "foedselsdato" : {
+            "type" : "string",
+            "format" : "date"
+          },
+          "foedselsaar" : {
+            "type" : "string"
+          },
+          "foedested" : {
+            "type" : "string"
+          },
+          "foedekommuneINorge" : {
+            "type" : "string"
+          },
+          "foedeland" : {
+            "type" : "string"
+          }
+        }
+      },
+      "FoedselINorge" : {
+        "type" : "object",
+        "properties" : {
+          "ajourholdstidspunkt" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "erGjeldende" : {
+            "type" : "boolean"
+          },
+          "kilde" : {
+            "type" : "string"
+          },
+          "aarsak" : {
+            "type" : "string"
+          },
+          "gyldighetstidspunkt" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "opphoerstidspunkt" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "foedselsinstitusjonsnavn" : {
+            "type" : "string"
+          },
+          "rekkefoelgenummer" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        }
+      },
+      "Folkeregisteridentifikator" : {
+        "type" : "object",
+        "properties" : {
+          "ajourholdstidspunkt" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "erGjeldende" : {
+            "type" : "boolean"
+          },
+          "kilde" : {
+            "type" : "string"
+          },
+          "aarsak" : {
+            "type" : "string"
+          },
+          "gyldighetstidspunkt" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "opphoerstidspunkt" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "status" : {
+            "type" : "string",
+            "enum" : [ "iBruk", "opphoert" ]
+          },
+          "foedselsEllerDNummer" : {
+            "type" : "string"
+          },
+          "identifikatortype" : {
+            "type" : "string",
+            "enum" : [ "foedselsnummer", "dNummer" ]
+          }
+        }
+      },
+      "Folkeregisterperson" : {
+        "type" : "object",
+        "properties" : {
+          "falskIdentitet" : {
+            "$ref" : "#/components/schemas/FalskIdentitet"
+          },
+          "identifikasjonsnummer" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Folkeregisteridentifikator"
+            }
+          },
+          "identitetsgrunnlag" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Identitetsgrunnlag"
+            }
+          },
+          "kontaktinformasjonForDoedsbo" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/KontaktinformasjonForDoedsbo"
+            }
+          },
+          "legitimasjonsdokument" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Identifikasjonsdokument"
+            }
+          },
+          "status" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Folkeregisterpersonstatus"
+            }
+          },
+          "utlendingsmyndighetenesIdentifikasjonsnummer" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Personidentifikasjon"
+            }
+          },
+          "utenlandskPersonidentifikasjon" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Personidentifikasjon"
+            }
+          },
+          "deltBosted" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/DeltBosted"
+            }
+          },
+          "kjoenn" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Personkjoenn"
+            }
+          },
+          "foedsel" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Foedsel"
+            }
+          },
+          "foedselINorge" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/FoedselINorge"
+            }
+          },
+          "familierelasjon" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Familierelasjon"
+            }
+          },
+          "sivilstand" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Sivilstand"
+            }
+          },
+          "doedsfall" : {
+            "$ref" : "#/components/schemas/Doedsfall"
+          },
+          "navn" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Folkeregisterpersonnavn"
+            }
+          },
+          "adressebeskyttelse" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/GraderingAvAdresse"
+            }
+          },
+          "bostedsadresse" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Bostedsadresse"
+            }
+          },
+          "oppholdsadresse" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Oppholdsadresse"
+            }
+          },
+          "innflytting" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/InnflyttingTilNorge"
+            }
+          },
+          "utflytting" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/UtflyttingFraNorge"
+            }
+          },
+          "brukAvSamiskSpraak" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/SamiskSpraak"
+            }
+          },
+          "forholdTilSametingetsValgmanntall" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/SametingetsValgmanntall"
+            }
+          },
+          "preferertKontaktadresse" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/PreferertKontaktadresse"
+            }
+          },
+          "postadresse" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Kontaktadresse"
+            }
+          },
+          "postadresseIUtlandet" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/KontaktadresseIUtlandet"
+            }
+          },
+          "foreldreansvar" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Foreldreansvar"
+            }
+          },
+          "statsborgerskap" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Statsborgerskap"
+            }
+          },
+          "bibehold" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/BibeholdAvNorskStatsborgerskap"
+            }
+          },
+          "opphold" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Opphold"
+            }
+          },
+          "oppholdPaaSvalbard" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/OppholdPaaSvalbard"
+            }
+          },
+          "vergemaalEllerFremtidsfullmakt" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/VergemaalRepresentasjonEllerFremtidsfullmakt"
+            }
+          }
+        }
+      },
+      "Folkeregisterpersonnavn" : {
+        "type" : "object",
+        "properties" : {
+          "ajourholdstidspunkt" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "erGjeldende" : {
+            "type" : "boolean"
+          },
+          "kilde" : {
+            "type" : "string"
+          },
+          "aarsak" : {
+            "type" : "string"
+          },
+          "gyldighetstidspunkt" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "opphoerstidspunkt" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "fornavn" : {
+            "type" : "string"
+          },
+          "mellomnavn" : {
+            "type" : "string"
+          },
+          "etternavn" : {
+            "type" : "string"
+          },
+          "forkortetNavn" : {
+            "type" : "string"
+          },
+          "originaltNavn" : {
+            "$ref" : "#/components/schemas/Personnavn"
+          }
+        }
+      },
+      "Folkeregisterpersonstatus" : {
+        "type" : "object",
+        "properties" : {
+          "ajourholdstidspunkt" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "erGjeldende" : {
+            "type" : "boolean"
+          },
+          "kilde" : {
+            "type" : "string"
+          },
+          "aarsak" : {
+            "type" : "string"
+          },
+          "gyldighetstidspunkt" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "opphoerstidspunkt" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "status" : {
+            "type" : "string",
+            "enum" : [ "bosatt", "utflyttet", "forsvunnet", "doed", "opphoert", "foedselsregistrert", "midlertidig", "inaktiv", "ikkeBosatt", "aktiv" ]
+          }
+        }
+      },
+      "Foreldreansvar" : {
+        "type" : "object",
+        "properties" : {
+          "ajourholdstidspunkt" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "erGjeldende" : {
+            "type" : "boolean"
+          },
+          "kilde" : {
+            "type" : "string"
+          },
+          "aarsak" : {
+            "type" : "string"
+          },
+          "gyldighetstidspunkt" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "opphoerstidspunkt" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "ansvar" : {
+            "type" : "string",
+            "enum" : [ "felles", "mor", "far", "medmor", "andre", "ukjent" ]
+          },
+          "ansvarssubjekt" : {
+            "type" : "string"
+          },
+          "ansvarlig" : {
+            "type" : "string"
+          },
+          "ansvarligOrganisasjon" : {
+            "type" : "string"
+          },
+          "ansvarligUtenIdentifikator" : {
+            "$ref" : "#/components/schemas/RelatertBiPerson"
+          },
+          "ansvarssubjektUtenIdentifikator" : {
+            "$ref" : "#/components/schemas/RelatertBiPerson"
+          }
+        }
+      },
+      "GraderingAvAdresse" : {
+        "type" : "object",
+        "properties" : {
+          "ajourholdstidspunkt" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "erGjeldende" : {
+            "type" : "boolean"
+          },
+          "kilde" : {
+            "type" : "string"
+          },
+          "aarsak" : {
+            "type" : "string"
+          },
+          "gyldighetstidspunkt" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "opphoerstidspunkt" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "graderingsnivaa" : {
+            "type" : "string",
+            "enum" : [ "ugradert", "klientadresse", "fortrolig", "strengtFortrolig" ]
+          }
+        }
+      },
+      "Identifikasjonsdokument" : {
+        "type" : "object",
+        "properties" : {
+          "ajourholdstidspunkt" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "erGjeldende" : {
+            "type" : "boolean"
+          },
+          "kilde" : {
+            "type" : "string"
+          },
+          "aarsak" : {
+            "type" : "string"
+          },
+          "gyldighetstidspunkt" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "opphoerstidspunkt" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "identifikasjonsdokumentnummer" : {
+            "type" : "string"
+          },
+          "identifikasjonsdokumenttype" : {
+            "type" : "string"
+          },
+          "utstederland" : {
+            "type" : "string"
+          },
+          "utstedernavn" : {
+            "type" : "string"
+          },
+          "gyldigFra" : {
+            "type" : "string",
+            "format" : "date"
+          },
+          "gyldigTil" : {
+            "type" : "string",
+            "format" : "date"
+          },
+          "dokumentkontroll" : {
+            "$ref" : "#/components/schemas/TekniskDokumentkontroll"
+          }
+        }
+      },
+      "IdentifiserendeInformasjon" : {
+        "type" : "object",
+        "properties" : {
+          "personnavn" : {
+            "$ref" : "#/components/schemas/Personnavn"
+          },
+          "foedselsdato" : {
+            "type" : "string",
+            "format" : "date"
+          },
+          "statsborgerskap" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          },
+          "kjoenn" : {
+            "type" : "string",
+            "enum" : [ "kvinne", "mann" ]
+          }
+        }
+      },
+      "Identitetsgrunnlag" : {
+        "type" : "object",
+        "properties" : {
+          "ajourholdstidspunkt" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "erGjeldende" : {
+            "type" : "boolean"
+          },
+          "kilde" : {
+            "type" : "string"
+          },
+          "aarsak" : {
+            "type" : "string"
+          },
+          "gyldighetstidspunkt" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "opphoerstidspunkt" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "identitetsgrunnlagstatus" : {
+            "type" : "string",
+            "enum" : [ "ingenStatus", "ikkeKontrollert", "kontrollert" ]
+          }
+        }
+      },
+      "InnflyttingTilNorge" : {
+        "type" : "object",
+        "properties" : {
+          "ajourholdstidspunkt" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "erGjeldende" : {
+            "type" : "boolean"
+          },
+          "kilde" : {
+            "type" : "string"
+          },
+          "aarsak" : {
+            "type" : "string"
+          },
+          "gyldighetstidspunkt" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "opphoerstidspunkt" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "fraflyttingsland" : {
+            "type" : "string"
+          },
+          "fraflyttingsstedIUtlandet" : {
+            "type" : "string"
+          }
+        }
+      },
+      "InternasjonalAdresse" : {
+        "type" : "object",
+        "properties" : {
+          "coAdressenavn" : {
+            "type" : "string"
+          },
+          "adressenavn" : {
+            "type" : "string"
+          },
+          "bygning" : {
+            "type" : "string"
+          },
+          "etasjenummer" : {
+            "type" : "string"
+          },
+          "boenhet" : {
+            "type" : "string"
+          },
+          "postboks" : {
+            "type" : "string"
+          },
+          "postkode" : {
+            "type" : "string"
+          },
+          "byEllerStedsnavn" : {
+            "type" : "string"
+          },
+          "distriktsnavn" : {
+            "type" : "string"
+          },
+          "region" : {
+            "type" : "string"
+          },
+          "landkode" : {
+            "type" : "string"
+          }
+        }
+      },
+      "InternasjonalAdresseIFrittFormat" : {
+        "type" : "object",
+        "properties" : {
+          "adresselinje" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          },
+          "postkode" : {
+            "type" : "string"
+          },
+          "byEllerStedsnavn" : {
+            "type" : "string"
+          },
+          "landkode" : {
+            "type" : "string"
+          }
+        }
+      },
+      "Kontaktadresse" : {
+        "type" : "object",
+        "properties" : {
+          "ajourholdstidspunkt" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "erGjeldende" : {
+            "type" : "boolean"
+          },
+          "kilde" : {
+            "type" : "string"
+          },
+          "aarsak" : {
+            "type" : "string"
+          },
+          "gyldighetstidspunkt" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "opphoerstidspunkt" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "adressegradering" : {
+            "type" : "string",
+            "enum" : [ "ugradert", "klientadresse", "fortrolig", "strengtFortrolig" ]
+          },
+          "postboksadresse" : {
+            "$ref" : "#/components/schemas/Postboksadresse"
+          },
+          "vegadresse" : {
+            "$ref" : "#/components/schemas/VegadresseForPost"
+          },
+          "postadresseIFrittFormat" : {
+            "$ref" : "#/components/schemas/PostadresseIFrittFormat"
+          },
+          "adresseIdentifikatorFraMatrikkelen" : {
+            "type" : "string"
+          }
+        }
+      },
+      "KontaktadresseForDoedsbo" : {
+        "type" : "object",
+        "properties" : {
+          "adresselinje" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          },
+          "poststedsnavn" : {
+            "type" : "string"
+          },
+          "postnummer" : {
+            "type" : "string"
+          },
+          "landkode" : {
+            "type" : "string"
+          }
+        }
+      },
+      "KontaktadresseIUtlandet" : {
+        "type" : "object",
+        "properties" : {
+          "ajourholdstidspunkt" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "erGjeldende" : {
+            "type" : "boolean"
+          },
+          "kilde" : {
+            "type" : "string"
+          },
+          "aarsak" : {
+            "type" : "string"
+          },
+          "gyldighetstidspunkt" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "opphoerstidspunkt" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "adressegradering" : {
+            "type" : "string",
+            "enum" : [ "ugradert", "klientadresse", "fortrolig", "strengtFortrolig" ]
+          },
+          "utenlandskAdresse" : {
+            "$ref" : "#/components/schemas/InternasjonalAdresse"
+          },
+          "utenlandskAdresseIFrittFormat" : {
+            "$ref" : "#/components/schemas/InternasjonalAdresseIFrittFormat"
+          }
+        }
+      },
+      "KontaktinformasjonForDoedsbo" : {
+        "type" : "object",
+        "properties" : {
+          "ajourholdstidspunkt" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "erGjeldende" : {
+            "type" : "boolean"
+          },
+          "kilde" : {
+            "type" : "string"
+          },
+          "aarsak" : {
+            "type" : "string"
+          },
+          "gyldighetstidspunkt" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "opphoerstidspunkt" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "person" : {
+            "$ref" : "#/components/schemas/PersonSomKontakt"
+          },
+          "advokat" : {
+            "$ref" : "#/components/schemas/AdvokatSomKontakt"
+          },
+          "organisasjon" : {
+            "$ref" : "#/components/schemas/OrganisasjonSomKontakt"
+          },
+          "skifteform" : {
+            "type" : "string",
+            "enum" : [ "offentlig", "annet" ]
+          },
+          "attestutstedelsesdato" : {
+            "type" : "string",
+            "format" : "date"
+          },
+          "adresse" : {
+            "$ref" : "#/components/schemas/KontaktadresseForDoedsbo"
+          }
+        }
+      },
+      "Matrikkeladresse" : {
+        "type" : "object",
+        "properties" : {
+          "bruksenhetsnummer" : {
+            "type" : "string"
+          },
+          "bruksenhetstype" : {
+            "type" : "string",
+            "enum" : [ "bolig", "annetEnnBolig", "fritidsbolig", "ikkeGodkjentBolig", "unummerertBruksenhet" ]
+          },
+          "matrikkelnummer" : {
+            "$ref" : "#/components/schemas/Matrikkelnummer"
+          },
+          "undernummer" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "adressetilleggsnavn" : {
+            "type" : "string"
+          },
+          "poststed" : {
+            "$ref" : "#/components/schemas/Poststed"
+          },
+          "coAdressenavn" : {
+            "type" : "string"
+          }
+        }
+      },
+      "Matrikkelnummer" : {
+        "type" : "object",
+        "properties" : {
+          "kommunenummer" : {
+            "type" : "string"
+          },
+          "gaardsnummer" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "bruksnummer" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "festenummer" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        }
+      },
+      "Opphold" : {
+        "type" : "object",
+        "properties" : {
+          "ajourholdstidspunkt" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "erGjeldende" : {
+            "type" : "boolean"
+          },
+          "kilde" : {
+            "type" : "string"
+          },
+          "aarsak" : {
+            "type" : "string"
+          },
+          "gyldighetstidspunkt" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "opphoerstidspunkt" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "oppholdstillatelse" : {
+            "type" : "string",
+            "enum" : [ "midlertidig", "permanent", "opplysningMangler" ]
+          },
+          "oppholdFra" : {
+            "type" : "string",
+            "format" : "date"
+          },
+          "oppholdTil" : {
+            "type" : "string",
+            "format" : "date"
+          }
+        }
+      },
+      "OppholdPaaSvalbard" : {
+        "type" : "object",
+        "properties" : {
+          "ajourholdstidspunkt" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "erGjeldende" : {
+            "type" : "boolean"
+          },
+          "kilde" : {
+            "type" : "string"
+          },
+          "aarsak" : {
+            "type" : "string"
+          },
+          "gyldighetstidspunkt" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "opphoerstidspunkt" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "startdato" : {
+            "type" : "string",
+            "format" : "date"
+          },
+          "sluttdato" : {
+            "type" : "string",
+            "format" : "date"
+          },
+          "fraflyttingskommunenummer" : {
+            "type" : "string"
+          },
+          "fraflyttingsland" : {
+            "type" : "string"
+          },
+          "antallTidligereOpphold" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "antattOppholdsvarighet" : {
+            "type" : "string",
+            "enum" : [ "underSeksMaaneder", "overSeksMaaneder", "overTolvMaaneder", "ukjent" ]
+          }
+        }
+      },
+      "Oppholdsadresse" : {
+        "type" : "object",
+        "properties" : {
+          "ajourholdstidspunkt" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "erGjeldende" : {
+            "type" : "boolean"
+          },
+          "kilde" : {
+            "type" : "string"
+          },
+          "aarsak" : {
+            "type" : "string"
+          },
+          "gyldighetstidspunkt" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "opphoerstidspunkt" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "utenlandskAdresse" : {
+            "$ref" : "#/components/schemas/InternasjonalAdresse"
+          },
+          "adressenErUkjent" : {
+            "type" : "boolean"
+          },
+          "vegadresse" : {
+            "$ref" : "#/components/schemas/Vegadresse"
+          },
+          "matrikkeladresse" : {
+            "$ref" : "#/components/schemas/Matrikkeladresse"
+          },
+          "adresseIdentifikatorFraMatrikkelen" : {
+            "type" : "string"
+          },
+          "adressegradering" : {
+            "type" : "string",
+            "enum" : [ "ugradert", "klientadresse", "fortrolig", "strengtFortrolig" ]
+          },
+          "oppholdsadressedato" : {
+            "type" : "string",
+            "format" : "date"
+          },
+          "oppholdAnnetSted" : {
+            "type" : "string",
+            "enum" : [ "militaer", "utenriks", "paaSvalbard", "pendler" ]
+          }
+        }
+      },
+      "Oppslag" : {
+        "type" : "object",
+        "properties" : {
+          "foedselsEllerDNummer" : {
+            "type" : "string"
+          },
+          "folkeregisterperson" : {
+            "$ref" : "#/components/schemas/Folkeregisterperson"
+          },
+          "feilmelding" : {
+            "$ref" : "#/components/schemas/Feilmelding"
+          }
+        }
+      },
+      "OrganisasjonSomKontakt" : {
+        "type" : "object",
+        "properties" : {
+          "organisasjonsnavn" : {
+            "type" : "string"
+          },
+          "organisasjonsnummer" : {
+            "type" : "string"
+          },
+          "kontaktpersonnavn" : {
+            "$ref" : "#/components/schemas/Personnavn"
+          }
+        }
+      },
+      "PersonSoekResponse" : {
+        "required" : [ "personer" ],
+        "type" : "object",
+        "properties" : {
+          "personer" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Oppslag"
+            }
+          }
+        }
+      },
+      "PersonSomKontakt" : {
+        "type" : "object",
+        "properties" : {
+          "foedselsdato" : {
+            "type" : "string",
+            "format" : "date"
+          },
+          "personnavn" : {
+            "$ref" : "#/components/schemas/Personnavn"
+          },
+          "foedselsEllerDNummer" : {
+            "type" : "string"
+          }
+        }
+      },
+      "Personidentifikasjon" : {
+        "type" : "object",
+        "properties" : {
+          "ajourholdstidspunkt" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "erGjeldende" : {
+            "type" : "boolean"
+          },
+          "kilde" : {
+            "type" : "string"
+          },
+          "aarsak" : {
+            "type" : "string"
+          },
+          "gyldighetstidspunkt" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "opphoerstidspunkt" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "identifikasjonsnummer" : {
+            "type" : "string"
+          },
+          "identifikasjonsnummertype" : {
+            "type" : "string"
+          },
+          "utstederland" : {
+            "type" : "string"
+          }
+        }
+      },
+      "Personkjoenn" : {
+        "type" : "object",
+        "properties" : {
+          "ajourholdstidspunkt" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "erGjeldende" : {
+            "type" : "boolean"
+          },
+          "kilde" : {
+            "type" : "string"
+          },
+          "aarsak" : {
+            "type" : "string"
+          },
+          "gyldighetstidspunkt" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "opphoerstidspunkt" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "kjoenn" : {
+            "type" : "string",
+            "enum" : [ "kvinne", "mann" ]
+          }
+        }
+      },
+      "Personnavn" : {
+        "type" : "object",
+        "properties" : {
+          "fornavn" : {
+            "type" : "string"
+          },
+          "mellomnavn" : {
+            "type" : "string"
+          },
+          "etternavn" : {
+            "type" : "string"
+          }
+        }
+      },
+      "PostadresseIFrittFormat" : {
+        "type" : "object",
+        "properties" : {
+          "adresselinje" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          },
+          "poststed" : {
+            "$ref" : "#/components/schemas/Poststed"
+          }
+        }
+      },
+      "Postboksadresse" : {
+        "type" : "object",
+        "properties" : {
+          "postbokseier" : {
+            "type" : "string"
+          },
+          "postboks" : {
+            "type" : "string"
+          },
+          "poststed" : {
+            "$ref" : "#/components/schemas/Poststed"
+          }
+        }
+      },
+      "Poststed" : {
+        "type" : "object",
+        "properties" : {
+          "poststedsnavn" : {
+            "type" : "string"
+          },
+          "postnummer" : {
+            "type" : "string"
+          }
+        }
+      },
+      "PreferertKontaktadresse" : {
+        "type" : "object",
+        "properties" : {
+          "ajourholdstidspunkt" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "erGjeldende" : {
+            "type" : "boolean"
+          },
+          "kilde" : {
+            "type" : "string"
+          },
+          "aarsak" : {
+            "type" : "string"
+          },
+          "gyldighetstidspunkt" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "opphoerstidspunkt" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "valg" : {
+            "type" : "string",
+            "enum" : [ "bostedsadresse", "oppholdsadresse", "postadresse", "postadresseIUtlandet" ]
+          },
+          "adressegradering" : {
+            "type" : "string",
+            "enum" : [ "ugradert", "klientadresse", "fortrolig", "strengtFortrolig" ]
+          },
+          "kontaktadresseIFrittFormat" : {
+            "$ref" : "#/components/schemas/AdresseIFrittFormat"
+          }
+        }
+      },
+      "RelatertBiPerson" : {
+        "type" : "object",
+        "properties" : {
+          "navn" : {
+            "$ref" : "#/components/schemas/Personnavn"
+          },
+          "foedselsdato" : {
+            "type" : "string",
+            "format" : "date"
+          },
+          "statsborgerskap" : {
+            "type" : "string"
+          },
+          "kjoenn" : {
+            "type" : "string",
+            "enum" : [ "kvinne", "mann" ]
+          }
+        }
+      },
+      "SametingetsValgmanntall" : {
+        "type" : "object",
+        "properties" : {
+          "ajourholdstidspunkt" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "erGjeldende" : {
+            "type" : "boolean"
+          },
+          "kilde" : {
+            "type" : "string"
+          },
+          "aarsak" : {
+            "type" : "string"
+          },
+          "gyldighetstidspunkt" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "opphoerstidspunkt" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "forhold" : {
+            "type" : "string",
+            "enum" : [ "innmeldt", "utmeldt", "aldriInnmeldt" ]
+          },
+          "vedtaksdato" : {
+            "type" : "string",
+            "format" : "date"
+          }
+        }
+      },
+      "SamiskSpraak" : {
+        "type" : "object",
+        "properties" : {
+          "ajourholdstidspunkt" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "erGjeldende" : {
+            "type" : "boolean"
+          },
+          "kilde" : {
+            "type" : "string"
+          },
+          "aarsak" : {
+            "type" : "string"
+          },
+          "gyldighetstidspunkt" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "opphoerstidspunkt" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "spraak" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "enum" : [ "nordsamisk", "soersamisk", "lulesamisk" ]
+            }
+          }
+        }
+      },
+      "Sivilstand" : {
+        "type" : "object",
+        "properties" : {
+          "ajourholdstidspunkt" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "erGjeldende" : {
+            "type" : "boolean"
+          },
+          "kilde" : {
+            "type" : "string"
+          },
+          "aarsak" : {
+            "type" : "string"
+          },
+          "gyldighetstidspunkt" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "opphoerstidspunkt" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "sivilstand" : {
+            "type" : "string",
+            "enum" : [ "uoppgitt", "ugift", "gift", "enkeEllerEnkemann", "skilt", "separert", "registrertPartner", "separertPartner", "skiltPartner", "gjenlevendePartner" ]
+          },
+          "sivilstandsdato" : {
+            "type" : "string",
+            "format" : "date"
+          },
+          "myndighet" : {
+            "type" : "string"
+          },
+          "kommune" : {
+            "type" : "string"
+          },
+          "sted" : {
+            "type" : "string"
+          },
+          "utland" : {
+            "type" : "string"
+          },
+          "relatertVedSivilstand" : {
+            "type" : "string"
+          }
+        }
+      },
+      "Statsborgerskap" : {
+        "type" : "object",
+        "properties" : {
+          "ajourholdstidspunkt" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "erGjeldende" : {
+            "type" : "boolean"
+          },
+          "kilde" : {
+            "type" : "string"
+          },
+          "aarsak" : {
+            "type" : "string"
+          },
+          "gyldighetstidspunkt" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "opphoerstidspunkt" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "statsborgerskap" : {
+            "type" : "string"
+          },
+          "ervervsdato" : {
+            "type" : "string",
+            "format" : "date"
+          }
+        }
+      },
+      "TekniskDokumentkontroll" : {
+        "type" : "object",
+        "properties" : {
+          "dokumentkontrollstatus" : {
+            "type" : "string"
+          },
+          "dokumentkontrolltidspunkt" : {
+            "type" : "string",
+            "format" : "date-time"
+          }
+        }
+      },
+      "UkjentBosted" : {
+        "type" : "object",
+        "properties" : {
+          "bostedskommune" : {
+            "type" : "string"
+          }
+        }
+      },
+      "UtflyttingFraNorge" : {
+        "type" : "object",
+        "properties" : {
+          "ajourholdstidspunkt" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "erGjeldende" : {
+            "type" : "boolean"
+          },
+          "kilde" : {
+            "type" : "string"
+          },
+          "aarsak" : {
+            "type" : "string"
+          },
+          "gyldighetstidspunkt" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "opphoerstidspunkt" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "tilflyttingsland" : {
+            "type" : "string"
+          },
+          "tilflyttingsstedIUtlandet" : {
+            "type" : "string"
+          }
+        }
+      },
+      "Vegadresse" : {
+        "type" : "object",
+        "properties" : {
+          "kommunenummer" : {
+            "type" : "string"
+          },
+          "bruksenhetsnummer" : {
+            "type" : "string"
+          },
+          "bruksenhetstype" : {
+            "type" : "string",
+            "enum" : [ "bolig", "annetEnnBolig", "fritidsbolig", "ikkeGodkjentBolig", "unummerertBruksenhet" ]
+          },
+          "adressenavn" : {
+            "type" : "string"
+          },
+          "adressenummer" : {
+            "$ref" : "#/components/schemas/Adressenummer"
+          },
+          "adressekode" : {
+            "type" : "string"
+          },
+          "adressetilleggsnavn" : {
+            "type" : "string"
+          },
+          "poststed" : {
+            "$ref" : "#/components/schemas/Poststed"
+          },
+          "coAdressenavn" : {
+            "type" : "string"
+          }
+        }
+      },
+      "VegadresseForPost" : {
+        "type" : "object",
+        "properties" : {
+          "coAdressenavn" : {
+            "type" : "string"
+          },
+          "adressenavn" : {
+            "type" : "string"
+          },
+          "adressenummer" : {
+            "$ref" : "#/components/schemas/Adressenummer"
+          },
+          "poststed" : {
+            "$ref" : "#/components/schemas/Poststed"
+          },
+          "adressekode" : {
+            "type" : "string"
+          },
+          "adressetilleggsnavn" : {
+            "type" : "string"
+          },
+          "bruksenhetsnummer" : {
+            "type" : "string"
+          }
+        }
+      },
+      "VergeRepresentantEllerFullmektig" : {
+        "type" : "object",
+        "properties" : {
+          "navn" : {
+            "$ref" : "#/components/schemas/Personnavn"
+          },
+          "foedselsEllerDNummer" : {
+            "type" : "string"
+          },
+          "omfang" : {
+            "type" : "string",
+            "enum" : [ "utlendingssakerPersonligeOgOekonomiskeInteresser", "personligeOgOekonomiskeInteresser", "oekonomiskeInteresser", "personligeInteresser" ]
+          },
+          "omfangetErInnenPersonligOmraade" : {
+            "type" : "boolean"
+          }
+        }
+      },
+      "VergemaalRepresentasjonEllerFremtidsfullmakt" : {
+        "type" : "object",
+        "properties" : {
+          "ajourholdstidspunkt" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "erGjeldende" : {
+            "type" : "boolean"
+          },
+          "kilde" : {
+            "type" : "string"
+          },
+          "aarsak" : {
+            "type" : "string"
+          },
+          "gyldighetstidspunkt" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "opphoerstidspunkt" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "vergemaaltype" : {
+            "type" : "string",
+            "enum" : [ "ensligMindreaarigAsylsoeker", "ensligMindreaarigFlyktning", "voksen", "midlertidigForVoksen", "mindreaarig", "midlertidigForMindreaarig", "forvaltningUtenforVergemaal", "stadfestetFremtidsfullmakt" ]
+          },
+          "embete" : {
+            "type" : "string"
+          },
+          "verge" : {
+            "$ref" : "#/components/schemas/VergeRepresentantEllerFullmektig"
+          }
+        }
+      },
+      "AarIntervall" : {
+        "type" : "object",
+        "properties" : {
+          "fraAar" : {
+            "minimum" : 0,
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "tilAar" : {
+            "type" : "integer",
+            "format" : "int32"
+          }
+        },
+        "description" : "Fødselsår, fra og med, til og med"
+      },
+      "PersonSoekDefinisjon" : {
+        "required" : [ "rolleId" ],
+        "type" : "object",
+        "properties" : {
+          "rolleId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "navn" : {
+            "type" : "string",
+            "description" : "Et eller flere hele ord fra personnavnet, skilt med mellomrom."
+          },
+          "kjoenn" : {
+            "type" : "string",
+            "enum" : [ "MANN", "KVINNE" ]
+          },
+          "foedselsdato" : {
+            "type" : "integer",
+            "description" : "Fødselsdato (YYYYMMDD)",
+            "format" : "int32"
+          },
+          "foedt" : {
+            "$ref" : "#/components/schemas/AarIntervall"
+          },
+          "adressenavn" : {
+            "type" : "string",
+            "description" : "Minst 3 tegn fra begynnelsen av gatenavn"
+          },
+          "husnummer" : {
+            "type" : "string",
+            "description" : "Husnummer, med eller uten bokstav"
+          },
+          "postnummer" : {
+            "type" : "string",
+            "description" : "Filtrerer treff på postnummer (4 siffer)"
+          },
+          "kommunenummer" : {
+            "type" : "string",
+            "description" : "Filtrerer treff på kommunenummer (4 siffer)"
+          },
+          "fylkesnummer" : {
+            "type" : "string",
+            "description" : "Filtrerer treff på fylkesnummer (2 siffer)"
+          },
+          "inkluderOppholdsadresse" : {
+            "type" : "boolean",
+            "description" : "Treffer oppholdsasdresse i tillegg til bostedsadresse. Default: false"
+          },
+          "soekFonetisk" : {
+            "type" : "boolean",
+            "description" : "Søk også på lignende navn. Default: false"
+          },
+          "inkluderDoede" : {
+            "type" : "boolean",
+            "description" : "Treffer også døde personer. Default: false"
+          },
+          "inkluderHistoriskeNavnOgAdresser" : {
+            "type" : "boolean",
+            "description" : "Styrer håndtering av historikk. Default: 'false'. Påvirker kun navn og adresse - for andre opplysninger søkes det alltid kun på gjeldende."
+          },
+          "maksTreff" : {
+            "type" : "integer",
+            "description" : "Maksimalt antall treff å returnere. Maks 10.000.",
+            "format" : "int32"
+          },
+          "dataminimering" : {
+            "type" : "array",
+            "description" : "Dataminimering",
+            "items" : {
+              "type" : "string",
+              "description" : "Dataminimering"
+            }
+          }
+        }
+      }
+    }
+  }
+}

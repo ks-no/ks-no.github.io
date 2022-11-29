@@ -1,0 +1,375 @@
+{
+  "openapi" : "3.0.1",
+  "info" : {
+    "title" : "KS FIKS: Send-service",
+    "description" : "Send-service",
+    "contact" : {
+      "name" : "Fiks brukerstøtte",
+      "url" : "https://ks-no.github.io/",
+      "email" : "fiks-utvikling@ks.no"
+    },
+    "version" : "v1"
+  },
+  "servers" : [ {
+    "url" : "https://api.fiks.ks.no",
+    "description" : "KS Fiks API host",
+    "variables" : { }
+  } ],
+  "tags" : [ {
+    "name" : "fiks-send",
+    "description" : "API for å håndtere funksjonalitet for sending til Fiks IO/Print"
+  } ],
+  "paths" : {
+    "/send/api/v1/send/{id}" : {
+      "post" : {
+        "tags" : [ "fiks-send" ],
+        "description" : "Sender en bestemt ordre på nytt enten til FiksIO eller Fiks-Print basert på ID",
+        "operationId" : "sendOrdreById",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "400" : {
+            "description" : "Ordre er allerede levert"
+          },
+          "404" : {
+            "description" : "Ingen ordre funnet"
+          },
+          "204" : {
+            "description" : "Send ordre."
+          }
+        }
+      }
+    },
+    "/send/api/v1/ordrer" : {
+      "get" : {
+        "tags" : [ "fiks-send" ],
+        "description" : "Henter ordrer som er klar for sending",
+        "operationId" : "getOrdrerIkkeLevert",
+        "responses" : {
+          "200" : {
+            "description" : "Ordrer funnet",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "type" : "string",
+                    "format" : "uuid"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/send/api/v1/konfigurasjon/{fiksOrgId}/{fortrolighetsNiva}" : {
+      "get" : {
+        "tags" : [ "fiks-send" ],
+        "description" : "Henter konfigurasjon for sending til Print",
+        "operationId" : "getKonfigurasjonPrint",
+        "parameters" : [ {
+          "name" : "fiksOrgId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        }, {
+          "name" : "fortrolighetsNiva",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "enum" : [ "NORMAL", "UNTATT_OFFENTLIGHET" ]
+          }
+        } ],
+        "responses" : {
+          "404" : {
+            "description" : "Ingen konfigurasjon funnet for gitt fiksOrgId og fortrolighetsnivå"
+          },
+          "200" : {
+            "description" : "Konfigurasjon funnet",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/SendKonfigurasjon"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/send/api/v1/konfigurasjon/{fiksOrgId}/{fortrolighetsNiva}/{fiksIOKontoId}" : {
+      "get" : {
+        "tags" : [ "fiks-send" ],
+        "description" : "Henter konfigurasjon for sending til Fiks IO og Print",
+        "operationId" : "getKonfigurasjon",
+        "parameters" : [ {
+          "name" : "fiksOrgId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        }, {
+          "name" : "fortrolighetsNiva",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "enum" : [ "NORMAL", "UNTATT_OFFENTLIGHET" ]
+          }
+        }, {
+          "name" : "fiksIOKontoId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "404" : {
+            "description" : "Ingen konfigurasjon funnet for gitt fiksOrgId og fortrolighetsnivå"
+          },
+          "200" : {
+            "description" : "Konfigurasjon funnet",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/SendKonfigurasjon"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/send/api/v1/status/{meldingstype}/{meldingId}" : {
+      "post" : {
+        "tags" : [ "fiks-send" ],
+        "description" : "Oppdaterer status på en ordre",
+        "operationId" : "oppdaterStatus",
+        "parameters" : [ {
+          "name" : "meldingstype",
+          "in" : "path",
+          "description" : "Mottatt meldingstype for ordre som skal oppdateres",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "meldingId",
+          "in" : "path",
+          "description" : "MeldingId for sendt ordre som skal oppdateres",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Status mottatt",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/StatusSvarModel"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/send/api/v1/mottak" : {
+      "post" : {
+        "tags" : [ "fiks-send" ],
+        "description" : "Mottar en ordre som skal sendes videre til enten FiksIO eller Fiks-Print",
+        "operationId" : "mottaOrdre",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/OrdreModel"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Mottar ordre.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "string",
+                  "format" : "uuid"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/send/api/v1/send" : {
+      "post" : {
+        "tags" : [ "fiks-send" ],
+        "description" : "Sender en ordre som skal sendes videre til enten FiksIO eller Fiks-Print",
+        "operationId" : "sendOrdre",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/OrdreModel"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Send ordre.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "string",
+                  "format" : "uuid"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components" : {
+    "schemas" : {
+      "FiksIOKonfigurasjon" : {
+        "required" : [ "offentligNokkel" ],
+        "type" : "object",
+        "properties" : {
+          "offentligNokkel" : {
+            "type" : "string"
+          }
+        }
+      },
+      "PrintKonfigurasjon" : {
+        "required" : [ "leverandorId", "offentligNokkel" ],
+        "type" : "object",
+        "properties" : {
+          "leverandorId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "offentligNokkel" : {
+            "type" : "string"
+          }
+        }
+      },
+      "SendKonfigurasjon" : {
+        "type" : "object",
+        "properties" : {
+          "printKonfigurasjon" : {
+            "$ref" : "#/components/schemas/PrintKonfigurasjon"
+          },
+          "fiksIOKonfigurasjon" : {
+            "$ref" : "#/components/schemas/FiksIOKonfigurasjon"
+          }
+        }
+      },
+      "StatusSvarModel" : {
+        "type" : "object",
+        "properties" : {
+          "status" : {
+            "type" : "string",
+            "enum" : [ "OK", "FEIL" ]
+          }
+        }
+      },
+      "AdresseModel" : {
+        "required" : [ "adresselinje1", "poststed" ],
+        "type" : "object",
+        "properties" : {
+          "adresselinje1" : {
+            "type" : "string"
+          },
+          "adresselinje2" : {
+            "type" : "string"
+          },
+          "adresselinje3" : {
+            "type" : "string"
+          },
+          "postnummer" : {
+            "pattern" : "^[0-9]{4}$",
+            "type" : "string"
+          },
+          "poststed" : {
+            "type" : "string"
+          }
+        }
+      },
+      "FiksIOOrdreModel" : {
+        "required" : [ "dokumentRef", "meldingstype", "mottakerKontoId" ],
+        "type" : "object",
+        "properties" : {
+          "mottakerKontoId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "meldingstype" : {
+            "type" : "string"
+          },
+          "dokumentRef" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "ttl" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        }
+      },
+      "OrdreModel" : {
+        "required" : [ "print" ],
+        "type" : "object",
+        "properties" : {
+          "print" : {
+            "$ref" : "#/components/schemas/PrintOrdreModel"
+          },
+          "fiksIO" : {
+            "$ref" : "#/components/schemas/FiksIOOrdreModel"
+          }
+        }
+      },
+      "PrintOrdreModel" : {
+        "required" : [ "adresse", "dokumentRef", "leverandorRef" ],
+        "type" : "object",
+        "properties" : {
+          "dokumentRef" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "adresse" : {
+            "$ref" : "#/components/schemas/AdresseModel"
+          },
+          "leverandorRef" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        }
+      }
+    }
+  }
+}

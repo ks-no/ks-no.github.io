@@ -1,0 +1,235 @@
+{
+  "openapi" : "3.0.1",
+  "info" : {
+    "title" : "KS Fiks: Innsyn Index Service",
+    "contact" : {
+      "name" : "Fiks-brukerstøtte",
+      "url" : "https://ks-no.github.io/",
+      "email" : "fiks-utvikling@ks.no"
+    },
+    "version" : "v2"
+  },
+  "servers" : [ {
+    "url" : "https://api.fiks.test.ks.no/"
+  } ],
+  "tags" : [ {
+    "name" : "Index"
+  } ],
+  "paths" : {
+    "/innsyn-index/api/v2/indexRequest" : {
+      "put" : {
+        "tags" : [ "Index" ],
+        "summary" : "Indekser nye meldinger, eller oppdater eksisterende meldinger",
+        "description" : "Batch av en eller flere meldinger, opp til et maksimum av 5000. Merk at operasjonen ikke er atomisk: responsen vil indikere om en eller flere indekseringsoperasjoner feilet.",
+        "operationId" : "index",
+        "requestBody" : {
+          "description" : "Meldingene som skal indekseres",
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/IndexRequestV2"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Indekseringsoperasjonen er gjennomført. Merk at indekseringen av en eller flere meldinger kan ha feilet, se de individuelle respons-kodene.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/MeldingIndexResponseV2"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Forespørselen er ikke korrekt formatert",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Integrasjonen er ikke autorisert for å indeksere på vegne av spesifisert organisasjon.\n\n\nDersom errorCode-feltet er satt til \"INNSYN.INTEGRASJON_IKKE_AUTORISERT_FOR_INDEX\", vil errorJson inneholde et JSON-objekt to felter; \"integrasjonId\" og \"fiksOrgId\". Disse beskriver den første kombinasjonen av integrasjonsid og Fiks-organisajonsid som feilet autorisering.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "422" : {
+            "description" : "Antall meldinger i operasjonen overgår øvre begrensning (5000)",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Indekseringsoperasjonen har feilet. Et ukjent antall meldinger kan likevel ha blitt indeksert, men alle bør sendes inn på nytt",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components" : {
+    "schemas" : {
+      "MeldingIndexResponseV2" : {
+        "required" : [ "manglerSamtykke", "oppdatert", "opprettet" ],
+        "type" : "object",
+        "properties" : {
+          "opprettet" : {
+            "type" : "integer",
+            "description" : "Antall nye meldinger som ble indeksert i Fiks Innsyn",
+            "format" : "int32"
+          },
+          "oppdatert" : {
+            "type" : "integer",
+            "description" : "Antall eksisterende meldinger som ble oppdatert",
+            "format" : "int32"
+          },
+          "manglerSamtykke" : {
+            "type" : "integer",
+            "description" : "Antall forespørsler hvor personen meldingen var eksponert for ikke har gitt samtykke til bruk av Fiks Innsyn",
+            "format" : "int32"
+          },
+          "meldingerUtenSamtykke" : {
+            "type" : "array",
+            "description" : "MeldingsId for forespørsler som ble blokkert pga manglende samtykke",
+            "items" : {
+              "type" : "string",
+              "description" : "MeldingsId for forespørsler som ble blokkert pga manglende samtykke",
+              "format" : "uuid"
+            }
+          }
+        },
+        "description" : "Resultat av indekseringsforespørselen"
+      },
+      "ErrorMessage" : {
+        "type" : "object",
+        "properties" : {
+          "timestamp" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "status" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "error" : {
+            "type" : "string"
+          },
+          "errorId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "path" : {
+            "type" : "string"
+          },
+          "originalPath" : {
+            "type" : "string"
+          },
+          "message" : {
+            "type" : "string"
+          },
+          "errorCode" : {
+            "type" : "string"
+          },
+          "errorJson" : {
+            "type" : "string"
+          }
+        }
+      },
+      "EksponertFor" : {
+        "required" : [ "identifikatorType", "verdi" ],
+        "type" : "object",
+        "properties" : {
+          "identifikatorType" : {
+            "type" : "string",
+            "description" : "Type identifikator",
+            "enum" : [ "ORGANISASJONSNUMMER", "FODSELSNUMMER", "MATRIKKELNUMMER", "OFFENTLIG" ]
+          },
+          "verdi" : {
+            "type" : "string",
+            "description" : "Et 11 siffret fødselsnummer, et 9 siffret organisasjonsnummer, eller et matrikkelnummer på format <kommunenr>-<gardsnr>/<bruksnr>/<festenr>/<seksjonsnr>"
+          }
+        },
+        "description" : "Angir hvem som skal ha tilgang til dokumentet. Dette kan endten være en fysisk person, en organisasjon, eller en matrikkelenhet."
+      },
+      "IndexMeldingV2" : {
+        "required" : [ "eksponertFor", "fiksOrganisasjonId", "meldingId", "meldingMetadata", "sikkerhetsniva", "versjon" ],
+        "type" : "object",
+        "properties" : {
+          "meldingId" : {
+            "type" : "string",
+            "description" : "UUID, i samsvar med standardrepresentasjonen beskrevet her: https://docs.oracle.com/javase/8/docs/api/java/util/UUID.html#toString--",
+            "format" : "uuid",
+            "example" : "b8403bc6-4a82-4fee-b06f-8893a539c453"
+          },
+          "sikkerhetsniva" : {
+            "minimum" : 0,
+            "type" : "integer",
+            "description" : "Påkrevd sikkerhetsnivå",
+            "format" : "int32",
+            "example" : 4
+          },
+          "eksponertFor" : {
+            "$ref" : "#/components/schemas/EksponertFor"
+          },
+          "fiksOrganisasjonId" : {
+            "type" : "string",
+            "description" : "Fiks-organisasjonen som er ansvarlig for meldingen, som registrert i fiks-konfigurasjon",
+            "format" : "uuid",
+            "example" : "120b7806-611f-4b76-b2d4-3a1445de5281"
+          },
+          "eksternRef" : {
+            "pattern" : "^[A-Za-zæøåÆØÅ0-9_.,/\\-_ ]+$",
+            "type" : "string",
+            "description" : "Ekstern-ref. Kan benyttes ved sletting av grupper dokumenter, for eksempel en gruppe som utgjør en kategori i kildesystemet",
+            "example" : "sakogarkiv.byggesak"
+          },
+          "versjon" : {
+            "type" : "string",
+            "description" : "Type og versjon for metadata i meldingMetadata-feltet"
+          },
+          "meldingMetadata" : {
+            "type" : "string",
+            "description" : "Base64-encodet streng med JSON-metadata av typen og versjonen som er definert i versjon-feltet"
+          }
+        },
+        "description" : "En forespørsel om å opprette en ny eller oppdatere eksisterende melding"
+      },
+      "IndexRequestV2" : {
+        "required" : [ "meldinger" ],
+        "type" : "object",
+        "properties" : {
+          "meldinger" : {
+            "maxItems" : 2147483647,
+            "minItems" : 1,
+            "type" : "array",
+            "description" : "List av IndexMeldingV2",
+            "items" : {
+              "$ref" : "#/components/schemas/IndexMeldingV2"
+            }
+          }
+        },
+        "description" : "Wrapper for en liste av IndexMeldingV2"
+      }
+    }
+  }
+}

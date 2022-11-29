@@ -1,0 +1,520 @@
+{
+  "openapi" : "3.0.1",
+  "info" : {
+    "title" : "KS Fiks: Innreise",
+    "contact" : {
+      "name" : "Fiks brukerstøtte",
+      "url" : "https://ks-no.github.io/",
+      "email" : "fiks-utvikling@ks.no"
+    },
+    "version" : "v1"
+  },
+  "servers" : [ {
+    "url" : "https://api.fiks.ks.no",
+    "description" : "KS Fiks API host",
+    "variables" : { }
+  }, {
+    "url" : "https://api.test.fiks.ks.no",
+    "description" : "KS Fiks TEST API host",
+    "variables" : { }
+  } ],
+  "tags" : [ {
+    "name" : "Innreise",
+    "description" : "API for å hente innreiser fra HDIR"
+  } ],
+  "paths" : {
+    "/innreise/api/v1/hentAntallInnreiser" : {
+      "post" : {
+        "tags" : [ "Innreise" ],
+        "description" : "Hente antall innreiser for gitt søkekriterie. Søkefelt må inneholde kommunenummer.",
+        "operationId" : "hentAntallInnreiser",
+        "parameters" : [ {
+          "name" : "fiksOrg",
+          "in" : "query",
+          "schema" : {
+            "pattern" : "[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}",
+            "type" : "string"
+          }
+        }, {
+          "name" : "tjeneste",
+          "in" : "query",
+          "schema" : {
+            "type" : "string",
+            "description" : "Tjeneste",
+            "enum" : [ "INNREISE", "INNREISEOPPFOLGING" ]
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/InnreiserAntallRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/InnreiserAntall"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Bad request",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Ikke autentisert",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Systemfeil",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/innreise/api/v1/hentInnreiser" : {
+      "post" : {
+        "tags" : [ "Innreise" ],
+        "description" : "Hente innreise for gitt søkekriterie. Tjenesten returnerer informasjon om innreiser basert på filteret som blir sendt med requesten. Tjenesten baserer seg på data som blir importert fra Helsedirektoratet hver natt, og innreiser registrert på dagens dato vil dermed ikke vere tilgjengelig. ",
+        "operationId" : "hentInnreiser",
+        "parameters" : [ {
+          "name" : "fiksOrg",
+          "in" : "query",
+          "schema" : {
+            "pattern" : "[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}",
+            "type" : "string"
+          }
+        }, {
+          "name" : "tjeneste",
+          "in" : "query",
+          "schema" : {
+            "type" : "string",
+            "description" : "Tjeneste",
+            "enum" : [ "INNREISE", "INNREISEOPPFOLGING" ]
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/InnreiseRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/Innreiser"
+                  }
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Bad request",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Ikke autentisert",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Systemfeil",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components" : {
+    "schemas" : {
+      "InnreiserAntall" : {
+        "required" : [ "antall" ],
+        "type" : "object",
+        "properties" : {
+          "antall" : {
+            "type" : "integer",
+            "description" : "Antall innreiser basert på filter",
+            "format" : "int32"
+          }
+        },
+        "description" : "Inneholder informasjon om antall innreiser basert på uttrekk"
+      },
+      "ErrorMessage" : {
+        "type" : "object",
+        "properties" : {
+          "timestamp" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "status" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "error" : {
+            "type" : "string"
+          },
+          "errorId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "path" : {
+            "type" : "string"
+          },
+          "originalPath" : {
+            "type" : "string"
+          },
+          "message" : {
+            "type" : "string"
+          },
+          "errorCode" : {
+            "type" : "string"
+          },
+          "errorJson" : {
+            "type" : "string"
+          }
+        }
+      },
+      "InnreiserAntallRequest" : {
+        "required" : [ "kommunenr" ],
+        "type" : "object",
+        "properties" : {
+          "kommunenr" : {
+            "pattern" : "^\\d{4}$",
+            "type" : "string",
+            "description" : "Kommunenummer"
+          },
+          "fraDato" : {
+            "type" : "string",
+            "description" : "Fra dato. Default er Date.MIN",
+            "format" : "date-time"
+          },
+          "tilDato" : {
+            "type" : "string",
+            "description" : "Til dato. Default er Date.Now()",
+            "format" : "date-time"
+          }
+        },
+        "description" : "Filter for å få ut antall innreiser"
+      },
+      "Innreiser" : {
+        "required" : [ "a_reference_code" ],
+        "type" : "object",
+        "properties" : {
+          "a_reference_code" : {
+            "type" : "string",
+            "description" : "ID knyttet til reisen. Består av 4 elementer: <br> 1. Kommmunenummer internt i HDIR database. <br> 2. Prefiks på telefonnummer (landkode). <br> 3. Innloggingsmetode, 1 = Pålogging via SMS, 2 = Pålogging via email, 3 = manuelt registrert/Call-senter, 4 = Pålogging via ID-porten<br> 4. Løpenummer"
+          },
+          "p_unique_id" : {
+            "type" : "string",
+            "description" : "Id knyttet til person. Dette kan vere Fødselsnummer, D-nummer eller passnummer"
+          },
+          "a_destination_id" : {
+            "type" : "string",
+            "description" : "Innreisekommune/Reisested"
+          },
+          "municipality_number" : {
+            "type" : "string",
+            "description" : "Kommunenummer - utledet av a_destination_id"
+          },
+          "p_first_name" : {
+            "type" : "string",
+            "description" : "Fornavn"
+          },
+          "p_last_name" : {
+            "type" : "string",
+            "description" : "Etternavn"
+          },
+          "p_birth_date" : {
+            "type" : "string",
+            "description" : "Fødselsdato",
+            "format" : "date"
+          },
+          "p_phone" : {
+            "type" : "string",
+            "description" : "Telefonnummer"
+          },
+          "p_email" : {
+            "type" : "string",
+            "description" : "Epost-adresse"
+          },
+          "p_lang_follow_up" : {
+            "type" : "string",
+            "description" : "Preferert språk for oppfølging"
+          },
+          "p_follow_up" : {
+            "type" : "string",
+            "description" : "Oppfølgingsstatus - Verdier: OK, Ikke OK, Ikke svar, Ikke satt"
+          },
+          "p_follow_up_time" : {
+            "type" : "string",
+            "description" : "Tid for oppfølging",
+            "format" : "date-time"
+          },
+          "p_country_of_residence" : {
+            "type" : "string",
+            "description" : "Bostedsland"
+          },
+          "p_dnr" : {
+            "type" : "string",
+            "description" : "D-nummer - fylles inn manuelt på grensen eller når den innreisende henvender seg til call centeret for innreiseregisteret, de som ikke har registrert reisen på forhånd"
+          },
+          "a_quarantine_option" : {
+            "type" : "string",
+            "description" : "Karantenevalg - ikke lenger i bruk/vil vere tom"
+          },
+          "a_q_opt_l1" : {
+            "type" : "string",
+            "description" : "Karantenevalg"
+          },
+          "a_q_opt_l2" : {
+            "type" : "string",
+            "description" : "Karantenevalg, type unntak for karantene"
+          },
+          "a_q_opt_l3" : {
+            "type" : "string",
+            "description" : "Karantenevalg, detaljert type unntak:"
+          },
+          "a_q_opt_l4" : {
+            "type" : "string",
+            "description" : "Karantenevalg/Karantenested"
+          },
+          "a_q_opt_l1_code" : {
+            "type" : "string",
+            "description" : "Karantenevalg: <br> <i>1001</i> - Karantene - alle som ankommer Norge har karanteneplikt i 10 døgn etter ankomst eller til de har svar på test (PCR) tatt tidligst 7 eller 3 døgn etter ankomst<br> <i>1002</i> - Helt eller delvis unntak fra karantene - det er den enkeltes plikt å gjøre seg kjent med bestemmelsene om karanteneunntak og at bruk av karanteneunntak på uriktig grunnlag kan bøtelegges"
+          },
+          "a_q_opt_l2_code" : {
+            "type" : "string",
+            "description" : "Type unntak for karantene: <br> <i>2001</i> - Innreiser fra grønne land/områder<br> <i>2002</i> - Dagsreise for nødvendig vedlikehold og tilsyn<br> <i>2003</i> - Pendlerunntak, gjelder beboere i Sverige og Finland<br> <i>2004</i> - Avtalt eller fastsatt samvær med barn<br> <i>2005</i> - Personell i kritisk samfunnsfunksjon § 6e<br> <i>2006</i> - Unntak for arbeidsreiser<br> <i>2007</i> - Invitert eller utsendt av norske myndigheter av utenrikspolitiske viktige grunner § 6d<br> <i>2008</i> - Jeg er fullvaksinert mot SARS-CoV-2 eller har gjennomgått SARS-CoV-2 siste 6 måneder (jf § 3), og kan dokumentere dette ved fremvisning av et norsk koronasertifikat med en QR-kode som kan verifiseres av norske myndigheter<br> <i>2009</i> - Arbeidsreisende i forbindelse med internasjonale idrettskonkurranser § 6f<br> <i>2010</i> - Alvorlig sykdom, bisettelse og begravelse til nærstående § 6j<br> <i>0</i> - Ikke valgt"
+          },
+          "a_q_opt_l3_code" : {
+            "type" : "string",
+            "description" : "Detaljert type unntak: <br> <i>3001</i> - Innreise direkte fra grønne land/områder §4<br> <i>3002</i> - Innreise fra grønne land/områder via land/område med karanteneplikt, uten opphold i dette landet/området, §6a<br> <i>3003</i> - Reisen gjelder Sverige § 6a<br> <i>3004</i> - Reisen gjelder Finland § 6a<br> <i>3005</i> - Regelmessig pendling mellom arbeidssted og bosted, krav til regelmessig testing § 6b<br> <i>3006</i> - Dagpendling som videregående elev, krav til regelmessig testing § 6b<br> <i>3007</i> - Pendling som grunnskoleelev § 6b<br> <i>3008</i> - Forelder som skal ha samvær med barn §6d<br> <i>3009</i> - Barn som skal ha samvær med forelder §6d<br> <i>3010</i> - Styring og kriseledelse<br> <i>3011</i> - Forsvar<br> <i>3012</i> - Lov og orden<br> <i>3013</i> - Helse og omsorg, herunder apotek og renhold<br> <i>3014</i> - Redningstjeneste<br> <i>3015</i> - Digital sikkerhet i sivil sektor<br> <i>3016</i> - Natur og miljø<br> <i>3017</i> - Forsyningssikkerhet<br> <i>3018</i> - Vann og avløp<br> <i>3019</i> - Finansielle tjenester<br> <i>3020</i> - Kraftforsyning<br> <i>3021</i> - Elektronisk kommunikasjon<br> <i>3022</i> - Transport<br> <i>3023</i> - Satellittbaserte<br> <i>3024</i> - Yrkessjåfører § 6b<br> <i>3025</i> - Flypersonell § 6g/ togpersonell § 6g/6b<br> <i>3026</i> - Skip/ båt § 6h/6a<br> <i>3027</i> - Ankommer Norge for å arbeide om bord på skip/båt § 6h<br> <i>3028</i> - Opphold og arbeid på skip/båt som returnerer til Norge etter kortvarig opphold i utenlandsk havn §6a<br> <i>3029</i> - Beskyttet og fullvaksinert forvarspersonell § 6l<br> <i>3030</i> - Mannskap på passasjerskip i fast rute §6c<br> <i>3031</i> - Brann-, redning- og ambulansepersonell mv §6n<br> <i>0</i> - Ikke valgt"
+          },
+          "a_q_opt_l4_code" : {
+            "type" : "string",
+            "description" : "Karantenevalg/Karantenested: <br> <i>4001</i> - Jeg skal bo på karantenehotell hele karanteneperioden<br> <i>4002</i> - Jeg skal gjennomføre karantene i boligen min eller på annet egnet oppholdssted<br> <i>4003</i> - Jeg er kommet til Norge for å utføre arbeid eller oppdrag, og har bekreftelse fra min arbeids- eller oppdragsgiver på at de sørger for et egnet oppholdssted i henhold til regelverket<br> <i>4004</i> - Jeg har et annet formål med oppholdet enn arbeid eller oppdrag, og har et egnet oppholdssted der det er mulig å unngå nærkontakt med andre, og kan fremlegge bekreftelse på at oppholdsstedet oppfyller vilkårene fra den som stiller oppholdsstedet til disposisjon<br> <i>4005</i> - Jeg overnatter ikke og har ikke fritid i Norge<br> <i>4006</i> - Jeg har fritidskarantene på karantenehotell<br> <i>4007</i> - Jeg skal bo på internat<br> <i>4008</i> - Jeg skal gjennomføre fritidskarantene i enerom i kjøretøyet som er egnet for overnatting<br> <i>4009</i> - Jeg skal gjennomføre karantenen på enelugar om bord i fartøyet<br> <i>4010</i> - Jeg er gift eller har felles barn med en person som er bosatt i Norge og skal gjennomføre karantenen i boligen til denne personen<br> <i>4011</i> - Jeg skal gjennomføre fritidskarantene i boligen min eller på annet egnet oppholdssted<br> <i>4012</i> - Jeg skal bo på karantenehotell første del av karantene, deretter skal resterende karantene gjennomføres i egen bolig eller annet egnet oppholdssted<br> <i>4013</i> - Jeg skal gjennomføre fritidskarantene på egnet oppholdssted hvor det er mulig å unngå nærkontakt med andre, med enerom, eget bad og eget kjøkken eller matservering<br> <i>4014</i> - Jeg skal gjennomføre karantene på karantenehotell, unntatt tidsrommet for besøket, deltakelse i bisettelse eller begravelse<br> <i>4015</i> - Jeg skal gjennomføre karantene i boligen min eller på annet egnet oppholdssted, unntatt tidsrommet for besøket, deltakelse i bisettelse eller begravelse"
+          },
+          "a_quarantine_reg_arrival_hotel" : {
+            "type" : "string",
+            "description" : "Karantenehotell ankomst"
+          },
+          "a_quarantine_reg_arrival" : {
+            "type" : "string",
+            "description" : "Ankomstdato ved karantenehotell",
+            "format" : "date"
+          },
+          "a_quarantine_reg_departure_hotel" : {
+            "type" : "string",
+            "description" : "Karantenehotell ved avreise - brukes dersom karantenehotell endres under karanteneoppholdet"
+          },
+          "a_quarantine_reg_departure" : {
+            "type" : "string",
+            "description" : "Avreisedato for karantene",
+            "format" : "date"
+          },
+          "a_date" : {
+            "type" : "string",
+            "description" : "Reisedato",
+            "format" : "date"
+          },
+          "a_travel_method" : {
+            "type" : "string",
+            "description" : "Reisemåte - Verdier: Fly, Bil/Buss, Yrkestransport, Båt, Tog, Annet"
+          },
+          "a_travel_method_extra" : {
+            "type" : "string",
+            "description" : "Informasjon om reisen"
+          },
+          "a_travel_method_extra2" : {
+            "type" : "string",
+            "description" : "Informasjon om reisen"
+          },
+          "a_country_of_departure" : {
+            "type" : "string",
+            "description" : "Avreiseland"
+          },
+          "a_country_of_departure_region" : {
+            "type" : "string",
+            "description" : "Avreiseområde"
+          },
+          "a_transit_countries" : {
+            "type" : "string",
+            "description" : "Transittland"
+          },
+          "a_num_travelers" : {
+            "type" : "string",
+            "description" : "Antall reisende"
+          },
+          "a_num_travelers_under_16" : {
+            "type" : "string",
+            "description" : "Antall reisende under 16 år"
+          },
+          "a_hotel_name" : {
+            "type" : "string",
+            "description" : "Opplysninger tilknyttet karantenested"
+          },
+          "a_location_address" : {
+            "type" : "string",
+            "description" : "Adresse for karantenested"
+          },
+          "a_location_zip_code" : {
+            "type" : "string",
+            "description" : "Postkode for karantenested"
+          },
+          "a_employer_org_number" : {
+            "type" : "string",
+            "description" : "Organisasjonsnummer"
+          },
+          "a_employer_name" : {
+            "type" : "string",
+            "description" : "Arbeidsgiver"
+          },
+          "a_employer_address" : {
+            "type" : "string",
+            "description" : "Arbeidsgivers adresse"
+          },
+          "a_employer_contact_person" : {
+            "type" : "string",
+            "description" : "Kontaktperson hos arbeidsgiver"
+          },
+          "a_employer_contact_phone" : {
+            "type" : "string",
+            "description" : "Kontakttelefon hos arbeidsgiver"
+          },
+          "a_is_leisure_trip" : {
+            "type" : "string",
+            "description" : "Fritidsreise - Verdier: Ja, Nei, tom "
+          },
+          "a_is_trip_necessary" : {
+            "type" : "string",
+            "description" : "Er fritidsreise nødvendig - Verdier: Ja, Nei, tom. Dette spørsmålet er blitt fjernet fra 27.mai 2021"
+          },
+          "a_updated" : {
+            "type" : "string",
+            "description" : "Siste oppdatering av reise-data.",
+            "format" : "date-time"
+          },
+          "p_updated" : {
+            "type" : "string",
+            "description" : "Siste oppdatering av informasjon om den innreisende.",
+            "format" : "date-time"
+          },
+          "p_fh_number" : {
+            "type" : "string",
+            "description" : "Felles nasjonalt hjelpenummer - dette nummeret blir generert dersom f-nr (via id-porten) eller d-nr mangler verdi"
+          },
+          "a_border_crossing_arrival" : {
+            "type" : "string",
+            "description" : "Dato for registrert grensepassering via grensekontroll-løsningen til politiet",
+            "format" : "date"
+          },
+          "a_border_crossing_quarantine_assessment" : {
+            "type" : "string",
+            "description" : "Dersom politiet har henvist innreisende til karantenehotell."
+          },
+          "a_border_crossing_location" : {
+            "type" : "string",
+            "description" : "Grensestasjon"
+          },
+          "a_q_hotel_destination_id" : {
+            "type" : "string",
+            "description" : "Karantenehotellet sin kommune, dersom karantenehotell ligger i annen kommune enn innreisekommune"
+          },
+          "hotel_municipality_number" : {
+            "type" : "string",
+            "description" : "Kommunenummer der karantenehotellet ligger. Utledet fra a_q_hotel_destination_id"
+          },
+          "responsible_municipality_number" : {
+            "type" : "string",
+            "description" : "Ansvarlig kommune for innreiseoppfølging, satt til enten hotel_municipality_number eller municipality_number. Feltet er utledet som en del av importen av data fra HDIR basert på følgende regel: <br> <br> * <i>hotel_municipality_number</i>: Dersom hotell-kommunenummer har verdi, og avreisedato ikke er satt eller avreisedato fra hotell er tidligere (eller lik) ankomstdato <br>    (hotel_municipality_number != null && (a_quarantine_reg_departure == null || (a_quarantine_reg_arrival != null && a_quarantine_reg_arrival >= a_quarantine_reg_departure)))<br> * <i>municipality_number</i>: Default-verdi dersom regel over ikke er oppfylt. Dette betyr at dersom municipality_number ikke har verdi, så blir responsible_municipality_number satt til null også."
+          }
+        }
+      },
+      "InnreiseRequest" : {
+        "type" : "object",
+        "properties" : {
+          "personId" : {
+            "pattern" : "^[0-9]{11}$",
+            "type" : "string",
+            "description" : "Fødselsnummer/D-nummer/Preg-nr til person det skal spørres etter innreise på"
+          },
+          "kommunenr" : {
+            "type" : "array",
+            "description" : "Kommunenummer det skal hentes ut innreiser for. Sjekker både municipality_number og hotel_municipality_number og returnerer alle innreiser som har treff i en av dem.",
+            "items" : {
+              "type" : "string",
+              "description" : "Kommunenummer det skal hentes ut innreiser for. Sjekker både municipality_number og hotel_municipality_number og returnerer alle innreiser som har treff i en av dem."
+            }
+          },
+          "oppdatertEtter" : {
+            "type" : "string",
+            "description" : "Oppdateringsdato - sjekk på a_date, a_updated og p_updated.",
+            "format" : "date-time"
+          },
+          "limit" : {
+            "type" : "integer",
+            "description" : "Begrensning på antall innreiser som blir returnert.",
+            "format" : "int32"
+          },
+          "offset" : {
+            "type" : "integer",
+            "description" : "Start uthenting fra",
+            "format" : "int64"
+          }
+        }
+      }
+    }
+  }
+}

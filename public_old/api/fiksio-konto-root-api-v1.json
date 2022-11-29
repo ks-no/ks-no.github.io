@@ -1,0 +1,151 @@
+{
+  "openapi" : "3.0.1",
+  "info" : {
+    "title" : "KS Fiks: FIKS IO Root Service",
+    "description" : "KS Fiks: FIKS IO Root Service",
+    "contact" : {
+      "name" : "Fiks brukerst??tte",
+      "url" : "https://www.ks.no/fagomrader/digitalisering/utviklingsprosjekter/",
+      "email" : "fiks@ks.no"
+    },
+    "version" : "v1"
+  },
+  "servers" : [ {
+    "url" : "https://api.fiks.test.ks.no",
+    "description" : "KS Fiks API host",
+    "variables" : { }
+  } ],
+  "tags" : [ {
+    "name" : "FiksIORoot",
+    "description" : "API for ?? behandle kontoer i Fiks IO"
+  } ],
+  "paths" : {
+    "/fiks-io/root/api/v1/kontoer" : {
+      "get" : {
+        "tags" : [ "FiksIORoot" ],
+        "description" : "Henter alle kontoer",
+        "operationId" : "kontoStatuser",
+        "responses" : {
+          "200" : {
+            "description" : "Alle kontoer"
+          },
+          "403" : {
+            "description" : "Krever ROOT tilgang"
+          }
+        }
+      }
+    },
+    "/fiks-io/root/api/v1/kontoer/{kontoId}/queue" : {
+      "get" : {
+        "tags" : [ "FiksIORoot" ],
+        "description" : "Henter status for k?? fra RabbitMQ",
+        "operationId" : "queueStats",
+        "parameters" : [ {
+          "name" : "kontoId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "K?? opprettet (om den ikke fantes) eller bare sjekket at den finnes"
+          },
+          "403" : {
+            "description" : "Krever ROOT tilgang"
+          },
+          "404" : {
+            "description" : "Kontoen finnes ikke"
+          }
+        }
+      },
+      "put" : {
+        "tags" : [ "FiksIORoot" ],
+        "description" : "Oppretter k?? p?? nytt dersom den ikke finnes",
+        "operationId" : "recreateQueue",
+        "parameters" : [ {
+          "name" : "kontoId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "K?? opprettet (om den ikke fantes) eller bare sjekket at den finnes"
+          },
+          "403" : {
+            "description" : "Krever ROOT tilgang"
+          },
+          "404" : {
+            "description" : "Kontoen finnes ikke"
+          }
+        }
+      }
+    }
+  },
+  "components" : {
+    "schemas" : {
+      "KontoQueueStatusApiModel" : {
+        "type" : "object",
+        "properties" : {
+          "queueExists" : {
+            "type" : "boolean"
+          },
+          "queueName" : {
+            "type" : "string"
+          },
+          "ventendeMeldinger" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "antallKonsumenter" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        }
+      },
+      "KontoStatus" : {
+        "type" : "object",
+        "properties" : {
+          "fiksOrgId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "fiksOrgNavn" : {
+            "type" : "string"
+          },
+          "kontoId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "kontoNavn" : {
+            "type" : "string"
+          },
+          "opprettet" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "status" : {
+            "$ref" : "#/components/schemas/KontoQueueStatusApiModel"
+          }
+        }
+      },
+      "KontoStatusViewResponse" : {
+        "type" : "object",
+        "properties" : {
+          "kontoer" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/KontoStatus"
+            }
+          }
+        }
+      }
+    }
+  }
+}

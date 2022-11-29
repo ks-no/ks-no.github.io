@@ -1,0 +1,181 @@
+{
+  "openapi" : "3.0.1",
+  "info" : {
+    "title" : "KS Fiks: Fiks Forget service",
+    "description" : "Forget Service",
+    "contact" : {
+      "name" : "Fiks brukerstøtte",
+      "url" : "https://www.ks.no/fagomrader/digitalisering/utviklingsprosjekter/",
+      "email" : "fiks-utvikling@ks.no"
+    },
+    "version" : "v1"
+  },
+  "servers" : [ {
+    "url" : "https://api.fiks.ks.no",
+    "description" : "KS Fiks API host",
+    "variables" : { }
+  }, {
+    "url" : "https://api.test.fiks.ks.no",
+    "description" : "KS Fiks TEST API host",
+    "variables" : { }
+  } ],
+  "tags" : [ {
+    "name" : "forget",
+    "description" : "API for å bli glemt"
+  } ],
+  "paths" : {
+    "/forget/api/v1/forgetMe" : {
+      "post" : {
+        "tags" : [ "Forget" ],
+        "description" : "Ber om at autentisert bruker blir glemt",
+        "operationId" : "forget",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/FiksForgetRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "default" : {
+            "description" : "default response",
+            "content" : {
+              "application/json" : { }
+            }
+          }
+        }
+      }
+    },
+    "/forget/api/v1/forgetMeNot" : {
+      "post" : {
+        "tags" : [ "Forget" ],
+        "description" : "Ber om at autentisert bruker blir gjort ikke-glemt",
+        "operationId" : "forgetMeNot",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/FiksForgetRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "default" : {
+            "description" : "default response",
+            "content" : {
+              "application/json" : { }
+            }
+          }
+        }
+      }
+    },
+    "/forget/api/v1/forgotten/{tjenestekode}" : {
+      "get" : {
+        "tags" : [ "Forget" ],
+        "description" : "Sjekker om autentisert bruker er glemt for en gitt tjeneste",
+        "operationId" : "forgotten",
+        "parameters" : [ {
+          "name" : "tjenestekode",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "er autentisert bruker glemt",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "boolean"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/forget/api/v1/forgotten/{tjenestekode}/list" : {
+      "get" : {
+        "tags" : [ "Forget" ],
+        "description" : "Henter en liste over alle personer som er eller har vært glemt tidligere",
+        "operationId" : "forgottenList",
+        "parameters" : [ {
+          "name" : "tjenestekode",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "en liste over alle personer som er eller har vært glemt",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ForgottenList"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components" : {
+    "schemas" : {
+      "FiksForgetRequest" : {
+        "type" : "object",
+        "properties" : {
+          "tjenesteKode" : {
+            "type" : "string"
+          }
+        }
+      },
+      "Forgotten" : {
+        "type" : "object",
+        "properties" : {
+          "fnr" : {
+            "type" : "string",
+            "description" : "Fødselsnummer for personen"
+          },
+          "forgotten" : {
+            "type" : "boolean",
+            "description" : "Indikerer om personen for øyeblikket er glemt eller ikke"
+          },
+          "sekvensnummer" : {
+            "type" : "integer",
+            "description" : "Sekvensnummer for siste oppdatering for denne personen",
+            "format" : "int64"
+          }
+        },
+        "description" : "Viser forgotten-status for en person"
+      },
+      "ForgottenList" : {
+        "type" : "object",
+        "properties" : {
+          "tjenesteKode" : {
+            "type" : "string",
+            "description" : "Kode for tjenesten listen gjelder"
+          },
+          "forgotten" : {
+            "uniqueItems" : true,
+            "type" : "array",
+            "description" : "Liste over personer som er forgotten eller har vært det tidligere",
+            "items" : {
+              "$ref" : "#/components/schemas/Forgotten"
+            }
+          }
+        },
+        "description" : "Liste over personer som er forgotten eller har vært det tidligere"
+      }
+    }
+  }
+}

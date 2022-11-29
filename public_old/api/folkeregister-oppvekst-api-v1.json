@@ -1,0 +1,698 @@
+{
+  "openapi" : "3.0.1",
+  "info" : {
+    "title" : "KS Fiks folkeregister oppvekst",
+    "description" : "Folkeregister oppvekst",
+    "contact" : {
+      "name" : "Fiks brukerstøtte",
+      "url" : "https://www.ks.no/fagomrader/digitalisering/utviklingsprosjekter",
+      "email" : "fiks-utvikling@ks.no"
+    },
+    "version" : "v1"
+  },
+  "servers" : [ {
+    "url" : "https://api.fiks.ks.no",
+    "description" : "KS Fiks API host",
+    "variables" : { }
+  }, {
+    "url" : "https://api.test.fiks.ks.no",
+    "description" : "KS Fiks TEST API host",
+    "variables" : { }
+  } ],
+  "tags" : [ {
+    "name" : "oppvekst",
+    "description" : "API for å håndtere funksjonalitet rundt oppvekst fra folkeregisteret"
+  } ],
+  "paths" : {
+    "/folkeregister/api/v1/oppvekst/{fiksOrgId}/{rolleId}" : {
+      "post" : {
+        "tags" : [ "oppvekst" ],
+        "description" : "Henter oppvekstuttrekk for angitt fødselsnumre",
+        "operationId" : "getUttrekkOppvekst",
+        "parameters" : [ {
+          "name" : "fiksOrgId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        }, {
+          "name" : "rolleId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/OpprettOppvekstUttrekk"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/PersonDefinisjon"
+                  }
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Ikke tilgang",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components" : {
+    "schemas" : {
+      "AdressenummerDefinisjon" : {
+        "required" : [ "husnummer" ],
+        "type" : "object",
+        "properties" : {
+          "husnummer" : {
+            "type" : "string",
+            "description" : "Husnummer"
+          },
+          "husbokstav" : {
+            "type" : "string",
+            "description" : "Husbokstav"
+          }
+        },
+        "description" : "Adressenummer, inneholder husnummer og husbkstav"
+      },
+      "BostedsadresseDefinisjon" : {
+        "required" : [ "adressegradering" ],
+        "type" : "object",
+        "properties" : {
+          "vegadresse" : {
+            "$ref" : "#/components/schemas/VegadresseDefinisjon"
+          },
+          "adressegradering" : {
+            "type" : "string",
+            "description" : "Beskyttelsesgrad for adresseinformasjon"
+          },
+          "matrikkeladresse" : {
+            "$ref" : "#/components/schemas/MatrikkeladresseDefinisjon"
+          },
+          "ukjentBosted" : {
+            "$ref" : "#/components/schemas/UkjentBostedDefinisjon"
+          },
+          "adresseIdentifikatorFraMatrikkelen" : {
+            "type" : "string",
+            "description" : "Kartverkets matrikkel sin unike identifikator for adressen"
+          },
+          "naerAdresseIdentifikatorFraMatrikkelen" : {
+            "type" : "string",
+            "description" : "Reserve identifikator for Kartverkets matrikkel sin unike identifikator for adressen"
+          },
+          "flyttedato" : {
+            "type" : "string",
+            "description" : "Flyttedato"
+          },
+          "skolekrets" : {
+            "type" : "integer",
+            "description" : "Skolekrets",
+            "format" : "int64"
+          },
+          "grunnkrets" : {
+            "type" : "integer",
+            "description" : "Grunnkrets",
+            "format" : "int64"
+          },
+          "kirkekrets" : {
+            "type" : "integer",
+            "description" : "Kirkekrets",
+            "format" : "int64"
+          },
+          "stemmekrets" : {
+            "type" : "integer",
+            "description" : "Stemmekrets",
+            "format" : "int64"
+          }
+        },
+        "description" : "Bostedsadresse"
+      },
+      "DeltBostedDefinisjon" : {
+        "required" : [ "adressegradering", "startdatoForKontrakt" ],
+        "type" : "object",
+        "properties" : {
+          "adresseIdentifikatorFraMatrikkelen" : {
+            "type" : "string",
+            "description" : "Kartverkets matrikkel sin unike identifikator for adressen"
+          },
+          "adressegradering" : {
+            "type" : "string",
+            "description" : "Beskyttelsesgrad for adresseinformasjon"
+          },
+          "matrikkeladresse" : {
+            "$ref" : "#/components/schemas/MatrikkeladresseDefinisjon"
+          },
+          "naerAdresseIdentifikatorFraMatrikkelen" : {
+            "type" : "string",
+            "description" : "Reserve identifikator for Kartverkets matrikkel sin unike identifikator for adressen"
+          },
+          "sluttdatoForKontrakt" : {
+            "type" : "string",
+            "description" : "Sluttdato for avtalen mellom foreldre angående delt fast bosted for barn"
+          },
+          "startdatoForKontrakt" : {
+            "type" : "string",
+            "description" : "Startdato for avtalen mellom foreldre angående delt fast bosted for barn"
+          },
+          "ukjentBosted" : {
+            "$ref" : "#/components/schemas/UkjentBostedDefinisjon"
+          },
+          "vegadresse" : {
+            "$ref" : "#/components/schemas/VegadresseDefinisjon"
+          }
+        },
+        "description" : "Delt fast bostedsadresse"
+      },
+      "FamilierelasjonDefinisjon" : {
+        "required" : [ "familierelasjonRolle" ],
+        "type" : "object",
+        "properties" : {
+          "familierelasjonPerson" : {
+            "type" : "string",
+            "description" : "Familierelasjonens fødsels- eller d-nummer"
+          },
+          "familierelasjonRolle" : {
+            "type" : "string",
+            "description" : "Familierelasjonens rolle"
+          }
+        },
+        "description" : "Liste av familierelasjoner for personen"
+      },
+      "ForeldreansvarligDefinisjon" : {
+        "required" : [ "ansvar", "identifikasjonsnummer" ],
+        "type" : "object",
+        "properties" : {
+          "ansvar" : {
+            "type" : "string",
+            "description" : "Type foreldreansvar"
+          },
+          "identifikasjonsnummer" : {
+            "$ref" : "#/components/schemas/IdentifikasjonsnummerDefinisjon"
+          },
+          "personstatus" : {
+            "type" : "string",
+            "description" : "Foreldreansvarlig sin status i forhold til tilknytning til Folkeregisteret"
+          },
+          "navn" : {
+            "$ref" : "#/components/schemas/NavnDefinisjon"
+          },
+          "statsborgerskap" : {
+            "type" : "string",
+            "description" : "Statsborgerskap til foreldreansvarlig"
+          },
+          "kjoenn" : {
+            "type" : "string",
+            "description" : "Kjønnet foreldreansvarlig er registrert med"
+          },
+          "adressebeskyttelse" : {
+            "type" : "string",
+            "description" : "Informasjon om gradering av adresseinformasjon"
+          },
+          "bostedsadresse" : {
+            "$ref" : "#/components/schemas/BostedsadresseDefinisjon"
+          },
+          "oppholdsadresse" : {
+            "$ref" : "#/components/schemas/OppholdsadresseDefinisjon"
+          },
+          "postadresse" : {
+            "$ref" : "#/components/schemas/PostadresseDefinisjon"
+          },
+          "foedsel" : {
+            "type" : "string",
+            "description" : "Fødselsdato"
+          }
+        },
+        "description" : "Liste av foreldreansvarlige for personen"
+      },
+      "IdentifikasjonsnummerDefinisjon" : {
+        "required" : [ "foedselsEllerDNummer", "identifikatortype" ],
+        "type" : "object",
+        "properties" : {
+          "foedselsEllerDNummer" : {
+            "type" : "string",
+            "description" : "Fødsels- eller d-nummer"
+          },
+          "identifikatortype" : {
+            "type" : "string",
+            "description" : "Identifikatortype angir hvilken type \"foedselsEllerDNummer\" er"
+          }
+        },
+        "description" : "Identifikator tilknyttet den foreldreasvarlige"
+      },
+      "MatrikkeladresseDefinisjon" : {
+        "required" : [ "matrikkelnummer" ],
+        "type" : "object",
+        "properties" : {
+          "adressetilleggsnavn" : {
+            "type" : "string",
+            "description" : "Nedarvet bruksnavn eller navn på en institusjon eller bygning, brukt som del av den offisielle adressen"
+          },
+          "bruksenhetsnummer" : {
+            "type" : "string",
+            "description" : "En bokstav og fire siffer som entydig identifiserer den enkelte bruksenheten innenfor en adresserbar bygning eller bygningsdel"
+          },
+          "bruksenhetstype" : {
+            "type" : "string",
+            "description" : "Kategorisering av bruksenhet i en bygning"
+          },
+          "coAdressenavn" : {
+            "type" : "string",
+            "description" : "C/O adressenavn"
+          },
+          "matrikkelnummer" : {
+            "$ref" : "#/components/schemas/MatrikkelnummerDefinisjon"
+          },
+          "poststed" : {
+            "$ref" : "#/components/schemas/PoststedDefinisjon"
+          },
+          "undernummer" : {
+            "type" : "integer",
+            "description" : "Brukes ved matrikkeladresser når en grunneiendom må tilknyttes flere ulike adresser",
+            "format" : "int64"
+          }
+        },
+        "description" : "Matrikkeladresse"
+      },
+      "MatrikkelnummerDefinisjon" : {
+        "required" : [ "kommunenummer" ],
+        "type" : "object",
+        "properties" : {
+          "bruksnummer" : {
+            "type" : "integer",
+            "description" : "En del av matrikkelnummeret til en fast eiendom, og er fortløpende nummerering innenfor gårdsnummeret",
+            "format" : "int64"
+          },
+          "festenummer" : {
+            "type" : "integer",
+            "description" : "Del av matrikkelnummeret som identifiserer festegrunn (tomt). Tas i bruk når et bruksnummer skal deles opp i flere grunneiendommer",
+            "format" : "int64"
+          },
+          "gaardsnummer" : {
+            "type" : "integer",
+            "description" : "En del av matrikkelnummeret til en fast eiendom",
+            "format" : "int64"
+          },
+          "kommunenummer" : {
+            "type" : "string",
+            "description" : "Kommunenummer"
+          }
+        },
+        "description" : "Offisiell benevnelse for matrikkelenheten"
+      },
+      "NavnDefinisjon" : {
+        "type" : "object",
+        "properties" : {
+          "fornavn" : {
+            "type" : "string",
+            "description" : "Fornavn"
+          },
+          "mellomnavn" : {
+            "type" : "string",
+            "description" : "Mellomnavn"
+          },
+          "etternavn" : {
+            "type" : "string",
+            "description" : "Etternavn"
+          }
+        },
+        "description" : "Navn på foreldreansvarlig"
+      },
+      "OppholdsadresseDefinisjon" : {
+        "required" : [ "adressegradering" ],
+        "type" : "object",
+        "properties" : {
+          "vegadresse" : {
+            "$ref" : "#/components/schemas/VegadresseDefinisjon"
+          },
+          "adressegradering" : {
+            "type" : "string",
+            "description" : "Beskyttelsesgrad for adresseinformasjon"
+          },
+          "matrikkeladresse" : {
+            "$ref" : "#/components/schemas/MatrikkeladresseDefinisjon"
+          },
+          "adresseIdentifikatorFraMatrikkelen" : {
+            "type" : "string",
+            "description" : "Kartverkets matrikkel sin unike identifikator for adressen"
+          },
+          "utenlandskAdresse" : {
+            "$ref" : "#/components/schemas/UtenlandskAdresseDefinisjon"
+          }
+        },
+        "description" : "Oppholdsadresse"
+      },
+      "PersonDefinisjon" : {
+        "required" : [ "familierelasjoner", "foreldreansvarlige", "identifikasjonsnummer" ],
+        "type" : "object",
+        "properties" : {
+          "identifikasjonsnummer" : {
+            "$ref" : "#/components/schemas/IdentifikasjonsnummerDefinisjon"
+          },
+          "tidligereIdentifikasjonsnummer" : {
+            "$ref" : "#/components/schemas/IdentifikasjonsnummerDefinisjon"
+          },
+          "dufNummer" : {
+            "type" : "string",
+            "description" : "Utlendingsmyndighetenes identifikasjonsnummer"
+          },
+          "foedselsdato" : {
+            "type" : "string",
+            "description" : "Fødselsdato, format: YYYY-MM-DD"
+          },
+          "personstatus" : {
+            "type" : "string",
+            "description" : "Personens status i forhold til tilknytning til Folkeregisteret"
+          },
+          "foreldreansvarstype" : {
+            "type" : "string",
+            "description" : "Hvem som har foreldremyndighet for personen"
+          },
+          "kjoenn" : {
+            "type" : "string",
+            "description" : "Kjønnet personen er registrert med"
+          },
+          "navn" : {
+            "$ref" : "#/components/schemas/NavnDefinisjon"
+          },
+          "statsborgerskap" : {
+            "type" : "string",
+            "description" : "Statsborgerskap til personen"
+          },
+          "adressebeskyttelse" : {
+            "type" : "string",
+            "description" : "Informasjon om gradering av adresseinformasjon"
+          },
+          "bostedsadresse" : {
+            "$ref" : "#/components/schemas/BostedsadresseDefinisjon"
+          },
+          "oppholdsadresse" : {
+            "$ref" : "#/components/schemas/OppholdsadresseDefinisjon"
+          },
+          "deltBosted" : {
+            "$ref" : "#/components/schemas/DeltBostedDefinisjon"
+          },
+          "postadresse" : {
+            "$ref" : "#/components/schemas/PostadresseDefinisjon"
+          },
+          "foreldreansvarlige" : {
+            "type" : "array",
+            "description" : "Liste av foreldreansvarlige for personen",
+            "items" : {
+              "$ref" : "#/components/schemas/ForeldreansvarligDefinisjon"
+            }
+          },
+          "familierelasjoner" : {
+            "type" : "array",
+            "description" : "Liste av familierelasjoner for personen",
+            "items" : {
+              "$ref" : "#/components/schemas/FamilierelasjonDefinisjon"
+            }
+          }
+        }
+      },
+      "PostadresseDefinisjon" : {
+        "required" : [ "adressegradering" ],
+        "type" : "object",
+        "properties" : {
+          "postboksadresse" : {
+            "$ref" : "#/components/schemas/PostboksadresseDefinisjon"
+          },
+          "vegadresseForPost" : {
+            "$ref" : "#/components/schemas/VegadresseForPostDefinisjon"
+          },
+          "frittFormat" : {
+            "$ref" : "#/components/schemas/PostadresseFrittFormatDefinisjon"
+          },
+          "adressegradering" : {
+            "type" : "string",
+            "description" : "Beskyttelsesgrad for adresseinformasjon"
+          },
+          "adresseIdentifikatorFraMatrikkelen" : {
+            "type" : "string",
+            "description" : "Kartverkets matrikkel sin unike identifikator for adressen"
+          }
+        },
+        "description" : "Postadresse"
+      },
+      "PostadresseFrittFormatDefinisjon" : {
+        "type" : "object",
+        "properties" : {
+          "adresselinje" : {
+            "type" : "array",
+            "description" : "En tekstlinje med adresseinformasjon i forenklet adresseformat for postadresse",
+            "items" : {
+              "type" : "string",
+              "description" : "En tekstlinje med adresseinformasjon i forenklet adresseformat for postadresse"
+            }
+          },
+          "poststed" : {
+            "$ref" : "#/components/schemas/PoststedDefinisjon"
+          }
+        },
+        "description" : "Postadresse som er lagret på et ustrukturert format"
+      },
+      "PostboksadresseDefinisjon" : {
+        "required" : [ "postboks" ],
+        "type" : "object",
+        "properties" : {
+          "postbokseier" : {
+            "type" : "string",
+            "description" : "Postbokseier"
+          },
+          "postboks" : {
+            "type" : "string",
+            "description" : "Postboks"
+          },
+          "poststed" : {
+            "$ref" : "#/components/schemas/PoststedDefinisjon"
+          }
+        },
+        "description" : "Postboksadresse, inneholder postbokseier, postboks og poststed"
+      },
+      "PoststedDefinisjon" : {
+        "type" : "object",
+        "properties" : {
+          "poststedsnavn" : {
+            "type" : "string",
+            "description" : "Poststedsnavn"
+          },
+          "postnummer" : {
+            "type" : "string",
+            "description" : "Postnummer"
+          }
+        },
+        "description" : "Poststed, inneholder poststedsnavn og postnummer"
+      },
+      "UkjentBostedDefinisjon" : {
+        "type" : "object",
+        "properties" : {
+          "bostedskommune" : {
+            "type" : "string",
+            "description" : "Bostedskommune hvis kjent"
+          }
+        },
+        "description" : "Informasjon om bosted til personen ikke er fastsatt til en fast bostedskommune"
+      },
+      "UtenlandskAdresseDefinisjon" : {
+        "required" : [ "landkode" ],
+        "type" : "object",
+        "properties" : {
+          "adressenavn" : {
+            "type" : "string",
+            "description" : "Adressenavn"
+          },
+          "boenhet" : {
+            "type" : "string",
+            "description" : "Beskriver hva slags tilholdssted personen er registrert på, samt unik identifikator innen bygningen/etasjen"
+          },
+          "byEllerStedsnavn" : {
+            "type" : "string",
+            "description" : "By- eller stedsnavn"
+          },
+          "bygning" : {
+            "type" : "string",
+            "description" : "Navn og/eller nummer på bygning"
+          },
+          "coAdressenavn" : {
+            "type" : "string",
+            "description" : "C/O adressenavn"
+          },
+          "distriktsnavn" : {
+            "type" : "string",
+            "description" : "Navn på distrikt"
+          },
+          "etasjenummer" : {
+            "type" : "string",
+            "description" : "Etasjenummer"
+          },
+          "landkode" : {
+            "type" : "string",
+            "description" : "Landkode"
+          },
+          "postboks" : {
+            "type" : "string",
+            "description" : "Postboks"
+          },
+          "postkode" : {
+            "type" : "string",
+            "description" : "Postkode"
+          },
+          "region" : {
+            "type" : "string",
+            "description" : "Region"
+          }
+        },
+        "description" : "Adresse som adresserer et sted utenfor Norge"
+      },
+      "VegadresseDefinisjon" : {
+        "required" : [ "kommunenummer" ],
+        "type" : "object",
+        "properties" : {
+          "adressenavn" : {
+            "type" : "string",
+            "description" : "Adressenavn"
+          },
+          "coAdressenavn" : {
+            "type" : "string",
+            "description" : "C/O adressenavn"
+          },
+          "adressenummer" : {
+            "$ref" : "#/components/schemas/AdressenummerDefinisjon"
+          },
+          "poststed" : {
+            "$ref" : "#/components/schemas/PoststedDefinisjon"
+          },
+          "kommunenummer" : {
+            "type" : "string",
+            "description" : "Kommunenummer"
+          },
+          "bruksenhetsnummer" : {
+            "type" : "string",
+            "description" : "En bokstav og fire siffer som entydig identifiserer den enkelte bruksenheten innenfor en adresserbar bygning eller bygningsdel"
+          },
+          "bruksenhetstype" : {
+            "type" : "string",
+            "description" : "Kategorisering av bruksenhet i en bygning"
+          },
+          "adressekode" : {
+            "type" : "string",
+            "description" : "Adressekode"
+          },
+          "adressetilleggsnavn" : {
+            "type" : "string",
+            "description" : "Nedarvet bruksnavn eller navn på en institusjon eller bygning, brukt som del av den offisielle adressen"
+          }
+        },
+        "description" : "Vegadresse"
+      },
+      "VegadresseForPostDefinisjon" : {
+        "required" : [ "adressenavn" ],
+        "type" : "object",
+        "properties" : {
+          "adressenavn" : {
+            "type" : "string",
+            "description" : "Adressenavn"
+          },
+          "coAdressenavn" : {
+            "type" : "string",
+            "description" : "C/O adressenavn"
+          },
+          "adressenummer" : {
+            "$ref" : "#/components/schemas/AdressenummerDefinisjon"
+          },
+          "poststed" : {
+            "$ref" : "#/components/schemas/PoststedDefinisjon"
+          },
+          "adressekode" : {
+            "type" : "string",
+            "description" : "Adressekode"
+          },
+          "adressetilleggsnavn" : {
+            "type" : "string",
+            "description" : "Nedarvet bruksnavn eller navn på en institusjon eller bygning, brukt som del av den offisielle adressen"
+          },
+          "bruksenhetsnummer" : {
+            "type" : "string",
+            "description" : "En bokstav og fire siffer som entydig identifiserer den enkelte bruksenheten innenfor en adresserbar bygning eller bygningsdel"
+          }
+        },
+        "description" : "Vegadresse for post"
+      },
+      "ErrorMessage" : {
+        "type" : "object",
+        "properties" : {
+          "timestamp" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "status" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "error" : {
+            "type" : "string"
+          },
+          "errorId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "path" : {
+            "type" : "string"
+          },
+          "originalPath" : {
+            "type" : "string"
+          },
+          "message" : {
+            "type" : "string"
+          },
+          "errorCode" : {
+            "type" : "string"
+          },
+          "errorJson" : {
+            "type" : "string"
+          }
+        }
+      },
+      "OpprettOppvekstUttrekk" : {
+        "required" : [ "foedselsnumre" ],
+        "type" : "object",
+        "properties" : {
+          "foedselsnumre" : {
+            "maxItems" : 1000,
+            "minItems" : 1,
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,110 @@
+{
+  "openapi" : "3.0.1",
+  "info" : {
+    "title" : "KS Fiks: Mine Kommuner Service",
+    "description" : "Mine kommuner service",
+    "contact" : {
+      "name" : "Fiks-brukerstøtte",
+      "url" : "https://ks-no.github.io/",
+      "email" : "fiks-utvikling@ks.no"
+    },
+    "version" : "v1"
+  },
+  "servers" : [ {
+    "url" : "https://api.fiks.test.ks.no",
+    "description" : "KS Fiks API host",
+    "variables" : { }
+  } ],
+  "tags" : [ {
+    "name" : "mine-kommuner",
+    "description" : "API for henting av kommuner og fylkeskommuner som en bruker har en tilknytning til"
+  } ],
+  "paths" : {
+    "/mine-kommuner/api/v1/kommuner" : {
+      "get" : {
+        "tags" : [ "mine-kommuner" ],
+        "description" : "Henter en liste av kommuner og fylkeskommuner innlogget bruker har en tilknytning til. Fiks organisasjons id til fylkeskommunene er funnet ved å søke opp fylkeskommunenummer som er koblet mot kommunene som er funnet.",
+        "operationId" : "getMineKommuner",
+        "parameters" : [ {
+          "name" : "OnBehalfOf",
+          "in" : "header",
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Liste med organisasjoner som autentisert bruker har tilknytning til",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/TilknyttetKommuneList"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components" : {
+    "schemas" : {
+      "TilknyttetFylkeskommune" : {
+        "type" : "object",
+        "properties" : {
+          "fiksOrganisasjonId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "tilknytninger" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "enum" : [ "TREFF_I_INNSYN" ]
+            }
+          }
+        },
+        "description" : "Informasjon om en fylkeskommune som er tilknyttet en bruker, samt begrunnelse for tilknytningen"
+      },
+      "TilknyttetKommune" : {
+        "type" : "object",
+        "properties" : {
+          "fiksOrganisasjonId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "tilknytninger" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "enum" : [ "TREFF_I_INNSYN" ]
+            }
+          },
+          "fylkeskommuneFiksOrgId" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        },
+        "description" : "Informasjon om en kommune som er tilknyttet en bruker, samt begrunnelse for tilknytningen"
+      },
+      "TilknyttetKommuneList" : {
+        "type" : "object",
+        "properties" : {
+          "kommuner" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/TilknyttetKommune"
+            }
+          },
+          "fylkeskommuner" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/TilknyttetFylkeskommune"
+            }
+          }
+        },
+        "description" : "En liste av kommuner og fylkeskommuner tilknyttet en bruker"
+      }
+    }
+  }
+}

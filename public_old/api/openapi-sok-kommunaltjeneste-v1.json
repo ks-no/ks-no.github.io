@@ -1,0 +1,280 @@
+{
+  "openapi" : "3.0.1",
+  "info" : {
+    "title" : "KS Fiks: Innsyn Kommunale Tjenester søk service",
+    "contact" : {
+      "name" : "Fiks-brukerstøtte",
+      "url" : "https://ks-no.github.io/",
+      "email" : "fiks-utvikling@ks.no"
+    },
+    "version" : "v1"
+  },
+  "servers" : [ {
+    "url" : "https://api.fiks.test.ks.no/"
+  } ],
+  "paths" : {
+    "/innsyn-sok/api/v1/kommunaltjeneste/sok" : {
+      "post" : {
+        "tags" : [ "KommunaltjenesteSok" ],
+        "summary" : "Søk",
+        "operationId" : "kommunaltjenesteSok",
+        "parameters" : [ {
+          "name" : "term",
+          "in" : "query",
+          "description" : "Søkeord",
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "fra",
+          "in" : "query",
+          "description" : "Index for det første søketreffet som skal returneres",
+          "schema" : {
+            "type" : "integer",
+            "format" : "int32",
+            "default" : 0
+          }
+        }, {
+          "name" : "antall",
+          "in" : "query",
+          "description" : "Antall søketreff som skal returneres",
+          "schema" : {
+            "type" : "integer",
+            "format" : "int32",
+            "default" : 50
+          }
+        }, {
+          "name" : "akseptertMeldingVersjon",
+          "in" : "query",
+          "description" : "Akseptert melding-versjon. Kan settes flere ganger. Innsyn vil nedgradere treff på høyere versjon til den høyeste av de aksepterte versjonen (om det er oppgitt flere på samme dokumenttype)",
+          "schema" : {
+            "uniqueItems" : true,
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "enum" : [ "fakturaV1", "saksmappeV1", "journalpostV1", "forsendelseV1", "forsendelseV2", "byggesakV1", "matrikkelenhetV1", "innsendtskjemaV1", "skjemakladdV1", "kommunaltjenesteV1" ]
+            }
+          }
+        }, {
+          "name" : "onBehalfOf",
+          "in" : "query",
+          "description" : "Organisasjonsnummer for organisasjonen dette søket skal utføres på vegne av. Krever at autentisert bruker har rettigheter til å agere på vegne av denne organisasjonen.",
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "requestBody" : {
+          "description" : "Filtere som begrenser resultatsettet",
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/KommunaltjenesteFilter"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "default" : {
+            "description" : "default response",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/KommunaltjenesteSokeresultat"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components" : {
+    "schemas" : {
+      "FiksOrganisasjon" : {
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "visningsnavn" : {
+            "type" : "string"
+          }
+        }
+      },
+      "Forelder" : {
+        "type" : "object",
+        "properties" : {
+          "type" : {
+            "type" : "string",
+            "enum" : [ "faktura", "saksmappe", "journalpost", "byggesak", "innsendtskjema", "skjemakladd", "matrikkelenhet", "kommunaltjeneste", "forsendelse" ]
+          },
+          "dokumentId" : {
+            "type" : "string"
+          }
+        }
+      },
+      "KommunalTjenesteAggregeringer" : {
+        "type" : "object",
+        "properties" : {
+          "kommune" : {
+            "uniqueItems" : true,
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/KommuneAggregering"
+            }
+          }
+        }
+      },
+      "KommunaltjenesteSokeresultat" : {
+        "type" : "object",
+        "properties" : {
+          "antallTreff" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "treffMedHoyereInnloggingsniva" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "treff" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/MeldingV1KommunaltjenesteV1"
+            }
+          },
+          "forespurtFra" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "forespurtAntall" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "aggregeringer" : {
+            "$ref" : "#/components/schemas/KommunalTjenesteAggregeringer"
+          }
+        }
+      },
+      "Kommune" : {
+        "type" : "object",
+        "properties" : {
+          "kommuneFiksOrgId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "visningsnavn" : {
+            "type" : "string"
+          }
+        }
+      },
+      "KommuneAggregering" : {
+        "type" : "object",
+        "properties" : {
+          "kommune" : {
+            "$ref" : "#/components/schemas/Kommune"
+          },
+          "antallTreff" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        }
+      },
+      "MeldingV1KommunaltjenesteV1" : {
+        "type" : "object",
+        "properties" : {
+          "meldingId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "dokumentId" : {
+            "type" : "string"
+          },
+          "sikkerhetsniva" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "fiksOrganisasjon" : {
+            "$ref" : "#/components/schemas/FiksOrganisasjon"
+          },
+          "sorteringDato" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "korrelasjonId" : {
+            "type" : "string"
+          },
+          "forelder" : {
+            "$ref" : "#/components/schemas/Forelder"
+          },
+          "eksternRef" : {
+            "type" : "string"
+          },
+          "meldingMetadata" : {
+            "$ref" : "#/components/schemas/kommunaltjenesteV1"
+          },
+          "score" : {
+            "type" : "number",
+            "format" : "float"
+          }
+        }
+      },
+      "kommunaltjenesteV1" : {
+        "type" : "object",
+        "properties" : {
+          "tjenesteId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "tittel" : {
+            "type" : "string"
+          },
+          "lenke" : {
+            "type" : "string"
+          },
+          "rettetMot" : {
+            "type" : "string",
+            "enum" : [ "PERSON", "ORGANISASJON", "PERSON_OG_ORGANISASJON" ]
+          },
+          "kommuneFiksOrganisasjonId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "kommuneVisningsnavn" : {
+            "type" : "string"
+          },
+          "versjon" : {
+            "type" : "string",
+            "enum" : [ "fakturaV1", "saksmappeV1", "journalpostV1", "forsendelseV1", "forsendelseV2", "byggesakV1", "matrikkelenhetV1", "innsendtskjemaV1", "skjemakladdV1", "kommunaltjenesteV1" ]
+          },
+          "type" : {
+            "type" : "string",
+            "enum" : [ "faktura", "saksmappe", "journalpost", "byggesak", "innsendtskjema", "skjemakladd", "matrikkelenhet", "kommunaltjeneste", "forsendelse" ]
+          }
+        },
+        "description" : "Kommunal tjeneste"
+      },
+      "KommunaltjenesteFilter" : {
+        "type" : "object",
+        "properties" : {
+          "inkluderteKommuneFiksOrgId" : {
+            "uniqueItems" : true,
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "format" : "uuid"
+            }
+          },
+          "ekskluderteKommuneFiksOrgId" : {
+            "uniqueItems" : true,
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "format" : "uuid"
+            }
+          }
+        }
+      }
+    }
+  }
+}

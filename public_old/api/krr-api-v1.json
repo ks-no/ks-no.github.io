@@ -1,0 +1,273 @@
+{
+  "openapi" : "3.0.1",
+  "info" : {
+    "title" : "KS FIKS: KRR Service",
+    "description" : "KRR service",
+    "contact" : {
+      "name" : "Fiks-brukerstøtte",
+      "url" : "https://ks-no.github.io/",
+      "email" : "fiks-utvikling@ks.no"
+    },
+    "version" : "v1"
+  },
+  "servers" : [ {
+    "url" : "https://api.fiks.ks.no",
+    "description" : "KS Fiks API host",
+    "variables" : { }
+  } ],
+  "tags" : [ {
+    "name" : "krr",
+    "description" : "API for henting av data fra kontakt- og reservasjonsregisteret hos Digdir"
+  } ],
+  "paths" : {
+    "/krr/api/krr/person" : {
+      "post" : {
+        "tags" : [ "Kontakt- og reservasjonsregisteret" ],
+        "description" : "Henter kontaktinfo for et fødselsnummer",
+        "operationId" : "kontaktInfoPerson",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/SokRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Kontaktinfo for et fødselsnummer",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Person"
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Ikke tillatt",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/krr/api/krr/personer" : {
+      "post" : {
+        "tags" : [ "Kontakt- og reservasjonsregisteret" ],
+        "description" : "Henter kontakinfo for flere personer basert på fødselsnummer",
+        "operationId" : "kontaktInfoPersonerBulk",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/SokBulkRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Kontaktinfo for liste med fødselsnummer",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/PersonerBulkResponse"
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Ikke tillatt",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/krr/api/krr/me" : {
+      "get" : {
+        "tags" : [ "Kontakt- og reservasjonsregisteret" ],
+        "description" : "Henter informasjon for autentisert bruker",
+        "operationId" : "me",
+        "responses" : {
+          "200" : {
+            "description" : "Personinformasjon for autentisert bruker",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Person"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components" : {
+    "schemas" : {
+      "Epost" : {
+        "type" : "object",
+        "properties" : {
+          "epost" : {
+            "type" : "string"
+          },
+          "sistOppdatert" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "sistVerifisert" : {
+            "type" : "string",
+            "format" : "date-time"
+          }
+        }
+      },
+      "Person" : {
+        "type" : "object",
+        "properties" : {
+          "fnr" : {
+            "type" : "string"
+          },
+          "reservert" : {
+            "type" : "boolean"
+          },
+          "status" : {
+            "type" : "string",
+            "enum" : [ "AKTIV", "SLETTET", "IKKE_REGISTRERT" ]
+          },
+          "kanVarsles" : {
+            "type" : "boolean"
+          },
+          "tlf" : {
+            "$ref" : "#/components/schemas/Tlf"
+          },
+          "epost" : {
+            "$ref" : "#/components/schemas/Epost"
+          },
+          "digitalpostadresse" : {
+            "type" : "string"
+          },
+          "digitalpostkasseleverandoerAdresse" : {
+            "type" : "string"
+          },
+          "sertifikat" : {
+            "type" : "string"
+          }
+        }
+      },
+      "Tlf" : {
+        "type" : "object",
+        "properties" : {
+          "tlf" : {
+            "type" : "string"
+          },
+          "sistOppdatert" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "sistVerifisert" : {
+            "type" : "string",
+            "format" : "date-time"
+          }
+        }
+      },
+      "ErrorMessage" : {
+        "type" : "object",
+        "properties" : {
+          "timestamp" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "status" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "error" : {
+            "type" : "string"
+          },
+          "errorId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "path" : {
+            "type" : "string"
+          },
+          "originalPath" : {
+            "type" : "string"
+          },
+          "message" : {
+            "type" : "string"
+          },
+          "errorCode" : {
+            "type" : "string"
+          },
+          "errorJson" : {
+            "type" : "string"
+          }
+        }
+      },
+      "SokRequest" : {
+        "type" : "object",
+        "properties" : {
+          "fnr" : {
+            "pattern" : "^[0-9]{11}$",
+            "type" : "string",
+            "description" : "Fodselsnummer til sokekandidat"
+          }
+        },
+        "description" : "En forespørsel om å hente personopplysninger"
+      },
+      "PersonerBulkResponse" : {
+        "type" : "object",
+        "properties" : {
+          "personerListe" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Person"
+            }
+          }
+        }
+      },
+      "Fnr" : {
+        "type" : "object",
+        "properties" : {
+          "fnr" : {
+            "pattern" : "^[0-9]{11}$",
+            "type" : "string",
+            "description" : "Fodselsnummer til sokekandidat"
+          }
+        },
+        "description" : "Fnr for forespørsel om å hente personopplysninger for liste med personer"
+      },
+      "SokBulkRequest" : {
+        "type" : "object",
+        "properties" : {
+          "fnrListe" : {
+            "maxItems" : 1000,
+            "minItems" : 1,
+            "type" : "array",
+            "description" : "Liste med fodselsnummer til sokekandidater",
+            "items" : {
+              "$ref" : "#/components/schemas/Fnr"
+            }
+          }
+        },
+        "description" : "En forespørsel om å hente personopplysninger for liste med personer"
+      }
+    }
+  }
+}

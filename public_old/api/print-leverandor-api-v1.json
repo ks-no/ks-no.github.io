@@ -1,0 +1,165 @@
+{
+  "openapi" : "3.0.1",
+  "info" : {
+    "title" : "KS FIKS: Print leverandør service",
+    "description" : "Print leverandør service",
+    "contact" : {
+      "name" : "Fiks brukerstøtte",
+      "url" : "https://www.ks.no/fagomrader/digitalisering/utviklingsprosjekter",
+      "email" : "fiks@ks.no"
+    },
+    "version" : "v1"
+  },
+  "servers" : [ {
+    "url" : "https://api.fiks.ks.no",
+    "description" : "KS Fiks API host",
+    "variables" : { }
+  }, {
+    "url" : "https://api.test.fiks.ks.no",
+    "description" : "KS Fiks TEST API host",
+    "variables" : { }
+  } ],
+  "tags" : [ {
+    "name" : "print-leverandor",
+    "description" : "API for å håndtere funksjonalitet til bruk for printleverandør"
+  } ],
+  "paths" : {
+    "/printleverandor/api/v1/{leverandor}" : {
+      "post" : {
+        "tags" : [ "print-leverandor" ],
+        "description" : "Oppdater status",
+        "operationId" : "oppdaterStatus",
+        "parameters" : [ {
+          "name" : "leverandor",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "enum" : [ "GRAFISK_DIGITAL" ]
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/Oppdateringer"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "default" : {
+            "description" : "default response",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/OppsummeringBatch"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components" : {
+    "schemas" : {
+      "OppsummeringBatch" : {
+        "type" : "object",
+        "properties" : {
+          "antallLevertPostgang" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "antallRapportertKostnad" : {
+            "type" : "integer",
+            "format" : "int32"
+          }
+        }
+      },
+      "JobbOppdatering" : {
+        "required" : [ "type" ],
+        "type" : "object",
+        "properties" : {
+          "type" : {
+            "type" : "string"
+          }
+        },
+        "discriminator" : {
+          "propertyName" : "type"
+        }
+      },
+      "LeveranseRapport" : {
+        "required" : [ "antallSider", "farger", "kostnadPorto", "kostnadProduksjon", "printetDato", "vekt" ],
+        "type" : "object",
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/JobbOppdatering"
+        }, {
+          "type" : "object",
+          "properties" : {
+            "ref" : {
+              "type" : "string",
+              "format" : "uuid"
+            },
+            "kostnadProduksjon" : {
+              "type" : "number"
+            },
+            "kostnadPorto" : {
+              "type" : "number"
+            },
+            "printetDato" : {
+              "type" : "string",
+              "format" : "date"
+            },
+            "antallSider" : {
+              "minimum" : 0,
+              "type" : "integer",
+              "format" : "int32"
+            },
+            "vekt" : {
+              "minimum" : 0,
+              "type" : "integer",
+              "format" : "int32"
+            },
+            "farger" : {
+              "type" : "boolean"
+            }
+          }
+        } ]
+      },
+      "LevertPostgang" : {
+        "required" : [ "levertDato" ],
+        "type" : "object",
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/JobbOppdatering"
+        }, {
+          "type" : "object",
+          "properties" : {
+            "ref" : {
+              "type" : "string",
+              "format" : "uuid"
+            },
+            "levertDato" : {
+              "type" : "string",
+              "format" : "date-time"
+            }
+          }
+        } ]
+      },
+      "Oppdateringer" : {
+        "required" : [ "data" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "maxItems" : 10000,
+            "minItems" : 1,
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/JobbOppdatering"
+            }
+          }
+        }
+      }
+    }
+  }
+}

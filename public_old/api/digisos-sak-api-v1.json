@@ -1,0 +1,418 @@
+{
+  "openapi" : "3.0.1",
+  "info" : {
+    "title" : "KS Fiks: Digisos Service",
+    "description" : "KS Fiks: Digisos Sak Oppdatering Service",
+    "contact" : {
+      "name" : "Fiks brukerstøtte",
+      "url" : "https://ks-no.github.io/",
+      "email" : "fiks@ks.no"
+    },
+    "version" : "v1"
+  },
+  "servers" : [ {
+    "url" : "https://api.fiks.test.ks.no",
+    "description" : "KS Fiks API host",
+    "variables" : { }
+  } ],
+  "tags" : [ {
+    "name" : "DigisosSaksoppdatering",
+    "description" : "API for KS Fiks Digisos Sak oppdatering"
+  } ],
+  "paths" : {
+    "/digisos/api/v1/{fiksOrgId}/{digisosId}/filer" : {
+      "get" : {
+        "tags" : [ "DigisosSaksoppdatering" ],
+        "description" : "Henter filmetadata for angitt Digisos-sak",
+        "operationId" : "hentFiler",
+        "parameters" : [ {
+          "name" : "fiksOrgId",
+          "in" : "path",
+          "description" : "FiksOrgId for kommunen som er tilknyttet saken",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        }, {
+          "name" : "digisosId",
+          "in" : "path",
+          "description" : "Unik DigisosId tilhørende saken",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Beskrivelse av filer tilhørende sak",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/DokumentInfo"
+                  }
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Bruker har ikke tilgang til å hente filmetadata for den oppgitte saken",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Ugyldig data ble oppgitt",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete" : {
+        "tags" : [ "DigisosSaksoppdatering" ],
+        "description" : "Sletter filer for angitt Digisos-sak",
+        "operationId" : "slettFiler",
+        "parameters" : [ {
+          "name" : "fiksOrgId",
+          "in" : "path",
+          "description" : "FiksOrgId for kommunen som er tilknyttet saken",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        }, {
+          "name" : "digisosId",
+          "in" : "path",
+          "description" : "Unik DigisosId tilhørende saken",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        }, {
+          "name" : "filIder",
+          "in" : "query",
+          "description" : "Liste av filer som skal slettes",
+          "required" : true,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "format" : "uuid"
+            }
+          }
+        } ],
+        "responses" : {
+          "204" : {
+            "description" : "Filer ble slettet"
+          },
+          "403" : {
+            "description" : "Bruker har ikke tilgang til å slette filer for den oppgitte saken",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Ugyldig data ble oppgitt",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/digisos/api/v1/{fiksOrgId}/{digisosId}" : {
+      "post" : {
+        "tags" : [ "DigisosSaksoppdatering" ],
+        "description" : "Oppdaterer digisos-soker",
+        "operationId" : "oppdaterSak",
+        "parameters" : [ {
+          "name" : "fiksOrgId",
+          "in" : "path",
+          "description" : "FiksOrgId for kommunen som er tilknyttet saken",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        }, {
+          "name" : "digisosId",
+          "in" : "path",
+          "description" : "Unik DigisosId tilhørende saken",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/DigisosSakApiModel"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "202" : {
+            "description" : "Oppdateringen er akseptert"
+          },
+          "403" : {
+            "description" : "Bruker har ikke tilgang til å oppdatere den oppgitte saken",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Feil i de innsendte data",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete" : {
+        "tags" : [ "DigisosSaksoppdatering" ],
+        "summary" : "Sletter alle saksoppdateringer for angitt Digisos-sak",
+        "description" : "Sletter bare saksoppdateringer, refererte filer fra digisos-soker slettes ikke",
+        "operationId" : "slettSaksoppdateringer",
+        "parameters" : [ {
+          "name" : "fiksOrgId",
+          "in" : "path",
+          "description" : "FiksOrgId for kommunen som er tilknyttet saken",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        }, {
+          "name" : "digisosId",
+          "in" : "path",
+          "description" : "Unik DigisosId tilhørende saken",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "204" : {
+            "description" : "Oppdateringer ble slettet"
+          },
+          "403" : {
+            "description" : "Bruker har ikke tilgang til å slette den oppgitte saken",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Ugyldig data ble oppgitt",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/digisos/api/v1/{fiksOrgId}/ny" : {
+      "post" : {
+        "tags" : [ "DigisosSaksoppdatering" ],
+        "description" : "Oppretter en ny Digisos-sak og returnerer tilhørende DigisosId",
+        "operationId" : "opprettNySak",
+        "parameters" : [ {
+          "name" : "fiksOrgId",
+          "in" : "path",
+          "description" : "FiksOrgId for kommunen som er tilknyttet saken",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        }, {
+          "name" : "sokerFnr",
+          "in" : "query",
+          "description" : "Angir fødselsnummer for opprettet sak",
+          "required" : true,
+          "schema" : {
+            "pattern" : "^[0-9]{11}$",
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Saken ble opprettet",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "string",
+                  "format" : "uuid"
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Bruker har ikke tilgang til å opprette ny sak",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Feil i de innsendte data",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components" : {
+    "schemas" : {
+      "DokumentInfo" : {
+        "type" : "object",
+        "properties" : {
+          "filnavn" : {
+            "type" : "string",
+            "description" : "Logisk navn på fil",
+            "example" : "example.pdf"
+          },
+          "dokumentlagerDokumentId" : {
+            "type" : "string",
+            "description" : "ID på filen i KS Fiks Dokumentlager",
+            "format" : "uuid"
+          },
+          "storrelse" : {
+            "type" : "integer",
+            "description" : "Størrelse på filen (i bytes)",
+            "format" : "int64"
+          }
+        },
+        "description" : "Metadata om en fil"
+      },
+      "ErrorMessage" : {
+        "type" : "object",
+        "properties" : {
+          "timestamp" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "status" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "error" : {
+            "type" : "string"
+          },
+          "errorId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "path" : {
+            "type" : "string"
+          },
+          "originalPath" : {
+            "type" : "string"
+          },
+          "message" : {
+            "type" : "string"
+          },
+          "errorCode" : {
+            "type" : "string"
+          },
+          "errorJson" : {
+            "type" : "string"
+          }
+        }
+      },
+      "DigisosSakApiModel" : {
+        "required" : [ "sak", "type" ],
+        "type" : "object",
+        "properties" : {
+          "sak" : {
+            "$ref" : "#/components/schemas/Sak"
+          },
+          "type" : {
+            "type" : "string",
+            "description" : "Type/versjon på Digisos-sak",
+            "enum" : [ "no.nav.digisos.digisos.soker.v1" ]
+          }
+        },
+        "description" : "Saksoppdatering for søkers innsynsfil"
+      },
+      "Sak" : {
+        "required" : [ "soker" ],
+        "type" : "object",
+        "properties" : {
+          "soker" : {
+            "title" : "Digisos saksoppdatering",
+            "type" : "object",
+            "description" : "Json-data for saksoppdatering, format: https://navikt.github.io/soknadsosialhjelp-filformat/#/data%20fra%20fagsystem/getdigisos_soker_json",
+            "example" : {
+              "version" : "1.0.0",
+              "avsender" : {
+                "systemnavn" : "Testsystemet",
+                "systemversjon" : "1.0.0"
+              },
+              "hendelser" : [ {
+                "type" : "soknadsStatus",
+                "hendelsestidspunkt" : "2018-10-04T13:37:00.134Z",
+                "status" : "MOTTATT"
+              } ]
+            },
+            "externalDocs" : {
+              "description" : "NAV IKT dokumentasjon",
+              "url" : "https://navikt.github.io/soknadsosialhjelp-filformat/#/data%20fra%20fagsystem/getdigisos_soker_json"
+            }
+          }
+        }
+      }
+    }
+  }
+}

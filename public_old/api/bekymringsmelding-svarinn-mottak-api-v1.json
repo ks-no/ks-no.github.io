@@ -1,0 +1,249 @@
+{
+  "openapi" : "3.0.1",
+  "info" : {
+    "title" : "KS FIKS: Bekymringsmelding Svarinn mottak service",
+    "description" : "Bekymringsmelding Svarinn mottak service",
+    "contact" : {
+      "name" : "Fiks brukerstøtte",
+      "url" : "https://ks-no.github.io/",
+      "email" : "fiks-utvikling@ks.no"
+    },
+    "version" : "v1"
+  },
+  "servers" : [ {
+    "url" : "https://api.fiks.ks.no",
+    "description" : "KS Fiks API host",
+    "variables" : { }
+  }, {
+    "url" : "https://api.fiks.test.ks.no",
+    "description" : "KS Fiks API TEST host",
+    "variables" : { }
+  } ],
+  "tags" : [ {
+    "name" : "Bekymringsmelding Svarinn",
+    "description" : "API for å håndtere funksjonalitet vedr. Svarinn mottak i bekymringsmelding"
+  } ],
+  "paths" : {
+    "/bekymringsmelding-svarinn-mottak/api/v1/forsendelse/{forsendelseId}" : {
+      "get" : {
+        "tags" : [ "Bekymringsmelding Svarinn" ],
+        "description" : "Henter bekymringsmelding i PDF-format",
+        "operationId" : "getFil",
+        "parameters" : [ {
+          "name" : "forsendelseId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Returnerer bekymringsmelding i PDF-format",
+            "content" : {
+              "application/octet-stream" : {
+                "schema" : {
+                  "type" : "string",
+                  "format" : "binary"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/bekymringsmelding-svarinn-mottak/api/v1/mottaker/hentNyeForsendelser" : {
+      "get" : {
+        "tags" : [ "Bekymringsmelding Svarinn" ],
+        "description" : "Henter forsendeler som ikke er kvittert ut",
+        "operationId" : "getForsendelser",
+        "responses" : {
+          "200" : {
+            "description" : "Returnerer forsendelser",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/Forsendelse"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/bekymringsmelding-svarinn-mottak/api/v1/mottakFeilet/forsendelse/{forsendelseId}" : {
+      "post" : {
+        "tags" : [ "Bekymringsmelding Svarinn" ],
+        "description" : "Kvitterer ut at en bekymringsmelding har feilet",
+        "operationId" : "postFeilet",
+        "parameters" : [ {
+          "name" : "forsendelseId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "default" : {
+            "description" : "default response",
+            "content" : {
+              "application/json" : { }
+            }
+          }
+        }
+      }
+    },
+    "/bekymringsmelding-svarinn-mottak/api/v1/kvitterMottak/forsendelse/{forsendelseId}" : {
+      "post" : {
+        "tags" : [ "Bekymringsmelding Svarinn" ],
+        "description" : "Kvitterer ut at man har mottatt bekymringsmelding",
+        "operationId" : "postMottatt",
+        "parameters" : [ {
+          "name" : "forsendelseId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "default" : {
+            "description" : "default response",
+            "content" : {
+              "application/json" : { }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components" : {
+    "schemas" : {
+      "Avsender" : {
+        "type" : "object",
+        "properties" : {
+          "adresselinje1" : {
+            "type" : "string"
+          },
+          "adresselinje2" : {
+            "type" : "string"
+          },
+          "adresselinje3" : {
+            "type" : "string"
+          },
+          "navn" : {
+            "type" : "string"
+          },
+          "poststed" : {
+            "type" : "string"
+          },
+          "postnr" : {
+            "type" : "string"
+          }
+        }
+      },
+      "FilMetadata" : {
+        "type" : "object",
+        "properties" : {
+          "filnavn" : {
+            "type" : "string"
+          },
+          "mimetype" : {
+            "type" : "string"
+          },
+          "sha256hash" : {
+            "type" : "string"
+          },
+          "dokumentType" : {
+            "type" : "string"
+          },
+          "size" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        }
+      },
+      "Forsendelse" : {
+        "type" : "object",
+        "properties" : {
+          "avsender" : {
+            "$ref" : "#/components/schemas/Avsender"
+          },
+          "mottaker" : {
+            "$ref" : "#/components/schemas/Mottaker"
+          },
+          "id" : {
+            "type" : "string"
+          },
+          "tittel" : {
+            "type" : "string"
+          },
+          "date" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "serverUrl" : {
+            "type" : "string"
+          },
+          "status" : {
+            "type" : "string"
+          },
+          "niva" : {
+            "type" : "string"
+          },
+          "filmetadata" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/FilMetadata"
+            }
+          },
+          "forsendelseType" : {
+            "type" : "string"
+          },
+          "eksternRef" : {
+            "type" : "string"
+          },
+          "downloadUrl" : {
+            "type" : "string"
+          }
+        }
+      },
+      "Mottaker" : {
+        "type" : "object",
+        "properties" : {
+          "adresse1" : {
+            "type" : "string"
+          },
+          "adresse2" : {
+            "type" : "string"
+          },
+          "adresse3" : {
+            "type" : "string"
+          },
+          "postnr" : {
+            "type" : "string"
+          },
+          "poststed" : {
+            "type" : "string"
+          },
+          "navn" : {
+            "type" : "string"
+          },
+          "land" : {
+            "type" : "string"
+          },
+          "orgnr" : {
+            "type" : "string"
+          },
+          "fnr" : {
+            "type" : "string"
+          }
+        }
+      }
+    }
+  }
+}

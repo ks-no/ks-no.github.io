@@ -1,0 +1,422 @@
+{
+  "openapi" : "3.0.1",
+  "info" : {
+    "title" : "KS Fiks: Fiks IO Katalog service",
+    "description" : "KS Fiks: FIKS IO Katalog Service",
+    "contact" : {
+      "name" : "Fiks brukerst??tte",
+      "url" : "https://www.ks.no/fagomrader/digitalisering/utviklingsprosjekter/",
+      "email" : "fiks@ks.no"
+    },
+    "version" : "v1"
+  },
+  "servers" : [ {
+    "url" : "https://api.fiks.test.ks.no",
+    "description" : "KS Fiks API host",
+    "variables" : { }
+  } ],
+  "tags" : [ {
+    "name" : "FiksIoKatalog",
+    "description" : "API for ?? sl?? opp informasjon fra Fiks IO"
+  } ],
+  "paths" : {
+    "/fiks-io/katalog/api/v1/kontoer/{kontoId}" : {
+      "get" : {
+        "tags" : [ "FiksIoKatalog" ],
+        "description" : "Hent en spesifisert konto basert p?? konto-id",
+        "operationId" : "getKonto",
+        "parameters" : [ {
+          "name" : "kontoId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Konto",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/KatalogKonto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/fiks-io/katalog/api/v1/kontoer/{kontoId}/offentligNokkel" : {
+      "get" : {
+        "tags" : [ "FiksIoKatalog" ],
+        "description" : "Hent offentlig nokkel for en konto",
+        "operationId" : "getOffentligNokkel",
+        "parameters" : [ {
+          "name" : "kontoId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Offentlig n??kkel for konto",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/OffentligNokkel"
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Offentlig n??kkel er ikke satt eller konto finnes ikke"
+          }
+        }
+      }
+    },
+    "/fiks-io/katalog/api/v1/lookup" : {
+      "get" : {
+        "tags" : [ "FiksIoKatalog" ],
+        "description" : "Finner en aktiv konto-id basert p?? parametere.",
+        "operationId" : "lookup",
+        "parameters" : [ {
+          "name" : "identifikator",
+          "in" : "query",
+          "required" : true,
+          "schema" : {
+            "pattern" : "^[A-Z_]+\\.[0-9]+$",
+            "type" : "string"
+          }
+        }, {
+          "name" : "meldingProtokoll",
+          "in" : "query",
+          "required" : true,
+          "schema" : {
+            "pattern" : "^[0-9a-z??????A-Z??????.]+$",
+            "type" : "string"
+          }
+        }, {
+          "name" : "sikkerhetsniva",
+          "in" : "query",
+          "required" : true,
+          "schema" : {
+            "maximum" : 4,
+            "minimum" : 1,
+            "type" : "integer",
+            "format" : "int32"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Konto",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/KatalogKonto"
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Fant ingen konto som samsvarte med de oppgitte parametrene"
+          }
+        }
+      }
+    },
+    "/fiks-io/katalog/api/v1/matchendeAdresser" : {
+      "post" : {
+        "tags" : [ "FiksIoKatalog" ],
+        "description" : "Hent eksisterende adresser som samsvarer med spesifiserte parametere. Tjenesten kan benyttes for ?? verifisere at en adresse ikke overlapper med en annen",
+        "operationId" : "matchendeAdresser",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/AdresseMatchSpesifikasjon"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "viser like adresser",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/AdresseMatch"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/fiks-io/katalog/api/v1/offentligNokkel/verifiser" : {
+      "post" : {
+        "tags" : [ "FiksIoKatalog" ],
+        "description" : "Verifiser at offentlig n??kkel er gyldig",
+        "operationId" : "verifiserOffentligNokkel",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/VerifiserOffentligNokkelSpesifikasjon"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Status for offentlig n??kkel",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/OffentligNokkelStatusApiModel"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/fiks-io/katalog/api/v1/sertifikat/verifiser" : {
+      "post" : {
+        "tags" : [ "FiksIoKatalog" ],
+        "description" : "Verifiser at sertifikat/offentlig n??kkel er gyldig. Kan sende inn b??de P12/PFX- og PEM-format, den offentlige n??kkelen returneres alltid. Passord er bare n??dvendig for P12/PFX",
+        "operationId" : "verifiserSertifikat",
+        "requestBody" : {
+          "content" : {
+            "multipart/form-data" : {
+              "schema" : {
+                "type" : "object",
+                "properties" : {
+                  "file" : {
+                    "$ref" : "#/components/schemas/file"
+                  },
+                  "format" : {
+                    "type" : "string",
+                    "description" : "Formatet p?? sertifikatet som skal bli lastet inn",
+                    "enum" : [ "PEM", "P12" ]
+                  },
+                  "passord" : {
+                    "type" : "string",
+                    "description" : "Passord for ?? laste inn pfx/p12-fil"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Status for offentlig n??kkel",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/OffentligNokkelStatusApiModel"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components" : {
+    "schemas" : {
+      "KatalogKonto" : {
+        "type" : "object",
+        "properties" : {
+          "fiksOrgId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "fiksOrgNavn" : {
+            "type" : "string"
+          },
+          "kontoId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "kontoNavn" : {
+            "type" : "string"
+          },
+          "status" : {
+            "$ref" : "#/components/schemas/KontoStatusApiModel"
+          }
+        }
+      },
+      "KontoStatusApiModel" : {
+        "type" : "object",
+        "properties" : {
+          "gyldigAvsender" : {
+            "type" : "boolean"
+          },
+          "gyldigMottaker" : {
+            "type" : "boolean"
+          },
+          "melding" : {
+            "type" : "string"
+          }
+        }
+      },
+      "OffentligNokkel" : {
+        "type" : "object",
+        "properties" : {
+          "nokkel" : {
+            "type" : "string"
+          },
+          "validFrom" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "validTo" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "serial" : {
+            "type" : "string"
+          },
+          "subjectDN" : {
+            "type" : "string"
+          },
+          "issuerDN" : {
+            "type" : "string"
+          },
+          "isValid" : {
+            "type" : "boolean",
+            "writeOnly" : true
+          },
+          "statusMessage" : {
+            "type" : "string"
+          },
+          "valid" : {
+            "type" : "boolean"
+          }
+        }
+      },
+      "AdresseMatch" : {
+        "type" : "object",
+        "properties" : {
+          "fiksOrgId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "kontoId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "adresseId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "identifikatorMatch" : {
+            "uniqueItems" : true,
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          },
+          "meldingTypeMatch" : {
+            "uniqueItems" : true,
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          },
+          "nivaMatch" : {
+            "uniqueItems" : true,
+            "type" : "array",
+            "items" : {
+              "type" : "integer",
+              "format" : "int32"
+            }
+          }
+        }
+      },
+      "AdresseMatchSpesifikasjon" : {
+        "required" : [ "adresseId", "identifikator", "meldingType", "sikkerhetsnivaer" ],
+        "type" : "object",
+        "properties" : {
+          "adresseId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "identifikator" : {
+            "uniqueItems" : true,
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Identifikator"
+            }
+          },
+          "meldingType" : {
+            "uniqueItems" : true,
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          },
+          "sikkerhetsnivaer" : {
+            "uniqueItems" : true,
+            "type" : "array",
+            "items" : {
+              "type" : "integer",
+              "format" : "int32"
+            }
+          }
+        }
+      },
+      "Identifikator" : {
+        "required" : [ "identifikator", "identifikatorType" ],
+        "type" : "object",
+        "properties" : {
+          "identifikatorType" : {
+            "type" : "string",
+            "enum" : [ "ORG_NO", "NAVENHET_ID" ]
+          },
+          "identifikator" : {
+            "pattern" : "^\\d+$",
+            "type" : "string"
+          }
+        }
+      },
+      "OffentligNokkelStatusApiModel" : {
+        "type" : "object",
+        "properties" : {
+          "gyldig" : {
+            "type" : "boolean"
+          },
+          "melding" : {
+            "type" : "string"
+          },
+          "offentligNokkel" : {
+            "type" : "string"
+          }
+        }
+      },
+      "VerifiserOffentligNokkelSpesifikasjon" : {
+        "required" : [ "pem" ],
+        "type" : "object",
+        "properties" : {
+          "pem" : {
+            "type" : "string"
+          }
+        }
+      },
+      "file" : {
+        "type" : "object",
+        "format" : "binary"
+      }
+    }
+  }
+}

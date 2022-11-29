@@ -1,0 +1,293 @@
+{
+  "openapi" : "3.0.1",
+  "info" : {
+    "title" : "KS FIKS: Grafisk Digital Integrasjon",
+    "description" : "Print Grafisk Digital service",
+    "contact" : {
+      "name" : "Fiks brukerstøtte",
+      "url" : "https://www.ks.no/fagomrader/digitalisering/utviklingsprosjekter",
+      "email" : "fiks@ks.no"
+    },
+    "version" : "v1"
+  },
+  "servers" : [ {
+    "url" : "https://api.fiks.ks.no",
+    "description" : "KS Fiks API host",
+    "variables" : { }
+  }, {
+    "url" : "https://api.test.fiks.ks.no",
+    "description" : "KS Fiks TEST API host",
+    "variables" : { }
+  } ],
+  "tags" : [ {
+    "name" : "GrafiskDigital",
+    "description" : "API for å sending av post til printleverandør"
+  } ],
+  "paths" : {
+    "/print/grafiskdigital/api/v1/ordrer/{ordreId}" : {
+      "put" : {
+        "tags" : [ "GrafiskDigital" ],
+        "operationId" : "createGrafiskDigitalPrintOrdre",
+        "parameters" : [ {
+          "name" : "ordreId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/GrafiskDigitalOrdreApiModel"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "201" : {
+            "description" : "Alt ok",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/OpplastetGrafiskDigital"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/print/grafiskdigital/api/v1/offentlignokkel" : {
+      "get" : {
+        "tags" : [ "GrafiskDigital" ],
+        "description" : "Henter offentlig nøkkel fra Grafisk Digital",
+        "operationId" : "getGrafiskDigitalOffentligNokkel",
+        "responses" : {
+          "200" : {
+            "description" : "Offentlig nøkkel fra Grafisk Digital",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/OffentligNokkelApiModel"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/print/grafiskdigital/api/v1/importer-loggfiler" : {
+      "post" : {
+        "tags" : [ "GrafiskDigital" ],
+        "description" : "Importerer loggfiler fra Grafisk Digital",
+        "operationId" : "importerLoggfiler",
+        "responses" : {
+          "200" : {
+            "description" : "Loggfiler fra Grafisk Digital fullført",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/LoggStatusApiModel"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/print/grafiskdigital/api/v1/fakturakonfigurasjon" : {
+      "put" : {
+        "tags" : [ "GrafiskDigital" ],
+        "operationId" : "uploadFakturakonfigurasjon",
+        "responses" : {
+          "200" : {
+            "description" : "Alt ok"
+          }
+        }
+      }
+    }
+  },
+  "components" : {
+    "schemas" : {
+      "OpplastetGrafiskDigital" : {
+        "type" : "object",
+        "properties" : {
+          "forsideFil" : {
+            "type" : "string"
+          },
+          "dokument" : {
+            "type" : "string"
+          }
+        }
+      },
+      "AdresseApiModel" : {
+        "required" : [ "adresseLinje1", "navn", "poststed" ],
+        "type" : "object",
+        "properties" : {
+          "navn" : {
+            "type" : "string"
+          },
+          "adresseLinje1" : {
+            "type" : "string"
+          },
+          "adresseLinje2" : {
+            "type" : "string"
+          },
+          "adresseLinje3" : {
+            "type" : "string"
+          },
+          "postnummer" : {
+            "pattern" : "^[0-9]{4}$|^$",
+            "type" : "string"
+          },
+          "poststed" : {
+            "type" : "string"
+          },
+          "landKode" : {
+            "type" : "string"
+          }
+        }
+      },
+      "FakturaDataApiModel" : {
+        "required" : [ "fiksOrgId" ],
+        "type" : "object",
+        "properties" : {
+          "fiksOrgId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "konteringskode" : {
+            "type" : "string"
+          }
+        }
+      },
+      "FeltApiModel" : {
+        "type" : "object",
+        "properties" : {
+          "tittel" : {
+            "type" : "string"
+          },
+          "tekst" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          }
+        }
+      },
+      "ForsideDataApiModel" : {
+        "type" : "object",
+        "properties" : {
+          "felt" : {
+            "$ref" : "#/components/schemas/FeltApiModel"
+          }
+        }
+      },
+      "GrafiskDigitalOrdreApiModel" : {
+        "required" : [ "dokumentRef", "fakturaData", "mottakerAdresse", "ordreId", "printData" ],
+        "type" : "object",
+        "properties" : {
+          "ordreId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "dokumentRef" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "mottakerAdresse" : {
+            "$ref" : "#/components/schemas/AdresseApiModel"
+          },
+          "avsenderAdresse" : {
+            "$ref" : "#/components/schemas/AdresseApiModel"
+          },
+          "fakturaData" : {
+            "$ref" : "#/components/schemas/FakturaDataApiModel"
+          },
+          "printData" : {
+            "$ref" : "#/components/schemas/PrintDataApiModel"
+          },
+          "forsideData" : {
+            "$ref" : "#/components/schemas/ForsideDataApiModel"
+          }
+        }
+      },
+      "PrintDataApiModel" : {
+        "required" : [ "konfidensialitetsklasse", "svartHvitt", "tosidig" ],
+        "type" : "object",
+        "properties" : {
+          "svartHvitt" : {
+            "type" : "boolean"
+          },
+          "tosidig" : {
+            "type" : "boolean"
+          },
+          "konfidensialitetsklasse" : {
+            "type" : "string",
+            "enum" : [ "NORMAL", "UNNTATT_OFFENTLIGHETEN" ]
+          }
+        }
+      },
+      "OffentligNokkelApiModel" : {
+        "required" : [ "issuerDN", "nokkel", "serial", "subjectDN", "validFrom", "validTo" ],
+        "type" : "object",
+        "properties" : {
+          "nokkel" : {
+            "type" : "string"
+          },
+          "validFrom" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "validTo" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "serial" : {
+            "type" : "string"
+          },
+          "subjectDN" : {
+            "type" : "string"
+          },
+          "issuerDN" : {
+            "type" : "string"
+          }
+        }
+      },
+      "LoggStatusApiModel" : {
+        "required" : [ "loggfilerFeilet", "loggfilerOk", "statusfilerFeilet", "statusfilerOk" ],
+        "type" : "object",
+        "properties" : {
+          "loggfilerOk" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          },
+          "loggfilerFeilet" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          },
+          "statusfilerOk" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          },
+          "statusfilerFeilet" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          }
+        }
+      }
+    }
+  }
+}

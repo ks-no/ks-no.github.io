@@ -1,1 +1,1 @@
-# ks-no.github.io
+# Teknisk dokumentasjon

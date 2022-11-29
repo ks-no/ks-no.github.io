@@ -1,0 +1,495 @@
+{
+  "openapi" : "3.0.1",
+  "info" : {
+    "title" : "KS FIKS: Print admin service",
+    "description" : "Print admin service",
+    "contact" : {
+      "name" : "Fiks brukerstøtte",
+      "url" : "https://www.ks.no/fagomrader/digitalisering/utviklingsprosjekter",
+      "email" : "fiks@ks.no"
+    },
+    "version" : "v1"
+  },
+  "servers" : [ {
+    "url" : "https://api.fiks.ks.no",
+    "description" : "KS Fiks API host",
+    "variables" : { }
+  }, {
+    "url" : "https://api.test.fiks.ks.no",
+    "description" : "KS Fiks TEST API host",
+    "variables" : { }
+  } ],
+  "tags" : [ {
+    "name" : "printadmin",
+    "description" : "API for å håndtere funksjonalitet til bruk for admingrensesnitt"
+  } ],
+  "paths" : {
+    "/printadmin/api/v1/jobber" : {
+      "get" : {
+        "tags" : [ "printadmin" ],
+        "operationId" : "hentJobber",
+        "parameters" : [ {
+          "name" : "fiksOrgId",
+          "in" : "query",
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        }, {
+          "name" : "avsenderKonto",
+          "in" : "query",
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        }, {
+          "name" : "periodeFra",
+          "in" : "query",
+          "schema" : {
+            "type" : "string",
+            "format" : "date"
+          }
+        }, {
+          "name" : "periodeTil",
+          "in" : "query",
+          "schema" : {
+            "type" : "string",
+            "format" : "date"
+          }
+        }, {
+          "name" : "bareAdvarsel",
+          "in" : "query",
+          "schema" : {
+            "type" : "boolean"
+          }
+        }, {
+          "name" : "status",
+          "in" : "query",
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "enum" : [ "Akseptert", "LevertLeverandor", "LevertPostgang", "Avbrutt" ]
+            }
+          }
+        }, {
+          "name" : "side",
+          "in" : "query",
+          "schema" : {
+            "minimum" : 1,
+            "type" : "integer",
+            "format" : "int64",
+            "default" : 1
+          }
+        }, {
+          "name" : "maksPerSide",
+          "in" : "query",
+          "schema" : {
+            "minimum" : 1,
+            "type" : "integer",
+            "format" : "int64",
+            "default" : 10000
+          }
+        }, {
+          "name" : "sortering",
+          "in" : "query",
+          "schema" : {
+            "type" : "string",
+            "enum" : [ "OPPRETTET_FALLENDE", "STATUS_FALLENDE", "AVSENDER_FALLENDE", "OPPRETTET_STIGENDE", "STATUS_STIGENDE", "AVSENDER_STIGENDE" ],
+            "default" : "OPPRETTET_FALLENDE"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Ok",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/TreffListe"
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Ingen tilgang",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post" : {
+        "tags" : [ "printadmin" ],
+        "description" : "Bulk oppdatering som krever ROOT admin",
+        "operationId" : "bulkOppdatering",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/BulkOppdatering"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Ok",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/BulkOppdateringOppsummering"
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Ikke ROOT admin",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/printadmin/api/v1/jobber/{fiksOrgId}" : {
+      "post" : {
+        "tags" : [ "printadmin" ],
+        "description" : "Bulk oppdatering som krever fiksorg admin",
+        "operationId" : "bulkOppdateringFiksOrgId",
+        "parameters" : [ {
+          "name" : "fiksOrgId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/BulkOppdatering"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Ok",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/BulkOppdateringOppsummering"
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Ikke fiksOrgId admin",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/printadmin/api/v1/jobber/{avsenderKonto}/{ref}" : {
+      "get" : {
+        "tags" : [ "printadmin" ],
+        "operationId" : "hentEnkeltJobb",
+        "parameters" : [ {
+          "name" : "avsenderKonto",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        }, {
+          "name" : "ref",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Ok",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/JobbBeskrivelse"
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Ingen tilgang",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Ikke funnet",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components" : {
+    "schemas" : {
+      "BulkOppdateringOppsummering" : {
+        "type" : "object",
+        "properties" : {
+          "antallAvbrutt" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "antallSattLevert" : {
+            "type" : "integer",
+            "format" : "int32"
+          }
+        }
+      },
+      "ErrorMessage" : {
+        "type" : "object",
+        "properties" : {
+          "timestamp" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "status" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "error" : {
+            "type" : "string"
+          },
+          "errorId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "path" : {
+            "type" : "string"
+          },
+          "originalPath" : {
+            "type" : "string"
+          },
+          "message" : {
+            "type" : "string"
+          },
+          "errorCode" : {
+            "type" : "string"
+          },
+          "errorJson" : {
+            "type" : "string"
+          }
+        }
+      },
+      "AvbrytJobb" : {
+        "required" : [ "eksternRef" ],
+        "type" : "object",
+        "properties" : {
+          "eksternRef" : {
+            "$ref" : "#/components/schemas/EksternRef"
+          },
+          "arsak" : {
+            "type" : "string"
+          },
+          "korruptFil" : {
+            "type" : "boolean"
+          }
+        },
+        "description" : "Operasjon for å avbryte en gitt jobb"
+      },
+      "BulkOppdatering" : {
+        "type" : "object",
+        "properties" : {
+          "avbryt" : {
+            "maxItems" : 10000,
+            "minItems" : 0,
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/AvbrytJobb"
+            }
+          },
+          "settLevert" : {
+            "maxItems" : 10000,
+            "minItems" : 0,
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/SettLevert"
+            }
+          }
+        },
+        "description" : "En bulk oppdatering av print jobber"
+      },
+      "EksternRef" : {
+        "type" : "object",
+        "properties" : {
+          "ref" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "avsenderKonto" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        }
+      },
+      "SettLevert" : {
+        "required" : [ "bekreftetLevert", "eksternRef" ],
+        "type" : "object",
+        "properties" : {
+          "eksternRef" : {
+            "$ref" : "#/components/schemas/EksternRef"
+          },
+          "arsak" : {
+            "type" : "string"
+          },
+          "bekreftetLevert" : {
+            "type" : "boolean"
+          }
+        },
+        "description" : "Operasjon for å sette en jobb som manuelt levert"
+      },
+      "Hendelselogg" : {
+        "type" : "object",
+        "properties" : {
+          "hendelser" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/LoggetHendelse"
+            }
+          }
+        }
+      },
+      "JobbBeskrivelse" : {
+        "type" : "object",
+        "properties" : {
+          "eksternRef" : {
+            "$ref" : "#/components/schemas/EksternRef"
+          },
+          "status" : {
+            "type" : "string",
+            "enum" : [ "Akseptert", "LevertLeverandor", "LevertPostgang", "Avbrutt" ]
+          },
+          "mottatt" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "oppdatert" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "fiksOrgId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "navnFiksOrg" : {
+            "type" : "string"
+          },
+          "navnAvsenderKonto" : {
+            "type" : "string"
+          },
+          "advarsel" : {
+            "type" : "boolean"
+          },
+          "hendelselogg" : {
+            "$ref" : "#/components/schemas/Hendelselogg"
+          }
+        }
+      },
+      "LoggetHendelse" : {
+        "type" : "object",
+        "properties" : {
+          "tidspunkt" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "beskrivelse" : {
+            "type" : "string"
+          }
+        }
+      },
+      "JobbTreff" : {
+        "type" : "object",
+        "properties" : {
+          "eksternRef" : {
+            "$ref" : "#/components/schemas/EksternRef"
+          },
+          "status" : {
+            "type" : "string",
+            "enum" : [ "Akseptert", "LevertLeverandor", "LevertPostgang", "Avbrutt" ]
+          },
+          "mottatt" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "oppdatert" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "fiksOrgId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "navnFiksOrg" : {
+            "type" : "string"
+          },
+          "navnAvsenderKonto" : {
+            "type" : "string"
+          },
+          "advarsel" : {
+            "type" : "boolean"
+          }
+        }
+      },
+      "TreffListe" : {
+        "type" : "object",
+        "properties" : {
+          "fra" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "totaltAntallTreff" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "treff" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/JobbTreff"
+            }
+          }
+        }
+      }
+    }
+  }
+}

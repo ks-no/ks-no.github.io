@@ -1,0 +1,227 @@
+{
+  "openapi" : "3.0.1",
+  "info" : {
+    "title" : "KS Fiks: Sysvak",
+    "contact" : {
+      "name" : "Fiks brukerstøtte",
+      "url" : "https://ks-no.github.io/",
+      "email" : "fiks-utvikling@ks.no"
+    },
+    "version" : "v1"
+  },
+  "servers" : [ {
+    "url" : "https://api.fiks.ks.no",
+    "description" : "KS Fiks API host",
+    "variables" : { }
+  }, {
+    "url" : "https://api.test.fiks.ks.no",
+    "description" : "KS Fiks TEST API host",
+    "variables" : { }
+  } ],
+  "tags" : [ {
+    "name" : "Sysvak",
+    "description" : "API for å hente vaksinasjonsliste fra FHI MSIS"
+  } ],
+  "paths" : {
+    "/sysvak/api/v1/hentVaksiner" : {
+      "post" : {
+        "tags" : [ "Sysvak" ],
+        "description" : "Kan hente vaksinasjonsstatus for personer",
+        "operationId" : "hentVaksiner",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/ImmunizationRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/SysvakResponse"
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Ikke autentisert",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Ikke tilgang",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Feil input",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "En serverfeil",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "502" : {
+            "description" : "Et problem med kall mot FHI",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components" : {
+    "schemas" : {
+      "CodeObject" : {
+        "type" : "object",
+        "properties" : {
+          "system" : {
+            "type" : "string"
+          },
+          "code" : {
+            "type" : "string"
+          },
+          "display" : {
+            "type" : "string"
+          }
+        }
+      },
+      "Immunization" : {
+        "type" : "object",
+        "properties" : {
+          "vaccinationDate" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "vaccineCode" : {
+            "$ref" : "#/components/schemas/CodeObject"
+          },
+          "atcCode" : {
+            "type" : "string"
+          },
+          "lotNumber" : {
+            "type" : "string"
+          },
+          "preparation" : {
+            "$ref" : "#/components/schemas/CodeObject"
+          },
+          "indication" : {
+            "$ref" : "#/components/schemas/CodeObject"
+          }
+        }
+      },
+      "SysvakResponse" : {
+        "type" : "object",
+        "properties" : {
+          "patientNin" : {
+            "type" : "string"
+          },
+          "status" : {
+            "type" : "string"
+          },
+          "immunizations" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Immunization"
+            }
+          }
+        }
+      },
+      "ErrorMessage" : {
+        "type" : "object",
+        "properties" : {
+          "timestamp" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "status" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "error" : {
+            "type" : "string"
+          },
+          "errorId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "path" : {
+            "type" : "string"
+          },
+          "originalPath" : {
+            "type" : "string"
+          },
+          "message" : {
+            "type" : "string"
+          },
+          "errorCode" : {
+            "type" : "string"
+          },
+          "errorJson" : {
+            "type" : "string"
+          }
+        }
+      },
+      "ImmunizationRequest" : {
+        "required" : [ "kommunenr", "name", "orgName", "orgnr", "patientNin" ],
+        "type" : "object",
+        "properties" : {
+          "patientNin" : {
+            "type" : "string"
+          },
+          "hprnr" : {
+            "type" : "string"
+          },
+          "fnrSaksbehandler" : {
+            "type" : "string"
+          },
+          "name" : {
+            "type" : "string"
+          },
+          "orgnr" : {
+            "type" : "string"
+          },
+          "orgName" : {
+            "type" : "string"
+          },
+          "kommunenr" : {
+            "type" : "string"
+          }
+        }
+      }
+    }
+  }
+}

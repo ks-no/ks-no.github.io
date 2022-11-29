@@ -1,0 +1,529 @@
+openapi: 3.0.0
+info:
+  title: 'KS HR Data API'
+  contact:
+    name: 'Catalyst IT'
+    url: 'https://www.catalyst-eu.net'
+    email: ks@catalyst-eu.net
+  version: '3.0'
+paths:
+  /v3/authority:
+    get:
+      tags:
+        - Authority
+      description: 'This endpoint provides data about the data providing Authority and the data it provides. It does not require date parameters and must not return changes.'
+      operationId: 'App\Controller\API3Controller::authority'
+      responses:
+        '200':
+          description: 'Authority Data'
+        '400':
+          description: 'Invalid Request'
+  /v3/organisation:
+    get:
+      tags:
+        - Organisation
+      description: 'Organisations represent organisations, companies, teams and other business units in the hierarchy. Their unique ID is Organisation Unit ID which must be unique within all the Organisations in your data set. Their position in the hierarchy is set by providing a Parent Organisation Unit ID. There can be only one Parent Organisation for each Organisation supplied.'
+      operationId: 'App\Controller\API3Controller::organisation'
+      parameters:
+        -
+          name: fromDate
+          in: query
+          description: 'From date: Should be in RFC 3339 format e.g. 2019-04-12T23:20:50Z'
+          required: false
+          schema:
+            type: string
+            format: date-time
+        -
+          name: toDate
+          in: query
+          description: 'To date: Should be in RFC 3339 format e.g. 2019-08-16T23:00:50Z'
+          required: false
+          schema:
+            type: string
+            format: date-time
+      responses:
+        '200':
+          description: 'Organisation Data'
+        '400':
+          description: 'Invalid Request'
+  /v3/person:
+    get:
+      tags:
+        - Person
+      description: 'People represent individual people who need to be represented in the hierarchy. Their unique ID is National ID Number. They can be an employee in multiple Organisations. They can be associated with Organisations using Employee Positions and Employee Taxonomies.'
+      operationId: 'App\Controller\API3Controller::person'
+      parameters:
+        -
+          name: fromDate
+          in: query
+          description: 'From date: Should be in RFC 3339 format e.g. 2019-04-12T23:20:50Z'
+          required: false
+          schema:
+            type: string
+            format: date-time
+        -
+          name: toDate
+          in: query
+          description: 'To date: Should be in RFC 3339 format e.g. 2019-08-16T23:00:50Z'
+          required: false
+          schema:
+            type: string
+            format: date-time
+      responses:
+        '200':
+          description: 'Person Data'
+        '400':
+          description: 'Invalid Request'
+  /v3/venue:
+    get:
+      tags:
+        - Venue
+      description: 'Venues represent venues, meeting rooms and other locations an Event may occur. Their unique ID is Venue ID which must be unique within all the Venues in your Authority. Their position in the hierarchy is set by providing a Organisation Unit ID for the Organisation the Venue is associated with. There will be only one Parent Organisation for each Venue supplied.'
+      operationId: 'App\Controller\API3Controller::venue'
+      parameters:
+        -
+          name: fromDate
+          in: query
+          description: 'From date: Should be in RFC 3339 format e.g. 2019-04-12T23:20:50Z'
+          required: false
+          schema:
+            type: string
+            format: date-time
+        -
+          name: toDate
+          in: query
+          description: 'To date: Should be in RFC 3339 format e.g. 2019-08-16T23:00:50Z'
+          required: false
+          schema:
+            type: string
+            format: date-time
+      responses:
+        '200':
+          description: 'Venue Data'
+        '400':
+          description: 'Invalid Request'
+  /v3/employee_position:
+    get:
+      tags:
+        - 'Employee Position'
+      description: 'Employee Positions represent the formal relationships between People and Organisations. They could be seen as a representation of an Person’s role within an Organisation. They are uniquely identified by combining org_id and national_id. Where either of these fields change it is assumed a new Employee Position is being referenced. People can have multiple Employee Positions in one or multiple Organisations.'
+      operationId: 'App\Controller\API3Controller::employeePosition'
+      parameters:
+        -
+          name: fromDate
+          in: query
+          description: 'From date: Should be in RFC 3339 format e.g. 2019-04-12T23:20:50Z'
+          required: false
+          schema:
+            type: string
+            format: date-time
+        -
+          name: toDate
+          in: query
+          description: 'To date: Should be in RFC 3339 format e.g. 2019-08-16T23:00:50Z'
+          required: false
+          schema:
+            type: string
+            format: date-time
+      responses:
+        '200':
+          description: 'Employee Position Data'
+        '400':
+          description: 'Invalid Request'
+  /v3/employee_taxonomy:
+    get:
+      tags:
+        - 'Employee Taxonomy'
+      description: 'Employee Taxonomies represent the informal relationships between People and Organisations. They are a way of “tagging” People with attributes in relation to Organisations. The taxon string can be anything that has meaning for your Organisation. People can have multiple Employee Taxonomies in one or multiple Organisations.'
+      operationId: 'App\Controller\API3Controller::employeeTaxonomy'
+      parameters:
+        -
+          name: fromDate
+          in: query
+          description: 'From date: Should be in RFC 3339 format e.g. 2019-04-12T23:20:50Z'
+          required: false
+          schema:
+            type: string
+            format: date-time
+        -
+          name: toDate
+          in: query
+          description: 'To date: Should be in RFC 3339 format e.g. 2019-08-16T23:00:50Z'
+          required: false
+          schema:
+            type: string
+            format: date-time
+      responses:
+        '200':
+          description: 'Employee Taxonomy Data'
+        '400':
+          description: 'Invalid Request'
+components:
+  schemas:
+    Authority:
+      title: Authority
+      properties:
+        name:
+          description: 'Authority Name. The name of your Authority. This will most likely be your kommune or fylkeskommune name.'
+          type: string
+        version:
+          description: 'API Version. The version of KS HR Data API data you are providing.'
+          type: string
+        email:
+          description: 'Email Address. An email address that will receive reports and other information about data import tasks.'
+          type: string
+      type: object
+    EmployeePositionChange:
+      title: 'Employee Position'
+      properties:
+        changeType:
+          description: 'Change type can be one of these: ''add'', ''delete'' or ''modify''.'
+          type: string
+        changeDate:
+          description: 'Date and time that the change occurred. This should be in RFC 3339 format.'
+          type: string
+        newRecord:
+          description: 'Contains the data relating to the entity after the change. This should only be provided for changeTypes: add and modify.'
+          properties:
+            org_id:
+              description: 'Organisation Unit ID. Organisation Unit ID of the Organisation this Employee Position is associated with.'
+              type: string
+            national_id:
+              description: 'National ID Number. Norwegian National ID Number or D Number of the Person associated with this position.'
+              type: string
+            position_name:
+              description: 'Position Name. The name of the Employee’s position or role within the given Organisation.'
+              type: string
+            position_code:
+              description: 'Position Code. The code associated with the Employee’s position within the given Organisation.'
+              type: string
+            external_id:
+              description: 'External ID. This is the ID or code associated with this position used by your HR or finance system. This will be used for debugging the import of Employee data in future enhancements of the KS Laring platform.'
+              type: string
+            email:
+              description: 'Employee’s email address. This is the email address associated with this Person’s position within the given Organisation. It is anticipated this email address will be used in future enhancements to the KS Laring platform.'
+              type: string
+            main:
+              description: 'Is the employee’s main position? A Person can only have one main position on KS Laring. If a main position has already been set this field will be ignored.'
+              type: boolean
+            manager:
+              description: 'Is this a Manager Position? Setting this to true will allow this Employee to carry out administrative tasks on the associated Organisation’s data, reports and invoices.'
+              type: boolean
+            reporter:
+              description: 'Is this a Reporter Position? Setting this to true will allow this Employee to view the data, invoices and reports relating to the associated Organisation.'
+              type: boolean
+          type: object
+        oldRecord:
+          description: 'Contains the data relating to the entity prior to the change. This should only be provided for changeTypes: delete and modify.'
+          properties:
+            org_id:
+              description: 'Organisation Unit ID. Organisation Unit ID of the Organisation this Employee Position is associated with.'
+              type: string
+            national_id:
+              description: 'National ID Number. Norwegian National ID Number or D Number of the Person associated with this position.'
+              type: string
+            position_name:
+              description: 'Position Name. The name of the Employee’s position or role within the given Organisation.'
+              type: string
+            position_code:
+              description: 'Position Code. The code associated with the Employee’s position within the given Organisation.'
+              type: string
+            external_id:
+              description: 'External ID. This is the ID or code associated with this position used by your HR or finance system. This will be used for debugging the import of Employee data in future enhancements of the KS Laring platform.'
+              type: string
+            email:
+              description: 'Employee’s email address. This is the email address associated with this Person’s position within the given Organisation. It is anticipated this email address will be used in future enhancements to the KS Laring platform.'
+              type: string
+            main:
+              description: 'Is the employee’s main position? A Person can only have one main position on KS Laring. If a main position has already been set this field will be ignored.'
+              type: boolean
+            manager:
+              description: 'Is this a Manager Position? Setting this to true will allow this Employee to carry out administrative tasks on the associated Organisation’s data, reports and invoices.'
+              type: boolean
+            reporter:
+              description: 'Is this a Reporter Position? Setting this to true will allow this Employee to view the data, invoices and reports relating to the associated Organisation.'
+              type: boolean
+          type: object
+      type: object
+    EmployeeTaxonomyChange:
+      title: 'Employee Taxonomy'
+      properties:
+        changeType:
+          description: 'Change type can be one of these: ''add'', ''delete'' or ''modify''.'
+          type: string
+        changeDate:
+          description: 'Date and time that the change occurred. This should be in RFC 3339 format.'
+          type: string
+        newRecord:
+          description: 'Contains the data relating to the entity after the change. This should only be provided for changeTypes: add and modify.'
+          properties:
+            org_id:
+              description: 'Organisation Unit ID. Organisation Unit ID of the Organisation this Taxonomy is associated with.'
+              type: string
+            national_id:
+              description: 'National ID Number. Norwegian National ID Number of the Person this Taxonomy is associated with.'
+              type: string
+            taxon:
+              description: 'Taxon text. String to associate with this Person and Organisation.'
+              type: string
+          type: object
+        oldRecord:
+          description: 'Contains the data relating to the entity prior to the change. This should only be provided for changeTypes: delete and modify.'
+          properties:
+            org_id:
+              description: 'Organisation Unit ID. Organisation Unit ID of the Organisation this Taxonomy is associated with.'
+              type: string
+            national_id:
+              description: 'National ID Number. Norwegian National ID Number of the Person this Taxonomy is associated with.'
+              type: string
+            taxon:
+              description: 'Taxon text. String to associate with this Person and Organisation.'
+              type: string
+          type: object
+      type: object
+    OrganisationChange:
+      title: Organisation
+      properties:
+        changeType:
+          description: 'Change type can be one of these: ''add'', ''delete'' or ''modify''.'
+          type: string
+        changeDate:
+          description: 'Date and time that the change occurred. This should be in RFC 3339 format.'
+          type: string
+        newRecord:
+          description: 'Contains the data relating to the entity after the change. This should only be provided for changeTypes: add and modify.'
+          properties:
+            id:
+              description: 'Organisation ID. The ID or Organisation Unit ID should be unique within all the Organisations in your Authority.'
+              type: string
+            name:
+              description: 'Organisation Name. The name of this Organisation.'
+              type: string
+            parent:
+              description: 'Parent Organisation ID. The ID or Organisation Unit ID of the parent Organisation of this Organisation. If set to null or omitted the Organisation will be placed at the root of your hierarchy, otherwise it will be placed as a child of this Organisation.'
+              type: string
+            external_id:
+              description: 'External ID. The id or code for this Organisation used by your HR or finance system. This will be used for debugging the import of Organisation data in future enhancements of the KS Laring platform.'
+              type: string
+            address_1:
+              description: 'Address line 1. First line of this Organisation’s address.'
+              type: string
+            address_2:
+              description: 'Address line 2. Second line of this Organisation’s address.'
+              type: string
+            address_3:
+              description: 'Address line 3. Third line of this Organisation’s address.'
+              type: string
+            postcode:
+              description: 'Postcode. This Organisation’s postcode.'
+              type: string
+            postal_area:
+              description: 'Postal Area. This Organisation’s postal area/city.'
+              type: string
+            email:
+              description: 'Organisation email address. This Organisation’s email address.'
+              type: string
+            phone:
+              description: 'Organisation phone number. This Organisation’s phone number.'
+              type: string
+            url:
+              description: 'Organisation website address. This Organisation’s website URL.'
+              type: string
+          type: object
+        oldRecord:
+          description: 'Contains the data relating to the entity prior to the change. This should only be provided for changeTypes: delete and modify.'
+          properties:
+            id:
+              description: 'Organisation ID. The ID or Organisation Unit ID should be unique within all the Organisations in your Authority.'
+              type: string
+            name:
+              description: 'Organisation Name. The name of this Organisation.'
+              type: string
+            parent:
+              description: 'Parent Organisation ID. The ID or Organisation Unit ID of the parent Organisation of this Organisation. If set to null or omitted the Organisation will be placed at the root of your hierarchy, otherwise it will be placed as a child of this Organisation.'
+              type: string
+            external_id:
+              description: 'External ID. The id or code for this Organisation used by your HR or finance system. This will be used for debugging the import of Organisation data in future enhancements of the KS Laring platform.'
+              type: string
+            address_1:
+              description: 'Address line 1. First line of this Organisation’s address.'
+              type: string
+            address_2:
+              description: 'Address line 2. Second line of this Organisation’s address.'
+              type: string
+            address_3:
+              description: 'Address line 3. Third line of this Organisation’s address.'
+              type: string
+            postcode:
+              description: 'Postcode. This Organisation’s postcode.'
+              type: string
+            postal_area:
+              description: 'Postal Area. This Organisation’s postal area/city.'
+              type: string
+            email:
+              description: 'Organisation email address. This Organisation’s email address.'
+              type: string
+            phone:
+              description: 'Organisation phone number. This Organisation’s phone number.'
+              type: string
+            url:
+              description: 'Organisation website address. This Organisation’s website URL.'
+              type: string
+          type: object
+      type: object
+    PersonChange:
+      title: Person
+      properties:
+        changeType:
+          description: 'Change type can be one of these: ''add'', ''delete'' or ''modify''.'
+          type: string
+        changeDate:
+          description: 'Date and time that the change occurred. This should be in RFC 3339 format.'
+          type: string
+        newRecord:
+          description: 'Contains the data relating to the entity after the change. This should only be provided for changeTypes: add and modify.'
+          properties:
+            national_id:
+              description: 'National ID Number. Norwegian National ID Number or D Number of this Person.'
+              type: string
+            external_id:
+              description: 'External ID. The ID, code or username for this Person used by your HR or finance system. This will be used for debugging the import of Person data in future enhancements of the KS Laring platform.'
+              type: string
+            first_name:
+              description: 'Forename. Person’s first or given name.'
+              type: string
+            middle_name:
+              description: 'Middle name. Person’s middle name or names.'
+              type: string
+            last_name:
+              description: 'Surname. Person’s last or family name.'
+              type: string
+            email:
+              description: 'Person’s email address. This is the email address that will be associated with their account on KS Laring. This is the email address that will be used to receive KS Laring emails and other notifications.'
+              type: string
+          type: object
+        oldRecord:
+          description: 'Contains the data relating to the entity prior to the change. This should only be provided for changeTypes: delete and modify.'
+          properties:
+            national_id:
+              description: 'National ID Number. Norwegian National ID Number or D Number of this Person.'
+              type: string
+            external_id:
+              description: 'External ID. The ID, code or username for this Person used by your HR or finance system. This will be used for debugging the import of Person data in future enhancements of the KS Laring platform.'
+              type: string
+            first_name:
+              description: 'Forename. Person’s first or given name.'
+              type: string
+            middle_name:
+              description: 'Middle name. Person’s middle name or names.'
+              type: string
+            last_name:
+              description: 'Surname. Person’s last or family name.'
+              type: string
+            email:
+              description: 'Person’s email address. This is the email address that will be associated with their account on KS Laring. This is the email address that will be used to receive KS Laring emails and other notifications.'
+              type: string
+          type: object
+      type: object
+    VenueChange:
+      title: Venue
+      properties:
+        changeType:
+          description: 'Change type can be one of these: ''add'', ''delete'' or ''modify''.'
+          type: string
+        changeDate:
+          description: 'Date and time that the change occurred. This should be in RFC 3339 format.'
+          type: string
+        newRecord:
+          description: 'Contains the data relating to the entity after the change. This should only be provided for changeTypes: add and modify.'
+          properties:
+            venue_id:
+              description: 'Venue ID. This is the Venue ID string associated with this Venue used to uniquely identify it within your Authority.'
+              type: string
+            org_id:
+              description: 'Organisation Unit ID. Organisation Unit ID of the Organisation this Venue is associated with.'
+              type: string
+            name:
+              description: 'Venue Name. Name of this Venue.'
+              type: string
+            floor:
+              description: 'Floor. The floor this Venue is on in it’s building.'
+              type: string
+            room:
+              description: 'Room. The room of this Venue in it’s building.'
+              type: string
+            address_1:
+              description: 'Address line 1. First line of this Venue’s address.'
+              type: string
+            address_2:
+              description: 'Address line 2. Second line of this Venue’s address.'
+              type: string
+            address_3:
+              description: 'Address line 3. Third line of this Venue’s address.'
+              type: string
+            postcode:
+              description: 'Postcode. This Venue’s postcode.'
+              type: string
+            postal_area:
+              description: 'Postal Area. This Venue’s postal area/city.'
+              type: string
+            email:
+              description: 'Organisation email address. This Venue’s email address.'
+              type: string
+            phone:
+              description: 'Organisation phone number. This Venue’s phone number.'
+              type: string
+            url:
+              description: 'Organisation website address. This Venue’s website URL.'
+              type: string
+            contact:
+              description: 'Contact person. The name of the contact person for this Venue.'
+              type: string
+          type: object
+        oldRecord:
+          description: 'Contains the data relating to the entity prior to the change. This should only be provided for changeTypes: delete and modify.'
+          properties:
+            venue_id:
+              description: 'Venue ID. This is the Venue ID string associated with this Venue used to uniquely identify it within your Authority.'
+              type: string
+            org_id:
+              description: 'Organisation Unit ID. Organisation Unit ID of the Organisation this Venue is associated with.'
+              type: string
+            name:
+              description: 'Venue Name. Name of this Venue.'
+              type: string
+            floor:
+              description: 'Floor. The floor this Venue is on in it’s building.'
+              type: string
+            room:
+              description: 'Room. The room of this Venue in it’s building.'
+              type: string
+            address_1:
+              description: 'Address line 1. First line of this Venue’s address.'
+              type: string
+            address_2:
+              description: 'Address line 2. Second line of this Venue’s address.'
+              type: string
+            address_3:
+              description: 'Address line 3. Third line of this Venue’s address.'
+              type: string
+            postcode:
+              description: 'Postcode. This Venue’s postcode.'
+              type: string
+            postal_area:
+              description: 'Postal Area. This Venue’s postal area/city.'
+              type: string
+            email:
+              description: 'Organisation email address. This Venue’s email address.'
+              type: string
+            phone:
+              description: 'Organisation phone number. This Venue’s phone number.'
+              type: string
+            url:
+              description: 'Organisation website address. This Venue’s website URL.'
+              type: string
+            contact:
+              description: 'Contact person. The name of the contact person for this Venue.'
+              type: string
+          type: object
+      type: object

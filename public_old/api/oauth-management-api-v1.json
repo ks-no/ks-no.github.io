@@ -1,0 +1,313 @@
+{
+  "openapi" : "3.0.1",
+  "info" : {
+    "title" : "KS Fiks: OAuth Token Service",
+    "description" : "Fiks OAuth Token",
+    "contact" : {
+      "name" : "Fiks-brukerst??tte",
+      "url" : "https://ks-no.github.io/",
+      "email" : "fiks-utvikling@ks.no"
+    },
+    "version" : "v1"
+  },
+  "servers" : [ {
+    "url" : "https://api.fiks.test.ks.no",
+    "description" : "KS Fiks API host",
+    "variables" : { }
+  } ],
+  "tags" : [ {
+    "name" : "Client",
+    "description" : "API for konfigurasjon av OAuth-klienter"
+  }, {
+    "name" : "Token",
+    "description" : "API for management av OAuth-tokens"
+  } ],
+  "paths" : {
+    "/management/clients" : {
+      "post" : {
+        "tags" : [ "Client" ],
+        "summary" : "Oppretter en ny OAuth-klient",
+        "operationId" : "create",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/ClientCreateRequestV1"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Den opprettede klienten",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ClientCreateResponseV1"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/management/clients/{clientId}" : {
+      "delete" : {
+        "tags" : [ "Client" ],
+        "summary" : "Sletter en eksisterende OAuth-klient",
+        "operationId" : "delete",
+        "parameters" : [ {
+          "name" : "clientId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "default" : {
+            "description" : "default response",
+            "content" : {
+              "*/*" : { }
+            }
+          }
+        }
+      },
+      "patch" : {
+        "tags" : [ "Client" ],
+        "summary" : "Oppdaterer en eksisterende OAuth-klient",
+        "operationId" : "update",
+        "parameters" : [ {
+          "name" : "clientId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/ClientUpdateRequestV1"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Den oppdaterte klienten",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ClientUpdateResponseV1"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/management/clients/{clientId}/tokens/{tokenId}" : {
+      "delete" : {
+        "tags" : [ "Token" ],
+        "summary" : "Revoker token med id for gitt klient",
+        "operationId" : "deleteToken",
+        "parameters" : [ {
+          "name" : "clientId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        }, {
+          "name" : "tokenId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Resultat av token revoke",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/TokenRevokeResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/management/clients/{clientId}/tokens" : {
+      "get" : {
+        "tags" : [ "Token" ],
+        "summary" : "Henter tokens for gitt klient",
+        "operationId" : "getTokens",
+        "parameters" : [ {
+          "name" : "clientId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Liste over genererte tokens",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Tokens"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components" : {
+    "schemas" : {
+      "ClientCreateResponseV1" : {
+        "required" : [ "created", "fiksOrganisasjonId", "id", "tokenLifetime" ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string",
+            "description" : "Unik id for klienten",
+            "format" : "uuid"
+          },
+          "fiksOrganisasjonId" : {
+            "type" : "string",
+            "description" : "Id for Fiks organisasjonen som eier klienten",
+            "format" : "uuid"
+          },
+          "created" : {
+            "type" : "integer",
+            "description" : "Timestamp for n??r klienten ble opprettet i epoch millis",
+            "format" : "int64"
+          },
+          "tokenLifetime" : {
+            "type" : "integer",
+            "description" : "Levetid for tokens generert av denne klienten i sekunder",
+            "format" : "int64"
+          }
+        }
+      },
+      "ClientCreateRequestV1" : {
+        "required" : [ "fiksOrganisasjonId" ],
+        "type" : "object",
+        "properties" : {
+          "fiksOrganisasjonId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "tokenLifetime" : {
+            "minimum" : 1,
+            "type" : "integer",
+            "description" : "Levetid for tokens generert av denne klienten i sekunder. Default levetid er ett ??r.",
+            "format" : "int64"
+          }
+        }
+      },
+      "ClientUpdateResponseV1" : {
+        "required" : [ "created", "fiksOrganisasjonId", "id", "tokenLifetime" ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string",
+            "description" : "Unik id for klienten",
+            "format" : "uuid"
+          },
+          "fiksOrganisasjonId" : {
+            "type" : "string",
+            "description" : "Id for Fiks organisasjonen som eier klienten",
+            "format" : "uuid"
+          },
+          "created" : {
+            "type" : "integer",
+            "description" : "Timestamp for n??r klienten ble opprettet i epoch millis",
+            "format" : "int64"
+          },
+          "tokenLifetime" : {
+            "type" : "integer",
+            "description" : "Levetid for tokens generert av denne klienten i sekunder",
+            "format" : "int64"
+          }
+        }
+      },
+      "ClientUpdateRequestV1" : {
+        "type" : "object",
+        "properties" : {
+          "tokenLifetime" : {
+            "minimum" : 1,
+            "type" : "integer",
+            "description" : "Levetid for tokens generert av denne klienten i sekunder. Default levetid er ett ??r.",
+            "format" : "int64"
+          }
+        }
+      },
+      "TokenRevokeResponse" : {
+        "required" : [ "revoked" ],
+        "type" : "object",
+        "properties" : {
+          "revoked" : {
+            "type" : "boolean",
+            "description" : "Ble tokenet revoked?"
+          }
+        }
+      },
+      "Token" : {
+        "required" : [ "createdAt", "expiresAt", "id", "revoked" ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string",
+            "description" : "Unik id for tokenet",
+            "format" : "uuid"
+          },
+          "revoked" : {
+            "type" : "boolean",
+            "description" : "Er tokenet revoked?"
+          },
+          "createdAt" : {
+            "type" : "integer",
+            "description" : "Timestamp for n??r tokenet ble opprettet i epoch millis",
+            "format" : "int64"
+          },
+          "expiresAt" : {
+            "type" : "integer",
+            "description" : "Timestamp for n??r tokenet utl??per i epoch millis",
+            "format" : "int64"
+          },
+          "revokedAt" : {
+            "type" : "integer",
+            "description" : "Timestamp for n??r tokenet ble revoked i epoch millis, eller null om det ikke er revoked",
+            "format" : "int64"
+          }
+        }
+      },
+      "Tokens" : {
+        "required" : [ "tokens" ],
+        "type" : "object",
+        "properties" : {
+          "tokens" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Token"
+            }
+          }
+        }
+      }
+    }
+  }
+}

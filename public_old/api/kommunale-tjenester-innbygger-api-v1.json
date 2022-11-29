@@ -1,0 +1,111 @@
+{
+  "openapi" : "3.0.1",
+  "info" : {
+    "title" : "KS FIKS: Kommunale Tjenester",
+    "description" : "Kommunale tjenester service",
+    "contact" : {
+      "name" : "Fiks brukerstøtte",
+      "url" : "https://ks-no.github.io/fiks-plattform/tjenester/kommunaletjenester/",
+      "email" : "fiks-utvikling@ks.no"
+    },
+    "version" : "v1"
+  },
+  "servers" : [ {
+    "url" : "https://api.fiks.ks.no",
+    "description" : "KS Fiks API host",
+    "variables" : { }
+  } ],
+  "tags" : [ {
+    "name" : "kommunaleTjenesterInnbygger",
+    "description" : "API for å håndtere innbygger-rettet funksjonalitet vedr. kommunale tjenester"
+  } ],
+  "paths" : {
+    "/kommunale-tjenester/api/v1/innbygger/{fiksOrgId}/tjenester" : {
+      "get" : {
+        "tags" : [ "kommunaleTjenesterInnbygger" ],
+        "description" : "Henter kommunale tjenester for spesifisert kommune",
+        "operationId" : "getTjenester",
+        "parameters" : [ {
+          "name" : "fiksOrgId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        }, {
+          "name" : "from",
+          "in" : "query",
+          "schema" : {
+            "type" : "integer",
+            "format" : "int32",
+            "default" : 0
+          }
+        }, {
+          "name" : "size",
+          "in" : "query",
+          "schema" : {
+            "type" : "integer",
+            "format" : "int32",
+            "default" : 10
+          }
+        }, {
+          "name" : "rettetMot",
+          "in" : "query",
+          "schema" : {
+            "type" : "string",
+            "enum" : [ "PERSONER", "ORGANISASJONER" ]
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Tjenester for den spesifiserte fiks-organisasjonen. Tjenster markert forside sorteres øverst, så følger evt. resterende opp til maks antall lik size parameter. Default er 10.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/TjenesteApiModel"
+                  }
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Ingen urler ble funnet for det oppgitte kommunenr"
+          }
+        }
+      }
+    }
+  },
+  "components" : {
+    "schemas" : {
+      "TjenesteApiModel" : {
+        "type" : "object",
+        "properties" : {
+          "tjenesteId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "fiksOrgId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "tittel" : {
+            "type" : "string"
+          },
+          "lenke" : {
+            "type" : "string"
+          },
+          "forside" : {
+            "type" : "boolean"
+          },
+          "rettetMot" : {
+            "type" : "string",
+            "enum" : [ "PERSONER", "ORGANISASJONER", "PERSONER_OG_ORGANISASJONER" ]
+          }
+        }
+      }
+    }
+  }
+}

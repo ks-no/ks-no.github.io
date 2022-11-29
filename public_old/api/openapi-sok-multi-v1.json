@@ -1,0 +1,994 @@
+{
+  "openapi" : "3.0.1",
+  "info" : {
+    "title" : "KS Fiks: Innsyn Multi-søk service",
+    "contact" : {
+      "name" : "Fiks-brukerstøtte",
+      "url" : "https://ks-no.github.io/",
+      "email" : "fiks-utvikling@ks.no"
+    },
+    "version" : "v1"
+  },
+  "servers" : [ {
+    "url" : "https://api.fiks.test.ks.no/"
+  } ],
+  "paths" : {
+    "/innsyn-sok/api/v1/multi/sok" : {
+      "post" : {
+        "tags" : [ "MultiSok" ],
+        "summary" : "Søk",
+        "operationId" : "sok",
+        "parameters" : [ {
+          "name" : "term",
+          "in" : "query",
+          "description" : "Søkeord",
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "antall",
+          "in" : "query",
+          "description" : "Antall søketreff som skal returneres",
+          "schema" : {
+            "type" : "integer",
+            "format" : "int32",
+            "default" : 10
+          }
+        }, {
+          "name" : "akseptertMeldingVersjon",
+          "in" : "query",
+          "description" : "Akseptert melding-versjon. Kan settes flere ganger. Innsyn vil nedgradere treff på høyere versjon til den høyeste av de aksepterte versjonen (om det er oppgitt flere på samme dokumenttype)",
+          "schema" : {
+            "uniqueItems" : true,
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "enum" : [ "fakturaV1", "saksmappeV1", "journalpostV1", "forsendelseV1", "forsendelseV2", "byggesakV1", "matrikkelenhetV1", "innsendtskjemaV1", "skjemakladdV1", "kommunaltjenesteV1" ]
+            }
+          }
+        }, {
+          "name" : "onBehalfOf",
+          "in" : "query",
+          "description" : "Organisasjonsnummer for organisasjonen dette søket skal utføres på vegne av. Krever at autentisert bruker har rettigheter til å agere på vegne av denne organisasjonen.",
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "kommune",
+          "in" : "query",
+          "description" : "FiksOrgId for innbyggers bosteds-kommune)",
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "default" : {
+            "description" : "default response",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/MultiSokeresultat"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components" : {
+    "schemas" : {
+      "ByggesakDokumentV1" : {
+        "type" : "object",
+        "properties" : {
+          "tittel" : {
+            "type" : "string"
+          },
+          "dokumenttype" : {
+            "$ref" : "#/components/schemas/ByggesakDokumenttypeV1"
+          },
+          "nedlastingslenke" : {
+            "type" : "string"
+          },
+          "dokumentsdato" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "vedtaksstatus" : {
+            "type" : "string"
+          },
+          "versjon" : {
+            "type" : "string"
+          },
+          "vedtaksdato" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "systemId" : {
+            "type" : "string"
+          },
+          "erstatterTidligereSystemId" : {
+            "type" : "string"
+          },
+          "mimeType" : {
+            "type" : "string"
+          },
+          "size" : {
+            "type" : "integer",
+            "format" : "int32"
+          }
+        }
+      },
+      "ByggesakDokumenttypeV1" : {
+        "type" : "object",
+        "properties" : {
+          "dokumenttypeKodeverdi" : {
+            "type" : "string"
+          },
+          "dokumenttypeKodebeskrivelse" : {
+            "type" : "string"
+          }
+        }
+      },
+      "ByggesakMatrikkelnummerV1" : {
+        "type" : "object",
+        "properties" : {
+          "kommunenummer" : {
+            "type" : "string"
+          },
+          "gardsnummer" : {
+            "type" : "string"
+          },
+          "bruksnummer" : {
+            "type" : "string"
+          },
+          "seksjonsnummer" : {
+            "type" : "string"
+          },
+          "festenummer" : {
+            "type" : "string"
+          }
+        }
+      },
+      "ByggesakSaksnummerV1" : {
+        "type" : "object",
+        "properties" : {
+          "saksnummerSaksaar" : {
+            "type" : "string"
+          },
+          "saksnummerSakssekvensnummer" : {
+            "type" : "string"
+          }
+        }
+      },
+      "ByggesakTiltakstypeV1" : {
+        "type" : "object",
+        "properties" : {
+          "tiltakstypeKodeverdi" : {
+            "type" : "string"
+          },
+          "tiltakstypeKodebeskrivelse" : {
+            "type" : "string"
+          }
+        }
+      },
+      "FiksOrganisasjon" : {
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "visningsnavn" : {
+            "type" : "string"
+          }
+        }
+      },
+      "Forelder" : {
+        "type" : "object",
+        "properties" : {
+          "type" : {
+            "type" : "string",
+            "enum" : [ "faktura", "saksmappe", "journalpost", "byggesak", "innsendtskjema", "skjemakladd", "matrikkelenhet", "kommunaltjeneste", "forsendelse" ]
+          },
+          "dokumentId" : {
+            "type" : "string"
+          }
+        }
+      },
+      "ForsendelseV1Dokument" : {
+        "type" : "object",
+        "properties" : {
+          "tittel" : {
+            "type" : "string"
+          },
+          "size" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "nedlastingslenke" : {
+            "type" : "string"
+          }
+        }
+      },
+      "ForsendelseV2Adresse" : {
+        "type" : "object",
+        "properties" : {
+          "navn" : {
+            "type" : "string"
+          },
+          "addresselinje1" : {
+            "type" : "string"
+          },
+          "addresselinje2" : {
+            "type" : "string"
+          },
+          "addresselinje3" : {
+            "type" : "string"
+          },
+          "poststed" : {
+            "type" : "string"
+          },
+          "postnummer" : {
+            "type" : "string"
+          },
+          "land" : {
+            "type" : "string"
+          }
+        }
+      },
+      "ForsendelseV2Dokument" : {
+        "type" : "object",
+        "properties" : {
+          "tittel" : {
+            "type" : "string"
+          },
+          "size" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "nedlastingLenke" : {
+            "type" : "string"
+          },
+          "mimeType" : {
+            "type" : "string"
+          }
+        }
+      },
+      "ForsendelseV2Lenke" : {
+        "type" : "object",
+        "properties" : {
+          "url" : {
+            "type" : "string"
+          },
+          "urlTekst" : {
+            "type" : "string"
+          },
+          "ledetekst" : {
+            "type" : "string"
+          }
+        }
+      },
+      "MatrikkelenhetMatrikkelnummerV1" : {
+        "type" : "object",
+        "properties" : {
+          "kommunenummer" : {
+            "type" : "string"
+          },
+          "gardsnummer" : {
+            "type" : "string"
+          },
+          "bruksnummer" : {
+            "type" : "string"
+          },
+          "seksjonsnummer" : {
+            "type" : "string"
+          },
+          "festenummer" : {
+            "type" : "string"
+          }
+        }
+      },
+      "MeldingV1ByggesakV1" : {
+        "type" : "object",
+        "properties" : {
+          "meldingId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "dokumentId" : {
+            "type" : "string"
+          },
+          "sikkerhetsniva" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "fiksOrganisasjon" : {
+            "$ref" : "#/components/schemas/FiksOrganisasjon"
+          },
+          "sorteringDato" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "korrelasjonId" : {
+            "type" : "string"
+          },
+          "forelder" : {
+            "$ref" : "#/components/schemas/Forelder"
+          },
+          "eksternRef" : {
+            "type" : "string"
+          },
+          "meldingMetadata" : {
+            "$ref" : "#/components/schemas/byggesakV1"
+          },
+          "score" : {
+            "type" : "number",
+            "format" : "float"
+          }
+        }
+      },
+      "MeldingV1InnsendtskjemaV1" : {
+        "type" : "object",
+        "properties" : {
+          "meldingId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "dokumentId" : {
+            "type" : "string"
+          },
+          "sikkerhetsniva" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "fiksOrganisasjon" : {
+            "$ref" : "#/components/schemas/FiksOrganisasjon"
+          },
+          "sorteringDato" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "korrelasjonId" : {
+            "type" : "string"
+          },
+          "forelder" : {
+            "$ref" : "#/components/schemas/Forelder"
+          },
+          "eksternRef" : {
+            "type" : "string"
+          },
+          "meldingMetadata" : {
+            "$ref" : "#/components/schemas/innsendtskjemaV1"
+          },
+          "score" : {
+            "type" : "number",
+            "format" : "float"
+          }
+        }
+      },
+      "MeldingV1KommunaltjenesteV1" : {
+        "type" : "object",
+        "properties" : {
+          "meldingId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "dokumentId" : {
+            "type" : "string"
+          },
+          "sikkerhetsniva" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "fiksOrganisasjon" : {
+            "$ref" : "#/components/schemas/FiksOrganisasjon"
+          },
+          "sorteringDato" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "korrelasjonId" : {
+            "type" : "string"
+          },
+          "forelder" : {
+            "$ref" : "#/components/schemas/Forelder"
+          },
+          "eksternRef" : {
+            "type" : "string"
+          },
+          "meldingMetadata" : {
+            "$ref" : "#/components/schemas/kommunaltjenesteV1"
+          },
+          "score" : {
+            "type" : "number",
+            "format" : "float"
+          }
+        }
+      },
+      "MeldingV1MatrikkelenhetV1" : {
+        "type" : "object",
+        "properties" : {
+          "meldingId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "dokumentId" : {
+            "type" : "string"
+          },
+          "sikkerhetsniva" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "fiksOrganisasjon" : {
+            "$ref" : "#/components/schemas/FiksOrganisasjon"
+          },
+          "sorteringDato" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "korrelasjonId" : {
+            "type" : "string"
+          },
+          "forelder" : {
+            "$ref" : "#/components/schemas/Forelder"
+          },
+          "eksternRef" : {
+            "type" : "string"
+          },
+          "meldingMetadata" : {
+            "$ref" : "#/components/schemas/matrikkelenhetV1"
+          },
+          "score" : {
+            "type" : "number",
+            "format" : "float"
+          }
+        }
+      },
+      "MeldingV1PostSokHit" : {
+        "type" : "object",
+        "properties" : {
+          "meldingId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "dokumentId" : {
+            "type" : "string"
+          },
+          "sikkerhetsniva" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "fiksOrganisasjon" : {
+            "$ref" : "#/components/schemas/FiksOrganisasjon"
+          },
+          "sorteringDato" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "korrelasjonId" : {
+            "type" : "string"
+          },
+          "forelder" : {
+            "$ref" : "#/components/schemas/Forelder"
+          },
+          "eksternRef" : {
+            "type" : "string"
+          },
+          "meldingMetadata" : {
+            "$ref" : "#/components/schemas/PostSokHit"
+          },
+          "score" : {
+            "type" : "number",
+            "format" : "float"
+          }
+        }
+      },
+      "MeldingV1SkjemakladdV1" : {
+        "type" : "object",
+        "properties" : {
+          "meldingId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "dokumentId" : {
+            "type" : "string"
+          },
+          "sikkerhetsniva" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "fiksOrganisasjon" : {
+            "$ref" : "#/components/schemas/FiksOrganisasjon"
+          },
+          "sorteringDato" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "korrelasjonId" : {
+            "type" : "string"
+          },
+          "forelder" : {
+            "$ref" : "#/components/schemas/Forelder"
+          },
+          "eksternRef" : {
+            "type" : "string"
+          },
+          "meldingMetadata" : {
+            "$ref" : "#/components/schemas/skjemakladdV1"
+          },
+          "score" : {
+            "type" : "number",
+            "format" : "float"
+          }
+        }
+      },
+      "MultiSokeresultat" : {
+        "type" : "object",
+        "properties" : {
+          "byggesak" : {
+            "$ref" : "#/components/schemas/ResultatByggesakV1"
+          },
+          "eiendom" : {
+            "$ref" : "#/components/schemas/ResultatMatrikkelenhetV1"
+          },
+          "tjenesteMinKommune" : {
+            "$ref" : "#/components/schemas/ResultatKommunaltjenesteV1"
+          },
+          "tjenesteAndreKommuner" : {
+            "$ref" : "#/components/schemas/ResultatKommunaltjenesteV1"
+          },
+          "tjenesteAlleKommuner" : {
+            "$ref" : "#/components/schemas/ResultatKommunaltjenesteV1"
+          },
+          "post" : {
+            "$ref" : "#/components/schemas/ResultatPostSokHit"
+          },
+          "innsendtSkjema" : {
+            "$ref" : "#/components/schemas/ResultatInnsendtskjemaV1"
+          },
+          "kladd" : {
+            "$ref" : "#/components/schemas/ResultatSkjemakladdV1"
+          }
+        }
+      },
+      "PostSokHit" : {
+        "type" : "object",
+        "properties" : {
+          "versjon" : {
+            "type" : "string",
+            "enum" : [ "fakturaV1", "saksmappeV1", "journalpostV1", "forsendelseV1", "forsendelseV2", "byggesakV1", "matrikkelenhetV1", "innsendtskjemaV1", "skjemakladdV1", "kommunaltjenesteV1" ]
+          },
+          "type" : {
+            "type" : "string",
+            "enum" : [ "faktura", "saksmappe", "journalpost", "byggesak", "innsendtskjema", "skjemakladd", "matrikkelenhet", "kommunaltjeneste", "forsendelse" ]
+          }
+        },
+        "discriminator" : {
+          "propertyName" : "versjon"
+        }
+      },
+      "ResultatByggesakV1" : {
+        "type" : "object",
+        "properties" : {
+          "antallTreff" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "treffMedHoyereInnloggingsniva" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "treff" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/MeldingV1ByggesakV1"
+            }
+          }
+        }
+      },
+      "ResultatInnsendtskjemaV1" : {
+        "type" : "object",
+        "properties" : {
+          "antallTreff" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "treffMedHoyereInnloggingsniva" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "treff" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/MeldingV1InnsendtskjemaV1"
+            }
+          }
+        }
+      },
+      "ResultatKommunaltjenesteV1" : {
+        "type" : "object",
+        "properties" : {
+          "antallTreff" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "treffMedHoyereInnloggingsniva" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "treff" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/MeldingV1KommunaltjenesteV1"
+            }
+          }
+        }
+      },
+      "ResultatMatrikkelenhetV1" : {
+        "type" : "object",
+        "properties" : {
+          "antallTreff" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "treffMedHoyereInnloggingsniva" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "treff" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/MeldingV1MatrikkelenhetV1"
+            }
+          }
+        }
+      },
+      "ResultatPostSokHit" : {
+        "type" : "object",
+        "properties" : {
+          "antallTreff" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "treffMedHoyereInnloggingsniva" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "treff" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/MeldingV1PostSokHit"
+            }
+          }
+        }
+      },
+      "ResultatSkjemakladdV1" : {
+        "type" : "object",
+        "properties" : {
+          "antallTreff" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "treffMedHoyereInnloggingsniva" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "treff" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/MeldingV1SkjemakladdV1"
+            }
+          }
+        }
+      },
+      "SkjemaFilV1" : {
+        "type" : "object",
+        "properties" : {
+          "nedlastingslenke" : {
+            "type" : "string"
+          },
+          "filnavn" : {
+            "type" : "string"
+          },
+          "mimeType" : {
+            "type" : "string"
+          },
+          "size" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        }
+      },
+      "byggesakV1" : {
+        "type" : "object",
+        "properties" : {
+          "tittel" : {
+            "type" : "string"
+          },
+          "beskrivelse" : {
+            "type" : "string"
+          },
+          "mappeId" : {
+            "type" : "string"
+          },
+          "sakstatus" : {
+            "type" : "string"
+          },
+          "saksdato" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "saksansvarlig" : {
+            "type" : "string"
+          },
+          "administrativEnhet" : {
+            "type" : "string"
+          },
+          "adresse" : {
+            "type" : "string"
+          },
+          "avsluttetDato" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "saksnummer" : {
+            "$ref" : "#/components/schemas/ByggesakSaksnummerV1"
+          },
+          "tiltakstype" : {
+            "$ref" : "#/components/schemas/ByggesakTiltakstypeV1"
+          },
+          "matrikkelnummer" : {
+            "$ref" : "#/components/schemas/ByggesakMatrikkelnummerV1"
+          },
+          "tiltakshaver" : {
+            "type" : "string"
+          },
+          "ansvarligSoker" : {
+            "type" : "string"
+          },
+          "dokumenter" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/ByggesakDokumentV1"
+            }
+          },
+          "versjon" : {
+            "type" : "string",
+            "enum" : [ "fakturaV1", "saksmappeV1", "journalpostV1", "forsendelseV1", "forsendelseV2", "byggesakV1", "matrikkelenhetV1", "innsendtskjemaV1", "skjemakladdV1", "kommunaltjenesteV1" ]
+          },
+          "type" : {
+            "type" : "string",
+            "enum" : [ "faktura", "saksmappe", "journalpost", "byggesak", "innsendtskjema", "skjemakladd", "matrikkelenhet", "kommunaltjeneste", "forsendelse" ]
+          }
+        },
+        "description" : "Byggesak"
+      },
+      "forsendelseV1" : {
+        "type" : "object",
+        "description" : "Forsendelse",
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/PostSokHit"
+        }, {
+          "type" : "object",
+          "properties" : {
+            "tittel" : {
+              "type" : "string"
+            },
+            "avsender" : {
+              "type" : "string"
+            },
+            "mottaker" : {
+              "type" : "string"
+            },
+            "eksternLenke" : {
+              "type" : "string"
+            },
+            "eksternLenkeTekst" : {
+              "type" : "string"
+            },
+            "svarLenke" : {
+              "type" : "string"
+            },
+            "sendtDato" : {
+              "type" : "string",
+              "format" : "date-time"
+            },
+            "lest" : {
+              "type" : "boolean"
+            },
+            "dokumenter" : {
+              "type" : "array",
+              "items" : {
+                "$ref" : "#/components/schemas/ForsendelseV1Dokument"
+              }
+            }
+          }
+        } ]
+      },
+      "forsendelseV2" : {
+        "type" : "object",
+        "description" : "Forsendelse",
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/PostSokHit"
+        }, {
+          "type" : "object",
+          "properties" : {
+            "tittel" : {
+              "type" : "string"
+            },
+            "avsender" : {
+              "type" : "string"
+            },
+            "mottakerAdresse" : {
+              "$ref" : "#/components/schemas/ForsendelseV2Adresse"
+            },
+            "returAdresse" : {
+              "$ref" : "#/components/schemas/ForsendelseV2Adresse"
+            },
+            "svarLenke" : {
+              "type" : "string"
+            },
+            "sendtDato" : {
+              "type" : "string",
+              "format" : "date-time"
+            },
+            "lest" : {
+              "type" : "boolean"
+            },
+            "dokumenter" : {
+              "type" : "array",
+              "items" : {
+                "$ref" : "#/components/schemas/ForsendelseV2Dokument"
+              }
+            },
+            "lenker" : {
+              "type" : "array",
+              "items" : {
+                "$ref" : "#/components/schemas/ForsendelseV2Lenke"
+              }
+            }
+          }
+        } ]
+      },
+      "innsendtskjemaV1" : {
+        "type" : "object",
+        "properties" : {
+          "tittel" : {
+            "type" : "string"
+          },
+          "mottaker" : {
+            "type" : "string"
+          },
+          "avsender" : {
+            "type" : "string"
+          },
+          "innsendtdato" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "skjemafil" : {
+            "$ref" : "#/components/schemas/SkjemaFilV1"
+          },
+          "vedlegg" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/SkjemaFilV1"
+            }
+          },
+          "url" : {
+            "type" : "string"
+          },
+          "versjon" : {
+            "type" : "string",
+            "enum" : [ "fakturaV1", "saksmappeV1", "journalpostV1", "forsendelseV1", "forsendelseV2", "byggesakV1", "matrikkelenhetV1", "innsendtskjemaV1", "skjemakladdV1", "kommunaltjenesteV1" ]
+          },
+          "type" : {
+            "type" : "string",
+            "enum" : [ "faktura", "saksmappe", "journalpost", "byggesak", "innsendtskjema", "skjemakladd", "matrikkelenhet", "kommunaltjeneste", "forsendelse" ]
+          }
+        },
+        "description" : "Innsendt skjema"
+      },
+      "kommunaltjenesteV1" : {
+        "type" : "object",
+        "properties" : {
+          "tjenesteId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "tittel" : {
+            "type" : "string"
+          },
+          "lenke" : {
+            "type" : "string"
+          },
+          "rettetMot" : {
+            "type" : "string",
+            "enum" : [ "PERSON", "ORGANISASJON", "PERSON_OG_ORGANISASJON" ]
+          },
+          "kommuneFiksOrganisasjonId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "kommuneVisningsnavn" : {
+            "type" : "string"
+          },
+          "versjon" : {
+            "type" : "string",
+            "enum" : [ "fakturaV1", "saksmappeV1", "journalpostV1", "forsendelseV1", "forsendelseV2", "byggesakV1", "matrikkelenhetV1", "innsendtskjemaV1", "skjemakladdV1", "kommunaltjenesteV1" ]
+          },
+          "type" : {
+            "type" : "string",
+            "enum" : [ "faktura", "saksmappe", "journalpost", "byggesak", "innsendtskjema", "skjemakladd", "matrikkelenhet", "kommunaltjeneste", "forsendelse" ]
+          }
+        },
+        "description" : "Kommunal tjeneste"
+      },
+      "matrikkelenhetV1" : {
+        "type" : "object",
+        "properties" : {
+          "matrikkelnummer" : {
+            "$ref" : "#/components/schemas/MatrikkelenhetMatrikkelnummerV1"
+          },
+          "matrikkelenhetId" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "adresser" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          },
+          "kommuneNavn" : {
+            "type" : "string"
+          },
+          "kommunenummer" : {
+            "type" : "string"
+          },
+          "versjon" : {
+            "type" : "string",
+            "enum" : [ "fakturaV1", "saksmappeV1", "journalpostV1", "forsendelseV1", "forsendelseV2", "byggesakV1", "matrikkelenhetV1", "innsendtskjemaV1", "skjemakladdV1", "kommunaltjenesteV1" ]
+          },
+          "type" : {
+            "type" : "string",
+            "enum" : [ "faktura", "saksmappe", "journalpost", "byggesak", "innsendtskjema", "skjemakladd", "matrikkelenhet", "kommunaltjeneste", "forsendelse" ]
+          }
+        },
+        "description" : "Matrikkelenhet"
+      },
+      "skjemakladdV1" : {
+        "type" : "object",
+        "properties" : {
+          "tittel" : {
+            "type" : "string"
+          },
+          "mottaker" : {
+            "type" : "string"
+          },
+          "avsender" : {
+            "type" : "string"
+          },
+          "endretdato" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "url" : {
+            "type" : "string"
+          },
+          "versjon" : {
+            "type" : "string",
+            "enum" : [ "fakturaV1", "saksmappeV1", "journalpostV1", "forsendelseV1", "forsendelseV2", "byggesakV1", "matrikkelenhetV1", "innsendtskjemaV1", "skjemakladdV1", "kommunaltjenesteV1" ]
+          },
+          "type" : {
+            "type" : "string",
+            "enum" : [ "faktura", "saksmappe", "journalpost", "byggesak", "innsendtskjema", "skjemakladd", "matrikkelenhet", "kommunaltjeneste", "forsendelse" ]
+          }
+        },
+        "description" : "Skjema kladd"
+      }
+    }
+  }
+}

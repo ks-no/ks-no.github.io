@@ -1,0 +1,141 @@
+{
+  "openapi" : "3.0.1",
+  "info" : {
+    "title" : "KS Fiks: Innsyn Delete Service",
+    "contact" : {
+      "name" : "Fiks-brukerstøtte",
+      "url" : "https://ks-no.github.io/",
+      "email" : "fiks-utvikling@ks.no"
+    },
+    "version" : "v1"
+  },
+  "servers" : [ {
+    "url" : "https://api.fiks.test.ks.no/"
+  } ],
+  "tags" : [ {
+    "name" : "Delete"
+  } ],
+  "paths" : {
+    "/innsyn-index/api/v1/delete/slett" : {
+      "delete" : {
+        "tags" : [ "Delete" ],
+        "summary" : "Fjerner meldinger indekserte av den autentiserte integrasjonen for den spesifiserte fiks-organisasjonen. Ekstern-ref eller meldingsid kan legges til for ytterligere filtrering. Merk at dette starter en asynkron jobb, og det vil bli returnert på forespørselen før slettejobben faktisk er utført.",
+        "operationId" : "slett",
+        "parameters" : [ {
+          "name" : "fiksOrganisasjonId",
+          "in" : "query",
+          "description" : "Fiks-organisasjon id",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        }, {
+          "name" : "eksternRef",
+          "in" : "query",
+          "description" : "Ekstern referanse",
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "meldingId",
+          "in" : "query",
+          "description" : "Melding id",
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "202" : {
+            "description" : "successful operation",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/SlettRespons"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/innsyn-index/api/v1/delete/slettByMeldingId" : {
+      "post" : {
+        "tags" : [ "Delete" ],
+        "summary" : "Fjerner meldinger for de spesifiserte melding-id'ene (maks 1000). Dette starter en synkron operasjon, det vil ikke returneres på forespørselen før slettingen er utført",
+        "operationId" : "slettByMeldingId",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/SlettMeldingerSpec"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/SlettRespons"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components" : {
+    "schemas" : {
+      "SlettRespons" : {
+        "type" : "object",
+        "properties" : {
+          "antallSlettet" : {
+            "type" : "integer",
+            "description" : "Antall meldinger som ble slettet i operasjonen.",
+            "format" : "int64"
+          }
+        }
+      },
+      "SlettMeldingSpec" : {
+        "required" : [ "fiksOrgId", "meldingId", "meldingType" ],
+        "type" : "object",
+        "properties" : {
+          "fiksOrgId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "meldingType" : {
+            "type" : "string",
+            "enum" : [ "faktura", "saksmappe", "journalpost", "byggesak", "innsendtskjema", "skjemakladd", "matrikkelenhet", "kommunaltjeneste", "forsendelse" ]
+          },
+          "meldingId" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        },
+        "description" : "Melding-id for meldinger som skal slettes, maks 1000"
+      },
+      "SlettMeldingerSpec" : {
+        "required" : [ "meldinger" ],
+        "type" : "object",
+        "properties" : {
+          "meldinger" : {
+            "maxItems" : 1000,
+            "minItems" : 1,
+            "type" : "array",
+            "description" : "Melding-id for meldinger som skal slettes, maks 1000",
+            "items" : {
+              "$ref" : "#/components/schemas/SlettMeldingSpec"
+            }
+          }
+        }
+      }
+    }
+  }
+}

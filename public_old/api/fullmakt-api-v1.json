@@ -1,0 +1,131 @@
+{
+  "openapi" : "3.0.1",
+  "info" : {
+    "title" : "KS Fiks: Fullmakt Service",
+    "description" : "Fiks Fullmakt",
+    "contact" : {
+      "name" : "Fiks-brukerstøtte",
+      "url" : "https://ks-no.github.io/",
+      "email" : "fiks-utvikling@ks.no"
+    },
+    "version" : "v1"
+  },
+  "servers" : [ {
+    "url" : "https://api.fiks.test.ks.no",
+    "description" : "KS Fiks API host",
+    "variables" : { }
+  } ],
+  "tags" : [ {
+    "name" : "Fullmakt",
+    "description" : "API for fullmakt"
+  } ],
+  "paths" : {
+    "/fullmakt/api/v1/alle" : {
+      "get" : {
+        "tags" : [ "Fullmakt" ],
+        "summary" : "Henter en liste over alle aktører autentisert bruker har lov til å handle på vegne av. En organisasjon har kun lov til å handle på vegne av seg selv. For personer vil tillatelser hentes fra Altinn.",
+        "operationId" : "getAllFullmakter",
+        "parameters" : [ {
+          "name" : "cache",
+          "in" : "query",
+          "schema" : {
+            "type" : "boolean",
+            "default" : true
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Liste over alle aktører autentisert bruker har lov til å handle på vegne av",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/Fullmakt"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/fullmakt/api/v1/meg" : {
+      "get" : {
+        "tags" : [ "Fullmakt" ],
+        "summary" : "Hent en fullmakt for autentisert bruker, inkludert navn dersom det finnes hos Altinn.",
+        "operationId" : "getMe",
+        "responses" : {
+          "200" : {
+            "description" : "Fullmakt for autentisert bruker",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Fullmakt"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/fullmakt/api/v1/hasFullmakt" : {
+      "get" : {
+        "tags" : [ "Fullmakt" ],
+        "summary" : "Sjekk om autentisert person er autorisert til å handle på vegne av aktøren",
+        "operationId" : "hasFullmakt",
+        "parameters" : [ {
+          "name" : "aktor",
+          "in" : "query",
+          "required" : true,
+          "schema" : {
+            "pattern" : "^[0-9]{11}$|^[0-9]{9}$",
+            "type" : "string"
+          }
+        }, {
+          "name" : "useCache",
+          "in" : "query",
+          "schema" : {
+            "type" : "boolean",
+            "default" : true
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Om autentisert person er autorisert til å handle på vegne av aktøren eller ikke",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "boolean"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components" : {
+    "schemas" : {
+      "Fullmakt" : {
+        "type" : "object",
+        "properties" : {
+          "aktor" : {
+            "type" : "string",
+            "description" : "Aktøren som fullmakten gir en bruker tilgang til å handle på vegne av"
+          },
+          "navn" : {
+            "type" : "string",
+            "description" : "Det fulle navne til aktøren"
+          },
+          "type" : {
+            "type" : "string",
+            "description" : "Typene en aktør i en fullmakt kan ha",
+            "enum" : [ "PERSON", "ORGANISASJON" ]
+          }
+        },
+        "description" : "En fullmakt som gir en bruker rett til å handle på vegne av en annen"
+      }
+    }
+  }
+}
