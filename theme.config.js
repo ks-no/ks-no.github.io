@@ -7,7 +7,12 @@ export default {
       <img
         src="https://static.fiks.ks.no/img/ks-logo-quad.svg"
         alt="KS"
-        style={{ width: '50px', height: 'auto', borderRadius: '999px', marginRight: '0.5em' }}
+        style={{
+          width: '50px',
+          height: 'auto',
+          borderRadius: '999px',
+          marginRight: '0.5em',
+        }}
       />
       <span className="text-gray-600 font-normal hidden md:inline">
         Teknisk dokumentasjon for Fiks-platformen
@@ -28,7 +33,7 @@ export default {
         name="og:description"
         content="Teknisk dokumentasjon for Fiks platformen"
       />
-      <link href="https://static.fiks.ks.no" rel="preconnect" crossorigin="" />
+      <link href="https://static.fiks.ks.no" rel="preconnect" crossOrigin="" />
       <link
         rel="apple-touch-icon"
         sizes="180x180"
@@ -53,7 +58,7 @@ export default {
     </>
   ),
   search: {
-    placeholder: 'foo'
+    placeholder: 'foo',
   },
   prevLinks: true,
   nextLinks: true,
@@ -61,5 +66,4 @@ export default {
   footerEditLink: 'Endre denne siden på Github',
   footerText: <>MIT {new Date().getFullYear()} © Nextra.</>,
   unstable_faviconGlyph: '👋',
-  
 }
