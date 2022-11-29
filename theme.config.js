@@ -8,7 +8,7 @@ export default {
         src="https://static.fiks.ks.no/img/ks-logo-quad.svg"
         alt="KS"
         style={{
-          width: '50px',
+          width: '40px',
           height: 'auto',
           borderRadius: '999px',
           marginRight: '0.5em',
@@ -64,6 +64,6 @@ export default {
   nextLinks: true,
   footer: true,
   footerEditLink: 'Endre denne siden på Github',
-  footerText: <>MIT {new Date().getFullYear()} © Nextra.</>,
+  footerText: <>{new Date().getFullYear()} &copy; KS Digitale Fellestjenester.</>,
   unstable_faviconGlyph: '👋',
 }
