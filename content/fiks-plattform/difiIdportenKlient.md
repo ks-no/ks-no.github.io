@@ -3,22 +3,28 @@ title: Hvordan lage klient hos maskinporten
 date: 2020-06-09
 aliases: [/fiks-platform/difiidportenklient]
 ---
-For å ta i bruk maskinporten må dere ha:
+## Ta i bruk maskinporten
+For å ta i bruk maskinporten må man gjøre følgende:
 - Avtale med Digdir om bruk av maskinporten
 - Virksomhetssertifikater for test- og produksjonsmiljøet
 - Sendt e-post til fiks-utvikling@ks.no hvor dere informerer om at det er inngått en avtale med Digdir om bruk av maskinporten og hvilket organisasjonsnummeret det gjelder
+- Opprett maskinporten-klient hos Difi
 
-# Godkjenne bruksvilkår for bruk av maskinporten
-- En må først ha godkjent bruksvilkår hos Digdir. Det har de fleste kommuner: https://samarbeid.digdir.no/digital-postkasse/bruksvilkar-offentlige-kunder/70
+Les videre for beskrivelser om hvordan man kan få dette på plass. 
 
-# Virksomhetssertifikat
-- Dere må ha virksomhetsertifikat fra Commfides eller Buypass. Test sertifikat for test og vanlig for produksjon.
+### Godkjenne bruksvilkår for bruk av maskinporten
 
-# Opprette maskinporten-klient
+En må først ha godkjent bruksvilkår hos Digdir. Det har de fleste kommuner: https://samarbeid.digdir.no/digital-postkasse/bruksvilkar-offentlige-kunder/70
+
+### Virksomhetssertifikat
+Man må ha virksomhetsertifikat fra Commfides eller Buypass. Test sertifikat for test og vanlig for produksjon.
+Husk å registrere virksomhetssertifikat med samme organisasjonsnummer som man vil bruke hos maskinporten og eventuelt tjenster hos KS som f.eks. [Fiks-Protokoll](https://developers.fiks.ks.no/fiks-plattform/tjenester/fiksprotokoll/) og [Fiks-IO](https://developers.fiks.ks.no/fiks-plattform/tjenester/fiksprotokoll/fiksio/).
+
+### Opprette maskinporten-klient
 - Husk å sende e-post til fiks-utvikling@ks.no med organisasjonsnummeret. Det er mulig å fullføre opprettelsen av maskinport-klient uten at dette er på plass, men det må etterregistreres for å få klienten til å virke på Fiks-plattformen.
 - Gå til https://selvbetjening-samarbeid-prod.difi.no/
-- logg inn
-- velg "Gå til integrasjoner", for ver2 for test. Produksjon for prod.
+- Logg inn
+- Velg "Gå til integrasjoner", for ver2 for test. Produksjon for prod.
  ![Idporten](../images/difi-selvbetjening1.png "")
 - velg "Ny integrasjon"
  ![Idporten](../images/difi-selvbetjening2.png "")
