@@ -18,7 +18,8 @@ Fiks IO tilbyr:
 * _Sending av store filer_: Fiks IO integrerer mot [Fiks Dokumentlager]({{< ref "dokumentlager.md" >}}) for å støtte sending av store filer, helt opp til dokumentlagers grense på fem gigabyte. 
 
 Merk at Fiks-IO har ikke leveringsgaranti. Det betyr ikke at meldingene kan bli borte i Fiks-IO køene, men vi kan ikke garantere 100% at meldingen går vellykket fra avsender til mottaker da noe f.eks. kan gå galt i håndtering av meldingene.
-For eksempel kan en melding bli markert som lest (ack) av en mottaker før den har blitt håndtert helt ferdig og dermed kan ikke meldingen hentes på nytt. 
+For eksempel kan en melding bli markert som lest (ack) av en mottaker før den har blitt håndtert helt ferdig og dermed kan ikke meldingen hentes på nytt.
+Derfor må mottaker- og avsendersystem lages slik at de håndterer at en melding kan forsvinne underveis.
 
 ### Hvordan tar man i bruk Fiks IO?
 [Fiks Protokoll](https://ks-no.github.io/fiks-plattform/tjenester/fiksprotokoll) oppretter Fiks IO konto og administrere meldingstyper. Dersom Fiks Protokoll benyttes, er det ikke behov for å sette opp egen Fiks IO konto. Protokoll Konto vil være en utvidelse av Fiks IO konto, og kan benyttes for å sette opp Fiks IO klient.
@@ -137,7 +138,7 @@ Disse tidsavbrudd-meldingene inneholder ingen body, men kun [headere](#Headere-o
 Meldingstype: `no.ks.fiks.io.feilmelding.serverfeil.v1`
 
 Hvis man får denne Fiks-IO serverfeil meldingen tilbake så betyr det at noe har gått galt og Fiks-IO har håndtert det. 
-Akkurat nå sendes meldingen når det har vært forsøkt levert 3 ganger. F.eks. mottaker har hentet ned meldingen uten å “acke” meldingen 3 ganger (forsøkt dokumentert her), eller at mottaker har nacket med requeue 3 ganger.
+Akkurat nå sendes meldingen når det har vært forsøkt levert 3 ganger. F.eks. mottaker har hentet ned meldingen uten å “acke” meldingen 3 ganger, eller at mottaker har nacket med requeue 3 ganger.
 
 Merk at de fleste protokollene har også en serverfeil meldingstype som kan sendes fra mottaker av din melding. 
 Hvis man får protokollens serverfeil melding tilbake, f.eks. for Fiks-Arkiv med meldingstypen `no.ks.fiks.arkiv.v1.feilmelding.serverfeil`, så vil det bety at mottaker feilet og sendte denne meldingen kontrollert tilbake med en mulighet for å beskrive hva som gikk galt (forhåpentligvis acket meldingen og sendte denne serverfeil meldingen tilbake).
