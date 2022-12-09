@@ -17,6 +17,9 @@ Fiks IO tilbyr:
 * _Levetid på meldinger_: En melding har en default levetid på 7 dager med mindre avsender setter det selv. Minste TTL (se mer om dette lenger nede) man kan sette er 1 sekund.
 * _Sending av store filer_: Fiks IO integrerer mot [Fiks Dokumentlager]({{< ref "dokumentlager.md" >}}) for å støtte sending av store filer, helt opp til dokumentlagers grense på fem gigabyte. 
 
+Merk at Fiks-IO har ikke leveringsgaranti. Det betyr ikke at meldingene kan bli borte i Fiks-IO køene, men vi kan ikke garantere 100% at meldingen går vellykket fra avsender til mottaker da noe f.eks. kan gå galt i håndtering av meldingene.
+For eksempel kan en melding bli markert som lest (ack) av en mottaker før den har blitt håndtert helt ferdig og dermed kan ikke meldingen hentes på nytt. 
+
 ### Hvordan tar man i bruk Fiks IO?
 [Fiks Protokoll](https://ks-no.github.io/fiks-plattform/tjenester/fiksprotokoll) oppretter Fiks IO konto og administrere meldingstyper. Dersom Fiks Protokoll benyttes, er det ikke behov for å sette opp egen Fiks IO konto. Protokoll Konto vil være en utvidelse av Fiks IO konto, og kan benyttes for å sette opp Fiks IO klient.
 
@@ -29,6 +32,25 @@ Funksjonalitet for å sende og lese meldinger vil typisk bli tilbudt av fagsyste
 ![em fiks-io konto](/images/fiksiokonto.png)
 
 I eksempelet over ser man en konto opprettet for å formidle Digisos meldinger til en kommunes fagsystem for behandlig av sosialsøknader. Det er opprettet en adresse på kontoen, "Digisos", man har konfigurert støtte for meldingsprotokollen "no.nav.digisos.fagsystem.v1", og sagt at dette systemet kan håndtere meldinger for både sikkerhetsnivå tre og fire. 
+
+### Hva trenger du for å komme i gang?
+
+#### Virksomhetssertifikat
+Man må ha et virksomhetssertifikat fra Commfides eller Buypass for å identifisere seg med maskinporten, et for test og et for produksjon. Se avsnitt om [sikkerhet](#sikkerhet) lenger nede.
+Det er viktig at virksomhetssertifikatet er registrert med samme organisasjonsnummer som man registrerer hos maskinporten og hos KS gjennom Fiks-protokoller/Fiks-IO oppsettet.
+
+#### Maskinporten 
+Fiks-IO bruker maskinporten til autentisering. Da må man ha laget en klient hos maskinporten. Se [her](https://developers.fiks.ks.no/fiks-plattform/difiidportenklient/) for hvordan det gjøres. 
+Det er viktig at det gjøres med samme organisasjonsnummer som man har i virksomhetssertifikatet og i Fiks-Protokoller/Fiks-IO oppsettet hos KS.
+
+#### Fiks-protokoll eller Fiks-IO oppsett
+Stort sett vil man bruke [Fiks Protokoll](https://ks-no.github.io/fiks-plattform/tjenester/fiksprotokoll) da man skal kommunisere over Fiks-IO med en av protokollene.
+Se guiden for oppsett av [Fiks Protokoll](https://ks-no.github.io/fiks-plattform/tjenester/fiksprotokoll) for hvordan dette gjøres.
+
+#### Fiks-IO 
+Vi anbefaler å bruke enten java eller .NET klienten som KS tilbyr hvis man er på java eller .NET. 
+Se github prosjektet for [java](https://github.com/ks-no/fiks-io-klient-java) eller [.NET](https://github.com/ks-no/fiks-io-client-dotnet) for hvordan man bruker klienten. 
+
 
 ### Forhold til SvarUt og SvarInn
 Fiks IO er en selvstendig kanal, og er ikke bygget for å være en erstatning for SvarUt/SvarInn, som begge vil bli videreført i sin nåværende form. Bruksområdene til tjenestene kan overlappe, og dette gjør at det noen ganger kan være tvil om SvarUt/SvarInn eller Fiks IO er riktig verktøy for et problem.
@@ -88,19 +110,37 @@ Digisos bruker som nevnt over meldingsprotokollen "no.nav.digisos.fagsystem.v1",
 Ta kontakt med fiks@ks.no om du ønsker å etablere eller gjøre endringer i en protokoll.
 
 ### Levetid på melding og TTL (Time To Live)
-Når man sender en melding via Fiks-IO klienten kan man velge å sette TTL selv på meldingen, men med minimum 1 sekund. Hvis man ikke setter TTL er defaulten 7 dager i Fiks-IO tjenesten. 
+Når man sender en melding via Fiks-IO klienten kan man velge å sette en levetid (TTL) selv på meldingen, men med minimum 1 sekund. 
+Hvis man ikke setter levetid selv blir TTL satt til 7 dager i Fiks-IO tjenesten. 
+
+TTL fungerer slik at den blir trigget når meldingen kommer fremst i køen til mottaker. Dette fører til en svakhet hvis man har meldinger på samme kø med forskjellig TTL.
+
+La oss ta følgende eksempel:
+
+Hvis det er flere meldinger på køen, nr 1 i køen har en TTL på 7 dager, nr 2 har en TTL på 10 sekunder. Mottaker systemet er nede i 1 time.
+Da vil ikke det bli trigget en TTL og sendt en “tidsavbrudd” melding tilbake til avsender (se avsnitt om standardmeldingstyper) før den første meldingen blir konsumert (eller går ut på tid). Altså får man ikke “tidsavbrudd” meldingen tilbake innen forventet tid. Dette betyr at første melding i køen avgjør når man får tidsavbrudd melding tilbake. 
 
 ### Standardmeldingstyper
 
-#### Tidsavbrudd (under utfasing)
-I tillegg til meldinger definert i protokollkatalogen, er det også definert en standard meldingstype som forteller at meldingens TTL har utløpt uten at mottaker har mottat den. 
-Meldingstypen er `no.ks.fiks.kvittering.tidsavbrudd`. Denne meldingen blir sendt til avsender når originalmeldingen kommer fremst i køen til mottaker og TTL er utgått. 
-Dette betyr at meldingen ikke trenger å komme når TTL utløper, men kan komme en stund senere.
-Hvis mottaker er nede, og ikke leser meldinger, vil ikke meldinger bak denne trigge tidsavbrudd-melding før meldingen som er først i køen utløper. 
+Dette er meldingstyper som sendes fra Fiks-IO.
+
+#### Tidsavbrudd 
+Meldingstype: `no.ks.fiks.kvittering.tidsavbrudd`
+
+Denne meldingen forteller at din meldings TTL har utløpt. 
+Denne meldingen blir sendt til avsender når originalmeldingen kommer fremst i køen til mottaker og TTL er utgått. 
+Som beskrevet tidligere betyr dette at man ikke kan si med sikkerhet at man vil få en tidsavbrudd melding når avsendt meldings TTL går ut, da meldingen foran i køen kan ha lenger TTL.
 
 Disse tidsavbrudd-meldingene inneholder ingen body, men kun [headere](#Headere-og-properties-i-meldingsutvekslingen).
 
-__NB! Siden utløp av meldinger ikke vil fungere godt om det ligger flere meldinger på kø vil denne funksjonaliteten fases ut snart. I stedet vil man få en `no.ks.fiks.io.feilmelding.serverfeil.v1` når en melding er avvist tre ganger__
+#### Serverfeil
+Meldingstype: `no.ks.fiks.io.feilmelding.serverfeil.v1`
+
+Hvis man får denne Fiks-IO serverfeil meldingen tilbake så betyr det at noe har gått galt og Fiks-IO har håndtert det. 
+Akkurat nå sendes meldingen når det har vært forsøkt levert 3 ganger. F.eks. mottaker har hentet ned meldingen uten å “acke” meldingen 3 ganger (forsøkt dokumentert her), eller at mottaker har nacket med requeue 3 ganger.
+
+Merk at de fleste protokollene har også en serverfeil meldingstype som kan sendes fra mottaker av din melding. 
+Hvis man får protokollens serverfeil melding tilbake, f.eks. for Fiks-Arkiv med meldingstypen `no.ks.fiks.arkiv.v1.feilmelding.serverfeil`, så vil det bety at mottaker feilet og sendte denne meldingen kontrollert tilbake med en mulighet for å beskrive hva som gikk galt (forhåpentligvis acket meldingen og sendte denne serverfeil meldingen tilbake).
 
 ### Håndtering av store filer
 Fiks IO støtter sending av store filer ved at alle meldinger større enn 5 megabyte mellomlagres i Fiks Dokumentlager, i en dedikert konto som opprettes sammen med Fiks IO kontoen. En referanse til denne lagrede filen blir så sendt over AMQP. Filer sendt på slik måte får en time-to-live i dokumentlager lik time-to-live for meldingen + 24 timer. Etter dette vil de automatisk slettes.
