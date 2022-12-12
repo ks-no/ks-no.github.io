@@ -5,7 +5,7 @@ S3_BUCKET=ks-static-assets
 CLOUDFRONT_ID=EH0YGOZRL8UI3
 
 # Sync to s3
-aws s3 sync out s3://$S3_BUCKET/teknisk-dokumentasjon --delete
+aws s3 sync out s3://$S3_BUCKET/teknisk-dokumentasjon --delete --debug
 
 # Invalidate cloudfront cache
 # Set AWS_PAGER, or else program is not returning exit code, as seen here
