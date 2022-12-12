@@ -135,7 +135,7 @@ Som beskrevet tidligere betyr dette at man ikke kan si med sikkerhet at man vil 
 Disse tidsavbrudd-meldingene inneholder ingen body, men kun [headere](#Headere-og-properties-i-meldingsutvekslingen).
 
 #### Serverfeil
-Meldingstype: `no.ks.fiks.io.feilmelding.serverfeil.v1`
+Meldingstype: `no.ks.fiks.kvittering.serverfeil.v1`
 
 Hvis man får denne Fiks-IO serverfeil meldingen tilbake så betyr det at noe har gått galt og Fiks-IO har håndtert det. 
 Akkurat nå sendes meldingen når det har vært forsøkt levert 3 ganger. F.eks. mottaker har hentet ned meldingen uten å “acke” meldingen 3 ganger, eller at mottaker har nacket med requeue 3 ganger.
