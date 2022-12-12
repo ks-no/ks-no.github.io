@@ -1,6 +1,7 @@
 ---
 title: Folkeregister
 date: 2022-02-18
+aliases: [/fiks-plattform/tjenester/folkeregister/]
 ---
 
 ## Fiks folkeregister
@@ -46,7 +47,6 @@ Du er klar til å [integrere](https://ks-no.github.io/fiks-plattform/integrasjon
 * integrasjon (brukernavn og passord)
 
 ## Roller og dataminimering
-Fiks folkeregister har introdusert roller for å styring av tilgang til FREG. En rolle blir brukt for å begrense opplysninger som kan hentes ut fra Folkeregisteret. Alle forespørsler må gjøres i kontekst av en rolle.  En rolle inneholder begrensninger for hvilke hjemler som er tillatt, hvilke bruksområder den skal brukes til og hvilke informasjonselementer som er tillatt å hente ut fra folkeregisteret.
 
 Skatteetaten har laget en egen side for [dataminimering](https://skatteetaten.github.io/folkeregisteret-api-dokumentasjon/dataminimering/). Rollene får tildelt "parts"/egenskaper (informasjonselementer) fra ut fra dataminimeringsoversikten. En rolle kan bare hente informasjonselementer som er definert i rollen og forsøk på å hente informasjonselementer ut over det som er definert resulterer i en feilmelding.
 
