@@ -1,14 +1,8 @@
 pipeline {
-  options() {
-    disableConcurrentBuilds()
-  }
-
-  tools {
-    nodejs "node-LTS"
-  }
-  
   agent any
-
+  options() { disableConcurrentBuilds() }
+  tools { nodejs "node-LTS" }
+  
   stages {
     stage('install, build, deploy') {
       steps {
