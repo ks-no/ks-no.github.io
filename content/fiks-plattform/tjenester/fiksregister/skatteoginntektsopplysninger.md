@@ -21,18 +21,16 @@ ___For å bruke API-ene, både proxy og vårt overbygg, må rollen som opprettes
 
 APIene er tilgjengelig via Fiks-plattformen som proxy-tjeneste eller via vårt overbygg. ___Hendelseslister er ikke tilgjengelig via vår løsning pr nå.___
 
+## Oppslag via proxy
+Det er mulig å bruke Skatteetatens delingstjeneste for skatte og inntektsopplysninger som en proxy-tjeneste i Fiks register og samtidig benytte seg av roller, rettighetsstyring og dataminimering som Fiks register tilbyr. Oppbygging av URL gjøres så likt som mulig Skatteetatens egen URL. Datamodellen forblir uendret.
+
 URL for proxy-api (GET):
 ```<MILJØ_URL>/skatteetaten/formueinntekt/summertskatt/api/v1/{ROLLE_ID}/{STADIE}/{RETTIGHETSPAKKE}/{INNTEKTSAAR}/{PERSONIDENTIFIKATOR}```
 
-URL for fiks-api (POST):
-```<MILJØ_URL>/register/api/v1/{ROLLE_ID}/summertskattegrunnlag``` Payload ```{"personidentifikatorer":["{PERSONIDENTIFIKATOR}"],"inntektsaar":"{INNTEKTSAAR}"}```
-
-## API-dokumentasjon
+### API-dokumentasjon
 Skatteetaten har lagt ut dokumentasjon her [Summert skattegrunnlag](https://skatteetaten.github.io/datasamarbeid-api-dokumentasjon/reference_summertskattegrunnlag.html) og [Swagger](https://app.swaggerhub.com/apis/Skatteetaten_Deling/summert-skattegrunnlag-api)
 
-Vårt overbygg har [swagger dokumentasjon her](https://editor.swagger.io/?url=https://developers.fiks.ks.no/api/register-api-v1.json)
-
-## Eksempel med bruk av proxy
+### Eksempel
 
 ```json
 {
@@ -62,7 +60,16 @@ Vårt overbygg har [swagger dokumentasjon her](https://editor.swagger.io/?url=ht
 }
 ```
 
-## Eksempel med bruk av Fiks-utvidelse
+## Oppslag via overbygg
+Vi har laget vårt eget overbygg som gir mulighet for å søke på flere personer. Vi søker først om personene har stadie ___OPPGJØR___, dersom de ikke har det søkes det etter ___UTKAST___. Datamodellen inkluderer de samme informasjonelementene (datamodell) som via proxy, i tillegg inkluderer vi visningstekst til hvert teknisk navn, samt henter navn på personene det søkes om, summerer både totalsummer og på poster for inntekt og utgifter.
+
+URL for fiks-api (POST):
+```<MILJØ_URL>/register/api/v1/{ROLLE_ID}/summertskattegrunnlag``` Payload ```{"personidentifikatorer":["{PERSONIDENTIFIKATOR}"],"inntektsaar":"{INNTEKTSAAR}"}```
+
+### API-dokumentasjon
+[Swagger dokumentasjon for overbygg finner du her.](https://editor.swagger.io/?url=https://developers.fiks.ks.no/api/register-api-v1.json) Bruk også dokumentasjon fra Skatteetaten.
+
+### Eksempel med bruk av API-overbygg
 
 ```json
 {
