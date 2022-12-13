@@ -1,6 +1,7 @@
 ---
-title: Skatte og inntektsopplysninger
+title: Skatte- og inntektsopplysninger
 date: 2022-12-02
+aliases: [/fiks-plattform/tjenester/fiksregister/skatteoginntektsopplysninger/]
 ---
 
 | Innbyggertjeneste                         | Gyldige tjenesteområde for rollen | Rettighetspakke            |
