@@ -25,6 +25,9 @@
     "name" : "UtsendingRapport",
     "description" : "API for å håndtere funksjonalitet for sending av sms og epost "
   }, {
+    "name" : "Events",
+    "description" : "API for å håndtere funksjonalitet for sending av sms og epost"
+  }, {
     "name" : "Utsending",
     "description" : "API for å håndtere funksjonalitet for sending av sms og epost "
   } ],
@@ -544,6 +547,82 @@
             "description" : "Systemfeil",
             "content" : {
               "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/varsling/api/v2/events/{utsendelseId}/krrProgresjon" : {
+      "get" : {
+        "tags" : [ "Events" ],
+        "description" : "Brukes til å lese progresjon for krr oppslag på en utsendelse",
+        "operationId" : "lesKrrProgresjon",
+        "parameters" : [ {
+          "name" : "utsendelseId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Ok",
+            "content" : {
+              "text/event-stream" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/UtsendelseEvent"
+                }
+              }
+            }
+          },
+          "default" : {
+            "description" : "Noe gikk galt",
+            "content" : {
+              "text/event-stream" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/varsling/api/v2/events/{utsendelseId}/utsendelseProgresjon" : {
+      "get" : {
+        "tags" : [ "Events" ],
+        "description" : "Brukes til å lese progresjon for en utsendelse",
+        "operationId" : "lesUtsendelseProgresjon",
+        "parameters" : [ {
+          "name" : "utsendelseId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Ok",
+            "content" : {
+              "text/event-stream" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/UtsendelseEvent"
+                }
+              }
+            }
+          },
+          "default" : {
+            "description" : "Noe gikk galt",
+            "content" : {
+              "text/event-stream" : {
                 "schema" : {
                   "$ref" : "#/components/schemas/ErrorMessage"
                 }
@@ -1740,6 +1819,72 @@
             "description" : "Antall sms feilet",
             "format" : "int32"
           }
+        }
+      },
+      "HendelseKrrOppslagProgresjon" : {
+        "required" : [ "antallBehandlet", "antallTotalt", "ferdigBehandlet", "type" ],
+        "type" : "object",
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/UtsendelseEvent"
+        }, {
+          "type" : "object",
+          "properties" : {
+            "antallBehandlet" : {
+              "type" : "integer",
+              "format" : "int32"
+            },
+            "antallTotalt" : {
+              "type" : "integer",
+              "format" : "int32"
+            },
+            "ferdigBehandlet" : {
+              "type" : "boolean"
+            }
+          }
+        } ]
+      },
+      "HendelseUtsendelseProgresjon" : {
+        "required" : [ "antallFeilet", "antallMottakere", "antallSendt", "type" ],
+        "type" : "object",
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/UtsendelseEvent"
+        }, {
+          "type" : "object",
+          "properties" : {
+            "antallSendt" : {
+              "type" : "integer",
+              "format" : "int32"
+            },
+            "antallLevert" : {
+              "type" : "integer",
+              "format" : "int32"
+            },
+            "antallFeilet" : {
+              "type" : "integer",
+              "format" : "int32"
+            },
+            "antallMottakere" : {
+              "type" : "integer",
+              "format" : "int32"
+            }
+          }
+        } ]
+      },
+      "UtsendelseEvent" : {
+        "required" : [ "type", "utsendelseId" ],
+        "type" : "object",
+        "properties" : {
+          "utsendelseId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "type" : {
+            "type" : "string",
+            "enum" : [ "HendelseKrrOppslagProgresjon", "HendelseUtsendelseProgresjon" ]
+          }
+        },
+        "discriminator" : {
+          "propertyName" : "type"
         }
       },
       "MottakerRespons" : {
