@@ -4,7 +4,7 @@ set -e
 S3_BUCKET=ks-static-assets
 CLOUDFRONT_ID=EH0YGOZRL8UI3
 
-git clone https://github.com/matcornic/hugo-theme-learn.git themes/hugo-theme-learn
+# git clone https://github.com/matcornic/hugo-theme-learn.git themes/hugo-theme-learn
 hugo
 
 # Sync to s3
