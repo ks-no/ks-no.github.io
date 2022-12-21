@@ -1,0 +1,227 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Fiks register oppslag service",
+    "description": "Rolleoppslag for Fiks register",
+    "contact": {
+      "name": "KS Fiks brukerstøtte",
+      "url": "https://www.ks.no/fagomrader/digitalisering/utviklingsprosjekter",
+      "email": "fiks-utvikling@ks.no"
+    },
+    "version": "v1"
+  },
+  "servers": [
+    {
+      "url": "https://api.fiks.ks.no",
+      "description": "KS Fiks API host",
+      "variables": {}
+    },
+    {
+      "url": "https://api.fiks.test.ks.no",
+      "description": "KS Fiks TEST API host",
+      "variables": {}
+    }
+  ],
+  "paths": {
+    "/register/api/v1/oppslag/roller/{id}": {
+      "get": {
+        "operationId": "oppslagRolleMedId",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "description": "Unik ID til den rollen man vil hente",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Fant rolle",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Rolle"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Rollen finnes ikke eller tilgang mangler",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "rolleoppslag"
+        ]
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "fiksBearerToken": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    },
+    "schemas": {
+      "Rolle": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "ressursId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "navn": {
+            "type": "string"
+          },
+          "tjenesteomraade": {
+            "$ref": "#/components/schemas/Tjenesteomraade"
+          },
+          "register": {
+            "$ref": "#/components/schemas/Registre"
+          },
+          "tjenester": {
+            "type": "array",
+            "uniqueItems": true,
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "id",
+          "ressursId",
+          "navn",
+          "tjenesteomraade",
+          "register"
+        ]
+      },
+      "Tjenesteomraade": {
+        "type": "object",
+        "properties": {
+          "kode": {
+            "$ref": "#/components/schemas/KodeFelt"
+          },
+          "kanHenteTaushetsbelagtInformasjon": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "kode",
+          "kanHenteTaushetsbelagtInformasjon"
+        ]
+      },
+      "Registre": {
+        "type": "object",
+        "description": "Registre som rollen har tilgang til",
+        "readOnly": true,
+        "minProperties": 1,
+        "properties": {
+          "folkeregister": {
+            "$ref": "#/components/schemas/Folkeregister"
+          },
+          "kontaktregister": {
+            "$ref": "#/components/schemas/Kontaktregister"
+          },
+          "summertskattegrunnlag": {
+            "$ref": "#/components/schemas/Summertskattegrunnlag"
+          }
+        }
+      },
+      "Folkeregister": {
+        "type": "object",
+        "readOnly": true,
+        "properties": {
+          "bruksomraader": {
+            "$ref": "#/components/schemas/FolkeregisterBruksomraader"
+          },
+          "kanBrukesPaaSokeside": {
+            "type": "boolean"
+          },
+          "minimering": {
+            "$ref": "#/components/schemas/FolkeregisterMinimeringDefinisjon"
+          }
+        },
+        "required": [
+          "bruksomraader",
+          "kanBrukesPaaSokeside",
+          "minimering"
+        ]
+      },
+      "FolkeregisterBruksomraader": {
+        "type": "object",
+        "properties": {
+          "innbyggerliste": {
+            "type": "boolean"
+          },
+          "hendelserliste": {
+            "type": "boolean"
+          },
+          "soek": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "innbyggerliste",
+          "hendelserliste",
+          "soek"
+        ]
+      },
+      "FolkeregisterMinimeringDefinisjon": {
+        "properties": {
+          "parts": {
+            "type": "array",
+            "uniqueItems": true,
+            "items": {
+              "$ref": "#/components/schemas/KodeFelt"
+            }
+          }
+        },
+        "required": [
+          "parts"
+        ]
+      },
+      "Kontaktregister": {
+        "readOnly": true,
+        "properties": {
+          "tilgjengelig": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "tilgjengelig"
+        ]
+      },
+      "Summertskattegrunnlag": {
+        "readOnly": true,
+        "properties": {
+          "rettighetspakke": {
+            "$ref": "#/components/schemas/KodeFelt"
+          }
+        },
+        "required": [
+          "rettighetspakke"
+        ]
+      },
+      "KodeFelt": {
+        "type": "string",
+        "pattern": "^[A-Z]+$"
+      }
+    }
+  }
+}
