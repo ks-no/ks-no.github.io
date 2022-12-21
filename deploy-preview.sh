@@ -4,8 +4,7 @@ set -e
 S3_BUCKET=ks-static-assets
 CLOUDFRONT_ID=EH0YGOZRL8UI3
 
-# git clone https://github.com/matcornic/hugo-theme-learn.git themes/hugo-theme-learn
-hugo
+hugo -b https://static.fiks.ks.no/teknisk-dokumentasjon/
 
 # Sync to s3
 aws s3 sync public s3://$S3_BUCKET/teknisk-dokumentasjon --delete
