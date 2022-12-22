@@ -1,5 +1,5 @@
 ---
-title: Hvordan lage klient hos maskinporten
+title: Maskinsporten
 date: 2020-06-09
 aliases: [/fiks-platform/difiidportenklient]
 ---
