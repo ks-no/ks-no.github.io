@@ -66,7 +66,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LagretRolleDefinisjon"
+                  "$ref": "#/components/schemas/Rolle"
                 }
               }
             }
@@ -95,67 +95,6 @@
       }
     },
     "/register/api/v1/konfigurasjon/{fiksOrgId}/roller/{id}": {
-      "get": {
-        "operationId": "hentRolleMedFiksOrgIdOgRolleId",
-        "parameters": [
-          {
-            "in": "path",
-            "name": "fiksOrgId",
-            "description": "Id til organisasjonen som skal eie rollen",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          },
-          {
-            "in": "path",
-            "name": "id",
-            "description": "Unik ID til den rollen man vil hente",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Fant rollen",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/LagretRolleDefinisjon"
-                }
-              }
-            }
-          },
-          "403": {
-            "description": "Mangler tilgang til rolle",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Rollen finnes ikke",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
-                }
-              }
-            }
-          }
-        },
-        "tags": [
-          "oppslag",
-          "konfigurasjon"
-        ]
-      },
       "delete": {
         "operationId": "slettRolle",
         "parameters": [
@@ -189,7 +128,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LagretRolleDefinisjon"
+                  "$ref": "#/components/schemas/Rolle"
                 }
               }
             }
@@ -256,7 +195,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LagretRolleDefinisjon"
+                  "$ref": "#/components/schemas/Rolle"
                 }
               }
             }
@@ -287,44 +226,32 @@
         ]
       }
     },
-    "/register/api/v1/konfigurasjon/roller/{id}": {
-      "get": {
-        "operationId": "hentRolleMedRolleId",
-        "parameters": [
-          {
-            "in": "path",
-            "name": "id",
-            "description": "Unik ID til den rollen man vil hente",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid"
+    "/register/api/v1/konfigurasjon/roller": {
+      "post": {
+        "operationId": "hentAktiveRollerForTjeneste",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FinnAktivRollerForTjenesteRequest"
+              }
             }
-          }
-        ],
+          },
+          "required": true
+        },
         "responses": {
           "200": {
-            "description": "Fant rollen",
+            "description": "Roller som bruker har tilgang til",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LagretRolleDefinisjon"
+                  "$ref": "#/components/schemas/RolleListe"
                 }
               }
             }
           },
           "403": {
-            "description": "Mangler tilgang til rolle",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Rollen finnes ikke",
+            "description": "Mangler tilgang til å lese roller på tvers av orgs",
             "content": {
               "application/json": {
                 "schema": {
@@ -335,8 +262,7 @@
           }
         },
         "tags": [
-          "oppslag",
-          "konfigurasjon"
+          "oppslag"
         ]
       }
     }
@@ -381,7 +307,7 @@
           "status"
         ]
       },
-      "LagretRolleDefinisjon": {
+      "Rolle": {
         "type": "object",
         "properties": {
           "id": {
@@ -428,6 +354,37 @@
           "registre",
           "aktiv",
           "fiksOrgId"
+        ]
+      },
+      "RolleListe": {
+        "type": "object",
+        "description": "En liste med roller som resultat av et oppslag",
+        "properties": {
+          "roller": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Rolle"
+            }
+          }
+        },
+        "required": [
+          "roller"
+        ]
+      },
+      "FinnAktivRollerForTjenesteRequest": {
+        "type": "object",
+        "properties": {
+          "tjeneste": {
+            "$ref": "#/components/schemas/KodeFelt"
+          },
+          "fiksOrgId": {
+            "description": "Brukes for å begrense treff per fiksOrgId",
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "required": [
+          "tjeneste"
         ]
       },
       "RegisterDefinisjon": {
@@ -581,11 +538,17 @@
       "NavnFelt": {
         "type": "string",
         "pattern": "^[A-ZÆØÅa-zæøå0-9ÁáÀàÂâÉéÈèÊêÍíÌìÎîÓóÒòÔôÚúÙùÛûÝýÄäËëÏïÖöÜü,.!?\\-:;/\\\\'()&+*=%§]+[A-ZÆØÅa-zæøå0-9ÁáÀàÂâÉéÈèÊêÍíÌìÎîÓóÒòÔôÚúÙùÛûÝýÄäËëÏïÖöÜü ,.!?\\-:;/\\\\'()&+*=%§]*[A-ZÆØÅa-zæøå0-9ÁáÀàÂâÉéÈèÊêÍíÌìÎîÓóÒòÔôÚúÙùÛûÝýÄäËëÏïÖöÜü,.!?\\-:;/\\\\'()&+*=%§]+$",
+        "minLength": 2,
         "maxLength": 400
       },
       "BeskrivelseFelt": {
         "type": "string",
         "maxLength": 400
+      },
+      "KodeFelt": {
+        "type": "string",
+        "minLength": 2,
+        "pattern": "^[A-Z]+$"
       }
     }
   }
