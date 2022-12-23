@@ -1,5 +1,5 @@
 ---
-title: Digisos
+title: Fiks digisos
 date: 2020-10-27
 aliases: [/fiks-platform/tjenester/digisos/]
 ---
