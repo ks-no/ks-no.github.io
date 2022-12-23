@@ -8,7 +8,7 @@ KS Fiks er en felles tjenesteplattform for norske kommuner og fylkeskommuner. Fo
 Plattformen består av tre hoveddeler:
 
 ### min.kommune.no
-Dette er hjemmet for innbyggerrettede tjenester på Fiks-plattformen. I dag tilbys flere tjenester. De fleste er drevet av søkemotoren [Fiks Innsyn]({{< ref "innsyn.md" >}}). Det vil komme flere tjenester forløpende på min kommune.
+Dette er hjemmet for innbyggerrettede tjenester på Fiks-plattformen. I dag tilbys flere tjenester. De fleste er drevet av søkemotoren [Fiks Innsyn](https://developer.fiks.ks.no/tjenester/minkommune/innsyn). Det vil komme flere tjenester forløpende på min kommune.
 
 ### forvaltning.fiks.ks.no
 Her finnes tjenester som retter seg mot kommuneansatte og andre som skal administrere eller bruke applikasjoner som Fiks tilbyr. Her finnes i dag Fiks Konfigurasjon, men andre tjenester vil raskt komme til.
@@ -19,7 +19,7 @@ Dette er api-laget for Fiks-plattformen. Her finner du webservicer i form av RES
 Api-spesifikasjoner finner du lenket fra den enkelte tjeneste, se "tjenester" eller "tjenester under utvikling".
 
 
-![fiks oversikt](images/fiks_diagram.png "Fiks oversikt")
+![fiks oversikt](https://developer.fiks.ks.no/tjenester/images/fiks_diagram.png "Fiks oversikt")
 
 
 
