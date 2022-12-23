@@ -4,22 +4,31 @@ date: 2020-10-27
 aliases: [/fiks-platform/tjenester/digisos/]
 ---
 
-Fiks Digisos er en tjeneste for å tilrettelegge for kommunal behandling av sosialsøknader via et brukergrensesnitt på nav.no.
+# Kort beskrivelse
+Fiks Digisos er en tjeneste for å tilrettelegge for kommunal behandling av sosialsøknader via et brukergrensesnitt på [nav.no](https://www.nav.no).
 
 Fiks Digisos tilbyr:
 
 * Enkelt oppsett for den enkelte kommune gjennom Fiks Konfigurasjon.
-* Innbygger får fortløpende oppdatering på saksgang, tilgjengelig på nav.no.
+* Innbygger får fortløpende oppdatering på saksgang, tilgjengelig på [nav.no](https://www.nav.no).
 * Innbygger får tilgang til alle dokumenter og mulighet til å sende inn nye søknader basert på data fra tidligere søknader.
 * Ansatte/brukerstøtte i NAV kan se utvalgte deler av saken via NAV sine systemer.
 
-## Hvordan tar man i bruk Fiks Digisos?
-     
+# Tilgjengelige grensesnitt
+| Grensesnitt | Støtte |
+| Web portal | Ja |
+| Maskin til maskin | Ja |
+
+
+# Beskrivelse av tjenesten
+  
 For at fagsystemet skal få tilgang til å motta sosialsøknader og sende saksoppdateringer til NAV via Digisos-API-et for en kommune, må kommunen først konfigurere og aktivere tjenesten Digisos gjennom [Fiks Konfigurasjon](https://forvaltning.fiks.ks.no/fiks-konfigurasjon/tjenester), som viser en veiviser for å sette opp tjenesten. Her konfigurerer man opp hvordan kommunens fagsystem skal motta søknader, enten via Fiks IO (anbefalt kanal) og/eller SvarUt. Det må også oppgis kontaktpersoner med minst èn epost for både en fagansvarlig og en teknisk ansvarlig, som kan bli kontaktet ved behov. 
 
-Etter at veiviseren er fullført må man inne på Digisos-tjenesten gi fagsystemet sin integrasjon tilgang til å bruke Digisos. For mer informasjon om utvikling og opprettelse av integrasjoner for kommunen sitt fagsystemet, se avsnittet [Integrasjonsutvikling Fagsystem](https://ks-no.github.io/fiks-plattform/tjenester/digisos/#integrasjonsutvikling-fagsystem).  
+Etter at veiviseren er fullført må man inne på Digisos-tjenesten gi fagsystemet sin integrasjon tilgang til å bruke Digisos. For mer informasjon om utvikling og opprettelse av integrasjoner for kommunen sitt fagsystemet, se avsnittet [Integrasjonsutvikling Fagsystem](https://ks-no.github.io/tjenester/digisos/#integrasjonsutvikling-fagsystem).  
 
-## Hvordan virker Fiks Digisos?
+
+## Teknisk oversiktsskisse
+[## Hvordan virker Fiks Digisos?]: #
 
 Digisos består av flere komponenter fra Fiks-plattformen, der Fiks Digisos er hovedkomponenten som bruker andre komponenter:
 
@@ -28,6 +37,9 @@ Digisos består av flere komponenter fra Fiks-plattformen, der Fiks Digisos er h
 - Fiks IO: Brukes som leveringskanal for søknader fra NAV til kommunene, som er en sikker kanal for maskin-til-maskin integrasjon, hvor søknadene blir meldingskryptert med mottakers offentlige nøkkel.
 - SvarUt/SvarInn: Brukes som en alternativ leveringskanal for søknader fra NAV til kommunene, med leveranse med print dersom kommunens fagsystem ikke klarer å motta digitale forsendelser via SvarInn.
 
+![fiks_digisos](/images/fiks_digisos.png "Fiks Digisos")
+
+## Teknisk beskrivelse av tjenesten
 ### Flyt
 
 1. Innbygger fyller ut søknad om sosialstønad på nav.no, som sender denne til Fiks Digisos gjennom et synkront http api.
@@ -44,7 +56,7 @@ Digisos består av flere komponenter fra Fiks-plattformen, der Fiks Digisos er h
 5. Om fagsystemet avviser eller unnlater å bekrefte mottak av saken via Fiks IO vil SvarUt benyttes som alternativ kanal, der det inkluderes en fil som inneholder både NAV og Fiks Digisos sin id for saken. I praksis betyr dette at meldingen blir sendt til kommunens SvarInn mottakersystem, evt. sendt til print og postlagt ved problemer med mottak til kommunens fagsystem.
 6. Søknader mottatt via SvarUt kan også manuelt lastes ned av kommunen via SvarUt-brukergrensesnittet.
 
-![fiks_digisos](/images/fiks_digisos.png "Fiks Digisos")
+
 
 ### Sikkerhet
 Systemet er lagt opp slik at NAV ikke trenger å lagre data, disse fjernes fra NAVs systemer når søknaden sendes til Fiks. All tilstand lagres dermed på Fiks-plattformen og hos kommunen. Innsending av søknad kan utelukkende gjøres med brukerens ID-Porten autentisering.
@@ -56,7 +68,7 @@ Innbygger har tilgang til alle sine opplastede dokumenter, der et begrenset utva
 ## Integrasjonsutvikling Fagsystem
 
 Det anbefales å lese gjennom dokumentasjonen for generell [integrasjonsutvikling mot Fiks]({{< ref "integrasjoner.md" >}}), der siste avsnitt, "Hvordan komme i gang med utvikling", er svært nyttig. På denne siden beskrives blant annet oppsett av IDPorten og autentisering mot Fiks, der fagsystemet bruker Integrasjon som autentiseringsmetode. Fiks tilbyr både en [Java-klient](https://github.com/ks-no/fiks-maskinporten) og en [.net-klient](https://github.com/ks-no/fiks-maskinporten-client-dotnet) som kan brukes for å generere access token fra Maskinporten (IDPorten).
-Avsnittet [Konfigurasjon](https://ks-no.github.io/fiks-plattform/integrasjoner/#konfigurasjon) beskriver hvordan en integrasjon opprettes og tilknyttes en tjeneste (Digisos). Integrasjons-id-en og passordet generert her må dermed brukes sammen med access token fra Maskinporten for å få tilgang til Digisos-API-et.
+Avsnittet [Konfigurasjon](https://ks-no.github.io/felles/integrasjoner/#konfigurasjon) beskriver hvordan en integrasjon opprettes og tilknyttes en tjeneste (Digisos). Integrasjons-id-en og passordet generert her må dermed brukes sammen med access token fra Maskinporten for å få tilgang til Digisos-API-et.
 
 ### Mottak av søknader
 
@@ -80,11 +92,11 @@ For ettersendelse, ```no.nav.digisos.ettersendelse.v1```, som definert i [json-s
 For ny søknad, ```no.nav.digisos.soknad.mottatt.v1```, med tom body.\
 For ettersendelse, ```no.nav.digisos.ettersendelse.mottatt.v1```, med tom body.
 
-For mer informasjon om Fiks IO, se [dokumentasjon for Fiks IO](https://ks-no.github.io/fiks-plattform/tjenester/fiksprotokoll/fiksio/).
+For mer informasjon om Fiks IO, se [dokumentasjon for Fiks IO](https://ks-no.github.io/tjenester/fiksprotokoll/fiksio/).
 
 #### SvarInn/SvarUt
 
-Ved bruk av SvarUt som leveringskanal må fagsystemet støtte mottak av metadata-filen som definert ovenfor, [Mottak av søknader](https://ks-no.github.io/fiks-plattform/tjenester/digisos/#mottak-av-søknader). Denne metadata filen vil være lagt med selve SvarUt forsendelsen, kalt ```forsendelseMetadata.json```.\
+Ved bruk av SvarUt som leveringskanal må fagsystemet støtte mottak av metadata-filen som definert ovenfor, [Mottak av søknader](https://ks-no.github.io/tjenester/digisos/#mottak-av-søknader). Denne metadata filen vil være lagt med selve SvarUt forsendelsen, kalt ```forsendelseMetadata.json```.\
 Søknad: Eksempel på innholdet i ```forsendelseMetadata.json``` for søknader er definert i [søknad-metadata-eksempel](https://github.com/ks-no/fiks-io-meldingstype-katalog/blob/prod/schema/no.nav.digisos.soknad.v1/examples/litenDigisosMelding.json).\
 Ettersendelse: Eksempel på innholdet i ```forsendelseMetadata.json``` for ettersendelser er definert i [ettersendelse-metadata-eksempel](https://github.com/ks-no/fiks-io-meldingstype-katalog/blob/prod/schema/no.nav.digisos.ettersendelse.v1/examples/litenDigisosMelding.json).
 
@@ -118,7 +130,7 @@ Mottak av ettersendelse tilknyttet samme søknad, med tilhørende fil ```forsend
 - Dersom søknaden ble sendt til SvarUt/SvarInn vil feltet `sendtKanal` ha verdi `SVARUT`. Feltet `id` vil da tilsvare Forsendelses-`id`-en til den orginal søknadens sin SvarUt/SvarInn forsendelsen.
 - Dersom fagsystemet bruker Fiks IO i kombinasjon med SvarUt/SvarInn kan det oppstå situasjoner hvor søknad blir sendt til Fiks IO, men ettersendelsen blir sendt til SvarUt/SvarInn. Da vil feltet `sendtKanal` ha verdi `FIKS_IO`. Feltet `id` vil være meldingsId-en til Fiks IO forsendelsen. 
 
-For mer informasjon om SvarUt/SvarInn, se [dokumentasjon for SvarUt](https://ks-no.github.io/svarut/). 
+For mer informasjon om SvarUt/SvarInn, se [dokumentasjon for SvarUt](https://ks-no.github.io/tjenester/svarut/). 
 
 ### Sak oppdatering fra Fagsystem
  
@@ -139,7 +151,7 @@ Digisos API-et har vi eksponert i en uavhengig tredjeparts-applikasjon, "Swagger
 
 **Referering til filer**
 
-Filer må lastes opp på forhånd, da digisos-soker.json inneholder referanse-id til dokumentene som kan linkes til søkeren, som gjelder både for filer som lastes opp til Fiks Dokumentlager via Digios-api (som beskrevet under) eller som er [sendt via SvarUt](https://ks-no.github.io/svarut/integrasjon/forsendelsesservicev10/).
+Filer må lastes opp på forhånd, da digisos-soker.json inneholder referanse-id til dokumentene som kan linkes til søkeren, som gjelder både for filer som lastes opp til Fiks Dokumentlager via Digios-api (som beskrevet under) eller som er [sendt via SvarUt](https://ks-no.github.io/tjenester/svarut/integrasjon/forsendelsesservicev10/).
 
 Det anbefales å laste opp alle filene via Digisos-api (som beskrevet under, "Opplasitng av filer"), da vil følgende gjelde:
 
@@ -211,7 +223,7 @@ For generell integrasjonsutvikling mot Fiks, se [Integrasjonsutvikling]({{< ref 
 
 Soknad api [(api-spec)](https://editor.swagger.io/?url=https://developers.fiks.ks.no/api/digisos-api-v1.json)
 
-For innsending av søknad/ettersendelse brukes person-integrasjon autentisering med OIDC, se [Integrasjonsutvikling]({{< ref "integrasjoner.md" >}}) for mer detaljer.
+For innsending av søknad/ettersendelse brukes person-integrasjon autentisering med OIDC, se [Integrasjonsutvikling](https://ks-no.github.io/felles/integrasjoner) for mer detaljer.
 
 **Innsending av ny søknad**
 
