@@ -37,7 +37,7 @@ Digisos består av flere komponenter fra Fiks-plattformen, der Fiks Digisos er h
 - Fiks IO: Brukes som leveringskanal for søknader fra NAV til kommunene, som er en sikker kanal for maskin-til-maskin integrasjon, hvor søknadene blir meldingskryptert med mottakers offentlige nøkkel.
 - SvarUt/SvarInn: Brukes som en alternativ leveringskanal for søknader fra NAV til kommunene, med leveranse med print dersom kommunens fagsystem ikke klarer å motta digitale forsendelser via SvarInn.
 
-![fiks_digisos](/images/fiks_digisos.png "Fiks Digisos")
+![fiks_digisos](https://ks-no.github.io/images/fiks_digisos.png "Fiks Digisos")
 
 ## Teknisk beskrivelse av tjenesten
 ### Flyt
