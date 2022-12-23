@@ -3,7 +3,7 @@ title: Fiks Protokoll
 date: 2022-07-05
 aliases: [/fiks-platform/tjenester/fiksprotokoll]
 ---
-Fiks Protokoll er en meldingstandard for meldinger som sendes over [Fiks IO](https://ks-no.github.io/fiks-plattform/tjenester/fiksprotokoll/fiksio), for sikker maskin-til-maskin integrasjon. 
+Fiks Protokoll er en meldingstandard for meldinger som sendes over [Fiks IO](https://ks-no.github.io/tjenester/fiksprotokoll/fiksio), for sikker maskin-til-maskin integrasjon. 
 Det består både av et sett av protokoller med meldingstyper, f.eks. Fiks Arkiv og Fiks Plan, og et miljø for å administrere systemer som implementerer disse protokollene over Fiks IO.
 
 ### Termer
@@ -15,8 +15,8 @@ Det består både av et sett av protokoller med meldingstyper, f.eks. Fiks Arkiv
 * Protokoll - Definisjon av en spesifikk protokoll, med meldingstyper og parter. F.eks. no.ks.fiks.arkiv.v1 og no.ks.fiks.plan.v1 
 * Meldingstype - Meldinger som sendes må ha en meldingstype. Gyldige meldingstyper defineres av protokollen, og vil typisk måtte følge meldingsskjema definert i enten xsd eller json skjema. 
 * Protokollpart - Meldinger i Fiks Protokoll sendes mellom parter av protokollen. F.eks. fagsystem og arkiv, eller eByggesak og matrikkelklient. Noen protokollen vil definere mer spesifike parter, som no.ks.fiks.arkiv.v1.arkiv.arkivering og no.ks.fiks.arkiv.v1.fagsystem.arkivering som henholdsvis kan ta imot og sende arkiveringsmeldinger, men ikke tillater søk.
-* Integrasjon - På Fiks Plattformen brukes integrasjoner for maskinpålogging sammen med maskinporten. Hvert system får opprettet en integrasjon som brukes for alle kontoer under systemet. Integrasjonen vil kunne sende og motta meldinger, og dersom valgt, vil også kunne konfigurere systemet og opprette nye kontoer. [Les mer her](https://ks-no.github.io/fiks-plattform/integrasjoner/)
-* Fiks IO - Dette er kanalen som brukes for å sende meldinger i Fiks Protokoll.  [Les mer her](https://ks-no.github.io/fiks-plattform/tjenester/fiksprotokoll/fiksio)
+* Integrasjon - På Fiks Plattformen brukes integrasjoner for maskinpålogging sammen med maskinporten. Hvert system får opprettet en integrasjon som brukes for alle kontoer under systemet. Integrasjonen vil kunne sende og motta meldinger, og dersom valgt, vil også kunne konfigurere systemet og opprette nye kontoer. [Les mer her](https://ks-no.github.io/felles/integrasjoner/)
+* Fiks IO - Dette er kanalen som brukes for å sende meldinger i Fiks Protokoll.  [Les mer her](https://ks-no.github.io/tjenester/fiksprotokoll/fiksio)
 * Fiks IO-konto - Meldinger sendes og mottas over Fiks IO med en Fiks IO-konto. Fiks IO-kontoen har samme ID som protokollkontoen. Protokollkontoen er wrapper rundt Fiks IO-kontoen for å muliggjøre tilgangsstyring i Fiks Protokoll, og validering av meldinger.
 
 
@@ -25,9 +25,9 @@ Først må Fiks Protokoll-tjenesten tas i bruk for kommunen og avtale må unders
 
 Deretter må det opprettes et system i Fiks Protokoll. Dette må gjøres i grensesnittet i Fiks Forvaltning av en administrator på Fiks Protokoll (dvs. en administrator i Fiks Organisasjonen, eller personer som er blitt gitt administratortilgang på Fiks Protokoll).
 
-![fiks protokoll](https://ks-no.github.io/fiks-plattform/images/forvaltning-protokoll-system-create.png "Opprett system")
+![fiks protokoll](https://ks-no.github.io/tjenester/images/forvaltning-protokoll-system-create.png "Opprett system")
 
-Merk at det sammen med systemet opprettes en tilhørende integrasjon som skal brukes til å sende og motta meldinger over [Fiks IO](https://ks-no.github.io/fiks-plattform/tjenester/fiksprotokoll/fiksio)
+Merk at det sammen med systemet opprettes en tilhørende integrasjon som skal brukes til å sende og motta meldinger over [Fiks IO](https://ks-no.github.io/tjenester/fiksprotokoll/fiksio)
 
 Et system kan settes opp til å konfigureres av integrasjon. Da vil den tilhørende integrasjonen få tilgang til å administrere systemet og vil kunne gjøre det samme som en administrator kan gjøre på Fiks Forvaltning (med visse unntak som sletting av system og resetting av passord)
 
@@ -37,7 +37,7 @@ APIet for konfigurering med integrasjon er definert her: [Fiks Protokoll API](ht
 Konto opprettes i forvaltning eller via API.
 Når konto opprettes må en ha tilgjengelig offentlig nøkkel i PEM format. Denne benyttes for kryptering av meldinger som skal mottas.
 Forvalting:
-![fiks protokoll](https://ks-no.github.io/fiks-plattform/images/forvaltning-protokoll-system-konto-create.png "Opprett system")
+![fiks protokoll](https://ks-no.github.io/tjenester/images/forvaltning-protokoll-system-konto-create.png "Opprett system")
 
 API:
 `POST /fiks-protokoll/api/v1/konfigurasjon/{fiksOrgId}/systemer/{systemId}/kontoer`
@@ -124,7 +124,7 @@ Definisjon av `EksternProtokollKontoResponseEksternProtokollKontoResponse`:
 
 
 ### Sende meldinger på konto 
-Benytt [Fiks IO](https://ks-no.github.io/fiks-plattform/tjenester/fiksprotokoll/fiksio) når meldinger skal sendes på konto.
+Benytt [Fiks IO](https://ks-no.github.io/tjenester/fiksprotokoll/fiksio) når meldinger skal sendes på konto.
 Dette er IDen til kontoen og er den samme som den tilhørende Fiks IO-kontoen. ID brukes når systemet skal sende meldinger fra kontoen, og når andre systemer skal sende meldinger til kontoen.
 
 * _Fiks-IO java klient_: [Java klient](https://github.com/ks-no/fiks-io-klient-java) som tilbyr funksjonalitet for å bygge, signere, kryptere, og sende meldinger som ASiC-E pakker, samt mottak og dekryptering på andre siden.
