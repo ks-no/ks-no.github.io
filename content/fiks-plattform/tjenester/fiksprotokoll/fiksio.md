@@ -22,7 +22,8 @@ For eksempel kan en melding bli markert som lest (ack) av en mottaker før den h
 Derfor må mottaker- og avsendersystem lages slik at de håndterer at en melding kan forsvinne underveis.
 
 ### Hvordan tar man i bruk Fiks IO?
-[Fiks Protokoll](https://ks-no.github.io/fiks-plattform/tjenester/fiksprotokoll) oppretter Fiks IO konto og administrere meldingstyper. Dersom Fiks Protokoll benyttes, er det ikke behov for å sette opp egen Fiks IO konto. Protokoll Konto vil være en utvidelse av Fiks IO konto, og kan benyttes for å sette opp Fiks IO klient.
+Når man oppretter en [Fiks Protokoll](https://ks-no.github.io/fiks-plattform/tjenester/fiksprotokoll) konto vil det blir opprettet en Fiks IO konto, samt at man kan administrere meldingstyper som skal benyttes. Vi anbefaler å bruke Fiks Protokoll oppsettet for å få opprettet Fiks IO konto da en Fiks Protokoll konto vil ikke kunne kommunisere med en Fiks IO konto som ikke er opprettet via Fiks Protokoll. 
+Fiks Protokoll konto er en utvidelse av Fiks IO konto, og dermed får man det man trenger for å f.eks. sette opp en Fiks IO klient.
 
 Fiks IO baserer seg på at organisasjoner benytter Fiks Konfigurasjon for å opprette en eller flere _kontoer_. Andre organisasjoner kan så sende meldinger til disse kontoene, som mottaker kan lese ved å koble seg til io.fiks.ks.no. 
 
