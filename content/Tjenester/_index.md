@@ -1,6 +1,5 @@
 ---
-title = "Getting start"
-description = ""
+title = Getting start
 weight = 1
 alwaysopen = true
 ---
