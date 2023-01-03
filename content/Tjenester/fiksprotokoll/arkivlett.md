@@ -5,12 +5,21 @@ date: 2020-05-12
 
 > Tjenesten er under utvikling/testing/pilotering
 
+# Kort beskrivelse 
+
 Fiks Arkivlett Byggesak er en tjeneste for å spørre etter relevante dokumenter i en byggesak.
 Løsningen benytter [FIKS Protokoll](https://ks-no.github.io/fiks-platform/tjenester/fiksprotokoll) for definisjon av meldingstyper, og [FIKS IO](https://ks-no.github.io/fiks-plattform/tjenester/fiksprotokoll/fiksio/) for maskin til maskin integrasjon 
 
 Løsningen vil typisk kunne brukes av et søknadssystem for byggesaker til å finne tidligere tegninger eller vedtak på en eiendom som er relevant for videre tiltak på eiendommen.
 
-## Løsningskonsept
+# Tilgjengelige grensesnitt
+| Grensesnitt | Støtte |
+|------|------|
+| Web portal | Nei |
+| Maskin til maskin | ja |
+
+# Beskrivelse av løsningen 
+## Teknisk oversikt skisse
 
 ![fiks_arkivlett](/images/arkivlett_skisse.png "Fiks IO Arkivlett")
 
