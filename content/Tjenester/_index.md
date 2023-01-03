@@ -1,7 +1,7 @@
 ---
-title: Getting start
+title: Tjenester
 weight: 1
-alwaysopen: true
+alwaysopen: false
 ---
 
 
