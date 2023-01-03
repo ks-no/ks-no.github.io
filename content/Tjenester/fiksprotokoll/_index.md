@@ -6,7 +6,8 @@ aliases: [/fiks-platform/tjenester/fiksprotokoll]
 Fiks protokoll er en tjenestegruppe som inneholder flere tjenester. Felles for disse tjenestene er at de gjelder meldinger som sendes over [Fiks IO](https://ks-no.github.io/tjenester/fiksprotokoll/fiksio), for sikker maskin-til-maskin integrasjon. 
 Tjenestene består både av et sett av protokoller med meldingstyper, f.eks. Fiks Arkiv og Fiks Plan, og et miljø for å administrere systemer som implementerer disse protokollene over Fiks IO.
 
-{{% children style="h2" depth="3" description="true" %}}
+# Tjenester under Fiks protokoll 
+{{% children style="h5" depth="1" description="true" %}}
 
 # Termer
 * Protokollsystem - Representerer et system som skal sende og motta meldinger over Fiks Protokoll. Dette vil være et arkiv, et fagsystem som skal arkivere, en matrikkelklient etc. Merk: Et system kan bruke flere protokoller, f.eks. både Fiks Arkiv og Fiks Plan.
