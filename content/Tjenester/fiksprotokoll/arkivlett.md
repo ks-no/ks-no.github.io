@@ -16,7 +16,7 @@ Løsningen vil typisk kunne brukes av et søknadssystem for byggesaker til å fi
 | Grensesnitt | Støtte |
 |------|------|
 | Web portal | Nei |
-| Maskin til maskin | ja |
+| Maskin til maskin | Ja |
 
 # Beskrivelse av løsningen 
 ## Teknisk oversikt skisse
