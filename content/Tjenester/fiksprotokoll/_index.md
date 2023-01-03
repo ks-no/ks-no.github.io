@@ -1,7 +1,3 @@
-+++
-alwaysopen = false
-+++
-
 ---
 title: Fiks Protokoll 
 date: 2022-07-05
