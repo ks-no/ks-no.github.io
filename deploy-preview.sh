@@ -9,6 +9,9 @@ hugo -b https://static.fiks.ks.no/teknisk-dokumentasjon/
 # Sync to s3
 aws s3 sync public s3://$S3_BUCKET/teknisk-dokumentasjon --delete
 
+
+aws s3 ls s3://$S3_BUCKET/teknisk-dokumentasjon
+
 # Invalidate cloudfront cache
 # Set AWS_PAGER, or else program is not returning exit code, as seen here
 # https://github.com/aws/aws-cli/issues/4973
