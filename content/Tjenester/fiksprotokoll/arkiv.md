@@ -5,26 +5,28 @@ date: 2021-07-29
 
 > Tjenesten er under utvikling/testing/pilotering
 
-Fiks Arkiv er en asynkron protokoll over Fiks IO eller andre transportmekanismer for å søke, arkivere og hente data fra et arkiv. Fiks Protokoll benyttes for meldingstype definisjon på konto.
-For brukerhistorier fra arbeidet som ble gjort ved kartleggingen av protokollen,  les mer i wiki på github repoet [fiks-arkiv](https://github.com/ks-no/fiks-arkiv/wiki).
+# Kort beskrivelse
 
-### Begrensninger og regler for protokollen
+Fiks Arkiv tjenesten er en asynkron protokoll over Fiks IO eller andre transportmekanismer for å søke, arkivere og hente data fra et arkiv. Fiks Protokoll benyttes for meldingstype definisjon på konto.
+For brukerhistorier fra arbeidet som ble gjort ved kartleggingen av protokollen, les mer i wiki på github repoet [fiks-arkiv](https://github.com/ks-no/fiks-arkiv/wiki).
+
+# Begrensninger og regler for protokollen
 - Arkivdel skal være spesifisert i arkivet og håndteres av arkivet, men protokollen støtter ikke henting av arkivdel fra arkiv. 
  Meldingene har mulighet for å sette arkivdel men protokollen har altså ikke egen meldingstype for å hente arkivdeler.
 - Protokollen støtter ikke henting av koder som meldingstype. Vi tilbyr standard kodelister for koder i meldingene som kommer med i nuget/maven pakkene (_oversikt over kodelistene vi tilbyr kommer her snart_).  
 
 
-## Meldinger
+# Meldinger
 
 Hver melding består av en zip fil ASIC-E som inneholder f.eks. `arkivmelding.xml` eller `sok.xml` og tilhørende vedlegg som er definert i xml filen. 
 Hver melding kan ikke overskride 5GB. Meldingene skal også ha et sett med headere som blandt annet viser hvem som er avsender, mottaker, om det er et svar på en annen melding osv.
 Headerene er definert under Fiks-IO og man kan lese mer om de [her](https://ks-no.github.io/fiks-plattform/tjenester/fiksprotokoll/fiksio/#headere)
 
-### Meldingsformat og skjema
+## Meldingsformat og skjema
 For mer informasjon rundt meldingsformatet **arkivmelding** kan man lese om definisjonen [her](https://docs.digdir.no/eformidling_nm_arkivmeldingen.html) hos Digdir.
 XSD skjema for meldingsformatene er tilgjengelig for nedlasting på github prosjektet [fiks-arkiv-specification](https://github.com/ks-no/fiks-arkiv-specification) eller i bibliotek for .NET og Java. Dette spesifikasjonsprosjektet brukes som felles kilde for bygging av bibliotek/moduler for .NET og Java.
 
-#### Detaljer om meldingstype
+## Detaljer om meldingstype
 I spesifikasjonen følger er det også en [json fil](https://github.com/ks-no/fiks-arkiv-specification/blob/main/Schema/V1/meldingstyper/meldingstyper.json) som beskriver detaljer rundt hver melding i protokollen. 
 Json-filen beskriver om meldingen har payload, filnavn på payload (`arkivmelding.xml`, `arkivmelding-kvittering.xml`, `sok.xml` osv.), hvilke meldingstyper som evt kan være et svar på denne meldingen osv.
 Den ligger [her](https://github.com/ks-no/fiks-arkiv-specification/blob/main/Schema/V1/meldingstyper/meldingstyper.json) for Fiks-Arkiv protokollen og kommer med i nuget/maven pakken for Fiks-Arkiv protokollen som leveres av KS.
@@ -36,7 +38,7 @@ Den ligger [her](https://github.com/ks-no/fiks-arkiv-specification/blob/main/Sch
 | Valideringstester                   | -                                                                                                                | https://github.com/ks-no/fiks-arkiv-integration-tests-dotnet    |
 
 
-### .NET bibliotek og prosjekter
+## .NET bibliotek og prosjekter
 
 **Prosjekter og evt nuget pakker:**
 
@@ -69,7 +71,7 @@ Les mer om Fiks-IO og headerene [her](https://ks-no.github.io/fiks-plattform/tje
 Denne kan brukes hvis man bare skal sende meldinger til Fiks-IO og ikke motta meldinger. Fiks-IO klienten bruker denne komponenten for sending. 
 
 
-### Java bibliotek og prosjekter
+## Java bibliotek og prosjekter
 
 **Maven**
 
@@ -102,7 +104,7 @@ Les mer om Fiks-IO og headerene [her](https://ks-no.github.io/fiks-plattform/tje
 Denne kan brukes hvis man bare skal sende meldinger til Fiks-IO og ikke motta meldinger. Fiks-IO klienten bruker denne komponenten for sending.
 
 
-### Felles for .NET og Java
+# Felles for .NET og Java
 
 | Type                              | Github                                                          | Url |
 |-----------------------------------|-----------------------------------------------------------------|-----|
@@ -122,7 +124,7 @@ Disse testene kan gjennomføre flere meldingsutvekslinger og steg enn `Fiks prot
 Testene er skrevet i .net og kjøres ved at man laster ned prosjektet og kjører de lokalt. Det oppfordres til å bidra med enda flere tester.
 
 
-### Asynkrone meldinger og retry
+## Asynkrone meldinger og retry
 
 Siden denne protokollen er asynkron betyr det at man må ta forbehold om at man kanskje ikke får svar på en melding som ble sendt.
 Det kan være mange ulike årsaker til dette som f.eks. at mottaker midlertidig feilet ved persistering eller andre tekniske feil.
@@ -141,7 +143,7 @@ Det kan være lurt at man tar med seg noen kjøreregler for sending og retry av 
 - Ikke forsøk å sende en melding på nytt med en gang. Gi det litt tid for å ikke "plage" mottaker.
 - Bruk klientMeldingId på alle meldinger. Både ved første forsøk og retry. Dette kan gjøre det lettere å gjenkjenne duplikate meldinger hos mottaker.
 
-### Ack
+## Ack
 
 Når en melding er mottatt skal mottaker persistere meldingen og sende `ack` tilbake til Fiks-IO. Sending av `ack` tilbake til Fiks-IO sørger for at meldingen blir tatt bort fra køen.
 
@@ -152,12 +154,12 @@ Les mer om dette i Fiks-IO dokumentasjonen [her](https://developers.fiks.ks.no/f
 
 OBS: Dette erstatter tidligere TTL-håndtering på Fiks-IO køene. Det vil ikke lenger sendes noen `tidsavbrudd` meldinger basert på TTL. 
 
-### Meldingsutveksling og headere
+## Meldingsutveksling og headere
 For at meldingsutvekslingen skal bli korrekt settes det [headere](https://developers.fiks.ks.no/fiks-plattform/tjenester/fiksprotokoll/fiksio/#headere) på meldingen. Bruker man en av Fiks-IO klientene fra KS vil man stort sett ikke trenge å gjøre noe med dette da klienten gjør det meste for deg. Dette er f.eks. `avsender-id` for å identifisere avsender, `avsender-navn` og `type` som er meldingstypen. 
 Når man sender en melding vil man få tilbake fra Fiks-IO en generert `melding-id`. Denne id følger med i header på meldingen som mottaker så setter inn i sitt eventuelle svar på meldingen i headeren `svar-til` slik at avsender av første melding ser at dette er et svar på sin opprinnelige melding.
 Dette vil Fiks-IO klienten fra KS gjøre for deg hvis man bruker `.Svar()` funksjonaliteten. Men i noen tilfeller vil det kanskje være aktuelt å gå utenfor denne funksjonaliteten og man må da sørge for at disse headerene blir korrekt selv. Les mer om headerene [her](https://developers.fiks.ks.no/fiks-plattform/tjenester/fiksprotokoll/fiksio/#headere).
 
-## Arkivering
+# Arkivering
 
 **Meldingstyper:**
 
@@ -169,25 +171,25 @@ Dette vil Fiks-IO klienten fra KS gjøre for deg hvis man bruker `.Svar()` funks
 
 For å arkivere data må en bruke meldingsformatet `arkivmelding.xml`. Se xsd schema [**no.ks.fiks.arkiv.v1.arkivering.arkivmelding.xsd**](https://github.com/ks-no/fiks-arkiv-specification/blob/main/Schema/V1/no.ks.fiks.arkiv.v1.arkivering.arkivmelding.xsd) for definsjon av meldingsformatet.
 
-### Begrensninger og regler for arkivering
+## Begrensninger og regler for arkivering
 
 - Arkivmelding støtter ikke å registrere flere mapper i et hierarki, altså mapper i mapper, i en enkelt arkivmelding. Registrering av ny undermappe må da registreres hver for seg. Mapper kan altså bare referere til eksisterende mappe, som må da ha vært opprettet tidligere.
 - En foreldermappe kan ikke inneholde registreringer. Altså en mappe som inneholder andre mapper skal bare inneholde mapper.
 
 
-### Mottatt og kvittering
+## Mottatt og kvittering
 
 Hvis meldingen er gyldig som arkivmelding skal man så sende melding tilbake av typen `no.ks.fiks.arkiv.v1.arkivering.arkivmelding.mottatt`.
 Når arkivering er arkivert til arkivet skal det komme en **arkivmelding** tilbake i meldingsformatet `arkivmelding-kvittering.xml` av typen `no.ks.fiks.arkiv.v1.arkivering.arkivmelding.kvittering`. Se [**no.ks.fiks.arkiv.v1.arkivering.arkivmelding.kvittering.xsd**](https://github.com/ks-no/fiks-arkiv-specification/blob/main/Schema/V1/no.ks.fiks.arkiv.v1.arkivering.arkivmelding.kvittering.xsd) for definisjon av meldingsformatet på kvitteringsmelding.
 
 ![arkivmelding_med_kvittering_ok](/images/arkivmelding_med_kvittering_ok.png "Arkivmelding med kvittering")
 
-### Feilmeldinger for arkivmelding
+## Feilmeldinger for arkivmelding
 Hvis arkivmeldingen ikke er gyldig, f.eks at den ikke validerer i henhold til schema, så sender man en `no.ks.fiks.arkiv.v1.feilmelding.ugyldigforespoersel` melding tilbake. Ved interne feil som gjør at man ikke får håndtert meldingen sendes `no.ks.fiks.arkiv.v1.feilmelding.serverfeil` tilbake.
 Les mer om disse feilmeldingene lenger nede under [feilmeldingstyper](#Feilmeldingstyper)
 
 
-## Søk etter data
+# Søk etter data
 
 **Meldingstyper:**
 
@@ -201,13 +203,13 @@ Les mer om disse feilmeldingene lenger nede under [feilmeldingstyper](#Feilmeldi
 Meldingsformatet for søk er definert i xsd schema [**sok.xsd**](https://github.com/ks-no/fiks-arkiv-specification/blob/main/Schema/V1/no.ks.fiks.arkiv.v1.innsyn.sok.xsd). 
 I meldingsformatet **sok.xml** definerer man hva man søker etter, hvilke returobjekter (journalposter eller mapper f.eks.) man ønsker, sortering og responstype.
 
-### Søk på endret dato
+## Søk på endret dato
 
 **Mappe**: Søk på `mappeEndretDato`. Endret dato for mappe betyr at en mappe er endret eller jounalposter er lagt til.
 
 **Registrering**: Søk på `registreringEndretDato`. Endret dato for registrering betyr at en registrering er endret eller dokumenter er lagt til eller endret. 
 
-### Bbox
+## Bbox
 For søk på saksmappe kan man søke på saker med koordinater innenfor et område ved hjelp av søkefeltet av typen `bbox`.
 Når man bruker bbox til søk så setter man to koordinater, nedreVenstre og oevreHoeyre, som da definerer en boks hvor man ønsker å finne saker som treffer innenfor dette området.
 Dermed gir det kun mening å bruke **equals** som parameter når man bruker bbox. Er noe bare delvis innenfor området skal det være treff.
@@ -215,28 +217,28 @@ Feltet `koordinatsystem` i bbox definerer hvilket koordinatsystem man ønsker å
 Se [her](https://register.geonorge.no/epsg-koder) for liste med EPSG-koder. 
 Støttes ikke koordinatsystemet skal man få en ugyldigforespørsel melding tilbake. 
 
-### Responsttype
+## Responsttype
 Feltet `responstype` sier noe om hvor mye data man ønsker å få tilbake på søketreffet, som da er utvidet, minimum eller noekler.
 
-### Søkeresultat utvidet
+## Søkeresultat utvidet
 
 Hvis søk forespørsel har satt *responstype* = *"utvidet"*  kan søket returnere et utvidet resultat med maksimalt mengde felter tilgjengelig gjennom søk. Se [**no.ks.fiks.arkiv.v1.innsyn.sok.resultat.utvidet.xsd**](https://github.com/ks-no/fiks-arkiv-specification/blob/main/Schema/V1/no.ks.fiks.arkiv.v1.innsyn.sok.resultat.utvidet.xsd) for definisjon av returmelding.
 
-### Søkeresultat minimum
+## Søkeresultat minimum
 
 Hvis søk forespørsel har satt *responstype* = *"minimum"* kan søket returnere et mer begrenset resultat tilgjengelig gjennom søk. Se [**no.ks.fiks.arkiv.v1.innsyn.sok.resultat.minimum.xsd**](https://github.com/ks-no/fiks-arkiv-specification/blob/main/Schema/V1/no.ks.fiks.arkiv.v1.innsyn.sok.resultat.minimum.xsd)
 
-### Søkeresultat nøkler
+## Søkeresultat nøkler
 
 Hvis søk forespørsel har satt *responstype* = *"noekler"* kan søket returnere bare tilgjengelige nøkler. Se [**no.ks.fiks.arkiv.v1.innsyn.sok.resultat.noekler.xsd**](https://github.com/ks-no/fiks-arkiv-specification/blob/main/Schema/V1/no.ks.fiks.arkiv.v1.innsyn.sok.resultat.noekler.xsd)
 
-### Feilmeldinger for søk
+## Feilmeldinger for søk
 Hvis søket ikke er gyldig, f.eks at den ikke validerer i henhold til schema, så sender man en `no.ks.fiks.arkiv.v1.feilmelding.ugyldigforespoersel` melding tilbake. Ved interne feil som gjør at man ikke får håndtert meldingen sendes `no.ks.fiks.arkiv.v1.feilmelding.serverfeil` tilbake.
 Les mer om disse feilmeldingene lenger nede under [feilmeldingstyper](#Feilmeldingstyper)
 
-## Hente data
+# Hente data
 
-### Meldingstyper:
+## Meldingstyper:
 
 | Type                       | Navn                                                    |
 |----------------------------|---------------------------------------------------------|
@@ -247,30 +249,30 @@ Les mer om disse feilmeldingene lenger nede under [feilmeldingstyper](#Feilmeldi
 | Hent registrering resultat | `no.ks.fiks.arkiv.v1.innsyn.registrering.hent.resultat` |
 | Hent dokumentfil resultat  | `no.ks.fiks.arkiv.v1.innsyn.dokumentfil.hent.resultat`  |
 
-### Hent mappe:
+## Hent mappe:
 
 Meldingsformatet for hent mappe er definert i xsd schema [**no.ks.fiks.arkiv.v1.innsyn.mappe.hent.xsd**](https://github.com/ks-no/fiks-arkiv-specification/blob/main/Schema/V1/no.ks.fiks.arkiv.v1.innsyn.mappe.hent.xsd) og sendes som meldingstypen `no.ks.fiks.arkiv.v1.innsyn.mappe.hent`.
 Resultatet skal sendes tilbake som meldingstypen `no.ks.fiks.arkiv.v1.mappe.hent.resultat` og formatet er definert i xsd schema  [**no.ks.fiks.arkiv.v1.innsyn.mappe.hent.resultat.xsd**](https://github.com/ks-no/fiks-arkiv-specification/blob/main/Schema/V1/no.ks.fiks.arkiv.v1.innsyn.mappe.hent.resultat.xsd).
 
-### Hent registrering:
+## Hent registrering:
 
 Meldingsformatet for henting av registrering (f.eks. journalpost) er definert i xsd schema [**no.ks.fiks.arkiv.v1.innsyn.registrering.hent.xsd**](https://github.com/ks-no/fiks-arkiv-specification/blob/main/Schema/V1/no.ks.fiks.arkiv.v1.innsyn.registrering.hent.xsd) og sendes som meldingstypen `no.ks.fiks.arkiv.v1.innsyn.registrering.hent`.
 Resultatet skal sendes tilbake som meldingstypen `no.ks.fiks.arkiv.v1.innsyn.registrering.hent.resultat` og formatet er definert i xsd schema  [**no.ks.fiks.arkiv.v1.innsyn.registrering.hent.resultat.xsd**](https://github.com/ks-no/fiks-arkiv-specification/blob/main/Schema/V1/no.ks.fiks.arkiv.v1.innsyn.registrering.hent.resultat.xsd).
 
-### Hent dokumentfil:
+## Hent dokumentfil:
 
 Meldingsformatet for hent dokumentfil er definert i xsd schema [**no.ks.fiks.arkiv.v1.innsyn.dokumentfil.hent.xsd**](https://github.com/ks-no/fiks-arkiv-specification/blob/main/Schema/V1/no.ks.fiks.arkiv.v1.innsyn.dokumentfil.hent.xsd) og sendes som meldingstypen `no.ks.fiks.arkiv.v1.innsyn.dokumentfil.hent`.
 Resultatet skal sendes tilbake som typen `no.ks.fiks.arkiv.v1.dokumentfil.hent.resultat`. Merk at det er ikke noe xsd schema for resultat da det ikke er noe behov for meta-data for dokumenfilen. Ønsker man meta-data for et dokument må **hent registrering brukes**. Dokumentfilen kommer som payload i Fiks-IO meldingen med meldingsypen `no.ks.fiks.arkiv.v1.dokumentfil.hent.resultat`.
 
-### Feilmeldinger for hent meldinger
+## Feilmeldinger for hent meldinger
 Hvis hent meldingen ikke er gyldig, f.eks at den ikke validerer i henhold til schema, så sender man en `no.ks.fiks.arkiv.v1.feilmelding.ugyldigforespoersel` melding tilbake. 
 Ved interne feil som gjør at man ikke får håndtert meldingen sendes `no.ks.fiks.arkiv.v1.feilmelding.serverfeil` tilbake og hvis det blir forsøkt å hente noe som ikke eksisterer i arkivet leveres det tilbake en `no.ks.fiks.arkiv.v1.feilmelding.ikkefunnet` melding.
 Les mer om disse feilmeldingene lenger nede under [feilmeldingstyper](#Feilmeldingstyper)
 
 
-## Oppdatering
+# Oppdatering
 
-### Meldingstyper:
+## Meldingstyper:
 
 |   Type    | Navn                                                              |
 | ----------- |-------------------------------------------------------------------|
@@ -278,20 +280,20 @@ Les mer om disse feilmeldingene lenger nede under [feilmeldingstyper](#Feilmeldi
 | Mottatt melding      | `no.ks.fiks.arkiv.v1.arkivering.arkivmelding.oppdater.mottatt`    |
 | Arkivmelding oppdatering kvittering      | `no.ks.fiks.arkiv.v1.arkivering.arkivmelding.oppdater.kvittering` |
 
-### Arkivmelding oppdatering:
+## Arkivmelding oppdatering:
 
 Meldingsformatet for arkivmelding oppdatering er definert i xsd schema [**no.ks.fiks.arkiv.v1.arkivering.arkivmelding.oppdater.xsd**](https://github.com/ks-no/fiks-arkiv-specification/blob/main/Schema/V1/no.ks.fiks.arkiv.v1.arkivering.arkivmelding.oppdater.xsd) og sendes som meldingstypen `no.ks.fiks.arkiv.v1.arkivering.arkivmelding.oppdater`.
 
-### Feilmeldinger for oppdater meldinger
+## Feilmeldinger for oppdater meldinger
 Hvis oppdater meldingen ikke er gyldig, f.eks at den ikke validerer i henhold til schema, så sender man en no.ks.fiks.arkiv.v1.feilmelding.ugyldigforespoersel melding tilbake. Ved interne feil som gjør at man ikke får håndtert meldingen sendes no.ks.fiks.arkiv.v1.feilmelding.serverfeil tilbake og hvis det blir forsøkt å oppdatere noe som ikke eksisterer i arkivet leveres det tilbake en no.ks.fiks.arkiv.v1.feilmelding.ikkefunnet melding. Les mer om disse feilmeldingene lenger nede under [feilmeldingstyper](#Feilmeldingstyper)
 
-## Feilmeldingstyper
+# Feilmeldingstyper
 
 Som svar kan man få feilmeldinger som tilhører denne protokollen. Feilmeldingstypene kan være like i innhold som feilmeldinger i andre protokoller men de vil ha navn som tilsier at de tilhører en spesifikk protokoll.
 Altså vil de ha en *no.ks.fiks.arkiv.v1.feilmelding* prefix for denne protokollen.
 
 
-### Feilmeldingstyper
+## Feilmeldingstyper
 
 | Type               | Navn                                                 |
 |--------------------|------------------------------------------------------|
@@ -300,20 +302,20 @@ Altså vil de ha en *no.ks.fiks.arkiv.v1.feilmelding* prefix for denne protokoll
 | Ikkefunnet         | `no.ks.fiks.arkiv.v1.feilmelding.ikkefunnet`         |
 
 
-### Ugyldig forespørsel
+## Ugyldig forespørsel
 
 Hvis noe er galt med forespørselen, altså den er ugyldig, så skal mottaker sende en `no.ks.fiks.arkiv.v1.feilmelding.ugyldigforespoersel` tilbake til sender. Xsd [schema](https://github.com/ks-no/fiks-arkiv-specification/blob/main/Schema/V1/no.ks.fiks.arkiv.v1.feilmelding.ugyldigforespoersel.xsd) følger med i Fiks-Arkiv models nuget pakken.
 ![arkivmelding_med_ugyldigforesporsel](/images/arkivmelding_med_ugyldigforesporsel.png "Arkivmelding med ugyldig forespørsel")
 
-### Serverfeil
+## Serverfeil
 
 Ved serverfeil hos mottaker skal det sendes en `no.ks.fiks.arkiv.v1.feilmelding.serverfeil` tilbake til sender. Xsd [schema](https://github.com/ks-no/fiks-arkiv-specification/blob/main/Schema/V1/no.ks.fiks.arkiv.v1.feilmelding.serverfeil.xsd) følger med i Fiks-Arkiv models nuget pakken.
 
-### Ikkefunnet
+## Ikkefunnet
 
 For meldinger som skal hente eller oppdatere noe i arkivet vil det returneres en ikkefunnet melding tilbake.  
 
-### Fiks-io feilmelding når meldinger ikke er hentet
+## Fiks-io feilmelding når meldinger ikke er hentet
 
 Når en melding er mottatt skal mottaker persistere meldingen og sende `ack` tilbake til Fiks-IO. Sending av `ack` tilbake til Fiks-IO sørger for at meldingen blir tatt bort fra køen.
 
@@ -322,7 +324,7 @@ Hvis `ack` for en melding uteblir vil meldingen bli værende på køen inntil de
 Dette erstatter tidligere TTL-håndtering på Fiks-IO køene. Det vil ikke lenger sendes noen `tidsavbrudd` meldinger basert på TTL.
 
 
-## Testing av meldingsutveksling
+# Testing av meldingsutveksling
 
 Det er opprettet en test-applikasjon, **fiks-protokoll-validator**, som kjører i KS sitt testmiljø. Med denne kan man teste protokollene mot sitt eget arkiv-testmiljø ved å sende ferdige meldinger med statisk XML innhold til den arkivets FIKS-IO konto.
 Fiks-protokoll-validator vil validere svaret den får tilbake via Fiks-IO og gi en pekepinn på om implementasjon fungerer som det skal.
@@ -330,7 +332,7 @@ Applikasjonen er kun tilgjengelig i KS test-miljø: [fiks-validator](https://for
 
 Koden for validatoren er tilgjengelig på [github](https://github.com/ks-no/fiks-protokoll-validator).
 
-### Integrasjonstester
+## Integrasjonstester
 
 Som tidligere nevnt er det også laget et .NET prosjekt som inneholder integrasjonstester som tester at et arkiv som har implementert Fiks Arkiv protokollen fungerer som forventet i meldings-utvekslinger.
 Github prosjektet finner man [her](https://github.com/ks-no/fiks-arkiv-integration-tests-dotnet). 
