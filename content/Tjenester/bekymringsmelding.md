@@ -16,6 +16,7 @@ Brukerne logger seg inn på portalen, fyller ut og sender inn bekymringsmeldinge
 
 # Tilgjengelige grensesnitt
 | Grensesnitt | Støtte |
+|------|------|
 | Web portal | Ja |
 | Maskin til maskin | Nei |
 
