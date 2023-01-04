@@ -1,7 +1,7 @@
 ---
 title: Konfigurasjon av SvarUT
 date: 2017-01-01
-
+hidden: true
 ---
  
 # Konfigurasjon av SvarUt

@@ -1,8 +1,9 @@
 ---
 title: Signeringstjeneste
 date: 2017-01-01
+hidden: true
 ---
-## Aktivering
+# Aktivering
 Avtale om bruk av signeringstjenesten må gjøres med Digdir og forutsetter at dere allerede har avtale om SDP. Når avtalene er inngått må dere aktivere tjenesten inne på [konfigurasjon](https://svarut.ks.no/konfigurasjon/#/) under SDP-fanen.
 
 <a name="api"></a>
@@ -21,7 +22,7 @@ Følgende nye felter må også fylles ut:
 * **/sendForsendelse/forsendelse/signaturtype** - Velge mellom autentisert eller avansert signering.
 * **/sendForsendelse/forsendelse/dokumenter/skalSigneres** - Markere ett dokument som inngår i signeringsoppdraget
 
-## Via send forsendelse
+# Via send forsendelse
 Brukergrensesnittet er oppdatert slik at man kan markere et dokument og angi utløpsdato.
 
 <a name="Sekvensdiagrammer"></a>
@@ -33,7 +34,7 @@ Innføringen av signeringsoppdrag gir ingen endringer i oppførsel utover valide
 
 Innbygger kan signere elektronisk frem til gyldigheten på signeringsoppdraget utløper, selv om brevet er sendt i posten.
   
-### Fra innbygger via Digipost og Svarut til fagsystem
+## Fra innbygger via Digipost og Svarut til fagsystem
 ![alternative text](http://www.plantuml.com/plantuml/proxy?src=https://raw.githubusercontent.com/ks-no/svarut-dokumentasjon/master/signering/puml/innbygger.puml?2)
 
 Innbygger logger på Altinn/SDP og trykker på signeringslenken som er oppgitt i meldingen. Dette er en lenke til Svarut. Svarut vil validere og sjekke at det er et gyldig signeringsoppdrag. 

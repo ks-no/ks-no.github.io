@@ -1,11 +1,12 @@
 ---
 title: SvarInn - Mottaksservice
 date: 2017-01-01
+hidden: true
 ---
 
 Mottaksservice gjør det mulig å laste ned og kvittere ut forsendelser før de varsles gjennom Altinn og sendes til eventuell printing.
 
-## Hva er Mottaksservice?
+# Hva er Mottaksservice?
 
 Primært brukes Mottaksservice til å automatisere nedlasting og import av forsendelser direkte i sakssystemer. Fra en forsendelse er mottatt i SvarUt er den tilgjengelig for nedlasting via mottaksservicen. Dersom forsendelsen ikke blir lastet ned innen 2 timer vil mottakersystem få en advarsel mail.
 
@@ -19,7 +20,7 @@ Mottaksservicen består av 3 tjenester (se også [detaljert beskrivelse](/svarut
 
 Sakssystemer må klargjøres for bruk av mottaksservicen. SvarUt-teamet har laget en modul som kan brukes for noen leverandører, samt fungere som et eksempel på hva som er nødvendig for integrasjon med SvarUt. Denne modulen er tilgjengelig [her](https://github.com/ks-no/svarut-sak-mottak).
 
-## Hvordan bruke Mottaksservice?
+# Hvordan bruke Mottaksservice?
 
 Mottaksservicen konfigureres under menypunktet Mottakersystem. Her kan administrator opprette nye mottakersystem og gi personer tilgang til mottakersystemet. Deretter kan personene som har fått tilgang selv utføre resten av stegene. De første 3 stegene utføres kun én gang, steg 4 en gang som en test. De siste tre stegene bør settes opp som en regelmessig jobb som kjøres hvert 15\. minutt.
 

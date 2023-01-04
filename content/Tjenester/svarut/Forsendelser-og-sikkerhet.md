@@ -1,9 +1,10 @@
 ---
 title: Sikkerhet
 date: 2017-01-01
+hidden: true
 ---
 
-### Generelt om forsendelser 
+# Generelt om forsendelser 
 
 * Forsendelser kan, men må ikke, krypteres før de sendes inn til SvarUt
 * Forsendelsesfiler lagres kryptert på SvarUt sine servere
@@ -11,7 +12,7 @@ date: 2017-01-01
 * Forsendelser som lastes ned direkte til mottagende (svarinn) dekrypteres før de blir importert til sakssystemet, men overføres kryptert.
 * Forsendelsesfiler som blir lastet ned av mottaker dekrypteres ellers i det de overføres til mottaker. 
 
-### Forsendelser på nivå 4 ##
+# Forsendelser på nivå 4 ##
 
 Det er nå mulig å sende forsendelser som inneholder sensitive persondata via SvarUt (ikke gradert informasjon). Dette kan være brev som sendes fra sikker sone. 
 
