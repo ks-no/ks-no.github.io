@@ -1,5 +1,5 @@
 ---
-title: Dokumentlager
+title: Fiks dokumentlager
 date: 2018-09-10
 aliases: [/fiks-platform/tjenester/dokumentlager/]
 ---

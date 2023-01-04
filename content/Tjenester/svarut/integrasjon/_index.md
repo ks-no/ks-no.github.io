@@ -1,5 +1,6 @@
 ---
 title: Integrasjon mot SvarUt
+hidden: true
 ---
 
 For utsending av forsendelser via KS-SvarUt benyttes en SOAP basert web-service. Denne servicen mottar forsendelsen og relevante metadata, og besørger videre ekspedering via elektroniske meldingstjenester eller vanlig post.
