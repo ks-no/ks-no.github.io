@@ -1,10 +1,10 @@
 ---
-title: SvarInn - Mottaksservice
+title: Svarinn
 date: 2017-01-01
-hidden: true
+hidden: false
 ---
 
-Mottaksservice gjør det mulig å laste ned og kvittere ut forsendelser før de varsles gjennom Altinn og sendes til eventuell printing.
+Mottaksservice tilsvarer svarinn gjør det mulig å laste ned og kvittere ut forsendelser før de varsles gjennom Altinn og sendes til eventuell printing.
 
 # Hva er Mottaksservice?
 
