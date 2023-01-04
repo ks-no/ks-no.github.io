@@ -6,6 +6,21 @@ aliases: [/fiks-platform/tjenester/fiksprotokoll]
 Fiks protokoll er en tjenestegruppe som inneholder flere tjenester. Felles for disse tjenestene er at de gjelder meldinger som sendes over [Fiks IO](https://ks-no.github.io/tjenester/fiksprotokoll/fiksio), for sikker maskin-til-maskin integrasjon. 
 Tjenestene består både av et sett av protokoller med meldingstyper, f.eks. Fiks Arkiv og Fiks Plan, og et miljø for å administrere systemer som implementerer disse protokollene over Fiks IO.
 
+# Hvordan komme i gang med Fiks protokoll
+
+Det er noen steg som må gjøres før det er mulig å bruke Fiks Protokoll. Tjenesten må tas i bruk, det må opprettes minst et system, og systemet må ha minst en konto og den kontoen må få tilgang til et system som har en konto den kan sende meldinger til.
+
+Noe av dette må gjøres gjennom grensesnittet i Fiks Konfigurasjon ([forvaltning.fiks.ks.no](forvaltning.fiks.ks.no) i produksjon og [forvaltning.fiks.test.ks.no](forvaltning.fiks.test.ks.no) i testmiljøet), mens noe kan gjøres via API. I denne brukerveiledningen viser vi steg for steg hvordan dette gjøres gjennom webgrensesnittet.
+
+1. [Ta i bruk Fiks Protokoll](ta_ibruk_protokoll)
+2. [Opprette system](opprette_system)
+3. [Opprette konto](opprette_konto)
+4. [Gi tilgang til system](gi_tilgang_til_system)
+
+I tillegg er det to veiledninger for hvordan du kan generere nytt passord til systemet, og hvordan du laster opp ny offentlig nøkkel til en konto.
+* [Generer nytt passord](nytt_passord)
+* [Ny offentlig nøkkel](laste_opp_ny_offentlig_nokkel)
+
 # Tjenester under Fiks protokoll 
 {{% children style="h5" depth="1" description="true" %}}
 
