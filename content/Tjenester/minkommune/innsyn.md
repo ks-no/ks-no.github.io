@@ -1,5 +1,5 @@
 ---
-title: Innsyn
+title: Min kommune - innsyn
 date: 2022-06-28
 aliases: [/fiks-platform/tjenester/innsyn, /fiks-plattform/tjenester/innsyn, /fiks-plattform/tjenester/minside/innsyn/]
 ---
