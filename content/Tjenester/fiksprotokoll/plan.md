@@ -1,5 +1,5 @@
 ---
-title: Fiks Plan
+title: Fiks plan
 date: 2022-06-16
 ---
 
