@@ -100,7 +100,9 @@ Henter nye forsendelser for autentisert mottaker (basert på angitt mottaker). E
   "svarPaForsendelse": "BBBBBB-BBBB-CCCC-BBBB-BBBBBBBBBB",
   "forsendelseType": "forsendelseType sett av avsender(heter dokumentType i v5 av servicen)",
   "eksternRef": "en ref fra avsender",
-  "downloadUrl": "https://svarut.ks.no/tjenester/svarinn/forsendelse/AAAAAAA-AAAA-AAAA-AAAA-AAAAAAAAAAAA"
+  "downloadUrl": "https://svarut.ks.no/tjenester/svarinn/forsendelse/AAAAAAA-AAAA-AAAA-AAAA-AAAAAAAAAAAA",
+  "avgivendeSystem": "Avgivende System",
+  "taushetsbelagtPost": false
 }]
 {{< /highlight >}}
 
