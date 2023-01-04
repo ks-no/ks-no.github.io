@@ -13,11 +13,11 @@ Edialog er grensesnittet som tilbys innbygger for å fylle ut et skjema som skal
 | Web portal | Ja |
 | Maskin til maskin | Ja |
 
-# Beskrivelse
+# Beskrivelse av tjenesten
 Svarut er en tjeneste som tilbyr et grensesnitt for aktørene i en digital dialog mellom kommune og innbygger. 
-Beskrivelser av de forskjellige komponentene:
+Beskrivelser av de forskjellige konfigurasjonene:
 
-{{% children style="h5" %}}
+{{% children style="h5" showhidden= "true" %}}
 
 
 ## Teknisk oversikt skisse

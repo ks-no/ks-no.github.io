@@ -4,7 +4,7 @@ date: 2017-01-01
 hidden: false
 ---
 
-Mottaksservice tilsvarer svarinn gjør det mulig å laste ned og kvittere ut forsendelser før de varsles gjennom Altinn og sendes til eventuell printing.
+Mottaksservice tilsvarer svarinn og gjør det mulig å laste ned og kvittere ut forsendelser før de varsles gjennom Altinn og sendes til eventuell printing.
 
 # Hva er Mottaksservice?
 
