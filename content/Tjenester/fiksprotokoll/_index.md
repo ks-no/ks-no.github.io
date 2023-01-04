@@ -12,10 +12,10 @@ Det er noen steg som må gjøres før det er mulig å bruke Fiks Protokoll. Tjen
 
 Noe av dette må gjøres gjennom grensesnittet i Fiks Konfigurasjon ([forvaltning.fiks.ks.no](forvaltning.fiks.ks.no) i produksjon og [forvaltning.fiks.test.ks.no](forvaltning.fiks.test.ks.no) i testmiljøet), mens noe kan gjøres via API. I denne brukerveiledningen viser vi steg for steg hvordan dette gjøres gjennom webgrensesnittet.
 
-1. [Ta i bruk Fiks Protokoll](ta_ibruk_protokoll)
-2. [Opprette system](opprette_system)
-3. [Opprette konto](opprette_konto)
-4. [Gi tilgang til system](gi_tilgang_til_system)
+* [Ta i bruk Fiks Protokoll](ta_ibruk_protokoll)
+* [Opprette system](opprette_system)
+* [Opprette konto](opprette_konto)
+* [Gi tilgang til system](gi_tilgang_til_system)
 
 I tillegg er det to veiledninger for hvordan du kan generere nytt passord til systemet, og hvordan du laster opp ny offentlig nøkkel til en konto.
 * [Generer nytt passord](nytt_passord)
