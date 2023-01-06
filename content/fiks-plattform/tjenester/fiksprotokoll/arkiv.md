@@ -5,10 +5,19 @@ date: 2021-07-29
 
 > Tjenesten er under utvikling/testing/pilotering
 
+# Kort beskrivelse
 Fiks Arkiv er en asynkron protokoll over Fiks IO eller andre transportmekanismer for å søke, arkivere og hente data fra et arkiv. Fiks Protokoll benyttes for meldingstype definisjon på konto.
 For brukerhistorier fra arbeidet som ble gjort ved kartleggingen av protokollen,  les mer i wiki på github repoet [fiks-arkiv](https://github.com/ks-no/fiks-arkiv/wiki).
 
-### Begrensninger og regler for protokollen
+# Tilgjengelige grensesnitt
+| Grensesnitt | Støtte |
+|------|------|
+| Web portal | Ja |
+| Maskin til maskin | Nei |
+
+
+# Beskrivelse
+## Begrensninger og regler for protokollen
 - Arkivdel skal være spesifisert i arkivet og håndteres av arkivet, men protokollen støtter ikke henting av arkivdel fra arkiv. 
  Meldingene har mulighet for å sette arkivdel men protokollen har altså ikke egen meldingstype for å hente arkivdeler.
 - Protokollen støtter ikke henting av koder som meldingstype. Vi tilbyr standard kodelister for koder i meldingene som kommer med i nuget/maven pakkene (_oversikt over kodelistene vi tilbyr kommer her snart_).  
