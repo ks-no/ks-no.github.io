@@ -15,6 +15,7 @@ Fiks Digisos tilbyr:
 * Ansatte/brukerstøtte i NAV kan se utvalgte deler av saken via NAV sine systemer.
 
 # Tilgjengelige grensesnitt
+|------|------|
 | Grensesnitt | Støtte |
 | Web portal | Ja |
 | Maskin til maskin | Ja |
