@@ -23,6 +23,18 @@ pipeline {
       }
     }
 
+     stage('deploy branch') {
+      when {
+          not {
+            branch 'source'
+          }
+                
+      }
+      steps {
+	           sh "sh -x ./deploy-preview.sh"
+      }
+    }
+
     stage('deploy') {
       when{
         branch 'source'
