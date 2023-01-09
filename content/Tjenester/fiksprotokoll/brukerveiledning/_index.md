@@ -1,7 +1,7 @@
 ---
 title: Brukerveiledning
 date: 2022-07-05
-aliases: [/fiks-platform/tjenester/fiksprotokoll] [/fiks-plattform/tjenester/fiksprotokoll/brukerveiledning]
+aliases: ["/fiks-platform/tjenester/fiksprotokoll", "/fiks-plattform/tjenester/fiksprotokoll/brukerveiledning"]
 hidden: true
 ---
 
