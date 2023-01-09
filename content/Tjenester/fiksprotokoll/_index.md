@@ -22,7 +22,7 @@ I tillegg er det to veiledninger for hvordan du kan generere nytt passord til sy
 * [Ny offentlig nøkkel](laste_opp_ny_offentlig_nokkel)
 
 # Tjenester under Fiks protokoll 
-{{% children style="h5" depth="1" description="true" %}}
+{{% children style="h5" depth="1" %}}
 
 # Termer
 * Protokollsystem - Representerer et system som skal sende og motta meldinger over Fiks Protokoll. Dette vil være et arkiv, et fagsystem som skal arkivere, en matrikkelklient etc. Merk: Et system kan bruke flere protokoller, f.eks. både Fiks Arkiv og Fiks Plan.
