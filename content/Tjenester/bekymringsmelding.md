@@ -1,7 +1,7 @@
 ---
 title: Fiks bekymringsmelding
 date: 2019-11-25 
-aliases: ["/fiks-platform/tjenester/bekymringsmelding", "/fiks-platform/tjenester_under_utvikling/bekymringsmelding"]
+aliases: ["/fiks-platform/tjenester/bekymringsmelding", "/fiks-platform/tjenester_under_utvikling/bekymringsmelding", "/fiks-plattform/tjenester/bekymringsmelding/"]
 ---
 
 # Kort beskrivelse

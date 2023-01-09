@@ -1,6 +1,7 @@
 ---
 title: Fiks edialog
 date: 2017-01-01
+alias: [/svarut/edialog]
 ---
 
 # Kort beskrivelse

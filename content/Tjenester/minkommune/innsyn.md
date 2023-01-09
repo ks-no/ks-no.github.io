@@ -1,7 +1,7 @@
 ---
 title: Min kommune - innsyn
 date: 2022-06-28
-aliases: [/fiks-platform/tjenester/innsyn, /fiks-plattform/tjenester/innsyn, /fiks-plattform/tjenester/minside/innsyn/]
+aliases: [/fiks-platform/tjenester/innsyn, /fiks-plattform/tjenester/innsyn, /fiks-plattform/tjenester/minside/innsyn/, /fiks-plattform/tjenester/minkommune/innsyn]
 ---
 
 Norske kommuner har mengder av informasjon om sine innbyggere. Denne informasjonen er spredd rundt i arkiver, fagsystemer, dokumentlagre og eksterne skyløsninger. Fiks Innsyn lagrer metadata som beskriver denne informasjonen, og gjør den tilgjengelig for innbyggeren via en kraftig søkemotor. 

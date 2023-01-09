@@ -1,7 +1,7 @@
 ---
 title: Fiks kjøretøyregister
 date: 2019-12-11
-aliases: [/fiks-platform/tjenester/kjoretoyregister]
+aliases: [/fiks-platform/tjenester/kjoretoyregister, /fiks-plattform/tjenester/kjoretoyregister]
 ---
 
 # Kort beskrivelse

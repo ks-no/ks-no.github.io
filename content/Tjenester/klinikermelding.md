@@ -1,6 +1,7 @@
 ---
 title: Fiks klinikermelding
 date: 2023-01-04
+alias: [/fiks-plattform/tjenester/klinikermelding/]
 ---
 
 # Kort beskrivelse

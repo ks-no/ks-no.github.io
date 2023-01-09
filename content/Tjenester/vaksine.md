@@ -1,6 +1,7 @@
 ---
 title: Fiks vaksine
 date: 2021-03-15
+alias: [/fiks-plattform/tjenester/vaksine]
 ---
 
 # Kort beskrivelse

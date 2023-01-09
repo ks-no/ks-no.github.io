@@ -1,6 +1,7 @@
 ---
 title: Generer nytt passord
 date: 2022-09-23
+alias: [/fiks-plattform/tjenester/fiksprotokoll/brukerveiledning/nytt_passord]
 ---
 Det er ikke mulig å hente passordet til integrasjonen som hører til et system etter at systemet er opprettet. Dersom du har mistet passordet må et nytt passord genereres. Under vises steg for steg hvordan dette gjøres.
 

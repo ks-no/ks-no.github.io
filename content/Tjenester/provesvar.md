@@ -1,6 +1,7 @@
 ---
 title: Fiks prøvesvar
 date: 2020-12-14
+alias: [/fiks-plattform/tjenester/provesvar]
 ---
 
 # Kort beskrivelse

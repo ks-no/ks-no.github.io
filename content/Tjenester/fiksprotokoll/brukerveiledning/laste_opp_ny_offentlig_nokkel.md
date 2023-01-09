@@ -1,6 +1,7 @@
 ---
 title: Ny offentlig nøkkel
 date: 2022-09-23
+alias: [/fiks-plattform/tjenester/fiksprotokoll/brukerveiledning/laste_opp_ny_offentlig_nokkel]
 ---
 
 Fiks IO sender krypterte meldinger. Det krever at kontoen har et offentlig/privat-nøkkelpar. Den offentlige nøkkelen blir tilgjengeliggjort for de som skal sende meldinger til kontoen, slik at de kan kryptere meldingen. Den private brukes for å dekryptere meldingene som kommer inn.

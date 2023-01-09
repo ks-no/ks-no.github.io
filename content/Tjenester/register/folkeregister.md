@@ -1,7 +1,7 @@
 ---
 title: Folkeregister
 date: 2022-02-18
-aliases: [/fiks-plattform/tjenester/folkeregister/]
+aliases: [/fiks-plattform/tjenester/folkeregister/, /fiks-plattform/tjenester/fiksregister/folkeregister]
 ---
 
 # Kort beskrivelse

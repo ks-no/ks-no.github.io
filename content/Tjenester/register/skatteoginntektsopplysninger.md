@@ -1,7 +1,7 @@
 ---
 title: Skatte- og inntektsopplysninger
 date: 2022-12-02
-aliases: [/fiks-plattform/tjenester/fiksregister/skatteoginntektsopplysninger/]
+aliases: [/fiks-plattform/tjenester/fiksregister/skatteoginntektsopplysninger/, /fiks-plattform/tjenester/fiksregister/skatteoginntekstopplysninger]
 ---
 
 # Kort beskrivelse

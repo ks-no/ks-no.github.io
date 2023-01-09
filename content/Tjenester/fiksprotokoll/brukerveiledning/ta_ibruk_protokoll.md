@@ -1,6 +1,7 @@
 ---
 title: 1. Ta i bruk tjenesten
 date: 2022-09-23
+alias: [/fiks-plattform/tjenester/fiksprotokoll/brukerveiledning/ta_ibruk_protokoll]
 ---
 
 Det første som må gjøres for bruke Fiks Protokoll, er å skrive under på avtale om bruk og ta i bruk tjenesten.

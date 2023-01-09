@@ -3,7 +3,8 @@ title: Min kommune
 date: 2022-06-28
 aliases: [
     "/fiks-platform/tjenester/minside",
-    "/fiks-plattform/tjenester/minside"
+    "/fiks-plattform/tjenester/minside",
+    "/fiks-plattform/tjenester/minkommune"
 ]
 ---
 

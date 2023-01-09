@@ -1,7 +1,7 @@
 ---
 title: Min kommune - faktura
 date: 2022-06-28
-aliases: [/fiks-plattform/tjenester/minside/faktura/]
+aliases: ["/fiks-plattform/tjenester/minside/faktura/", "/fiks-plattform/tjenester/minkommune/faktura"]
 ---
 
 Faktura består av flere tjenester som sammen lager faktura visningen.

@@ -1,5 +1,6 @@
 ---
 title: SvarUt
+alias: /svarut/
 ---
 
 # Kort beskrivelse

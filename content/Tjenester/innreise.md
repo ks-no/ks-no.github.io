@@ -1,6 +1,7 @@
 ---
 title: Fiks innreise
 date: 2023-01-04
+alias: [/fiks-plattform/tjenester/innreise/]
 ---
 
 # Kort beskrivelse

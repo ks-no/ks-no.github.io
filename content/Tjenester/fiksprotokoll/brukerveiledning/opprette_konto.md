@@ -1,6 +1,7 @@
 ---
 title: 3. Opprette konto
 date: 2022-09-23
+alias: [/fiks-plattform/tjenester/fiksprotokoll/brukerveiledning/opprette_konto]
 ---
 
 #### Steg 1: Velg system
