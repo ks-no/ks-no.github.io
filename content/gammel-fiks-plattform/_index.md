@@ -2,6 +2,7 @@
 title: Fiks-plattformen
 description: Description
 aliases: [/fiks-platform]
+hidden: true
 ---
 
 KS Fiks er en felles tjenesteplattform for norske kommuner og fylkeskommuner. Formålet med FIKS-plattformen er å hjelpe kommuner og fylkeskommuner med å digitalisere sine tjenester raskere, øke kvaliteten på tjenestene og digitalisere for lavere kostnader.  

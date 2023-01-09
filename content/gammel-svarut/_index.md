@@ -1,5 +1,6 @@
 ---
 title: SvarUt
+hidden: true
 ---
 Dokumentasjonen av SvarUt finnes på flere nettsteder:
 
