@@ -1,7 +1,7 @@
 ---
 title: Fiks arkivlett byggesak
 date: 2020-05-12
-alias: [/fiks-plattform/tjenester/fiksprotokoll/arkivlett]
+alias: ["/fiks-plattform/tjenester/fiksprotokoll/arkivlett"]
 ---
 
 > Tjenesten er under utvikling/testing/pilotering

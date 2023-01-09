@@ -1,7 +1,7 @@
 ---
 title: Fiks arkiv
 date: 2021-07-29
-alias: [/fiks-plattform/tjenester/fiksprotokoll/arkiv]
+alias: ["/fiks-plattform/tjenester/fiksprotokoll/arkiv"]
 ---
 
 > Tjenesten er under utvikling/testing/pilotering
