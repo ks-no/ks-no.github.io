@@ -1,5 +1,5 @@
 ---
-title: SvarUt
+title: Skjult SvarUt
 hidden: true
 ---
 Dokumentasjonen av SvarUt finnes på flere nettsteder:
