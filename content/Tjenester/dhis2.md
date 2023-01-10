@@ -25,7 +25,7 @@ Systemet har en felles installasjon for alle kommunene og leveres som en skytjen
 
 Figuren under beskriver de overordnede prosessene som inngår i tjenesten Smittsporing.
 
-![Smittesporingtjeneste](./images/Smittesportjeneste.gif "Smittesporing")
+![Smittesporingtjeneste](../Tjenester/images/Smittesportjeneste.gif "Smittesporing")
 
 Funksjonaliteten i DHIS2 er kort fortalt registrering av informasjon om smittet og hvem den smittede har vært i nærkontakt med, innsamlet gjennom intervju. Nærkontakter er definert av FHI som personer som har hatt tett kontakt med en person som er bekreftet syk med covid-19 fra 48 timer før symptomdebut og til personen er avisolert. Disse er etter covid-19 forskriften pålagt å være i karantene. De som har nærmest kontakt, har størst risiko for å være smittet. Ved sannsynlig, men ikke bekreftet covid-19, anbefales det at husstandsmedlemmer eller tilsvarende nære kontakter oppholder seg i karantene. Gjeldende definsjon og retningslinjer for smittetifeller og nærkontakter finnes på FHI sine nettsider. https://www.fhi.no/nettpub/coronavirus/helsepersonell/definisjoner-av-mistenkte-og-bekreftede-tilfeller-med-koronavirus-coronavir/
 
