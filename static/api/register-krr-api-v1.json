@@ -1,0 +1,157 @@
+{
+  "openapi" : "3.0.1",
+  "info" : {
+    "title" : "Fiks register KRR service",
+    "description" : "Oppslag i kontakt- og reservasjonsregisteret (KRR) for Fiks register",
+    "contact" : {
+      "name" : "Fiks brukerstøtte",
+      "url" : "https://www.ks.no/fagomrader/digitalisering/utviklingsprosjekter",
+      "email" : "fiks-utvikling@ks.no"
+    },
+    "version" : "v1"
+  },
+  "servers": [
+    {
+      "url": "https://api.fiks.ks.no",
+      "description": "KS Fiks API host",
+      "variables": {}
+    },
+    {
+      "url": "https://api.fiks.test.ks.no",
+      "description": "KS Fiks TEST API host",
+      "variables": {}
+    }
+  ],
+  "paths" : {
+    "/register/api/v1/ks/{rolleId}/krr/person" : {
+      "post" : {
+        "tags" : [ "krr" ],
+        "description" : "Henter KRR-info for angitt rolleId",
+        "operationId" : "postPerson",
+        "parameters" : [ {
+          "name" : "rolleId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/KrrSoekDefinisjon"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/KrrDefinisjon"
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Ikke tilgang",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Ingen treff",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components" : {
+    "schemas" : {
+      "KrrDefinisjon" : {
+        "required" : [ "epost", "fnr", "kanVarsles", "reservert", "tlf" ],
+        "type" : "object",
+        "properties" : {
+          "fnr" : {
+            "type" : "string"
+          },
+          "epost" : {
+            "$ref" : "#/components/schemas/KrrEpostDefinisjon"
+          },
+          "tlf" : {
+            "$ref" : "#/components/schemas/KrrTlfDefinisjon"
+          },
+          "status" : {
+            "type" : "string"
+          },
+          "reservert" : {
+            "type" : "boolean"
+          },
+          "kanVarsles" : {
+            "type" : "boolean"
+          }
+        }
+      },
+      "KrrEpostDefinisjon" : {
+        "required" : [ "adresse" ],
+        "type" : "object",
+        "properties" : {
+          "adresse" : {
+            "type" : "string"
+          },
+          "sistOppdatert" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "sistVerifisert" : {
+            "type" : "string",
+            "format" : "date-time"
+          }
+        }
+      },
+      "KrrTlfDefinisjon" : {
+        "required" : [ "nummer" ],
+        "type" : "object",
+        "properties" : {
+          "nummer" : {
+            "type" : "string"
+          },
+          "sistOppdatert" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "sistVerifisert" : {
+            "type" : "string",
+            "format" : "date-time"
+          }
+        }
+      },
+      "KrrSoekDefinisjon" : {
+        "required" : [ "fnr" ],
+        "type" : "object",
+        "properties" : {
+          "fnr" : {
+            "pattern" : "^[0-9]{11}$",
+            "type" : "string"
+          }
+        }
+      }
+    }
+  }
+}
