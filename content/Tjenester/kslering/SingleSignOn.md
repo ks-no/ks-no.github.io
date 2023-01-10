@@ -2,6 +2,7 @@
 title: Single Sign On
 date: 2022-06-23
 aliases: [/kslering/SingleSignOn]
+hidden: true
 ---
 ## Single sign On (SSO)
 1. Bestilling
