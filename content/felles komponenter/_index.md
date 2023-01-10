@@ -1,7 +1,13 @@
 ---
-title: Felles komponenter
+title: Komponenter
 description: Description
 hidden: false
 ---
 
-Teknisk beskrivelse av felles komponenenter på plattformen
+
+# Komponenter
+Fiks plattformen inneholder en del komponenter som ikke tilbys som selvstendige tjenester. Disse er:
+
+{{% children style="h5" depth="1" %}}
+
+
