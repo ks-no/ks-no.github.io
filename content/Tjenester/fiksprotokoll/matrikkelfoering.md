@@ -4,29 +4,29 @@ date: 2021-08-18
 alias: [/fiks-plattform/tjenester/fiksprotokoll/matrikkelfoering]
 ---
 
-# Kort beskrivelse
+## Kort beskrivelse
 Fiks Matrikkelføring er en asynkron protokoll over Fiks IO for å overføre grunnlag til matrikkelføring fra eByggesak til Matrikkelklienter. 
 Den er tilsvarende løsningen som er etablert på Fiks SvarUt/SvarInn http://geointegrasjon.no/nytt-grensesnitt-ebyggesak-og-matrikkel/.
 Denne løsningen benytter altså [Fiks IO](https://ks-no.github.io/fiks-plattform/tjenester/fiksprotokoll/fiksio/) for maskin til maskin integrasjon. 
 
-# Tilgjengelige grensesnitt
+## Tilgjengelige grensesnitt
 | Grensesnitt | Støtte |
 |------|------|
 | Web portal | Nei |
 | Maskin til maskin | Ja |
 
 
-# Beskrivelse
+## Beskrivelse
 
-## Teknisk oversikt skisse
+### Teknisk oversikt skisse
 ![fiks_matrikkelfoering](/images/matrikkelfoering_skisse.png "Fiks Matrikkelføring")
 
-## Hvordan ta i bruk Fiks Matrikkelføring
+### Hvordan ta i bruk Fiks Matrikkelføring
 For at eByggesak eller annet fagsystem skal få tilgang til å sende grunnlag for matrikkelføring til matrikkelklienter, så må kommunen aktivere tjenesten Fiks IO i [Fiks Konfigurasjon](https://forvaltning.fiks.ks.no/fiks-konfigurasjon/tjenester).
 
 Aktuell matrikkelklient må aktiveres for å kunne svare med meldinger på meldingsprotokoll ```no.ks.fiks.matrikkelfoering.v2```
 
-## Meldinger med Fiks IO for Fiks Matrikkelføring
+### Meldinger med Fiks IO for Fiks Matrikkelføring
 
 Meldingsprotokoll som matrikkelklient må støtte er ```no.ks.fiks.matrikkelfoering.v2```
 
@@ -38,7 +38,7 @@ Hver melding kan ikke overskride 5GB totalt, med protokollmelding og vedlegg.
 Fiks-IO har støtte for headere på meldinger. For å markere en melding som unik skal man sette headeren `klientMeldingId` med en unik id. Denne id'en skal brukes igjen for alle meldinger som forsøkes på nytt. 
 Dette er for at mottaker skal kunne se at dette er en melding som har vært forsøkt tidligere og kan håndtere meldingen korrekt. Se kode eksempel lenger nede for hvordan man setter `klientMeldingId`. 
 
-### Meldinger
+#### Meldinger
 
 **Fra eByggesak/fagsystem:**
 
@@ -57,7 +57,7 @@ Dette er for at mottaker skal kunne se at dette er en melding som har vært fors
 | Kvittering på føring i matrikkelen | `no.ks.fiks.matrikkelfoering.v2.kvittering` | [no.ks.fiks.matrikkelfoering.v2.kvittering.xsd](https://github.com/ks-no/fiks-matrikkelfoering-specification/blob/main/Schema/V2/no.ks.fiks.matrikkelfoering.v2.kvittering.xsd) | `kvittering.xml` |
 | Svar på forespørsel om status | `no.ks.fiks.matrikkelfoering.v2.statussvar` | [no.ks.fiks.matrikkelfoering.v2.statussvar.xsd](https://github.com/ks-no/fiks-matrikkelfoering-specification/blob/main/Schema/V2/no.ks.fiks.matrikkelfoering.v2.statussvar.xsd) | `statussvar.xml` |
 
-## Datamodell for meldinger
+### Datamodell for meldinger
 ![fiks_matrikkelfoering_datamodell_grunnlag](/images/datamodell_grunnlag.png "Matrikkelføring datamodell grunnlag")
 
 [`no.ks.fiks.matrikkelfoering.v2.grunnlag.xsd`](https://github.com/ks-no/fiks-matrikkelfoering-specification/blob/main/Schema/V2/no.ks.fiks.matrikkelfoering.v2.grunnlag.xsd)
@@ -66,7 +66,7 @@ Dette er for at mottaker skal kunne se at dette er en melding som har vært fors
 
 [`no.ks.fiks.matrikkelfoering.v2.kvittering.xsd`](https://github.com/ks-no/fiks-matrikkelfoering-specification/blob/main/Schema/V2/no.ks.fiks.matrikkelfoering.v2.kvittering.xsd)
 
-## Flyt
+### Flyt
 
 ![fiks_matrikkelfoering_prosess](/images/matrikkelfoering_flyt.png "Matrikkelføring prosess")
 
@@ -81,7 +81,7 @@ Dette er for at mottaker skal kunne se at dette er en melding som har vært fors
 - Når tiltaket er matrikkelført / ført i FKB, sender Matrikkelklienten en kvitteringsmelding tilbake til eByggesak via Fiks IO.
 - eByggesak mottar kvitteringsmeldingen via Fiks IO og oppretter milepæl for matrikkelføring i saken
 
-### Flyt for status meldinger
+#### Flyt for status meldinger
 Fagsystem kan sende status forespørsel for en innsendt matrikkelføring med meldingstypen `no.ks.fiks.matrikkelfoering.v2.status`.
 Matrikkelsystem svarer da med status med meldingstypen `no.ks.fiks.matrikkelfoering.v2.statussvar`.
 For at dette skal fungere krever protokollen at det blir sendt unik klientMeldingId header (se eksempel lenger nede) på alle `no.ks.fiks.matrikkelfoering.v2.grunnlag` meldinger.
@@ -135,7 +135,7 @@ Her følger det med en **statusKvittering**. Den vil gjenspeile **svarMedKvitter
 **Utloept** brukes der kvittering er sendt, og **svarMedKvittering** er true, men samtidig at dokumentet ikke lenger er lagret på matrikkelsystem-siden pga. f.eks. at det blir slettet etter en stund.
 
 
-## Overføring av filer
+### Overføring av filer
 
 Meldingen `no.ks.fiks.matrikkelfoering.v2.grunnlag` vil  inneholde en **byggesak.xml** fil som er matrikkelføringen, eventuelle vedlegg og en **index.json** fil som beskriver innholdet i hele meldingen.
 Filen **index.json** har følgende struktur:
@@ -178,7 +178,7 @@ Her er noen eksempler hentet derfra:
 |  Matrikkelføring XML | Byggesak |
 
 
-## Nivå på grunnlaget til matrikkelføring
+### Nivå på grunnlaget til matrikkelføring
 Det er definert 4 trappetrinn/nivå i løsningskonseptet som illustrerer hvor godt et tiltak er tilrettelagt for effektiv
 matrikkelføring.
 
@@ -214,7 +214,7 @@ Nivå 4:
 - Gir Matrikkelfører informasjon om delelinjer / grensejusteringer ved Delesaker.
 
 
-## Videresending av grunnlag som skal føres i en annen matrikkelklient
+### Videresending av grunnlag som skal føres i en annen matrikkelklient
 
 Hvis matrikkelfører finner ut at en melding skal registreres ved bruk av en annen matrikkelklient så kan denne meldingen videresendes. Det skal da brukes egne headere for å angi hvilken opprinnelig konto og hvilken opprinnelig meldingsid som skal besvares med mottatt melding, evt feilmelding og kvitteringsmelding. 
 
@@ -223,7 +223,7 @@ Hvis matrikkelfører finner ut at en melding skal registreres ved bruk av en ann
 | videresendt-fra-konto      | Opprinnelig konto som melding kom fra |
 | opprinnelig-melding-id      | Opprinnelig meldingsid som svar-til skal sendes tilbake til |
 
-## Eksempel 1 - viser eksempel på en nivå 1 melding
+### Eksempel 1 - viser eksempel på en nivå 1 melding
 
 Kodeeksempel på sending av melding med grunnlag for matrikkelføring. 
 Fiks-IO klienten støtter å sette egne headere og som tidligere nevnt skal `klientMeldingId` settes som parameter slik at den komme med i headeren.
@@ -301,7 +301,7 @@ byggesak.xml innhold
 </Byggesak>
 ```
 
-## Eksempel på XML på nivå 2
+### Eksempel på XML på nivå 2
 
 ```xml
 <?xml version="1.0" encoding="utf-8"?>

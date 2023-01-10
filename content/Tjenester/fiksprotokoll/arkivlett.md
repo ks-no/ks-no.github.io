@@ -6,30 +6,30 @@ alias: ["/fiks-plattform/tjenester/fiksprotokoll/arkivlett"]
 
 > Tjenesten er under utvikling/testing/pilotering
 
-# Kort beskrivelse 
+## Kort beskrivelse 
 
 Fiks Arkivlett Byggesak er en tjeneste for å spørre etter relevante dokumenter i en byggesak.
 Løsningen benytter [FIKS Protokoll](https://ks-no.github.io/fiks-platform/tjenester/fiksprotokoll) for definisjon av meldingstyper, og [FIKS IO](https://ks-no.github.io/fiks-plattform/tjenester/fiksprotokoll/fiksio/) for maskin til maskin integrasjon 
 
 Løsningen vil typisk kunne brukes av et søknadssystem for byggesaker til å finne tidligere tegninger eller vedtak på en eiendom som er relevant for videre tiltak på eiendommen.
 
-# Tilgjengelige grensesnitt
+## Tilgjengelige grensesnitt
 | Grensesnitt | Støtte |
 |------|------|
 | Web portal | Nei |
 | Maskin til maskin | Ja |
 
-# Beskrivelse av løsningen 
-## Teknisk oversikt skisse
+## Beskrivelse av løsningen 
+### Teknisk oversikt skisse
 
 ![fiks_arkivlett](/images/arkivlett_skisse.png "Fiks IO Arkivlett")
 
-## Hvordan ta i bruk Fiks Arkivlett Byggesak
+### Hvordan ta i bruk Fiks Arkivlett Byggesak
 For at søknadssystem for byggesaker skal få tilgang til å sende forespørsel om byggesaker på en eiendom til arkivet, så må kommunen aktivere tjenesten Fiks IO i [Fiks Konfigurasjon](https://forvaltning.fiks.ks.no/fiks-konfigurasjon/tjenester).
 
 Aktuellt system for mottak av arkivlett meldinger må aktiveres for å kunne svare på meldingsprotokoll ```no.dibk.arkivlett.byggesak.v1```
 
-## Sikkerhet sjekkliste
+### Sikkerhet sjekkliste
 
 Løsningen for å utlevere informasjon må være vurdert av behandlingsansvarlig(kommunen) for å ivareta den registrertes rettigheter. Databehandler(Leverandør) må dokumentere at personopplysninger behandles etter innstruks fra behandlingsansvarlig.   
 
@@ -38,7 +38,7 @@ Løsningen for å utlevere informasjon må være vurdert av behandlingsansvarlig
 Avklares nærmere i pilot 
 
 
-## Flyt
+### Flyt
 ![fiks_arkivlett_flyt](/images/arkivlett_flyt.png "Fiks Arkivlett")
 
 - Søknadssystem sjekker om valgt kommune har system som støtter meldingsprotokollen for arkivlett i kontokatalogen
@@ -52,10 +52,10 @@ Avklares nærmere i pilot
 - Søknadssystem vise resultatet til søker
 
 
-## Fiks IO meldingsprotokoll for arkivlett byggesak
+### Fiks IO meldingsprotokoll for arkivlett byggesak
 Meldingsprotokoll som arkivlett mottaksklient må støtte ```no.dibk.arkivlett.byggesak.v1```
 
-### Oppslag på kontoer som støtter meldingsprotokoll for arkivlett byggesak
+#### Oppslag på kontoer som støtter meldingsprotokoll for arkivlett byggesak
 For å finne hvilke konto en skal sende meldinger til så kan en slå opp dette i adresse katalogen til FIKS IO
 
 ```csharp
@@ -66,7 +66,7 @@ var kontoliste = client.Lookup(new LookupRequest("ORG_NO.987654321", "no.dibk.ar
 var kontoliste = client.Lookup(new LookupRequest("KOMM.3817", "no.dibk.arkivlett.byggesak.v1", 3));
 ```
 
-#### Fra søknadssystem/fagsystem: 
+##### Fra søknadssystem/fagsystem: 
 - Forespørsel om å hente byggesaker for en eiendom: ```no.dibk.arkivlett.byggesak.hentbyggesaker.v1```  [Datamodell hentbyggesaker.v1.schema.json](/files/hentbyggesaker.v1.schema.json)
 
 Eksempel message.json:
@@ -95,7 +95,7 @@ payloads.Add(new StringPayload(jsonMessage, "message.json"));
 var msgSent = client.Send(messageRequest, payloads).Result;
 ```
 
-#### Fra arkivlett klienter: 
+##### Fra arkivlett klienter: 
 - Mottak vellykket: ```no.dibk.arkivlett.mottatt.v1```
 - Mottak feilet: ```no.dibk.arkivlett.feil.v1```
 - Resultat til forespørsel om eiendommens byggesaker:
@@ -202,7 +202,7 @@ payloads.Add(new FilePayload("tegninghytte.pdf"));
 var msgSent = client.Send(messageRequest, payloads).Result;
 ```
 
-## Overføring av filer
+### Overføring av filer
 
 Dokumenttyper ihht Arkivlett anbefales https://www.ks.no/fagomrader/digitalisering/felleslosninger/verktoykasse-plan--og-byggesak/enklere-tilgang-til-kommunale-byggesaksarkiv/
 

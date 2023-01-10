@@ -4,23 +4,23 @@ date: 2019-12-11
 aliases: [/fiks-platform/tjenester/kjoretoyregister, /fiks-plattform/tjenester/kjoretoyregister]
 ---
 
-# Kort beskrivelse
+## Kort beskrivelse
 Fiks kjøretøyregister er en tjeneste for å gjøre oppslag i Statens Vegvesen sitt [Kjøretøy register](https://autosys-kjoretoy-api.atlas.vegvesen.no/) (Autosys). Fiks Kjøretøyregister speiler [Kjøretøyoppslag](https://autosys-kjoretoy-api.atlas.vegvesen.no/api-ui/index-kjoretoyoppslag.html) og [Kjøretøysøk](https://autosys-kjoretoy-api.atlas.vegvesen.no/api-ui/index-kjoretoysok.html) tjenestene til Statens Vegvesen på Fiks plattformen. Den gjør det mulig å slå opp et eller flere kjøretøy basert på *kjennemerke*, *kuid* (svv-identifikator), eller *understellsnummer*. Oppslaget vil gi informasjon om kjøretøyet og eierforhold på nåværende tidspunkt, eller på et spesifisert tidspunkt som angis i søket.  
 
-# Tilgjengelige grensesnitt
+## Tilgjengelige grensesnitt
 | Grensesnitt | Støtte |
 |------|------|
 | Web portal | Nei |
 | Maskin til maskin | ja |
 
 
-## Hvordan tar jeg i bruk Fiks Kjøretøyregister
+### Hvordan tar jeg i bruk Fiks Kjøretøyregister
 
 Fiks Kjøretøyregister er en tjeneste for maskin-til-maskin integrasjon. For å ta i bruk Fiks Kjøretøyregister trenger du derfor at en leverandør av fagsystem utvikler en integrasjon tjenesten.
 
 På sikt vil de bli vurdert å utvikle et administrativt grensesnitt mot Fiks Kjøretøyregister for kommuneansatte.
  
-## Integrasjon
+### Integrasjon
  
 Api kall gjøres i henhold til [swagger spesifikasjonen](https://autosys-kjoretoy-api.atlas.vegvesen.no/swagger-ui/index-akf.html) til Statens Vegvesen, med følgende endringer:
   

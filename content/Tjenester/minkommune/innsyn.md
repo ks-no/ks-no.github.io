@@ -6,7 +6,7 @@ aliases: [/fiks-platform/tjenester/innsyn, /fiks-plattform/tjenester/innsyn, /fi
 
 Norske kommuner har mengder av informasjon om sine innbyggere. Denne informasjonen er spredd rundt i arkiver, fagsystemer, dokumentlagre og eksterne skyløsninger. Fiks Innsyn lagrer metadata som beskriver denne informasjonen, og gjør den tilgjengelig for innbyggeren via en kraftig søkemotor. 
 
-### Hvordan tar man i bruk Fiks Innsyn?
+## Hvordan tar man i bruk Fiks Innsyn?
 En kommune kan bruke Fiks Innsyn for å gjøre kommunal informasjon (forsendelser, byggesaker, eiendommer, fakturaer osv) tilgjengelig for innbyggere, endten på min.kommune.no eller i kommunens eksisterende løsninger.
 ![minside_integrasjoner](/images/innsyn_konfigurasjon_integrasjoner.png "Innsyn integrasjoner")
 
@@ -16,7 +16,7 @@ Hvis kommunen benytter min.kommune.no er nå alt klart: innloggede innbyggere vi
 
 Hvis kommunen benytter en egen minside-løsning må også søket mot Fiks Innsyn gjøres via en integrasjon, som legges til på samme måte som datakilde-integrasjonene over. I noen tilfeller vil det finnes nøkkelklare leverandør-integrasjoner for dette, i andre må kommunen lage en egen integrasjon som leverandøren kan benytte. Kontakt leverandør for å avklare dette.
 
-### Hvordan virker Fiks Innsyn?
+## Hvordan virker Fiks Innsyn?
 ![minside_sok](https://www.lucidchart.com/publicSegments/view/db355c1a-7955-4c4a-8ccf-ccd7e64424fd/image.png "Innsyn")
 Tjenesten består av tre hovedkomponenter:
  
@@ -37,14 +37,14 @@ Søkeresultatet scores og sorteres basert på relevans: nye meldinger scores hø
 
 Søkemotoren inneholder utelukkende metadata, ikke selve dokumentet. Om meldingen skal peke til et dokument, bilde eller annen fil gjøres dette i form av en lenke: denne kan for eksempel peke til en fil i [Fiks Dokumentlager]({{< ref "dokumentlager.md" >}}), en sak i et kommunalt filarkiv, eller en annen tjeneste. Så lenge disse støtter innlogging gjennom ID-Porten vil nedlastingen oppleves sømløst av innbygger.
 
-### Uvikling av integrasjoner som leverer data til Innsyn: 
+## Uvikling av integrasjoner som leverer data til Innsyn: 
 Noen grunnleggende prinsipper for forvalting av meldinger i innsyn:
 
 * _Alle dokumenter eies av en Fiks Organisasjon._ I de fleste tilfeller vil dette være en kommune eller en fylkeskommune. Det er denne organisasjonen som autoriserer indeksering av data, og har rett til å oppdatere eller slette disse, enten direkte eller via tredjepart.
 * _Integrasjoner må autoriseres for å indeksere data på vegne av en av organisasjon._ Dette gjøres gjennom å tildele "Innsyn Index" privilegiet til integrasjonen i Fiks Konfigurasjon. Nøkkelklare integrasjoner vil automatisk bli tildelt de nødvendige privilegiene når de blir lagt til i Innsyn konfigurasjonen.
 * _Hver integrasjon styrer dokumentene de har lastet opp på vegne av organisasjonen._ Dvs. at integrasjon A ikke kan slette eller oppdatere dokumenter lastet opp av integrasjon B. Merk at tjenesteadministrator når som helst kan slette meldinger gjennom Fiks Konfigurasjon, uavhengig av hvilke integrasjon som har indeksert meldingene. 
 
-#### API
+### API
 
 Meldinger til Innsyn indekseres gjennom [Innsyn Index API Versjon 2](https://editor.swagger.io/?url=https://developers.fiks.ks.no/api/innsyn-index-api-v2.json) 
 
@@ -62,12 +62,12 @@ Merk at JSON-metadata må Base64 encodes før det sendes til APIet, dette hoveds
 Alle JSON-schema definisjoner finnes i følgende GitHub repository: [ks-no / fiks-innsyn-json-schema](https://github.com/ks-no/fiks-innsyn-json-schema). Disse kan også brukes til å generere modeller for deres valgte språk. 
 Det finnes allerede en Maven-modul for Java-brukere som er deployet til Maven Central. Mer informasjon rundt dette finnes i prosjektets README på GitHub.
 
-##### Gamle APIer
+#### Gamle APIer
 [Versjon 1](https://editor.swagger.io/?url=https://developers.fiks.ks.no/api/innsyn-index-api-v1.json) av innsyn index støttes fortsatt for eksisterende integrasjoner, men bør ikke benyttes for nyutvikling.
 
 Hovedforskjellen fra versjon 2 er at metadata for meldingstypene er definert i API-speccen, i stedet for eksterne JSON-schemas.
 
-#### Indeksering
+### Indeksering
 Indekseringstjenesten lar integrasjoner opprette meldinger, eller fjerne / endre meldinger som alt er opprettet. Hver melding har en meldingId som settes av integrasjonen. Hvis man indekserer to meldinger på samme melding-id vil den første meldingen bli overskrevet av den andre. 
 
 Når man lager en integrasjon mot indekseringstjenesten er det viktig å være bevisst på at Innsyn bør betraktes som en cache: man bør ikke forvente at meldingene man laster opp vil ligge der til evig tid: en forvalter med admin-privilegier på innsyn-tjenesten kan for eksempel når som helst slette meldinger. Hvis man ønsker en robust løsning er det derfor viktig at man støtter _replay_: muligheten til å re-indexere alle meldinger til Innsyn. 
@@ -86,7 +86,7 @@ En indekseringsoperasjon kan ha følgende utfall:
 
 Gjennomføring av batch-operasjoner skjer synkront fra ståstedet til en bruker av tjenesten: responsen blir ikke sendt før batchen er gjennomført. Dermed vil man kunne vite at en gruppe opprettet i batch 1 eksisterer når batch 2 gjennomføres, så lenge disse utføres sekvensielt. 
 
-#### Eksponering av meldinger
+### Eksponering av meldinger
 _Eksponert for_ i en indekseringsforespørsel angir hvem som skal kunne se meldingen. Dette kan ha en av følgende verdier:
 
 * _fødselsnummer_: Meldingen blir tilgjengelig for innbyggeren som er autentisert med det spesifiserte fødselsnummeret.
@@ -96,21 +96,21 @@ _Eksponert for_ i en indekseringsforespørsel angir hvem som skal kunne se meldi
 
 Det er viktig at man har et bevisst forhold til hvem meldinger eksponeres for, spesielt når man eksponerer for en matrikkelenhet, da endringer i eierskap vil medføre at nye personer får tilgang til meldingen. Man bør derfor aldri eksponere sensitive data via denne metoden.
 
-#### Versjonering
+### Versjonering
 Over tid vil json-modellen for en melding endrer seg. Innsyn løser dette ved at alle metadatamodellene er versjonert, for eksempel som Forsendelse V1, Forsendelse V2 osv. Alle tidligere versjoner er støttet, så om din integrasjon indekserer V1 av forsendelser i dag vil dette fortsette å virke selv om V2 blir gjort tilgjengelig.
 
 Hvis man ønsker å oppgradere eksisterende meldinger til ny versjon, for eksempel for å benytte felt som er lagt til i oppdateringen, gjøres dette gjennom _replay_; alle meldinger re-indekseres på eksisterende meldingId med ny versjon av metadata.  
 
-##### Sletting
+#### Sletting
 Indekserte meldinger kan fjernes ved å benytte [slette-API](https://editor.swagger.io/?url=https://developers.fiks.ks.no/api/innsyn-delete-api-v1.json). Her gjelder de samme reglene som over: en integrasjon må være autorisert for å handle på vegne av en ansvarlig organisasjon for at sletting kan gjennomføres, og en integrasjon kan bare slette meldinger den selv har indeksert.
 
 Merk at sletting på samme måte som indeksering ikke gjennomføres i en atomisk transaksjon: deler av meldingene i batchen kan bli slettet selv om andre feiler. 
 
-##### Håndtering av filer
+#### Håndtering av filer
 Mange meldingstyper vil referere til filer i eksterne systemer, som for eksempel dokumenter i "Forsendelse" typen. Innsyn har i seg selv ikke noe forhold til binære filer, og betrakter dem utelukkende som en lenke. Hvis filene allerede er tilgjengelig i et ID-Porten kompatibelt filarkiv trenger man ikke å laste disse opp på nytt, hvis man ikke har en slik tjeneste fra før kan man benytte Fiks Dokumentlager til dette. 
 
-### Uvikling av integrasjoner for å søke i innsyn
-#### Gjennomføring av søk 
+## Uvikling av integrasjoner for å søke i innsyn
+### Gjennomføring av søk 
 Hvis kommunen benytter min.kommune.no er det ikke behov for å utvikle noen egne integrasjoner for søk, men det kan ofte være aktuelt å søke i Innsyn fra annen løsning, for eksempel for å få "Post fra kommunen" fram på kommunens eksisterende minside-løsning. 
 
 Innsyn tilbyr følgende søke-api'er for eksterne integrasjoner:
@@ -127,12 +127,12 @@ I tillegg til søke-apier er det mulig å benytte [Innsyn Oppslag api](https://e
 
 Integrasjonen som skal utføre søk eller oppslag må benytte [integrasjon-person]({{< ref "integrasjoner.md" >}}) autentisering, dvs at de må fremvise den innloggede innbyggers ID-Porten token i kombinasjon med integrasjonId og Integrasjonpassord. I tillegg må integrasjonen ha "innsyn søk" privilegiet på den aktuelle Fiks-organisasjonen (tildelse via Innsyn konfigurasjon på forvaltning.fiks.ks.no). Søkeresultatet vil være begrenset til meldinger autorisert for den innloggede personen og eid av den aktuelle Fiks-organisasjonen.
 
-#### Versjonering av melding-metadata
+### Versjonering av melding-metadata
 Meldinger i Innsyn er versjonert, for eksempel som "ForsendelseV1" eller "ForsendelseV2", og nye versjoner av en melding blir lagt til uten forvarsel.
 
 Det er derfor viktig at man spesifisere "aksepterte-versjoner" (se api-spek'ene over) når man gjør et søk - en nyere versjon av en melding vil da bli nedgradert til den spesifiserte versjonen. Hvis man ikke gjør dette vil man få det som til enhver tid er nyeste versjon, hvor endringer kan brekke parsing av JSON metadata.
 
-#### Å søke på vegne av andre
+### Å søke på vegne av andre
 Innsyn tilbyr støtte for å søke på vegne av en organisasjon hvor man innhar rollen "Post/Arkiv" i Altinn. Denne settes som en query-param på søket (se api-spekk'er over). Det vil da bli sjekket om personen faktisk innehar denne fullmakten, og hvis dette er tilfellet vil søkeresultatet inneholde meldinger som er eksponert for organisasjonen eller matrikkelenheter organisasjonen eier heller enn personen som er autentisert gjennom ID-Porten tokenent. 
 
 "Legacy søk" api'et støtter den samme funksjonaliteten gjennom en ON_BEHALF_OF http-header, men et anbefales å ikke benytte denne metoden ved nyutvikling.

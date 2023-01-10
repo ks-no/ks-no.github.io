@@ -4,7 +4,7 @@ date: 2018-09-10
 aliases: [/fiks-platform/tjenester/dokumentlager/]
 ---
 
-# Kort beskrivelse
+## Kort beskrivelse
 Dokumentlager-tjenesten lar kommunen og andre Fiks-organisasjoner laste opp dokumenter. Ved opplasting autoriseres en eller 
 flere personer og/eller organisasjoner for tilgang til dokumentet. Det er også mulig å laste opp dokumenter med en begrenset
 levetid, slik at det blir gjort utilgjengelig når denne tiden utløper.
@@ -16,13 +16,13 @@ gjennom konfigurasjonsgrensesnittet, hvor man også finner statistikk for diskbr
 Dokumentlageret vil bli benyttet av flere Fiks-tjenester: SvarUt, SvarInn, Digisos og Innsyn, men det kan også benyttes av 
 en Fiks-organisasjons egne integrasjoner.
 
-# Tilgjengelige grensesnitt
+## Tilgjengelige grensesnitt
 | Grensesnitt | Støtte |
 |------|------|
 | Web portal | Nei |
 | Maskin til maskin | Ja |
 
-# Beskrivelse av tjenesten
+## Beskrivelse av tjenesten
 Dokumentlageret fungerer på følgende måte:
 
 1. En laster opp metadata om dokumentet. Her spesifiseres blant annet hvem dokumentet skal eksponeres for, dokumentets levetid, osv.
@@ -38,7 +38,7 @@ Det er tre forskjellige måter et dokument kan bli slettet på:
 
 Når et dokument slettes vil metadata fortsette å eksistere, men selve dokumentet vil ikke lenger være tilgjengelig.
 
-## Klienter
+### Klienter
 
 For å gjøre det enklere å ta i bruk Dokumentlageret har KS utviklet en klient for opplasting og nedlasting. Denne støtter 
 blant annet klient-side kryptering ved opplasting.
@@ -46,7 +46,7 @@ blant annet klient-side kryptering ved opplasting.
 Per i dag finnes denne klienten kun for Java, med en egen modul for konfigurering via Spring Boot. Kode og dokumentasjon 
 finnes på GitHub: https://github.com/ks-no/fiks-dokumentlager-klient
 
-## Integrasjonsutvikling
+### Integrasjonsutvikling
 
 Alle operasjoner i dokumentlageret utføres på en konto, som er en ressurs som hører til dokumentlager-tjenesten til en 
 Fiks-organisasjon. Hvordan disse organiseres er opp til hver organisasjon. Man kan ha én konto for alt, eller dele det 
@@ -57,7 +57,7 @@ tillegg må integrasjonen ha rett til å laste opp dokumenter på en dokumentlag
 gjennom konfigurasjonsgrensesnittet, men må gis på kontonivå. Dersom man har flere kontoer, men ønsker å gi en integrasjon 
 tilgang til flere av disse må tilgang gis på hver enkelt konto.
 
-### Opplasting
+#### Opplasting
 
 Opplasting gjøres med en POST-request mot følgende URL:
 
@@ -81,7 +81,7 @@ URL for nedlasting ligger i Location-header på returnert 201 CREATED respons, e
     - ``https://minside.kommune.no/dokumentlager/nedlasting/{id}``
     - ``https://minside.kommune.no/dokumentlager/nedlasting/niva4/{id}`` (Krever nivå 4 innlogging)
 
-#### Metadata
+##### Metadata
 
 Metadata for dokumenter legges i multipart med navn ``metadata`` og defineres i JSON. 
 Content-Type må på multiparten må settes til application/json.
@@ -119,7 +119,7 @@ Se https://eid.difi.no/nb/sikkerhet-og-informasjonskapsler/ulike-sikkerhetsniva
     - Autorisasjon - Eksponeres for et "privilegium, ressurs"-par. Personer eller integrasjoner med gitt privilegium på 
     gitt ressurs vil ha lov til å laste ned dokumentet.
 
-#### Dokument
+##### Dokument
 
 Dokumentdata legges i multipart med navn ``dokument``.
 
@@ -134,7 +134,7 @@ Public-keyen kan hentes med en GET-request mot følgende endepunkt:
 - Test: ``https://api.fiks.test.ks.no/dokumentlager/api/v1/public-key``
 - Prod: ``https://api.fiks.ks.no/dokumentlager/api/v1/public-key``
 
-#### Responskoder
+##### Responskoder
 - 201 Created - Dokumentet ble lastet opp. 
   Body inneholder metadata:
   ```json
@@ -154,7 +154,7 @@ Public-keyen kan hentes med en GET-request mot følgende endepunkt:
 - 404 Not Found - Fant ingen konto med spesifisert id for organisasjonen.
 - 410 Gone - Konto er slettet.
 
-#### Eksempel (cURL)
+##### Eksempel (cURL)
 
 ```bash
 curl -X POST https://api.fiks.test.ks.no/dokumentlager/api/v1/{fiksOrganisasjonId}/kontoer/{kontoId}/dokumenter/ \
@@ -165,7 +165,7 @@ curl -X POST https://api.fiks.test.ks.no/dokumentlager/api/v1/{fiksOrganisasjonI
 -F "dokument=@dokument.pdf"
 ```
 
-### Sletting
+#### Sletting
 
 Integrasjoner som er autorisert til å laste opp dokumenter har også lov til å slette. 
 
@@ -174,12 +174,12 @@ Dette gjøres med en DELETE-request mot følgende URL:
 - Test: ``https://api.fiks.test.ks.no/dokumentlager/api/v1/{fiksOrganisasjonId}/kontoer/{kontoId}/dokumenter/{dokumentId}``
 - Prod: ``https://api.fiks.ks.no/dokumentlager/api/v1/{fiksOrganisasjonId}/kontoer/{kontoId}/dokumenter/{dokumentId}``
 
-#### Responskoder
+##### Responskoder
 - 200 OK - Dokumentet med spesifisert id ble slettet. Tom body.
 - 400 Bad Request - Request er ikke i henhold til spesifikasjonen.
 - 403 Forbidden - Integrasjonen har ikke nødvendige tilganger til å slette dokumenter på spesifisert konto og organisasjon.
 - 404 Not Found - Fant ikke et dokument med oppgitt id, eller spesifisert konto og organisasjon.
 - 410 Gone - Dokumentet er allerede slettet, eller konto er slettet.
 
-### Feilmeldinger
+#### Feilmeldinger
 [Beskrivelse av feilmeldinger](../../integrasjoner/#feilmeldinger) 

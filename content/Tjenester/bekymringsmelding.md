@@ -4,7 +4,7 @@ date: 2019-11-25
 aliases: ["/fiks-platform/tjenester/bekymringsmelding", "/fiks-platform/tjenester_under_utvikling/bekymringsmelding", "/fiks-plattform/tjenester/bekymringsmelding/"]
 ---
 
-# Kort beskrivelse
+## Kort beskrivelse
 
 Fiks bekymringsmelding er en portal laget for Norges innbyggere for å varsle bekymring ovenfor et barn til barnevernet. Løsningen består av to ulike skjema, ett for privat melder og ett for offentlige ansatte.
 
@@ -14,24 +14,24 @@ Brukerne logger seg inn på portalen, fyller ut og sender inn bekymringsmeldinge
 * Manuell nedlastning, ustrukturert informasjon i digital form – PDF
 * Tilsendt som brevpost
 
-# Tilgjengelige grensesnitt
+## Tilgjengelige grensesnitt
 | Grensesnitt | Støtte |
 |------|------|
 | Web portal | Ja |
 | Maskin til maskin | Nei |
 
-# Beskrivelse av tjenesten
+## Beskrivelse av tjenesten
 Når bekymringsmeldingen er sendt vil systemet forsøke å levere den som strukturert data via Fiks-plattformen til kommunens fagsystem. Dersom kommunens fagsystem ikke støtter integrasjon mot [Fiks IO](https://ks-no.github.io/fiks-plattform/tjenester/fiksprotokoll/fiksio/) finnes det en løsning for å laste ned bekymeringsmeldingen manuelt. Bekymringsmeldinger som ikke markeres som mottatt sendes ut som brevpost.
 
-## Teknisk oversikt skisse
+### Teknisk oversikt skisse
 ![alt text](https://ks-no.github.io/images/Bekymringsmelding_4.png "Overordnet designløsning")
 
 Bekymringsmeldingen blir omgjort til strukturert data (JSON) for integrasjon mot fagsystem og ustrukturert data (PDF) til manuell nedlastning og for brevpost. All kommunikasjon mellom bruker og løsningen er kanalkryptert. I tillegg lagres både strukturert og ustrukturert data kryptert med mottakersystemets offentlige nøkkel (fagsystem, utskriftsleverandør, manuell nedlastning).  
 
 Portalen tilbyr også et API hvor det er mulig å sende en bekymringsmelding fra fagsystemet til en annen kommunes barneverntjeneste.
 
-## Teknisk beskrivelse av løsning og integrasjon
-### Hvordan tar man i bruk Fiks Bekymringsmelding?
+### Teknisk beskrivelse av løsning og integrasjon
+#### Hvordan tar man i bruk Fiks Bekymringsmelding?
 Portalen inneholder to skjema, en for innbyggere og en for offentlig ansatte, som kan brukes for å melde inn bekymringsmeldinger.
 
 Noen ganger kan det være hensiktsmessig å ha skjema for offentlig melder som en integrert del av et eget fagsystem (eks: skole, politi, ol) og da kan man benytte API for bekymringsmelding for å implementere dette. API-et støtter maskin-til-maskin integrasjon både som produsent (avsender) av bekymringsmelding og konsument (mottaker) av bekymringsmelding. Ta kontakt med din leverandør av fagsystem og hør om de støtter integrasjon mot bekymringsmelding. 
@@ -42,12 +42,12 @@ Dersom en bekymringsmelding ikke er lastet ned innen 2 virkedager vil den bli se
 
 Før løsningen kan tas i bruk må kommunen inngå en [avtale](https://svarut.wordpress.com/fiks/avtalen/) om bruk.
 
-### Integrasjonsutvikling
+#### Integrasjonsutvikling
 Fagsystemet kan produsere og sende inn bekymringsmeldinger til et API eller man kan benytte seg av å sende inn via skjema. Benyttes skjema så vil skjemaet produsere PDF og JSON-fil, men hvis fagsystemet skal sende inn til API, må fagsystemet sende med dette.
 
 Informasjon om generell integrasjonsutvikling mot Fiks, som blant annet autentisering, finner man [her](https://ks-no.github.io/fiks-plattform/integrasjoner/).
 
-#### Fagsystem som konsument
+##### Fagsystem som konsument
 Ved bruk av Fiks IO som leveringskanal må fagsystemet støtte meldingsprotokollen ```no.ks.fiks.bekymringsmelding.v1```, som er definert til bruk av bekymringsmeldinger. Meldingsprotokollen vil inneholde kontrakter i form av JSON-skjema som gjelder både for mottak og svar på Fiks IO-meldinger.
 
 **Til fagsystem - mottak av bekymringsmeldinger**
@@ -63,7 +63,7 @@ Dersom fagsystemet ikke klarer å lagre bekymringsmeldingen kan man sende tilbak
 
 Fullstendig skjemadefinisjon med eksempler finner man [her](https://github.com/ks-no/fiks-io-bekymringsmelding-protokoll). Det anbefales at man setter ttl (time-to-live) for en Fiks IO-melding til 24 timer. Får man meldingstype ```no.ks.fiks.kvittering.tidsavbrudd```, så trenger dere ikke sende noe tilbake, da vi alltid har en fallback til brevpost. Men det anbefales at man logger det, og sier fra så vi kan feilsøke. For mer informasjon om Fiks IO, se [dokumentasjon for Fiks IO](https://ks-no.github.io/fiks-plattform/tjenester/fiksprotokoll/fiksio/). Trondheim kommune har også laget en Fiks IO-klient i Go som er spesifikt rettet mot bekymringsmelding. Den finner man [her](https://github.com/tktip/fiks-bekymringsmelding-konsument).
 
-#### Fagsystem som produsent
+##### Fagsystem som produsent
 Swagger-spesifikasjon for å sende inn bekymringsmeldinger via API finnes her: [Bekymringsmelding mottak fagsystem](https://editor.swagger.io/?url=https://developers.fiks.ks.no/api/bekymringsmelding-mottak-fagsystem-api-v1.json) og [Bekymringsmelding kommune service](https://editor.swagger.io/?url=https://developers.fiks.ks.no/api/bekymringsmelding-kommune-api-v1.json). Merk at filene som skal sendes med, sendes som multipart request. Ikke alle Swagger-genererte klienter genererer dette riktig i henhold til OpenAPI 3.0-spesifikasjonen. Du kan se et eksempel på multipartforsendelse i Java [her](#eksempel-på-innsending-java-med-jersey-client).
 
 Feltet "Leveringskanal", jmf JSON-skjemaene, skal settes til navn på organisasjonen (Politiet, navnet på skolen, etc.) som sender bekymringsmeldingen. Feltet "Sendingstidspunkt" forventer ISO-8601 norsk tid uten tidssone, eksempelvis "2021-11-08T09:24:45".

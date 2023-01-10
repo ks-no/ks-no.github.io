@@ -6,7 +6,7 @@ alias: ["/fiks-platform/tjenester/fiksprotokoll"]
 Fiks protokoll er en tjenestegruppe som inneholder flere tjenester. Felles for disse tjenestene er at de gjelder meldinger som sendes over [Fiks IO](https://ks-no.github.io/tjenester/fiksprotokoll/fiksio), for sikker maskin-til-maskin integrasjon. 
 Tjenestene består både av et sett av protokoller med meldingstyper, f.eks. Fiks Arkiv og Fiks Plan, og et miljø for å administrere systemer som implementerer disse protokollene over Fiks IO.
 
-# Hvordan komme i gang med Fiks protokoll
+### Hvordan komme i gang med Fiks protokoll
 
 Det er noen steg som må gjøres før det er mulig å bruke Fiks Protokoll. Tjenesten må tas i bruk, det må opprettes minst et system, og systemet må ha minst en konto og den kontoen må få tilgang til et system som har en konto den kan sende meldinger til.
 
@@ -21,10 +21,10 @@ I tillegg er det to veiledninger for hvordan du kan generere nytt passord til sy
 * [Generer nytt passord](nytt_passord)
 * [Ny offentlig nøkkel](laste_opp_ny_offentlig_nokkel)
 
-# Tjenester under Fiks protokoll 
+### Tjenester under Fiks protokoll 
 {{% children style="h5" depth="1" %}}
 
-# Termer
+### Termer
 * Protokollsystem - Representerer et system som skal sende og motta meldinger over Fiks Protokoll. Dette vil være et arkiv, et fagsystem som skal arkivere, en matrikkelklient etc. Merk: Et system kan bruke flere protokoller, f.eks. både Fiks Arkiv og Fiks Plan.
 * Protokollkonto - Et protokollsystem kan ha flere protokollkontoer. En protokollkonto er en Fiks IO-konto som er en part i en protokoll. F.eks: 
   * En konto i et arkiv, som støtter arkivering og søk
@@ -38,7 +38,7 @@ I tillegg er det to veiledninger for hvordan du kan generere nytt passord til sy
 * Fiks IO-konto - Meldinger sendes og mottas over Fiks IO med en Fiks IO-konto. Fiks IO-kontoen har samme ID som protokollkontoen. Protokollkontoen er wrapper rundt Fiks IO-kontoen for å muliggjøre tilgangsstyring i Fiks Protokoll, og validering av meldinger.
 
 
-# Hvordan tar man i bruk Fiks Protokoll?
+### Hvordan tar man i bruk Fiks Protokoll?
 Først må Fiks Protokoll-tjenesten tas i bruk for kommunen og avtale må underskrives. Dette må gjøres av administrator i Fiks Organisasjonen (typisk kommunen).
 
 Deretter må det opprettes et system i Fiks Protokoll. Dette må gjøres i grensesnittet i Fiks Forvaltning av en administrator på Fiks Protokoll (dvs. en administrator i Fiks Organisasjonen, eller personer som er blitt gitt administratortilgang på Fiks Protokoll).
@@ -51,7 +51,7 @@ Et system kan settes opp til å konfigureres av integrasjon. Da vil den tilhøre
 
 APIet for konfigurering med integrasjon er definert her: [Fiks Protokoll API](https://editor.swagger.io/?url=https://developers.fiks.ks.no/api/fiks-protokoll-konfigurasjon-api-v1.json)
 
-# Fiks Protokoll Konto
+### Fiks Protokoll Konto
 Konto opprettes i forvaltning eller via API.
 Når konto opprettes må en ha tilgjengelig offentlig nøkkel i PEM format. Denne benyttes for kryptering av meldinger som skal mottas.
 Forvalting:
@@ -71,10 +71,10 @@ Payload:
 }
 ```
 
-# Tilganger
+### Tilganger
 Merk: Tilgangsstyringen er ikke implementert i Fiks IO ennå i Test, så reglene beskrevet under blir per nå ikke håndhevet. Men det vil komme før løsninger går ut i produksjon
 
-## Gi tilgang til system
+#### Gi tilgang til system
 Tilganger tildeles Protokoll system fra konto. Konto kan gi annet system tilgang til å sende meldinger til konto en oppretter tilgang fra. 
 
 Når system opprettes vil systemet kun være synlig for kontoer under egen organisasjon. Dersom systemet skal være synlig for kontoer utenfor egen organisasjon, må _Tilgjengelig for andre organisasjoner_ slås på. (Per nå kun mulig via API)
@@ -92,7 +92,7 @@ API:
 Tilsvarende for å fjerne tilgang
 `DELETE /fiks-protokoll/api/v1/konfigurasjon/{fiksOrgId}/systemer/{systemId}/kontoer/{kontoId}/tilganger/{eksternSystemId}`
 
-## Be om tilgang til system
+#### Be om tilgang til system
 En kan legge inn forespørsel om tilgang til konto, for system. Ved hjelp av API. Dette er ikke ferdig implementert i forvaltning.
 
 `POST {fiksOrgId}/systemer/{systemId}/forespurteTilganger/{eksternKonto}`
@@ -108,7 +108,7 @@ Tilsvarende for å fjerne forespørsel
 
 Merk: Søk etter systemer er ikke implementert ennå, så det kan være vanskelig å finne systemer å be om tilgang til
 
-## Kontoer et system kan sende meldinger til
+#### Kontoer et system kan sende meldinger til
 Hvilke kontoer et system kan sende meldinger til finnes på system-responsen fra `GET /fiks-protokoll/api/v1/konfigurasjon/{fiksOrgId}/systemer/{systemId}`. Der vil `tilgangTilKontoer` ha en liste over kontoer (`EksternProtokollKontoResponseEksternProtokollKontoResponse`) systemet kan sende meldinger til.
 Kun kontoer som er parter fra samme protokoll (samme navn og versjon) og som er støttet part (er i listen av stottedeParter hos motaker) som kan sende meldinger til hverandre. Dersom et system ikke ha en konto som er støttet part, så må en slik konto opprettes før meldinger kan sendes. 
 
@@ -141,7 +141,7 @@ Definisjon av `EksternProtokollKontoResponseEksternProtokollKontoResponse`:
 ```
 
 
-# Sende meldinger på konto 
+### Sende meldinger på konto 
 Benytt [Fiks IO](https://ks-no.github.io/tjenester/fiksprotokoll/fiksio) når meldinger skal sendes på konto.
 Dette er IDen til kontoen og er den samme som den tilhørende Fiks IO-kontoen. ID brukes når systemet skal sende meldinger fra kontoen, og når andre systemer skal sende meldinger til kontoen.
 

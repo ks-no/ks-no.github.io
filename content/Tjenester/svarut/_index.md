@@ -3,31 +3,31 @@ title: SvarUt
 alias: /svarut/
 ---
 
-# Kort beskrivelse
+## Kort beskrivelse
 KS FIKS meldingformidler er en sentralisert løsning som formidler dokumenter mellom avsender og mottaker via ulike kanaler. Kommuner og andre kan benytte KS FIKS plattform. SvarUt benyttes for utgående post, mens SvarInn benyttes for innkommet post.
 
 Edialog er grensesnittet som tilbys innbygger for å fylle ut et skjema som skal returneres til kommunen.
 
-# Tilgjengelige grensesnitt
+## Tilgjengelige grensesnitt
 | Grensesnitt | Støtte |
 |------|------|
 | Web portal | Ja |
 | Maskin til maskin | Ja |
 
-# Beskrivelse av tjenesten
+## Beskrivelse av tjenesten
 Svarut er en tjeneste som tilbyr et grensesnitt for aktørene i en digital dialog mellom kommune og innbygger. 
 Beskrivelser av de forskjellige konfigurasjonene:
 
 {{% children style="h5" showhidden= "true" %}}
 
 
-## Teknisk oversikt skisse
+### Teknisk oversikt skisse
 ![alternative text](http://www.plantuml.com/plantuml/proxy?src=https://raw.githubusercontent.com/wiki/ks-no/svarut-dokumentasjon/edialog/edialog.puml?2)
 
-## Konfigurasjon av Svarut
+### Konfigurasjon av Svarut
 [Konfigurasjon av SvarUt](https://svarut.wordpress.com/hjelp/konfigurasjon-av-svarut/)
 
-## Integrasjon mot Svarut
+### Integrasjon mot Svarut
 For utsending av forsendelser via KS-SvarUt benyttes en SOAP basert web-service. Denne servicen mottar forsendelsen og relevante metadata, og besørger videre ekspedering via elektroniske meldingstjenester eller vanlig post.
 
 For å sikre bakoverkompabilitet versjoneres servicen. Når grensesnittet endres deployes en ny versjon slik at eksisterende klienter selv kan velge når de ønsker å ta i bruk ny versjon. Se tabell under for hvilke versjoner som til enhver tid er støttet. Hver versjon dokumenteres separat. Deprecated bør ikke brukes i nye integrasjoner.
@@ -48,7 +48,7 @@ Kall mot SvarUt, timer ut hvis de tar mer enn 15 minutter. Derfor kan det være 
 | [ForsendelsesServiceV10](integrasjoner/forsendelsesservicev10) | [WSDL](https://svarut.ks.no/tjenester/forsendelseservice/ForsendelsesServiceV10?wsdl) | Deprecated | <ul><li> Ny operasjon: retrieveDokumentMetadata. Denne er lagt inn for å kunne hente ut informasjon om bl.a. hvor dokumentet kan lastes ned og eventuelt lenke til signeringsoppdrag.</li><li> Endret operasjon: setForsendelseLestAvEksterntSystem. Denne er oppdatert til å ta imot objekt av type LestAv.</li><li> Endret operasjoner: retrieveForsendelsesStatus og retrieveForsendelsesStatuser, begge returnerer nå samme modell-objekt (ForsendelsesStatus). Sistnevnte operasjon har pakket resultatet i en liste.</li><li> Forsendelsesid og organisasjonsnummer er kapslet inn i egne typer.</li><li> Modell-objektet StatusResult heter nå ForsendelsesStatus. Gamle ForsendelseStatus heter nå Status og blir returnert som en del av ForsendelsesStatus.</li><li> Modell-objektet Brevpost er ikke lenger i bruk og er fjernet.</li><li> Modell-objektet PrintKonfigurasjon heter nå UtskriftsKonfigurasjon.</li><li> Alle modell-objektene er oppdatert til å bruke camelCase på felt og attributter.</li></ul> |
 | [ForsendelsesServiceV11](forsendelsesservicev11) | [WSDL](https://svarut.ks.no/tjenester/forsendelseservice/ForsendelsesServiceV11?wsdl) | Stabil | <ul><li>EksponertFor, kan gjør forsendelse tilgjengelig for andre enn mottaker. Brukes av edialog for å tilate innsender å laste ned filene. </li></ul> |
 
-## Rest versjoner av forsendelseService
+### Rest versjoner av forsendelseService
 
 Det kommer ikke ny funksjonalitet etter v11 av soap servicen. Nye endringer og features vil komme i Rest servicene.
 Når vi brekker json strukturen vil det komme ny versjon av servicen. Alle implementasjoner må takle json felt som ikke er spesifisert. Det vil komme nye felt og eksisterende ikke obligatoriske felt kan forsvinne.
@@ -57,7 +57,7 @@ Når vi brekker json strukturen vil det komme ny versjon av servicen. Alle imple
 | --- | --- | --- |
 | [ForsendelseRestServiceV1](forsendelserestservicev1) | Stabil | <ul><li>Funksjonaliteten i V11 flyttet til http/json basert api.</li></ul> |
 
-## Nedlasting av forsendelser direkte til sakssystem
+### Nedlasting av forsendelser direkte til sakssystem
 
 Sakssystemer kan kalle SvarUt for å laste ned forsendelser direkte ved å bruke enten en REST-tjeneste eller en SOAP web-service.
 
@@ -68,7 +68,7 @@ For å sikre bakoverkompabilitet versjoneres servicen. Når grensesnittet endres
 | [MottaksService V1 REST](mottaksservice-rest) | Stabil | NA |
 
 
-## IPer
+### IPer
 
 Hvis dere må åpne i brannvegg ligger svarut bak disse ipene:
 

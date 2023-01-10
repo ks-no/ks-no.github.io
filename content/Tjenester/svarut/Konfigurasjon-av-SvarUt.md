@@ -4,7 +4,7 @@ date: 2017-01-01
 hidden: true
 ---
  
-# Konfigurasjon av SvarUt
+## Konfigurasjon av SvarUt
 Etter at det er signert avtale med KS om bruk av SvarUt oversendes en veiledning i konfigurasjon av tjenesten:
 
 [Konfigurasjon av SvarUt](https://svarut.wordpress.com/hjelp/konfigurasjon-av-svarut/)
