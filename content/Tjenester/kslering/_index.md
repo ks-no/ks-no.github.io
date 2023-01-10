@@ -7,4 +7,5 @@ aliases: [/kslering/_index_]
 KS-læring kjøres på Moodle-plattform. 
 
 [Integrasjon mot HR API](integrasjon)
+
 [Single sign on](SignleSignOn)
