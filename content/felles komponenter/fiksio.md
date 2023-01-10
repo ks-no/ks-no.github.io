@@ -1,7 +1,7 @@
 ---
 title: Fiks IO
 date: 2021-12-17
-aliases: ["/fiks-platform/tjenester/fiksio" /fiks-plattform/tjenester/fiksprotokoll/fiksio" ]
+aliases: [/fiks-platform/tjenester/fiksio, /fiks-plattform/tjenester/fiksprotokoll/fiksio]
 ---
 
 ## Kort beskrivelse
