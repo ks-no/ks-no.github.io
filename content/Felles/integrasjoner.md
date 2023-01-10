@@ -4,19 +4,19 @@ date: 2019-09-19
 aliases: [/fiks-platform/integrasjoner]
 ---
 
-En _integrasjon_ på Fiks-plattformen er en maskin-til-maskin klient som benytter tjenestelaget for å utføre oppgaver på vegne av en fiks-organisasjon. Dette kan for eksempel være et arkivsystem som sender saker gjennom [Fiks SvarInn](https://developer.fiks.ks.no/tjenester/fiksprotokoll/fiksio), eller et fagsystem som oppdaterer meldinger i [Fiks Innsyn](https://developer.fiks.ks.no/tjenester/minkommune/innsyn).
+En _integrasjon_ på Fiks-plattformen er en maskin-til-maskin klient som benytter tjenestelaget for å utføre oppgaver på vegne av en fiks-organisasjon. Dette kan for eksempel være et arkivsystem som sender saker gjennom [Fiks SvarInn]({{< ref "fiksio.md" >}}), eller et fagsystem som oppdaterer meldinger i [Fiks Innsyn]({{< ref "innsyn.md" >}}).
 
 Når en Fiks-organisasjon tar i bruk plattformen vil man se at det allerede finnes en del forhåndsdefinerte integrasjoner, for eksempel en SvarUt-integrasjon mot Fiks Innsyn. Dette er "globale integrasjoner" som blir tilgjengelig for alle Fiks-organisasjoner uten at hver organisasjon trenger å opprette dem. Ta kontakt med fiks-kundeservice om du på denne måten ønsker å gjøre en av dine integrasjoner tilgjengelig på hele plattformen. Dette er for det meste relevant for leverandører av skyløsninger for flere kommuner.
 
 Hver Fiks-organisasjon kan også opprette sine egne "lokale" integrasjoner - dette gjøres gjennom Fiks Konfigurasjon. Her opprettes integrasjonen, og man definerer hvilken organisasjon som skal ha rett til å sende forespørseler til Fiks-plattformen på vegne av denne. Organisasjonen kan være Fiks-organisasjonen selv, eller en tredjepart som har driftsansvar. Se under for detaljer om opprettelse av integrasjoner.
 
-Etter organisasjonen er opprettet må den autoriseres for å kunne handle på vegne av en Fiks-organisasjon. Om man for eksempel ønsker å autorisere en integrasjon for å indeksere meldinger [Fiks Innsyn](https://developer.fiks.ks.no/tjenester/minkommune/innsyn) må det relevante privilegiet tildeles på konfigurasjonssiden for denne tjenesten. Dette gjelder også for globale integrasjoner.
+Etter organisasjonen er opprettet må den autoriseres for å kunne handle på vegne av en Fiks-organisasjon. Om man for eksempel ønsker å autorisere en integrasjon for å indeksere meldinger [Fiks Innsyn]({{< ref "innsyn.md" >}}) må det relevante privilegiet tildeles på konfigurasjonssiden for denne tjenesten. Dette gjelder også for globale integrasjoner.
 
 ## Hvordan komme i gang med utviklingen
 
 1. Bestill virksomhetssertifikat fra comfides eller buypass for test. **NB!** På grunn av krav fra Digdir/Maskinporten kan du ikke bruke _selvsignert sertifikat_ hverken i test eller produksjonsmiljø
 1. Vi må ha org.nr på kontoen hos ID-porten (samme som i virksomhetssertifikatet), slik at vi får gitt dere tilgang til "ks:fiks"-scopet. Sendes til fiks-utvikling@ks.no
-1. [Følg oppskrift her for å lage klient hos idporten](https://developer.fiks.ks.no/felles/difiidportenklient) 
+1. [Følg oppskrift her for å lage klient hos idporten]({{< ref "difiidportenklient.md" >}}) 
 1. Send en e-post til fiks-utvikling@ks.no med e-postadresser som vil ha tilgang til vår Slack support-kanal. Vi liker best å ta support på Slack-chat.
 1. Har dere personinnlogginger i ID-porten test, send disse i en e-post til oss slik at vi kan sette opp test kommune/organisasjon i test. fiks-utvikling@ks.no Hvis ikke får dere testpersoner av oss.
 1. Ta kontakt på Slack-kanalen hvis dere står fast eller ønsker å få tilbakemelding på om dere bruker api-ene korrekt.
@@ -28,7 +28,7 @@ Etter organisasjonen er opprettet må den autoriseres for å kunne handle på ve
 1. Bestill tilgang til Maskinporten/Idporten hos Digdir. For personinnlogga websider må du ha idporten, for applikasjoner der du ikke er logget inn via idporten må en ha maskinporten.
   * For å opprette tilgang må en bruke selvbetjening: https://samarbeid.digdir.no/maskinporten/ta-i-bruk-maskinporten/97
   * Gå inn på https://minside-samarbeid.digdir.no/my-organisation/integrations/admin
-  *  [Følg oppskrift her for å lage klient hos idporten](https://developer.fiks.ks.no/felles/difiidportenklient) 
+  *  [Følg oppskrift her for å lage klient hos idporten]({{< ref "difiidportenklient.md" >}}) 
 1. Gå til https://forvaltning.fiks.ks.no og lag en integrasjon. Og gi tilgang til de tjenestene applikasjonen trenger.
 
 ## Grensesnitt
@@ -49,7 +49,7 @@ En Fiks-organisasjon kan opprette egen integrasjoner gjennom Fiks konfigurasjon.
 Integrasjoner autentiseres på to ulike måter: som "integrasjon" med oAuth 2.0, eller "integrasjon-person" m. Open Id Connect (OIDC). Fiks har laget klienter for å generere access token fra Maskinporten basert på et virksomhetssertifikat, en issuer (konto hos Difi) og ett eller flere scopes. Java-klient: [https://github.com/ks-no/fiks-maskinporten](https://github.com/ks-no/fiks-maskinporten), .net-klient: [https://github.com/ks-no/fiks-maskinporten-client-dotnet](https://github.com/ks-no/fiks-maskinporten).
 
 ### Integrasjon
-Denne metoden benyttes for ren server til server integrasjon, for eksempel når et fagsystem skal laste opp meldinger til  [Fiks Innsyn](https://developer.fiks.ks.no/tjenester/minkommune/innsyn). Organisasjonen henter et OAuth 2.0 access token med scope "ks:fiks" fra ID-Porten, basert på organisasjonens virksomhetssertifikat. Dokumentasjon for dette finnes [her](https://difi.github.io/idporten-oidc-dokumentasjon/oidc_auth_server-to-server-oauth2.html). Vi støtter i første omgang kun JWT access_tokens, dette må konfigureres hos ID-Porten.  I tillegg til dette tokenet må man ha en header for integrasjonId og for integrasjonPassord. 
+Denne metoden benyttes for ren server til server integrasjon, for eksempel når et fagsystem skal laste opp meldinger til  [Fiks Innsyn]({{< ref "innsyn.md" >}}). Organisasjonen henter et OAuth 2.0 access token med scope "ks:fiks" fra ID-Porten, basert på organisasjonens virksomhetssertifikat. Dokumentasjon for dette finnes [her](https://difi.github.io/idporten-oidc-dokumentasjon/oidc_auth_server-to-server-oauth2.html). Vi støtter i første omgang kun JWT access_tokens, dette må konfigureres hos ID-Porten.  I tillegg til dette tokenet må man ha en header for integrasjonId og for integrasjonPassord. 
    
 Kallet mot Fiks-plattformtjenesten trenger dermed følgende HTTP headere:
  
