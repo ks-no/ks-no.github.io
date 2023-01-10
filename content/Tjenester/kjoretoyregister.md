@@ -10,7 +10,7 @@ Fiks kjøretøyregister er en tjeneste for å gjøre oppslag i Statens Vegvesen 
 # Tilgjengelige grensesnitt
 | Grensesnitt | Støtte |
 |------|------|
-| Web portal | Ja |
+| Web portal | Nei |
 | Maskin til maskin | ja |
 
 

@@ -19,7 +19,7 @@ en Fiks-organisasjons egne integrasjoner.
 # Tilgjengelige grensesnitt
 | Grensesnitt | Støtte |
 |------|------|
-| Web portal | Ja |
+| Web portal | Nei |
 | Maskin til maskin | Ja |
 
 # Beskrivelse av tjenesten
