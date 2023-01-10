@@ -1,7 +1,7 @@
 ---
 title: Integrasjoner
 date: 2019-09-19
-aliases: [/fiks-platform/integrasjoner]
+aliases: ["/fiks-platform/integrasjoner", "/fiks-plattform/integrasjoner"]
 ---
 
 En _integrasjon_ på Fiks-plattformen er en maskin-til-maskin klient som benytter tjenestelaget for å utføre oppgaver på vegne av en fiks-organisasjon. Dette kan for eksempel være et arkivsystem som sender saker gjennom [Fiks SvarInn]({{< ref "fiksio.md" >}}), eller et fagsystem som oppdaterer meldinger i [Fiks Innsyn]({{< ref "innsyn.md" >}}).
