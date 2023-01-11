@@ -1,7 +1,7 @@
 ---
 title: Min kommune - matrikkel
 date: 2022-06-28
-hidden: true
+hidden: false
 aliases: [/fiks-platform/tjenester/matrikkel, /fiks-plattform/tjenester/matrikkel, /fiks-plattform/tjenester/minside/matrikkel/, /fiks-plattform/tjenester/minkommune/matrikkel]
 ---
 
