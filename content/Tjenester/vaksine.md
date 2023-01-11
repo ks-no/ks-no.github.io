@@ -12,7 +12,7 @@ KS har sammen med Folkehelseinstituttet (FHI) utviklet et API som gjør det muli
 | Grensesnitt | Støtte |
 |------|------|
 | Web portal | Nei |
-| Maskin til maskin | [(Api-spec)](https://editor.swagger.io/?url=https://developers.fiks.ks.no/api/vaksine-api-v1.json) |
+| Maskin til maskin | [Api-spec](https://editor.swagger.io/?url=https://developers.fiks.ks.no/api/vaksine-api-v1.json) |
 
 ## Beskrivelse av tjenesten
 Tjenesten vil tilby et api hvor kommunen kan spørre etter vaksineinformasjon på et fødselsnummer/dnummer. 
