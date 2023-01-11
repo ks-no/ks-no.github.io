@@ -8,4 +8,4 @@ KS-læring kjøres på Moodle-plattform.
 
 [Integrasjon mot HR API](integrasjon)
 
-[Single sign on](SignleSignOn)
+[Single sign on](SingleSignOn)
