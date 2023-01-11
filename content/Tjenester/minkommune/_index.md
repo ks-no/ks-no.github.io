@@ -15,9 +15,13 @@ Innbyggere som navigerer til nettsiden blir autentisert via ID-porten og present
 Under kan man lese mer om hvordan tjenesten fungerer: 
 
 [Min kommune - faktura](faktura)
+
 [Min kommune - innsyn](innsyn)
+
 [Min kommune - kommunale tjenester](kommunaletjenester)
+
 [Min kommune - matrikkel](matrikkel)
+
 
 
 Søkefeltet gir mulighet til å gjøre et fritekstsøk på informasjonen som min.kommune.no tilbyr innbyggeren: eiendommer, post, byggesaker osv. Denne informasjonen er også tilgjengelig via den enkelte tjeneste.
