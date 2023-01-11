@@ -16,7 +16,7 @@ API-et er også tilgjengelig for kommuner som benytter andre løsninger for innr
 | Grensesnitt | Støtte |
 |------|------|
 | Web portal | Nei |
-| Maskin til maskin | Ja |
+| Maskin til maskin | [(Api-spec)](https://editor.swagger.io/?url=https://developers.fiks.ks.no/api/innreise-api-v1.json) |
 
 ## Produktbeskrivelse
 Tjenesten tilbyr et API hvor kommuner kan spørre etter personer som er registrert som innreisende. 

@@ -18,7 +18,7 @@ Fiks Digisos tilbyr:
 | Grensesnitt | Støtte |
 |------|------|
 | Web portal | Ja |
-| Maskin til maskin | [api-spec](https://editor.swagger.io/?url=https://developers.fiks.ks.no/api/digisos-sak-api-v1.json)|
+| Maskin til maskin | [Api-spec](https://editor.swagger.io/?url=https://developers.fiks.ks.no/api/digisos-sak-api-v1.json)|
 
 
 ## Beskrivelse av tjenesten

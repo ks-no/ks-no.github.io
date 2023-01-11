@@ -11,7 +11,7 @@ Fiks kjøretøyregister er en tjeneste for å gjøre oppslag i Statens Vegvesen 
 | Grensesnitt | Støtte |
 |------|------|
 | Web portal | Nei |
-| Maskin til maskin | ja |
+| Maskin til maskin | [Api spec](https://autosys-kjoretoy-api.atlas.vegvesen.no/swagger-ui/index-akf.html) |
 
 
 ### Hvordan tar jeg i bruk Fiks Kjøretøyregister

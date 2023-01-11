@@ -11,7 +11,7 @@ Tjenesten er laget for å tilgjengeliggjøre Covid19 prøvesvar for smittesporer
 | Grensesnitt | Støtte |
 |------|------|
 | Web portal | Nei |
-| Maskin til maskin | Ja |
+| Maskin til maskin | [(Api-spec)](https://editor.swagger.io/?url=https://developers.fiks.ks.no/api/provesvar-api-v1.json) |
 
 ## Beskrivelse av tjenesten
 Tjenesten er et api hvor smittesporer kan spørre etter prøvesvar basert på:
