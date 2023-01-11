@@ -22,7 +22,13 @@ Under kan man lese mer om hvordan tjenesten fungerer:
 
 [Min kommune - matrikkel](matrikkel)
 
+## Tilgjengelige grensesnitt
+| Grensesnitt | Støtte |
+|------|------|
+| Web portal | Ja |
+| Maskin til maskin | [API for Matrikkel](https://editor.swagger.io/?url=https://developers.fiks.ks.no/api/matrikkel-eier-oppslag-api-v1.json) |
 
+## Beskrivelse
 
 Søkefeltet gir mulighet til å gjøre et fritekstsøk på informasjonen som min.kommune.no tilbyr innbyggeren: eiendommer, post, byggesaker osv. Denne informasjonen er også tilgjengelig via den enkelte tjeneste.
 

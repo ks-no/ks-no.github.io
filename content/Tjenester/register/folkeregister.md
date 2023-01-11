@@ -12,7 +12,7 @@ Mer informasjon om Fiks folkeregister finner man [her](https://www.ks.no/fagomra
 | Grensesnitt | Støtte |
 |------|------|
 | Web portal | Ja |
-| Maskin til maskin | Ja |
+| Maskin til maskin | [Api spec](https://app.swaggerhub.com/organizations/Skatteetaten_FREG) |
 
 ## Beskrivelse av tjenesten
 For å ta i bruk Fiks folkeregister må man inngå bruksavtaler både med skatteetaten og KS. [Klikk her for mer informasjon.](https://portal.fiks.ks.no/fiks/fiks-folkeregister/)
