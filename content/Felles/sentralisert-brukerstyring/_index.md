@@ -1,6 +1,6 @@
 ---
 title: Sentralisert brukerstyring
-aliases: [/fiks-platform/brukerstyring/, /fiks-platform/sentralisert_brukerstyring/, /fiks-plattform/sentralisertbrukerstyring/]
+aliases: [/fiks-platform/brukerstyring/, /fiks-platform/sentralisert_brukerstyring/, /fiks-plattform/sentralisertbrukerstyring/, /fiks-plattform/sentralisert-brukerstyring/]
 --- 
 
 Sentralisert brukerstyring er en ny funksjon som skal gjøre det lettere å håndtere tilganger for ansatte til ressurser på Fiks-plattformen. 
