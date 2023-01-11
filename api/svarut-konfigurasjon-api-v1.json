@@ -378,13 +378,17 @@
         "operationId" : "getForsidePreview",
         "requestBody" : {
           "content" : {
-            "application/json" : {
+            "application/x-www-form-urlencoded" : {
               "schema" : {
-                "$ref" : "#/components/schemas/PreviewForsideKonfigurasjon"
+                "type" : "object",
+                "properties" : {
+                  "konfigurasjonAsJson" : {
+                    "type" : "string"
+                  }
+                }
               }
             }
-          },
-          "required" : true
+          }
         },
         "responses" : {
           "200" : {
@@ -880,7 +884,7 @@
           "content" : {
             "application/json" : {
               "schema" : {
-                "$ref" : "#/components/schemas/OppdaterforsideKonfigurasjonRequest"
+                "$ref" : "#/components/schemas/ForsideKonfigurasjon"
               }
             }
           },
@@ -1272,7 +1276,8 @@
           "poststed" : {
             "type" : "string"
           }
-        }
+        },
+        "description" : "Adresse for avsender"
       },
       "AltinnKonfigurasjon" : {
         "type" : "object",
@@ -1315,32 +1320,37 @@
         "description" : "Maler for Altinn"
       },
       "ForsideKonfigurasjon" : {
-        "required" : [ "adresse", "avsender", "orgnummer" ],
+        "required" : [ "adresse", "avsender" ],
         "type" : "object",
         "properties" : {
           "orgnummer" : {
-            "type" : "string"
+            "pattern" : "^[0-9]{9}$",
+            "type" : "string",
+            "description" : "Hvis orgnr er utfylt vil mottaker bruke dette ved svar på forsendelsen. Dette betyr at all svarpost som blir sendt elektronisk vil komme til dette orgnr."
           },
           "avsender" : {
             "maxLength" : 60,
             "minLength" : 0,
-            "type" : "string"
+            "type" : "string",
+            "description" : "Navn på avsender"
           },
           "adresse" : {
             "$ref" : "#/components/schemas/Adresse"
           },
           "forsidetekst" : {
-            "type" : "string"
+            "type" : "string",
+            "description" : "Dette er hovedteksten på forsiden. Her kan man definere generell tilleggsinformasjon om forsendelser til mottaker."
           },
           "forsidetittel" : {
-            "type" : "string"
+            "type" : "string",
+            "description" : "Tittel som kan overstyre forsendelsestittel på print forside"
           },
           "skjulForsideInfo" : {
             "type" : "boolean",
             "description" : "Valg for om tittel/tekst skal skjules eller ikke"
           }
         },
-        "description" : "Forsidekonfigurasjon for bruk som avsender adresse ved utsending av forsendelse"
+        "description" : "Forsidekonfigurasjon for SvarUt konto. Beskriver returadresse printet på forside"
       },
       "Maler" : {
         "required" : [ "altinn", "sdp" ],
@@ -1565,44 +1575,6 @@
           }
         }
       },
-      "PreviewForsideKonfigurasjon" : {
-        "required" : [ "avsender", "postnummer", "poststed", "skjulForsideInfo" ],
-        "type" : "object",
-        "properties" : {
-          "avsender" : {
-            "type" : "string"
-          },
-          "orgid" : {
-            "type" : "string"
-          },
-          "adresselinje1" : {
-            "type" : "string"
-          },
-          "adresselinje2" : {
-            "type" : "string"
-          },
-          "adresselinje3" : {
-            "type" : "string"
-          },
-          "postnummer" : {
-            "pattern" : "(^\\d{4}$)|",
-            "type" : "string"
-          },
-          "poststed" : {
-            "type" : "string"
-          },
-          "forsidetekst" : {
-            "type" : "string"
-          },
-          "forsidetittel" : {
-            "type" : "string"
-          },
-          "skjulForsideInfo" : {
-            "type" : "boolean"
-          }
-        },
-        "description" : "Forsidekonfigurasjon"
-      },
       "KontoHendelseV1" : {
         "required" : [ "melding", "metadata", "tidspunkt" ],
         "type" : "object",
@@ -1684,39 +1656,6 @@
           }
         },
         "description" : "Mal for meldingen som skal fremkomme i Altinn meldingsboksen"
-      },
-      "OppdaterforsideKonfigurasjonRequest" : {
-        "required" : [ "adresse", "avsender" ],
-        "type" : "object",
-        "properties" : {
-          "orgnummer" : {
-            "pattern" : "^[0-9]{9}$",
-            "type" : "string",
-            "description" : "Hvis orgnr er utfylt vil mottaker bruke dette ved svar på forsendelsen. Dette betyr at all svarpost som blir sendt elektronisk vil komme til dette orgnr."
-          },
-          "avsender" : {
-            "maxLength" : 60,
-            "minLength" : 0,
-            "type" : "string",
-            "description" : "Navn på avsender"
-          },
-          "adresse" : {
-            "$ref" : "#/components/schemas/Adresse"
-          },
-          "forsidetekst" : {
-            "type" : "string",
-            "description" : "Dette er hovedteksten på forsiden. Her kan man definere generell tilleggsinformasjon om forsendelser til mottaker."
-          },
-          "forsidetittel" : {
-            "type" : "string",
-            "description" : "Tittel som kan overstyre forsendelsestittel på print forside"
-          },
-          "skjulForsideInfo" : {
-            "type" : "boolean",
-            "description" : "Valg for om tittel/tekst skal skjules eller ikke"
-          }
-        },
-        "description" : "Forsidekonfigurasjon for SvarUt konto. Beskriver returadresse printet på forside"
       },
       "OppdaterKontoRequest" : {
         "required" : [ "navn" ],
@@ -1808,7 +1747,7 @@
             "description" : "SvarUt konto visningsnavn"
           },
           "forside" : {
-            "$ref" : "#/components/schemas/OppdaterforsideKonfigurasjonRequest"
+            "$ref" : "#/components/schemas/ForsideKonfigurasjon"
           },
           "print" : {
             "$ref" : "#/components/schemas/OppdaterPrintKonfigurasjonRequest"
