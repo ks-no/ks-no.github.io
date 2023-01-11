@@ -1,6 +1,7 @@
 ---
 title: Min kommune - innsyn
 date: 2022-06-28
+hidden: true
 aliases: [/fiks-platform/tjenester/innsyn, /fiks-plattform/tjenester/innsyn, /fiks-plattform/tjenester/minside/innsyn/, /fiks-plattform/tjenester/minkommune/innsyn]
 ---
 

@@ -7,22 +7,30 @@ aliases: [
     "/fiks-plattform/tjenester/minkommune"
 ]
 ---
-
+## Kort beskrivelse
 min.kommune.no er en portal for de innbyggerrettede tjenestene på Fiks-plattformen. 
 
 Innbyggere som navigerer til nettsiden blir autentisert via ID-porten og presentert for en oversikt som inkluderer et søkefelt og en rekke tjenester. 
+
+Under kan man lese mer om hvordan tjenesten fungerer: 
+
+[Min kommune - faktura](faktura)
+[Min kommune - innsyn](innsyn)
+[Min kommune - kommunale tjenester](kommunaletjenester)
+[Min kommune - matrikkel](matrikkel)
+
 
 Søkefeltet gir mulighet til å gjøre et fritekstsøk på informasjonen som min.kommune.no tilbyr innbyggeren: eiendommer, post, byggesaker osv. Denne informasjonen er også tilgjengelig via den enkelte tjeneste.
 
 ![matrikkel](/images/minside-forside.png "Matrikkel")
 
-### Min profil
+## Min profil
 Oversikt over informasjonen min.kommune.no har om innbyggeren. Hentes fra kontakt-og-reservasjonsregisteret med utgangspunkt i brukerens ID-Porten-autentisering.
 
-### Post fra kommunen
+## Post fra kommunen
 Lar innbyggeren søke i post som er sendt til innbyggeren via KS SvarUt. Søket er også tilgjenglig på forsiden. For at disse skal bli tilgjenglig må tjenesten aktiveres via Fiks-konfigurasjon.
 
-### Mine eiendommer
+## Mine eiendommer
 Viser eiendommer innbyggeren eier, basert på data fra matrikkelen. Disse eiendommene er også søkbare fra forsiden.
 
 "Mine eiendommer" er basert på data som automatisk synkroniseres fra Kartverket for alle kommuner. Det er altså ikke nødvendig å aktivere denne tjenesten.

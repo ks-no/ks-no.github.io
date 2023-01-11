@@ -1,6 +1,7 @@
 ---
 title: Min kommune - kommunale tjenester
 date: 2022-06-28
+hidden: true
 aliases: [/fiks-platform/tjenester/kommunaletjenester, /fiks-plattform/tjenester/kommunaletjenester, /fiks-plattform/tjenester/minside/kommunaletjenester/, /fiks-plattform/tjenester/minkommune/kommunaletjenester]
 ---
 

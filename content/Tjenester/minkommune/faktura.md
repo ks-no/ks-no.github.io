@@ -1,6 +1,7 @@
 ---
 title: Min kommune - faktura
 date: 2022-06-28
+hidden: true
 aliases: ["/fiks-plattform/tjenester/minside/faktura/", "/fiks-plattform/tjenester/minkommune/faktura"]
 ---
 
