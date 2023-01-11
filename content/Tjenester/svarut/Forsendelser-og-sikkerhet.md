@@ -1,7 +1,7 @@
 ---
 title: Sikkerhet
 date: 2017-01-01
-hidden: true
+hidden: false
 ---
 
 ## Generelt om forsendelser 

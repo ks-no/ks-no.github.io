@@ -1,7 +1,7 @@
 ---
 title: SvarUt Testmiljø
 date: 2018-05-29
-hidden: true
+hidden: false
 ---
 
 Vi ønsker ikke sensitive data i test miljøet.
