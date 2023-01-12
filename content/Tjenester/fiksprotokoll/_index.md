@@ -1,7 +1,7 @@
 ---
 title: Fiks protokoll 
 date: 2022-07-05
-alias: ["/fiks-platform/tjenester/fiksprotokoll", "/fiks-plattform/tjenester/fiksprotokoll/"]
+alias: ["/fiks-platform/tjenester/fiksprotokoll", "/fiks-plattform/tjenester/fiksprotokoll"]
 ---
 
 ## Kort beskrivelse
@@ -51,7 +51,7 @@ Først må Fiks Protokoll-tjenesten tas i bruk for kommunen og avtale må unders
 
 Deretter må det opprettes et system i Fiks Protokoll. Dette må gjøres i grensesnittet i Fiks Forvaltning av en administrator på Fiks Protokoll (dvs. en administrator i Fiks Organisasjonen, eller personer som er blitt gitt administratortilgang på Fiks Protokoll).
 
-![fiks protokoll](../Tjenester/images/forvaltning-protokoll-system-create.png "Opprett system")
+![fiks protokoll]({{< forvaltning-protokoll-system-create.png >}} "Opprett system")
 
 Merk at det sammen med systemet opprettes en tilhørende integrasjon som skal brukes til å sende og motta meldinger over [Fiks IO](https://ks-no.github.io/tjenester/fiksprotokoll/fiksio)
 
@@ -63,7 +63,7 @@ APIet for konfigurering med integrasjon er definert her: [Fiks Protokoll API](ht
 Konto opprettes i forvaltning eller via API.
 Når konto opprettes må en ha tilgjengelig offentlig nøkkel i PEM format. Denne benyttes for kryptering av meldinger som skal mottas.
 Forvalting:
-![fiks protokoll](../Tjenester/images/forvaltning-protokoll-system-konto-create.png "Opprett system")
+![fiks protokoll]({{< forvaltning-protokoll-system-konto-create.png >}} "Opprett system")
 
 API:
 `POST /fiks-protokoll/api/v1/konfigurasjon/{fiksOrgId}/systemer/{systemId}/kontoer`
