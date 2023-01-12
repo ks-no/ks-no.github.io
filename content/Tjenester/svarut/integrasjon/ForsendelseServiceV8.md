@@ -1,7 +1,7 @@
 ---
 title: ForsendelseServiceV8
 date: 2017-01-01
-alias: [/svarut/integrasjon/ForsendelseServiceV8]
+aliases: [/svarut/integrasjon/ForsendelseServiceV8]
 ---
 
 ### Tilgang

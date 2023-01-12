@@ -1,7 +1,7 @@
 ---
 title: Fiks plan
 date: 2022-06-16
-alias: [/fiks-plattform/tjenester/fiksprotokoll/plan]
+aliases: [/fiks-plattform/tjenester/fiksprotokoll/plan]
 ---
 
 > Tjenesten er under utvikling/testing/pilotering

@@ -1,7 +1,7 @@
 ---
 title: Fiks matrikkelføring
 date: 2021-08-18
-alias: [/fiks-plattform/tjenester/fiksprotokoll/matrikkelfoering]
+aliases: [/fiks-plattform/tjenester/fiksprotokoll/matrikkelfoering]
 ---
 
 ## Kort beskrivelse

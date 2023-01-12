@@ -1,7 +1,7 @@
 ---
 title: ForsendelseServiceV5
 date: 2017-01-01
-alias: [/svarut/integrasjon/ForsendelseServiceV5]
+aliases: [/svarut/integrasjon/ForsendelseServiceV5]
 ---
 
 Her beskrives funksjonalitet for ForsendelseServiceV5

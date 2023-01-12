@@ -1,7 +1,7 @@
 ---
 title: ForsendelseServiceV4
 date: 2017-01-01
-alias: [/svarut/integrasjon/ForsendelseServiceV4]
+aliases: [/svarut/integrasjon/ForsendelseServiceV4]
 ---
 
 Her beskrives funksjonalitet for ForsendelseServiceV4

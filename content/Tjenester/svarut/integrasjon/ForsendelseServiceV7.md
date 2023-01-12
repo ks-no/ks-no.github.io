@@ -1,7 +1,7 @@
 ---
 title: ForsendelseServiceV7
 date: 2017-01-01
-alias: [/svarut/integrasjon/ForsendelseServiceV7]
+aliases: [/svarut/integrasjon/ForsendelseServiceV7]
 ---
 
 ### Tilgang

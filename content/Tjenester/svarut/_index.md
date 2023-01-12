@@ -1,6 +1,6 @@
 ---
 title: SvarUt
-alias: /svarut/
+aliases: [/svarut/]
 ---
 
 ## Kort beskrivelse
