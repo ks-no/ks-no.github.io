@@ -1,6 +1,7 @@
 ---
 title: Kodeeksempel MottaksserviceV1
 date: 2017-01-01
+alias: [/svarut/integrasjon/kodeeksempelMottakerRest]
 ---
 
 ### Maven dependencies

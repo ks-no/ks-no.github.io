@@ -1,6 +1,7 @@
 ---
 title: ForsendelsesServiceV11
 date: 2019-05-07
+alias: [/svarut/integrasjon/ForsendelseServiceV11]
 ---
 ### Tilgang
 

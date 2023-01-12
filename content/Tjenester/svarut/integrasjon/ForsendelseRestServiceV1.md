@@ -1,6 +1,7 @@
 ---
 title: ForsendelseRestServiceV1
 date: 2019-04-11
+alias: [/svarut/integrasjon/ForsendelseRestServiceV1]
 ---
 ### Tilgang
 

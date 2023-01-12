@@ -1,6 +1,7 @@
 ---
 title: Kodeeksempel .Net
 date: 2021-02-22
+alias: [/svarut/integrasjon/kodeeksempelDotNet]
 ---
 
 Eksempel på Soap integrasjon: [kodeeksempel](https://github.com/ks-no/svarut-dot-net-eksempel)
