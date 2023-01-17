@@ -12,7 +12,7 @@ Tjenestene består både av et sett av protokoller med meldingstyper, f.eks. Fik
 | Grensesnitt | Støtte |
 |------|------|
 | Web portal | Nei |
-| Maskin til maskin | Ja |
+| Maskin til maskin | [API](https://editor.swagger.io/?url=https://developers.fiks.ks.no/api/fiks-protokoll-konfigurasjon-api-v1.json) |
 
 ### Hvordan komme i gang med Fiks protokoll
 
