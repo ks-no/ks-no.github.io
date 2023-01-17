@@ -65,7 +65,7 @@ For å sikre bakoverkompabilitet versjoneres servicen. Når grensesnittet endres
 
 | Dokumentasjon | Status | Endringer |
 | --- | --- | --- |
-| [MottaksService V1 REST](mottaksservice-rest) | Stabil | NA |
+| [MottaksService V1 REST](integrasjon/mottaksservice-rest) | Stabil | NA |
 
 
 ### IPer
