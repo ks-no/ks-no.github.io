@@ -2,6 +2,7 @@
 title: Tjenester
 weight: 1
 alwaysopen: false
+aliases: [/fiks-plattform/]
 ---
 
 
