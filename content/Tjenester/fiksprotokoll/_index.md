@@ -17,7 +17,7 @@ Tjenestene består både av et sett av protokoller med meldingstyper, f.eks. Fik
 | Fiks matrikkelføring | I produksjon |
 | SSB barnevern kostra rapportering | Pilot |
 
-Protokoller i pilot kan oppleve å få endringer som må utbedres fortløpende. Dette vil være små endringer som kommer etter erfaringer en har gjort i produksjonskjøring.
+Protokoller i pilot kan oppleve å få endringer som må utbedres fortløpende. Dette vil være små endringer som kommer etter erfaringer en har gjort i produksjonskjøring. Disse er stabile nok til å ta i bruk i vanlig drift.
 
 ## Tilgjengelige grensesnitt
 | Grensesnitt | Støtte |
