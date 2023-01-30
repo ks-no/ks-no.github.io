@@ -1,0 +1,271 @@
+{
+  "openapi" : "3.0.1",
+  "info" : {
+    "title" : "Fiks register summert skattegrunnlag service",
+    "description" : "Oppslag i summert skattegrunnlag for Fiks register",
+    "contact" : {
+      "name" : "Fiks brukerstøtte",
+      "url" : "https://www.ks.no/fagomrader/digitalisering/utviklingsprosjekter",
+      "email" : "fiks-utvikling@ks.no"
+    },
+    "version" : "v1"
+  },
+  "servers" : [ {
+    "url" : "https://api.fiks.ks.no",
+    "description" : "KS Fiks API host",
+    "variables" : { }
+  }, {
+    "url" : "https://api.fiks.test.ks.no",
+    "description" : "KS Fiks TEST API host",
+    "variables" : { }
+  } ],
+  "paths" : {
+    "/register/api/v1/ks/{rolleId}/summertskattegrunnlag" : {
+      "post" : {
+        "tags" : [ "summertSkattegrunnlag" ],
+        "description" : "Henter summert skattegrunnlag for angitte fødselsnummere",
+        "operationId" : "summertskattegrunnlag",
+        "parameters" : [ {
+          "name" : "rolleId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/SummertSkattegrunnlagSoekDefinisjon"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/SummertSkattegrunnlagDefinisjon"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Feil input",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Ikke tilgang",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Ikke tilgang",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Ingen treff",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "410" : {
+            "description" : "Finnes ikke lenger",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components" : {
+    "schemas" : {
+      "PersonnavnDefinisjon" : {
+        "required" : [ "etternavn", "fornavn" ],
+        "type" : "object",
+        "properties" : {
+          "etternavn" : {
+            "type" : "string"
+          },
+          "fornavn" : {
+            "type" : "string"
+          },
+          "mellomnavn" : {
+            "type" : "string"
+          }
+        }
+      },
+      "StadieDefinisjon" : {
+        "type" : "string",
+        "enum" : [ "OPPGJOER", "UTKAST", "UKJENT" ]
+      },
+      "SummertSkattegrunnlagDefinisjon" : {
+        "required" : [ "inntektsaar", "stadie", "summertSkattegrunnlagPersoner", "tidspunkt", "totaltSummertGrunnlag" ],
+        "type" : "object",
+        "properties" : {
+          "totaltSummertGrunnlag" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "tidspunkt" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "inntektsaar" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "stadie" : {
+            "$ref" : "#/components/schemas/StadieDefinisjon"
+          },
+          "summertSkattegrunnlagPersoner" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/SummertSkattegrunnlagPersonDefinisjon"
+            }
+          }
+        }
+      },
+      "SummertSkattegrunnlagPersonDefinisjon" : {
+        "required" : [ "grunnlag", "inntektsaar", "kildeskattPaaLoennGrunnlag", "personidentifikator", "skjermet", "stadie", "summertGrunnlag", "summertKildeskattPaaLoennGrunnlag", "summertSvalbardGrunnlag", "svalbardGrunnlag", "totaltSummertGrunnlagPerson" ],
+        "type" : "object",
+        "properties" : {
+          "personidentifikator" : {
+            "pattern" : "^[0-9]{11}$",
+            "type" : "string"
+          },
+          "personnavn" : {
+            "$ref" : "#/components/schemas/PersonnavnDefinisjon"
+          },
+          "inntektsaar" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "skjermet" : {
+            "type" : "boolean"
+          },
+          "grunnlag" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/SummertSkattegrunnlagsobjektDefinisjon"
+            }
+          },
+          "summertGrunnlag" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "skatteoppgjoersdato" : {
+            "type" : "string",
+            "format" : "date"
+          },
+          "svalbardGrunnlag" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/SummertSkattegrunnlagsobjektDefinisjon"
+            }
+          },
+          "summertSvalbardGrunnlag" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "kildeskattPaaLoennGrunnlag" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/SummertSkattegrunnlagsobjektDefinisjon"
+            }
+          },
+          "summertKildeskattPaaLoennGrunnlag" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "stadie" : {
+            "$ref" : "#/components/schemas/StadieDefinisjon"
+          },
+          "registreringstidpunkt" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "totaltSummertGrunnlagPerson" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "skattFeilmelding" : {
+            "type" : "string"
+          }
+        }
+      },
+      "SummertSkattegrunnlagsobjektDefinisjon" : {
+        "required" : [ "beloep", "tekniskNavn" ],
+        "type" : "object",
+        "properties" : {
+          "tekniskNavn" : {
+            "type" : "string"
+          },
+          "beloep" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "kategori" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          },
+          "visningstekst" : {
+            "type" : "string"
+          }
+        }
+      },
+      "SummertSkattegrunnlagSoekDefinisjon" : {
+        "required" : [ "personidentifikatorer", "inntektsaar" ],
+        "type" : "object",
+        "properties" : {
+          "personidentifikatorer" : {
+            "type" : "array",
+            "description" : "Fødsels- eller D-nummer.",
+            "items" : {
+              "type" : "string",
+              "description" : "Fødsels- eller D-nummer."
+            }
+          },
+          "inntektsaar" : {
+            "minimum" : 2016,
+            "type" : "integer",
+            "format" : "int32"
+          }
+        }
+      }
+    }
+  }
+}
