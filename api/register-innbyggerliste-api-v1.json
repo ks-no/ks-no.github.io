@@ -1,0 +1,1288 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "KS Fiks register innbyggerliste service",
+    "description": "Folkregister innbyggerliste service",
+    "contact": {
+      "name": "Fiks brukerstøtte",
+      "url": "https://www.ks.no/fagomrader/digitalisering/utviklingsprosjekter",
+      "email": "fiks-utvikling@ks.no"
+    },
+    "version": "v1"
+  },
+  "servers": [
+    {
+      "url": "https://api.fiks.ks.no",
+      "description": "KS Fiks API host",
+      "variables": {}
+    },
+    {
+      "url": "https://api.fiks.test.ks.no",
+      "description": "KS Fiks TEST API host",
+      "variables": {}
+    }
+  ],
+  "tags": [
+    {
+      "name": "innbyggerliste",
+      "description": "API for å håndtere funksjonalitet rundt innbyggerlister"
+    },
+    {
+      "name": "innbyggerliste-hendelser",
+      "description": "API for å følge opp status på eksisterende innbyggerlister"
+    }
+  ],
+  "paths": {
+    "/register/api/v1/ks/innbyggerliste/v1/verdier": {
+      "get": {
+        "tags": [
+          "innbyggerliste"
+        ],
+        "description": "Gyldige verdier for nøkkelfelt, til bruk i front-end",
+        "operationId": "gyldigeVerdier",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GyldigeVerdier"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Ikke tilgang",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/register/api/v1/ks/innbyggerliste/v1/{fiksOrgId}": {
+      "get": {
+        "tags": [
+          "innbyggerliste"
+        ],
+        "description": "Henter innbyggerlister man har tilgang tilhørende gitt organisasjon",
+        "operationId": "listInnbyggerlister",
+        "parameters": [
+          {
+            "name": "fiksOrgId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "OPPRETTET",
+                  "HOS_SKATT",
+                  "FERDIG_SKATT",
+                  "FERDIG",
+                  "FEILET"
+                ]
+              }
+            }
+          },
+          {
+            "name": "rolleId",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InnbyggerlisterResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Ikke tilgang",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "innbyggerliste"
+        ],
+        "description": "Oppretter innbyggerliste for en organisasjon",
+        "operationId": "opprett",
+        "parameters": [
+          {
+            "name": "fiksOrgId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OpprettInnbyggerlisteFraUttrekk"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InnbyggerlisteFerdig"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Opprettet",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InnbyggerlisteRef"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Ikke tilgang",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/register/api/v1/ks/innbyggerliste/v1/{fiksOrgId}/soek": {
+      "post": {
+        "tags": [
+          "innbyggerliste"
+        ],
+        "description": "Oppretter innbyggerliste for en organisasjon basert på et personsøk",
+        "operationId": "opprettFraSoek",
+        "parameters": [
+          {
+            "name": "fiksOrgId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OpprettInnbyggerlisteFraSoek"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InnbyggerlisteFerdig"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Opprettet",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InnbyggerlisteRef"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Ikke tilgang",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/register/api/v1/ks/innbyggerliste/v1/{fiksOrgId}/{innbyggerlisteId}": {
+      "get": {
+        "tags": [
+          "innbyggerliste"
+        ],
+        "description": "Henter status på uttrekk",
+        "operationId": "status",
+        "parameters": [
+          {
+            "name": "fiksOrgId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "innbyggerlisteId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InnbyggerlisteStatusResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Ikke tilgang",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Det finnes ikke noe utrekk med den gitte innbyggerlisteId-en",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "innbyggerliste"
+        ],
+        "operationId": "slettInnbyggerliste",
+        "parameters": [
+          {
+            "name": "fiksOrgId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "innbyggerlisteId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "204": {
+            "description": "No Content"
+          },
+          "403": {
+            "description": "Ikke tilgang",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/register/api/v1/ks/innbyggerliste/v1/events/{fiksOrgId}": {
+      "get": {
+        "tags": [
+          "innbyggerliste-hendelser"
+        ],
+        "description": "Brukes til å lese alle hendelser for alle innbyggerlister man har tilgang til",
+        "operationId": "lesAlleEventer",
+        "parameters": [
+          {
+            "name": "fiksOrgId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "403": {
+            "description": "Ikke tilgang",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "Ok",
+            "content": {
+              "text/event-stream": {
+                "schema": {
+                  "$ref": "#/components/schemas/InnbyggerlisteHendelse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/register/api/v1/ks/innbyggerliste/v1/events/{fiksOrgId}/{rolleId}": {
+      "get": {
+        "tags": [
+          "innbyggerliste-hendelser"
+        ],
+        "description": "Brukes til å lese alle hendelser for alle innbyggerlister som gjøres for en gitt rolle",
+        "operationId": "lesAlleEventerForRolle",
+        "parameters": [
+          {
+            "name": "fiksOrgId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "rolleId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Feil input",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Ikke tilgang",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "Ok",
+            "content": {
+              "text/event-stream": {
+                "schema": {
+                  "$ref": "#/components/schemas/InnbyggerlisteHendelse"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "GyldigeVerdier": {
+        "required": [
+          "innbyggerStatus",
+          "kjoenn",
+          "landStatsborgerskap",
+          "sivilstand",
+          "status",
+          "tilhorighetKommune"
+        ],
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Verdi"
+            }
+          },
+          "innbyggerStatus": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Verdi"
+            }
+          },
+          "sivilstand": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Verdi"
+            }
+          },
+          "kjoenn": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Verdi"
+            }
+          },
+          "tilhorighetKommune": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Verdi"
+            }
+          },
+          "landStatsborgerskap": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Statsborgerskap"
+            }
+          }
+        }
+      },
+      "Statsborgerskap": {
+        "required": [
+          "kode",
+          "landKilde",
+          "navn"
+        ],
+        "type": "object",
+        "properties": {
+          "kode": {
+            "type": "string"
+          },
+          "navn": {
+            "type": "string"
+          },
+          "landKilde": {
+            "type": "string",
+            "enum": [
+              "ISO",
+              "UDI"
+            ]
+          }
+        }
+      },
+      "Verdi": {
+        "type": "object",
+        "properties": {
+          "kode": {
+            "type": "string"
+          },
+          "visningsnavn": {
+            "type": "string"
+          },
+          "beskrivelse": {
+            "type": "string"
+          }
+        }
+      },
+      "AarIntervall": {
+        "type": "object",
+        "properties": {
+          "fraAar": {
+            "minimum": 0,
+            "type": "integer",
+            "format": "int32"
+          },
+          "tilAar": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "description": "Fødselsår, fra og med, til og med"
+      },
+      "EksportFormatDefinisjon": {
+        "type": "string",
+        "enum": [
+          "EGENDEFINERT",
+          "VAKSINE"
+        ]
+      },
+      "FerdigInnbyggerliste": {
+        "title": "FerdigInnbyggerliste",
+        "required": [
+          "dokumentlagerId",
+          "id",
+          "innbyggereHentet",
+          "kilde",
+          "opprettet",
+          "rolleId",
+          "sistOppdatert"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "innbyggereHentet": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "sistOppdatert": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "dokumentlagerId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "beskrivelse": {
+            "type": "string"
+          },
+          "opprettet": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "rolleId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "kilde": {
+            "$ref": "#/components/schemas/KildeSystem"
+          }
+        },
+        "readOnly": true,
+        "discriminator": {
+          "propertyName": "kilde",
+          "mapping": {
+            "innbyggerliste": "#/components/schemas/FerdigInnbyggerlisteFraUttrekk",
+            "SOEK": "#/components/schemas/FerdigInnbyggerlisteFraSoek"
+          }
+        }
+      },
+      "FerdigInnbyggerlisteFraSoek": {
+        "required": [
+          "definisjon",
+          "dokumentlagerId",
+          "id",
+          "innbyggereHentet",
+          "kilde",
+          "opprettet",
+          "rolleId",
+          "sistOppdatert"
+        ],
+        "type": "object",
+        "readOnly": true,
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/FerdigInnbyggerliste"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "definisjon": {
+                "$ref": "#/components/schemas/PersonSoekDefinisjon"
+              }
+            }
+          }
+        ]
+      },
+      "FerdigInnbyggerlisteFraUttrekk": {
+        "required": [
+          "definisjon",
+          "dokumentlagerId",
+          "id",
+          "innbyggereHentet",
+          "kilde",
+          "opprettet",
+          "rolleId",
+          "sistOppdatert"
+        ],
+        "type": "object",
+        "readOnly": true,
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/FerdigInnbyggerliste"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "definisjon": {
+                "$ref": "#/components/schemas/UttrekkDefinisjon"
+              }
+            }
+          }
+        ]
+      },
+      "InnbyggerlisteFraSoekResponse": {
+        "required": [
+          "definisjon",
+          "fiksOrg",
+          "id",
+          "innbyggereHentet",
+          "innbyggerlisteStatus",
+          "kilde",
+          "opprettet",
+          "rolleId",
+          "sistOppdatert"
+        ],
+        "type": "object",
+        "readOnly": true,
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/InnbyggerlisteStatusResponse"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "definisjon": {
+                "$ref": "#/components/schemas/PersonSoekDefinisjon"
+              }
+            }
+          }
+        ]
+      },
+      "InnbyggerlisteFraUttrekkResponse": {
+        "required": [
+          "definisjon",
+          "fiksOrg",
+          "id",
+          "innbyggereHentet",
+          "innbyggerlisteStatus",
+          "kilde",
+          "opprettet",
+          "rolleId",
+          "sistOppdatert"
+        ],
+        "type": "object",
+        "readOnly": true,
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/InnbyggerlisteStatusResponse"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "definisjon": {
+                "$ref": "#/components/schemas/UttrekkDefinisjon"
+              }
+            }
+          }
+        ]
+      },
+      "InnbyggerlisteStatus": {
+        "type": "string",
+        "enum": [
+          "OPPRETTET",
+          "HOS_SKATT",
+          "FERDIG_SKATT",
+          "FERDIG",
+          "FEILET"
+        ]
+      },
+      "InnbyggerlisteStatusResponse": {
+        "required": [
+          "fiksOrg",
+          "id",
+          "innbyggereHentet",
+          "innbyggerlisteStatus",
+          "kilde",
+          "opprettet",
+          "rolleId",
+          "sistOppdatert"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "innbyggerlisteStatus": {
+            "$ref": "#/components/schemas/InnbyggerlisteStatus"
+          },
+          "innbyggereHentet": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "sistOppdatert": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "beskrivelse": {
+            "type": "string"
+          },
+          "opprettet": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "rolleId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "fiksOrg": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "kilde": {
+            "$ref": "#/components/schemas/KildeSystem"
+          }
+        },
+        "readOnly": true,
+        "discriminator": {
+          "propertyName": "kilde",
+          "mapping": {
+            "innbyggerliste": "#/components/schemas/InnbyggerlisteFraUttrekkResponse",
+            "SOEK": "#/components/schemas/InnbyggerlisteFraSoekResponse"
+          }
+        }
+      },
+      "InnbyggerlisterResponse": {
+        "required": [
+          "feilede",
+          "ferdige"
+        ],
+        "type": "object",
+        "properties": {
+          "ferdige": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FerdigInnbyggerliste"
+            }
+          },
+          "feilede": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/InnbyggerlisteStatusResponse"
+            }
+          },
+          "igang": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/InnbyggerlisteStatusResponse"
+            }
+          }
+        }
+      },
+      "KildeSystem": {
+        "type": "string",
+        "enum": [
+          "innbyggerliste",
+          "SOEK"
+        ]
+      },
+      "PersonSoekDefinisjon": {
+        "required": [
+          "rolleId"
+        ],
+        "type": "object",
+        "properties": {
+          "rolleId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "navn": {
+            "type": "string",
+            "description": "Et eller flere hele ord fra personnavnet, skilt med mellomrom."
+          },
+          "kjoenn": {
+            "type": "string",
+            "enum": [
+              "MANN",
+              "KVINNE"
+            ]
+          },
+          "foedselsdato": {
+            "type": "integer",
+            "description": "Fødselsdato (YYYYMMDD)",
+            "format": "int32"
+          },
+          "foedt": {
+            "$ref": "#/components/schemas/AarIntervall"
+          },
+          "adressenavn": {
+            "type": "string",
+            "description": "Minst 3 tegn fra begynnelsen av gatenavn"
+          },
+          "husnummer": {
+            "type": "string",
+            "description": "Husnummer, med eller uten bokstav"
+          },
+          "postnummer": {
+            "type": "string",
+            "description": "Filtrerer treff på postnummer (4 siffer)"
+          },
+          "kommunenummer": {
+            "type": "string",
+            "description": "Filtrerer treff på kommunenummer (4 siffer)"
+          },
+          "fylkesnummer": {
+            "type": "string",
+            "description": "Filtrerer treff på fylkesnummer (2 siffer)"
+          },
+          "inkluderOppholdsadresse": {
+            "type": "boolean",
+            "description": "Treffer oppholdsasdresse i tillegg til bostedsadresse. Default: false"
+          },
+          "soekFonetisk": {
+            "type": "boolean",
+            "description": "Søk også på lignende navn. Default: false"
+          },
+          "inkluderDoede": {
+            "type": "boolean",
+            "description": "Treffer også døde personer. Default: false"
+          },
+          "inkluderHistoriskeNavnOgAdresser": {
+            "type": "boolean",
+            "description": "Styrer håndtering av historikk. Default: 'false'. Påvirker kun navn og adresse - for andre opplysninger søkes det alltid kun på gjeldende."
+          },
+          "maksTreff": {
+            "type": "integer",
+            "description": "Maksimalt antall treff å returnere. Maks 10.000.",
+            "format": "int32"
+          },
+          "parts": {
+            "type": "array",
+            "description": "Parts brukt for dataminimering",
+            "items": {
+              "type": "string",
+              "description": "Parts brukt for dataminimering"
+            }
+          },
+          "personidentifikator": {
+            "type": "string",
+            "description": "Fødsels- eller D-nummer. Hvis personidentifikator er satt, gjøres et oppslag, og alle andre felter bortsett fra parts ignoreres."
+          }
+        }
+      },
+      "UttrekkDefinisjon": {
+        "required": [
+          "status"
+        ],
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "AKTIV",
+                "BOSATT",
+                "UTFLYTTET",
+                "DOED",
+                "INAKTIV"
+              ]
+            }
+          },
+          "bostedskommune": {
+            "type": "string"
+          },
+          "oppholdskommune": {
+            "type": "string"
+          },
+          "foedt": {
+            "$ref": "#/components/schemas/AarIntervall"
+          },
+          "doed": {
+            "$ref": "#/components/schemas/AarIntervall"
+          },
+          "kjoenn": {
+            "type": "string",
+            "enum": [
+              "MANN",
+              "KVINNE"
+            ]
+          },
+          "statsborgerskap": {
+            "type": "string"
+          },
+          "sivilstand": {
+            "type": "string",
+            "enum": [
+              "UGIFT",
+              "GIFT",
+              "ENKE_ELLER_ENKEMANN",
+              "SKILT",
+              "SEPARERT",
+              "PARTNER",
+              "SEPARERT_PARTNER",
+              "SKILT_PARTNER",
+              "GJENLEVENDE_PARTNER"
+            ]
+          },
+          "minimering": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "eksportFormat": {
+            "$ref": "#/components/schemas/EksportFormatDefinisjon"
+          },
+          "tilleggsopplysninger": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "KONTAKT_OG_RESERVASJONSREGISTERET"
+              ]
+            }
+          }
+        }
+      },
+      "InnbyggerlisteFerdig": {
+        "required": [
+          "dokumentlagerId",
+          "id",
+          "nedlastingUrl"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "dokumentlagerId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "nedlastingUrl": {
+            "type": "string"
+          }
+        }
+      },
+      "InnbyggerlisteRef": {
+        "required": [
+          "fiksOrgId",
+          "ref"
+        ],
+        "type": "object",
+        "properties": {
+          "fiksOrgId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "ref": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      },
+      "OpprettInnbyggerlisteFraUttrekk": {
+        "required": [
+          "kommunenummer",
+          "rolleId",
+          "status"
+        ],
+        "type": "object",
+        "properties": {
+          "rolleId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "kommunenummer": {
+            "pattern": "\\d{4}",
+            "type": "string"
+          },
+          "kommuneTilhoerighet": {
+            "type": "string",
+            "enum": [
+              "BOSTED",
+              "OPPHOLD"
+            ]
+          },
+          "status": {
+            "maxItems": 2147483647,
+            "minItems": 1,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "AKTIV",
+                "BOSATT",
+                "UTFLYTTET",
+                "DOED",
+                "INAKTIV"
+              ]
+            }
+          },
+          "foedt": {
+            "$ref": "#/components/schemas/AarIntervall"
+          },
+          "doed": {
+            "$ref": "#/components/schemas/AarIntervall"
+          },
+          "kjoenn": {
+            "type": "string",
+            "enum": [
+              "MANN",
+              "KVINNE"
+            ]
+          },
+          "statsborgerskap": {
+            "maxLength": 3,
+            "minLength": 3,
+            "type": "string",
+            "description": "Må være en gyldig ISO 3166-1 alpha-3 landkode eller enten \"XXX\" (statsløs), \"XUX\" (ukjent) eller \"XUK\" (Kosovo)"
+          },
+          "sivilstand": {
+            "type": "string",
+            "enum": [
+              "UGIFT",
+              "GIFT",
+              "ENKE_ELLER_ENKEMANN",
+              "SKILT",
+              "SEPARERT",
+              "PARTNER",
+              "SEPARERT_PARTNER",
+              "SKILT_PARTNER",
+              "GJENLEVENDE_PARTNER"
+            ]
+          },
+          "beskrivelse": {
+            "type": "string"
+          },
+          "minimering": {
+            "type": "array",
+            "description": "Parts/opplysninger brukt for dataminimering",
+            "items": {
+              "type": "string",
+              "description": "Parts/opplysninger brukt for dataminimering"
+            }
+          },
+          "eksportFormat": {
+            "$ref": "#/components/schemas/EksportFormatDefinisjon"
+          },
+          "tilleggsopplysninger": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "KONTAKT_OG_RESERVASJONSREGISTERET"
+              ]
+            }
+          }
+        }
+      },
+      "OpprettInnbyggerlisteFraSoek": {
+        "required": [
+          "soek"
+        ],
+        "type": "object",
+        "properties": {
+          "soek": {
+            "$ref": "#/components/schemas/PersonSoekDefinisjon"
+          },
+          "beskrivelse": {
+            "type": "string"
+          }
+        }
+      },
+      "HendelseType": {
+        "type": "string",
+        "enum": [
+          "HendelseUttrekkStartet",
+          "HendelseUttrekkFeilet",
+          "HendelseUttrekkFerdig",
+          "HendelseUttrekkProgress"
+        ]
+      },
+      "HendelseUttrekkFeilet": {
+        "required": [
+          "beskrivelse",
+          "type"
+        ],
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/InnbyggerlisteHendelse"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "beskrivelse": {
+                "type": "string"
+              }
+            }
+          }
+        ]
+      },
+      "HendelseUttrekkFerdig": {
+        "required": [
+          "dokumentlagerId",
+          "ferdig",
+          "innbyggereHentet",
+          "type"
+        ],
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/InnbyggerlisteHendelse"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "ferdig": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "dokumentlagerId": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "innbyggereHentet": {
+                "type": "integer",
+                "format": "int64"
+              }
+            }
+          }
+        ]
+      },
+      "HendelseUttrekkProgress": {
+        "required": [
+          "innbyggereHentet",
+          "oppdatert",
+          "type"
+        ],
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/InnbyggerlisteHendelse"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "oppdatert": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "innbyggereHentet": {
+                "type": "integer",
+                "format": "int64"
+              }
+            }
+          }
+        ]
+      },
+      "HendelseUttrekkStartet": {
+        "required": [
+          "opprettet",
+          "type"
+        ],
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/InnbyggerlisteHendelse"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "opprettet": {
+                "type": "string",
+                "format": "date-time"
+              }
+            }
+          }
+        ]
+      },
+      "InnbyggerlisteHendelse": {
+        "required": [
+          "fiksOrg",
+          "hendelseId",
+          "rolleId",
+          "type",
+          "innbyggerlisteId"
+        ],
+        "type": "object",
+        "properties": {
+          "hendelseId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "fiksOrg": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "rolleId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "innbyggerlisteId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "type": {
+            "$ref": "#/components/schemas/HendelseType"
+          }
+        },
+        "discriminator": {
+          "propertyName": "type"
+        }
+      }
+    }
+  }
+}
