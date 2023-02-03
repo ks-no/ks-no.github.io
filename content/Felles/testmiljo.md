@@ -1,7 +1,7 @@
 ---
 title: Testmiljø
 date: 2018-05-29
-aliases: [/fiks-platform/testmiljo]
+aliases: ["/fiks-platform/testmiljo", "/fiks-plattform/testmiljo"]
 ---
 
 Fiks-plattformens testmiljø er tilgjengelig for kommuner,fylkeskommuner og leverandører som ønsker å teste konfigurasjon og integrasjoner. Miljøet er koblet til eksterne testmiljøer for integrerte komponenter: ID-Porten, Altinn og KS-SvarUt. Man kan dermed teste hele løpet, komplett med autentisering og autorisering. 

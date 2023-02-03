@@ -1,7 +1,7 @@
 ---
 title: Fiks dokumentlager
 date: 2018-09-10
-aliases: [/fiks-platform/tjenester/dokumentlager/]
+aliases: ["/fiks-platform/tjenester/dokumentlager/", "/fiks-plattform/tjenester/dokumentlager/"]
 ---
 
 ## Kort beskrivelse

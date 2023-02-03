@@ -1,7 +1,7 @@
 ---
 title: Maskinporten
 date: 2020-06-09
-aliases: [/fiks-platform/difiidportenklient]
+aliases: ["/fiks-platform/difiidportenklient", "/fiks-plattform/difiidportenklient"]
 ---
 ## Ta i bruk maskinporten
 For å ta i bruk maskinporten må man gjøre følgende:
