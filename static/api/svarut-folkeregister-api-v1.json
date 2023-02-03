@@ -1,21 +1,21 @@
 {
   "openapi" : "3.0.1",
   "info" : {
-    "title" : "KS Fiks: Svarut-folkeregister Konfigurasjon",
-    "description" : "Tjeneste for konfigurering av Svarut-folkeregister",
+    "title" : "KS Fiks: Svarut Folkeregister - Hemmelig adresse",
+    "description" : "Tjeneste for å kunne bestemme om person har hemmelig",
     "contact" : {
       "name" : "Fiks brukerstøtte",
-      "url" : "https://ks-no.github.io/",
+      "url" : "https://developers.fiks.ks.no/",
       "email" : "fiks-utvikling@ks.no"
     },
     "version" : "v1"
   },
   "servers" : [ {
-    "url" : "https://api.fiks.ks.no",
+    "url" : "https://forvaltning.fiks.ks.no",
     "description" : "KS Fiks API host",
     "variables" : { }
   }, {
-    "url" : "https://api.fiks.test.ks.no",
+    "url" : "https://forvaltning.fiks.test.ks.no",
     "description" : "KS Fiks TEST API host",
     "variables" : { }
   } ],
@@ -27,44 +27,6 @@
     "description" : "API for konfigurering av rolle for folkeregisteroppslag for Svarut Folkeregister"
   } ],
   "paths" : {
-    "/svarut-folkeregister/api/v1/doedsregister/{fiksOrgId}/erPersonDoed" : {
-      "post" : {
-        "tags" : [ "SvarutFolkeregister" ],
-        "summary" : "Henter informasjon om person er registrert som død i folkeregisteret",
-        "operationId" : "erPersonDoed",
-        "parameters" : [ {
-          "name" : "fiksOrgId",
-          "in" : "path",
-          "required" : true,
-          "schema" : {
-            "type" : "string",
-            "format" : "uuid"
-          }
-        } ],
-        "requestBody" : {
-          "content" : {
-            "application/json" : {
-              "schema" : {
-                "$ref" : "#/components/schemas/DoedPersonRequest"
-              }
-            }
-          },
-          "required" : true
-        },
-        "responses" : {
-          "200" : {
-            "description" : "Oppslag om person er død resultat",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/DoedPersonReturn"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
     "/svarut-folkeregister/api/v1/doedsregister/alleDoede" : {
       "get" : {
         "tags" : [ "SvarutFolkeregister" ],
@@ -88,7 +50,7 @@
       "get" : {
         "tags" : [ "Svarut folkeregisterrolle konfigurasjon" ],
         "summary" : "Henter status på om organisasjon har aktivert folkeregister for oppslag for Svarut Folkeregister",
-        "operationId" : "hentOrganisasjon",
+        "operationId" : "hentStatus",
         "parameters" : [ {
           "name" : "fiksOrgId",
           "in" : "path",
@@ -104,7 +66,7 @@
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/Organisasjon"
+                  "$ref" : "#/components/schemas/FolkeregisterStatusRetur"
                 }
               }
             }
@@ -157,18 +119,18 @@
         }
       }
     },
-    "/svarut-folkeregister-konfigurasjon/api/v1/organisasjoner/roller" : {
+    "/svarut-folkeregister-konfigurasjon/api/v1/organisasjoner" : {
       "get" : {
         "tags" : [ "Svarut folkeregisterrolle konfigurasjon" ],
-        "summary" : "Henter alle roller som er opprettet for tjeneste SVARUT",
-        "operationId" : "hentAlleAktiveRoller",
+        "summary" : "Henter alle organisasjoner som har aktivert folkeregister for oppslag mot Svarut Folkeregister",
+        "operationId" : "hentAlleFiksOrg",
         "responses" : {
           "200" : {
-            "description" : "Roller som er opprettet for tjenesten SVARUT",
+            "description" : "Oppslag mot folkeregister aktivert",
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/Roller"
+                  "$ref" : "#/components/schemas/AktiveOrganisasjoner"
                 }
               }
             }
@@ -194,33 +156,41 @@
           }
         }
       }
+    },
+    "/svarut-folkeregister-konfigurasjon/api/v1/organisasjoner/roller/oppdater" : {
+      "put" : {
+        "tags" : [ "Svarut folkeregisterrolle konfigurasjon" ],
+        "summary" : "Oppdaterer alle roller som er opprettet for tjeneste SVARUT",
+        "operationId" : "oppdaterAlleRoller",
+        "responses" : {
+          "204" : {
+            "description" : "Oppdatert roller som er opprettet for tjenesten SVARUT"
+          }
+        }
+      }
+    },
+    "/svarut-folkeregister/api/v1/hemmeligAdresseRegister/personer" : {
+      "get" : {
+        "tags" : [ "SvarutFolkeregister" ],
+        "summary" : "Henter fnr på alle personer som er registrert med strengt fortrolig adresse",
+        "operationId" : "hentPersonerMedHemmeligAdresse",
+        "responses" : {
+          "200" : {
+            "description" : "Henter alle fnr knyttet til personer med strengt fortrolig adresse",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/PersonerMedHemmeligAdresseRetur"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components" : {
     "schemas" : {
-      "DoedPersonReturn" : {
-        "required" : [ "status" ],
-        "type" : "object",
-        "properties" : {
-          "status" : {
-            "type" : "string",
-            "description" : "Status for oppslag på person",
-            "enum" : [ "DOED", "IKKE_DOED", "KONTO_IKKE_AKTIVERT" ]
-          }
-        },
-        "description" : "Er person død eller ikke, eller om konto ikke er aktivert enda"
-      },
-      "DoedPersonRequest" : {
-        "required" : [ "fnr" ],
-        "type" : "object",
-        "properties" : {
-          "fnr" : {
-            "pattern" : "^[0-9]{11}$",
-            "type" : "string",
-            "description" : "Fødselsnummer til mottaker"
-          }
-        }
-      },
       "DoedePersonerRetur" : {
         "type" : "object",
         "properties" : {
@@ -230,7 +200,8 @@
               "type" : "string"
             }
           }
-        }
+        },
+        "description" : "Liste over døde personer"
       },
       "AktivertRolle" : {
         "required" : [ "id" ],
@@ -242,19 +213,33 @@
           }
         }
       },
-      "Roller" : {
-        "required" : [ "roller" ],
+      "AktiveOrganisasjoner" : {
+        "required" : [ "fiksOrg" ],
         "type" : "object",
         "properties" : {
-          "roller" : {
+          "fiksOrg" : {
             "type" : "array",
             "items" : {
-              "type" : "string",
-              "format" : "uuid"
+              "$ref" : "#/components/schemas/Organisasjon"
             }
           }
         },
-        "description" : "Liste over rollerId opprettet for tjeneste SVARUT"
+        "description" : "Liste over fiksOrgId og rolleId for fiksOrg som aktivert folkeregister for SvarUt"
+      },
+      "Organisasjon" : {
+        "required" : [ "fiksOrgId", "rolleId" ],
+        "type" : "object",
+        "properties" : {
+          "fiksOrgId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "rolleId" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        },
+        "description" : "Informasjon om organisasjon"
       },
       "Organisasjoner" : {
         "required" : [ "fiksOrgIs" ],
@@ -270,7 +255,7 @@
         },
         "description" : "Liste over fiksOrgId med aktive folkeregisterroller"
       },
-      "Organisasjon" : {
+      "FolkeregisterStatusRetur" : {
         "required" : [ "folkeregisterStatus" ],
         "type" : "object",
         "properties" : {
@@ -279,7 +264,19 @@
             "enum" : [ "AKTIVERT", "DEAKTIVERT" ]
           }
         },
-        "description" : "Informasjon om organisasjon"
+        "description" : "Informasjon om status for folkeregister-aktivering"
+      },
+      "PersonerMedHemmeligAdresseRetur" : {
+        "type" : "object",
+        "properties" : {
+          "fnrs" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          }
+        },
+        "description" : "Liste over personer med hemmelig adresse"
       }
     }
   }
