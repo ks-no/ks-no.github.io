@@ -18,7 +18,7 @@ Brukerne logger seg inn på portalen, fyller ut og sender inn bekymringsmeldinge
 | Grensesnitt | Støtte |
 |------|------|
 | Web portal | Ja |
-| Maskin til maskin | Nei |
+| Maskin til maskin | Ja |
 
 ## Beskrivelse av tjenesten
 Når bekymringsmeldingen er sendt vil systemet forsøke å levere den som strukturert data via Fiks-plattformen til kommunens fagsystem. Dersom kommunens fagsystem ikke støtter integrasjon mot [Fiks IO](https://ks-no.github.io/fiks-plattform/tjenester/fiksprotokoll/fiksio/) finnes det en løsning for å laste ned bekymeringsmeldingen manuelt. Bekymringsmeldinger som ikke markeres som mottatt sendes ut som brevpost.
