@@ -15,12 +15,12 @@ Fiks skatte- og inntektsopplysninger tilbyr kommunalt ansatte et grensesnitt for
 
 
 ## Beskrivelse av tjenesten
-| Innbyggertjeneste                         | Gyldige tjenesteområde for rollen | Rettighetspakke            |
-| ----------------------------------------- | --------------------------------- | -------------------------- |
-| Barnehage SFO - redusert foreldrebetaling | Foreldrebetaling SFO/barnehage    | kommuneforeldrebetaling    |
-| Kommunal bolig- og bostøtte               | N/A                               | kommuneboligsosialeformaal |
-| Personlig assistanse / praktisk bistand   | N/A                               | kommunepersonligassistanse |
-| Sykehjem langtidsopphold                  | N/A                               | N/A                        |
+| Innbyggertjeneste                         | Gyldige tjenesteområde for rollen | Rettighetspakke                   |
+| ----------------------------------------- | --------------------------------- | --------------------------------- |
+| Barnehage SFO - redusert foreldrebetaling | Foreldrebetaling SFO/barnehage    | kommuneforeldrebetaling           |
+| Kommunal bolig- og bostøtte               | N/A                               | kommuneboligsosialeformaal        |
+| Personlig assistanse / praktisk bistand   | N/A                               | kommunepersonligassistanse        |
+| Sykehjem langtidsopphold                  | N/A                               | kommuneLangtidsoppholdInstitusjon |
 
 ___For å bruke API-ene, både proxy og vårt overbygg, må rollen som opprettes være i rett tjenesteområde. Pr i dag har vi kun støtte for redusert foreldrebetaling barnehage og SFO.___
 
