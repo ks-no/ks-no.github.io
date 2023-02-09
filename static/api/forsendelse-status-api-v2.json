@@ -1,0 +1,154 @@
+{
+  "openapi" : "3.0.1",
+  "info" : {
+    "title" : "KS SvarUt: Status API",
+    "description" : "API for henting av status for forsendelser",
+    "contact" : {
+      "name" : "Fiks-brukerstøtte",
+      "url" : "https://ks-no.github.io/",
+      "email" : "fiks-utvikling@ks.no"
+    },
+    "version" : "v2"
+  },
+  "servers" : [ {
+    "url" : "https://api.fiks.ks.no",
+    "description" : "KS Fiks API host",
+    "variables" : { }
+  } ],
+  "tags" : [ {
+    "name" : "Status",
+    "description" : "API for henting av status for forsendelser"
+  } ],
+  "paths" : {
+    "/api/v2/kontoer/{kontoId}/forsendelser/status-sok" : {
+      "post" : {
+        "tags" : [ "Status" ],
+        "description" : "Henter status for forsendelse",
+        "operationId" : "hentStatuser",
+        "parameters" : [ {
+          "name" : "kontoId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "*/*" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/StatusSok"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Status for forsendelser",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ForsendelseStatuser"
+                }
+              }
+            }
+          },
+          "default" : {
+            "description" : "Feil",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components" : {
+    "schemas" : {
+      "ForsendelseStatus" : {
+        "required" : [ "id", "sisteStatusEndring", "status" ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "sisteStatusEndring" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "status" : {
+            "type" : "string",
+            "enum" : [ "MOTTATT", "AKSEPTERT", "AVVIST", "VARSLET", "LEST", "SENDT_PRINT", "PRINTET", "MANUELT_HANDTERT", "SENDT_DIGITALT", "SENDT_SDP", "LEVERT_SDP", "KLAR_FOR_MOTTAK", "IKKE_LEVERT" ]
+          }
+        }
+      },
+      "ForsendelseStatuser" : {
+        "required" : [ "statuser" ],
+        "type" : "object",
+        "properties" : {
+          "statuser" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/ForsendelseStatus"
+            }
+          }
+        }
+      },
+      "ErrorMessage" : {
+        "type" : "object",
+        "properties" : {
+          "timestamp" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "status" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "error" : {
+            "type" : "string"
+          },
+          "errorId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "path" : {
+            "type" : "string"
+          },
+          "originalPath" : {
+            "type" : "string"
+          },
+          "message" : {
+            "type" : "string"
+          },
+          "errorCode" : {
+            "type" : "string"
+          },
+          "errorJson" : {
+            "type" : "string"
+          }
+        }
+      },
+      "StatusSok" : {
+        "required" : [ "forsendelseIds" ],
+        "type" : "object",
+        "properties" : {
+          "forsendelseIds" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "format" : "uuid"
+            }
+          }
+        }
+      }
+    }
+  }
+}
