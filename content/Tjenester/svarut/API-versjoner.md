@@ -1,6 +1,5 @@
 ---
 title: API-versjoner
-hidden: true
 aliases: [/svarut/integrasjon/]
 ---
 

@@ -15,11 +15,7 @@ Edialog er grensesnittet som tilbys innbygger for å fylle ut et skjema som skal
 | Maskin til maskin | [Apier](api-versjoner) |
 
 ## Beskrivelse av tjenesten
-Svarut er en tjeneste som tilbyr et grensesnitt for aktørene i en digital dialog mellom kommune og innbygger. 
-Beskrivelser av de forskjellige konfigurasjonene:
-
-{{% children style="h5" showhidden= "true" %}}
-
+Svarut er en tjeneste som tilbyr et grensesnitt for aktørene i en digital dialog mellom kommune og innbygger.
 
 ### Teknisk oversikt skisse
 ![alternative text](http://www.plantuml.com/plantuml/proxy?src=https://raw.githubusercontent.com/wiki/ks-no/svarut-dokumentasjon/edialog/edialog.puml?2)
