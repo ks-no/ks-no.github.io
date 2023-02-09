@@ -1,5 +1,5 @@
 ---
-title: ForsendelseServiceV8
+title: SOAP V9
 date: 2017-01-01
 aliases: [/svarut/integrasjon/ForsendelseServiceV8, /tjenester/svarut/integrasjon/forsendelseservicev8/]
 ---

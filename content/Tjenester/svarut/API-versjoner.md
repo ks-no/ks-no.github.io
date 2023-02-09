@@ -3,7 +3,7 @@ title: 'API: Versjonsoversikt'
 aliases: [/svarut/integrasjon/]
 ---
 
-# REST API for forsendelser
+## REST API for forsendelser
 
 Det kommer ikke ny funksjonalitet for SOAP-servicen etter V11. Nye endringer og features vil komme i REST-servicene.
 Dersom JSON-strukturen bli forandret vil det komme en ny versjon av servicen. Alle implementasjoner må takle at det kan legges til nye JSON-felt, og at eksisterende ikke-obligatoriske felt kan forsvinne.
@@ -12,7 +12,7 @@ Dersom JSON-strukturen bli forandret vil det komme en ny versjon av servicen. Al
 |-------------------------------------|--------|----------------------------------------------------------------------------|
 | [ForsendelseRestServiceV1](/tjenester/svarut/restv1) | Stabil | <ul><li>Funksjonaliteten i V11 flyttet til http/json basert api.</li></ul> |
 
-# SOAP API for forsendelser
+## SOAP API for forsendelser
 
 For utsending av forsendelser via KS-SvarUt kan man benytte en SOAP basert web-service. Denne servicen mottar forsendelsen og relevante metadata, og besørger videre ekspedering via elektroniske meldingstjenester eller vanlig post.
 
@@ -35,8 +35,7 @@ Kall mot SvarUt, timer ut hvis de tar mer enn 15 minutter. Derfor kan det være 
 | [ForsendelsesServiceV11](/tjenester/svarut/soapv11)             | [WSDL](https://svarut.ks.no/tjenester/forsendelseservice/ForsendelsesServiceV11?wsdl) | Stabil     | <ul><li>EksponertFor, kan gjør forsendelse tilgjengelig for andre enn mottaker. Brukes av edialog for å tilate innsender å laste ned filene. </li></ul>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
 
 
-
-# Nedlasting av forsendelser direkte til sakssystem
+## Nedlasting av forsendelser direkte til sakssystem
 
 Sakssystemer kan kalle SvarUt for å laste ned forsendelser direkte via REST API.
 
