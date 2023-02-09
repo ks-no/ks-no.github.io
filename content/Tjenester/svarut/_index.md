@@ -4,7 +4,8 @@ aliases: [/svarut/]
 ---
 
 ## Kort beskrivelse
-KS FIKS meldingformidler er en sentralisert løsning som formidler dokumenter mellom avsender og mottaker via ulike kanaler. Kommuner og andre kan benytte KS FIKS plattform. SvarUt benyttes for utgående post, mens SvarInn benyttes for innkommet post.
+KS FIKS meldingformidler er en sentralisert løsning som formidler dokumenter mellom avsender og mottaker via ulike kanaler. 
+Kommuner og andre kan benytte KS FIKS plattform. SvarUt benyttes for utgående post, mens SvarInn benyttes for innkommet post.
 
 Edialog er grensesnittet som tilbys innbygger for å fylle ut et skjema som skal returneres til kommunen.
 
@@ -15,7 +16,7 @@ Edialog er grensesnittet som tilbys innbygger for å fylle ut et skjema som skal
 | Maskin til maskin | [Apier](api-versjoner) |
 
 ## Beskrivelse av tjenesten
-Svarut er en tjeneste som tilbyr et grensesnitt for aktørene i en digital dialog mellom kommune og innbygger.
+SvarUt er en tjeneste som tilbyr et grensesnitt for aktørene i en digital dialog mellom kommune og innbygger.
 
 ### Teknisk oversikt skisse
 ![alternative text](http://www.plantuml.com/plantuml/proxy?src=https://raw.githubusercontent.com/wiki/ks-no/svarut-dokumentasjon/edialog/edialog.puml?2)

@@ -1,5 +1,5 @@
 ---
-title: API-versjoner
+title: API: Versjonsoversikt
 aliases: [/svarut/integrasjon/]
 ---
 
