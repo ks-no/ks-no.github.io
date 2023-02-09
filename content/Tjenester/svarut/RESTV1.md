@@ -1,7 +1,7 @@
 ---
-title: ForsendelseRestServiceV1
+title: API: Integrasjon med REST
 date: 2019-04-11
-aliases: ["/svarut/integrasjon/ForsendelseRestServiceV1", "/svarut/integrasjon/forsendelserestservicev1/"]
+aliases: ["/svarut/integrasjon/ForsendelseRestServiceV1", "/svarut/integrasjon/forsendelserestservicev1/", "/tjenester/svarut/integrasjon/forsendelsesservicev11/"]
 ---
 ### Tilgang
 

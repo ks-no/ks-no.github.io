@@ -1,7 +1,7 @@
 ---
-title: ForsendelseServiceV5
+title: SOAP V5
 date: 2017-01-01
-aliases: [/svarut/integrasjon/ForsendelseServiceV5]
+aliases: [/svarut/integrasjon/ForsendelseServiceV5, /tjenester/svarut/integrasjon/forsendelseservicev5/]
 ---
 
 Her beskrives funksjonalitet for ForsendelseServiceV5

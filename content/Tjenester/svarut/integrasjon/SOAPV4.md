@@ -1,7 +1,7 @@
 ---
-title: ForsendelseServiceV4
+title: SOAP V4
 date: 2017-01-01
-aliases: [/svarut/integrasjon/ForsendelseServiceV4]
+aliases: [/svarut/integrasjon/ForsendelseServiceV4, /tjenester/svarut/integrasjon/forsendelseservicev4/]
 ---
 
 Her beskrives funksjonalitet for ForsendelseServiceV4

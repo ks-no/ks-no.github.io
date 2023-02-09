@@ -1,7 +1,7 @@
 ---
-title: ForsendelseServiceV7
+title: SOAP V6
 date: 2017-01-01
-aliases: [/svarut/integrasjon/ForsendelseServiceV7]
+aliases: [/svarut/integrasjon/ForsendelseServiceV6, /tjenester/svarut/integrasjon/forsendelseservicev6/]
 ---
 
 ### Tilgang
@@ -21,7 +21,7 @@ Forsendelsesservicet tilbyr følgende funksjonalitet:
 | retrieveForsendelseIdByEksternRef  | eksternref                                                                          | List\<forsendelsesid\> | Henter liste med forsendelseider som har denne eksternRef.                                               |
 | setForsendelseLestAvEksterntSystem | forsendelsesid,<br/> lestAvFodselsnummer,<br/> navnPaEksterntSystem, <br />datoLest | (Ingen retur)          | Benyttes for å sette status til lest når dokumentet har blitt lest utenfor vårt system.                  |
 
-Definisjonsfil (WSDL) for tjenesten finnes her https://svarut.ks.no/tjenester/forsendelseservice/ForsendelsesServiceV7?wsdl
+Definisjonsfil (WSDL) for tjenesten finnes her https://svarut.ks.no/tjenester/forsendelseservice/ForsendelsesServiceV6?wsdl
 
 #### sendForsendelse
 SendForsendelse for ekspedering i SvarUt. Hvis du får HTTP 200 ok er forsendelsen er mottat og akseptert av SvarUt. Dette betyr at vi da vil garantere levering til mottaker (kunDigital har ikke garantert levering). Hvis det skulle oppstå problemer vil avsender bli kontaktet. Dette betyr at jobben til avleverende system nå er ferdig.
@@ -53,7 +53,7 @@ Følgende metadata inkluderes:
 <td rowspan="10">Mottaker</td>
 
 <td colspan="2">PrivatPerson eller Organisasjon, full adresse må være utfylt, for sending til Altinn må orgnr/fødselsnr være utfylt. Støtte for utenlandske adresser.</td>
-<td>Ved signeringsoppdrag må dette feltet være av type PrivatPerson.</td>
+
 </tr>
 
 <tr>
@@ -122,8 +122,8 @@ Følgende metadata inkluderes:
 
 <td>Fødselsnr</td>
 
-<td>Hvis Privat, må være utfylt for å kunne levere til altinn. </td>
-<td>Ved signeringsoppdrag må dette feltet være utfylt.</td>
+<td>Hvis Privat, må være utfylt for å kunne levere til altinn.</td>
+
 </tr>
 
 <tr>
@@ -143,9 +143,11 @@ Følgende metadata inkluderes:
 </tr>
 <tr>
 
-<td>forsendelseType</td>
+<td>dokumentType - blir endret til forsendelseType i nyere versjoner</td>
 
-<td colspan="2">Fritekst felt for å kunne identifisere forsendelse type.</td>
+<td colspan="2">Fritekst felt for å kunne identifisere forsendelse type. Dette feltet blir ikke brukt til noe i dag, men vil bli søkbart og tilgengelig i SvarInn.
+
+</td>
 
 </tr>
 
@@ -207,7 +209,7 @@ Følgende metadata inkluderes:
 
 <td>krevNiva4Innlogging</td>
 
-<td colspan="2">Forsendelsen krever nivå 4-innlogging for å kunne lastes ned eller signeres. Disse forsendelsene må være kryptert.</td>
+<td colspan="2">Forsendelsen krever nivå 4-innlogging for å kunne lastes ned. Disse forsendelsene må være kryptert.</td>
 
 </tr>
 
@@ -230,7 +232,7 @@ Hvis forsendelsen aksepteres og sendes digitalt, vil det genereres en lenke hvor
 
 <tr>
 
-<td rowspan="6">Liste med filer</td>
+<td rowspan="5">Liste med filer</td>
 
 <td colspan="2">Rekkefølgen er rekkefølgen de kommer i brevet. Total filstørrelse inntil 350MB er støttet når det skal printes. Ellers er det ikke begrensning.</td>
 
@@ -241,8 +243,8 @@ Hvis forsendelsen aksepteres og sendes digitalt, vil det genereres en lenke hvor
 <td>Filnavn</td>
 
 <td>Filnavn er for intern bruk, må være unikt i en forsendelse.</td>
-<td>Max 226 tegn. Må ikke inneholde mappe, kun filnavn. (ingen / eller \)
-Disse tegnene er også ugyldige " < > ? * | : De har andre funksjoner i windows og kan ikke brukes i filnavn på windows.
+<td>Max 226 tegn. Må ikke inneholde mappe, kun filnavn. (ingen / eller \) Disse tegnene er også ugyldige " < > ? * | : De har andre funksjoner i windows og kan ikke brukes i filnavn på windows.</td>
+
 </tr>
 
 <tr>
@@ -270,13 +272,7 @@ Disse tegnene er også ugyldige " < > ? * | : De har andre funksjoner i windows 
 <td>Liste med sidetall som skal printes på gult giroark. Digital versjon vil få grått giroark. Første side er 1.</td>
 
 </tr>
-<tr>
 
-<td>skalSigneres</td>
-
-<td>Angir om filen skal signeres</td>
-<td>Bare en fil kan signeres og skal være av type PDF</td>
-</tr>
 <tr>
 
 <td rowspan="4">Liste med Lenker</td>
@@ -397,7 +393,7 @@ Disse tegnene er også ugyldige " < > ? * | : De har andre funksjoner i windows 
 
 <tr>
 
-<td rowspan="7">Metadata i mottakende system</td>
+<td rowspan="6">Metadata i mottakende system</td>
 
 <td colspan="2">Noark5 metadata som stemmer med mottakende system. Kan brukes til å legge dokumentet på rett sak. Samme som over.</td>
 
@@ -443,8 +439,8 @@ Disse tegnene er også ugyldige " < > ? * | : De har andre funksjoner i windows 
 
 <td rowspan="10">SvarSendesTil</td>
 
-<td colspan="2">PrivatPerson eller Organisasjon, full adresse må være utfylt. Dette er mottaker som en skal sende til om en vil svare på forsendelsen. Valgfritt å fylle ut. Dette blir brukt som avsender adresse i digital kommunikasjon og på print i posten. Vil overstyre avsender adresse i konfigurasjonen. </td>
-<td>Ved signeringsoppdrag må feltet være satt til Organisasjon</td>
+<td colspan="2">PrivatPerson eller Organisasjon, full adresse må være utfylt. Dette er mottaker som en skal sende til om en vil svare på forsendelsen. Valgfritt å fylle ut. Dette blir brukt som avsender adresse i digital kommunikasjon og på print i posten. Vil overstyre avsender adresse i konfigurasjonen.</td>
+
 </tr>
 
 <tr>
@@ -522,19 +518,7 @@ Disse tegnene er også ugyldige " < > ? * | : De har andre funksjoner i windows 
 <td>Orgnr</td>
 
 <td>Må være utfylt om en skal svare til en organisasjon.</td>
-<td>Ved signeringsoppdrag må organisasjonsnummer må være fylt ut.</td>
-</tr>
-<tr>
 
-<td>signeringUtloper</td>
-<td colspan="2">Angi hvor lenge signeringsoppdraget er gyldig, minimum 1 dag.</td>
-<td>Må anngis ved signering</td>
-</tr>
-
-<tr>
-<td>signaturtype</td>
-<td colspan="2">Velge mellom autentisert eller avansert signering.</td>
-<td>Må anngis ved signering</td>
 </tr>
 
 </tbody>

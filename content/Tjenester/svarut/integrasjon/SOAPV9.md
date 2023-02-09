@@ -1,7 +1,7 @@
 ---
-title: ForsendelseServiceV9
+title: SOAP V9
 date: 2017-01-01
-aliases: [/svarut/integrasjon/ForsendelseServiceV9]
+aliases: [/svarut/integrasjon/ForsendelseServiceV9, /tjenester/svarut/integrasjon/forsendelseservicev9/]
 ---
 
 ### Tilgang

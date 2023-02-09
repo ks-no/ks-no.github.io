@@ -1,7 +1,7 @@
 ---
-title: ForsendelsesServiceV10
+title: SOAP V10
 date: 2018-05-11
-aliases: [/svarut/integrasjon/ForsendelseServiceV10]
+aliases: [/svarut/integrasjon/ForsendelseServiceV10, /tjenester/svarut/integrasjon/forsendelsesservicev10/]
 ---
 ### Tilgang
 

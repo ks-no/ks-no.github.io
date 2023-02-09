@@ -1,5 +1,5 @@
 ---
-title: Svarinn
+title: SvarInn
 date: 2017-01-01
 hidden: false
 ---
