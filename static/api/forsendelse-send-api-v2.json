@@ -1,0 +1,369 @@
+{
+  "openapi" : "3.0.1",
+  "info" : {
+    "title" : "KS SvarUt: Send forsendelse-API",
+    "description" : "API for sending av forsendelser",
+    "contact" : {
+      "name" : "Fiks-brukerstøtte",
+      "url" : "https://ks-no.github.io/",
+      "email" : "fiks-utvikling@ks.no"
+    },
+    "version" : "v2"
+  },
+  "servers" : [ {
+    "url" : "https://api.fiks.ks.no",
+    "description" : "KS Fiks API host",
+    "variables" : { }
+  } ],
+  "tags" : [ {
+    "name" : "Send",
+    "description" : "API for sending av forsendelser"
+  } ],
+  "paths" : {
+    "/api/v2/kontoer/{kontoId}/forsendelser" : {
+      "post" : {
+        "tags" : [ "Send" ],
+        "description" : "Sender forsendelse fra konto",
+        "operationId" : "send",
+        "parameters" : [ {
+          "name" : "kontoId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "ForsendelseId",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/SendForsendelseResponse"
+                }
+              }
+            }
+          },
+          "default" : {
+            "description" : "Feil",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components" : {
+    "schemas" : {
+      "Adresse" : {
+        "type" : "object",
+        "properties" : {
+          "digitalId" : {
+            "type" : "string"
+          },
+          "navn" : {
+            "type" : "string"
+          },
+          "adresselinje1" : {
+            "type" : "string"
+          },
+          "adresselinje2" : {
+            "type" : "string"
+          },
+          "adresselinje3" : {
+            "type" : "string"
+          },
+          "poststed" : {
+            "type" : "string"
+          },
+          "postnummer" : {
+            "type" : "string"
+          },
+          "land" : {
+            "type" : "string"
+          }
+        }
+      },
+      "Dokument" : {
+        "type" : "object",
+        "properties" : {
+          "filnavn" : {
+            "type" : "string"
+          },
+          "mimeType" : {
+            "type" : "string"
+          },
+          "skalSigneres" : {
+            "type" : "boolean"
+          },
+          "dokumentType" : {
+            "type" : "string"
+          },
+          "giroarkSider" : {
+            "uniqueItems" : true,
+            "type" : "array",
+            "items" : {
+              "type" : "integer",
+              "format" : "int32"
+            }
+          },
+          "skalEkskluderesFraUtskrift" : {
+            "type" : "boolean"
+          },
+          "ekstraMetadata" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Metadata"
+            }
+          }
+        }
+      },
+      "Forsendelse" : {
+        "required" : [ "dokumenter" ],
+        "type" : "object",
+        "properties" : {
+          "mottaker" : {
+            "$ref" : "#/components/schemas/Adresse"
+          },
+          "eksponertFor" : {
+            "uniqueItems" : true,
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          },
+          "avgivendeSystem" : {
+            "type" : "string"
+          },
+          "tittel" : {
+            "type" : "string"
+          },
+          "konteringskode" : {
+            "type" : "string"
+          },
+          "kunDigitalLevering" : {
+            "type" : "boolean"
+          },
+          "kryptert" : {
+            "type" : "boolean"
+          },
+          "utskriftskonfigurasjon" : {
+            "$ref" : "#/components/schemas/Utskriftskonfigurasjon"
+          },
+          "krevNiva4Innlogging" : {
+            "type" : "boolean"
+          },
+          "metadataFraAvleverendeSystem" : {
+            "$ref" : "#/components/schemas/NoarkMetadataFraAvleverendeSaksSystem"
+          },
+          "metadataForImport" : {
+            "$ref" : "#/components/schemas/NoarkMetadataForImport"
+          },
+          "svarSendesTil" : {
+            "$ref" : "#/components/schemas/Adresse"
+          },
+          "svarPaForsendelse" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "dokumenter" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Dokument"
+            }
+          },
+          "lenker" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Lenke"
+            }
+          },
+          "forsendelsestype" : {
+            "type" : "string"
+          },
+          "eksternReferanse" : {
+            "type" : "string"
+          },
+          "svarPaForsendelseLink" : {
+            "type" : "boolean"
+          },
+          "signeringUtloper" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "signaturType" : {
+            "type" : "string",
+            "enum" : [ "AUTENTISERT_SIGNATUR", "AVANSERT_SIGNATUR" ]
+          },
+          "taushetsbelagtPost" : {
+            "type" : "boolean"
+          }
+        }
+      },
+      "Lenke" : {
+        "type" : "object",
+        "properties" : {
+          "url" : {
+            "type" : "string"
+          },
+          "tekst" : {
+            "type" : "string"
+          },
+          "ledetekst" : {
+            "type" : "string"
+          }
+        }
+      },
+      "Metadata" : {
+        "type" : "object",
+        "properties" : {
+          "key" : {
+            "type" : "string"
+          },
+          "value" : {
+            "type" : "string"
+          }
+        }
+      },
+      "NoarkMetadataForImport" : {
+        "type" : "object",
+        "properties" : {
+          "sakssekvensnummer" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "saksaar" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "journalposttype" : {
+            "type" : "string"
+          },
+          "journalstatus" : {
+            "type" : "string"
+          },
+          "dokumentetsDato" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "tittel" : {
+            "type" : "string"
+          }
+        }
+      },
+      "NoarkMetadataFraAvleverendeSaksSystem" : {
+        "type" : "object",
+        "properties" : {
+          "sakssekvensnummer" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "saksaar" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "journalaar" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "journalsekvensnummer" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "journalpostnummer" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "journalposttype" : {
+            "type" : "string"
+          },
+          "journalstatus" : {
+            "type" : "string"
+          },
+          "journaldato" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "dokumentetsDato" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "tittel" : {
+            "type" : "string"
+          },
+          "saksbehandler" : {
+            "type" : "string"
+          },
+          "ekstraMetadata" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Metadata"
+            }
+          }
+        }
+      },
+      "Utskriftskonfigurasjon" : {
+        "type" : "object",
+        "properties" : {
+          "utskriftMedFarger" : {
+            "type" : "boolean"
+          },
+          "tosidig" : {
+            "type" : "boolean"
+          }
+        }
+      },
+      "SendForsendelseResponse" : {
+        "required" : [ "id" ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        }
+      },
+      "ErrorMessage" : {
+        "type" : "object",
+        "properties" : {
+          "timestamp" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "status" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "error" : {
+            "type" : "string"
+          },
+          "errorId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "path" : {
+            "type" : "string"
+          },
+          "originalPath" : {
+            "type" : "string"
+          },
+          "message" : {
+            "type" : "string"
+          },
+          "errorCode" : {
+            "type" : "string"
+          },
+          "errorJson" : {
+            "type" : "string"
+          }
+        }
+      }
+    }
+  }
+}
