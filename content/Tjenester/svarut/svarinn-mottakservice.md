@@ -12,7 +12,7 @@ Primært brukes Mottaksservice til å automatisere nedlasting og import av forse
 
 Mottaksservice gir mulighet for å laste ned sensitive forsendelser. Dette betyr at mottaker må legge inn sitt offentlige sertifikat i SvarUt, og bruke sin private nøkkel til å dekryptere forsendelsesfilene som blir lastet ned. Alle forsendelser blir sendt på denne måten selv, uavhengig av om forsendelsen er nivå 3 eller 4.
 
-Mottaksservicen består av 3 tjenester (se også [detaljert beskrivelse]({{< ref "mottaksservice-rest.md" >}})):
+Mottaksservicen består av 3 tjenester (se også [detaljert beskrivelse]({{< ref "svarinn-rest.md" >}})):
 
 1.  **hentNyeForsendelser -** Henter nye forsendelser som er klar for import.
 2.  **getForsendelsefil -** Henter filen for en gitt forsendelse, enten som PDF eller zipfil. Filen vil være kryptert og må dekrypteres etter nedlasting.
