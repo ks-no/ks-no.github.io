@@ -1,5 +1,5 @@
 ---
-title: API: Integrasjon med SOAP
+title: 'API: Integrasjon med SOAP'
 date: 2019-05-07
 aliases: [/svarut/integrasjon/ForsendelseServiceV11]
 ---

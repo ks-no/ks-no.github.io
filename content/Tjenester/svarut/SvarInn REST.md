@@ -1,5 +1,5 @@
 ---
-title: API: SvarInn REST
+title: 'API: SvarInn REST'
 date: 2017-01-01
 aliases: [/svarut/integrasjon/mottaksservice-rest, /tjenester/svarut/integrasjon/mottaksservice-rest/]
 ---
