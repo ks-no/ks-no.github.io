@@ -1,0 +1,298 @@
+{
+  "openapi" : "3.0.1",
+  "info" : {
+    "title" : "Fiks register summert skattegrunnlag service",
+    "description" : "Oppslag i summert skattegrunnlag for Fiks register",
+    "contact" : {
+      "name" : "Fiks brukerstøtte",
+      "url" : "https://www.ks.no/fagomrader/digitalisering/utviklingsprosjekter",
+      "email" : "fiks-utvikling@ks.no"
+    },
+    "version" : "v2"
+  },
+  "servers" : [ {
+    "url" : "https://api.fiks.ks.no",
+    "description" : "KS Fiks API host",
+    "variables" : { }
+  }, {
+    "url" : "https://api.fiks.test.ks.no",
+    "description" : "KS Fiks TEST API host",
+    "variables" : { }
+  } ],
+  "paths" : {
+    "/register/api/v2/ks/{rolleId}/summertskattegrunnlag" : {
+      "post" : {
+        "tags" : [ "Summert skattegrunnlag" ],
+        "description" : "Henter summert skattegrunnlag for angitte fødselsnummere",
+        "operationId" : "summertskattegrunnlag",
+        "parameters" : [ {
+          "name" : "rolleId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/SummertSkattegrunnlagSoekDefinisjonV2"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/SummertSkattegrunnlagDefinisjonV2"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Feil input",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Ikke tilgang",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Ikke tilgang",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Ingen treff",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "410" : {
+            "description" : "Finnes ikke lenger",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components" : {
+    "schemas" : {
+      "PersonnavnDefinisjon" : {
+        "required" : [ "etternavn", "fornavn" ],
+        "type" : "object",
+        "properties" : {
+          "etternavn" : {
+            "type" : "string"
+          },
+          "fornavn" : {
+            "type" : "string"
+          },
+          "mellomnavn" : {
+            "type" : "string"
+          }
+        }
+      },
+      "StadieDefinisjon" : {
+        "type" : "string",
+        "enum" : [ "OPPGJOER", "UTKAST", "UKJENT" ]
+      },
+      "SummertSkattegrunnlagDefinisjonV2" : {
+        "required" : [ "inntektsaar", "stadie", "summertSkattegrunnlagPersoner", "samletBeloep", "samletGrunnlag", "soeketidspunkt" ],
+        "type" : "object",
+        "properties" : {
+          "inntektsaar" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "stadie" : {
+            "$ref" : "#/components/schemas/StadieDefinisjon"
+          },
+          "summertSkattegrunnlagPersoner" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/SummertSkattegrunnlagPersonDefinisjonV2"
+            }
+          },
+          "samletBeloep" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "samletGrunnlag" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/GruppeDefinisjon"
+            }
+          },
+          "soeketidspunkt" : {
+            "type" : "string",
+            "format" : "date-time"
+          }
+        }
+      },
+      "SummertSkattegrunnlagPersonDefinisjonV2" : {
+        "required" : [ "personidentifikator", "skjermet", "skatteoppgjoersdato", "stadie", "registreringstidpunkt", "beloep", "grunnlag" ],
+        "type" : "object",
+        "properties" : {
+          "personidentifikator" : {
+            "pattern" : "^[0-9]{11}$",
+            "type" : "string"
+          },
+          "personnavn" : {
+            "$ref" : "#/components/schemas/PersonnavnDefinisjon"
+          },
+          "skjermet" : {
+            "type" : "boolean"
+          },
+          "skatteoppgjoersdato" : {
+            "type" : "string",
+            "format" : "date"
+          },
+          "stadie" : {
+            "$ref" : "#/components/schemas/StadieDefinisjon"
+          },
+          "registreringstidpunkt" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "beloep" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "grunnlag" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/GruppeDefinisjon"
+            }
+          },
+          "skattFeilmelding" : {
+            "type" : "string"
+          }
+        }
+      },
+      "GruppeDefinisjon": {
+        "required" : [ "id", "navn", "beloep", "operasjon" ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string"
+          },
+          "navn" : {
+            "type" : "string"
+          },
+          "beloep" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "operasjon" : {
+            "$ref" : "#/components/schemas/OperasjonDefinisjon"
+          },
+          "poster" : {
+            "type" : "array",
+            "items": {
+              "$ref" : "#/components/schemas/PostDefinisjon"
+            }
+          }
+        }
+      },
+      "SummertSkattegrunnlagSoekDefinisjonV2": {
+        "required" : [ "soekere", "inntektsaar", "egenandelsberegning" ],
+        "type" : "object",
+        "properties" : {
+          "soekere" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/HusstandsmedlemDefinisjon"
+            }
+          },
+          "inntektsaar" : {
+            "minimum" : 2016,
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "egenandelsberegning" : {
+            "type" : "string",
+            "enum" : [ "PERSONLIG_ASSISTANSE", "OPPHOLD_INSTITUSJON", "BARNEHAGE_SFO", "BOLIGSOSIALE_FORMAAL" ]
+          }
+        }
+      },
+      "HusstandsmedlemDefinisjon": {
+        "required" : [ "personidentifikator", "personType" ],
+        "type" : "object",
+        "properties": {
+          "personidentifikator": {
+            "description" : "Fødsels- eller D-nummer.",
+            "type" : "string",
+            "pattern": "^[0-9]{11}$"
+          },
+          "personType": {
+            "$ref" : "#/components/schemas/PersonTypeDefinisjon"
+          },
+          "ekstraPoster": {
+            "type": "array",
+            "items" : {
+              "$ref" : "#/components/schemas/PostDefinisjon"
+            }
+          }
+        }
+      },
+      "PersonTypeDefinisjon": {
+        "type" : "string",
+        "enum" : [ "SOEKER", "EKTEFELLE", "PARTNER", "SAMBOER", "BARN", "MOR", "FAR" ]
+      },
+      "PostDefinisjon": {
+        "required": [ "tekniskNavn", "visningsnavn", "beloep"],
+        "type": "object",
+        "properties": {
+          "tekniskNavn" : {
+            "type": "string"
+          },
+          "visningsnavn" : {
+            "type": "string"
+          },
+          "beloep" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        }
+      },
+      "OperasjonDefinisjon": {
+        "type": "string",
+        "enum": [ "ADDERE", "SUBTRAHERE", "INGEN"]
+      }
+    }
+  }
+}
