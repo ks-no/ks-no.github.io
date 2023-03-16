@@ -15,9 +15,13 @@ Send e-post til fiks@ks.no for tilgang til testmiljøet. Send gjerne med eventue
 
 ## Hvor er testmiljøet?
 Minside kan nås på https://min.fiks.test.ks.no/. 
+
 Konfigurasjon finnes på https://forvaltning.fiks.test.ks.no. 
+
 Min kommune finnes på https://min.fiks.test.ks.no/
+
 Bekymringsmelding finnes på https://bekymringsmelding.fiks.test.ks.no/
+
 SvarUt finnes på https://test.svarut.ks.no
 
 Benytt ID-porten testbruker for innlogging. 
