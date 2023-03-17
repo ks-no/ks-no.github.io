@@ -1,7 +1,7 @@
 ---
 title: Fiks digisos
 date: 2020-10-27
-aliases: [/fiks-platform/tjenester/digisos/ /fiks-plattform/tjenester/digisos/]
+aliases: [/fiks-platform/tjenester/digisos/, /fiks-plattform/tjenester/digisos/]
 ---
 
 ## Kort beskrivelse
