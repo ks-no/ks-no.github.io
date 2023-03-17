@@ -14,7 +14,6 @@ Merk at testmiljøet ikke har de samme sikkerhetsgarantiene som produksjon - det
 Send e-post til fiks@ks.no for tilgang til testmiljøet. Send gjerne med eventuelle eksisterende testbrukere i ID-porten, slik at disse kan gjenbrukes for tilganger på Fiks-plattformen.
 
 ## Hvor er testmiljøet?
-Minside kan nås på https://min.fiks.test.ks.no/. 
 
 Konfigurasjon finnes på https://forvaltning.fiks.test.ks.no. 
 
