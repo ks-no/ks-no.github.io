@@ -1,11 +1,11 @@
 ---
 title: 2. Opprette system
 date: 2022-09-23
-alias: [/fiks-plattform/tjenester/fiksprotokoll/brukerveiledning/opprette_system, /tjenester/fiksprotokoll/opprette_system, /tjenester/fiksprotokoll/brukerveiledning/opprette_system]
+alias: [/fiks-plattform/tjenester/fiksprotokoll/brukerveiledning/opprette_system, /tjenester/fiksprotokoll/opprette_system, /tjenester/fiksprotokoll/brukerveiledning/opprette_system/]
 ---
 
 For å bruke Fiks Protokoll må du opprette et system. Hvert system i kommunen som skal bruke Fiks Protokoll, må opprette et protokollsystem. F.eks fagsystem eller arkiv.
-Logg først inn på [forvaltning.fiks.ks.no](forvaltning.fiks.ks.no) ([forvaltning.fiks.test.ks.no](forvaltning.fiks.test.ks.no) for testmiljø). Og gå inn på konfigurasjon.
+Logg først inn på [forvaltning.fiks.ks.no](https://forvaltning.fiks.ks.no) ([forvaltning.fiks.test.ks.no](https://forvaltning.fiks.test.ks.no) for testmiljø). Og gå inn på konfigurasjon.
 
 ## Steg 1: Velg Fiks Protokoll
 Finn Fiks Protokoll i listen over tjenester. Tjenester som er tatt i bruk ligger øverst. Klikk på "Fiks Protokoll"-knappen
