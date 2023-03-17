@@ -27,6 +27,19 @@ Benytt ID-porten testbruker for innlogging.
 
 SvarUt data for "Post fra kommunen" på Minside kommer fra SvarUts testmiljø. Aktiver avsendere i Fiks-konfigurasjonen for å indeksere meldinger.
 
+## Ekstrene lenker til andre testmiljø
+
+Altinn test: https://tt02.altinn.no
+
+Digipost test: https://www.difitest.digipost.no/
+
+eBoks test: http://demo2-www.e-boks.no/default.aspx
+
+idporten brukerprofil (krr og valg av postkasse): https://brukerprofil-ver2.difi.no/minprofil/ og  https://brukerprofil-ver1.difi.no/minprofil/ Må endres begge plasser da forskjellige
+tjenester bruker forskjellig testmiljø hos digdir.
+
+Tenor testdata for f.eks folkeregisteret: https://www.skatteetaten.no/skjema/testdata/
+
 ## Personinnlogging
 Alle testbrukere dere får fra oss har "Min Id"-innlogging i ID-Porten. Her anbefaler vi at dere setter telefonnummer og e-post slik at brukeren kan låses opp om noen skulle sperre den med feilede innloggingsforsøk.
 
