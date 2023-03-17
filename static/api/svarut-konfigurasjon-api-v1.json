@@ -169,6 +169,54 @@
         }
       }
     },
+    "/svarut-konfigurasjon/api/v1/kontoer/{kontoId}/dpi/deaktiver" : {
+      "put" : {
+        "tags" : [ "Konto" ],
+        "description" : "Deaktiverer SDP",
+        "operationId" : "deaktiverDPI",
+        "parameters" : [ {
+          "name" : "kontoId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "204" : {
+            "description" : "Deaktiverer DPI",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/SvarUtKonto"
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Kontoid ikke funnet",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Systemfeil",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/svarut-konfigurasjon/api/v1/kontoer/{kontoId}/deaktiver" : {
       "put" : {
         "tags" : [ "Konto" ],
@@ -917,6 +965,112 @@
         }
       }
     },
+    "/svarut-konfigurasjon/api/v1/kontoer/{kontoId}/maler/dpi/{dpiMalId}" : {
+      "put" : {
+        "tags" : [ "Konto" ],
+        "description" : "Oppdaterer DPI-maler på konto",
+        "operationId" : "oppdaterDpiMal",
+        "parameters" : [ {
+          "name" : "kontoId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        }, {
+          "name" : "dpiMalId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "enum" : [ "STANDARD", "UTEN_DOKUMENTER", "MED_LENKER_OG_SENDES_MED_DOKUMENTER", "SMS", "EPOST" ]
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/OppdaterDpiMalRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Oppdatert mal",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/SvarUtKonto"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Ugyldig data for mal"
+          },
+          "500" : {
+            "description" : "Systemfeil",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete" : {
+        "tags" : [ "Konto" ],
+        "description" : "Tilbakestill DPI-mal til standard på konto",
+        "operationId" : "resetDpiMal",
+        "parameters" : [ {
+          "name" : "kontoId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        }, {
+          "name" : "dpiMalId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "enum" : [ "STANDARD", "UTEN_DOKUMENTER", "MED_LENKER_OG_SENDES_MED_DOKUMENTER", "SMS", "EPOST" ]
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Konto",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/SvarUtKonto"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Ugyldig request"
+          },
+          "500" : {
+            "description" : "Systemfeil",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/svarut-konfigurasjon/api/v1/kontoer/{kontoId}/folkeregister" : {
       "put" : {
         "tags" : [ "Konto" ],
@@ -1421,6 +1575,61 @@
         },
         "description" : "Maler for Altinn"
       },
+      "DPIKonfigurasjon" : {
+        "required" : [ "avsendernavn", "dokumenter", "orgnr", "signering" ],
+        "type" : "object",
+        "properties" : {
+          "avsendernavn" : {
+            "type" : "string",
+            "description" : "Avsendernavn bør være det samme som er registrert i Brønnøysundregistrene"
+          },
+          "avsenderIdentifikator" : {
+            "type" : "string"
+          },
+          "ekstratekst" : {
+            "type" : "string"
+          },
+          "orgnr" : {
+            "pattern" : "^[0-9]{9}$",
+            "type" : "string",
+            "description" : "Organisasjonsnummeret må være det samme som er brukt i avtalen med Digdir"
+          },
+          "dokumenter" : {
+            "type" : "boolean"
+          },
+          "signering" : {
+            "type" : "boolean"
+          }
+        }
+      },
+      "DpiMal" : {
+        "required" : [ "egendefinert", "id", "kanEndres", "navn", "standard" ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string",
+            "description" : "Id for mal",
+            "enum" : [ "STANDARD", "UTEN_DOKUMENTER", "MED_LENKER_OG_SENDES_MED_DOKUMENTER", "SMS", "EPOST" ]
+          },
+          "navn" : {
+            "type" : "string",
+            "description" : "Visningsnavn for mal"
+          },
+          "kanEndres" : {
+            "type" : "boolean",
+            "description" : "Flagg som indikerer om malen kan endres fra standard"
+          },
+          "standard" : {
+            "type" : "string",
+            "description" : "Standard-mal"
+          },
+          "egendefinert" : {
+            "type" : "string",
+            "description" : "Egendefinert mal"
+          }
+        },
+        "description" : "Maler for DPI"
+      },
       "FolkeregisterKonfigurasjon" : {
         "required" : [ "hemmeligAdresse" ],
         "type" : "object",
@@ -1466,7 +1675,7 @@
         "description" : "Forsidekonfigurasjon for SvarUt konto. Beskriver returadresse printet på forside"
       },
       "Maler" : {
-        "required" : [ "altinn", "sdp" ],
+        "required" : [ "altinn", "dpi", "sdp" ],
         "type" : "object",
         "properties" : {
           "altinn" : {
@@ -1481,6 +1690,13 @@
             "description" : "Maler for SDP",
             "items" : {
               "$ref" : "#/components/schemas/SdpMal"
+            }
+          },
+          "dpi" : {
+            "type" : "array",
+            "description" : "Maler for DPI",
+            "items" : {
+              "$ref" : "#/components/schemas/DpiMal"
             }
           }
         }
@@ -1567,7 +1783,7 @@
         }
       },
       "SvarUtKonto" : {
-        "required" : [ "aktivert", "altinnAktiv", "avsender", "fiksOrgId", "gyldig", "id", "maler", "navn", "sdpAktiv" ],
+        "required" : [ "aktivert", "altinnAktiv", "avsender", "dpiAktiv", "fiksOrgId", "gyldig", "id", "maler", "navn" ],
         "type" : "object",
         "properties" : {
           "id" : {
@@ -1592,9 +1808,9 @@
             "type" : "boolean",
             "description" : "Altinn status"
           },
-          "sdpAktiv" : {
+          "dpiAktiv" : {
             "type" : "boolean",
-            "description" : "SDP status"
+            "description" : "DPI status"
           },
           "aktivert" : {
             "type" : "boolean",
@@ -1612,6 +1828,9 @@
           },
           "sdp" : {
             "$ref" : "#/components/schemas/SDPKonfigurasjon"
+          },
+          "dpi" : {
+            "$ref" : "#/components/schemas/DPIKonfigurasjon"
           },
           "maler" : {
             "$ref" : "#/components/schemas/Maler"
@@ -1799,6 +2018,17 @@
             "type" : "boolean"
           }
         }
+      },
+      "OppdaterDpiMalRequest" : {
+        "required" : [ "mal" ],
+        "type" : "object",
+        "properties" : {
+          "mal" : {
+            "type" : "string",
+            "description" : "Oppdatert mal"
+          }
+        },
+        "description" : "Mal for meldingen som skal fremkomme i DPI meldingsboksen"
       },
       "OppdaterFolkeregisterKonfigurasjonRequest" : {
         "required" : [ "hemmeligAdresse" ],
