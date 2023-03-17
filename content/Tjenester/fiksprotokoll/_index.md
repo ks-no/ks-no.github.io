@@ -1,7 +1,7 @@
 ---
 title: Fiks protokoll 
 date: 2022-07-05
-aliases: [/fiks-platform/tjenester/fiksprotokoll, /fiks-plattform/tjenester/fiksprotokoll, /fiks-plattform/tjenester/fiksprotokoll/]
+aliases: [/fiks-platform/tjenester/fiksprotokoll, /fiks-plattform/tjenester/fiksprotokoll, /fiks-plattform/tjenester/fiksprotokoll/, /tjenester/fiksprotokoll/fiksio/fiksprotokoll]
 ---
 
 ## Kort beskrivelse
