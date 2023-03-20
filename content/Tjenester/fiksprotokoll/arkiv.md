@@ -87,7 +87,7 @@ Denne kan brukes hvis man bare skal sende meldinger til Fiks-IO og ikke motta me
 | XSD skjema, protokoll spesifikasjon | -                                                                                                    | https://github.com/ks-no/fiks-arkiv-specification |
 | Modeller og XSD skjema              | [`fiks-arkiv`](https://github.com/ks-no/fiks-arkiv-client-java)                                                   | https://github.com/ks-no/fiks-arkiv-client-java   |
 | Forenklet arkivering                | [`fiks-arkiv-forenklet-arkivering`](https://search.maven.org/artifact/no.ks.fiks/fiks-arkiv-forenklet-arkivering) | https://github.com/ks-no/fiks-arkiv-client-java   |
-| Fiks-IO klient                      | [`fiks-io-klient`](https://search.maven.org/artifact/no.ks.fiks/fiks-io-klient-java)                              | https://github.com/ks-no/fiks-io-klient           |
+| Fiks-IO klient                      | [`fiks-io-klient`](https://search.maven.org/artifact/no.ks.fiks/fiks-io-klient-java)                              | https://github.com/ks-no/fiks-io-klient-java      |
 | Fiks-IO send klient                 | [`fiks-io-send-klient`](https://search.maven.org/artifact/no.ks.fiks/fiks-io-send-klient)                         | https://github.com/ks-no/fiks-io-send-klient      |
 
 

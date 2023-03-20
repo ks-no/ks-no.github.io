@@ -46,10 +46,10 @@ En Fiks-organisasjon kan opprette egen integrasjoner gjennom Fiks konfigurasjon.
 * _Sett tjenester_. Hvilke tjenester er denne integrasjonen aktuell for?
 
 ## Autentisering
-Integrasjoner autentiseres på to ulike måter: som "integrasjon" med oAuth 2.0, eller "integrasjon-person" m. Open Id Connect (OIDC). Fiks har laget klienter for å generere access token fra Maskinporten basert på et virksomhetssertifikat, en issuer (konto hos Difi) og ett eller flere scopes. Java-klient: [https://github.com/ks-no/fiks-maskinporten](https://github.com/ks-no/fiks-maskinporten), .net-klient: [https://github.com/ks-no/fiks-maskinporten-client-dotnet](https://github.com/ks-no/fiks-maskinporten).
+Integrasjoner autentiseres på to ulike måter: som "integrasjon" med OAuth 2.0, eller "integrasjon-person" m. Open Id Connect (OIDC). Fiks har laget klienter for å generere access token fra Maskinporten basert på et virksomhetssertifikat, en issuer (konto hos Difi) og ett eller flere scopes. Java-klient: [https://github.com/ks-no/fiks-maskinporten](https://github.com/ks-no/fiks-maskinporten), .net-klient: [https://github.com/ks-no/fiks-maskinporten-client-dotnet](https://github.com/ks-no/fiks-maskinporten).
 
 ### Integrasjon
-Denne metoden benyttes for ren server til server integrasjon, for eksempel når et fagsystem skal laste opp meldinger til  [Fiks Innsyn]({{< ref "innsyn.md" >}}). Organisasjonen henter et OAuth 2.0 access token med scope "ks:fiks" fra ID-Porten, basert på organisasjonens virksomhetssertifikat. Dokumentasjon for dette finnes [her](https://difi.github.io/idporten-oidc-dokumentasjon/oidc_auth_server-to-server-oauth2.html). Vi støtter i første omgang kun JWT access_tokens, dette må konfigureres hos ID-Porten.  I tillegg til dette tokenet må man ha en header for integrasjonId og for integrasjonPassord. 
+Denne metoden benyttes for ren server til server integrasjon, for eksempel når et fagsystem skal laste opp meldinger til  [Fiks Innsyn]({{< ref "innsyn.md" >}}). Organisasjonen henter et OAuth 2.0 access token med scope "ks:fiks" fra Maskinporten, basert på organisasjonens virksomhetssertifikat. Dokumentasjon for dette finnes [her](https://docs.digdir.no/docs/Maskinporten/maskinporten_overordnet). Vi støtter i første omgang kun JWT access_tokens, dette må konfigureres hos ID-Porten.  I tillegg til dette tokenet må man ha en header for integrasjonId og for integrasjonPassord. 
    
 Kallet mot Fiks-plattformtjenesten trenger dermed følgende HTTP headere:
  

@@ -17,11 +17,11 @@ Tjenesten bruker HTTP Basic autentication med brukernavn og generert service-pas
 Forsendelser er tilgjengelig for direkte import til sakssystem i uendelig tid. Dersom forsendelsene markeres som permanent import feil går forsendelsene videre i det normale løpet med varsling i Altinn og til slutt printing.
 Etter 2 timer vil det bli sendt varsel mail om manglende import 3 ganger om dagen.
 
-Tjenestene er tilgjengelige via https://svarut.ks.no/tjenester/svarinn/
+Tjenestene er tilgjengelige via `https://svarut.ks.no/tjenester/svarinn/`
 
 #### hentNyeForsendelser (GET)
 
-**https://svarut.ks.no/tjenester/svarinn/mottaker/hentNyeForsendelser**
+`https://svarut.ks.no/tjenester/svarinn/mottaker/hentNyeForsendelser`
 
 Henter nye forsendelser for autentisert mottaker (basert på angitt mottaker). En vellykket forespørsel returnerer en liste av forsendelser (JSON). Dersom ingen forsendelser er tilgjengelig sendes en tom liste. Her følger et eksempel på en forsendelse.
 
@@ -148,7 +148,7 @@ Henter filen for en gitt forsendelse. Kun én fil returneres. Hvis forsendelsen 
 
 #### settForsendelseMottatt (POST)
 
-**https://svarut.ks.no/tjenester/svarinn/kvitterMottak/forsendelse/{forsendelseid}**
+`https://svarut.ks.no/tjenester/svarinn/kvitterMottak/forsendelse/{forsendelseid}`
 
 Etter mottatt forsendelse kvitteres den ut fra importtjenesten. Forsendelsesstatus endres til lest slik at varsel ikke sendes til Altinn. Forsendelsen blir heller ikke sendt til print siden den er mottatt.
 
@@ -186,7 +186,7 @@ Etter mottatt forsendelse kvitteres den ut fra importtjenesten. Forsendelsesstat
 
 #### settForsendelseMottakFeilet (POST)
 
-**https://svarut.ks.no/tjenester/svarinn/mottakFeilet/forsendelse/{forsendelseid}**
+`https://svarut.ks.no/tjenester/svarinn/mottakFeilet/forsendelse/{forsendelseid}`
 
 Hvis mottak av forsendelse feilet, kan dette meldes tilbake til SvarUt. Dette vil da framkomme i loggen til avsender.
 
