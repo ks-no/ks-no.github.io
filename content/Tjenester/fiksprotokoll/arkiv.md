@@ -170,13 +170,13 @@ Dette vil Fiks-IO klienten fra KS gjøre for deg hvis man bruker `.Svar()` funks
 
 **Meldingstyper:**
 
-| Type                     | Navn                                                         |
-|--------------------------|--------------------------------------------------------------|
-| Arkiver melding          | `no.ks.fiks.arkiv.v1.arkivering.arkivmelding`                |
-| Mottatt melding          | `no.ks.fiks.arkiv.v1.arkivering.arkivmelding.mottatt`        |
-| Kvittering på arkivering | `no.ks.fiks.arkiv.v1.arkivering.arkivmelding.kvittering`     |
+| Type                     | Navn                                                             |
+|--------------------------|------------------------------------------------------------------|
+| Arkiver melding          | `no.ks.fiks.arkiv.v1.arkivering.arkivmelding.opprett`            |
+| Mottatt melding          | `no.ks.fiks.arkiv.v1.arkivering.arkivmelding.opprett.mottatt`    |
+| Kvittering på arkivering | `no.ks.fiks.arkiv.v1.arkivering.arkivmelding.opprett.kvittering` |
 
-For å arkivere data må en bruke meldingsformatet `arkivmelding.xml`. Se xsd schema [**no.ks.fiks.arkiv.v1.arkivering.arkivmelding.xsd**](https://github.com/ks-no/fiks-arkiv-specification/blob/main/Schema/V1/no.ks.fiks.arkiv.v1.arkivering.arkivmelding.xsd) for definsjon av meldingsformatet.
+For å arkivere data må en bruke meldingsformatet `arkivmelding.xml`. Se xsd schema [**no.ks.fiks.arkiv.v1.arkivering.arkivmelding.opprett.xsd**](https://github.com/ks-no/fiks-arkiv-specification/blob/main/Schema/V1/no.ks.fiks.arkiv.v1.arkivering.arkivmelding.opprett.xsd) for definsjon av meldingsformatet.
 
 ### Begrensninger og regler for arkivering
 
@@ -186,8 +186,8 @@ For å arkivere data må en bruke meldingsformatet `arkivmelding.xml`. Se xsd sc
 
 ### Mottatt og kvittering
 
-Hvis meldingen er gyldig som arkivmelding skal man så sende melding tilbake av typen `no.ks.fiks.arkiv.v1.arkivering.arkivmelding.mottatt`.
-Når arkivering er arkivert til arkivet skal det komme en **arkivmelding** tilbake i meldingsformatet `arkivmelding-kvittering.xml` av typen `no.ks.fiks.arkiv.v1.arkivering.arkivmelding.kvittering`. Se [**no.ks.fiks.arkiv.v1.arkivering.arkivmelding.kvittering.xsd**](https://github.com/ks-no/fiks-arkiv-specification/blob/main/Schema/V1/no.ks.fiks.arkiv.v1.arkivering.arkivmelding.kvittering.xsd) for definisjon av meldingsformatet på kvitteringsmelding.
+Hvis meldingen er gyldig som arkivmelding skal man så sende melding tilbake av typen `no.ks.fiks.arkiv.v1.arkivering.arkivmelding.opprett.mottatt`.
+Når arkivering er arkivert til arkivet skal det komme en **arkivmelding** tilbake i meldingsformatet `arkivmelding-kvittering.xml` av typen `no.ks.fiks.arkiv.v1.arkivering.arkivmelding.opprett.kvittering`. Se [**no.ks.fiks.arkiv.v1.arkivering.arkivmelding.opprett.kvittering.xsd**](https://github.com/ks-no/fiks-arkiv-specification/blob/main/Schema/V1/no.ks.fiks.arkiv.v1.arkivering.arkivmelding.opprett.kvittering.xsd) for definisjon av meldingsformatet på kvitteringsmelding.
 
 ![arkivmelding_med_kvittering_ok](/images/arkivmelding_med_kvittering_ok.png "Arkivmelding med kvittering")
 
