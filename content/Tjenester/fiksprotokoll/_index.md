@@ -9,13 +9,13 @@ Fiks protokoll er en tjenestegruppe som inneholder flere tjenester. Felles for d
 Tjenestene består både av et sett av protokoller med meldingstyper, f.eks. Fiks Arkiv og Fiks Plan, og et miljø for å administrere systemer som implementerer disse protokollene over Fiks IO.
 
 ## Status protokoller
-| Protokoll | Status |
-|------|------|
-| Fiks arkiv | Pilot i produksjon fram til sommeren 2023 |
-| Fiks politisk behandling | Under utvikling |
+| Protokoll | Status                                                            |
+|------|-------------------------------------------------------------------|
+| Fiks arkiv | Pilot i produksjon fram til sommeren 2023                         |
+| Fiks politisk behandling | Under utvikling                                                   |
 | Fiks plan | Under implementering hos leverandører. Pilot når de første er klar |
-| Fiks matrikkelføring | I produksjon |
-| SSB barnevern kostra rapportering | Pilot |
+| Fiks matrikkelføring | I produksjon                                                      |
+| SSB barnevern kostra rapportering | Produksjo                                                         |
 
 Protokoller i pilot kan oppleve å få endringer som må utbedres fortløpende. Dette vil være små endringer som kommer etter erfaringer en har gjort i produksjonskjøring. Disse er stabile nok til å ta i bruk i vanlig drift.
 
