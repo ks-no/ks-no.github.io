@@ -1,10 +1,10 @@
 ---
-title: SSB barnevern kostra rapportering
+title: Barnevern - fagsysteminnrapportering til Barnevernsregisteret
 date: 2023-03-21
 aliases: []
 ---
 
-SSB barnevern kostra rapportering  er en asynkron protokoll over Fiks IO.
+Barnevern - fagsysteminnrapportering til Barnevernsregisteret er en asynkron protokoll over Fiks IO.
 
 
 ## Meldinger
