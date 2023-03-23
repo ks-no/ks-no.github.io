@@ -34,13 +34,13 @@ hidden: true
    Gi skriftlig beskjed til KS når alt er OK, slik at saken kan avsluttes.
 ## Azure AD
 **Konfigurere SSO med SAML for KS læring**
-Se brukerveildeningen i pdf-format her: https://portal.fiks.ks.no/wp-content/uploads/2022/06/SSO-med-fodselsnummer-220622.pdf
+Se brukerveildeningen i pdf-format her: https://portal.fiks.ks.no/wp-content/uploads/2023/03/SSO_med_fnr.pdf
 * Identifier (Entity ID): https://www.kslaring.no/auth/saml2/sp/metadata.php
 * Reply URL (Assertion Consumer Service URL): https://www.kslaring.no/auth/saml2/sp/saml2-acs.php/www.kslaring.no
 * Logout Url: https://www.kslaring.no/auth/saml2/sp/saml2-logout.php/www.kslaring.no
 ## Innlogging uten fødselsnummer (valgfri identifikator)
 Identifikator blir fortrinnsvis bygget opp slik: "id"@"fiksorgiden".
-Se brukerveildeningen i pdf-format her: https://portal.fiks.ks.no/wp-content/uploads/2022/06/SSO-uten-fodselsnummer-220622.pdf
+Se brukerveildeningen i pdf-format her: https://portal.fiks.ks.no/wp-content/uploads/2023/03/SSO_uten_fnr.pdf
 Når en ikke bruker fødselsnummer som id på brukeren, vil innlogginger med idporten resultere i en annen bruker.
 Hvis du logger inn med idporten vil du få en bruker som er identifisert med fødselsnummer, hvis du bruker SSO vil du få en bruker som har id <id>@<fiksordid>.
 Disse 2 brukerene vil være helt forskjellige brukere og ikke dele hvilken kurs som er tatt.
