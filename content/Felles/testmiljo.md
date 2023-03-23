@@ -44,6 +44,6 @@ Tenor testdata for f.eks folkeregisteret: https://www.skatteetaten.no/skjema/tes
 Alle testbrukere dere får fra oss har "Min Id"-innlogging i ID-Porten. Her anbefaler vi at dere setter telefonnummer og e-post slik at brukeren kan låses opp om noen skulle sperre den med feilede innloggingsforsøk.
 
 ## Integrasjoninnlogging
-For å kunne teste integrasjoner mot Fiks-plattformen i test må organisasjonen ha en ID-porten-konto. For å få dette må en henvende seg til idporten@difi.no og sende med orgnr i fra testvirksomhetssertifikat.
+For å kunne teste integrasjoner mot Fiks-plattformen sitt testmiljø må organisasjonen ha tilgang til Maskinporten. For å få dette må en henvende seg til servicedesk@digdir.no og sende med orgnr i fra testvirksomhetssertifikat.
 
-Etter at konto er registrert hos ID-porten kan integrasjonen opprettes og autoriseres i Fiks-konfigurasjon.
+For at Maskinportklienten skal kunne kommunisere med Fiks sitt testmiljø må den opprettes i Maskinporten Ver2 og ha lagt til ks:fiks-scopet. Om dette scopet mangler fra listen kan dere oppgi deres orgnr til fiks@ks.no.
