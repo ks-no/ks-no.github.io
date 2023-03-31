@@ -6,7 +6,7 @@ hidden: true
 ---
 ## Single sign On (SSO)
 1. Bestilling
-   Kommune / IKT samarbeidet sender bestilling med meta-datalenke. Gjerne i forbindelse med sak som er opprettet under bestilling av HR API.
+   Kommune / IKT samarbeidet sender bestilling med meta-datalenke til fiks@ks.no 
 2. Grunnoppsett
    Sertifikater
    Manuelt importere rot-sertifikatet til KS fra lenke https://www.commfides.com/wp-content/uploads/2017/09/cpnrootcasha256class3.zip. Rot-sertifikatet skal installeres i mappen Trusted Root Certificates Authorities, Microsoft AD FS kan komme til å foreslå Intermediate Certification Authorities.
