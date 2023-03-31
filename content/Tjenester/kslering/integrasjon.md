@@ -8,8 +8,7 @@ hidden: true
 
 ## Prosedyre for KS Læring HR API
 
-1. Kommunens representant sender inn en bestilling via bestillingsskjemaet
-https://skjema.kf.no/FormsEngine/?wizardId=5497&externalid=ks
+1. Kommunens representant sender inn en en henvendelse til fiks@ks.no og informerer om at kommunen ønsker å begynne å bruke HR API
 Med bakgrunn i dette skjemaet, opprettes en sak hos KS. All skriftlig kommunikasjon går via den saken.
 
 2. Teknisk dokumentasjon til kommune og utvikler
