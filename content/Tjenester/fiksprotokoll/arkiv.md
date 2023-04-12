@@ -9,7 +9,7 @@ alias: ["/fiks-plattform/tjenester/fiksprotokoll/arkiv"]
 ## Kort beskrivelse
 
 Fiks Arkiv tjenesten er en asynkron protokoll over Fiks IO eller andre transportmekanismer for å søke, arkivere og hente data fra et arkiv. Fiks Protokoll benyttes for meldingstype definisjon på konto.
-For brukerhistorier fra arbeidet som ble gjort ved kartleggingen av protokollen, les mer i wiki på github repoet [fiks-arkiv](https://github.com/ks-no/fiks-arkiv/wiki).
+For brukerhistorier fra arbeidet som ble gjort ved kartleggingen av protokollen, les mer i [wiki](https://github.com/ks-no/fiks-arkiv-specification/wiki) og [dokumentasjon](https://github.com/ks-no/fiks-arkiv-specification/tree/main/Dokumentasjon/V1) i github repoet [fiks-arkiv-specification](https://github.com/ks-no/fiks-arkiv-specification/)
 
 ## Tilgjengelige grensesnitt
 | Grensesnitt | Støtte |
@@ -170,26 +170,36 @@ Dette vil Fiks-IO klienten fra KS gjøre for deg hvis man bruker `.Svar()` funks
 
 **Meldingstyper:**
 
-| Type                     | Navn                                                             |
-|--------------------------|------------------------------------------------------------------|
-| Arkiver melding          | `no.ks.fiks.arkiv.v1.arkivering.arkivmelding.opprett`            |
-| Mottatt melding          | `no.ks.fiks.arkiv.v1.arkivering.arkivmelding.opprett.mottatt`    |
-| Kvittering på arkivering | `no.ks.fiks.arkiv.v1.arkivering.arkivmelding.opprett.kvittering` |
+| Type                                  | Navn                                                               |
+|---------------------------------------|--------------------------------------------------------------------|
+| Arkiver arkivmelding melding          | `no.ks.fiks.arkiv.v1.arkivering.arkivmelding.opprett`              |
+| Mottatt arkivmelding melding          | `no.ks.fiks.arkiv.v1.arkivering.arkivmelding.opprett.mottatt`      |
+| Kvittering på arkivmelding            | `no.ks.fiks.arkiv.v1.arkivering.arkivmelding.opprett.kvittering`   |
+| Arkiver dokumentobjekt melding        | `no.ks.fiks.arkiv.v1.arkivering.dokumentobjekt.opprett`            |
+| Mottat arkiver dokumentobjekt melding | `no.ks.fiks.arkiv.v1.arkivering.dokumentobjekt.opprett.mottatt`    |
+| Kvittering på dokumentobjekt          | `no.ks.fiks.arkiv.v1.arkivering.dokumentobjekt.opprett.kvittering` |
 
 For å arkivere data må en bruke meldingsformatet `arkivmelding.xml`. Se xsd schema [**no.ks.fiks.arkiv.v1.arkivering.arkivmelding.opprett.xsd**](https://github.com/ks-no/fiks-arkiv-specification/blob/main/Schema/V1/no.ks.fiks.arkiv.v1.arkivering.arkivmelding.opprett.xsd) for definsjon av meldingsformatet.
 
+Det er en egen meldingstype for å arkivere nytt dokumentobjekt, `no.ks.fiks.arkiv.v1.arkivering.dokumentobjekt.opprett`,  som også bruker filnavnet `arkivmelding.xml`. Se xsd schema [**no.ks.fiks.arkiv.v1.arkivering.dokumentobjekt.opprett.xsd**](https://github.com/ks-no/fiks-arkiv-specification/blob/main/Schema/V1/no.ks.fiks.arkiv.v1.arkivering.dokumentobjekt.opprett.xsd) for definsjon av meldingsformatet.
+
 ### Begrensninger og regler for arkivering
 
+- Det skal sendes en melding pr mappe eller journalpost som skal arkiveres. Det vil si at arkivmelding ikke støtter å sende inn arkivmelding med f.eks. en ny saksmappe med tilhørende 1000 journalposter i en og samme melding. 
 - Arkivmelding støtter ikke å registrere flere mapper i et hierarki, altså mapper i mapper, i en enkelt arkivmelding. Registrering av ny undermappe må da registreres hver for seg. Mapper kan altså bare referere til eksisterende mappe, som må da ha vært opprettet tidligere.
 - En foreldermappe kan ikke inneholde registreringer. Altså en mappe som inneholder andre mapper skal bare inneholde mapper.
 
 
-### Mottatt og kvittering
+### Mottatt og kvittering 
 
+#### Arkiver arkivmelding 
 Hvis meldingen er gyldig som arkivmelding skal man så sende melding tilbake av typen `no.ks.fiks.arkiv.v1.arkivering.arkivmelding.opprett.mottatt`.
-Når arkivering er arkivert til arkivet skal det komme en **arkivmelding** tilbake i meldingsformatet `arkivmelding-kvittering.xml` av typen `no.ks.fiks.arkiv.v1.arkivering.arkivmelding.opprett.kvittering`. Se [**no.ks.fiks.arkiv.v1.arkivering.arkivmelding.opprett.kvittering.xsd**](https://github.com/ks-no/fiks-arkiv-specification/blob/main/Schema/V1/no.ks.fiks.arkiv.v1.arkivering.arkivmelding.opprett.kvittering.xsd) for definisjon av meldingsformatet på kvitteringsmelding.
+Når arkivmelding er arkivert til arkivet skal det komme en melding tilbake i meldingsformatet `arkivmelding-kvittering.xml` av typen `no.ks.fiks.arkiv.v1.arkivering.arkivmelding.opprett.kvittering`. Se [**no.ks.fiks.arkiv.v1.arkivering.arkivmelding.opprett.kvittering.xsd**](https://github.com/ks-no/fiks-arkiv-specification/blob/main/Schema/V1/no.ks.fiks.arkiv.v1.arkivering.arkivmelding.opprett.kvittering.xsd) for definisjon av meldingsformatet på kvitteringsmelding.
 
-![arkivmelding_med_kvittering_ok](/images/arkivmelding_med_kvittering_ok.png "Arkivmelding med kvittering")
+#### Arkiver dokumentobjekt
+Hvis meldingen er gyldig som dokumentobjekt skal man så sende melding tilbake av typen `no.ks.fiks.arkiv.v1.arkivering.dokumentobjekt.opprett.mottatt`.
+Når dokumentobjekt er arkivert til arkivet skal det komme en melding tilbake i meldingsformatet `arkivmelding-kvittering.xml` av typen `no.ks.fiks.arkiv.v1.arkivering.dokumentobjekt.opprett.kvittering`. Se [**no.ks.fiks.arkiv.v1.arkivering.dokumentobjekt.opprett.kvittering.xsd**](https://github.com/ks-no/fiks-arkiv-specification/blob/main/Schema/V1/no.ks.fiks.arkiv.v1.arkivering.dokumentobjekt.opprett.kvittering.xsd) for definisjon av meldingsformatet på kvitteringsmelding.
+
 
 ### Feilmeldinger for arkivmelding
 Hvis arkivmeldingen ikke er gyldig, f.eks at den ikke validerer i henhold til schema, så sender man en `no.ks.fiks.arkiv.v1.feilmelding.ugyldigforespoersel` melding tilbake. Ved interne feil som gjør at man ikke får håndtert meldingen sendes `no.ks.fiks.arkiv.v1.feilmelding.serverfeil` tilbake.
@@ -312,7 +322,6 @@ Altså vil de ha en *no.ks.fiks.arkiv.v1.feilmelding* prefix for denne protokoll
 ### Ugyldig forespørsel
 
 Hvis noe er galt med forespørselen, altså den er ugyldig, så skal mottaker sende en `no.ks.fiks.arkiv.v1.feilmelding.ugyldigforespoersel` tilbake til sender. Xsd [schema](https://github.com/ks-no/fiks-arkiv-specification/blob/main/Schema/V1/no.ks.fiks.arkiv.v1.feilmelding.ugyldigforespoersel.xsd) følger med i Fiks-Arkiv models nuget pakken.
-![arkivmelding_med_ugyldigforesporsel](/images/arkivmelding_med_ugyldigforesporsel.png "Arkivmelding med ugyldig forespørsel")
 
 ### Serverfeil
 
