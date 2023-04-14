@@ -11,7 +11,7 @@ Fiks skatte- og inntektsopplysninger tilbyr kommunalt ansatte et grensesnitt for
 | Grensesnitt | Støtte |
 |------|------|
 | Web portal | Ja |
-| Maskin til maskin | [Api spec]](https://editor.swagger.io/?url=https://developers.fiks.ks.no/api/ |
+| Maskin til maskin | [Api spec]](https://editor.swagger.io/?url=https://developers.fiks.ks.no/api/register-summert-skattegrunnlag-api-v2.json) |
 
 
 ## Beskrivelse av tjenesten
