@@ -107,6 +107,93 @@
           }
         }
       }
+    },
+    "/register/api/v2/ks/{rolleId}/summertskattegrunnlag/verdier/{egenandelsberegning}/{inntektsaar}" : {
+      "get" : {
+        "tags" : [ "Summert skattegrunnlag" ],
+        "description" : "Henter gyldige verdier for angitt egenandelsberegning",
+        "operationId" : "summertskattegrunnlagVerdierEgenandelsberegning",
+        "parameters" : [
+          {
+            "name" : "rolleId",
+            "in" : "path",
+            "required" : true,
+            "schema" : {
+              "type" : "string",
+              "format" : "uuid"
+            }
+          },
+          {
+            "name" : "egenandelsberegning",
+            "in" : "path",
+            "required" : true,
+            "schema" : {
+              "$ref" : "#/components/schemas/EgenandelsberegningDefinisjon"
+            }
+          },
+          {
+            "name" : "inntektsaar",
+            "in" : "path",
+            "required" : true,
+            "schema" : {
+              "type" : "integer",
+              "format" : "int32"
+            }
+          }
+        ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/SummertSkattegrunnlagVerdierDefinisjon"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Feil input",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Ikke tilgang",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Ikke tilgang",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Ingen treff",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components" : {
@@ -203,6 +290,23 @@
           }
         }
       },
+      "SummertSkattegrunnlagVerdierDefinisjon": {
+        "type" : "object",
+        "properties" : {
+          "navVerdier" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/EkstraPostVerdiDefinisjon"
+            }
+          },
+          "kommuneVerdier" : {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/EkstraPostVerdiDefinisjon"
+            }
+          }
+        }
+      },
       "GruppeDefinisjon": {
         "required" : [ "navn", "beskrivelse", "beloep", "operasjon" ],
         "type" : "object",
@@ -244,15 +348,14 @@
             "format" : "int32"
           },
           "egenandelsberegning" : {
-            "type" : "string",
-            "enum" : [ "PERSONLIG_ASSISTANSE", "OPPHOLD_INSTITUSJON", "BARNEHAGE_SFO", "BOLIGSOSIALE_FORMAAL" ]
+            "$ref" : "#/components/schemas/EgenandelsberegningDefinisjon"
           }
         }
       },
       "HusstandsmedlemDefinisjon": {
         "required" : [ "personidentifikator", "personType" ],
         "type" : "object",
-        "properties": {
+        "properties" : {
           "personidentifikator": {
             "description" : "Fødsels- eller D-nummer.",
             "type" : "string",
@@ -261,11 +364,29 @@
           "personType": {
             "$ref" : "#/components/schemas/PersonTypeDefinisjon"
           },
-          "ekstraPoster": {
-            "type": "array",
+          "navPoster" : {
+            "type" : "array",
             "items" : {
-              "$ref" : "#/components/schemas/PostDefinisjon"
+              "$ref" : "#/components/schemas/NavPostDefinisjon"
             }
+          },
+          "kommunePoster" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/KommunePostDefinisjon"
+            }
+          }
+        }
+      },
+      "EkstraPostVerdiDefinisjon": {
+        "required": [ "visningsnavn", "tekniskNavn" ],
+        "type": "object",
+        "properties": {
+          "visningsnavn": {
+            "type" : "string"
+          },
+          "tekniskNavn" : {
+            "type": "string"
           }
         }
       },
@@ -274,6 +395,26 @@
         "enum" : [ "SOEKER", "EKTEFELLE", "PARTNER", "SAMBOER", "BARN", "SOESKEN", "MOR", "FAR", "MEDMOR", "ANNET" ]
       },
       "PostDefinisjon": {
+        "required": [ "tekniskNavn", "visningsnavn", "beloep", "postType"],
+        "type": "object",
+        "properties": {
+          "tekniskNavn" : {
+            "type": "string"
+          },
+          "visningsnavn" : {
+            "type": "string"
+          },
+          "beloep" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "postType": {
+            "type" : "string",
+            "enum" : [ "SKATTEETATEN", "NAV", "KOMMUNE" ]
+          }
+        }
+      },
+      "NavPostDefinisjon": {
         "required": [ "tekniskNavn", "visningsnavn", "beloep"],
         "type": "object",
         "properties": {
@@ -289,9 +430,26 @@
           }
         }
       },
+      "KommunePostDefinisjon": {
+        "required": [ "visningsnavn", "beloep"],
+        "type": "object",
+        "properties": {
+          "visningsnavn" : {
+            "type": "string"
+          },
+          "beloep" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        }
+      },
       "OperasjonDefinisjon": {
         "type": "string",
         "enum": [ "ADDERE", "SUBTRAHERE", "INGEN"]
+      },
+      "EgenandelsberegningDefinisjon": {
+        "type" : "string",
+        "enum" : [ "PERSONLIG_ASSISTANSE", "OPPHOLD_INSTITUSJON", "BARNEHAGE_SFO", "BOLIGSOSIALE_FORMAAL" ]
       }
     }
   }
