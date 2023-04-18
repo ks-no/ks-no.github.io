@@ -33,6 +33,19 @@ ___For å bruke API-ene, både proxy og vårt overbygg, må rollen som opprettes
 
 APIene er tilgjengelig via Fiks-plattformen som proxy-tjeneste eller via vårt overbygg. ___Hendelseslister er ikke tilgjengelig via vår løsning pr nå og må hentes fra skatteetatens eget API.___
 
+### Oppslag via overbygg
+Vi har laget vårt eget overbygg som gir mulighet for å søke på flere personer. Vi søker først om personene har stadie ___OPPGJØR___, dersom de ikke har det søkes det etter ___UTKAST___. Datamodellen er en sammenstilling av det som kommer fra skatteetaten sine APIer og har summert alle poster som hører sammen.
+
+URL for fiks-api (POST): ```<MILJØ_URL>/register/api/v2/ks/{ROLLE_ID}/summertskattegrunnlag``` [Payload, se swagger dokumentasjon](https://editor.swagger.io/?url=https://developers.fiks.ks.no/api/register-api-v2.json) 
+
+#### API-dokumentasjon
+[Swagger dokumentasjon for overbygg finner du her.](https://editor.swagger.io/?url=https://developers.fiks.ks.no/api/register-api-v2.json) Bruk også dokumentasjon fra Skatteetaten.
+
+#### Eksempel med bruk av API-overbygg
+
+```json
+---
+```
 ### Oppslag via proxy
 Det er mulig å bruke Skatteetatens delingstjeneste for skatte og inntektsopplysninger som en proxy-tjeneste i Fiks register og samtidig benytte seg av roller, rettighetsstyring og dataminimering som Fiks register tilbyr. Oppbygging av URL gjøres så likt som mulig Skatteetatens egen URL. Datamodellen forblir uendret.
 
@@ -72,63 +85,4 @@ Skatteetaten har lagt ut dokumentasjon her [Summert skattegrunnlag](https://skat
 }
 ```
 
-### Oppslag via overbygg
-Vi har laget vårt eget overbygg som gir mulighet for å søke på flere personer. Vi søker først om personene har stadie ___OPPGJØR___, dersom de ikke har det søkes det etter ___UTKAST___. Datamodellen inkluderer de samme informasjonelementene (datamodell) som via proxy, i tillegg inkluderer vi visningstekst til hvert teknisk navn, samt henter navn på personene det søkes om, summerer både totalsummer og på poster for inntekt og utgifter.
 
-URL for fiks-api (POST):
-```<MILJØ_URL>/register/api/v1/{ROLLE_ID}/summertskattegrunnlag``` Payload ```{"personidentifikatorer":["{PERSONIDENTIFIKATOR}"],"inntektsaar":"{INNTEKTSAAR}"}```
-
-#### API-dokumentasjon
-[Swagger dokumentasjon for overbygg finner du her.](https://editor.swagger.io/?url=https://developers.fiks.ks.no/api/register-api-v1.json) Bruk også dokumentasjon fra Skatteetaten.
-
-#### Eksempel med bruk av API-overbygg
-
-```json
-{
-  "totaltSummertGrunnlag": 1200142,
-  "tidspunkt": "2022-12-02T08:06:14.799283611Z",
-  "inntektsaar": 2021,
-  "stadie": "OPPGJOER",
-  "summertSkattegrunnlagPersoner": [
-    {
-      "personidentifikator": "03870349520",
-      "personnavn": {
-        "etternavn": "EKSAMEN",
-        "fornavn": "VISSEN",
-        "mellomnavn": null
-      },
-      "inntektsaar": 2021,
-      "skjermet": false,
-      "grunnlag": [
-        {
-          "tekniskNavn": "samledeOpptjenteRenterIInnenlandskeBanker",
-          "beloep": 19015,
-          "kategori": ["inntekt"],
-          "visningstekst": "Renter av bankinnskudd"
-        },
-        {
-          "tekniskNavn": "samletPensjonFraFolketrygden",
-          "beloep": 894828,
-          "kategori": ["inntekt"],
-          "visningstekst": "Alderspensjon fra folketrygden"
-        },
-        {
-          "tekniskNavn": "samletAvkastningAvKapitalforsikringsavtale",
-          "beloep": 286299,
-          "kategori": ["inntekt"],
-          "visningstekst": "Avkastning/gevinst av kapitalforsikring"
-        }
-      ],
-      "summertGrunnlag": 1200142,
-      "skatteoppgjoersdato": "2022-02-10",
-      "svalbardGrunnlag": [],
-      "summertSvalbardGrunnlag": 0,
-      "kildeskattPaaLoennGrunnlag": [],
-      "summertKildeskattPaaLoennGrunnlag": 0,
-      "stadie": "OPPGJOER",
-      "registreringstidpunkt": "2022-02-10T15:17:37Z",
-      "totaltSummertGrunnlagPerson": 1200142
-    }
-  ]
-}
-```
