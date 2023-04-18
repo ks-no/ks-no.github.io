@@ -91,7 +91,6 @@ Payload:
 ```
 
 ### Tilganger
-Merk: Tilgangsstyringen er ikke implementert i Fiks IO ennå i Test, så reglene beskrevet under blir per nå ikke håndhevet. Men det vil komme før løsninger går ut i produksjon
 
 #### Gi tilgang til system
 Tilganger tildeles Protokoll system fra konto. Konto kan gi annet system tilgang til å sende meldinger til konto en oppretter tilgang fra. 
