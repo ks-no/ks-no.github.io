@@ -50,14 +50,14 @@ Payload
 	"soekere": [{
 		"personidentifikator": "25851449852",
 		"personType": "SOEKER",
-		"ekstraPoster": [{
+		"navPoster": [{
 			"tekniskNavn": "nav.omsorgsloennEtterHelseOgOmsorgstjenesteloven",
 			"beloep": "1"
 		}, {
 			"tekniskNavn": "nav.hjelpestoenadFraFolketrygden",
 			"beloep": "2"
-		}, {
-			"tekniskNavn": "kommune.skjoennsmessigeFradrag",
+		}],
+		"kommunePoster": [{
 			"visningsnavn": "Fradrag 1",
 			"beloep": "3"
 		}]
