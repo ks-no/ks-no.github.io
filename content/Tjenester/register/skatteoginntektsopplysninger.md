@@ -42,10 +42,275 @@ URL for fiks-api (POST): ```<MILJØ_URL>/register/api/v2/ks/{ROLLE_ID}/summertsk
 [Swagger dokumentasjon for overbygg finner du her.](https://editor.swagger.io/?url=https://developers.fiks.ks.no/api/register-api-v2.json) Bruk også dokumentasjon fra Skatteetaten.
 
 #### Eksempel med bruk av API-overbygg
-
+Payload
 ```json
----
+{
+	"inntektsaar": "2021",
+	"egenandelsberegning": "PRAKTISK_BISTAND",
+	"soekere": [{
+		"personidentifikator": "25851449852",
+		"personType": "SOEKER",
+		"ekstraPoster": [{
+			"tekniskNavn": "nav.omsorgsloennEtterHelseOgOmsorgstjenesteloven",
+			"beloep": "1"
+		}, {
+			"tekniskNavn": "nav.hjelpestoenadFraFolketrygden",
+			"beloep": "2"
+		}, {
+			"tekniskNavn": "kommune.skjoennsmessigeFradrag",
+			"visningsnavn": "Fradrag 1",
+			"beloep": "3"
+		}]
+	}, {
+		"personidentifikator": "06882949409",
+		"personType": "EKTEFELLE"
+	}]
+}
 ```
+Svar
+```json
+{
+	"inntektsaar": 2021,
+	"stadie": "OPPGJOER",
+	"summertSkattegrunnlagPersoner": [{
+		"personidentifikator": "25851449852",
+		"skjermet": false,
+		"stadie": "OPPGJOER",
+		"beloep": 95427,
+		"grunnlag": [{
+			"navn": "1",
+			"beskrivelse": "Alminnelig inntekt før særfradrag",
+			"beloep": 6700,
+			"operasjon": "ADDERE",
+			"poster": [{
+				"tekniskNavn": "alminneligInntektFoerSaerfradrag",
+				"visningsnavn": "Alminnelig inntekt før særfradrag",
+				"beloep": 6700
+			}]
+		}, {
+			"navn": "3",
+			"beskrivelse": "Summerte poster oppjustert av gevinst",
+			"beloep": 39199,
+			"operasjon": "SUBTRAHERE",
+			"poster": [{
+				"tekniskNavn": "oppjustertTilleggTilGevinstVedRealisasjonAvAksje",
+				"visningsnavn": "Oppjustering av gevinst ved salg av aksjer",
+				"beloep": 39199
+			}]
+		}, {
+			"navn": "5",
+			"beskrivelse": "Summerte poster oppjustering av tap",
+			"beloep": 39090,
+			"operasjon": "ADDERE",
+			"poster": [{
+				"tekniskNavn": "oppjustertTilleggTilTapVedRealisasjonAvAksje",
+				"visningsnavn": "Oppjustering av tap ved salg av aksjer",
+				"beloep": 39090
+			}]
+		}, {
+			"navn": "4",
+			"beskrivelse": "Summerte poster tap",
+			"beloep": 88840,
+			"operasjon": "ADDERE",
+			"poster": [{
+				"tekniskNavn": "tapVedRealisasjonAvAksje",
+				"visningsnavn": "Tap ved salg av aksjer",
+				"beloep": 88840
+			}]
+		}, {
+			"navn": "NAV.OMSORGSLOENNETTERHELSEOGOMSORGSTJENESTELOVEN",
+			"beskrivelse": "Omsorgslønn etter helse- og omsorgstjenesteloven § 3-6",
+			"beloep": 1,
+			"operasjon": "ADDERE",
+			"poster": [{
+				"tekniskNavn": "nav.omsorgsloennEtterHelseOgOmsorgstjenesteloven",
+				"visningsnavn": "",
+				"beloep": 1
+			}]
+		}, {
+			"navn": "NAV.HJELPESTOENADFRAFOLKETRYGDEN",
+			"beskrivelse": "Hjelpestønad fra Folketrygden",
+			"beloep": 2,
+			"operasjon": "SUBTRAHERE",
+			"poster": [{
+				"tekniskNavn": "nav.hjelpestoenadFraFolketrygden",
+				"visningsnavn": "",
+				"beloep": 2
+			}]
+		}, {
+			"navn": "KOMMUNE.SKJOENNSMESSIGEFRADRAG",
+			"beskrivelse": "Skjønnsmessig fradrag",
+			"beloep": 3,
+			"operasjon": "SUBTRAHERE",
+			"poster": [{
+				"tekniskNavn": "kommune.skjoennsmessigeFradrag",
+				"visningsnavn": "Fradrag 1",
+				"beloep": 3
+			}]
+		}],
+		"personnavn": {
+			"etternavn": "APPELSIN",
+			"fornavn": "GLAD",
+			"mellomnavn": null
+		},
+		"skatteoppgjoersdato": "2022-02-10",
+		"registreringstidpunkt": "2022-02-10T15:32:55Z",
+		"skattFeilmelding": null
+	}, {
+		"personidentifikator": "06882949409",
+		"skjermet": false,
+		"stadie": "OPPGJOER",
+		"beloep": 6381000,
+		"grunnlag": [{
+			"navn": "1",
+			"beskrivelse": "Alminnelig inntekt før særfradrag",
+			"beloep": 6801000,
+			"operasjon": "ADDERE",
+			"poster": [{
+				"tekniskNavn": "alminneligInntektFoerSaerfradrag",
+				"visningsnavn": "Alminnelig inntekt før særfradrag",
+				"beloep": 6801000
+			}]
+		}, {
+			"navn": "7",
+			"beskrivelse": "Summerte poster oppjustering av utbytte",
+			"beloep": 132000,
+			"operasjon": "SUBTRAHERE",
+			"poster": [{
+				"tekniskNavn": "oppjustertTilleggTilAndelIFellesTilleggIAlminneligInntektFraSDFInnenAnnenNaering",
+				"visningsnavn": "Oppjustering av tillegg i alminnelig inntekt fra selskap med deltakerfastsetting",
+				"beloep": 132000
+			}]
+		}, {
+			"navn": "2",
+			"beskrivelse": "Summerte gevinstposter",
+			"beloep": 200000,
+			"operasjon": "SUBTRAHERE",
+			"poster": [{
+				"tekniskNavn": "gevinstVedSalgAvAndelISDF",
+				"visningsnavn": "Gevinst ved salg mv. av andel i selskap med deltakerfastsetting",
+				"beloep": 200000
+			}]
+		}, {
+			"navn": "3",
+			"beskrivelse": "Summerte poster oppjustert av gevinst",
+			"beloep": 88000,
+			"operasjon": "SUBTRAHERE",
+			"poster": [{
+				"tekniskNavn": "oppjustertTilleggTilGevinstVedSalgAvAndelISDF",
+				"visningsnavn": "Oppjustering av gevinst ved salg mv. av andel i selskap med deltakerfastsetting",
+				"beloep": 88000
+			}]
+		}],
+		"personnavn": {
+			"etternavn": "VEVSTOL",
+			"fornavn": "KONSERVATIV",
+			"mellomnavn": null
+		},
+		"skatteoppgjoersdato": "2022-09-26",
+		"registreringstidpunkt": "2022-09-26T12:21:31Z",
+		"skattFeilmelding": null
+	}],
+	"samletBeloep": 6476427,
+	"samletGrunnlag": [{
+		"navn": "2",
+		"beskrivelse": "Summerte gevinstposter",
+		"beloep": 200000,
+		"operasjon": "SUBTRAHERE",
+		"poster": [{
+			"tekniskNavn": "gevinstVedSalgAvAndelISDF",
+			"visningsnavn": "Gevinst ved salg mv. av andel i selskap med deltakerfastsetting",
+			"beloep": 200000
+		}]
+	}, {
+		"navn": "KOMMUNE.SKJOENNSMESSIGEFRADRAG",
+		"beskrivelse": "Skjønnsmessig fradrag",
+		"beloep": 3,
+		"operasjon": "SUBTRAHERE",
+		"poster": [{
+			"tekniskNavn": "kommune.skjoennsmessigeFradrag",
+			"visningsnavn": "Fradrag 1",
+			"beloep": 3
+		}]
+	}, {
+		"navn": "3",
+		"beskrivelse": "Summerte poster oppjustert av gevinst",
+		"beloep": 127199,
+		"operasjon": "SUBTRAHERE",
+		"poster": [{
+			"tekniskNavn": "oppjustertTilleggTilGevinstVedSalgAvAndelISDF",
+			"visningsnavn": "Oppjustering av gevinst ved salg mv. av andel i selskap med deltakerfastsetting",
+			"beloep": 88000
+		}, {
+			"tekniskNavn": "oppjustertTilleggTilGevinstVedRealisasjonAvAksje",
+			"visningsnavn": "Oppjustering av gevinst ved salg av aksjer",
+			"beloep": 39199
+		}]
+	}, {
+		"navn": "NAV.HJELPESTOENADFRAFOLKETRYGDEN",
+		"beskrivelse": "Hjelpestønad fra Folketrygden",
+		"beloep": 2,
+		"operasjon": "SUBTRAHERE",
+		"poster": [{
+			"tekniskNavn": "nav.hjelpestoenadFraFolketrygden",
+			"visningsnavn": "",
+			"beloep": 2
+		}]
+	}, {
+		"navn": "5",
+		"beskrivelse": "Summerte poster oppjustering av tap",
+		"beloep": 39090,
+		"operasjon": "ADDERE",
+		"poster": [{
+			"tekniskNavn": "oppjustertTilleggTilTapVedRealisasjonAvAksje",
+			"visningsnavn": "Oppjustering av tap ved salg av aksjer",
+			"beloep": 39090
+		}]
+	}, {
+		"navn": "1",
+		"beskrivelse": "Alminnelig inntekt før særfradrag",
+		"beloep": 6807700,
+		"operasjon": "ADDERE",
+		"poster": [{
+			"tekniskNavn": "alminneligInntektFoerSaerfradrag",
+			"visningsnavn": "Alminnelig inntekt før særfradrag",
+			"beloep": 6807700
+		}]
+	}, {
+		"navn": "4",
+		"beskrivelse": "Summerte poster tap",
+		"beloep": 88840,
+		"operasjon": "ADDERE",
+		"poster": [{
+			"tekniskNavn": "tapVedRealisasjonAvAksje",
+			"visningsnavn": "Tap ved salg av aksjer",
+			"beloep": 88840
+		}]
+	}, {
+		"navn": "NAV.OMSORGSLOENNETTERHELSEOGOMSORGSTJENESTELOVEN",
+		"beskrivelse": "Omsorgslønn etter helse- og omsorgstjenesteloven § 3-6",
+		"beloep": 1,
+		"operasjon": "ADDERE",
+		"poster": [{
+			"tekniskNavn": "nav.omsorgsloennEtterHelseOgOmsorgstjenesteloven",
+			"visningsnavn": "",
+			"beloep": 1
+		}]
+	}, {
+		"navn": "7",
+		"beskrivelse": "Summerte poster oppjustering av utbytte",
+		"beloep": 132000,
+		"operasjon": "SUBTRAHERE",
+		"poster": [{
+			"tekniskNavn": "oppjustertTilleggTilAndelIFellesTilleggIAlminneligInntektFraSDFInnenAnnenNaering",
+			"visningsnavn": "Oppjustering av tillegg i alminnelig inntekt fra selskap med deltakerfastsetting",
+			"beloep": 132000
+		}]
+	}],
+	"soeketidspunkt": "2023-04-18T10:40:26.683377065Z"
+}
+```
+
 ### Oppslag via proxy
 Det er mulig å bruke Skatteetatens delingstjeneste for skatte og inntektsopplysninger som en proxy-tjeneste i Fiks register og samtidig benytte seg av roller, rettighetsstyring og dataminimering som Fiks register tilbyr. Oppbygging av URL gjøres så likt som mulig Skatteetatens egen URL. Datamodellen forblir uendret.
 
