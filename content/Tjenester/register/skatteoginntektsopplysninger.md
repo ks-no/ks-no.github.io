@@ -5,24 +5,24 @@ aliases: [/fiks-plattform/tjenester/fiksregister/skatteoginntektsopplysninger/, 
 ---
 
 ## Kort beskrivelse
-Fiks skatte- og inntektsopplysninger tilbyr kommunalt ansatte et grensesnitt for å kunne hente informasjon om skatte- og inntektsopplysninger om innbyggere som søker om kommunale tjenester.
+Fiks register tilbyr skatte- og inntektsopplysninger for kommunalt ansatte via et web-basert grensesnitt for innbyggere som søker om kommunale tjenester. Dette grensesnittet er også tilgjengelig som API for kommunene sine fagsystem. API-grensesnittet er ikke ferdig utviklet og endringer kan fortsatt forekomme.
 
 ## Tilgjengelige grensesnitt
-| Grensesnitt | Støtte |
-|------|------|
-| Web portal | Ja |
-| Maskin til maskin | [Api spec]](https://editor.swagger.io/?url=https://developers.fiks.ks.no/api/register-summert-skattegrunnlag-api-v2.json) |
+| Grensesnitt       | Støtte                                                                                                                      |
+| ----------------- | --------------------------------------------------------------------------------------------------------------------------- |
+| Web portal        | Ja                                                                                                                          |
+| Maskin til maskin | [Api spec v2](https://editor.swagger.io/?url=https://developers.fiks.ks.no/api/register-summert-skattegrunnlag-api-v2.json) |
 
 
 ## Beskrivelse av tjenesten
-| Innbyggertjeneste                         | Gyldige tjenesteområde for rollen | Rettighetspakke                   |
-| ----------------------------------------- | --------------------------------- | --------------------------------- |
-| Barnehage SFO - redusert foreldrebetaling | Foreldrebetaling SFO/barnehage    | kommuneforeldrebetaling           |
-| Kommunal bolig- og bostøtte               | N/A                               | kommuneboligsosialeformaal        |
-| Personlig assistanse / praktisk bistand   | N/A                               | kommunepersonligassistanse        |
-| Sykehjem langtidsopphold                  | N/A                               | kommuneLangtidsoppholdInstitusjon |
+| Innbyggertjeneste                         | Gyldige tjenesteområde for rollen | Beregningstype              |
+| ----------------------------------------- | --------------------------------- | --------------------------- |
+| Redusert foreldrebetaling SFO/barnehage   | Foreldrebetaling SFO/barnehage    | BARNEHAGE_SFO               |
+| Kommunal bolig- og bostøtte               | N/A                               | BOLIGSOSIALE_FORMAAL        |
+| Praktisk bistand og opplæring             | Helse og omsorg: Pratisk bistand  | PRAKTISK_BISTAND            |
+| Langtidsopphold institusjon               | N/A                               | LANGTIDSOPPHOLD_INSTITUSJON |
 
-___For å bruke API-ene, både proxy og vårt overbygg, må rollen som opprettes være i rett tjenesteområde. Pr i dag har vi kun støtte for redusert foreldrebetaling barnehage og SFO.___
+___For å bruke API-ene, både proxy og vårt overbygg, må rollen som opprettes være i rett tjenesteområde.___
 
 ### Miljø
 
@@ -31,7 +31,7 @@ ___For å bruke API-ene, både proxy og vårt overbygg, må rollen som opprettes
 | Test (Integrasjon) | http&#8203;s://api.fiks.test.ks.no |
 | Produksjon         | http&#8203;s://api.fiks.ks.no      |
 
-APIene er tilgjengelig via Fiks-plattformen som proxy-tjeneste eller via vårt overbygg. ___Hendelseslister er ikke tilgjengelig via vår løsning pr nå.___
+APIene er tilgjengelig via Fiks-plattformen som proxy-tjeneste eller via vårt overbygg. ___Hendelseslister er ikke tilgjengelig via vår løsning pr nå og må hentes fra skatteetatens eget API.___
 
 ### Oppslag via proxy
 Det er mulig å bruke Skatteetatens delingstjeneste for skatte og inntektsopplysninger som en proxy-tjeneste i Fiks register og samtidig benytte seg av roller, rettighetsstyring og dataminimering som Fiks register tilbyr. Oppbygging av URL gjøres så likt som mulig Skatteetatens egen URL. Datamodellen forblir uendret.
