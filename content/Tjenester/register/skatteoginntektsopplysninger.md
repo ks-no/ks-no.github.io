@@ -46,7 +46,7 @@ Payload
 ```json
 {
 	"inntektsaar": "2021",
-	"egenandelsberegning": "PRAKTISK_BISTAND",
+	"beregningstype": "PRAKTISK_BISTAND",
 	"soekere": [{
 		"personidentifikator": "25851449852",
 		"personType": "SOEKER",
