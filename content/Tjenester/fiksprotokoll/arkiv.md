@@ -291,15 +291,17 @@ Les mer om disse feilmeldingene lenger nede under [feilmeldingstyper](#Feilmeldi
 
 ### Meldingstyper:
 
-|   Type    | Navn                                                              |
-| ----------- |-------------------------------------------------------------------|
-| Arkivmelding oppdatering      | `no.ks.fiks.arkiv.v1.arkivering.arkivmelding.oppdater`            |
-| Mottatt melding      | `no.ks.fiks.arkiv.v1.arkivering.arkivmelding.oppdater.mottatt`    |
-| Arkivmelding oppdatering kvittering      | `no.ks.fiks.arkiv.v1.arkivering.arkivmelding.oppdater.kvittering` |
+| Type                                | Navn                                                              |
+|-------------------------------------|-------------------------------------------------------------------|
+| Arkivmelding oppdatering            | `no.ks.fiks.arkiv.v1.arkivering.arkivmelding.oppdater`            |
+| Mottatt melding                     | `no.ks.fiks.arkiv.v1.arkivering.arkivmelding.oppdater.mottatt`    |
+| Arkivmelding oppdatering kvittering | `no.ks.fiks.arkiv.v1.arkivering.arkivmelding.oppdater.kvittering` |
 
 ### Arkivmelding oppdatering:
 
 Meldingsformatet for arkivmelding oppdatering er definert i xsd schema [**no.ks.fiks.arkiv.v1.arkivering.arkivmelding.oppdater.xsd**](https://github.com/ks-no/fiks-arkiv-specification/blob/main/Schema/V1/no.ks.fiks.arkiv.v1.arkivering.arkivmelding.oppdater.xsd) og sendes som meldingstypen `no.ks.fiks.arkiv.v1.arkivering.arkivmelding.oppdater`.
+Når arkiv mottar en arkivmelding oppdatering så skal den først svare med mottatt melding `no.ks.fiks.arkiv.v1.arkivering.arkivmelding.oppdater.mottatt`. Når oppdatering er vellykket skal det sendes en tom kvitterings melding `no.ks.fiks.arkiv.v1.arkivering.arkivmelding.oppdater.kvittering` tilbake. 
+Den har altså ikke noen payload men det skal allikevel sendes en kvitteringsmelding tilbake for å gi beskjed om at oppdatering var vellykket.
 
 ### Feilmeldinger for oppdater meldinger
 Hvis oppdater meldingen ikke er gyldig, f.eks at den ikke validerer i henhold til schema, så sender man en no.ks.fiks.arkiv.v1.feilmelding.ugyldigforespoersel melding tilbake. Ved interne feil som gjør at man ikke får håndtert meldingen sendes no.ks.fiks.arkiv.v1.feilmelding.serverfeil tilbake og hvis det blir forsøkt å oppdatere noe som ikke eksisterer i arkivet leveres det tilbake en no.ks.fiks.arkiv.v1.feilmelding.ikkefunnet melding. Les mer om disse feilmeldingene lenger nede under [feilmeldingstyper](#Feilmeldingstyper)
