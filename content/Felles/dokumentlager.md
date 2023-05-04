@@ -183,14 +183,18 @@ Eksempel på request body:
 }
 ```
 
-Ved vellykket oppdatering returneres et JSON objekt med id og oppdatert data:
-
-```json
-{
-  "id": "bd393a3a-78f6-4902-af96-b604c24850a6",
-  "tilgjengeligTil": "2023-05-04T10:41:13.485+02:00"
-}
-```
+##### Responskoder
+- 200 OK - Dokumentet med spesifisert id oppdatert. Body inneholder id og oppdatert data:
+  ```json
+  {
+    "id": "bd393a3a-78f6-4902-af96-b604c24850a6",
+    "tilgjengeligTil": "2023-05-04T10:41:13.485+02:00"
+  }
+  ```
+- 400 Bad Request - Request er ikke i henhold til spesifikasjonen.
+- 403 Forbidden - Integrasjonen har ikke nødvendige tilganger til å slette dokumenter på spesifisert konto og organisasjon.
+- 404 Not Found - Fant ikke et dokument med oppgitt id, eller spesifisert konto og organisasjon.
+- 410 Gone - Dokumentet er allerede slettet, eller konto er slettet.
 
 #### Sletting
 
