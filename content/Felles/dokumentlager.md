@@ -85,15 +85,16 @@ URL for nedlasting ligger i Location-header på returnert 201 CREATED respons, e
 
 Metadata for dokumenter legges i multipart med navn ``metadata`` og defineres i JSON. 
 Content-Type må på multiparten må settes til application/json.
-Et eksempel er vist under:
+Et eksempel er vist under (ttl og tilgjengeligTil kan ikke settes samtidig):
 
 ```json
 {
   "dokumentnavn": "dokument.pdf",
   "mimetype": "application/pdf",
   "ttl": 86400,
+  "tilgjengeligTil": "2023-05-04T08:05:17+02:00",
   "sikkerhetsniva": 3,
-  "korrelasjonsid": "fa315d73-7ed0-4192-99d1-4049f47e2200"
+  "korrelasjonsid": "fa315d73-7ed0-4192-99d1-4049f47e2200",
   "eksponertFor": [
     { "type": "PERSON", "fnr": "12345679810" },
     { "type": "INTEGRASJON", "id": "249e3fde-e3d8-435e-835f-16a432598c10" },
@@ -105,7 +106,8 @@ Et eksempel er vist under:
 
 - Dokumentnavn - Dokumentets navn, ved nedlasting gjennom en browser vil dette bli satt som default navn på filen som lagres på disk
 - MIME type - Dokumenttype på gyldig MIME-format. Se https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/MIME_types
-- TTL - Hvor mange sekunder etter opplasting dokumentet skal være tilgjengelig. Ved utløp blir dokumentet utilgjengeliggjort og slettes.
+- TTL - Hvor mange sekunder etter opplasting dokumentet skal være tilgjengelig. Ved utløp blir dokumentet utilgjengeliggjort og slettes. En negativ verdi betyr at dokumentet aldri vil slettes. Kan ikke settes sammen med tilgjengeligTil, men en av disse må settes.
+- Tilgjengelig til - Tidspunkt for når dokumentet utløper og skal slettes på ISO 8601-format. Opplastingen vil bli avvist dersom tidspunktet er i fortiden. Kan ikke settes sammen med ttl, men en av disse må settes.
 - Sikkerhetsniva - Sikkerhetsnivå som skal kreves ved nedlasting av dokument. Ved nivå 4 kreves kryptering hos klient før opplasting.
 Se https://eid.difi.no/nb/sikkerhet-og-informasjonskapsler/ulike-sikkerhetsniva
 - Korrelasjonsid - Id som kan brukes til å indikere at flere dokumenter hører sammen. Feltet er ikke påkrevd.
@@ -163,6 +165,31 @@ curl -X POST https://api.fiks.test.ks.no/dokumentlager/api/v1/{fiksOrganisasjonI
 -H "IntegrasjonPassord: <integrasjonspassord>" \
 -F "metadata={\"dokumentnavn\":\"dokument.pdf\",\"mimetype\":\"application/pdf\",\"ttl\":3600,\"eksponertFor\":[{\"type\":\"PERSON\", \"fnr\":\"<fødselsnummer>\"}],\"sikkerhetsniva\":3};type=application/json" \
 -F "dokument=@dokument.pdf"
+```
+
+#### Oppdatering av metadata
+
+Oppdatering av metadata gjøres med en PATCH-request mot følgende URL:
+
+- Test: ``https://api.fiks.test.ks.no/dokumentlager/api/v1/{fiksOrganisasjonId}/kontoer/{kontoId}/dokumenter/{dokumentId}``
+- Prod: ``https://api.fiks.ks.no/dokumentlager/api/v1/{fiksOrganisasjonId}/kontoer/{kontoId}/dokumenter/{dokumentId}``
+
+Kun tilgjengeligTil kan oppdateres, enten via ttl, som oppgis i sekunder relativt til tid for oppdateringen, eller via tilgjengeligTil, som er et eksakt tidspunkt i fremtiden.
+Eksempel på request body:
+```json
+{
+  "ttl": 3600,
+  "tilgjengeligTil": "2023-05-04T10:42:40.943+02:00"
+}
+```
+
+Ved vellykket oppdatering returneres et JSON objekt med id og oppdatert data:
+
+```json
+{
+  "id": "bd393a3a-78f6-4902-af96-b604c24850a6",
+  "tilgjengeligTil": "2023-05-04T10:41:13.485+02:00"
+}
 ```
 
 #### Sletting
