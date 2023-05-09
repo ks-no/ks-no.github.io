@@ -85,7 +85,33 @@ En indekseringsoperasjon kan ha følgende utfall:
   - Hvis deserialisering var vellykket men en eller flere meldinger ikke validerte får man en meldinger som feilet, og en beskrivelse av hvorfor. Dette indikerer som oftest at et påkrevet feil mangeler, eller at det har en ugyldig verdi. Dette bør utbedres, eller meldingene med ugyldige verdier bør fjernes før man prøver igjen.
 * _5XX_. Indeksering av batchen feilet. Dette betyr som oftest at noe gikk galt på server-siden. Noen av meldingene i batchen kan likevel være indeksert. Man bør derfor forsøke å indeksere alle meldingene på nytt.
 
-Gjennomføring av batch-operasjoner skjer synkront fra ståstedet til en bruker av tjenesten: responsen blir ikke sendt før batchen er gjennomført. Dermed vil man kunne vite at en gruppe opprettet i batch 1 eksisterer når batch 2 gjennomføres, så lenge disse utføres sekvensielt. 
+Gjennomføring av batch-operasjoner skjer synkront fra ståstedet til en bruker av tjenesten: responsen blir ikke sendt før batchen er gjennomført. Dermed vil man kunne vite at en gruppe opprettet i batch 1 eksisterer når batch 2 gjennomføres, så lenge disse utføres sekvensielt.
+
+#### Eksempel på index request med en journalpost:
+```json
+{
+  "meldinger": [
+    {
+      "meldingId": "02ba5fc7-f36e-4e01-9ca2-c9ed5b9ea10b",
+      "sikkerhetsniva": 3,
+      "eksponertFor": {
+        "identifikatorType": "FODSELSNUMMER",
+        "verdi": "28422155364"
+      },
+      "fiksOrganisasjonId": "aa1bfb4a-e164-415a-a446-c2cc2787519b",
+      "versjon": "JOURNALPOST_V1",
+      "meldingMetadata": "eyJqb3VybmFscG9zdHR5cGUiOiJOIiwidGl0dGVsIjoiZjlkZjYxMWYtYTQ2MC00NmI4LTk3NDEtN2Q4NDM3MmE4ZDg2In0="
+    }
+  ]
+}
+```
+meldingMetadata-feltet inneholder følgende JSON som har blitt Base64 encodet:
+```json
+{
+  "journalposttype": "N",
+  "tittel": "f9df611f-a460-46b8-9741-7d84372a8d86"
+}
+```
 
 ### Eksponering av meldinger
 _Eksponert for_ i en indekseringsforespørsel angir hvem som skal kunne se meldingen. Dette kan ha en av følgende verdier:
