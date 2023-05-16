@@ -53,7 +53,6 @@ Merk at JSON-metadata må Base64 encodes før det sendes til APIet, dette hoveds
 
 | Meldingstype       | Versjon            |                                                                                                          |
 |--------------------|--------------------|----------------------------------------------------------------------------------------------------------|
-| Byggesak V1        | BYGGESAK_V1        | [Spec](https://github.com/ks-no/fiks-innsyn-json-schema/blob/main/schema/domain/byggesak.v1.json)        |
 | Faktura V1         | FAKTURA_V1         | [Spec](https://github.com/ks-no/fiks-innsyn-json-schema/blob/main/schema/domain/faktura.v1.json)         |
 | Innsendt Skjema V1 | INNSENDT_SKJEMA_V1 | [Spec](https://github.com/ks-no/fiks-innsyn-json-schema/blob/main/schema/domain/innsendt.skjema.v1.json) |
 | Skjemakladd V1     | SKJEMAKLADD_V1     | [Spec](https://github.com/ks-no/fiks-innsyn-json-schema/blob/main/schema/domain/skjema.kladd.v1.json)    |
@@ -142,7 +141,6 @@ Hvis kommunen benytter min.kommune.no er det ikke behov for å utvikle noen egne
 
 Innsyn tilbyr følgende søke-api'er for eksterne integrasjoner:
 
-* [Byggesak-søk](https://editor.swagger.io/?url=https://developers.fiks.ks.no/api/openapi-sok-byggesak-v1.json)  Søk i innbyggerens byggesaker (pågående og historiske).
 * [Eiendom-søk](https://editor.swagger.io/?url=https://developers.fiks.ks.no/api/openapi-sok-eiendom-v1.json) Søk i matrikkelenheter fra kartverket.
 * [Faktura-søk](https://editor.swagger.io/?url=https://developers.fiks.ks.no/api/openapi-sok-faktura-v1.json) Søk i innbyggerens fakturaer.
 * [Post-søk](https://editor.swagger.io/?url=https://developers.fiks.ks.no/api/openapi-sok-post-v1.json) Søk i post sendt fra kommunen til inbyggeren via KS-SvarUt.
