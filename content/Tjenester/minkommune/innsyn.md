@@ -56,8 +56,8 @@ Merk at JSON-metadata må Base64 encodes før det sendes til APIet, dette hoveds
 | Faktura V1         | FAKTURA_V1         | [Spec](https://github.com/ks-no/fiks-innsyn-json-schema/blob/main/schema/domain/faktura.v1.json)         |
 | Innsendt Skjema V1 | INNSENDT_SKJEMA_V1 | [Spec](https://github.com/ks-no/fiks-innsyn-json-schema/blob/main/schema/domain/innsendt.skjema.v1.json) |
 | Skjemakladd V1     | SKJEMAKLADD_V1     | [Spec](https://github.com/ks-no/fiks-innsyn-json-schema/blob/main/schema/domain/skjema.kladd.v1.json)    |
-| Mappe V1           | MAPPE_V1           | [Spec](https://github.com/ks-no/fiks-innsyn-json-schema/blob/main/schema/domain/sak/mappe.v1.json)       |
-| Journalpost V1     | JOURNALPOST_V1     | [Spec](https://github.com/ks-no/fiks-innsyn-json-schema/blob/main/schema/domain/sak/journalpost.v1.json) |
+| Mappe V1           | MAPPE_V1           | [Spec](https://github.com/ks-no/fiks-innsyn-json-schema/blob/main/schema/domain/mappe/mappe.v1.json)       |
+| Journalpost V1     | JOURNALPOST_V1     | [Spec](https://github.com/ks-no/fiks-innsyn-json-schema/blob/main/schema/domain/mappe/journalpost.v1.json) |
 
 Alle JSON-schema definisjoner finnes i følgende GitHub repository: [ks-no / fiks-innsyn-json-schema](https://github.com/ks-no/fiks-innsyn-json-schema). Disse kan også brukes til å generere modeller for deres valgte språk. 
 Det finnes allerede en Maven-modul for Java-brukere som er deployet til Maven Central. Mer informasjon rundt dette finnes i prosjektets README på GitHub.
