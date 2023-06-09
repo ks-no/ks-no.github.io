@@ -21,9 +21,46 @@
   } ],
   "tags" : [ {
     "name" : "Ledsagerbevis",
-    "description" : "API for digitalt ledsagerbevis"
+    "description" : "API for Digitalt ledsagerbevis: Oppslag mot Folkeregister"
   } ],
   "paths" : {
+    "/ledsagerbevis/api/v1/folkeregister/organisasjoner/{fiksOrgId}" : {
+      "post" : {
+        "tags" : [ "Ledsagerbevis" ],
+        "description" : "Oppslag med fødselsnummer for å hente ut informasjon fra Folkeregisteret",
+        "operationId" : "oppslag",
+        "parameters" : [ {
+          "name" : "fiksOrgId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/FolkeregisterRequest"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Informasjon henta fra Folkeregisteret",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/FolkeregisterPerson"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/ledsagerbevis/api/v1" : {
       "get" : {
         "tags" : [ "Ledsagerbevis" ],
@@ -46,6 +83,59 @@
   },
   "components" : {
     "schemas" : {
+      "Adresse" : {
+        "type" : "object",
+        "properties" : {
+          "adressenavn" : {
+            "type" : "string",
+            "description" : "Gatenavn"
+          },
+          "postnummer" : {
+            "pattern" : "^[0-9]{4}$",
+            "type" : "string",
+            "description" : "Postnummer"
+          },
+          "poststed" : {
+            "type" : "string",
+            "description" : "Poststed"
+          },
+          "kommunenummer" : {
+            "pattern" : "^\\d{4}$",
+            "type" : "string",
+            "description" : "Kommunenummer"
+          }
+        },
+        "description" : "Adresse det er mulig å sende post til"
+      },
+      "FolkeregisterPerson" : {
+        "required" : [ "fnr" ],
+        "type" : "object",
+        "properties" : {
+          "fnr" : {
+            "type" : "string"
+          },
+          "navn" : {
+            "type" : "string",
+            "description" : "Navn henta fra Folkeregisteret."
+          },
+          "adresse" : {
+            "$ref" : "#/components/schemas/Adresse"
+          }
+        },
+        "description" : "Personinformasjon henta fra Folkeregisteret"
+      },
+      "FolkeregisterRequest" : {
+        "required" : [ "fnr" ],
+        "type" : "object",
+        "properties" : {
+          "fnr" : {
+            "pattern" : "^[0-9]{11}$",
+            "type" : "string",
+            "description" : "Fødselsnummeret det skal hentes informasjon om fra Folkeregisteret"
+          }
+        },
+        "description" : "Request for å hente ut informasjon fra Folkeregisteret"
+      },
       "Test" : {
         "type" : "object",
         "properties" : {
