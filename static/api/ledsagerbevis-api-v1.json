@@ -61,18 +61,130 @@
         }
       }
     },
-    "/ledsagerbevis/api/v1" : {
+    "/ledsagerbevis/api/v1/{fiksOrgId}/ledsagerbevis/{ledsagerbevisId}" : {
       "get" : {
         "tags" : [ "Ledsagerbevis" ],
-        "description" : "Test",
-        "operationId" : "test",
+        "description" : "Hent ledsagerbevis",
+        "operationId" : "hentLedsagerbevis",
+        "parameters" : [ {
+          "name" : "fiksOrgId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        }, {
+          "name" : "ledsagerbevisId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
         "responses" : {
           "200" : {
-            "description" : "Informasjon om tjeneste",
+            "description" : "Henter ledsagerbevis",
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/Test"
+                  "$ref" : "#/components/schemas/LedsagerbevisResponse"
+                }
+              }
+            }
+          },
+          "default" : {
+            "description" : "Noe gikk galt",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post" : {
+        "tags" : [ "Ledsagerbevis" ],
+        "description" : "Last opp bilde",
+        "operationId" : "lastOppBilde",
+        "parameters" : [ {
+          "name" : "fiksOrgId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        }, {
+          "name" : "ledsagerbevisId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "201" : {
+            "description" : "Laster opp bilde"
+          },
+          "default" : {
+            "description" : "Noe gikk galt",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/ledsagerbevis/api/v1/{fiksOrgId}/ledsagerbevis" : {
+      "post" : {
+        "tags" : [ "Ledsagerbevis" ],
+        "description" : "Opprett ledsagerbevis",
+        "operationId" : "opprettLedsagerbevis",
+        "parameters" : [ {
+          "name" : "fiksOrgId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/OpprettLedsagerbevisRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "201" : {
+            "description" : "Oppretter ledsagerbevis",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/LedsagerbevisResponse"
+                }
+              }
+            }
+          },
+          "default" : {
+            "description" : "Noe gikk galt",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
                 }
               }
             }
@@ -136,11 +248,115 @@
         },
         "description" : "Request for å hente ut informasjon fra Folkeregisteret"
       },
-      "Test" : {
+      "LedsagerbevisResponse" : {
+        "required" : [ "antallLedsagere", "eksponertFor", "eksternId", "fnr", "id", "navn", "utlopsdato" ],
         "type" : "object",
         "properties" : {
+          "id" : {
+            "type" : "string",
+            "description" : "Id til ledsagerbevis",
+            "format" : "uuid"
+          },
+          "navn" : {
+            "type" : "string",
+            "description" : "Navn på mottaker av ledsagerbevis"
+          },
+          "fnr" : {
+            "pattern" : "^[0-9]{11}$",
+            "type" : "string",
+            "description" : "Fødselsnummer på mottaker av ledsagerbevis"
+          },
+          "antallLedsagere" : {
+            "type" : "integer",
+            "description" : "Antall ledsagere",
+            "format" : "int32"
+          },
+          "utlopsdato" : {
+            "type" : "string",
+            "description" : "Utløpsdato for beviset",
+            "format" : "date"
+          },
+          "eksponertFor" : {
+            "uniqueItems" : true,
+            "type" : "array",
+            "description" : "Personer beviset skal være eksponert for",
+            "items" : {
+              "type" : "string",
+              "description" : "Personer beviset skal være eksponert for"
+            }
+          },
+          "eksternId" : {
+            "type" : "string",
+            "description" : "Ekstern id for ledsagerbevis"
+          }
+        }
+      },
+      "ErrorMessage" : {
+        "type" : "object",
+        "properties" : {
+          "timestamp" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "status" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "error" : {
+            "type" : "string"
+          },
+          "errorId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "path" : {
+            "type" : "string"
+          },
+          "originalPath" : {
+            "type" : "string"
+          },
           "message" : {
             "type" : "string"
+          },
+          "errorCode" : {
+            "type" : "string"
+          },
+          "errorJson" : {
+            "type" : "string"
+          }
+        }
+      },
+      "OpprettLedsagerbevisRequest" : {
+        "required" : [ "antallLedsagere", "fnr", "navn", "utlopsdato" ],
+        "type" : "object",
+        "properties" : {
+          "navn" : {
+            "type" : "string",
+            "description" : "Navn på mottaker av ledsagerbevis"
+          },
+          "fnr" : {
+            "pattern" : "^[0-9]{11}$",
+            "type" : "string",
+            "description" : "Fødselsnummer på mottaker av ledsagerbevis"
+          },
+          "antallLedsagere" : {
+            "type" : "integer",
+            "description" : "Antall ledsagere",
+            "format" : "int32"
+          },
+          "utlopsdato" : {
+            "type" : "string",
+            "description" : "Utløpsdato for beviset",
+            "format" : "date"
+          },
+          "eksponertFor" : {
+            "uniqueItems" : true,
+            "type" : "array",
+            "description" : "Personer beviset skal være eksponert for",
+            "items" : {
+              "type" : "string",
+              "description" : "Personer beviset skal være eksponert for"
+            }
           }
         }
       }
