@@ -1,0 +1,448 @@
+{
+  "openapi" : "3.0.1",
+  "info" : {
+    "title" : "KS SvarUt: SvarInn API",
+    "description" : "SvarInn API",
+    "contact" : {
+      "name" : "Fiks-brukerstøtte",
+      "url" : "https://developers.fiks.ks.no",
+      "email" : "fiks-utvikling@ks.no"
+    },
+    "version" : "v1"
+  },
+  "servers" : [ {
+    "url" : "https://test.svarut.ks.no",
+    "description" : "SvarUt TEST",
+    "variables" : { }
+  }, {
+    "url" : "https://svarut.ks.no",
+    "description" : "SvarUt",
+    "variables" : { }
+  } ],
+  "tags" : [ {
+    "name" : "SvarInn",
+    "description" : "API for henting av hendelser for forsendelse"
+  } ],
+  "paths" : {
+    "/svarinn/forsendelse/{forsendelseId}" : {
+      "get" : {
+        "tags" : [ "SvarInn" ],
+        "summary" : "Henter ZIP med alle filene tilhørende forsendelsen med gitt id. Husk at filene kan være store. MIME type er definert i Content-Type headeren, og filnavn i Content-Disposition. Filen er kryptert med den offentlige nøkkelen til mottakersystemet og må dekrypteres etter nedlasting.",
+        "operationId" : "hentForsendelsefil",
+        "parameters" : [ {
+          "name" : "forsendelseId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "default" : {
+            "description" : "default response",
+            "content" : {
+              "*/*" : { }
+            }
+          }
+        }
+      }
+    },
+    "/svarinn/mottaker/hentNyeForsendelser" : {
+      "get" : {
+        "tags" : [ "SvarInn" ],
+        "summary" : "Henter metadata for nye forsendelser på mottakersystemet man er autentisert med. Dersom det ikke finnes noen nye forsendelser returneres tom liste.",
+        "operationId" : "hentNyeForsendelser",
+        "responses" : {
+          "default" : {
+            "description" : "default response",
+            "content" : {
+              "application/json; charset=utf-8" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/Forsendelse"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/svarinn/kvitterMottak/forsendelse/{forsendelseId}" : {
+      "post" : {
+        "tags" : [ "SvarInn" ],
+        "summary" : "Markerer forsendelsen som mottatt, slik at status endres til Lest. Forsendelsen vil ikke lenger returneres ved henting av nye forsendelser, og vil ikke videresendes via andre kanaler.",
+        "operationId" : "settForsendelseMottatt",
+        "parameters" : [ {
+          "name" : "forsendelseId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "default" : {
+            "description" : "default response",
+            "content" : {
+              "*/*" : { }
+            }
+          }
+        }
+      }
+    },
+    "/svarinn/mottakFeilet/forsendelse/{forsendelseId}" : {
+      "post" : {
+        "tags" : [ "SvarInn" ],
+        "summary" : "Hvis mottak av forsendelse feilet, kan dette meldes tilbake til SvarUt. Dette vil da fremkomme i loggen til avsender. Dersom en feil blir market som permanent, vil den bli sendt videre til Altinn, eller eventuelt som brevpost, gitt at forsendelsen ikke er markert som kun digital. ",
+        "operationId" : "settImportFeilet",
+        "parameters" : [ {
+          "name" : "forsendelseId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "*/*" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/ImportFeil"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "default" : {
+            "description" : "default response",
+            "content" : {
+              "*/*" : { }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components" : {
+    "schemas" : {
+      "Avsender" : {
+        "type" : "object",
+        "properties" : {
+          "adresselinje1" : {
+            "type" : "string",
+            "description" : "Første adresselinje"
+          },
+          "adresselinje2" : {
+            "type" : "string",
+            "description" : "Andre adresselinje"
+          },
+          "adresselinje3" : {
+            "type" : "string",
+            "description" : "Tredje adresselinje"
+          },
+          "navn" : {
+            "type" : "string",
+            "description" : "Navn"
+          },
+          "poststed" : {
+            "type" : "string",
+            "description" : "Poststed"
+          },
+          "postnr" : {
+            "type" : "string",
+            "description" : "Postnummer"
+          }
+        },
+        "description" : "Informasjon om forsendelsens avsender"
+      },
+      "Entry" : {
+        "type" : "object",
+        "properties" : {
+          "key" : {
+            "type" : "string",
+            "description" : "Nøkkel som beskriver metadataene"
+          },
+          "value" : {
+            "type" : "string",
+            "description" : "Metadata-verdi"
+          }
+        },
+        "description" : "Key-value metadata"
+      },
+      "FilMetadata" : {
+        "required" : [ "filnavn", "mimetype", "sha256hash", "size" ],
+        "type" : "object",
+        "properties" : {
+          "filnavn" : {
+            "type" : "string",
+            "description" : "Filnavn med eventuell extension"
+          },
+          "mimetype" : {
+            "type" : "string",
+            "description" : "MIME type"
+          },
+          "sha256hash" : {
+            "type" : "string",
+            "description" : "SHA-256 hash av filens innhold"
+          },
+          "dokumentType" : {
+            "type" : "string",
+            "description" : "Fritekst for å beskrive dokumentets type, f.eks. Noark dokumenttype"
+          },
+          "size" : {
+            "type" : "integer",
+            "description" : "Filens størrelse, eller 0 om den ikke er satt",
+            "format" : "int64"
+          },
+          "ekstraMetadata" : {
+            "type" : "array",
+            "description" : "Ekstra metadata for filen definert av avsender",
+            "items" : {
+              "$ref" : "#/components/schemas/Entry"
+            }
+          }
+        },
+        "description" : "Metadata som beskriver en fil i forsendelsen"
+      },
+      "Forsendelse" : {
+        "required" : [ "downloadUrl", "filmetadata", "id", "mottaker", "niva", "status", "taushetsbelagtPost", "tittel" ],
+        "type" : "object",
+        "properties" : {
+          "avsender" : {
+            "$ref" : "#/components/schemas/Avsender"
+          },
+          "mottaker" : {
+            "$ref" : "#/components/schemas/Mottaker"
+          },
+          "id" : {
+            "type" : "string"
+          },
+          "tittel" : {
+            "type" : "string"
+          },
+          "date" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "metadataFraAvleverendeSystem" : {
+            "$ref" : "#/components/schemas/NoarkMetadataFraAvleverendeSakssystem"
+          },
+          "metadataForImport" : {
+            "$ref" : "#/components/schemas/NoarkMetadataForImport"
+          },
+          "status" : {
+            "type" : "string"
+          },
+          "niva" : {
+            "type" : "string"
+          },
+          "filmetadata" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/FilMetadata"
+            }
+          },
+          "svarSendesTil" : {
+            "$ref" : "#/components/schemas/Mottaker"
+          },
+          "svarPaForsendelse" : {
+            "type" : "string"
+          },
+          "forsendelseType" : {
+            "type" : "string"
+          },
+          "eksternRef" : {
+            "type" : "string"
+          },
+          "lenker" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Lenke"
+            }
+          },
+          "downloadUrl" : {
+            "type" : "string"
+          },
+          "avgivendeSystem" : {
+            "type" : "string"
+          },
+          "taushetsbelagtPost" : {
+            "type" : "boolean"
+          }
+        }
+      },
+      "Lenke" : {
+        "required" : [ "urlLenke", "urlTekst" ],
+        "type" : "object",
+        "properties" : {
+          "ledetekst" : {
+            "type" : "string",
+            "description" : "Tekst som kommer før lenken"
+          },
+          "urlLenke" : {
+            "type" : "string",
+            "description" : "URL som lenken peker til"
+          },
+          "urlTekst" : {
+            "type" : "string",
+            "description" : "Teksten som kan trykkes på i lenken"
+          }
+        },
+        "description" : "Lenker tilknyttet forsendelsen"
+      },
+      "Mottaker" : {
+        "required" : [ "navn" ],
+        "type" : "object",
+        "properties" : {
+          "adresse1" : {
+            "type" : "string",
+            "description" : "Første adresselinje"
+          },
+          "adresse2" : {
+            "type" : "string",
+            "description" : "Andre adresselinje"
+          },
+          "adresse3" : {
+            "type" : "string",
+            "description" : "Tredje adresselinje"
+          },
+          "postnr" : {
+            "type" : "string",
+            "description" : "Postnummer"
+          },
+          "poststed" : {
+            "type" : "string",
+            "description" : "Poststed"
+          },
+          "navn" : {
+            "type" : "string",
+            "description" : "Navn"
+          },
+          "land" : {
+            "type" : "string",
+            "description" : "Land"
+          },
+          "orgnr" : {
+            "type" : "string",
+            "description" : "Organisasjonsnummer"
+          }
+        },
+        "description" : "Mottaker av forsendelsen"
+      },
+      "NoarkMetadataForImport" : {
+        "type" : "object",
+        "properties" : {
+          "sakssekvensnummer" : {
+            "type" : "integer",
+            "description" : "Viser rekkefølgen når saksmappen ble opprettet innenfor året",
+            "format" : "int64"
+          },
+          "saksaar" : {
+            "type" : "integer",
+            "description" : "Viser året saksmappen ble opprettet",
+            "format" : "int32"
+          },
+          "journalposttype" : {
+            "type" : "string",
+            "description" : "Navn på type journalpost"
+          },
+          "journalstatus" : {
+            "type" : "string",
+            "description" : "Status til journalposten, dvs. om dokumentet er registrert, under behandling eller endelig arkivert"
+          },
+          "dokumentetsDato" : {
+            "type" : "integer",
+            "description" : "Dato som er påført selve dokumentet",
+            "format" : "int64"
+          },
+          "tittel" : {
+            "type" : "string",
+            "description" : "Tittel eller navn på arkivenheten"
+          }
+        },
+        "description" : "Noark 5-metadata som stemmer med mottakende system. Kan brukes til å legge dokumentet på rett sak."
+      },
+      "NoarkMetadataFraAvleverendeSakssystem" : {
+        "type" : "object",
+        "properties" : {
+          "sakssekvensnummer" : {
+            "type" : "integer",
+            "description" : "Viser rekkefølgen når saksmappen ble opprettet innenfor året ",
+            "format" : "int64"
+          },
+          "saksaar" : {
+            "type" : "integer",
+            "description" : "Viser året saksmappen ble opprettet",
+            "format" : "int32"
+          },
+          "journalaar" : {
+            "type" : "integer",
+            "description" : "Viser året journalposten ble opprettet",
+            "format" : "int32"
+          },
+          "journalsekvensnummer" : {
+            "type" : "integer",
+            "description" : "Viser rekkefølgen når journalposten ble opprettet under året",
+            "format" : "int64"
+          },
+          "journalpostnummer" : {
+            "type" : "integer",
+            "description" : "Viser rekkefølgen journalpostene ble opprettet innenfor saksmappen",
+            "format" : "int64"
+          },
+          "journalposttype" : {
+            "type" : "string",
+            "description" : "Navn på type journalpost"
+          },
+          "journalstatus" : {
+            "type" : "string",
+            "description" : "Status til journalposten, dvs. om dokumentet er registrert, under behandling eller endelig arkivert"
+          },
+          "journaldato" : {
+            "type" : "integer",
+            "description" : "Datoen journalposten er opprettet/arkivert",
+            "format" : "int64"
+          },
+          "dokumentetsDato" : {
+            "type" : "integer",
+            "description" : "Dato som er påført selve dokumentet",
+            "format" : "int64"
+          },
+          "tittel" : {
+            "type" : "string",
+            "description" : "Tittel eller navn på arkivenheten"
+          },
+          "saksBehandler" : {
+            "type" : "string",
+            "description" : "Navn på person som er saksbehandler"
+          },
+          "ekstraMetadata" : {
+            "type" : "array",
+            "description" : "Ekstra metadata for forsendelsen definert av avsender",
+            "items" : {
+              "$ref" : "#/components/schemas/Entry"
+            }
+          }
+        },
+        "description" : "Noark 5-metadata fra avleverende system"
+      },
+      "ImportFeil" : {
+        "required" : [ "feilmelding", "permanent" ],
+        "type" : "object",
+        "properties" : {
+          "feilmelding" : {
+            "type" : "string",
+            "description" : "En menneskelig lesbar feilmelding"
+          },
+          "permanent" : {
+            "type" : "boolean",
+            "description" : "Kan være permanent eller midlertidig. Hvis feilen er ikke mulig å fikse kan den markeres som permanent. Dersom forsendelsen markeres som feilet permanent blir den sendt videre via en annen kanal."
+          }
+        },
+        "description" : "Request body for å markere at mottak av forsendelse feilet"
+      }
+    }
+  }
+}
