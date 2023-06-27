@@ -86,20 +86,33 @@ En indekseringsoperasjon kan ha følgende utfall:
 
 Gjennomføring av batch-operasjoner skjer synkront fra ståstedet til en bruker av tjenesten: responsen blir ikke sendt før batchen er gjennomført. Dermed vil man kunne vite at en gruppe opprettet i batch 1 eksisterer når batch 2 gjennomføres, så lenge disse utføres sekvensielt.
 
-#### Eksempel på index request med en journalpost:
+#### Eksempel på index request med en journalpost og en mappe:
 ```json
 {
   "meldinger": [
     {
-      "meldingId": "02ba5fc7-f36e-4e01-9ca2-c9ed5b9ea10b",
+      "meldingId": "e59cec27-0192-432a-a285-7efb69e5a993",
       "sikkerhetsniva": 3,
       "eksponertFor": {
         "identifikatorType": "FODSELSNUMMER",
-        "verdi": "28422155364"
+        "verdi": "46832685061"
       },
-      "fiksOrganisasjonId": "aa1bfb4a-e164-415a-a446-c2cc2787519b",
+      "fiksOrganisasjonId": "620a05f6-2d78-4b88-b07e-85368bc8a03c",
+      "eksternRef": "8cc734ad-9e74-4a1a-9666-599d6121a061",
       "versjon": "JOURNALPOST_V1",
-      "meldingMetadata": "eyJqb3VybmFscG9zdHR5cGUiOiJOIiwidGl0dGVsIjoiZjlkZjYxMWYtYTQ2MC00NmI4LTk3NDEtN2Q4NDM3MmE4ZDg2In0="
+      "tilgjengeligTil": "2023-07-02T12:03:44.347302401+02:00",
+      "meldingMetadata": "eyJqb3VybmFscG9zdHR5cGUiOiJVIiwidGl0dGVsIjoiMzhkZTQ5MDMtOWU4Mi00NDc3LTlkNGQtOWQ5ZGIwNzBkZmRkIn0="
+    },
+    {
+      "meldingId": "5b557f4a-11e8-41aa-b04e-e0f03af577cc",
+      "sikkerhetsniva": 3,
+      "eksponertFor": {
+        "identifikatorType": "MATRIKKELNUMMER",
+        "verdi": "2634-155/298/803/176"
+      },
+      "fiksOrganisasjonId": "98f33c17-35c9-449b-be58-06e1ce2fef8b",
+      "versjon": "MAPPE_V1",
+      "meldingMetadata": "eyJ0eXBlIjoiQllHR0VTQUsiLCJ0aXR0ZWwiOiJkNGYzYjQ2ZC0zZDNlLTQ2NjQtOWQ3OC1kMTQ0ZDQ0Mzg2MmEifQ=="
     }
   ]
 }
