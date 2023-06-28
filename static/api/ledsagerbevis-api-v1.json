@@ -64,8 +64,8 @@
     "/ledsagerbevis/api/v1/organisasjoner/{fiksOrgId}/bilde" : {
       "get" : {
         "tags" : [ "Ledsagerbevis" ],
-        "description" : "Last opp bilde",
-        "operationId" : "hentBilde",
+        "description" : "Henter ut eksisterende bilder",
+        "operationId" : "hentBilder",
         "parameters" : [ {
           "name" : "fiksOrgId",
           "in" : "path",
@@ -77,7 +77,7 @@
         } ],
         "requestBody" : {
           "content" : {
-            "multipart/form-data" : {
+            "application/json" : {
               "schema" : {
                 "$ref" : "#/components/schemas/HentBilde"
               }
@@ -86,11 +86,11 @@
         },
         "responses" : {
           "201" : {
-            "description" : "Laster opp bilde",
+            "description" : "Henter eksisterende bilder",
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/OpplastetBildeResponse"
+                  "$ref" : "#/components/schemas/EksisterendeBilderRespons"
                 }
               }
             }
@@ -121,7 +121,7 @@
           }
         } ],
         "responses" : {
-          "201" : {
+          "200" : {
             "description" : "Laster opp bilde",
             "content" : {
               "application/json" : {
@@ -295,12 +295,27 @@
         },
         "description" : "Request for å hente ut informasjon fra Folkeregisteret"
       },
-      "OpplastetBildeResponse" : {
+      "Bilde" : {
         "type" : "object",
         "properties" : {
           "bildeId" : {
             "type" : "string",
             "format" : "uuid"
+          },
+          "opplastetDato" : {
+            "type" : "string",
+            "format" : "date"
+          }
+        }
+      },
+      "EksisterendeBilderRespons" : {
+        "type" : "object",
+        "properties" : {
+          "bilder" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Bilde"
+            }
           }
         }
       },
@@ -340,12 +355,15 @@
         }
       },
       "HentBilde" : {
+        "required" : [ "fnr" ],
         "type" : "object",
         "properties" : {
           "fnr" : {
-            "type" : "string"
+            "type" : "string",
+            "description" : "Fødselsnummer"
           }
-        }
+        },
+        "description" : "Hent bildeinfo for fnr"
       },
       "LedsagerbevisResponse" : {
         "required" : [ "antallLedsagere", "eksponertFor", "eksternId", "fnr", "id", "navn", "utlopsdato" ],
@@ -387,6 +405,15 @@
           "eksternId" : {
             "type" : "string",
             "description" : "Ekstern id for ledsagerbevis"
+          }
+        }
+      },
+      "OpplastetBildeResponse" : {
+        "type" : "object",
+        "properties" : {
+          "bildeId" : {
+            "type" : "string",
+            "format" : "uuid"
           }
         }
       },
