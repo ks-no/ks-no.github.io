@@ -24,6 +24,46 @@
     "description" : "API for å håndtere signering av avtaler for bruk av Fiks-plattformen"
   } ],
   "paths" : {
+    "/avtale/api/v1/avtaler/delegering/{fiksOrgId}" : {
+      "post" : {
+        "tags" : [ "avtale" ],
+        "description" : "Deleger signering av avtale",
+        "operationId" : "delegerSigneringAvAvtale",
+        "parameters" : [ {
+          "name" : "fiksOrgId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "*/*" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/DelegerSigneringAvAvtaleDefinisjon"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Avtalesignering delegert"
+          },
+          "401" : {
+            "description" : "Ikke tilgang",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/avtale/api/v1/avtaler/{avtaleSignertId}" : {
       "get" : {
         "tags" : [ "avtale" ],
@@ -269,6 +309,38 @@
             "description" : "Ikke tilgang",
             "content" : {
               "text/csv" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/avtale/api/v1/avtaler/delegering" : {
+      "get" : {
+        "tags" : [ "avtale" ],
+        "description" : "Hent signeringsoppdrag delegert til inlogget person for signering",
+        "operationId" : "hentDelegerteSigneringsoppdrag",
+        "responses" : {
+          "200" : {
+            "description" : "Signeringsoppdrag",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/DelegertSigneringsoppdragDefinisjon"
+                  }
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Ikke tilgang",
+            "content" : {
+              "application/json" : {
                 "schema" : {
                   "$ref" : "#/components/schemas/ErrorMessage"
                 }
@@ -572,6 +644,40 @@
           }
         }
       },
+      "AvtaleDelegertTilSigneringDefinisjon" : {
+        "required" : [ "fiksOrgId", "fnrSignatur", "tjenestekode" ],
+        "type" : "object",
+        "properties" : {
+          "fiksOrgId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "tjenestekode" : {
+            "pattern" : "^[0-9A-Z_.]+$",
+            "type" : "string"
+          },
+          "fnrSignatur" : {
+            "pattern" : "^[0-9]{11}$",
+            "type" : "string",
+            "description" : "Fødselsnummer til personen som skal utføre signeringsoppdraget"
+          }
+        }
+      },
+      "DelegerSigneringAvAvtaleDefinisjon" : {
+        "required" : [ "fnrSignatur", "tjenestekode" ],
+        "type" : "object",
+        "properties" : {
+          "tjenestekode" : {
+            "pattern" : "^[0-9A-Z_.]+$",
+            "type" : "string"
+          },
+          "fnrSignatur" : {
+            "pattern" : "^[0-9]{11}$",
+            "type" : "string",
+            "description" : "Fødselsnummer til personen som skal utføre signeringsoppdraget"
+          }
+        }
+      },
       "FiksOrganisasjonDefinisjon" : {
         "required" : [ "harHovedavtale", "id", "kommunenummer", "navn", "type" ],
         "type" : "object",
@@ -636,7 +742,7 @@
           "signeringStatus" : {
             "type" : "string",
             "description" : "Om den signerte avtalen er signert, oppsagt eller har feilet",
-            "enum" : [ "SIGNERT", "OPPSAGT", "ESIGNERING_STARTET", "FEILET", "AVBRUTT", "SIGNERT_MEN_ELDRE_VERSJON" ]
+            "enum" : [ "SIGNERT", "OPPSAGT", "ESIGNERING_STARTET", "FEILET", "AVBRUTT", "SIGNERT_MEN_ELDRE_VERSJON", "USIGNERT" ]
           },
           "oppsigelse" : {
             "$ref" : "#/components/schemas/OppsigelseAvtaleSignertDefinisjon"
@@ -720,6 +826,30 @@
           }
         },
         "description" : "Informasjon om avtalen er sagt opp"
+      },
+      "DelegertSigneringsoppdragDefinisjon" : {
+        "required" : [ "fiksOrgId", "fiksOrgNavn", "signeringStatus", "tjenestekode", "tjenestenavn" ],
+        "type" : "object",
+        "properties" : {
+          "fiksOrgId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "fiksOrgNavn" : {
+            "type" : "string"
+          },
+          "tjenestekode" : {
+            "type" : "string"
+          },
+          "tjenestenavn" : {
+            "type" : "string"
+          },
+          "signeringStatus" : {
+            "type" : "string",
+            "description" : "Om den signerte avtalen er signert, oppsagt eller har feilet",
+            "enum" : [ "SIGNERT", "OPPSAGT", "ESIGNERING_STARTET", "FEILET", "AVBRUTT", "SIGNERT_MEN_ELDRE_VERSJON", "USIGNERT" ]
+          }
+        }
       },
       "TjenesteAvtaleSignertDefinisjon" : {
         "type" : "object",
