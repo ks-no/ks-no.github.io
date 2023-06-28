@@ -117,11 +117,21 @@ Gjennomføring av batch-operasjoner skjer synkront fra ståstedet til en bruker 
   ]
 }
 ```
-meldingMetadata-feltet inneholder følgende JSON som har blitt Base64 encodet:
+meldingMetadata-feltene inneholder følgende JSON som har blitt Base64 encodet:
+
+Journalpost:
 ```json
 {
-  "journalposttype": "N",
-  "tittel": "f9df611f-a460-46b8-9741-7d84372a8d86"
+  "journalposttype": "U",
+  "tittel": "38de4903-9e82-4477-9d4d-9d9db070dfdd"
+}
+```
+
+Mappe:
+```json
+{
+  "type": "BYGGESAK",
+  "tittel": "d4f3b46d-3d3e-4664-9d78-d144d443862a"
 }
 ```
 
