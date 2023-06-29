@@ -1,5 +1,5 @@
 ---
-title: Fiks edialog
+title: Fiks eDialog
 date: 2023-06-29
 aliases: [/svarut/edialog]
 ---
@@ -28,7 +28,7 @@ Bruk av denne funksjonaliteten krever ikke at man har konfigurert noen mottakere
 2. Avsender får en forsendelseid i retur.
 3. SvarUt sender vanlig varsel til SDP/Altinn med link for å kunne svare på forsendelsen.
 4. Mottaker klikker på "svar på forsendelse" link i Altinn/SDP.
-5. Mottaker fyller ut edialog skjema og sender det inn.
+5. Mottaker fyller ut eDialog skjema og sender det inn.
 6. eDialog sender kvittering på innsendt skjema til innbygger på epost.
 6. eDialog lager en ny forsendelse til avsender. Dette er utfylt med svarPaForsendelse lik forsendelseid til opprinnelig forsendelse.
 7. Sak/Arkivsystem mottar forsendelse via SvarInn og ser at dette er svar på utgående forsendelse og putter svaret på samme sak.
