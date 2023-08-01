@@ -25,6 +25,45 @@
   } ],
   "paths" : {
     "/avtale/api/v1/avtaler/delegering/{fiksOrgId}" : {
+      "get" : {
+        "tags" : [ "avtale" ],
+        "description" : "Hent signeringsoppdrag fom fiksOrg som er delegert for signering",
+        "operationId" : "hentDelegerteSigneringsoppdragForFiksOrg",
+        "parameters" : [ {
+          "name" : "fiksOrgId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Signeringsoppdrag",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/DelegertSigneringsoppdragDefinisjon"
+                  }
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Ikke tilgang",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      },
       "post" : {
         "tags" : [ "avtale" ],
         "description" : "Deleger signering av avtale",
@@ -838,6 +877,11 @@
         "required" : [ "fiksOrgId", "fiksOrgNavn", "signeringStatus", "tjenestekode", "tjenestenavn" ],
         "type" : "object",
         "properties" : {
+          "fnr" : {
+            "pattern" : "^[0-9]{11}$",
+            "type" : "string",
+            "description" : "Fødselsnummer til personen som skal utføre signeringsoppdraget"
+          },
           "fiksOrgId" : {
             "type" : "string",
             "format" : "uuid"
@@ -855,6 +899,25 @@
             "type" : "string",
             "description" : "Om den signerte avtalen er signert, oppsagt eller har feilet",
             "enum" : [ "SIGNERT", "OPPSAGT", "ESIGNERING_STARTET", "FEILET", "AVBRUTT", "SIGNERT_MEN_ELDRE_VERSJON", "USIGNERT" ]
+          },
+          "signeringsdato" : {
+            "type" : "string",
+            "format" : "date"
+          },
+          "signertAv" : {
+            "type" : "string"
+          }
+        }
+      },
+      "DelegertDefinisjon" : {
+        "required" : [ "delegertTilFnr" ],
+        "type" : "object",
+        "properties" : {
+          "delegertTilFnr" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
           }
         }
       },
@@ -863,6 +926,9 @@
         "properties" : {
           "tjeneste" : {
             "$ref" : "#/components/schemas/TjenesteEnkelDefinisjon"
+          },
+          "delegert" : {
+            "$ref" : "#/components/schemas/DelegertDefinisjon"
           },
           "avtaleSignert" : {
             "$ref" : "#/components/schemas/AvtaleSignertDefinisjon"
