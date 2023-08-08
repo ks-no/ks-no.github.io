@@ -1,0 +1,195 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Fiks register verifisering service",
+    "description": "Verifiseringstjeneste for Fiks register",
+    "contact": {
+      "name": "KS Fiks brukerstøtte",
+      "url": "https://www.ks.no/fagomrader/digitalisering/utviklingsprosjekter",
+      "email": "fiks-utvikling@ks.no"
+    },
+    "version": "v1"
+  },
+  "servers": [
+    {
+      "url": "https://api.fiks.ks.no",
+      "description": "KS Fiks API host",
+      "variables": {}
+    },
+    {
+      "url": "https://api.fiks.test.ks.no",
+      "description": "KS Fiks TEST API host",
+      "variables": {}
+    }
+  ],
+  "paths": {
+    "/register/api/v1/konfigurasjon/verifisering": {
+      "post": {
+        "summary": "Hent verifiseringskonfigurasjon",
+        "description": "Henter konfigurasjon for verifisering av meldinger",
+        "operationId": "hentVerifiseringskonfigurasjon",
+        "tags": [
+          "verifisering"
+        ],
+        "requestBody": {
+          "$ref": "#/components/requestBodies/VerifiseringRequest"
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VerfiseringResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "requestBodies": {
+      "VerifiseringRequest": {
+        "required": true,
+        "description": "Verifiserer at konfigurasjon er korrekt for å enten en organisasjon eller en rolle",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/VerfiseringRequest"
+            }
+          }
+        }
+      }
+    },
+    "schemas": {
+      "VerfiseringRequest": {
+        "type": "object",
+        "properties": {
+          "organisasjonId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "rolleId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "registre": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RegisterNavn"
+            }
+          }
+        },
+        "required": [
+          "organisasjonId"
+        ]
+      },
+      "VerfiseringResponse": {
+        "type": "object",
+        "properties": {
+          "register": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/VerifiseringRegister"
+            },
+            "minItems": 1
+          },
+          "konfigurasjon": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SubsystemVerifisering"
+            }
+          },
+          "altOk": {
+            "description": "Er alt ok for gitt organisasjon/rolle",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "register",
+          "konfigurasjon",
+          "altOk"
+        ]
+      },
+      "RegisterNavn": {
+        "type": "string",
+        "enum": [
+          "FOLKEREGISTER",
+          "SUMMERT_SKATTEGRUNNLAG",
+          "KONTAKTREGISTERET"
+        ]
+      },
+      "VerifiseringRegister": {
+        "type": "object",
+        "properties": {
+          "navn": {
+            "$ref": "#/components/schemas/RegisterNavn"
+          },
+          "subsystem": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SubsystemVerifisering"
+            },
+            "minItems": 1
+          },
+          "ok": {
+            "description": "Er konfigurasjon ok for gitt register",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "navn",
+          "subsystem",
+          "altOk"
+        ]
+      },
+      "SubsystemVerifisering": {
+        "type": "object",
+        "properties": {
+          "navn": {
+            "type": "string"
+          },
+          "beskrivelse": {
+            "type": "string"
+          },
+          "verfisering": {
+            "$ref": "#/components/schemas/Verifisering"
+          }
+        },
+        "required": [
+          "navn",
+          "verfisering"
+        ]
+      },
+      "Verifisering": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "$ref": "#/components/schemas/VerifkasjonStatus"
+          },
+          "suksess": {
+            "type": "boolean"
+          },
+          "beskrivelse": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "status",
+          "suksess"
+        ]
+      },
+      "VerifkasjonStatus": {
+        "type": "string",
+        "enum": [
+          "OK",
+          "IKKE_UTFORT",
+          "FEILET",
+          "UTILGJENGELIG"
+        ]
+      }
+    }
+  }
+}
