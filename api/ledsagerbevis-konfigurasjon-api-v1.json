@@ -74,6 +74,34 @@
     "/digitalt-ledsagerbevis-konfigurasjon/api/v1/organisasjoner/{fiksOrgId}" : {
       "get" : {
         "tags" : [ "Ledsagerbevis Konfigurasjon" ],
+        "summary" : "Henter informasjon om en organisasjon",
+        "operationId" : "hentOrganisasjon",
+        "parameters" : [ {
+          "name" : "fiksOrgId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Informasjon om en organisasjon",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/OrganisasjonResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/digitalt-ledsagerbevis-konfigurasjon/api/v1/organisasjoner/{fiksOrgId}/status" : {
+      "get" : {
+        "tags" : [ "Ledsagerbevis Konfigurasjon" ],
         "summary" : "Henter status på om organisasjon har aktivert dokumentlagerkonto og registerRolle",
         "operationId" : "hentStatus",
         "parameters" : [ {
@@ -97,7 +125,9 @@
             }
           }
         }
-      },
+      }
+    },
+    "/digitalt-ledsagerbevis-konfigurasjon/api/v1/organisasjoner/{fiksOrgId}/konfigurer" : {
       "post" : {
         "tags" : [ "Ledsagerbevis Konfigurasjon" ],
         "summary" : "Oppretter ny Dokumentlager-konto og registerrolle som brukes til utsendelse av informasjon til de som skal få digitalt ledsagerbevis. Vil i tillegg initialisere og konfigurere opp tjenesten om det er behov for det.",
@@ -153,32 +183,92 @@
           }
         }
       }
+    },
+    "/digitalt-ledsagerbevis-konfigurasjon/api/v1/organisasjoner/{fiksOrgId}/oppdater" : {
+      "post" : {
+        "tags" : [ "Ledsagerbevis Konfigurasjon" ],
+        "summary" : "Oppdaterer organisasjons-informasjon",
+        "operationId" : "oppdaterOrganisasjon",
+        "parameters" : [ {
+          "name" : "fiksOrgId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/OppdaterOrganisasjonRequest"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Organisasjon er oppdatert"
+          }
+        }
+      }
     }
   },
   "components" : {
     "schemas" : {
       "SvarutKonto" : {
+        "required" : [ "kontoId", "kontonavn" ],
         "type" : "object",
         "properties" : {
           "kontoId" : {
             "type" : "string",
+            "description" : "Id til Svarutkonto",
             "format" : "uuid"
           },
           "kontonavn" : {
-            "type" : "string"
+            "type" : "string",
+            "description" : "Navn til svarutkonto"
           }
-        }
+        },
+        "description" : "Navn og kontoId for Svarutkonto"
       },
       "SvarutKontoer" : {
+        "required" : [ "kontoer" ],
         "type" : "object",
         "properties" : {
           "kontoer" : {
             "type" : "array",
+            "description" : "Liste over aktive svarutkontoer tilknyttet fiksOrg",
             "items" : {
               "$ref" : "#/components/schemas/SvarutKonto"
             }
           }
-        }
+        },
+        "description" : "Inneholder liste over aktive Svarut-kontoer"
+      },
+      "OrganisasjonResponse" : {
+        "required" : [ "fiksOrgId" ],
+        "type" : "object",
+        "properties" : {
+          "fiksOrgId" : {
+            "type" : "string",
+            "description" : "FiksorganisasjonsId",
+            "format" : "uuid"
+          },
+          "epost" : {
+            "type" : "array",
+            "description" : "Epost-adresser til personer tilknytet organisasjonen",
+            "items" : {
+              "type" : "string",
+              "description" : "Epost-adresser til personer tilknytet organisasjonen"
+            }
+          },
+          "svarutkonto" : {
+            "$ref" : "#/components/schemas/SvarutKonto"
+          }
+        },
+        "description" : "Informasjon om status for konfigurasjon av digitalt ledsagerbevis"
       },
       "StatusRetur" : {
         "required" : [ "dokumentlagerKontoStatus", "initialisert", "rolleStatus", "svarutKontoStatus" ],
@@ -213,6 +303,25 @@
           "rolleId" : {
             "type" : "string",
             "format" : "uuid"
+          }
+        },
+        "description" : "Informasjon konfigurasjon av ledsagerbevis"
+      },
+      "OppdaterOrganisasjonRequest" : {
+        "required" : [ "epost" ],
+        "type" : "object",
+        "properties" : {
+          "epost" : {
+            "maxItems" : 20,
+            "minItems" : 0,
+            "type" : "array",
+            "description" : "Epost-adresser til personer tilknytet organisasjonen",
+            "items" : {
+              "maxLength" : 20,
+              "minLength" : 0,
+              "type" : "string",
+              "description" : "Epost-adresser til personer tilknytet organisasjonen"
+            }
           }
         }
       }
