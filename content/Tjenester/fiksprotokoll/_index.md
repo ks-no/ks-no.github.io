@@ -16,7 +16,7 @@ Tjenestene består både av et sett av protokoller med meldingstyper, f.eks. Fik
 | Fiks politisk behandling                                      | Protokoll under utvikling.                                         | 4 kvartal 2024  |
 | Fiks plan                                                     | Under implementering hos leverandører. Pilot når de første er klar | 4 kvartal 2023  |
 | Fiks matrikkelføring                                          | I produksjon                                                       | Ferdig          |
-| Barnevern - fagsysteminnrapportering til Barnevernsregisteret | Pilot i produksjon                                                 |                 |
+| Barnevern - fagsysteminnrapportering til Barnevernsregisteret | Pilot i produksjon                                                 | Ferdig          |
 
 Protokoller i pilot kan oppleve å få endringer som må utbedres fortløpende. Dette vil være små endringer som kommer etter erfaringer en har gjort i produksjonskjøring. Disse er stabile nok til å ta i bruk i vanlig drift.
 
@@ -24,9 +24,9 @@ Det er også variasjon i adopsjonsgrad av protokollene, spesielt for Fiks arkiv.
 Det pågår arbeid med kartlegging av adopsjonsgrad og implementeringsprogresjon for protokollene. Estimering kan påvirkes av resultatet av dette da deler av en protokoll kan vise seg å ikke være implementert av noen enda eller tilstrekkelig testet.
 
 ## Tilgjengelige grensesnitt
-| Grensesnitt | Støtte |
-|------|------|
-| Web portal | Nei |
+| Grensesnitt       | Støtte                                                                                                           |
+|-------------------|------------------------------------------------------------------------------------------------------------------|
+| Web portal        | Nei                                                                                                              |
 | Maskin til maskin | [API](https://editor.swagger.io/?url=https://developers.fiks.ks.no/api/fiks-protokoll-konfigurasjon-api-v1.json) |
 
 ### Hvordan komme i gang med Fiks protokoll
