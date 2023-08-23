@@ -9,20 +9,24 @@ Fiks protokoll er en tjenestegruppe som inneholder flere tjenester. Felles for d
 Tjenestene består både av et sett av protokoller med meldingstyper, f.eks. Fiks Arkiv og Fiks Plan, og et miljø for å administrere systemer som implementerer disse protokollene over Fiks IO.
 
 ## Status protokoller
-| Protokoll | Status                                                             |
-|------|--------------------------------------------------------------------|
-| Fiks arkiv | Pilot i produksjon fram til sommeren 2023                          |
-| Fiks politisk behandling | Under utvikling                                                    |
-| Fiks plan | Under implementering hos leverandører. Pilot når de første er klar |
-| Fiks matrikkelføring | I produksjon                                                       |
-| Barnevern - fagsysteminnrapportering til Barnevernsregisteret | Pilot                                                              |
+
+| Protokoll                                                     | Status                                                             | Estimert ferdig |
+|---------------------------------------------------------------|--------------------------------------------------------------------|-----------------|
+| Fiks arkiv                                                    | Under implementering hos leverandører. I pilot                     | 4 kvartal 2023  |
+| Fiks politisk behandling                                      | Protokoll under utvikling.                                         | 4 kvartal 2024  |
+| Fiks plan                                                     | Under implementering hos leverandører. Pilot når de første er klar | 4 kvartal 2023  |
+| Fiks matrikkelføring                                          | I produksjon                                                       | Ferdig          |
+| Barnevern - fagsysteminnrapportering til Barnevernsregisteret | Pilot i produksjon                                                 | Ferdig          |
 
 Protokoller i pilot kan oppleve å få endringer som må utbedres fortløpende. Dette vil være små endringer som kommer etter erfaringer en har gjort i produksjonskjøring. Disse er stabile nok til å ta i bruk i vanlig drift.
 
+Det er også variasjon i adopsjonsgrad av protokollene, spesielt for Fiks arkiv. Det vil si at noen fagsystemer kommer kanskje bare til å arkivere og dermed bruke en liten del av hele protokollen. 
+Det pågår arbeid med kartlegging av adopsjonsgrad og implementeringsprogresjon for protokollene. Estimering kan påvirkes av resultatet av dette da deler av en protokoll kan vise seg å ikke være implementert av noen enda eller tilstrekkelig testet.
+
 ## Tilgjengelige grensesnitt
-| Grensesnitt | Støtte |
-|------|------|
-| Web portal | Nei |
+| Grensesnitt       | Støtte                                                                                                           |
+|-------------------|------------------------------------------------------------------------------------------------------------------|
+| Web portal        | Nei                                                                                                              |
 | Maskin til maskin | [API](https://editor.swagger.io/?url=https://developers.fiks.ks.no/api/fiks-protokoll-konfigurasjon-api-v1.json) |
 
 ### Hvordan komme i gang med Fiks protokoll
