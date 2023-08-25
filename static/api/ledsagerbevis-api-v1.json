@@ -185,6 +185,114 @@
             }
           }
         }
+      },
+      "post" : {
+        "tags" : [ "Ledsagerbevis" ],
+        "description" : "Legg til person som skal få tilgang til det digitale ledsagerbeviset",
+        "operationId" : "leggTilEksponertFor",
+        "parameters" : [ {
+          "name" : "fiksOrgId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        }, {
+          "name" : "ledsagerbevisId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/LeggTilEksponertForRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "201" : {
+            "description" : "Oppretter ledsagerbevis",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/LedsagerbevisResponse"
+                }
+              }
+            }
+          },
+          "default" : {
+            "description" : "Noe gikk galt",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete" : {
+        "tags" : [ "Ledsagerbevis" ],
+        "description" : "Revoker ledsagerbevis",
+        "operationId" : "revokerLedsagerbevis",
+        "parameters" : [ {
+          "name" : "fiksOrgId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        }, {
+          "name" : "ledsagerbevisId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/RevokerLedsagerbevisRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Revokert ledsagerbevis",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/LedsagerbevisResponse"
+                }
+              }
+            }
+          },
+          "default" : {
+            "description" : "Noe gikk galt",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
       }
     },
     "/digitalt-ledsagerbevis/api/v1/organisasjoner/{fiksOrgId}/ledsagerbevis" : {
@@ -253,52 +361,6 @@
         "responses" : {
           "201" : {
             "description" : "Oppretter ledsagerbevis",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/LedsagerbevisResponse"
-                }
-              }
-            }
-          },
-          "default" : {
-            "description" : "Noe gikk galt",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/ErrorMessage"
-                }
-              }
-            }
-          }
-        }
-      },
-      "delete" : {
-        "tags" : [ "Ledsagerbevis" ],
-        "description" : "Revoker ledsagerbevis",
-        "operationId" : "revokerLedsagerbevis",
-        "parameters" : [ {
-          "name" : "fiksOrgId",
-          "in" : "path",
-          "required" : true,
-          "schema" : {
-            "type" : "string",
-            "format" : "uuid"
-          }
-        } ],
-        "requestBody" : {
-          "content" : {
-            "application/json" : {
-              "schema" : {
-                "$ref" : "#/components/schemas/RevokerLedsagerbevisRequest"
-              }
-            }
-          },
-          "required" : true
-        },
-        "responses" : {
-          "200" : {
-            "description" : "Revokert ledsagerbevis",
             "content" : {
               "application/json" : {
                 "schema" : {
@@ -537,6 +599,25 @@
         },
         "description" : "Beskriver fiksOrg som ansatt har tilgang til"
       },
+      "LeggTilEksponertForRequest" : {
+        "required" : [ "adresse", "fnr", "navn" ],
+        "type" : "object",
+        "properties" : {
+          "navn" : {
+            "type" : "string",
+            "description" : "Navn til den som skal få tilgang til ledsagerbevis"
+          },
+          "fnr" : {
+            "pattern" : "^[0-9]{11}$",
+            "type" : "string",
+            "description" : "Fødselsnummer"
+          },
+          "adresse" : {
+            "$ref" : "#/components/schemas/Adresse"
+          }
+        },
+        "description" : "Person som skal få tilgang til et ledsagerbevis"
+      },
       "OpprettLedsagerbevisRequest" : {
         "required" : [ "adresse", "antallLedsagere", "fnr", "navn", "utlopsdato" ],
         "type" : "object",
@@ -565,17 +646,13 @@
           "adresse" : {
             "$ref" : "#/components/schemas/Adresse"
           }
-        }
+        },
+        "description" : "Opprett Ledsagerbevis for person"
       },
       "RevokerLedsagerbevisRequest" : {
-        "required" : [ "ledsagerbevisId", "revokertGrunn" ],
+        "required" : [ "revokertGrunn" ],
         "type" : "object",
         "properties" : {
-          "ledsagerbevisId" : {
-            "type" : "string",
-            "description" : "Id til ledsagerbevis som skal bli revokert",
-            "format" : "uuid"
-          },
           "revokertGrunn" : {
             "type" : "string",
             "description" : "Hvorfor ledsagerbevis skal bli revokert",
