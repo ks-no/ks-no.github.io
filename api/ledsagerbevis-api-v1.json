@@ -141,11 +141,11 @@
         }
       }
     },
-    "/digitalt-ledsagerbevis/api/v1/organisasjoner/{fiksOrgId}/ledsagerbevis/{ledsagerbevisId}/eksponert" : {
-      "delete" : {
+    "/digitalt-ledsagerbevis/api/v1/organisasjoner/{fiksOrgId}/ledsagerbevis/{ledsagerbevisId}/forvalter" : {
+      "post" : {
         "tags" : [ "Ledsagerbevis" ],
-        "description" : "Fjerne person som har tilgang til det digitale ledsagerbeviset",
-        "operationId" : "fjernEksponertFor",
+        "description" : "Legg til person som skal forvalte det digitale ledsagerbeviset",
+        "operationId" : "leggTilForvalter",
         "parameters" : [ {
           "name" : "fiksOrgId",
           "in" : "path",
@@ -167,7 +167,7 @@
           "content" : {
             "application/json" : {
               "schema" : {
-                "$ref" : "#/components/schemas/FjernEksponertForRequest"
+                "$ref" : "#/components/schemas/LeggTilForvalterRequest"
               }
             }
           },
@@ -175,7 +175,61 @@
         },
         "responses" : {
           "201" : {
-            "description" : "Fjerner eksponert person",
+            "description" : "Legger til forvalter",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/LedsagerbevisResponse"
+                }
+              }
+            }
+          },
+          "default" : {
+            "description" : "Noe gikk galt",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete" : {
+        "tags" : [ "Ledsagerbevis" ],
+        "description" : "Fjerne person som forvalter det digitale ledsagerbeviset",
+        "operationId" : "fjernForvalter",
+        "parameters" : [ {
+          "name" : "fiksOrgId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        }, {
+          "name" : "ledsagerbevisId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/FjernForvalterRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "201" : {
+            "description" : "Fjerner forvalter",
             "content" : {
               "application/json" : {
                 "schema" : {
@@ -222,60 +276,6 @@
         "responses" : {
           "200" : {
             "description" : "Henter ledsagerbevis",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/LedsagerbevisResponse"
-                }
-              }
-            }
-          },
-          "default" : {
-            "description" : "Noe gikk galt",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/ErrorMessage"
-                }
-              }
-            }
-          }
-        }
-      },
-      "post" : {
-        "tags" : [ "Ledsagerbevis" ],
-        "description" : "Legg til person som skal få tilgang til det digitale ledsagerbeviset",
-        "operationId" : "leggTilEksponertFor",
-        "parameters" : [ {
-          "name" : "fiksOrgId",
-          "in" : "path",
-          "required" : true,
-          "schema" : {
-            "type" : "string",
-            "format" : "uuid"
-          }
-        }, {
-          "name" : "ledsagerbevisId",
-          "in" : "path",
-          "required" : true,
-          "schema" : {
-            "type" : "string",
-            "format" : "uuid"
-          }
-        } ],
-        "requestBody" : {
-          "content" : {
-            "application/json" : {
-              "schema" : {
-                "$ref" : "#/components/schemas/LeggTilEksponertForRequest"
-              }
-            }
-          },
-          "required" : true
-        },
-        "responses" : {
-          "201" : {
-            "description" : "Legger til eksponert",
             "content" : {
               "application/json" : {
                 "schema" : {
@@ -583,11 +583,6 @@
           "poststed" : {
             "type" : "string",
             "description" : "Poststed"
-          },
-          "kommunenummer" : {
-            "pattern" : "^\\d{4}$",
-            "type" : "string",
-            "description" : "Kommunenummer"
           }
         },
         "description" : "Adresse det er mulig å sende post til"
@@ -649,13 +644,13 @@
             "description" : "Utløpsdato for beviset",
             "format" : "date"
           },
-          "eksponertFor" : {
+          "forvaltere" : {
             "uniqueItems" : true,
             "type" : "array",
-            "description" : "Personer beviset skal være eksponert for",
+            "description" : "Personer som skal forvalte ledsagerbeviset",
             "items" : {
               "type" : "string",
-              "description" : "Personer beviset skal være eksponert for"
+              "description" : "Personer som skal forvalte ledsagerbeviset"
             }
           },
           "eksternId" : {
@@ -684,7 +679,7 @@
           }
         }
       },
-      "FjernEksponertForRequest" : {
+      "FjernForvalterRequest" : {
         "required" : [ "fnr" ],
         "type" : "object",
         "properties" : {
@@ -693,7 +688,7 @@
             "description" : "Fødselsnummer til person"
           }
         },
-        "description" : "Person som skal fjernes fra eksponerte"
+        "description" : "Person som skal fjernes som forvalter av ledsagerbevis"
       },
       "LedsagerbevisHendelse" : {
         "required" : [ "hendelseType", "tidspunkt" ],
@@ -702,7 +697,7 @@
           "hendelseType" : {
             "type" : "string",
             "description" : "Type hendelse på ledsagerbeviset",
-            "enum" : [ "OPPRETTET", "REVOKERT", "SENDT_EKSPONERT", "IKKE_SENDT_EKSPONERT", "IKKE_SENDT_UTSTEDET_TIL", "SENDT_UTSTEDET_TIL", "SENDT_PRINT", "EKSPONERT_PERSON_LAGT_TIL", "EKSPONERT_PERSON_FJERNET", "ENDRET_EKSTERN_ID" ]
+            "enum" : [ "OPPRETTET", "REVOKERT", "SENDT_FORVALTER", "IKKE_SENDT_FORVALTER", "IKKE_SENDT_UTSTEDET_TIL", "SENDT_UTSTEDET_TIL", "SENDT_PRINT", "FORVALTER_LAGT_TIL", "FORVALTER_FJERNET", "ENDRET_EKSTERN_ID" ]
           },
           "tidspunkt" : {
             "type" : "string",
@@ -732,13 +727,23 @@
         },
         "description" : "Beskriver fiksOrg som ansatt har tilgang til"
       },
-      "LeggTilEksponertForRequest" : {
+      "LeggTilForvalterRequest" : {
+        "required" : [ "forvalter" ],
+        "type" : "object",
+        "properties" : {
+          "forvalter" : {
+            "$ref" : "#/components/schemas/Person"
+          }
+        },
+        "description" : "Person som skal forvalte et ledsagerbevis"
+      },
+      "Person" : {
         "required" : [ "adresse", "fnr", "navn" ],
         "type" : "object",
         "properties" : {
           "navn" : {
             "type" : "string",
-            "description" : "Navn til den som skal få tilgang til ledsagerbevis"
+            "description" : "Navn knyttet til ledsagerbevis"
           },
           "fnr" : {
             "pattern" : "^[0-9]{11}$",
@@ -749,20 +754,14 @@
             "$ref" : "#/components/schemas/Adresse"
           }
         },
-        "description" : "Person som skal få tilgang til et ledsagerbevis"
+        "description" : "Person knyttet til ledsagerbeviset"
       },
       "OpprettLedsagerbevisRequest" : {
-        "required" : [ "adresse", "antallLedsagere", "fnr", "navn", "utlopsdato" ],
+        "required" : [ "antallLedsagere", "eier", "utlopsdato" ],
         "type" : "object",
         "properties" : {
-          "navn" : {
-            "type" : "string",
-            "description" : "Navn på mottaker av ledsagerbevis"
-          },
-          "fnr" : {
-            "pattern" : "^[0-9]{11}$",
-            "type" : "string",
-            "description" : "Fødselsnummer på mottaker av ledsagerbevis"
+          "eier" : {
+            "$ref" : "#/components/schemas/Person"
           },
           "antallLedsagere" : {
             "maximum" : 2,
@@ -776,11 +775,15 @@
             "description" : "Utløpsdato for beviset",
             "format" : "date"
           },
-          "adresse" : {
-            "$ref" : "#/components/schemas/Adresse"
+          "forvalter" : {
+            "type" : "array",
+            "description" : "Personer som skal forvalte ledsagerbeviset",
+            "items" : {
+              "$ref" : "#/components/schemas/Person"
+            }
           }
         },
-        "description" : "Opprett Ledsagerbevis for person"
+        "description" : "Opprett Ledsagerbevis"
       },
       "RevokerLedsagerbevisRequest" : {
         "required" : [ "revokertGrunn" ],
