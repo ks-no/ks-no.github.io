@@ -4,18 +4,7 @@ date: 2023-06-29
 aliases: [/svarut/edialog]
 ---
 
-Sikker innsending av brev via SvarUt til mottakersystem i SvarUt. For å bruke eDialog bør man allerede ha tatt i bruk SvarInn.
-
-## Beskrivelse
-
-Konfigurasjon av eDialog-mottakere skjer via https://forvaltning.fiks.ks.no under «Fiks melding»-tjenesten og «eDialog». 
-Hver mottaker vil ha en SvarUt-konto tilknyttet seg som vil faktureres for alle meldinger som sendes inn.
-
-### eDialog med predefinert mottaker
-Man kan lenke direkte til eDialog ved å bruke https://min.kommune.no/s/{organisasjonsnummer}. 
-Man kan også bruke mottakerens fire bokstavers id i stedet for organisasjonsnummeret. 
-Denne id'en kan finnes i konfigurasjonen for hver enkelt mottaker på https://forvaltning.fiks.ks.no/fiks-konfigurasjon/tjenester/melding/edialog/mottakere.
-
+eDialog er nå en del av Fiks melding. Dokumentasjon for tjenesten finnes [her](/tjenester/fiksmelding/edialog).
 
 ### Svare på forsendelse ved bruk av eDialog
 Dersom man benytter V6 eller nyere av SOAP-service, eller hvilken som helst versjon av REST, for sending av forsendelser til SvarUt, kan man sende med en lenke til eDialog for å besvare forsendelsen. 
