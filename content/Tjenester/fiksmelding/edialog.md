@@ -3,9 +3,10 @@ title: eDialog
 date: 2023-09-13
 ---
 
-## Beskrivelse
+Sikker innsending av brev fra innbyggere til organisasjoner via SvarUt. For å bruke eDialog bør man allerede ha tatt i bruk [SvarUt](/tjenester/svarut) og [SvarInn](/tjenester/svarut/svarinn-mottakservice).
+Dersom SvarInn ikke er konfigurert opp for organisasjonsnummeret som mottar meldingene vil disse bli sendt til Altinn.
 
-eDialog kan benyttes for sikker innsending av brev fra innbyggere til organisasjoner via SvarUt. For å bruke eDialog må man allerede ha tatt i bruk [SvarUt](/tjenester/svarut), og man bør også ha tatt i bruk [SvarInn](/tjenester/svarut/svarinn-mottakservice).
+## Beskrivelse
 
 Konfigurasjon av eDialog-mottakere skjer via https://forvaltning.fiks.ks.no under «Fiks melding»-tjenesten og «eDialog».
 Hver mottaker vil ha en SvarUt-konto tilknyttet seg som vil faktureres for alle meldinger som sendes inn.
