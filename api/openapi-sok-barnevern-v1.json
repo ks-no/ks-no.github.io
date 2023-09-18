@@ -1,0 +1,558 @@
+{
+  "openapi" : "3.0.1",
+  "info" : {
+    "title" : "KS Fiks: Innsyn Barnevern-søk",
+    "contact" : {
+      "name" : "Fiks brukerstøtte",
+      "url" : "https://developers.fiks.ks.no/",
+      "email" : "fiks-utvikling@ks.no"
+    },
+    "version" : "v1"
+  },
+  "servers" : [ {
+    "url" : "https://api.fiks.ks.no",
+    "description" : "KS Fiks API host"
+  }, {
+    "url" : "https://api.fiks.test.ks.no/",
+    "description" : "KS Fiks TEST API host"
+  } ],
+  "tags" : [ {
+    "name" : "Innsyn Barnevern-søk",
+    "description" : "API for søk etter barnevernssaker"
+  } ],
+  "paths" : {
+    "/innsyn-sok/api/v1/barnevern/mapper" : {
+      "get" : {
+        "tags" : [ "BarnevernSok" ],
+        "summary" : "Hent barnevernsmapper for autentisert bruker",
+        "operationId" : "hentMapper",
+        "responses" : {
+          "default" : {
+            "description" : "default response",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/MappeSokeresultat"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/innsyn-sok/api/v1/barnevern/journalposter/{dokumentId}" : {
+      "post" : {
+        "tags" : [ "BarnevernSok" ],
+        "summary" : "Oppslag på barnevernjournalpost",
+        "operationId" : "journalpostOppslag",
+        "parameters" : [ {
+          "name" : "dokumentId",
+          "in" : "path",
+          "description" : "Unik dokument-id for barnevernjournalposten på formatet <fiksOrgId>_<integrasjonId>_<meldingId>",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          },
+          "example" : "b036c9a1-f389-4eec-aa62-878bbeab8702_0fd67142-3b05-41e0-8dc9-40cf09ed4fb5_884e8f04-c903-421d-b736-d4944d2e8d85"
+        } ],
+        "responses" : {
+          "default" : {
+            "description" : "default response",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/JournalpostOppslag"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/innsyn-sok/api/v1/barnevern/mapper/{dokumentId}/journalposter/sok" : {
+      "post" : {
+        "tags" : [ "BarnevernSok" ],
+        "summary" : "Søk etter barnevernjournalposter tilhørende en barnevernsmappe",
+        "operationId" : "journalpostSok",
+        "parameters" : [ {
+          "name" : "dokumentId",
+          "in" : "path",
+          "description" : "Unik dokument-id for foreldermappen på formatet <fiksOrgId>_<integrasjonId>_<meldingId>",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          },
+          "example" : "b036c9a1-f389-4eec-aa62-878bbeab8702_0fd67142-3b05-41e0-8dc9-40cf09ed4fb5_884e8f04-c903-421d-b736-d4944d2e8d85"
+        }, {
+          "name" : "term",
+          "in" : "query",
+          "description" : "Søkeord",
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "fra",
+          "in" : "query",
+          "description" : "Index for det første søketreffet som skal returneres",
+          "schema" : {
+            "type" : "integer",
+            "format" : "int32",
+            "default" : 0
+          }
+        }, {
+          "name" : "antall",
+          "in" : "query",
+          "description" : "Antall søketreff som skal returneres",
+          "schema" : {
+            "type" : "integer",
+            "format" : "int32",
+            "default" : 50
+          }
+        }, {
+          "name" : "sortering",
+          "in" : "query",
+          "description" : "Skal søkeresultatet sorteres på dato heller enn relevans? Relevans-basert sortering er default",
+          "schema" : {
+            "$ref" : "#/components/schemas/Sortering"
+          }
+        } ],
+        "requestBody" : {
+          "description" : "Filtere som begrenser resultatsettet",
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/BarnevernJournalpostFilter"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "default" : {
+            "description" : "default response",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/JournalpostSokeresultat"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/innsyn-sok/api/v1/barnevern/mapper/{dokumentId}" : {
+      "get" : {
+        "tags" : [ "BarnevernSok" ],
+        "summary" : "Oppslag på barnevernsmappe",
+        "operationId" : "mappeOppslag",
+        "parameters" : [ {
+          "name" : "dokumentId",
+          "in" : "path",
+          "description" : "Unik dokument-id for mappen på formatet <fiksOrgId>_<integrasjonId>_<meldingId>",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          },
+          "example" : "b036c9a1-f389-4eec-aa62-878bbeab8702_0fd67142-3b05-41e0-8dc9-40cf09ed4fb5_884e8f04-c903-421d-b736-d4944d2e8d85"
+        } ],
+        "responses" : {
+          "default" : {
+            "description" : "default response",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/MappeOppslag"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components" : {
+    "schemas" : {
+      "Barnevernsmappe" : {
+        "required" : [ "dokumentId", "fiksOrganisasjon", "hovedperson" ],
+        "type" : "object",
+        "properties" : {
+          "dokumentId" : {
+            "type" : "string"
+          },
+          "hovedperson" : {
+            "type" : "string"
+          },
+          "fiksOrganisasjon" : {
+            "$ref" : "#/components/schemas/FiksOrganisasjon"
+          },
+          "avsluttet" : {
+            "type" : "string"
+          }
+        }
+      },
+      "FiksOrganisasjon" : {
+        "required" : [ "id", "visningsnavn" ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "visningsnavn" : {
+            "type" : "string"
+          }
+        }
+      },
+      "MappeSokeresultat" : {
+        "type" : "object",
+        "properties" : {
+          "antallTreff" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "treffMedHoyereInnloggingsniva" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "treff" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Barnevernsmappe"
+            }
+          }
+        }
+      },
+      "Dokument" : {
+        "required" : [ "filnavn", "mimeType", "storrelse", "tittel" ],
+        "type" : "object",
+        "properties" : {
+          "filnavn" : {
+            "type" : "string"
+          },
+          "storrelse" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "mimeType" : {
+            "type" : "string"
+          },
+          "tittel" : {
+            "type" : "string"
+          },
+          "lenke" : {
+            "type" : "string"
+          },
+          "svarUtFilnummer" : {
+            "type" : "integer",
+            "format" : "int32"
+          }
+        }
+      },
+      "JournalpostOppslag" : {
+        "required" : [ "dokumentId", "forelderDokumentId", "journalposttype", "tittel" ],
+        "type" : "object",
+        "properties" : {
+          "dokumentId" : {
+            "type" : "string"
+          },
+          "forelderDokumentId" : {
+            "type" : "string"
+          },
+          "journalposttype" : {
+            "type" : "string",
+            "enum" : [ "I", "U", "N", "X", "S" ]
+          },
+          "tittel" : {
+            "type" : "string"
+          },
+          "mappeId" : {
+            "type" : "string"
+          },
+          "systemId" : {
+            "type" : "string"
+          },
+          "registreringsId" : {
+            "type" : "string"
+          },
+          "journalpostnummer" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "journalaar" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "journaldato" : {
+            "type" : "string"
+          },
+          "svarUtForsendelseId" : {
+            "type" : "string"
+          },
+          "internEksponertFor" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Part"
+            }
+          },
+          "beskrivelse" : {
+            "type" : "string"
+          },
+          "lenker" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Lenke"
+            }
+          },
+          "klagefrist" : {
+            "type" : "string"
+          },
+          "korrespondanseparter" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Korrespondansepart"
+            }
+          },
+          "dokumenter" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Dokument"
+            }
+          },
+          "dokumenttype" : {
+            "type" : "string",
+            "enum" : [ "VEDTAK", "MOTEREFERAT", "TILTAKSPLAN" ]
+          }
+        }
+      },
+      "Korrespondansepart" : {
+        "required" : [ "korrespondanseparttype", "navn", "type" ],
+        "type" : "object",
+        "properties" : {
+          "type" : {
+            "type" : "string",
+            "enum" : [ "PERSON", "ORGANISASJON" ]
+          },
+          "korrespondanseparttype" : {
+            "type" : "string",
+            "enum" : [ "EA", "EM", "EK", "IA", "IM", "IK" ]
+          },
+          "navn" : {
+            "type" : "string"
+          },
+          "orgnr" : {
+            "type" : "string"
+          },
+          "kontaktperson" : {
+            "type" : "string"
+          }
+        }
+      },
+      "Lenke" : {
+        "required" : [ "navn", "url" ],
+        "type" : "object",
+        "properties" : {
+          "navn" : {
+            "type" : "string"
+          },
+          "url" : {
+            "type" : "string"
+          }
+        }
+      },
+      "Part" : {
+        "required" : [ "navn", "rolle", "type" ],
+        "type" : "object",
+        "properties" : {
+          "type" : {
+            "type" : "string",
+            "enum" : [ "PERSON", "ORGANISASJON" ]
+          },
+          "rolle" : {
+            "type" : "string",
+            "enum" : [ "HOVEDPERSON", "MOR", "FAR", "MEDMOR", "MEDFAR", "VERGE" ]
+          },
+          "navn" : {
+            "type" : "string"
+          }
+        }
+      },
+      "Barnevernsjournalpost" : {
+        "required" : [ "dokumentId", "tittel" ],
+        "type" : "object",
+        "properties" : {
+          "dokumentId" : {
+            "type" : "string"
+          },
+          "tittel" : {
+            "type" : "string"
+          },
+          "journaldato" : {
+            "type" : "string"
+          }
+        }
+      },
+      "DokumenttypeAggregering" : {
+        "type" : "object",
+        "properties" : {
+          "dokumenttype" : {
+            "type" : "string",
+            "enum" : [ "VEDTAK", "MOTEREFERAT", "TILTAKSPLAN" ]
+          },
+          "antallTreff" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        }
+      },
+      "JournalpostAggregeringer" : {
+        "type" : "object",
+        "properties" : {
+          "periode" : {
+            "$ref" : "#/components/schemas/Periode"
+          },
+          "dokumenttyper" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/DokumenttypeAggregering"
+            }
+          }
+        }
+      },
+      "JournalpostSokeresultat" : {
+        "type" : "object",
+        "properties" : {
+          "antallTreff" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "treffMedHoyereInnloggingsniva" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "treff" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Barnevernsjournalpost"
+            }
+          },
+          "aggregeringer" : {
+            "$ref" : "#/components/schemas/JournalpostAggregeringer"
+          }
+        }
+      },
+      "Periode" : {
+        "type" : "object",
+        "properties" : {
+          "fraDato" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "tilDato" : {
+            "type" : "string",
+            "format" : "date-time"
+          }
+        }
+      },
+      "Sortering" : {
+        "type" : "string",
+        "enum" : [ "DATO_ASC", "DATO_DESC", "RELEVANS" ]
+      },
+      "BarnevernJournalpostFilter" : {
+        "type" : "object",
+        "properties" : {
+          "dokumenttyper" : {
+            "uniqueItems" : true,
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "enum" : [ "VEDTAK", "MOTEREFERAT", "TILTAKSPLAN" ]
+            }
+          },
+          "fraDato" : {
+            "type" : "string",
+            "format" : "date"
+          },
+          "tilDato" : {
+            "type" : "string",
+            "format" : "date"
+          }
+        }
+      },
+      "MappeOppslag" : {
+        "required" : [ "dokumentId", "tittel" ],
+        "type" : "object",
+        "properties" : {
+          "dokumentId" : {
+            "type" : "string"
+          },
+          "tittel" : {
+            "type" : "string"
+          },
+          "mappeId" : {
+            "type" : "string"
+          },
+          "systemId" : {
+            "type" : "string"
+          },
+          "beskrivelse" : {
+            "type" : "string"
+          },
+          "parter" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Part"
+            }
+          },
+          "minPart" : {
+            "$ref" : "#/components/schemas/Part"
+          },
+          "sistOppdatert" : {
+            "type" : "string"
+          },
+          "avsluttet" : {
+            "type" : "string"
+          },
+          "milepeler" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Milepel"
+            }
+          },
+          "navaerendeMilepel" : {
+            "$ref" : "#/components/schemas/Milepel"
+          },
+          "saksdato" : {
+            "type" : "string"
+          },
+          "saksansvarlig" : {
+            "type" : "string"
+          },
+          "lenker" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Lenke"
+            }
+          }
+        }
+      },
+      "Milepel" : {
+        "required" : [ "navn", "startdato" ],
+        "type" : "object",
+        "properties" : {
+          "navn" : {
+            "type" : "string"
+          },
+          "startdato" : {
+            "type" : "string"
+          },
+          "sluttdato" : {
+            "type" : "string"
+          },
+          "beskrivelse" : {
+            "type" : "string"
+          }
+        }
+      }
+    }
+  }
+}
