@@ -9,7 +9,7 @@ hidden: true
    Kommune / IKT samarbeidet sender bestilling med meta-datalenke til fiks@ks.no 
 2. Grunnoppsett
    Sertifikater
-   Manuelt importere rot-sertifikatet til KS fra lenke https://www.commfides.com/wp-content/uploads/2017/09/cpnrootcasha256class3.zip. Rot-sertifikatet skal installeres i mappen Trusted Root Certificates Authorities, Microsoft AD FS kan komme til å foreslå Intermediate Certification Authorities.
+   Manuelt importere rot-sertifikatet til KS som ligger nederst under "Legal Person – G3" på https://www.commfides.com/en/cps/. Rot-sertifikatet skal installeres i mappen Trusted Root Certificates Authorities, Microsoft AD FS kan komme til å foreslå Intermediate Certification Authorities.
    Relaying party trust
    Sette opp relying party trust basert på provider meta-data link tilsendt i e-post. Eks: https://www.kslaring.no/auth/saml2/sp/metadata.php?idp=<kommunenavn>
    Merk at det kan hende kommunesamarbeidet sitt navn skal stå istedet for kommunenavn, etter idp=
