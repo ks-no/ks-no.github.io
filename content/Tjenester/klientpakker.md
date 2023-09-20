@@ -17,7 +17,7 @@ Risiko kan ligge i kompromitterte pakker i de sentraliserte repositories.
 Dette kan hende som resultat av:
 - Tredjepart laster opp kompromitterte pakker til Maven Central eller nuget.org som KS
 - At man har et kompromittert byggemiljø som leverer kompromitterte pakker
-- Avhengige pakker, tredjepart pakker, som følger med KS sine pakker er komprimittert og følger med ut med KS sine pakker
+- Avhengige pakker, tredjepart pakker, som følger med KS sine pakker er kompromittert og følger med ut med KS sine pakker
 
 
 ## Tiltak
