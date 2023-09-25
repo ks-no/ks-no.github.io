@@ -12,6 +12,7 @@ Før man begynner på arbeidet med å sette opp Fiks Protokoll er det lurt å sj
 
 ### Person fra kunden
 Det må være en person fra kunden organisasjonen (kommunen) som skal ha opprettet protokoll konto og system som kan logge seg på Fiks forvaltning og gjøre minstekravet for oppsett.
+Minstekravet for oppsettet er å få opprettet et *"system"* hvis leverandør(ene) setter opp resten via API. Se mer om dette lenger nede.
 
 Denne personen må ha rettighet til å:
 * Signere avtale for bruk av Fiks protokoll hvis ikke dette er gjort tidligere
