@@ -37,7 +37,7 @@ Noe av dette må gjøres gjennom grensesnittet i Fiks Konfigurasjon ([forvaltnin
 
 Vi har også laget en huskeliste for hva man må ha klart og hvilke personer med gitt rettighet i Fiks forvaltning som må være med på å sette dette opp.
 
-* [Huskeliste før man start på oppsett]({{< ref "huskeliste_for_opprette_protokoll.md" >}})
+* [Huskeliste før man starter på oppsett]({{< ref "huskeliste_for_opprette_protokoll.md" >}})
 * [Ta i bruk Fiks Protokoll]({{< ref "ta_ibruk_protokoll.md" >}})
 * [Opprette system]({{< ref "opprette_system.md" >}})
 * [Opprette konto]({{< ref "opprette_konto.md" >}})

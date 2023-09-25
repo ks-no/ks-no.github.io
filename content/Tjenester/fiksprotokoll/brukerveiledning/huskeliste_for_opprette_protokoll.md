@@ -1,5 +1,5 @@
 ---
-title: 1. Huskeliste før man starte å sette opp protokoll
+title: 1. Huskeliste før man starter å sette opp protokoll
 date: 2022-09-23
 alias: [/fiks-plattform/tjenester/fiksprotokoll/brukerveiledning/huskeliste]
 ---
