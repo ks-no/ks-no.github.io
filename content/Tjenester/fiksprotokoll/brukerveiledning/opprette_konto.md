@@ -1,5 +1,5 @@
 ---
-title: 3. Opprette konto
+title: 4. Opprette konto
 date: 2022-09-23
 alias: [/fiks-plattform/tjenester/fiksprotokoll/brukerveiledning/opprette_konto, /tjenester/fiksprotokoll/opprette_konto]
 ---
