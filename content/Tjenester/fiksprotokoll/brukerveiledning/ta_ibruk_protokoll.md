@@ -1,5 +1,5 @@
 ---
-title: 1. Ta i bruk tjenesten
+title: 2. Ta i bruk tjenesten
 date: 2022-09-23
 alias: [/fiks-plattform/tjenester/fiksprotokoll/brukerveiledning/ta_ibruk_protokoll, /tjenester/fiksprotokoll/ta_ibruk_protokoll, /tjenester/fiksprotokoll/brukerveiledning/ta_ibruk_protokoll]
 ---

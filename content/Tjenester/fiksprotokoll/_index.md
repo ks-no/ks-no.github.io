@@ -35,6 +35,9 @@ Det er noen steg som må gjøres før det er mulig å bruke Fiks Protokoll. Tjen
 
 Noe av dette må gjøres gjennom grensesnittet i Fiks Konfigurasjon ([forvaltning.fiks.ks.no](https://forvaltning.fiks.ks.no) i produksjon og [forvaltning.fiks.test.ks.no](https://forvaltning.fiks.test.ks.no) i testmiljøet), mens noe kan gjøres via API. I denne brukerveiledningen viser vi steg for steg hvordan dette gjøres gjennom webgrensesnittet.
 
+Vi har også laget en huskeliste for hva man må ha klart og hvilke personer med gitt rettighet i Fiks forvaltning som må være med på å sette dette opp.
+
+* [Huskeliste før man start på oppsett]({{< ref "huskeliste_for_opprette_protokoll.md" >}})
 * [Ta i bruk Fiks Protokoll]({{< ref "ta_ibruk_protokoll.md" >}})
 * [Opprette system]({{< ref "opprette_system.md" >}})
 * [Opprette konto]({{< ref "opprette_konto.md" >}})
