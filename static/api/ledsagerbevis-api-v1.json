@@ -2,7 +2,7 @@
   "openapi" : "3.0.1",
   "info" : {
     "title" : "KS Fiks: Ledsagerbevis",
-    "description" : "Tjeneste digitalt ledsagerbevis",
+    "description" : "Tjeneste digitalt ledsagerbevis - oppslag mot Folkeregister og KRR",
     "contact" : {
       "name" : "Fiks brukerstøtte",
       "url" : "https://ks-no.github.io/",
@@ -11,10 +11,10 @@
     "version" : "v1"
   },
   "servers" : [ {
-    "url" : "https://api.fiks.ks.no",
+    "url" : "https://forvaltning.fiks.ks.no",
     "description" : "KS Fiks API host"
   }, {
-    "url" : "https://api.test.fiks.ks.no",
+    "url" : "https://forvaltning.test.fiks.ks.no",
     "description" : "KS Fiks TEST API host"
   } ],
   "tags" : [ {
@@ -22,7 +22,7 @@
     "description" : "API for digitalt ledsagerbevis for å laste opp og hente ut bilder"
   }, {
     "name" : "Ledsagerbevis",
-    "description" : "API for Digitalt ledsagerbevis: Oppslag mot Folkeregister"
+    "description" : "API for digitalt ledsagerbevis"
   } ],
   "paths" : {
     "/digitalt-ledsagerbevis/api/v1/bilde/organisasjoner/{fiksOrgId}/sistOpplastet" : {
@@ -97,43 +97,6 @@
               "application/json" : {
                 "schema" : {
                   "$ref" : "#/components/schemas/ErrorMessage"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/digitalt-ledsagerbevis/api/v1/personsok/organisasjoner/{fiksOrgId}" : {
-      "post" : {
-        "tags" : [ "Ledsagerbevis" ],
-        "description" : "Oppslag med fødselsnummer for å hente ut informasjon fra Folkeregisteret",
-        "operationId" : "oppslag",
-        "parameters" : [ {
-          "name" : "fiksOrgId",
-          "in" : "path",
-          "required" : true,
-          "schema" : {
-            "type" : "string",
-            "format" : "uuid"
-          }
-        } ],
-        "requestBody" : {
-          "content" : {
-            "application/json" : {
-              "schema" : {
-                "$ref" : "#/components/schemas/FolkeregisterRequest"
-              }
-            }
-          }
-        },
-        "responses" : {
-          "200" : {
-            "description" : "Informasjon henta fra Folkeregisteret",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/FolkeregisterPerson"
                 }
               }
             }
@@ -501,6 +464,43 @@
           }
         }
       }
+    },
+    "/digitalt-ledsagerbevis/api/v1/personsok/organisasjoner/{fiksOrgId}" : {
+      "post" : {
+        "tags" : [ "Ledsagerbevis" ],
+        "description" : "Oppslag med fødselsnummer for å hente ut informasjon fra Folkeregisteret og KRR",
+        "operationId" : "oppslag",
+        "parameters" : [ {
+          "name" : "fiksOrgId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/PersonSokRequest"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Informasjon henta fra Folkeregisteret og KRR",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/PersonSok"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components" : {
@@ -559,55 +559,6 @@
             "format" : "uuid"
           }
         }
-      },
-      "Adresse" : {
-        "required" : [ "adressenavn", "postnummer", "poststed" ],
-        "type" : "object",
-        "properties" : {
-          "adressenavn" : {
-            "type" : "string",
-            "description" : "Gatenavn"
-          },
-          "postnummer" : {
-            "pattern" : "^[0-9]{4}$",
-            "type" : "string",
-            "description" : "Postnummer"
-          },
-          "poststed" : {
-            "type" : "string",
-            "description" : "Poststed"
-          }
-        },
-        "description" : "Adresse det er mulig å sende post til"
-      },
-      "FolkeregisterPerson" : {
-        "required" : [ "fnr" ],
-        "type" : "object",
-        "properties" : {
-          "fnr" : {
-            "type" : "string"
-          },
-          "navn" : {
-            "type" : "string",
-            "description" : "Navn henta fra Folkeregisteret."
-          },
-          "adresse" : {
-            "$ref" : "#/components/schemas/Adresse"
-          }
-        },
-        "description" : "Personinformasjon henta fra Folkeregisteret"
-      },
-      "FolkeregisterRequest" : {
-        "required" : [ "fnr" ],
-        "type" : "object",
-        "properties" : {
-          "fnr" : {
-            "pattern" : "^[0-9]{11}$",
-            "type" : "string",
-            "description" : "Fødselsnummeret det skal hentes informasjon om fra Folkeregisteret"
-          }
-        },
-        "description" : "Request for å hente ut informasjon fra Folkeregisteret"
       },
       "LedsagerbevisResponse" : {
         "required" : [ "antallLedsagere", "eksternId", "fiksOrgId", "fnr", "id", "navn", "opprettetDato", "utlopsdato" ],
@@ -719,6 +670,26 @@
         },
         "description" : "Beskriver fiksOrg som ansatt har tilgang til"
       },
+      "Adresse" : {
+        "required" : [ "adressenavn", "postnummer", "poststed" ],
+        "type" : "object",
+        "properties" : {
+          "adressenavn" : {
+            "type" : "string",
+            "description" : "Gatenavn"
+          },
+          "postnummer" : {
+            "pattern" : "^[0-9]{4}$",
+            "type" : "string",
+            "description" : "Postnummer"
+          },
+          "poststed" : {
+            "type" : "string",
+            "description" : "Poststed"
+          }
+        },
+        "description" : "Adresse det er mulig å sende post til"
+      },
       "LeggTilForvalterRequest" : {
         "required" : [ "forvalter" ],
         "type" : "object",
@@ -786,6 +757,39 @@
             "description" : "Hvorfor ledsagerbevis skal bli revokert"
           }
         }
+      },
+      "PersonSok" : {
+        "required" : [ "fnr" ],
+        "type" : "object",
+        "properties" : {
+          "fnr" : {
+            "type" : "string"
+          },
+          "navn" : {
+            "type" : "string",
+            "description" : "Navn henta fra Folkeregisteret."
+          },
+          "adresse" : {
+            "$ref" : "#/components/schemas/Adresse"
+          },
+          "tlf" : {
+            "type" : "string",
+            "description" : "Telefonnummer som finnes i Kontakt- og Reservasjonsregisteret"
+          }
+        },
+        "description" : "Personinformasjon henta fra Folkeregisteret og KRR"
+      },
+      "PersonSokRequest" : {
+        "required" : [ "fnr" ],
+        "type" : "object",
+        "properties" : {
+          "fnr" : {
+            "pattern" : "^[0-9]{11}$",
+            "type" : "string",
+            "description" : "Fødselsnummeret det skal hentes informasjon om"
+          }
+        },
+        "description" : "Request for å hente ut informasjon fra Folkeregisteret og KRR"
       }
     }
   }
