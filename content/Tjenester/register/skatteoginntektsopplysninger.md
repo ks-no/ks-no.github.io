@@ -15,12 +15,11 @@ Fiks register tilbyr skatte- og inntektsopplysninger for kommunalt ansatte via e
 
 
 ## Beskrivelse av tjenesten
-| Innbyggertjeneste                         | Gyldige tjenesteområde for rollen | Beregningstype              |
-| ----------------------------------------- | --------------------------------- | --------------------------- |
-| Redusert foreldrebetaling SFO/barnehage   | Foreldrebetaling SFO/barnehage    | BARNEHAGE_SFO               |
-| Kommunal bolig- og bostøtte               | N/A                               | BOLIGSOSIALE_FORMAAL        |
-| Praktisk bistand og opplæring             | Helse og omsorg: Praktisk bistand  | PRAKTISK_BISTAND            |
-| Langtidsopphold institusjon               | N/A                               | LANGTIDSOPPHOLD_INSTITUSJON |
+| Innbyggertjeneste                         | Gyldige tjenesteområde for rollen            | Beregningstype              |
+| ----------------------------------------- | -------------------------------------------- | --------------------------- |
+| Redusert foreldrebetaling SFO/barnehage   | Foreldrebetaling SFO/barnehage               | BARNEHAGE_SFO               |
+| Praktisk bistand og opplæring             | Helse og omsorg: Praktisk bistand            | PRAKTISK_BISTAND            |
+| Langtidsopphold institusjon               | Helse og omsorg: Langtidsopphold institusjon | LANGTIDSOPPHOLD_INSTITUSJON |
 
 ___For å bruke API-ene, både proxy og vårt overbygg, må rollen som opprettes være i rett tjenesteområde.___
 
