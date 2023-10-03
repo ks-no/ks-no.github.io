@@ -40,7 +40,7 @@ Et godt valg av navn på *"system"* er leverandørens navn pluss eventuelt lever
 Da er det lett å kjenne igjen og forstå hva det er i listen over systemer man etter hvert kan få.
 
 #### 3.1 Skal *"system"* støtte API?
-Leverandør(ene) må ha avklart på forhånd om *"systemet"* som settes opp for dem skal støtte å bruke API. Dette er et valg man må gjøre under oppsett av *"system"* 
+Leverandør(ene) må ha avklart på forhånd om *"systemet"* som settes opp for dem skal støtte å bruke API. Dette er et valg man må gjøre under oppsett av *"system"*. 
 
 ### 4. Dele integrasjonsid og passord
 Når *"system*" er opprettet skal integrasjonsid og integrasjonspassord som man får i oppsettet deles med leverandøren på en sikker måte. Hvordan dette kan deles på en sikker måte bør man ha klarert på forhånd.
@@ -48,7 +48,7 @@ Når *"system*" er opprettet skal integrasjonsid og integrasjonspassord som man 
 Hvis leverandør skal bruke API for resten av oppsett er man ferdig, hvis ikke se videre i huskelisten
 
 ### 5. Gyldig generert public key
-Når man setter opp en *"protokoll-konto"* i forvaltningssidene  må leverandøren ha gjort klar en public-key som man har generert på forhånd i korrekt format. 
+Når man setter opp en *"protokoll-konto"* i forvaltningssidene  må leverandøren ha gjort klar en public-key som man har generert på forhånd i form av et X509 sertifikat lagret i .pem filformat.
 Dette må personen fra kundeorganisasjon ha fått slik at man kan laste det opp i forvaltningssidene. 
 Vi anbefaler at leverandøren deler filen slik at den kan lastes ned.
 
@@ -59,5 +59,5 @@ Vi anbefaler at leverandøren deler filen slik at den kan lastes ned.
 Leverandør(ene) har klart hvilken protokoll og hvilken *"part*" sin side skal være i kommunikasjonen
 
 ### 7. Gi tilgang
-Man må huske å gi tilganger mellom kontoene. Det enkleste er å gjøre det fra "tjener" kontoen, søke opp og gi tilgang til "klient" kontoen slik at "klient" konto kan sende meldinger til seg selv.
-Alternativt kan man søke opp "tjener" kontoen man ønsker å sende meldinger til fra "klient" kontoen, og så be om å få tilgang. Men da må man inn på "tjener" kontoen igjen og bekrefte tilgangsforespørsel.
+Man må huske å gi tilganger mellom kontoene. Det enkleste er å gjøre det fra "tjener" kontoen, søke opp og gi tilgang til "klient" kontoen slik at "klient" konto kan sende meldinger til "tjener" kontoen.
+Alternativt kan man søke opp "tjener" kontoen man ønsker å sende meldinger til fra "klient" kontoen, og så be om å få tilgang. Men da må man inn på "tjener" kontoen igjen og bekrefte tilgangsforespørselen.
