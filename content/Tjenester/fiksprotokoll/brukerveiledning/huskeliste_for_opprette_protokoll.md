@@ -59,5 +59,5 @@ Vi anbefaler at leverandøren deler filen slik at den kan lastes ned.
 Leverandør(ene) har klart hvilken protokoll og hvilken *"part*" sin side skal være i kommunikasjonen
 
 ### 7. Gi tilgang
-Man må huske å gi tilganger mellom kontoene. Det enkleste er å gjøre det fra "tjener" kontoen, søke opp og gi tilgang til "klient" kontoen slik at "klient" konto kan sende meldinger til "tjener" kontoen.
-Alternativt kan man søke opp "tjener" kontoen man ønsker å sende meldinger til fra "klient" kontoen, og så be om å få tilgang. Men da må man inn på "tjener" kontoen igjen og bekrefte tilgangsforespørselen.
+Man må huske å gi tilganger mellom kontoene. Det enkleste er å gjøre det fra "tjener" siden, søke opp og gi tilgang til "klient" kontoen slik at "klient" konto kan sende meldinger til "tjener" kontoen.
+Alternativt kan man søke opp "tjener" kontoen man ønsker å sende meldinger til fra "klient" siden, og så be om å få tilgang. Men da må man inn på "tjener" siden igjen og bekrefte tilgangsforespørselen.
