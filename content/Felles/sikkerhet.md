@@ -25,7 +25,7 @@ Digdirs fellestjenester ID-porten og maskinporten benyttes til autentisering, og
 Utvikling av Fiks-plattformen følger prinsippene for innebygget personvern med grunnleggende opplæring i personvern og informasjonssikkerhet, avdekking av krav til personvern og informasjonssikkerhet ved systematisk arbeid med DPIA og ROS, sikker design vha. trusselmodellering og STRIDE, sikker koding med bruk av statisk kodeanalyse, automatisk oppdatering av sårbare avhengigheter, sikkerhetstesting på flere nivåer med enhetstesting, integrasjonstesting og akseptansetesting samt automatisert bygging og produksjonssetting som kun gjennomføres etter at tester og kvalitetskriterier er oppfylt.
 
 ## Opplæring
-Alle i KS' avdeling for digitale fellestjenester får grunnleggende opplæring i personvern og informasjonssikkerhet. Alle utviklere vil jevnlig få opplæring og trening i sikker utvikling.
+Alle i KS-Digitale fellestjenester får grunnleggende opplæring i personvern og informasjonssikkerhet. Alle utviklere vil jevnlig få opplæring og trening i sikker utvikling.
 
 ## Autentisering og autorisering
 Fiks-plattformens tjenester benytter som hovedregel ID-porten og Maskinporten fra Digitaliseringsdirektoratet (digdir) for autentisering av brukere. Spesifikke mekanismer for autentisering og autorisering avhenger av kontekst: 
