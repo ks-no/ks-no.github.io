@@ -10,14 +10,14 @@ Under beskrives hvordan vi har sikret tjenestene på en ovordnet nivå.
 ## Generelt om sikkerhet
 Ivaretakelse av digital sikkerhet i nasjonale felleskomponenter og andre samfunnskritiske systemer som leveres av virksomheter i offentlig sektor, må ha et særskilt fokus. Med økt fokus på innebygget personvern og informasjonssikkerhet blir Fiks-plattformen stadig bedre sikret, og er i seg selv å anse som et godt sikringstiltak for kommunal sektor.
 
-KS Fiks har for noen av tjenestene utarbeidet en utfylt mal for risikovurdering av hele verdikjeden, dvs. fra kommunens forretningskritiske prosesser til innbyggeren. Målet med denne risikovurderingen er å hjelpe kommunen med å få gjennomført en slik risikovurdering. 
+KS-Digitale fellestjenester har for noen av tjenestene utarbeidet en utfylt mal for risikovurdering av hele verdikjeden, dvs. fra kommunens forretningskritiske prosesser til innbyggeren. Målet med denne risikovurderingen er å hjelpe kommunen med å få gjennomført en slik risikovurdering. 
 
-På samme måte har KS også påbegynt en vurdering av personvernkonsekvenser (DPIA) ved bruk av tjenesten, som kommunene kan velge å benytte.
+På samme måte har KS-Digitale fellestjenester også påbegynt en vurdering av personvernkonsekvenser (DPIA) ved bruk av tjenesten, som kommunene kan velge å benytte.
 
 Den enkelte digitale fellestjeneste avtalefestes ved et eget tjenestevedlegg til den grunnleggende avtalen om tilknytning og bruk av Fiks-plattformen.
 
 ## Styringsystem for personvern og informasjonssikkerhet
-Avdeling for digitale fellestjenester har etablert og jobber etter et eget styringssystem for personvern og informasjonssikkerhet. Styringssystemet bygger på anerkjente standarder som ISO27001, ISO27701 og NSMs grunnprinsipper for IKT-sikkerhet. For full beskrivelse av styringsssystem og risiko- og sårbarhetsanalyser for den enkelte tjeneste, se [sikkerhetsdokumentasjon på forvaltning.fiks.ks.no](https://forvaltning.fiks.ks.no/sikkerhet-dokumentasjon/). Tilgangen der er begrenset til personer som er administrator for en organisasjon i Fiks-plattformen.
+KS-Digitale fellestjenester har etablert og jobber etter et eget styringssystem for personvern og informasjonssikkerhet. Styringssystemet bygger på anerkjente standarder som ISO27001, ISO27701 og NSMs grunnprinsipper for IKT-sikkerhet. For spesifikke spørsmål om sikkerhet og personvern på plattformen, ta kontakt med [brukerstøtte](mailto:fiks@ks.no) eller [sikkerhetsavdelingen](mailto:fiks-sikkerhet@ks.no) vår.
 
 ## Overordnet om teknologiske sikringstiltak
 Digdirs fellestjenester ID-porten og maskinporten benyttes til autentisering, og benyttes som identitetsbærer i hele Fiks-plattformen. ID- og maskinporten-tokens benyttes også som grunnlag for plattformens gjennom-gående autorisasjonslag, som benyttes på tvers av alle tjenester.  Gjennom faste prinsipper og komponenter oppnår plattformen er veletablert og godt testet funksjonalitet for autentisering og autorisasjon.
