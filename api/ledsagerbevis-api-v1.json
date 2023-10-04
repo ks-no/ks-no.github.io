@@ -2,7 +2,7 @@
   "openapi" : "3.0.1",
   "info" : {
     "title" : "KS Fiks: Ledsagerbevis",
-    "description" : "Tjeneste digitalt ledsagerbevis - oppslag mot Folkeregister og KRR",
+    "description" : "Tjeneste digitalt ledsagerbevis",
     "contact" : {
       "name" : "Fiks brukerstøtte",
       "url" : "https://ks-no.github.io/",
@@ -11,10 +11,10 @@
     "version" : "v1"
   },
   "servers" : [ {
-    "url" : "https://forvaltning.fiks.ks.no",
+    "url" : "https://api.fiks.ks.no",
     "description" : "KS Fiks API host"
   }, {
-    "url" : "https://forvaltning.test.fiks.ks.no",
+    "url" : "https://api.test.fiks.ks.no",
     "description" : "KS Fiks TEST API host"
   } ],
   "tags" : [ {
@@ -501,6 +501,97 @@
           }
         }
       }
+    },
+    "/digitalt-ledsagerbevis/innbygger/api/v1/ledsagerbevis" : {
+      "get" : {
+        "tags" : [ "Ledsagerbevis" ],
+        "description" : "Henter alle ledsagerbevis innbygger har tilgang på",
+        "operationId" : "hentLedsagerbevisList",
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/LedsagerbevisInnbyggerRespons"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/digitalt-ledsagerbevis/innbygger/api/v1/{tlf}" : {
+      "post" : {
+        "tags" : [ "Ledsagerbevis" ],
+        "description" : "Utsteder engangspassord",
+        "operationId" : "utstedEngangspassord",
+        "parameters" : [ {
+          "name" : "tlf",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "201" : {
+            "description" : "Utsted engangspassord"
+          },
+          "default" : {
+            "description" : "Noe gikk galt",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/digitalt-ledsagerbevis/innbygger/api/v1/token" : {
+      "get" : {
+        "tags" : [ "Ledsagerbevis" ],
+        "description" : "Utsteder token",
+        "operationId" : "utstedToken",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/TokenRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Utsted token",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/TokenResponse"
+                }
+              }
+            }
+          },
+          "default" : {
+            "description" : "Noe gikk galt",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components" : {
@@ -806,6 +897,51 @@
           }
         },
         "description" : "Request for å hente ut informasjon fra Folkeregisteret og KRR"
+      },
+      "LedsagerbevisInnbyggerRespons" : {
+        "required" : [ "antallLedsagere", "id", "utlopsdato" ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string",
+            "description" : "Id på ledsagerbeviset",
+            "format" : "uuid"
+          },
+          "antallLedsagere" : {
+            "type" : "integer",
+            "description" : "Antall ledsagere",
+            "format" : "int32"
+          },
+          "utlopsdato" : {
+            "type" : "string",
+            "description" : "Utløpsdato for beviset",
+            "format" : "date"
+          }
+        }
+      },
+      "TokenResponse" : {
+        "required" : [ "token" ],
+        "type" : "object",
+        "properties" : {
+          "token" : {
+            "type" : "string"
+          }
+        },
+        "description" : "Token for tilgang til ledsagerbevis"
+      },
+      "TokenRequest" : {
+        "required" : [ "otp", "telefonnummer" ],
+        "type" : "object",
+        "properties" : {
+          "otp" : {
+            "type" : "string",
+            "description" : "Engangspassord for telefonnummer"
+          },
+          "telefonnummer" : {
+            "type" : "string",
+            "description" : "Tilhørende telefonnummer"
+          }
+        }
       }
     }
   }
