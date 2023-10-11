@@ -28,7 +28,7 @@
     "/digitalt-ledsagerbevis/api/v1/bilde/organisasjoner/{fiksOrgId}/sistOpplastet" : {
       "post" : {
         "tags" : [ "LedsagerbevisBilde" ],
-        "description" : "Henter ut eventuell eksisterende bilde",
+        "description" : "Henter ut sist opplastet bilde",
         "operationId" : "hentBilde",
         "parameters" : [ {
           "name" : "fiksOrgId",
@@ -51,7 +51,7 @@
         },
         "responses" : {
           "200" : {
-            "description" : "Henter eksisterende bilde"
+            "description" : "Henter sist opplastet bilde"
           },
           "default" : {
             "description" : "Noe gikk galt",
@@ -696,13 +696,16 @@
         "description" : "Hent bildeinfo for fnr"
       },
       "OpplastetBildeResponse" : {
+        "required" : [ "bildeId" ],
         "type" : "object",
         "properties" : {
           "bildeId" : {
             "type" : "string",
+            "description" : "Bilde-id",
             "format" : "uuid"
           }
-        }
+        },
+        "description" : "Respons som inneholder id til bilde som nettopp er lastet opp"
       },
       "LedsagerbevisResponse" : {
         "required" : [ "antallLedsagere", "eier", "eksternId", "fiksOrgId", "id", "opprettetDato", "utlopsdato" ],
@@ -798,7 +801,7 @@
           "hendelseType" : {
             "type" : "string",
             "description" : "Type hendelse på ledsagerbeviset",
-            "enum" : [ "OPPRETTET", "REVOKERT", "SENDT_FORVALTER", "IKKE_SENDT_FORVALTER", "IKKE_SENDT_UTSTEDET_TIL", "SENDT_UTSTEDET_TIL", "SENDT_PRINT", "FORVALTER_LAGT_TIL", "FORVALTER_FJERNET", "ENDRET_EKSTERN_ID" ]
+            "enum" : [ "OPPRETTET", "REVOKERT", "SENDT_ADMINISTRATOR", "IKKE_SENDT_ADMINISTRATOR", "IKKE_SENDT_UTSTEDET_TIL", "SENDT_UTSTEDET_TIL", "SENDT_PRINT", "ADMINISTRATOR_LAGT_TIL", "ADMINISTRATOR_FJERNET", "ENDRET_EKSTERN_ID" ]
           },
           "tidspunkt" : {
             "type" : "string",
@@ -940,6 +943,21 @@
           "hentAlle" : {
             "type" : "boolean",
             "description" : "Hent alle ledsagerbevis, også revokerte"
+          },
+          "fra" : {
+            "type" : "integer",
+            "description" : "Paginering, fra",
+            "format" : "int32"
+          },
+          "antall" : {
+            "type" : "integer",
+            "description" : "Paginering, antall. Default er satt til 20",
+            "format" : "int32"
+          },
+          "sortering" : {
+            "type" : "string",
+            "description" : "Sorteringsrekkefølge, basert på dato ledsagerbeviset er opprettet. Default = nyeste opprettet ledsagerbevis først",
+            "enum" : [ "ASCENDING", "DESCENDING" ]
           }
         },
         "description" : "Filter for ledsagerbevis"
@@ -1003,7 +1021,8 @@
         "type" : "object",
         "properties" : {
           "telefonnummer" : {
-            "type" : "string"
+            "type" : "string",
+            "description" : "Telefonnummer"
           }
         }
       },
