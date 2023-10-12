@@ -55,8 +55,8 @@
           }
         },
         "responses": {
-          "200": {
-            "description": "OK",
+          "201": {
+            "description": "Ny tjeneste opprettet",
             "content": {
               "application/json": {
                 "schema": {
@@ -133,6 +133,78 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/TjenesteDefinisjon"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Ugyldig input",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Feil"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Ikke autentisert",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Feil"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Ikke autorisert",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Feil"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "tjeneste"
+        ],
+        "description": "Oppdater konfigurasjon for tjeneste. Kun de feltene som er med i requesten blir oppdatert",
+        "operationId": "oppdaterTjeneste",
+        "parameters": [
+          {
+            "name": "tjenesteId",
+            "in": "path",
+            "description": "ID til tjenesten",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/TjenesteId"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OppdaterTjenesteDefinisjon"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "Oppdatering ok",
+            "links": {
+              "self": {
+                "description": "Lenke til tjenesten som ble opprettet",
+                "operationId": "hentTjeneste",
+                "parameters": {
+                  "tjenesteId": "$request.path.tjenesteId"
                 }
               }
             }
@@ -342,10 +414,17 @@
           "harEnEllerFlereTilganger": {
             "type": "boolean",
             "description": "True hvis brukeren har tilgang til en eller flere tjenester"
+          },
+          "tjenester": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TjenesteId"
+            }
           }
         },
         "required": [
-          "harTilgang"
+          "harTilgang",
+          "tjenester"
         ]
       },
       "SjekkTilgangResponse": {
@@ -383,7 +462,7 @@
           "tjenester": {
             "type": "array",
             "items": {
-              "type": "string"
+              "$ref": "#/components/schemas/TjenesteId"
             }
           }
         },
@@ -455,6 +534,23 @@
           "beskrivelse",
           "logo"
         ]
+      },
+      "OppdaterTjenesteDefinisjon": {
+        "type": "object",
+        "description": "Oppdaterer tjenestedefinisjonen",
+        "properties": {
+          "navn": {
+            "$ref": "#/components/schemas/Tjenestenavn"
+          },
+          "beskrivelse": {
+            "type": "string",
+            "description": "Beskrivelse av tjenesten",
+            "example": "Min tjeneste er en tjeneste som gjør noe"
+          },
+          "logo": {
+            "$ref": "#/components/schemas/TjenesteLogo"
+          }
+        }
       },
       "TjenesteLogo": {
         "type": "object",
