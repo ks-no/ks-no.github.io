@@ -35,10 +35,14 @@ APIene er tilgjengelig via Fiks-plattformen som proxy-tjeneste eller via vårt o
 ### Oppslag via overbygg
 Vi har laget vårt eget overbygg som gir mulighet for å søke på flere personer. Vi søker om personene har stadie ___OPPGJØR___. Ved redusert foreldrebetaling SFO/barnehage, søkes det også etter ___UTKAST___ dersom de ikke har ___OPPGJØR___. Datamodellen er en sammenstilling av det som kommer fra skatteetaten sine APIer og har summert alle poster som hører sammen. For hver tjeneste finnes det en beregningstype som må sendes inn som en del av payloaden, dette erstatter behovet for å bruke rettighetspakke.
 
-URL for fiks-api (POST): ```<MILJØ_URL>/register/api/v2/ks/{ROLLE_ID}/summertskattegrunnlag``` [Payload, se swagger dokumentasjon](https://editor.swagger.io/?url=https://developers.fiks.ks.no/api/register-summert-skattegrunnlag-api-v2.json) 
+URL for fiks-api (POST): ```<MILJØ_URL>/register/api/v2/ks/{rolleId}/summertskattegrunnlag``` [Payload, se swagger dokumentasjon](https://editor.swagger.io/?url=https://developers.fiks.ks.no/api/register-summert-skattegrunnlag-api-v2.json) 
 
 #### API-dokumentasjon
 [Swagger dokumentasjon for overbygg finner du her.](https://editor.swagger.io/?url=https://developers.fiks.ks.no/api/register-summert-skattegrunnlag-api-v2.json) Bruk også dokumentasjon fra Skatteetaten.
+
+#### Manuelle poster
+
+Det finnes også en del ulike poster som har andre kilder enn Skatteetaten. Disse kan sendes med som en del av requesten, og vil da bli kalkulert sammen med data fra Skatteetaten. For å hente ut hvilke poster som er gyldig kan endepunktet ```<MILJØ_URL>/register/api/v2/ks/{rolleId}/summertskattegrunnlag/verdier/{beregningstype}/{inntektsaar}``` brukes. Hvilke poster som er gyldige er avhengig av beregningstype, inntektsår og persontype.
 
 #### Eksempel med bruk av API-overbygg
 Payload
