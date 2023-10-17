@@ -174,7 +174,7 @@ Les mer om detaljene rundt meldingsutveksling på dokumentasjonssidene til [Fiks
 ### Overvåking
 Det anbefales at man overvåker at man har en fungerende mottakende komponent som henter meldinger fra køen. 
 Siden meldinger har en time-to-live kan man risikere at disse til slutt går ut på tid og man ikke får hentet dem.
-Det er selvfølgelig også i ens egen interesse å svar på meldinger så fort som mulig. 
+Det er selvfølgelig også i ens egen interesse å svare på meldinger så fort som mulig. 
 
 Hvordan man overvåker at man kan sende og motta meldinger er opp til en selv men vi anbefaler at man i det minste overvåker koblingsstatus til Fiks-IO for henting av meldinger. Klienten for .NET har f.eks. en IsOpen() metode som viser om det er en aktiv kobling.
 
