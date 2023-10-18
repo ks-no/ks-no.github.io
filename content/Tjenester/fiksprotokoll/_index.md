@@ -5,8 +5,10 @@ aliases: [/fiks-platform/tjenester/fiksprotokoll, /fiks-plattform/tjenester/fiks
 ---
 
 ## Kort beskrivelse
-Fiks protokoll er en tjenestegruppe som inneholder flere tjenester. Felles for disse tjenestene er at de gjelder meldinger som sendes over [Fiks IO](https://ks-no.github.io/tjenester/fiksprotokoll/fiksio), for sikker maskin-til-maskin integrasjon. 
-Tjenestene består både av et sett av protokoller med meldingstyper, f.eks. Fiks Arkiv og Fiks Plan, og et miljø for å administrere systemer som implementerer disse protokollene over Fiks IO.
+
+Fiks Protokoll er en tjenestegruppe, hvor blant annet [Fiks IO](https://ks-no.github.io/tjenester/fiksprotokoll/fiksio) er tjenesten som sørger for den asynkrone maskin-til-maskin meldingsutvekslingen.
+I tillegg til meldingsutveksling via Fiks IO validerer Fiks Protokoll at det kun er gyldige meldingstyper som sendes for de ulike protokollene (f.eks Fiks Arkiv eller Fiks Plan).
+Videre at det kun sendes meldinger mellom avsender- og mottakersystem som er forhåndsgodkjent av systemadministratorene.
 
 ## Status protokoller
 
@@ -61,7 +63,7 @@ I tillegg er det to veiledninger for hvordan du kan generere nytt passord til sy
 * Protokollpart - Meldinger i Fiks Protokoll sendes mellom parter av protokollen. F.eks. fagsystem og arkiv, eller eByggesak og matrikkelklient. Noen protokollen vil definere mer spesifike parter, som no.ks.fiks.arkiv.v1.arkiv.arkivering og no.ks.fiks.arkiv.v1.fagsystem.arkivering som henholdsvis kan ta imot og sende arkiveringsmeldinger, men ikke tillater søk.
 * Integrasjon - På Fiks Plattformen brukes integrasjoner for maskinpålogging sammen med maskinporten. Hvert system får opprettet en integrasjon som brukes for alle kontoer under systemet. Integrasjonen vil kunne sende og motta meldinger, og dersom valgt, vil også kunne konfigurere systemet og opprette nye kontoer. [Les mer her](https://ks-no.github.io/felles/integrasjoner/)
 * Fiks IO - Dette er kanalen som brukes for å sende meldinger i Fiks Protokoll.  [Les mer her](https://ks-no.github.io/tjenester/fiksprotokoll/fiksio)
-* Fiks IO-konto - Meldinger sendes og mottas over Fiks IO med en Fiks IO-konto. Fiks IO-kontoen har samme ID som protokollkontoen. Protokollkontoen er wrapper rundt Fiks IO-kontoen for å muliggjøre tilgangsstyring i Fiks Protokoll, og validering av meldinger.
+* Fiks IO-konto - Meldinger sendes og mottas over Fiks IO med en Fiks IO-konto. Fiks IO-kontoen har samme ID som protokollkontoen. Protokollkontoen er wrapper rundt Fiks IO-kontoen for å muliggjøre tilgangsstyring i Fiks Protokoll, og validering av meldinger. En Fiks IO konto er også en kø som holder på meldingene den mottar.
 
 
 ### Hvordan tar man i bruk Fiks Protokoll?
@@ -166,10 +168,29 @@ Definisjon av `EksternProtokollKontoResponseEksternProtokollKontoResponse`:
 ```
 
 
-### Sende meldinger på konto 
-Benytt [Fiks IO](https://ks-no.github.io/tjenester/fiksprotokoll/fiksio) når meldinger skal sendes på konto.
-Dette er IDen til kontoen og er den samme som den tilhørende Fiks IO-kontoen. ID brukes når systemet skal sende meldinger fra kontoen, og når andre systemer skal sende meldinger til kontoen.
+### Sende og motta meldinger fra protokoll konto 
+Fiks protokoll bruker som tidligere nevnt Fiks IO til meldingsutveksling.
+Les mer om detaljene rundt meldingsutveksling på dokumentasjonssidene til [Fiks IO](https://ks-no.github.io/tjenester/fiksprotokoll/fiksio)
 
-* _Fiks-IO java klient_: [Java klient](https://github.com/ks-no/fiks-io-klient-java) som tilbyr funksjonalitet for å bygge, signere, kryptere, og sende meldinger som ASiC-E pakker, samt mottak og dekryptering på andre siden.
-* _Fiks-IO .net klient_: [.net core](https://github.com/ks-no/fiks-io-client-dotnet) implementasjon av samme funksjonalitet som klienten over.
+### Overvåking
+Det anbefales at man overvåker at man har en fungerende mottakende komponent som henter meldinger fra køen. 
+Siden meldinger har en time-to-live kan man risikere at disse til slutt går ut på tid og man ikke får hentet dem.
+Det er selvfølgelig også i ens egen interesse å svare på meldinger så fort som mulig. 
+
+Hvordan man overvåker at man kan sende og motta meldinger er opp til en selv men vi anbefaler at man i det minste overvåker koblingsstatus til Fiks-IO for henting av meldinger. Klienten for .NET har f.eks. en IsOpen() metode som viser om det er en aktiv kobling.
+
+
+#### Status i fiks forvaltning
+Inne på forvaltningssidene til Fiks Protokoll kan man se noen statuser på sine systemer og protokoll kontoer. En protokoll konto er som tidligere nevnt en wrapper rundt Fiks-IO, som igjen har en kø for meldinger til den kontoen.
+Enkel status for denne køen vises på forvaltningssidene.
+
+På system-siden vil man få en advarsel hvis man har protokollkonto(er) som ikke har kobling. Dette betyr at man har 1 eller flere protokollkonter som ikke lytter og henter meldinger fra køen.
+
+Hvis man går inn på listen over kontoer vil man også se status for hver kont: koblingsstatus som viser om det mangler noe som henter meldinger fra køen og antall meldinger som ligger på køen.
+Dette vil man også se hvis man går inn på kontoen.
+
+
+
+
+
 
