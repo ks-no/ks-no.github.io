@@ -6,8 +6,9 @@ aliases: [/fiks-platform/tjenester/fiksprotokoll, /fiks-plattform/tjenester/fiks
 
 ## Kort beskrivelse
 
-Fiks protokoll er en tjenestegruppe som inneholder flere tjenester, hvor blant annet [Fiks IO](https://ks-no.github.io/tjenester/fiksprotokoll/fiksio) er tjenesten som sørger for den asynkrone maskin-til-maskin meldingsutvekslingen.
-I tillegg til meldingsutveksling via Fiks IO sørger Fiks Protokoll for validering av meldingstyper innenfor protokollen (f.eks. Fiks Arkiv eller Fiks Plan), godkjenning av avsender-system og mottaker-system osv.  
+Fiks Protokoll er en tjenestegruppe, hvor blant annet [Fiks IO](https://ks-no.github.io/tjenester/fiksprotokoll/fiksio) er tjenesten som sørger for den asynkrone maskin-til-maskin meldingsutvekslingen.
+I tillegg til meldingsutveksling via Fiks IO validerer Fiks Protokoll at det kun er gyldige meldingstyper som sendes for de ulike protokollene (f.eks Fiks Arkiv eller Fiks Plan).
+Videre at det kun sendes meldinger mellom avsender- og mottakersystem som er forhåndsgodkjent av systemadministratorene.
 
 ## Status protokoller
 
@@ -168,7 +169,7 @@ Definisjon av `EksternProtokollKontoResponseEksternProtokollKontoResponse`:
 
 
 ### Sende og motta meldinger fra protokoll konto 
-Fiks protokoll bruker som tidligere nevnt Fiks IO til meldingsuveksling.
+Fiks protokoll bruker som tidligere nevnt Fiks IO til meldingsutveksling.
 Les mer om detaljene rundt meldingsutveksling på dokumentasjonssidene til [Fiks IO](https://ks-no.github.io/tjenester/fiksprotokoll/fiksio)
 
 ### Overvåking
@@ -180,12 +181,12 @@ Hvordan man overvåker at man kan sende og motta meldinger er opp til en selv me
 
 
 #### Status i fiks forvaltning
-Inne på forvaltningssidene til Fiks protokoll kan man se noen statuser på sine systemer og protokoll kontoer. En protokoll konto er som tidligere nevnt en wrapper rundt Fiks-IO, som igjen har en kø for meldinger til den kontoen.
+Inne på forvaltningssidene til Fiks Protokoll kan man se noen statuser på sine systemer og protokoll kontoer. En protokoll konto er som tidligere nevnt en wrapper rundt Fiks-IO, som igjen har en kø for meldinger til den kontoen.
 Enkel status for denne køen vises på forvaltningssidene.
 
 På system-siden vil man få en advarsel hvis man har protokollkonto(er) som ikke har kobling. Dette betyr at man har 1 eller flere protokollkonter som ikke lytter og henter meldinger fra køen.
 
-Hvis man går inn på listen over kontoer vil man også se status for hver konto, koblingsstatus som viser om det mangler noe som henter meldinger fra køen og antall meldinger som ligger på køen.
+Hvis man går inn på listen over kontoer vil man også se status for hver kont: koblingsstatus som viser om det mangler noe som henter meldinger fra køen og antall meldinger som ligger på køen.
 Dette vil man også se hvis man går inn på kontoen.
 
 
