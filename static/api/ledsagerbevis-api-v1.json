@@ -231,14 +231,7 @@
         },
         "responses" : {
           "201" : {
-            "description" : "Legger til person med administratorrett",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/LedsagerbevisResponse"
-                }
-              }
-            }
+            "description" : "Legger til person med administratorrett"
           },
           "default" : {
             "description" : "Noe gikk galt",
@@ -284,15 +277,8 @@
           "required" : true
         },
         "responses" : {
-          "201" : {
-            "description" : "Fjerner person med administratorrett",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/LedsagerbevisResponse"
-                }
-              }
-            }
+          "200" : {
+            "description" : "Fjerner person med administratorrett"
           },
           "default" : {
             "description" : "Noe gikk galt",
@@ -329,7 +315,7 @@
                 "schema" : {
                   "type" : "array",
                   "items" : {
-                    "$ref" : "#/components/schemas/LedsagerbevisResponse"
+                    "$ref" : "#/components/schemas/RedusertLedsagerbevisResponse"
                   }
                 }
               }
@@ -769,14 +755,27 @@
             "description" : "Nytt telefonnummer"
           },
           "fnr" : {
+            "pattern" : "^[0-9]{11}$",
             "type" : "string",
             "description" : "Fødelsnummer endringa er knyttet til"
           }
         },
         "description" : "Skal endre Ledsagerbevis"
       },
+      "FjernAdministratorRequest" : {
+        "required" : [ "fnr" ],
+        "type" : "object",
+        "properties" : {
+          "fnr" : {
+            "pattern" : "^[0-9]{11}$",
+            "type" : "string",
+            "description" : "Fødselsnummer til person"
+          }
+        },
+        "description" : "Person som skal fjernes som administrator av ledsagerbevis"
+      },
       "LedsagerbevisResponse" : {
-        "required" : [ "antallLedsagere", "eier", "eksternId", "fiksOrgId", "id", "opprettetDato", "utlopsdato" ],
+        "required" : [ "antallLedsagere", "bilde", "eier", "eksternId", "fiksOrgId", "id", "opprettetDato", "utlopsdato" ],
         "type" : "object",
         "properties" : {
           "id" : {
@@ -827,9 +826,12 @@
             "type" : "string",
             "description" : "Dato ledsagerbeviset er revokert",
             "format" : "date-time"
+          },
+          "bilde" : {
+            "type" : "string",
+            "description" : "Base64-encoded bilde fra dokumentlager"
           }
-        },
-        "description" : "Liste over ledsagerbevis som passer til søket"
+        }
       },
       "PersonRespons" : {
         "required" : [ "fnr", "navn", "telefonnummer" ],
@@ -851,17 +853,35 @@
         },
         "description" : "Administrator av ledsagerbevis"
       },
-      "FjernAdministratorRequest" : {
-        "required" : [ "fnr" ],
+      "RedusertLedsagerbevisResponse" : {
+        "required" : [ "antallLedsagere", "eier", "fiksOrgId", "id", "ledsagerbevisStatus" ],
         "type" : "object",
         "properties" : {
-          "fnr" : {
-            "pattern" : "^[0-9]{11}$",
+          "id" : {
             "type" : "string",
-            "description" : "Fødselsnummer til person"
+            "description" : "Id til ledsagerbevis",
+            "format" : "uuid"
+          },
+          "eier" : {
+            "$ref" : "#/components/schemas/PersonRespons"
+          },
+          "antallLedsagere" : {
+            "type" : "integer",
+            "description" : "Antall ledsagere",
+            "format" : "int32"
+          },
+          "fiksOrgId" : {
+            "type" : "string",
+            "description" : "Organisasjon som har utstedet bevis",
+            "format" : "uuid"
+          },
+          "ledsagerbevisStatus" : {
+            "type" : "string",
+            "description" : "Status for ledsagerbeviset",
+            "enum" : [ "AKTIV", "OPPHORT", "REVOKERT" ]
           }
         },
-        "description" : "Person som skal fjernes som administrator av ledsagerbevis"
+        "description" : "Liste over ledsagerbevis som passer til søket"
       },
       "LedsagerbevisHendelse" : {
         "required" : [ "hendelseType", "tidspunkt" ],
@@ -1010,7 +1030,7 @@
             "type" : "array",
             "description" : "Liste over ledsagerbevis som passer til søket",
             "items" : {
-              "$ref" : "#/components/schemas/LedsagerbevisResponse"
+              "$ref" : "#/components/schemas/RedusertLedsagerbevisResponse"
             }
           },
           "totaltAntall" : {
