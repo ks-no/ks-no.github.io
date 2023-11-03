@@ -27,13 +27,16 @@ Se huskelisten lenger nede for hvilke ressurser det gjelder.
 ## Huskeliste
 
 ### 1. Maskinporten
-Leverandør(ene) skal ha satt opp integrasjon med Maskinporten med **sitt** organsiasasjonsnummer på forhånd. Dette organsiasjonsnummeret skal brukes i oppsett av *"system"*
+Leverandør(ene) skal ha satt opp integrasjon med Maskinporten på forhånd. Her kan man velge å enten bruke leverandøren sitt organisasjonsnummer eller kunden (kommunen) sitt organisasjonsnummer pluss tilhørende virksomhetssertifikat. 
+Det samme organsiasjonsnummeret **må** brukes i oppsett av *"system"*. 
+
+Organisasjonsnummer skal være likt i maskinportenintegrasjon, *"system"* i FIKS forvaltning og virksomhetssertifikatet som brukes i maskinporten integrasjonen (og dermed også FIKS IO klienten).
 
 ### 2. Avtale om å bruke Fiks Protokoll
 Person fra kundeorganisasjon oppretter avtale om bruk av Fiks protokoll hvis ikke dette er gjort tidligere.
 
 ### 3. Opprette *"system"* under Fiks Protokoll
-Person fra kundeorganisasjon oppretter *"system"* og bruker organisasjonsnummer til leverandøren (se punkt 1) som leverandøren har registrert hos Maskinporten. Dette organisasjonsnummeret må man ha klart til oppsett.
+Person fra kundeorganisasjon oppretter *"system"* og bruker det samme organisasjonsnummeret som ble brukt i maskinporten integrasjonen og i det tilhørende virksomhetssertifikatet  (se punkt 1). Dette organisasjonsnummeret må man ha klart til oppsett.
 *"Systemet*" blir da et system for leverandøren som kan inneholder protokoll-kontoer for flere forskjellige protokoller. 
 
 Et godt valg av navn på *"system"* er leverandørens navn pluss eventuelt leverandørens navn på applikasjon, eller internt navn i organisasjonen på systemet. 
