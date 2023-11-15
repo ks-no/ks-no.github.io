@@ -691,6 +691,52 @@
           }
         }
       }
+    },
+    "/fiks-protokoll/api/v1/root/protokoller/protokollSystemInfo" : {
+      "get" : {
+        "tags" : [ "Protokoll-root" ],
+        "description" : "Henter systemInfo for system/integrasjon/konto/kommune/fiksOrgId",
+        "operationId" : "getProtokollSystemInfo",
+        "parameters" : [ {
+          "name" : "type",
+          "in" : "query",
+          "schema" : {
+            "type" : "string",
+            "enum" : [ "SYSTEMID", "INTEGRASJONID", "FIKSORGID", "FIKSIOKONTOID", "KOMMUNENUMMER" ]
+          }
+        }, {
+          "name" : "id",
+          "in" : "query",
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Henter alle protokoller",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/ProtokollSystemResponse"
+                  }
+                }
+              }
+            }
+          },
+          "default" : {
+            "description" : "Noe gikk galt",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components" : {
@@ -861,7 +907,7 @@
             }
           }
         },
-        "description" : "Parter definert på protokollen"
+        "description" : "Part protokollkontoen implementerer"
       },
       "ProtokollDefinisjonResponse" : {
         "required" : [ "beskrivelse", "meldingstyper", "navn", "parter", "protokollversjon" ],
@@ -894,6 +940,215 @@
             "items" : {
               "$ref" : "#/components/schemas/PartResponse"
             }
+          }
+        }
+      },
+      "EksternProtokollKontoResponse" : {
+        "required" : [ "beskrivelse", "id", "navn", "part", "system" ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string",
+            "description" : "Id på konto og tilhørende Fiks IO-konto",
+            "format" : "uuid"
+          },
+          "navn" : {
+            "type" : "string",
+            "description" : "Navn på konto"
+          },
+          "beskrivelse" : {
+            "type" : "string",
+            "description" : "Beskrivelse av kontoen"
+          },
+          "part" : {
+            "$ref" : "#/components/schemas/PartResponse"
+          },
+          "system" : {
+            "$ref" : "#/components/schemas/EksternProtokollSystemResponse"
+          }
+        },
+        "description" : "Kontoer systemet har har forespurt tilgang til"
+      },
+      "EksternProtokollSystemResponse" : {
+        "required" : [ "beskrivelse", "fiksOrg", "id", "navn" ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string",
+            "description" : "System-id",
+            "format" : "uuid"
+          },
+          "navn" : {
+            "type" : "string",
+            "description" : "Navn på system"
+          },
+          "beskrivelse" : {
+            "type" : "string",
+            "description" : "Beskrivelse av system"
+          },
+          "fiksOrg" : {
+            "$ref" : "#/components/schemas/FiksOrgResponse"
+          }
+        },
+        "description" : "Eiersystem"
+      },
+      "FiksOrgResponse" : {
+        "required" : [ "id", "navn" ],
+        "type" : "object",
+        "properties" : {
+          "navn" : {
+            "type" : "string",
+            "description" : "Navn på fiksOrg"
+          },
+          "id" : {
+            "type" : "string",
+            "description" : "fiksOrgId",
+            "format" : "uuid"
+          },
+          "kommunenummer" : {
+            "type" : "string",
+            "description" : "Kommunenummer dersom fiksOrg er kommune"
+          }
+        },
+        "description" : "FiksOrg til eier av systemet"
+      },
+      "PartSummaryResponse" : {
+        "required" : [ "navn", "protokollnavn", "protokollversjon" ],
+        "type" : "object",
+        "properties" : {
+          "navn" : {
+            "pattern" : "^[A-Za-z0-9\\.\\-_]+$",
+            "type" : "string",
+            "description" : "Navn på part"
+          },
+          "protokollnavn" : {
+            "type" : "string",
+            "description" : "Protokollnavn"
+          },
+          "protokollversjon" : {
+            "type" : "string",
+            "description" : "Protokollversjon"
+          }
+        },
+        "description" : "Part protokollkontoen implementerer"
+      },
+      "ProtokollKontoMetrikkResponse" : {
+        "type" : "object",
+        "properties" : {
+          "meldingerPaKo" : {
+            "type" : "integer",
+            "description" : "Antall meldinger på kø",
+            "format" : "int32"
+          },
+          "antallKonsumenter" : {
+            "type" : "integer",
+            "description" : "Antall konsumenter for protokollkonto",
+            "format" : "int32"
+          }
+        },
+        "description" : "Metrikk for konto"
+      },
+      "ProtokollKontoSummaryResponse" : {
+        "required" : [ "beskrivelse", "id", "navn", "part" ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string",
+            "description" : "Id på konto og tilhørende Fiks IO-konto",
+            "format" : "uuid"
+          },
+          "navn" : {
+            "type" : "string",
+            "description" : "Navn på konto"
+          },
+          "beskrivelse" : {
+            "type" : "string",
+            "description" : "Beskrivelse av kontoen"
+          },
+          "part" : {
+            "$ref" : "#/components/schemas/PartSummaryResponse"
+          },
+          "metrikk" : {
+            "$ref" : "#/components/schemas/ProtokollKontoMetrikkResponse"
+          }
+        },
+        "description" : "Kontoer"
+      },
+      "ProtokollSystemResponse" : {
+        "required" : [ "automatiskGodkjenning", "beskrivelse", "eposter", "forespurteTilgangerTilKontoer", "id", "integrasjonId", "konfigureresAvIntegrasjon", "kontoer", "navn", "offentlig", "orgnummer", "tilgangTilKontoer" ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string",
+            "description" : "System-id",
+            "format" : "uuid"
+          },
+          "integrasjonId" : {
+            "type" : "string",
+            "description" : "Integrasjon-id",
+            "format" : "uuid"
+          },
+          "orgnummer" : {
+            "pattern" : "^[0-9]{9}$",
+            "type" : "string",
+            "description" : "Orgnummer for organisasjon"
+          },
+          "navn" : {
+            "type" : "string",
+            "description" : "Navn på system"
+          },
+          "beskrivelse" : {
+            "type" : "string",
+            "description" : "Beskrivelse av system"
+          },
+          "eposter" : {
+            "type" : "array",
+            "description" : "Kontakteposter",
+            "items" : {
+              "type" : "string",
+              "description" : "Kontakteposter"
+            }
+          },
+          "kontoer" : {
+            "type" : "array",
+            "description" : "Kontoer",
+            "items" : {
+              "$ref" : "#/components/schemas/ProtokollKontoSummaryResponse"
+            }
+          },
+          "tilgangTilKontoer" : {
+            "type" : "array",
+            "description" : "Kontoer systemet har tilgang på",
+            "items" : {
+              "$ref" : "#/components/schemas/EksternProtokollKontoResponse"
+            }
+          },
+          "forespurteTilgangerTilKontoer" : {
+            "type" : "array",
+            "description" : "Kontoer systemet har har forespurt tilgang til",
+            "items" : {
+              "$ref" : "#/components/schemas/EksternProtokollKontoResponse"
+            }
+          },
+          "offentlig" : {
+            "type" : "boolean",
+            "description" : "Begrenser synlighet utover egen organisasjon"
+          },
+          "automatiskGodkjenning" : {
+            "type" : "boolean",
+            "description" : "Godkjenner automatisk forespørsler om tilgang"
+          },
+          "konfigureresAvIntegrasjon" : {
+            "type" : "boolean",
+            "description" : "Konfigureres av integrasjon"
+          },
+          "leverandorNavn" : {
+            "type" : "string",
+            "description" : "Systemleverandør"
+          },
+          "leverandorKontaktpunkt" : {
+            "type" : "string",
+            "description" : "Kontaktpunkt for systemleverendør"
           }
         }
       },
