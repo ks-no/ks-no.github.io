@@ -26,16 +26,16 @@ Tjenestene er tilgjengelige via:
 Endepunkter og modeller er definert i OpenAPI-spec:  
 [OpenAPI SvarInn V1](https://developers.fiks.ks.no/api/svarinn-api-v1.json) ([Åpne i swagger editor](https://editor.swagger.io/?url=https://developers.fiks.ks.no/api/svarinn-api-v1.json))
 
-# Kryptering
+### Kryptering
 
 Alle forsendelser som lastes ned via SvarInn er kryptert. For at dette skal fungere må den offentlige nøkkelen dere ønsker å bruke lastes opp til mottakersystemet i SvarUt med nivå 4-innlogging. 
 Den private nøkkelen må være tilgjengelig i systemet som skal laste ned forsendelsene, slik at disse kan dekrypteres. 
 I begge eksemplene under er disse filene kalt henholdsvis `public.pem` og `privatekey.pem`, og blir generert med en gyldighet på 99999 dager.
 
-### Unix
+#### Unix
 For å generere RSA nøkkelpar med OpenSSL kan følgende kommando brukes:  
 `openssl req -x509 -newkey rsa:2048 -nodes -keyout privatekey.pem -out public.pem -days 99999`  
 
-### Windows
+#### Windows
 For windows kan man for eksempel laste ned denne OpenSSL-implementasjonen: https://slproweb.com/products/Win32OpenSSL.html   
 `openssl req -x509 -newkey rsa:2048 -nodes -keyout privatekey.pem -out public.pem -days 99999 -config c:\<opensslinstallmappe>\bin\openssl.cfg`
