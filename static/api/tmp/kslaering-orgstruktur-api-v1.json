@@ -1,0 +1,150 @@
+{
+  "openapi" : "3.0.1",
+  "info" : {
+    "title" : "Fiks KS Læring Orgstruktur service",
+    "description" : "API for opprettelse og vedlikehold av orgstruktur i KS Læring.",
+
+    "contact" : {
+      "name" : "Fiks brukerstøtte",
+      "url" : "https://www.ks.no/fagomrader/digitalisering/utviklingsprosjekter",
+      "email" : "fiks-utvikling@ks.no"
+    },
+    "version" : "v1"
+  },
+  "servers": [
+    {
+      "url": "https://api.fiks.ks.no",
+      "description": "KS Fiks API host",
+      "variables": {}
+    },
+    {
+      "url": "https://api.fiks.test.ks.no",
+      "description": "KS Fiks TEST API host",
+      "variables": {}
+    }
+  ],
+  "paths" : {
+    "/orgstruktur/api/v1/ks/{fiksOrgId}/organisasjon" : {
+      "post": {
+        "tags": [
+          "organisasjon"
+        ],
+        "description": "Oppdaterer hele organsisasjonsstrukturen og alle stillinger for en organisasjon (fiksorg)",
+        "operationId": "postOrganisasjon",
+        "parameters": [
+          {
+            "name": "fiksOrgId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "fiksOrgId for organisasjonen"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OppdaterOrganisasjon"
+              }
+            }
+          },
+          "required": true,
+          "description": "Et komplett set med organisasjonsstruktur og stillinger som skal synkroniseres til KS Læring"
+        },
+        "responses": {
+          "200": {
+            "description": "Ok"
+          },
+          "403": {
+            "description": "Ikke tilgang",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components" : {
+    "schemas" : {
+      "OppdaterOrganisasjon": {
+        "required": ["avdelinger", "stillinger"],
+        "type": "object",
+        "description": "Dette objektet skall inneholde den fulle organisasjonsstrukturen og alle stillinger",
+        "properties": {
+          "avdelinger": {
+            "type" : "array",
+            "items": {
+              "$ref": "#/components/schemas/AvdelingDefinisjon"
+            },
+            "description": "Liste med alle avdelinger som skal synkroniseres"
+          },
+          "stillinger": {
+            "type" : "array",
+            "items": {
+              "$ref": "#/components/schemas/StillingDefinisjon"
+            },
+            "description": "Liste med alle stillinger som skal synkroniseres"
+          }
+        }
+      },
+      "AvdelingDefinisjon": {
+        "required" : [ "avdelingskode", "avdelingsnavn" ],
+        "type" : "object",
+        "description": "Definerer en node i organisasjonsstrukturen",
+        "properties" : {
+          "avdelingskode" : {
+            "type" : "string",
+            "description": "Unik id for denne avdelingen innenfor organisasjonen"
+          },
+          "parentId" : {
+            "type" : "string",
+            "description": "Id til avdelingen denne avdelingen hører til under. Utelates for øverste node i organisasjonen"
+          },
+          "avdelingsnavn" : {
+            "type" : "string",
+            "description": "Navn på avdelingen"
+          }
+        }
+      },
+      "StillingDefinisjon": {
+        "required" : [ "avdelingskode", "brukernavn", "stillingstittel" ],
+        "type" : "object",
+        "description": "Definerer en stilling, som knytter en bruker til en avdeling i organisasjonsstrukturen",
+        "properties" : {
+          "avdelingskode" : {
+            "type" : "string",
+            "desceription": "Id på en avdeling i organisasjonsstrukturen"
+          },
+          "brukernavn" : {
+            "type" : "string",
+            "description": "En brukerid som samsvarer med en bruker i brukersynkroniseringen, og valgt id format"
+          },
+          "stillingstittel" : {
+            "type" : "string",
+            "description": "Stillingstittel"
+          },
+          "stillingskode" : {
+            "type" : "string",
+            "description": "Stillingskode"
+          },
+          "lederstilling": {
+            "type" : "boolean",
+            "description": "Har denne brukeren en lederstilling?"
+          },
+          "raportering": {
+            "type" : "boolean",
+            "description": "Har denne brukeren tilgang til raporter i KS Læring"
+          }
+        }
+      }
+    }
+  }
+}
