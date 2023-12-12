@@ -265,6 +265,54 @@
           "oppslag"
         ]
       }
+    },
+    "/register/api/v1/konfigurasjon/tilganger/{fiksOrgId}": {
+      "get": {
+        "tags": [
+          "tilganger"
+        ],
+        "description": "Henter liste over tilganger gitt til alle roller som er definert som JSON eller CSV",
+        "operationId": "tilgangerForFiksOrg",
+        "parameters": [
+          {
+            "name": "fiksOrgId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RolleOversikt"
+                }
+              },
+              "text/csv": {
+                "example": "Rollenavn,Person,Tilgangstype\n\"Rollen vår\",\n,01017012345,Bruker\n,02107192001,Administrator",
+                "schema": {
+                  "$ref": "#/components/schemas/RolleOversikt"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Ikke tilgang",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -570,6 +618,105 @@
         "type": "string",
         "minLength": 2,
         "pattern": "^[A-Z\\.]+$"
+      },
+      "RolleOversikt": {
+        "type": "object",
+        "required": ["fiksOrgId","roller"],
+        "properties": {
+          "fiksOrgId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "roller": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RolleMedTilgangListe"
+            }
+          }
+        }
+      },
+      "RolleMedTilgangListe": {
+        "type": "object",
+        "required": ["rolle","tilganger","administratorer"],
+        "properties": {
+          "rolle": {
+            "$ref": "#/components/schemas/RolleMedNavn"
+          },
+          "tilganger": {
+            "$ref": "#/components/schemas/TilgangListe"
+          },
+          "administratorer": {
+            "$ref": "#/components/schemas/AdministrasjonListe"
+          }
+        }
+      },
+      "RolleMedNavn": {
+        "required": ["fiksOrgId","navn"],
+        "type": "object",
+        "properties": {
+          "fiksOrgId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "navn": {
+            "type": "string"
+          }
+        }
+      },
+      "TilgangListe": {
+        "type": "object",
+        "required": ["integrasjoner","personer"],
+        "properties": {
+          "integrasjoner": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          "personer": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "eksterneBrukere": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "eksterneGrupper": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "AdministrasjonListe": {
+        "type": "object",
+        "required": ["personer"],
+        "properties": {
+          "personer": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "eksterneBrukere": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "eksterneGrupper": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
       }
     }
   }
