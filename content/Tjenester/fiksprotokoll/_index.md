@@ -12,13 +12,17 @@ Videre at det kun sendes meldinger mellom avsender- og mottakersystem som er for
 
 ## Status protokoller
 
-| Protokoll                                                     | Status                                                             | Estimert ferdig |
-|---------------------------------------------------------------|--------------------------------------------------------------------|-----------------|
-| Fiks arkiv                                                    | Under implementering hos leverandører. I pilot                     | 4 kvartal 2023  |
-| Fiks politisk behandling                                      | Protokoll under utvikling.                                         | 4 kvartal 2024  |
-| Fiks plan                                                     | Under implementering hos leverandører. Pilot når de første er klar | 4 kvartal 2023  |
-| Fiks matrikkelføring                                          | I produksjon                                                       | Ferdig          |
-| Barnevern - fagsysteminnrapportering til Barnevernsregisteret | Pilot i produksjon                                                 | Ferdig          |
+| Protokoll                                                     | Status                                                              | Estimert ferdig |
+|---------------------------------------------------------------|---------------------------------------------------------------------|-----------------|
+| Fiks arkiv                                                    | Under implementering hos leverandører. I pilot                      | 31. mars        |
+| Fiks politisk behandling                                      | Protokoll har vært under utvikling og er satt på pause.             | Uklart          |
+| Fiks plan                                                     | Under implementering hos leverandører. Pilot når de første er klar. | 31. mai         |
+| Fiks matrikkelføring                                          | I pilot-testing og delvis i produksjon                              | 29. februar     |
+| Barnevern - fagsysteminnrapportering til Barnevernsregisteret | Pilot i produksjon                                                  | Ferdig          |
+
+
+#### Plan
+![](charts/fiks-protokoller-gantt.png)
 
 Protokoller i pilot kan oppleve å få endringer som må utbedres fortløpende. Dette vil være små endringer som kommer etter erfaringer en har gjort i produksjonskjøring. Disse er stabile nok til å ta i bruk i vanlig drift.
 
