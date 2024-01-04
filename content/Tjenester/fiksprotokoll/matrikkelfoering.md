@@ -10,10 +10,10 @@ Den er tilsvarende løsningen som er etablert på Fiks SvarUt/SvarInn http://geo
 Denne løsningen benytter altså [Fiks IO](https://ks-no.github.io/fiks-plattform/tjenester/fiksprotokoll/fiksio/) for maskin til maskin integrasjon. 
 
 ## Tilgjengelige grensesnitt
-| Grensesnitt | Støtte |
-|------|------|
-| Web portal | Nei |
-| Maskin til maskin | Ja |
+| Grensesnitt       | Støtte |
+|-------------------|--------|
+| Web portal        | Nei    |
+| Maskin til maskin | Ja     |
 
 
 ## Beskrivelse
@@ -42,20 +42,20 @@ Dette er for at mottaker skal kunne se at dette er en melding som har vært fors
 
 **Fra eByggesak/fagsystem:**
 
-|    Type     |     Navn    |   Skjema    |   Filer    |
-| ----------- | ----------- |----------- |----------- |
-| Grunnlag til matrikkelføring    | `no.ks.fiks.matrikkelfoering.v2.grunnlag`       | [no.ks.fiks.matrikkelfoering.v2.grunnlag.xsd](https://github.com/ks-no/fiks-matrikkelfoering-specification/blob/main/Schema/V2/no.ks.fiks.matrikkelfoering.v2.grunnlag.xsd) | `byggesak.xml`, `index.json` + evt vedlegg |
-| Forespørsel om status    | `no.ks.fiks.matrikkelfoering.v2.status`       | [no.ks.fiks.matrikkelfoering.v2.status.xsd](https://github.com/ks-no/fiks-matrikkelfoering-specification/blob/main/Schema/V2/no.ks.fiks.matrikkelfoering.v2.status.xsd) | `status.xml` |
+| Type                         | Navn                                      | Skjema                                                                                                                                                                       | Filer                                      |
+|------------------------------|-------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|--------------------------------------------|
+| Grunnlag til matrikkelføring | `no.ks.fiks.matrikkelfoering.v2.grunnlag` | [no.ks.fiks.matrikkelfoering.v2.grunnlag.xsd](https://github.com/ks-no/fiks-matrikkelfoering-specification/blob/main/Schema/V2/no.ks.fiks.matrikkelfoering.v2.grunnlag.xsd)  | `byggesak.xml`, `index.json` + evt vedlegg |
+| Forespørsel om status        | `no.ks.fiks.matrikkelfoering.v2.status`   | [no.ks.fiks.matrikkelfoering.v2.status.xsd](https://github.com/ks-no/fiks-matrikkelfoering-specification/blob/main/Schema/V2/no.ks.fiks.matrikkelfoering.v2.status.xsd)      | `status.xml`                               |
 
 **Fra matrikkelklienter:**
 
-|    Type     |     Navn    |  Skjema    |  Filer    |
-| ----------- | ----------- |----------- |----------- |
-| Mottak vellykket | `no.ks.fiks.matrikkelfoering.v2.mottatt` | Ingen payload | Ingen fil |
+| Type                                | Navn                                                             | Skjema                                                                                                                                                                                                                    | Filer             |
+|-------------------------------------|------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-------------------|
+| Mottak vellykket                    | `no.ks.fiks.matrikkelfoering.v2.mottatt`                         | Ingen payload                                                                                                                                                                                                             | Ingen fil         |
 | Mottak feilet - Ugyldig forespørsel | `no.ks.fiks.matrikkelfoering.v2.feilmelding.ugyldigforespoersel` | [no.ks.fiks.matrikkelfoering.v2.feilmelding.ugyldigforespoersel.xsd](https://github.com/ks-no/fiks-matrikkelfoering-specification/blob/main/Schema/V2/no.ks.fiks.matrikkelfoering.v2.feilmelding.ugyldigforespoersel.xsd) | `feilmelding.xml` |
-| Mottak feilet - Serverfeil | `no.ks.fiks.matrikkelfoering.v2.feilmelding.serverfeil` | [no.ks.fiks.matrikkelfoering.v2.feilmelding.serverfeil.xsd](https://github.com/ks-no/fiks-matrikkelfoering-specification/blob/main/Schema/V2/no.ks.fiks.matrikkelfoering.v2.feilmelding.serverfeil.xsd) | `feilmelding.xml` |
-| Kvittering på føring i matrikkelen | `no.ks.fiks.matrikkelfoering.v2.kvittering` | [no.ks.fiks.matrikkelfoering.v2.kvittering.xsd](https://github.com/ks-no/fiks-matrikkelfoering-specification/blob/main/Schema/V2/no.ks.fiks.matrikkelfoering.v2.kvittering.xsd) | `kvittering.xml` |
-| Svar på forespørsel om status | `no.ks.fiks.matrikkelfoering.v2.statussvar` | [no.ks.fiks.matrikkelfoering.v2.statussvar.xsd](https://github.com/ks-no/fiks-matrikkelfoering-specification/blob/main/Schema/V2/no.ks.fiks.matrikkelfoering.v2.statussvar.xsd) | `statussvar.xml` |
+| Mottak feilet - Serverfeil          | `no.ks.fiks.matrikkelfoering.v2.feilmelding.serverfeil`          | [no.ks.fiks.matrikkelfoering.v2.feilmelding.serverfeil.xsd](https://github.com/ks-no/fiks-matrikkelfoering-specification/blob/main/Schema/V2/no.ks.fiks.matrikkelfoering.v2.feilmelding.serverfeil.xsd)                   | `feilmelding.xml` |
+| Kvittering på føring i matrikkelen  | `no.ks.fiks.matrikkelfoering.v2.kvittering`                      | [no.ks.fiks.matrikkelfoering.v2.kvittering.xsd](https://github.com/ks-no/fiks-matrikkelfoering-specification/blob/main/Schema/V2/no.ks.fiks.matrikkelfoering.v2.kvittering.xsd)                                           | `kvittering.xml`  |
+| Svar på forespørsel om status       | `no.ks.fiks.matrikkelfoering.v2.statussvar`                      | [no.ks.fiks.matrikkelfoering.v2.statussvar.xsd](https://github.com/ks-no/fiks-matrikkelfoering-specification/blob/main/Schema/V2/no.ks.fiks.matrikkelfoering.v2.statussvar.xsd)                                           | `statussvar.xml`  |
 
 ### Datamodell for meldinger
 ![fiks_matrikkelfoering_datamodell_grunnlag](/images/datamodell_grunnlag.png "Matrikkelføring datamodell grunnlag")
@@ -65,6 +65,13 @@ Dette er for at mottaker skal kunne se at dette er en melding som har vært fors
 ![fiks_matrikkelfoering_datamodell_kvittering](/images/datamodell_kvittering.png "Matrikkelføring datamodell kvittering")
 
 [`no.ks.fiks.matrikkelfoering.v2.kvittering.xsd`](https://github.com/ks-no/fiks-matrikkelfoering-specification/blob/main/Schema/V2/no.ks.fiks.matrikkelfoering.v2.kvittering.xsd)
+
+### Kodelister
+
+Kodelistene er tilgjengelig hos [Geonorge](https://register.geonorge.no/kodelister).
+Man kan da laste de f.eks. ned som json-filer.
+Liste med kodelister og lenker til kilden hos Geonorge finner man i [README](https://github.com/ks-no/fiks-matrikkelfoering-specification) for **fiks-matrikkelfoering-specification** prosjektet på Github.
+
 
 ### Flyt
 
@@ -162,20 +169,20 @@ Vedleggstyper er definert [her](https://register.geonorge.no/kodelister/byggesok
 
 Her er noen eksempler hentet derfra:
 
-| Tittel        | Vedleggstype | 
-| ------------- |--------------|
-| Situasjonsplan      | Situasjonsplan |
-| Tegning eksisterende plan | TegningEksisterendePlan |
-| Tegning ny plan | TegningNyPlan |
-|  Tegning eksisterende snitt | TegningEksisterendeSnitt |
-|  Tegning nytt snitt | TegningNyttSnitt |
-|  Tegning eksisterende fasade | TegningEksisterendeFasade |
-|  Tegning eksisterende snitt | TegningEksisterendeSnitt |
-|  Tegning ny fasade | TegningNyFasade |
-|  ByggesaksBIM | ByggesaksBIM |
-|  Tegning eksisterende snitt | TegningEksisterendeSnitt |
-|  Tegning eksisterende snitt | TegningEksisterendeSnitt |
-|  Matrikkelføring XML | Byggesak |
+| Tittel                      | Vedleggstype              | 
+|-----------------------------|---------------------------|
+| Situasjonsplan              | Situasjonsplan            |
+| Tegning eksisterende plan   | TegningEksisterendePlan   |
+| Tegning ny plan             | TegningNyPlan             |
+| Tegning eksisterende snitt  | TegningEksisterendeSnitt  |
+| Tegning nytt snitt          | TegningNyttSnitt          |
+| Tegning eksisterende fasade | TegningEksisterendeFasade |
+| Tegning eksisterende snitt  | TegningEksisterendeSnitt  |
+| Tegning ny fasade           | TegningNyFasade           |
+| ByggesaksBIM                | ByggesaksBIM              |
+| Tegning eksisterende snitt  | TegningEksisterendeSnitt  |
+| Tegning eksisterende snitt  | TegningEksisterendeSnitt  |
+| Matrikkelføring XML         | Byggesak                  |
 
 
 ### Nivå på grunnlaget til matrikkelføring
