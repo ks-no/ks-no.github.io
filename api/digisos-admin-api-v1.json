@@ -1,0 +1,602 @@
+{
+  "openapi" : "3.0.1",
+  "info" : {
+    "title" : "KS Fiks: Digisos Admin Service",
+    "description" : "KS Fiks: Digisos Admin Service",
+    "contact" : {
+      "name" : "Fiks brukerstøtte",
+      "url" : "https://ks-no.github.io/",
+      "email" : "fiks@ks.no"
+    },
+    "version" : "v1"
+  },
+  "servers" : [ {
+    "url" : "http://digisos-svar-service:8080",
+    "description" : "Cluster internal service URI"
+  } ],
+  "tags" : [ {
+    "name" : "DigisosAdmin",
+    "description" : "API for DIGISOS ADMIN"
+  } ],
+  "paths" : {
+    "/digisos/admin/api/v1/soknader/{soknadId}/historikk" : {
+      "get" : {
+        "tags" : [ "DigisosAdmin" ],
+        "description" : "Hent historikk for en søknad",
+        "operationId" : "getHistorikk",
+        "parameters" : [ {
+          "name" : "soknadId",
+          "in" : "path",
+          "description" : "ID for ønsket søknad",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "example" : "b89ef035-708e-48ae-a1dc-c1b8cc5efefa"
+        }, {
+          "name" : "fiksOrgId",
+          "in" : "query",
+          "description" : "FiksOrgId for kommune som skal konfigureres. Hvis feltet er tomt kjører man som root administrator.",
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "example" : "b89ef035-708e-48ae-a1dc-c1b8cc5efefa"
+        }, {
+          "name" : "fra",
+          "in" : "query",
+          "description" : "Index for det første søketreffet som skal returneres",
+          "schema" : {
+            "type" : "integer",
+            "format" : "int32",
+            "default" : 0
+          },
+          "example" : 0
+        }, {
+          "name" : "antall",
+          "in" : "query",
+          "description" : "Antall søketreff som skal returneres",
+          "schema" : {
+            "maximum" : 200,
+            "type" : "integer",
+            "format" : "int32",
+            "default" : 50
+          },
+          "example" : 50
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Uthentet historikk for en søknad",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/HistorikkResponse"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Feil i inputdata",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Fant ikke søknad",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Du har ikke tilgang til den angitte fiksorg",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/digisos/admin/api/v1/soknader/{soknadId}" : {
+      "get" : {
+        "tags" : [ "DigisosAdmin" ],
+        "description" : "Hent digisos søknader for din kommune",
+        "operationId" : "getSoknad",
+        "parameters" : [ {
+          "name" : "soknadId",
+          "in" : "path",
+          "description" : "ID for ønsket søknad",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "example" : "b89ef035-708e-48ae-a1dc-c1b8cc5efefa"
+        }, {
+          "name" : "fiksOrgId",
+          "in" : "query",
+          "description" : "FiksOrgId for kommune. Hvis feltet er tomt kjører man som root administrator.",
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "example" : "b89ef035-708e-48ae-a1dc-c1b8cc5efefa"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Uthentet søknadd",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Soknad"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Feil i inputdata",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Du har ikke tilgang til den angitte fiksorg",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/digisos/admin/api/v1/soknader" : {
+      "get" : {
+        "tags" : [ "DigisosAdmin" ],
+        "description" : "Hent digisos søknader for din kommune",
+        "operationId" : "getSoknader",
+        "parameters" : [ {
+          "name" : "fiksOrgId",
+          "in" : "query",
+          "description" : "FiksOrgId for kommune. Hvis feltet er tomt kjører man som root administrator.",
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "example" : "b89ef035-708e-48ae-a1dc-c1b8cc5efefa"
+        }, {
+          "name" : "kommunenummer",
+          "in" : "query",
+          "description" : "Kommunenummer for kommunen. Hvis feltet er tomt henter man alle søknadder man har tilgang til.",
+          "schema" : {
+            "type" : "string"
+          },
+          "example" : 1234
+        }, {
+          "name" : "fra",
+          "in" : "query",
+          "description" : "Index for det første søketreffet som skal returneres",
+          "schema" : {
+            "type" : "integer",
+            "format" : "int32",
+            "default" : 0
+          },
+          "example" : 0
+        }, {
+          "name" : "antall",
+          "in" : "query",
+          "description" : "Antall søketreff som skal returneres",
+          "schema" : {
+            "type" : "integer",
+            "format" : "int32",
+            "default" : 50
+          },
+          "example" : 50
+        }, {
+          "name" : "fraDato",
+          "in" : "query",
+          "description" : "FraDato for søknader i YYYY-MM-DDTHH:MM:SS format. Hvis feltet er tomt settes 7 dager fra tilDato",
+          "schema" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "example" : "2020-01-01T00:00:00"
+        }, {
+          "name" : "tilDato",
+          "in" : "query",
+          "description" : "TilDato for søknader i YYYY-MM-DDTHH:MM:SS format",
+          "schema" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "example" : "2020-01-01T00:00:00"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Uthentet søknadder man har tilgang til",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/AdminResponse"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Feil i inputdata",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Du har ikke tilgang til den angitte fiksorg",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/digisos/admin/api/v1/soknader/csv" : {
+      "get" : {
+        "tags" : [ "DigisosAdmin" ],
+        "description" : "Hent CSV fil for søknaddene",
+        "operationId" : "getSoknaderCSV",
+        "parameters" : [ {
+          "name" : "fiksOrgId",
+          "in" : "query",
+          "description" : "FiksOrgId for kommune. Hvis feltet er tomt kjører man som root administrator.",
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "example" : "b89ef035-708e-48ae-a1dc-c1b8cc5efefa"
+        }, {
+          "name" : "kommunenummer",
+          "in" : "query",
+          "description" : "Kommunenummer for kommunen. Hvis feltet er tomt henter man alle søknadder man har tilgang til.",
+          "schema" : {
+            "type" : "string"
+          },
+          "example" : 1234
+        }, {
+          "name" : "fraDato",
+          "in" : "query",
+          "description" : "FraDato for søknader i YYYY-MM-DDTHH:MM:SS format. Hvis feltet er tomt settes 7 dager fra tilDato",
+          "schema" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "example" : "2020-01-01T00:00:00"
+        }, {
+          "name" : "tilDato",
+          "in" : "query",
+          "description" : "TilDato for søknader i YYYY-MM-DDTHH:MM:SS format. Hvis feltet er tomt settes nåtid",
+          "schema" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "example" : "2020-01-01T00:00:00"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Uthentet CSV for en søknad",
+            "content" : {
+              "text/csv; charset=UTF-8" : {
+                "schema" : {
+                  "type" : "string"
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Du har ikke tilgang til den angitte fiksorg",
+            "content" : {
+              "text/csv; charset=UTF-8" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Feil i inputdata",
+            "content" : {
+              "text/csv; charset=UTF-8" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/digisos/admin/api/v1/statistikk" : {
+      "get" : {
+        "tags" : [ "DigisosAdmin" ],
+        "description" : "Hent digisos statistikk for din kommune",
+        "operationId" : "getStatistikk",
+        "parameters" : [ {
+          "name" : "fiksOrgId",
+          "in" : "query",
+          "description" : "FiksOrgId for kommune",
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "example" : "b89ef035-708e-48ae-a1dc-c1b8cc5efefa"
+        }, {
+          "name" : "kommunenummer",
+          "in" : "query",
+          "description" : "Kommunenummer for kommunen",
+          "schema" : {
+            "type" : "string"
+          },
+          "example" : 1234
+        }, {
+          "name" : "fraDato",
+          "in" : "query",
+          "description" : "FraDato for søknader i YYYY-MM-DDTHH:MM:SS format",
+          "schema" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "example" : "2020-01-01T00:00:00"
+        }, {
+          "name" : "tilDato",
+          "in" : "query",
+          "description" : "TilDato for søknader i YYYY-MM-DDTHH:MM:SS format",
+          "schema" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "example" : "2020-01-01T00:00:00"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Uthentet statestikk kommunen",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Statistikk"
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Du har ikke tilgang til den angitte fiksorg",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Feil i inputdata",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components" : {
+    "schemas" : {
+      "Hendelse" : {
+        "type" : "object",
+        "properties" : {
+          "state" : {
+            "type" : "string",
+            "enum" : [ "AKSEPTERT_FIKS", "AKSEPTERT_FIKS_ETTERSENDELSE", "SENDT_FIKS_IO", "SENDT_SVARUT", "SENDT_FIKS_IO_ETTERSENDELSE", "SENDT_SVARUT_ETTERSENDELSE", "FEILET_SVARUT", "OPPRETTET_SAK_KOMMUNE", "OPPDATERT_SAK_KOMMUNE", "LASTET_OPP_FILER_KOMMUNE", "SLETTET_OPPDATERINGER_KOMMUNE", "SLETTET_FILER_KOMMUNE", "DIGISOS_SLETTET_FEILET" ]
+          },
+          "hendelsestidspunkt" : {
+            "type" : "string",
+            "format" : "date-time"
+          }
+        }
+      },
+      "HistorikkResponse" : {
+        "type" : "object",
+        "properties" : {
+          "historikk" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Hendelse"
+            }
+          }
+        }
+      },
+      "ErrorMessage" : {
+        "type" : "object",
+        "properties" : {
+          "timestamp" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "status" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "error" : {
+            "type" : "string"
+          },
+          "errorId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "path" : {
+            "type" : "string"
+          },
+          "originalPath" : {
+            "type" : "string"
+          },
+          "message" : {
+            "type" : "string"
+          },
+          "errorCode" : {
+            "type" : "string"
+          },
+          "errorJson" : {
+            "type" : "string"
+          }
+        }
+      },
+      "Forsendelse" : {
+        "type" : "object",
+        "properties" : {
+          "forsendelsesId" : {
+            "type" : "string"
+          },
+          "status" : {
+            "type" : "string",
+            "enum" : [ "SENDT", "BEKREFTET", "TTL_TIDSAVBRUDD", "IKKE_SENDT", "SVARUT_FEIL", "STOPPET" ]
+          },
+          "statusTime" : {
+            "type" : "string",
+            "format" : "date-time"
+          }
+        }
+      },
+      "Soknad" : {
+        "type" : "object",
+        "properties" : {
+          "fiksDigisosId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "kommunenummer" : {
+            "type" : "string"
+          },
+          "navEksternRefId" : {
+            "type" : "string"
+          },
+          "navSendtTidspunkt" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "status" : {
+            "type" : "string",
+            "enum" : [ "OK", "DIGISOS_SLETTET_FEILET" ]
+          },
+          "kanal" : {
+            "type" : "string",
+            "enum" : [ "FIKS_IO", "SVARUT" ]
+          },
+          "forsendelse" : {
+            "$ref" : "#/components/schemas/Forsendelse"
+          },
+          "antallFiler" : {
+            "type" : "integer",
+            "format" : "int32"
+          }
+        }
+      },
+      "AdminResponse" : {
+        "type" : "object",
+        "properties" : {
+          "soknader" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Soknad"
+            }
+          }
+        }
+      },
+      "Statistikk" : {
+        "type" : "object",
+        "properties" : {
+          "antallSoknader" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "antallAkseptert" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "antallAkseptertEttersendelse" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "antallSendtIO" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "antallSendtSvarUt" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "antallSendtFiksIOEttersendelse" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "antallSendtSvarutEttersendelse" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "antallFeiletSvarut" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "antallOpprettetSakKommune" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "antallOppdatertSakKommune" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "antallLastetOppFilerKommune" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "antallSlettetOppdateringerKommune" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "antallSlettetFilerKommune" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "antallDigisosSlettetFeilet" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        }
+      }
+    }
+  }
+}
