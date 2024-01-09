@@ -1,0 +1,242 @@
+{
+  "openapi" : "3.0.1",
+  "info" : {
+    "title" : "KS Fiks: Chat Konfigurasjon",
+    "description" : "Fiks Chat Konfigurasjon Saksbehandler service",
+    "contact" : {
+      "name" : "Fiks-brukerstøtte",
+      "url" : "https://ks-no.github.io/",
+      "email" : "fiks-utvikling@ks.no"
+    },
+    "version" : "v1"
+  },
+  "servers" : [ {
+    "url" : "https://api.fiks.ks.no",
+    "description" : "KS Fiks API host"
+  }, {
+    "url" : "https://api.fiks.test.ks.no",
+    "description" : "KS Fiks API test host"
+  } ],
+  "tags" : [ {
+    "name" : "chat-konfigurasjon-ekstern",
+    "description" : "API for konfigurering av Fiks Chat i Forvaltning"
+  } ],
+  "paths" : {
+    "/fiks-chat-konfigurasjon/api/v1/ekstern/{fiksOrgId}/sok" : {
+      "post" : {
+        "tags" : [ "chat-konfigurasjon-ekstern" ],
+        "description" : "Søker etter en saksbehandler i Chat konfigurasjon",
+        "operationId" : "hentEksternBruker",
+        "parameters" : [ {
+          "name" : "fiksOrgId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/FinnSaksbehandlerRequest"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "default" : {
+            "description" : "default response",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/SaksbehandlerSokResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/fiks-chat-konfigurasjon/api/v1/ekstern/leggtilsaksbehandleriteam" : {
+      "put" : {
+        "tags" : [ "chat-konfigurasjon-ekstern" ],
+        "description" : "Legger til en saksbehandler i team i RocketChat",
+        "operationId" : "leggTilSaksbehandler",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/LeggTilSaksbehandlerITeamRequest"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "201" : {
+            "description" : "La til saksbehandler i team"
+          },
+          "default" : {
+            "description" : "Noe gikk galt",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/fiks-chat-konfigurasjon/api/v1/ekstern/opprettchatbruker" : {
+      "post" : {
+        "tags" : [ "chat-konfigurasjon-ekstern" ],
+        "description" : "Oppretter en ekstern bruker i RocketChat",
+        "operationId" : "opprettEksternBruker",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/OpprettChatbrukerRequest"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "201" : {
+            "description" : "Opprettet ny chatbruker og la til i channel"
+          },
+          "default" : {
+            "description" : "Noe gikk galt",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components" : {
+    "schemas" : {
+      "SaksbehandlerSokResponse" : {
+        "required" : [ "etternavn", "fnr", "telefonnummer" ],
+        "type" : "object",
+        "properties" : {
+          "fnr" : {
+            "pattern" : "^[0-9]{11}$",
+            "type" : "string",
+            "description" : "PersonNummer for saksbehandler"
+          },
+          "fornavn" : {
+            "type" : "string"
+          },
+          "etternavn" : {
+            "type" : "string",
+            "description" : "Etternavn for saksbehandler som skal opprettes"
+          },
+          "telefonnummer" : {
+            "pattern" : "^[+]?[0-9]+([- ][0-9]+)*$",
+            "type" : "string",
+            "description" : "Telefonnummer for saksbehandler som skal opprettes"
+          }
+        }
+      },
+      "FinnSaksbehandlerRequest" : {
+        "required" : [ "fnr" ],
+        "type" : "object",
+        "properties" : {
+          "fnr" : {
+            "pattern" : "^[0-9]{11}$",
+            "type" : "string",
+            "description" : "PersonNummer for saksbehandler"
+          }
+        }
+      },
+      "ErrorMessage" : {
+        "type" : "object",
+        "properties" : {
+          "timestamp" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "status" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "error" : {
+            "type" : "string"
+          },
+          "errorId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "path" : {
+            "type" : "string"
+          },
+          "originalPath" : {
+            "type" : "string"
+          },
+          "message" : {
+            "type" : "string"
+          },
+          "errorCode" : {
+            "type" : "string"
+          },
+          "errorJson" : {
+            "type" : "string"
+          }
+        }
+      },
+      "LeggTilSaksbehandlerITeamRequest" : {
+        "required" : [ "fnrKallendeSaksbehandler", "fnrLeggTil", "teamId" ],
+        "type" : "object",
+        "properties" : {
+          "fnrLeggTil" : {
+            "pattern" : "^[0-9]{11}$",
+            "type" : "string",
+            "description" : "Personnummer for saksbehandler som skal legges til"
+          },
+          "fnrKallendeSaksbehandler" : {
+            "pattern" : "^[0-9]{11}$",
+            "type" : "string",
+            "description" : "Personnummer for saksbehandler som legger til"
+          },
+          "teamId" : {
+            "type" : "string",
+            "description" : "Id for teamet som saksbehandler skal legges til"
+          }
+        }
+      },
+      "OpprettChatbrukerRequest" : {
+        "required" : [ "channelId", "fiksOrgId", "fnr", "saksbehandlerFnr" ],
+        "type" : "object",
+        "properties" : {
+          "fnr" : {
+            "pattern" : "^[0-9]{11}$",
+            "type" : "string",
+            "description" : "Personnummer for chatbruker som skal opprettes"
+          },
+          "channelId" : {
+            "type" : "string",
+            "description" : "Id for kanalen som chatbruker skal knyttes til"
+          },
+          "fiksOrgId" : {
+            "type" : "string",
+            "description" : "FiksOrgId for kommunen som chatbruker skal knyttes til"
+          },
+          "saksbehandlerFnr" : {
+            "pattern" : "^[0-9]{11}$",
+            "type" : "string",
+            "description" : "Personnummer for saksbehandler som ønsker legge til bruker "
+          }
+        }
+      }
+    }
+  }
+}
