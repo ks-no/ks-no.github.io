@@ -33,8 +33,16 @@
       "description": "Administrer apper som skal tilgjengeliggjøres på fiks plattformen"
     },
     {
-      "name": "tjeneste",
-      "description": "Administrer eksterne tjenester som skal tilgjengeliggjøres på fiks plattformen"
+      "name": "forvaltning",
+      "description": "Administrasjon for eksisterende organisasjoner som skal administrere tilgang til FHI portal via fiks forvaltning"
+    },
+    {
+      "name": "fhi",
+      "description": "Initialisering av kort for FHI"
+    },
+    {
+      "name": "leverandor",
+      "description": "Administrer produkt som skal tilgjengliggjøres via andre leverandører"
     }
   ],
   "security": [
@@ -43,14 +51,18 @@
     }
   ],
   "paths": {
-    "/kominn/api/v1/eksterntjeneste": {
+    "/kominn/api/v1/tjenester/organisasjoner/{fiksOrgId}": {
       "post": {
         "tags": [
-          "app",
-          "tjeneste"
+          "fhi", "leverandor"
         ],
         "operationId": "opprettTjeneste",
         "description": "Opprett en ny ekstern tjeneste som skal gjøres tilgjengelig",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/fiksOrgId"
+          }
+        ],
         "requestBody": {
           "content": {
             "application/json": {
@@ -100,11 +112,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage",
-                  "example": {
-                    "message": "Ikke autentisert",
-                    "code": "401"
-                  }
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
                 }
               }
             }
@@ -114,35 +122,22 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage",
-                  "example": {
-                    "message": "Ikke autorisert",
-                    "code": "403"
-                  }
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
                 }
               }
             }
           }
         }
-      }
-    },
-    "/kominn/api/v1/eksterntjeneste/{tjenesteId}": {
+      },
       "get": {
         "tags": [
-          "app",
-          "tjeneste"
+          "fhi", "leverandor"
         ],
         "description": "Hent gjeldende konfigurasjon for ekstern tjeneste",
         "operationId": "hentTjeneste",
         "parameters": [
           {
-            "name": "tjenesteId",
-            "in": "path",
-            "description": "ID til den eksterne tjenesten",
-            "required": true,
-            "schema": {
-              "$ref": "#/components/schemas/TjenesteId"
-            }
+            "$ref": "#/components/parameters/fiksOrgId"
           }
         ],
         "responses": {
@@ -200,19 +195,18 @@
       },
       "patch": {
         "tags": [
-          "app",
-          "tjeneste"
+          "fhi", "leverandor"
         ],
         "description": "Oppdater konfigurasjon for ekstern tjeneste. Kun de feltene som er med i requesten blir oppdatert",
         "operationId": "oppdaterTjeneste",
         "parameters": [
           {
-            "name": "tjenesteId",
+            "name": "fiksOrgId",
             "in": "path",
-            "description": "ID til den eksterne tjenesten",
+            "description": "ID til fiks organisasjonen som eier tjenesten",
             "required": true,
             "schema": {
-              "$ref": "#/components/schemas/TjenesteId"
+              "$ref": "#/components/schemas/FiksOrgId"
             }
           }
         ],
@@ -245,10 +239,6 @@
               "application/json": {
                 "schema": {
                   "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
-                },
-                "example": {
-                  "message": "Ugyldig input",
-                  "code": "400"
                 }
               }
             }
@@ -258,11 +248,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage",
-                  "example": {
-                    "message": "Ikke autentisert",
-                    "code": "401"
-                  }
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
                 }
               }
             }
@@ -272,11 +258,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage",
-                  "example": {
-                    "message": "Ikke autorisert",
-                    "code": "403"
-                  }
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
                 }
               }
             }
@@ -286,38 +268,55 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage",
-                  "example": {
-                    "message": "Tjenesten finnes ikke",
-                    "code": "404"
-                  }
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
                 }
               }
             }
           }
         }
-      },
-      "delete": {
-        "tags": [
-          "app",
-          "tjeneste"
-        ],
-        "description": "Slett ekstern tjeneste",
-        "operationId": "slettTjeneste",
+      }
+    },
+    "/kominn/api/v1/tjenester/organisasjoner/{fiksOrgId}/{tjenestekode}": {
+      "post": {
+        "tags": ["forvaltning"],
+        "operationId": "opprettTjenesteForvaltning",
+        "description": "Ta i bruk og konfigurerer gitt tjeneste levert av FHI for en gitt organisasjon",
         "parameters": [
           {
-            "name": "tjenesteId",
-            "in": "path",
-            "description": "ID til den eksterne tjenesten",
-            "required": true,
-            "schema": {
-              "$ref": "#/components/schemas/TjenesteId"
-            }
+            "$ref": "#/components/parameters/fiksOrgId"
+          },
+          {
+            "$ref": "#/components/parameters/tjenestekode"
           }
         ],
+        "requestBody":{
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OpprettEksternTjenesteRequest"
+              }
+            }
+          }
+        },
         "responses": {
-          "204": {
-            "description": "Sletting ok"
+          "201": {
+            "description": "Konfigurert",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EksternTjenesteDefinisjon"
+                }
+              }
+            },
+            "links": {
+              "self": {
+                "description": "Lenke til tjenesten som ble opprettet",
+                "operationId": "hentTjeneste",
+                "parameters": {
+                  "tjenesteId": "$response.body#/tjenesteId"
+                }
+              }
+            }
           },
           "400": {
             "description": "Ugyldig input",
@@ -340,17 +339,7 @@
             }
           },
           "403": {
-            "description": "Mangler tilgang til å slette tjenesten",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Tjenesten finnes ikke",
+            "description": "Ikke autorisert",
             "content": {
               "application/json": {
                 "schema": {
@@ -362,22 +351,19 @@
         }
       }
     },
-    "/kominn/api/v1/eksterntjeneste/{tjenesteId}/apper": {
+    "/kominn/api/v1/tjenester/organisasjoner/{fiksOrgId}/{tjenestekode}/apper": {
       "post": {
         "tags": [
-          "app"
+          "fhi", "leverandor"
         ],
         "operationId": "opprettApp",
         "description": "Opprett en ny app som skal gjøres tilgjengelig",
         "parameters": [
           {
-            "name": "tjenesteId",
-            "in": "path",
-            "description": "ID til den eksterne tjenesten",
-            "required": true,
-            "schema": {
-              "$ref": "#/components/schemas/TjenesteId"
-            }
+            "$ref": "#/components/parameters/fiksOrgId"
+          },
+          {
+            "$ref": "#/components/parameters/tjenestekode"
           }
         ],
         "requestBody": {
@@ -402,11 +388,7 @@
             "links": {
               "self": {
                 "description": "Lenke til tjenesten som ble opprettet",
-                "operationId": "hentTjeneste",
-                "parameters": {
-                  "tjenesteId": "$response.body#/tjenesteId",
-                  "appId": "$response.body#/appId"
-                }
+                "operationId": "hentTjeneste"
               }
             }
           },
@@ -451,9 +433,80 @@
             }
           }
         }
+      },
+      "get": {
+        "tags": [
+          "app"
+        ],
+        "description": "Hent alle apper for en tjeneste",
+        "operationId": "hentApper",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/fiksOrgId"
+          },
+          {
+            "$ref": "#/components/parameters/tjenestekode"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AppDefinisjonListe"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Ugyldig input",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Ikke autentisert",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                },
+                "example": {
+                  "message": "Ikke autentisert",
+                  "code": "401"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Ikke autorisert",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Tjenesten finnes ikke",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
       }
     },
-    "/kominn/api/v1/eksterntjeneste/{tjenesteId}/apper/{appId}": {
+    "/kominn/api/v1/tjenester/organisasjoner/{fiksOrgId}/{tjenestekode}/apper/{appId}": {
       "get": {
         "tags": [
           "app"
@@ -462,24 +515,13 @@
         "operationId": "hentApp",
         "parameters": [
           {
-            "name": "tjenesteId",
-            "in": "path",
-            "description": "ID til den eksterne tjenesten",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
+            "$ref": "#/components/parameters/fiksOrgId"
           },
           {
-            "name": "appId",
-            "in": "path",
-            "description": "ID til appen",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
+            "$ref": "#/components/parameters/tjenestekode"
+          },
+          {
+            "$ref": "#/components/parameters/appId"
           }
         ],
         "responses": {
@@ -527,28 +569,19 @@
       },
       "patch": {
         "tags": [
-          "app"
+          "fhi", "leverandor"
         ],
         "description": "Oppdater konfigurasjon for app. Kun de feltene som er med i requesten blir oppdatert",
         "operationId": "oppdaterApp",
         "parameters": [
           {
-            "name": "tjenesteId",
-            "in": "path",
-            "description": "ID til den eksterne tjenesten",
-            "required": true,
-            "schema": {
-              "$ref": "#/components/schemas/TjenesteId"
-            }
+            "$ref": "#/components/parameters/fiksOrgId"
           },
           {
-            "name": "appId",
-            "in": "path",
-            "description": "ID til appen",
-            "required": true,
-            "schema": {
-              "$ref": "#/components/schemas/AppId"
-            }
+            "$ref": "#/components/parameters/tjenestekode"
+          },
+          {
+            "$ref": "#/components/parameters/appId"
           }
         ],
         "requestBody": {
@@ -608,28 +641,19 @@
       },
       "delete": {
         "tags": [
-          "app"
+          "fhi", "leverandor"
         ],
         "description": "Slett app",
         "operationId": "slettApp",
         "parameters": [
           {
-            "name": "tjenesteId",
-            "in": "path",
-            "description": "ID til den eksterne tjenesten",
-            "required": true,
-            "schema": {
-              "$ref": "#/components/schemas/TjenesteId"
-            }
+            "$ref": "#/components/parameters/fiksOrgId"
           },
           {
-            "name": "appId",
-            "in": "path",
-            "description": "ID til appen",
-            "required": true,
-            "schema": {
-              "$ref": "#/components/schemas/AppId"
-            }
+            "$ref": "#/components/parameters/tjenestekode"
+          },
+          {
+            "$ref": "#/components/parameters/appId"
           }
         ],
         "responses": {
@@ -678,6 +702,35 @@
         "bearerFormat": "JWT"
       }
     },
+    "parameters": {
+      "fiksOrgId": {
+        "name": "fiksOrgId",
+        "in": "path",
+        "description": "ID til fiks organisasjonen som eier tjenesten",
+        "required": true,
+        "schema": {
+          "$ref": "#/components/schemas/FiksOrgId"
+        }
+      },
+      "tjenestekode": {
+        "name": "tjenestekode",
+        "in": "path",
+        "description": "Kode for tjenesten",
+        "required": true,
+        "schema": {
+          "$ref": "#/components/schemas/Tjenestekode"
+        }
+      },
+      "appId": {
+        "name": "appId",
+        "in": "path",
+        "description": "ID til appen",
+        "required": true,
+        "schema": {
+          "$ref": "#/components/schemas/AppId"
+        }
+      }
+    },
     "schemas": {
       "Fodselsnummer": {
         "type": "string",
@@ -687,12 +740,11 @@
       "Navn": {
         "type": "string",
         "pattern": "^[a-zA-ZÆØÅa-zæøå0-9]+$",
+        "description": "Navn på elementet i henhold til navnereglene i Fiks Plattformen",
         "example": "NavnÆøå"
       },
       "Appnavn": {
-        "$ref": "#/components/schemas/Navn",
-        "description": "Navn på appen",
-        "example": "AppEn"
+        "$ref": "#/components/schemas/Navn"
       },
       "UnikId": {
         "type": "string",
@@ -704,6 +756,12 @@
         "type": "string",
         "description": "Kommunenummer",
         "pattern": "^[0-9]{4}$"
+      },
+      "Tjenestekode": {
+        "type": "string",
+        "description": "Kode for tjenesten",
+        "pattern": "^[a-zA-Z0-9]+$",
+        "example": "TJENESTEN"
       },
       "OpprettAppRequest": {
         "type": "object",
@@ -727,16 +785,13 @@
         ]
       },
       "AppId": {
-        "$ref": "#/components/schemas/UnikId",
-        "description": "ID til tjenesten"
+        "$ref": "#/components/schemas/UnikId"
       },
       "FiksOrgId": {
-        "$ref": "#/components/schemas/UnikId",
-        "description": "ID til fiks organisasjonen som eier tjenesten"
+        "$ref": "#/components/schemas/UnikId"
       },
       "TjenesteId": {
-        "$ref": "#/components/schemas/UnikId",
-        "description": "ID til den eksterne tjenesten"
+        "$ref": "#/components/schemas/UnikId"
       },
       "OpprettAppResponse": {
         "type": "object",
@@ -769,6 +824,18 @@
           "beskrivelse",
           "logo"
         ]
+      },
+      "AppDefinisjonListe":{
+        "type": "object",
+        "properties": {
+          "apps":{
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AppDefinisjon"
+            }
+          }
+        }
+
       },
       "OppdaterAppDefinisjon": {
         "type": "object",
@@ -807,9 +874,7 @@
         ]
       },
       "TjenesteNavn": {
-        "$ref": "#/components/schemas/Navn",
-        "description": "Navn på tjenesten",
-        "example": "TjenesteEn"
+        "$ref": "#/components/schemas/Navn"
       },
       "OpprettEksternTjenesteRequest": {
         "type": "object",
@@ -834,6 +899,9 @@
           },
           "navn": {
             "$ref": "#/components/schemas/TjenesteNavn"
+          },
+          "kode": {
+            "$ref": "#/components/schemas/Tjenestekode"
           }
         },
         "required": [
