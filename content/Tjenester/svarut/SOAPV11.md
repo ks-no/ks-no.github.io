@@ -3,6 +3,10 @@ title: 'API: Integrasjon med SOAP'
 date: 2019-05-07
 aliases: [/svarut/integrasjon/ForsendelseServiceV11]
 ---
+
+<b>SOAP APIene er deprecated, og det vil ikke komme noen ny versjon av eller ny funksjonalitet til disse. 
+Vi anbefaler bruk av nyeste versjon av REST-APIet for nye integrasjoner.</b>
+
 ### Tilgang
 
 For å benytte web-tjenesten må en bruke HTTP Basic autentication med brukernavn(avsendernavn) og service-passord. Avsender opprettes av KS-SvarUt administrator/organisasjons administrator. Service-passordet genereres av avsender-ansvarlig via [konfigurasjon](https://svarut.ks.no/konfigurasjon/)-siden.
