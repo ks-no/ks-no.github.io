@@ -16,10 +16,15 @@ Tilganger må tildeles integrasjoner på alle kontoene de skal ha lov til å utf
 
 ## APIer
 
+### Feilmeldinger
+Generell informasjon om feilmeldinger på Fiks-plattformen finnes [her](https://developers.fiks.ks.no/felles/integrasjoner/#feilmeldinger).
+
 ### Forsendelse
 
 #### Send
 Sending av forsendelser: [OpenAPI spec](https://editor.swagger.io/?url=https://developers.fiks.ks.no/api/forsendelse-send-api-v2.json)
+
+**Ved innsending av forsendelser anbefales det en timeout på 16 minutter. Dette for å håndtere innsending av større filer.** 
 
 Innsending utføres ved bruk av en multipart HTTP request. Dette er ikke beskrevet i speccen. Første part må inneholde forsendelsens metadata, og ha navn "forsendelse".
 Påfølgende parts skal inneholde dokumentene som skal sendes med forsendelsen. Disse må være i samme rekkefølge og ha samme navn som dokumentene definert i metadata.
