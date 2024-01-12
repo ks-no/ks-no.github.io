@@ -42,34 +42,19 @@
       "description": "Administrasjon for eksisterende organisasjoner som skal administrere tilgang til FHI portal via fiks forvaltning"
     },
     {
-      "name": "fhi",
-      "description": "Initialisering av kort for FHI"
-    },
-    {
       "name": "leverandor",
       "description": "Administrer produkt som skal tilgjengliggjøres via andre leverandører"
     }
   ],
   "paths": {
-    "/kominn/api/v1/tjenester/organisasjoner/{fiksOrgId}": {
-      "post": {
+    "/kominn/api/v1/leverandor/organisasjoner/{fiksOrgId}": {
+      "put": {
         "tags": [
-          "fhi",
           "leverandor"
         ],
         "operationId": "opprettTjeneste",
-        "description": "Opprett en ny ekstern tjeneste som skal gjøres tilgjengelig",
-        "summary": "Opprett en ny ekstern tjeneste som skal gjøres tilgjengelig",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/OpprettEksternTjenesteRequest"
-              }
-            }
-          },
-          "required": true
-        },
+        "description": "Ta i bruk og konfigurer ny tjeneste som skal leveres av ekstern leverandør",
+        "summary": "Ta i bruk og konfigurer ny tjeneste som skal leveres av ekstern leverandør",
         "responses": {
           "201": {
             "description": "Ny tjeneste opprettet",
@@ -124,7 +109,6 @@
       },
       "get": {
         "tags": [
-          "fhi",
           "leverandor"
         ],
         "description": "Hent gjeldende konfigurasjon for ekstern tjeneste",
@@ -183,86 +167,13 @@
           }
         }
       },
-      "patch": {
-        "tags": [
-          "fhi",
-          "leverandor"
-        ],
-        "description": "Oppdater konfigurasjon for ekstern tjeneste. Kun de feltene som er med i requesten blir oppdatert",
-        "operationId": "oppdaterTjeneste",
-        "summary": "Oppdater konfigurasjon for ekstern tjeneste. Kun de feltene som er med i requesten blir oppdatert",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/OppdaterEksternTjenesteDefinisjon"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "204": {
-            "description": "Oppdatering ok",
-            "links": {
-              "self": {
-                "description": "Lenke til tjenesten som ble opprettet",
-                "operationId": "hentTjeneste",
-                "parameters": {
-                  "tjenesteId": "$request.path.tjenesteId"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Ugyldig input",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorMessage"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Ikke autentisert",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorMessage"
-                }
-              }
-            }
-          },
-          "403": {
-            "description": "Ikke autorisert",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorMessage"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Tjenesten finnes ikke",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorMessage"
-                }
-              }
-            }
-          }
-        }
-      },
       "parameters": [
         {
           "$ref": "#/components/parameters/fiksOrgId"
         }
       ]
     },
-    "/kominn/api/v1/tjenester/organisasjoner/{fiksOrgId}/{tjenestekode}": {
+    "/kominn/api/v1/organisasjoner/{fiksOrgId}/tjenester/{tjenestekode}": {
       "put": {
         "tags": [
           "forvaltning"
@@ -383,10 +294,92 @@
         }
       ]
     },
-    "/kominn/api/v1/tjenester/organisasjoner/{fiksOrgId}/{tjenestekode}/apper": {
+    "/kominn/api/v1/organisasjoner/{fiksOrgId}/tjenester/{tjenestekode}/apper/{appId}/brukere": {
+      "get": {
+        "tags": [
+          "forvaltning"
+        ],
+        "operationId": "hentAppBrukere",
+        "description": "Hent alle brukere som har tilgang til gitt app",
+        "summary": "Hent alle brukere som har tilgang til gitt app",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TjenesteBrukerListe"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Appen finnes ikke",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage",
+                  "example": {
+                    "message": "Appen finnes ikke",
+                    "code": "404"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "forvaltning"
+        ],
+        "operationId": "oppdaterAppBrukere",
+        "description": "Oppdater brukere som har tilgang til gitt app",
+        "summary": "Oppdater brukere som har tilgang til gitt app",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OppdaterAppbrukere"
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": "Oppdatering ok"
+          },
+          "404": {
+            "description": "Appen finnes ikke",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage",
+                  "example": {
+                    "message": "Appen finnes ikke",
+                    "code": "404"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/fiksOrgId"
+        },
+        {
+          "$ref": "#/components/parameters/tjenestekode"
+        },
+        {
+          "$ref": "#/components/parameters/appId"
+        }
+      ]
+    },
+    "/kominn/api/v1/leverandor/organisasjoner/{fiksOrgId}/tjenester/{tjenestekode}/apper": {
       "post": {
         "tags": [
-          "fhi",
           "leverandor"
         ],
         "operationId": "opprettApp",
@@ -462,8 +455,7 @@
       },
       "get": {
         "tags": [
-          "leverandor",
-          "fhi"
+          "leverandor"
         ],
         "description": "Hent alle apper for en tjeneste",
         "summary": "Hent alle apper for en tjeneste",
@@ -534,10 +526,9 @@
         }
       ]
     },
-    "/kominn/api/v1/tjenester/organisasjoner/{fiksOrgId}/{tjenestekode}/apper/{appId}": {
+    "/kominn/api/v1/leverandor/organisasjoner/{fiksOrgId}/tjenester/{tjenestekode}/apper/{appId}": {
       "get": {
         "tags": [
-          "fhi",
           "leverandor"
         ],
         "description": "Hent gjeldende konfigurasjon for app",
@@ -588,7 +579,6 @@
       },
       "patch": {
         "tags": [
-          "fhi",
           "leverandor"
         ],
         "description": "Oppdater konfigurasjon for app. Kun de feltene som er med i requesten blir oppdatert",
@@ -651,7 +641,6 @@
       },
       "delete": {
         "tags": [
-          "fhi",
           "leverandor"
         ],
         "description": "Slett app",
@@ -767,7 +756,7 @@
       "Tjenestekode": {
         "type": "string",
         "description": "Kode for tjenesten",
-        "pattern": "^[a-zA-Z0-9_]+$",
+        "pattern": "^[A-Z0-9_]+$",
         "example": "TJENESTEN"
       },
       "Beskrivelse": {
@@ -921,26 +910,6 @@
       "TjenesteNavn": {
         "$ref": "#/components/schemas/Navn"
       },
-      "OpprettEksternTjenesteRequest": {
-        "type": "object",
-        "properties": {
-          "fiksOrgId": {
-            "$ref": "#/components/schemas/FiksOrgId"
-          },
-          "navn": {
-            "$ref": "#/components/schemas/TjenesteNavn"
-          }
-        },
-        "required": [
-          "fiksOrgId",
-          "navn"
-        ],
-        "description": "Oppretter en ny tjeneste som skal leveres av ekstern leverandør",
-        "example": {
-          "fiksOrgId": "f7480539-92b2-460d-8e7f-2bc8a37c6746",
-          "navn": "PORTALEN_EKSTERN"
-        }
-      },
       "EksternTjenesteDefinisjon": {
         "description": "Definisjon av tjeneste som blir levert ekstern leverandør",
         "type": "object",
@@ -951,30 +920,19 @@
           "navn": {
             "$ref": "#/components/schemas/TjenesteNavn"
           },
-          "kode": {
+          "tjenestekode": {
             "$ref": "#/components/schemas/Tjenestekode"
           }
         },
         "required": [
           "fiksOrgId",
-          "navn"
+          "navn",
+          "tjenestekode"
         ],
         "example": {
           "fiksOrgId": "f7480539-92b2-460d-8e7f-2bc8a37c6746",
           "navn": "PORTALEN_EKSTERN",
-          "kode": "MIN_TJENESTE"
-        }
-      },
-      "OppdaterEksternTjenesteDefinisjon": {
-        "type": "object",
-        "description": "Oppdaterer definisjon av ekstern tjeneste",
-        "properties": {
-          "navn": {
-            "$ref": "#/components/schemas/TjenesteNavn"
-          }
-        },
-        "example": {
-          "navn": "PortalenFHI"
+          "tjenestekode": "MIN_TJENESTE"
         }
       },
       "SentralisertGruppe": {
@@ -1017,38 +975,12 @@
       },
       "TaIBrukOgKonfigurerForvaltetTjenesteRequest": {
         "type": "object",
-        "description": "Ta i bruk og konfigurerer tjeneste levert av ekstern leverandør (FHI)",
-        "properties": {
-          "administratorer": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/TjenesteBruker"
-            }
-          },
-          "brukere": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/TjenesteBruker"
-            }
-          }
-        }
+        "description": "Ta i bruk og konfigurerer tjeneste levert av ekstern leverandør (FHI)"
       },
       "ForvaltetTjenesteDefinisjon": {
         "type": "object",
         "description": "Definisjon av tjeneste som blir levert av ekstern leverandør (FHI)",
         "properties": {
-          "administratorer": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/TjenesteBruker"
-            }
-          },
-          "brukere": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/TjenesteBruker"
-            }
-          },
           "apper": {
             "type": "array",
             "items": {
@@ -1076,8 +1008,61 @@
             "$ref": "#/components/schemas/IdentifisertPerson"
           }
         ],
+        "properties": {
+          "navn": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "navn"
+        ],
         "discriminator": {
           "propertyName": "aktorType"
+        },
+        "example": {
+          "aktor": "SDG_12345678-1234-1234-1234-123456789012",
+          "aktorType": "SentralisertGruppe",
+          "navn": "Gruppe 1"
+        }
+      },
+      "AktorId": {
+        "type": "string",
+        "description": "Aktor id som kan være enten fnr/dnr eller id for enten bruker (SDB) eller gruppe (SDG) fra sentralisert brukerstyring",
+        "pattern": "^(SD(B|G)_[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}|[0-9]{11})$"
+      },
+      "OppdaterBrukerOperasjon": {
+        "type": "string",
+        "enum": [
+          "LeggTil",
+          "Fjern"
+        ]
+      },
+      "OppdaterAppbrukere": {
+        "type": "object",
+        "description": "Oppdater brukere som har tilgang til gitt app",
+        "properties": {
+          "operasjon": {
+            "$ref": "#/components/schemas/OppdaterBrukerOperasjon"
+          },
+          "aktor": {
+            "$ref": "#/components/schemas/AktorId"
+          }
+        },
+        "required": [
+          "operasjon",
+          "aktor"
+        ]
+      },
+      "TjenesteBrukerListe": {
+        "type": "object",
+        "description": "Liste av brukere som har tilgang til gitt app",
+        "properties": {
+          "brukere": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TjenesteBruker"
+            }
+          }
         }
       },
       "ErrorMessage": {
