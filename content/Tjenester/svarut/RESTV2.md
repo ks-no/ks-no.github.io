@@ -3,18 +3,16 @@ title: 'API: Integrasjon med REST'
 date: 2022-03-01
 ---
 
-# Nytt i denne versjonen
+## Nytt i denne versjonen
 
 * Endepunkter delt opp i flere separate enheter som kan versjoneres hver for seg
 * OpenAPI specs som definerer endepunktene
 * Bruker samme autentiserings- og autoriseringsmekanismer som resten av Fiks-plattformen
 
-# Tilgang
+## Tilgang
 
 Autentisering og autorisering skjer ved bruk av OAuth 2.0 med Fiks-integrasjoner og Maskinporten, som beskrevet [her](/felles/integrasjoner/). 
 Tilganger må tildeles integrasjoner på alle kontoene de skal ha lov til å utføre operasjoner for. Tilgang til en forsendelse autoriseres via avsenderkontoen.
-
-# APIer
 
 ## Feilmeldinger
 Generell informasjon om feilmeldinger på Fiks-plattformen finnes [her](https://developers.fiks.ks.no/felles/integrasjoner/#feilmeldinger).
