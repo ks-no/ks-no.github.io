@@ -30,7 +30,7 @@ Innsending utføres ved bruk av en multipart HTTP request. Dette er ikke beskrev
 Påfølgende parts skal inneholde dokumentene som skal sendes med forsendelsen. Disse må være i samme rekkefølge og ha samme navn som dokumentene definert i metadata.
 
 Eksempel på en hvordan en slik request med to filer kan se ut:
-```json
+```
 POST /api/v2/kontoer/<konto-id>/forsendelser/ HTTP/1.1
 Host: svarut.ks.no
 Authorization: Bearer <Maskinporten-token>
