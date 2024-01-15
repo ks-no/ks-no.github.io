@@ -1,5 +1,5 @@
 ---
-title: 'API: Integrasjon med REST'
+title: REST V1
 date: 2019-04-11
 aliases: ["/svarut/integrasjon/ForsendelseRestServiceV1", "/svarut/integrasjon/forsendelserestservicev1/", "/tjenester/svarut/integrasjon/forsendelserestservicev1/"]
 ---
