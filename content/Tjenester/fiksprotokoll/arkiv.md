@@ -12,10 +12,10 @@ Fiks Arkiv tjenesten er en asynkron protokoll over Fiks IO eller andre transport
 For brukerhistorier fra arbeidet som ble gjort ved kartleggingen av protokollen, les mer i [wiki](https://github.com/ks-no/fiks-arkiv-specification/wiki) og [dokumentasjon](https://github.com/ks-no/fiks-arkiv-specification/tree/main/Dokumentasjon/V1) i github repoet [fiks-arkiv-specification](https://github.com/ks-no/fiks-arkiv-specification/)
 
 ## Tilgjengelige grensesnitt
-| Grensesnitt | Støtte |
-|------|------|
-| Web portal | Nei |
-| Maskin til maskin | Ja |
+| Grensesnitt       | Støtte |
+|-------------------|--------|
+| Web portal        | Nei    |
+| Maskin til maskin | Ja     |
 
 ## Begrensninger og regler for protokollen
 - Arkivdel skal være spesifisert i arkivet og håndteres av arkivet, men protokollen støtter ikke henting av arkivdel fra arkiv. 
@@ -181,7 +181,7 @@ Dette vil Fiks-IO klienten fra KS gjøre for deg hvis man bruker `.Svar()` funks
 
 For å arkivere data må en bruke meldingsformatet `arkivmelding.xml`. Se xsd schema [**no.ks.fiks.arkiv.v1.arkivering.arkivmelding.opprett.xsd**](https://github.com/ks-no/fiks-arkiv-specification/blob/main/Schema/V1/no.ks.fiks.arkiv.v1.arkivering.arkivmelding.opprett.xsd) for definsjon av meldingsformatet.
 
-Det er en egen meldingstype for å arkivere nytt dokumentobjekt, `no.ks.fiks.arkiv.v1.arkivering.dokumentobjekt.opprett`,  som også bruker filnavnet `arkivmelding.xml`. Se xsd schema [**no.ks.fiks.arkiv.v1.arkivering.dokumentobjekt.opprett.xsd**](https://github.com/ks-no/fiks-arkiv-specification/blob/main/Schema/V1/no.ks.fiks.arkiv.v1.arkivering.dokumentobjekt.opprett.xsd) for definsjon av meldingsformatet.
+Det er en egen meldingstype for å arkivere nytt dokumentobjekt, `no.ks.fiks.arkiv.v1.arkivering.dokumentobjekt.opprett`, som også bruker filnavnet `arkivmelding.xml`. Se xsd schema [**no.ks.fiks.arkiv.v1.arkivering.dokumentobjekt.opprett.xsd**](https://github.com/ks-no/fiks-arkiv-specification/blob/main/Schema/V1/no.ks.fiks.arkiv.v1.arkivering.dokumentobjekt.opprett.xsd) for definsjon av meldingsformatet.
 
 ### Begrensninger og regler for arkivering
 

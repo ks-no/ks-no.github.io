@@ -14,10 +14,10 @@ Videre at det kun sendes meldinger mellom avsender- og mottakersystem som er for
 
 | Protokoll                                                     | Status                                                              | Estimert ferdig |
 |---------------------------------------------------------------|---------------------------------------------------------------------|-----------------|
-| Fiks arkiv                                                    | Under implementering hos leverandører. I pilot                      | 31. mars        |
+| Fiks arkiv                                                    | Under implementering hos leverandører. I pilot                      | 4. april        |
 | Fiks politisk behandling                                      | Protokoll har vært under utvikling og er satt på pause.             | Uklart          |
-| Fiks plan                                                     | Under implementering hos leverandører. Pilot når de første er klar. | 31. mai         |
-| Fiks matrikkelføring                                          | I pilot-testing og delvis i produksjon                              | 29. februar     |
+| Fiks plan                                                     | Under implementering hos leverandører. Pilot når de første er klar. | 29. mai         |
+| Fiks matrikkelføring                                          | I pilot-testing og delvis i produksjon                              | 28. februar     |
 | Barnevern - fagsysteminnrapportering til Barnevernsregisteret | Pilot i produksjon                                                  | Ferdig          |
 
 
