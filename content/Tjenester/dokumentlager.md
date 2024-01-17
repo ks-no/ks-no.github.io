@@ -196,9 +196,9 @@ Eksempel på request body:
 - 404 Not Found - Fant ikke et dokument med oppgitt id, eller spesifisert konto og organisasjon.
 - 410 Gone - Dokumentet er allerede slettet, eller konto er slettet.
 
-#### Sletting
+#### Sletting av dokument
 
-Integrasjoner som er autorisert til å laste opp dokumenter har også lov til å slette. 
+Integrasjoner som er autorisert til å laste opp dokumenter har også lov til å slette.
 
 Dette gjøres med en DELETE-request mot følgende URL:
 
@@ -209,8 +209,24 @@ Dette gjøres med en DELETE-request mot følgende URL:
 - 200 OK - Dokumentet med spesifisert id ble slettet. Tom body.
 - 400 Bad Request - Request er ikke i henhold til spesifikasjonen.
 - 403 Forbidden - Integrasjonen har ikke nødvendige tilganger til å slette dokumenter på spesifisert konto og organisasjon.
-- 404 Not Found - Fant ikke et dokument med oppgitt id, eller spesifisert konto og organisasjon.
+- 404 Not Found - Fant ikke et dokument med oppgitt id, eller spesifisert konto og/eller organisasjon.
 - 410 Gone - Dokumentet er allerede slettet, eller konto er slettet.
+
+#### Sletting via korrelasjonsid
+
+Integrasjoner kan også slette alle dokumenter med en gitt korrelasjonsid som er lastet opp på en konto de har tilgang til.
+
+Dette gjøres med en DELETE-request mot følgende URL:
+
+- Test: ``https://api.fiks.test.ks.no/dokumentlager/api/v1/{fiksOrganisasjonId}/kontoer/{kontoId}/korrelasjonsid/{korrelasjonsid}``
+- Prod: ``https://api.fiks.ks.no/dokumentlager/api/v1/{fiksOrganisasjonId}/kontoer/{kontoId}/korrelasjonsid/{korrelasjonsid}``
+
+##### Responskoder
+- 204 No Content - Korrelasjonsid er markert som slettet. Dokumentene vil bli slettet asynkront.
+- 400 Bad Request - Request er ikke i henhold til spesifikasjonen.
+- 403 Forbidden - Integrasjonen har ikke nødvendige tilganger til å slette dokumenter på spesifisert konto og organisasjon.
+- 404 Not Found - Fant ikke spesifisert konto og/eller organisasjon.
+- 410 Gone - Kontoen er slettet.
 
 #### Feilmeldinger
 [Beskrivelse av feilmeldinger](../../integrasjoner/#feilmeldinger) 
