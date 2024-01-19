@@ -22,6 +22,35 @@
     "description" : "API for konfigurering av Fiks Chat via RocketChat"
   } ],
   "paths" : {
+    "/fiks-chat-konfigurasjon/api/v1/ekstern/users/{fiksOrgId}" : {
+      "post" : {
+        "operationId" : "getUsers",
+        "parameters" : [ {
+          "name" : "fiksOrgId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "201" : {
+            "description" : "Opprettet ny kanal"
+          },
+          "default" : {
+            "description" : "Noe gikk galt",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/fiks-chat-konfigurasjon/api/v1/ekstern/{fiksOrgId}/sok" : {
       "post" : {
         "tags" : [ "chat-konfigurasjon-ekstern" ],
@@ -120,10 +149,110 @@
           }
         }
       }
+    },
+    "/fiks-chat-konfigurasjon/api/v1/ekstern/kanal" : {
+      "post" : {
+        "tags" : [ "chat-konfigurasjon-ekstern" ],
+        "description" : "Oppretter en ny kanal",
+        "operationId" : "opprettKanal",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/OpprettKanalRequest"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "201" : {
+            "description" : "Opprettet ny kanal"
+          },
+          "default" : {
+            "description" : "Noe gikk galt",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components" : {
     "schemas" : {
+      "ErrorMessage" : {
+        "type" : "object",
+        "properties" : {
+          "timestamp" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "status" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "error" : {
+            "type" : "string"
+          },
+          "errorId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "path" : {
+            "type" : "string"
+          },
+          "originalPath" : {
+            "type" : "string"
+          },
+          "message" : {
+            "type" : "string"
+          },
+          "errorCode" : {
+            "type" : "string"
+          },
+          "errorJson" : {
+            "type" : "string"
+          }
+        }
+      },
+      "User" : {
+        "type" : "object",
+        "properties" : {
+          "get_id" : {
+            "type" : "string"
+          },
+          "username" : {
+            "type" : "string"
+          },
+          "name" : {
+            "type" : "string"
+          },
+          "status" : {
+            "type" : "string"
+          },
+          "statusText" : {
+            "type" : "string"
+          },
+          "outside" : {
+            "type" : "boolean"
+          }
+        }
+      },
+      "Users" : {
+        "type" : "object",
+        "properties" : {
+          "users" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/User"
+            }
+          }
+        }
+      },
       "ChatbrukerSokResponse" : {
         "required" : [ "etternavn", "fnr", "telefonnummer" ],
         "type" : "object",
@@ -162,43 +291,8 @@
           }
         }
       },
-      "ErrorMessage" : {
-        "type" : "object",
-        "properties" : {
-          "timestamp" : {
-            "type" : "integer",
-            "format" : "int64"
-          },
-          "status" : {
-            "type" : "integer",
-            "format" : "int32"
-          },
-          "error" : {
-            "type" : "string"
-          },
-          "errorId" : {
-            "type" : "string",
-            "format" : "uuid"
-          },
-          "path" : {
-            "type" : "string"
-          },
-          "originalPath" : {
-            "type" : "string"
-          },
-          "message" : {
-            "type" : "string"
-          },
-          "errorCode" : {
-            "type" : "string"
-          },
-          "errorJson" : {
-            "type" : "string"
-          }
-        }
-      },
       "LeggTilSaksbehandlerITeamRequest" : {
-        "required" : [ "fnrKallendeSaksbehandler", "fnrLeggTil", "teamId" ],
+        "required" : [ "fiksOrgId", "fnrKallendeSaksbehandler", "fnrLeggTil", "teamId", "teamRoomId" ],
         "type" : "object",
         "properties" : {
           "fnrLeggTil" : {
@@ -214,6 +308,10 @@
           "teamId" : {
             "type" : "string",
             "description" : "Id for teamet som saksbehandler skal legges til"
+          },
+          "teamRoomId" : {
+            "type" : "string",
+            "description" : "Id til team-rommet som saksbehandler skal legges til i."
           },
           "fiksOrgId" : {
             "type" : "string",
@@ -243,6 +341,29 @@
             "pattern" : "^[0-9]{11}$",
             "type" : "string",
             "description" : "Personnummer for saksbehandler som ønsker legge til bruker "
+          }
+        }
+      },
+      "OpprettKanalRequest" : {
+        "required" : [ "fiksOrgId", "navn", "saksbehandlerFnr", "teamRoomId" ],
+        "type" : "object",
+        "properties" : {
+          "navn" : {
+            "type" : "string",
+            "description" : "Navn på den nye kanalen. Format: saksnr - valgfri tekst - (kommune)"
+          },
+          "teamRoomId" : {
+            "type" : "string",
+            "description" : "Id til rommet bruker står i når der kanal skal opprettes"
+          },
+          "fiksOrgId" : {
+            "type" : "string",
+            "description" : "FiksOrgId for kommunen som kanalen skal knyttes til"
+          },
+          "saksbehandlerFnr" : {
+            "pattern" : "^[0-9]{11}$",
+            "type" : "string",
+            "description" : "Fødselsnummer til saksbehandler som skal opprette kanal"
           }
         }
       }
