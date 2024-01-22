@@ -18,10 +18,198 @@
     "description" : "KS Fiks TEST API host"
   } ],
   "tags" : [ {
+    "name" : "Maler",
+    "description" : "API for administrering av eDialog-maler"
+  }, {
     "name" : "Mottaker",
     "description" : "API for administrering av eDialog-mottakere"
   } ],
   "paths" : {
+    "/edialog/api/v1/maler/{malId}" : {
+      "get" : {
+        "tags" : [ "Maler" ],
+        "summary" : "Henter en eksisterende mal",
+        "operationId" : "hentMal",
+        "parameters" : [ {
+          "name" : "malId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Hentet mal",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Mal"
+                }
+              }
+            }
+          },
+          "default" : {
+            "description" : "Feilmelding",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put" : {
+        "tags" : [ "Maler" ],
+        "summary" : "Oppdaterer en eksisterende mal",
+        "operationId" : "oppdaterMal",
+        "parameters" : [ {
+          "name" : "malId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/OppdaterMal"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Oppdatert mal",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Mal"
+                }
+              }
+            }
+          },
+          "default" : {
+            "description" : "Feilmelding",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete" : {
+        "tags" : [ "Maler" ],
+        "summary" : "Sletter en mal",
+        "operationId" : "slettMal",
+        "parameters" : [ {
+          "name" : "malId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "204" : {
+            "description" : "Mal slettet"
+          },
+          "default" : {
+            "description" : "Feilmelding",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/edialog/api/v1/maler" : {
+      "get" : {
+        "tags" : [ "Maler" ],
+        "summary" : "Henter maler",
+        "operationId" : "hentMaler",
+        "parameters" : [ {
+          "name" : "fiksOrganisasjonId",
+          "in" : "query",
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Hentede maler",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/HentMalerResponse"
+                }
+              }
+            }
+          },
+          "default" : {
+            "description" : "Feilmelding",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post" : {
+        "tags" : [ "Maler" ],
+        "summary" : "Oppretter en ny mal",
+        "operationId" : "opprettMal",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/OpprettMal"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Opprettet mal",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Mal"
+                }
+              }
+            }
+          },
+          "default" : {
+            "description" : "Feilmelding",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/edialog/api/v1/mottakere/{mottakerId}" : {
       "get" : {
         "tags" : [ "Mottaker" ],
@@ -275,6 +463,116 @@
   },
   "components" : {
     "schemas" : {
+      "Mal" : {
+        "required" : [ "avsender", "fiksOrganisasjonId", "id", "info", "sensitiv" ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "fiksOrganisasjonId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "info" : {
+            "type" : "string",
+            "enum" : [ "VISES", "SKJULT" ]
+          },
+          "sensitiv" : {
+            "type" : "string",
+            "enum" : [ "JA", "NEI", "VELGES" ]
+          },
+          "avsender" : {
+            "type" : "string",
+            "enum" : [ "PERSON", "ORGANISASJON", "VELGES" ]
+          }
+        }
+      },
+      "ErrorMessage" : {
+        "type" : "object",
+        "properties" : {
+          "timestamp" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "status" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "error" : {
+            "type" : "string"
+          },
+          "errorId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "path" : {
+            "type" : "string"
+          },
+          "originalPath" : {
+            "type" : "string"
+          },
+          "message" : {
+            "type" : "string"
+          },
+          "errorCode" : {
+            "type" : "string"
+          },
+          "errorJson" : {
+            "type" : "string"
+          }
+        }
+      },
+      "HentMalerResponse" : {
+        "type" : "object",
+        "properties" : {
+          "maler" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Mal"
+            }
+          }
+        }
+      },
+      "OppdaterMal" : {
+        "type" : "object",
+        "properties" : {
+          "info" : {
+            "type" : "string",
+            "enum" : [ "VISES", "SKJULT" ]
+          },
+          "sensitiv" : {
+            "type" : "string",
+            "enum" : [ "JA", "NEI", "VELGES" ]
+          },
+          "avsender" : {
+            "type" : "string",
+            "enum" : [ "PERSON", "ORGANISASJON", "VELGES" ]
+          }
+        }
+      },
+      "OpprettMal" : {
+        "type" : "object",
+        "properties" : {
+          "fiksOrganisasjonId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "info" : {
+            "type" : "string",
+            "enum" : [ "VISES", "SKJULT" ]
+          },
+          "sensitiv" : {
+            "type" : "string",
+            "enum" : [ "JA", "NEI", "VELGES" ]
+          },
+          "avsender" : {
+            "type" : "string",
+            "enum" : [ "PERSON", "ORGANISASJON", "VELGES" ]
+          }
+        }
+      },
       "MottakerV1" : {
         "required" : [ "aktiv", "fiksOrganisasjonId", "id", "navn", "orgnr", "postnummer", "poststed", "printleverandor", "shortId" ],
         "type" : "object",
@@ -317,41 +615,6 @@
           "printleverandor" : {
             "type" : "string",
             "enum" : [ "GRAFISK_DIGITAL", "MANUELL_PRINT" ]
-          }
-        }
-      },
-      "ErrorMessage" : {
-        "type" : "object",
-        "properties" : {
-          "timestamp" : {
-            "type" : "integer",
-            "format" : "int64"
-          },
-          "status" : {
-            "type" : "integer",
-            "format" : "int32"
-          },
-          "error" : {
-            "type" : "string"
-          },
-          "errorId" : {
-            "type" : "string",
-            "format" : "uuid"
-          },
-          "path" : {
-            "type" : "string"
-          },
-          "originalPath" : {
-            "type" : "string"
-          },
-          "message" : {
-            "type" : "string"
-          },
-          "errorCode" : {
-            "type" : "string"
-          },
-          "errorJson" : {
-            "type" : "string"
           }
         }
       },
