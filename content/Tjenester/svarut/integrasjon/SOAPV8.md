@@ -462,7 +462,7 @@ Disse tegnene er også ugyldige " < > ? * | : De har andre funksjoner i windows 
 
 <td rowspan="12">SvarSendesTil</td>
 
-<td colspan="2">Addresse, full post adresse må være utfylt. Dette er mottaker som en skal sende til om en vil svare på forsendelsen. Valgfritt å fylle ut</td>
+<td colspan="2">Dersom feltet settes må full postadresse være utfylt. Dette er adressen det skal sendes til dersom en ønsker å svare på forsendelsen. En eventuell adresse som fylles inn her vil overstyre adressen fra avsenderens forsidekonfigurasjon. Den vil også fremkomme på forsiden av brevet dersom forsendelsen sendes i posten.</td>
 <td></td>
 </tr>
 
