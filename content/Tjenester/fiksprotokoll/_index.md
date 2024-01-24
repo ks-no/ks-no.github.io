@@ -22,7 +22,7 @@ Videre at det kun sendes meldinger mellom avsender- og mottakersystem som er for
 
 
 #### Plan
-![](charts/fiks-protokoller-gantt.png)
+![plan for fiks protokoller](/Tjenester/images/fiks-protokoller-gantt.png)
 
 Protokoller i pilot kan oppleve å få endringer som må utbedres fortløpende. Dette vil være små endringer som kommer etter erfaringer en har gjort i produksjonskjøring. Disse er stabile nok til å ta i bruk i vanlig drift.
 
