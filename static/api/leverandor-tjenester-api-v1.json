@@ -572,6 +572,42 @@
         }
       ]
     },
+    "/kominn/api/v1/leverandor/organisasjoner/{fiksOrgId}/tjenester": {
+      "get": {
+        "tags": [
+          "leverandor"
+        ],
+        "operationId": "hentTjenester",
+        "description": "Hent tjenester som denne organisasjonen har tilgang til å administrere applikasjoner for",
+        "summary": "Hent tjenester som denne organisasjonen har tilgang til å administrere applikasjoner for",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LeverandorTjenesteListe"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/ugyldigParameterverdi"
+          },
+          "401": {
+            "$ref": "#/components/responses/ikkeAutentisert"
+          },
+          "403": {
+            "$ref": "#/components/responses/manglerTilgang"
+          }
+        }
+      },
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/fiksOrgId"
+        }
+      ]
+    },
     "/kominn/api/v1/leverandor/organisasjoner/{fiksOrgId}/tjenester/{tjenestekode}/apper": {
       "post": {
         "tags": [
@@ -585,7 +621,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/OpprettAppRequest"
+                "$ref": "#/components/schemas/OpprettLeverandorAppRequest"
               }
             }
           }
@@ -596,7 +632,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/OpprettAppResponse"
+                  "$ref": "#/components/schemas/LeverandorApp"
                 }
               }
             }
@@ -628,7 +664,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/AppDefinisjonListe"
+                  "$ref": "#/components/schemas/LeverandorAppListe"
                 }
               }
             }
@@ -670,7 +706,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/AppDefinisjon"
+                  "$ref": "#/components/schemas/LeverandorApp"
                 }
               }
             }
@@ -700,7 +736,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/AppDefinisjon"
+                "$ref": "#/components/schemas/OppdaterLeverandorAppRequest"
               }
             }
           },
@@ -859,25 +895,6 @@
         "description": "Beskrivelse av tjenesten",
         "example": "Min tjeneste er en tjeneste som gjør noe"
       },
-      "OpprettAppRequest": {
-        "type": "object",
-        "properties": {
-          "navn": {
-            "$ref": "#/components/schemas/Appnavn"
-          },
-          "beskrivelse": {
-            "$ref": "#/components/schemas/Beskrivelse"
-          },
-          "logo": {
-            "$ref": "#/components/schemas/AppLogo"
-          }
-        },
-        "required": [
-          "navn",
-          "beskrivelse",
-          "logo"
-        ]
-      },
       "AppId": {
         "$ref": "#/components/schemas/UnikId"
       },
@@ -887,26 +904,7 @@
       "TjenesteId": {
         "$ref": "#/components/schemas/UnikId"
       },
-      "OpprettAppResponse": {
-        "type": "object",
-        "allOf": [
-          {
-            "$ref": "#/components/schemas/AppDefinisjon"
-          },
-          {
-            "type": "object",
-            "properties": {
-              "appId": {
-                "$ref": "#/components/schemas/AppId"
-              }
-            }
-          }
-        ],
-        "required": [
-          "appId"
-        ]
-      },
-      "AppDefinisjon": {
+      "OpprettLeverandorAppRequest": {
         "type": "object",
         "properties": {
           "navn": {
@@ -925,16 +923,48 @@
           "logo"
         ]
       },
-      "AppDefinisjonListe": {
+      "OppdaterLeverandorAppRequest": {
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/OpprettLeverandorAppRequest"
+          }
+        ]
+      },
+      "LeverandorApp": {
+        "type": "object",
+        "properties": {
+          "appId": {
+            "$ref": "#/components/schemas/AppId"
+          },
+          "navn": {
+            "$ref": "#/components/schemas/Appnavn"
+          },
+          "beskrivelse": {
+            "$ref": "#/components/schemas/Beskrivelse"
+          },
+          "logo": {
+            "$ref": "#/components/schemas/AppLogo"
+          }
+        },
+        "required": [
+          "appId",
+          "navn",
+          "beskrivelse",
+          "logo"
+        ]
+      },
+      "LeverandorAppListe": {
         "type": "object",
         "properties": {
           "apps": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/AppDefinisjon"
+              "$ref": "#/components/schemas/LeverandorApp"
             },
             "example": [
               {
+                "appId": "f7480539-92b2-460d-8e7f-2bc8a37c6746",
                 "navn": "MINAPP",
                 "beskrivelse": "Min app er en app som gjør noe",
                 "logo": {
@@ -952,6 +982,7 @@
         "example": {
           "apps": [
             {
+              "appId": "f7480539-92b2-460d-8e7f-2bc8a37c6746",
               "navn": "MINAPP",
               "beskrivelse": "Min app er en app som gjør noe",
               "logo": {
@@ -1182,14 +1213,11 @@
         "type": "object",
         "allOf": [
           {
-            "$ref": "#/components/schemas/AppDefinisjon"
+            "$ref": "#/components/schemas/LeverandorApp"
           },
           {
             "type": "object",
             "properties": {
-              "appId": {
-                "$ref": "#/components/schemas/AppId"
-              },
               "aktivert": {
                 "type": "boolean",
                 "description": "Angir om appen er aktivert for tjenesten",
@@ -1199,7 +1227,6 @@
           }
         ],
         "required": [
-          "appId",
           "aktivert"
         ],
         "example": {
@@ -1306,6 +1333,31 @@
             "type": "boolean",
             "description": "Angir om tjenesten skal aktiveres for sentralisert brukerstyring",
             "example": true
+          }
+        }
+      },
+      "LeverandorTjenesteListe": {
+        "type": "object",
+        "description": "Liste over eksterne som leverer applikasjoner gjennom Fiks plattformen.",
+        "properties": {
+          "leverandorTjenester": {
+            "type": "array",
+            "minItems": 0,
+            "items": {
+              "$ref": "#/components/schemas/LeverandorTjeneste"
+            }
+          }
+        }
+      },
+      "LeverandorTjeneste": {
+        "type": "object",
+        "description": "Ekstern organisasjon som leverer applikasjoner gjennom Fiks plattformen.",
+        "properties": {
+          "navn": {
+            "$ref": "#/components/schemas/TjenesteNavn"
+          },
+          "tjenestekode": {
+            "$ref": "#/components/schemas/Tjenestekode"
           }
         }
       },
