@@ -2,7 +2,7 @@
   "openapi": "3.0.0",
   "info": {
     "title": "Fiks tilgangstjeneste",
-    "description": "API for å sjekke tilgang til kommunale tjenester",
+    "description": "API for å sjekke tilgang til applikasjoner som skal tilbyes kommunalt ansatte",
     "contact": {
       "name": "KS Fiks brukerstøtte",
       "url": "https://www.ks.no/fagomrader/digitalisering/utviklingsprosjekter",
@@ -34,11 +34,7 @@
   "tags": [
     {
       "name": "tilgang",
-      "description": "Sjekk tilgang til kommunale tjenester"
-    },
-    {
-      "name": "tjeneste",
-      "description": "Administrer tjenester"
+      "description": "Sjekk tilgang til applikasjoner for kommunalt ansatte"
     }
   ],
   "paths": {
@@ -47,14 +43,14 @@
         "tags": [
           "tilgang"
         ],
-        "description": "Sjekk om en gitt bruker har tilgang til en gitt tjeneste",
+        "description": "Sjekk om en gitt bruker har tilgang til en gitt app",
         "operationId": "sjekkTilgang",
-        "summary": "Sjekk om en gitt bruker har tilgang til en gitt tjeneste",
+        "summary": "Sjekk om en gitt bruker har tilgang til en gitt app",
         "parameters": [
           {
             "name": "appId",
             "in": "path",
-            "description": "ID til tjenesten",
+            "description": "ID til appen",
             "required": true,
             "schema": {
               "$ref": "#/components/schemas/AppId"
@@ -62,7 +58,7 @@
           }
         ],
         "requestBody": {
-          "description": "Sjekk om en gitt bruker har tilgang til en gitt tjeneste",
+          "description": "Sjekk om en gitt bruker har tilgang til en gitt app",
           "content": {
             "application/json": {
               "schema": {
@@ -84,34 +80,13 @@
             }
           },
           "400": {
-            "description": "Ugyldig input",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorMessage"
-                }
-              }
-            }
+            "$ref": "#/components/responses/UgyldigParameterVerdi"
           },
           "401": {
-            "description": "Ikke autentisert",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorMessage"
-                }
-              }
-            }
+            "$ref": "#/components/responses/IkkeAutentisert"
           },
           "403": {
-            "description": "Ikke autorisert",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorMessage"
-                }
-              }
-            }
+            "$ref": "#/components/responses/ManglerTilgang"
           }
         }
       }
@@ -146,34 +121,13 @@
             }
           },
           "400": {
-            "description": "Ugyldig input",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorMessage"
-                }
-              }
-            }
+            "$ref": "#/components/responses/UgyldigParameterVerdi"
           },
           "401": {
-            "description": "Ikke autentisert",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorMessage"
-                }
-              }
-            }
+            "$ref": "#/components/responses/IkkeAutentisert"
           },
           "403": {
-            "description": "Ikke autorisert",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorMessage"
-                }
-              }
-            }
+            "$ref": "#/components/responses/ManglerTilgang"
           }
         }
       }
@@ -187,17 +141,55 @@
         "bearerFormat": "JWT"
       }
     },
+    "responses": {
+      "UgyldigParameterVerdi": {
+        "description": "Ugyldig input",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorMessage"
+            },
+            "example": {
+              "message": "Ugyldig input",
+              "status": 400
+            }
+          }
+        }
+      },
+      "IkkeAutentisert": {
+        "description": "Ikke autentisert",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorMessage"
+            },
+            "example": {
+              "message": "Ikke autentisert",
+              "status": 401
+            }
+          }
+        }
+      },
+      "ManglerTilgang": {
+        "description": "Ikke autorisert",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorMessage"
+            },
+            "example": {
+              "message": "Ikke autorisert",
+              "status": 403
+            }
+          }
+        }
+      }
+    },
     "schemas": {
       "Fodselsnummer": {
         "type": "string",
-        "description": "Fødselsnummer fra folkergisteret '12345678901'",
+        "description": "Fødselsnummer fra folkeregisteret '12345678901'",
         "pattern": "^[0-9]{11}$"
-      },
-      "Appnavn": {
-        "type": "string",
-        "pattern": "^[a-zA-Z]+$",
-        "description": "Navn på tjenesten",
-        "example": "TjenesteEn"
       },
       "SjekkTilgangRequest": {
         "type": "object",
@@ -215,9 +207,9 @@
         "properties": {
           "harEnEllerFlereTilganger": {
             "type": "boolean",
-            "description": "True hvis brukeren har tilgang til en eller flere tjenester"
+            "description": "True hvis brukeren har tilgang til en eller flere applikasjoner"
           },
-          "tjenester": {
+          "applikasjoner": {
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/AppId"
@@ -226,7 +218,7 @@
         },
         "required": [
           "harEnEllerFlereTilganger",
-          "tjenester"
+          "applikasjoner"
         ]
       },
       "SjekkTilgangResponse": {
@@ -255,28 +247,11 @@
           "kommune"
         ]
       },
-      "Kommunetilgang": {
-        "type": "object",
-        "properties": {
-          "kommunenummer": {
-            "$ref": "#/components/schemas/Kommunenummer"
-          },
-          "tjenester": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/AppId"
-            }
-          }
-        },
-        "required": [
-          "kommunenummer",
-          "tjenester"
-        ]
-      },
       "Kommunenummer": {
         "type": "string",
         "description": "Kommunenummer",
-        "pattern": "^[0-9]{4}$"
+        "pattern": "^[0-9]{4}$",
+        "example": "0301"
       },
       "Feil": {
         "$ref": "#/components/schemas/ErrorMessage"
