@@ -239,6 +239,148 @@
         }
       }
     },
+    "/konfigurasjon/api/v2/fiksorgs/{fiksOrg}/ressurser/{ressursId}/tilganger/delete" : {
+      "post" : {
+        "tags" : [ "PersonAdministrasjonV2" ],
+        "summary" : "Fjerner privilegie person har på ressurs",
+        "operationId" : "fjernPrivilegieForPersonPaRessurs",
+        "parameters" : [ {
+          "name" : "fiksOrg",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        }, {
+          "name" : "ressursId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/RemoveRessursPrivilegieRequestV2"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Person som ikke lengre har privilegie på ressurs",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/PersonV2"
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Utførende person må være administrator på tjenesten"
+          }
+        }
+      }
+    },
+    "/konfigurasjon/api/v2/fiksorgs/{fiksOrg}/ressurser/{ressursId}/tilganger" : {
+      "post" : {
+        "tags" : [ "PersonAdministrasjonV2" ],
+        "summary" : "Gir person privilegie på ressurs",
+        "operationId" : "giPersonPrivilegiePaRessurs",
+        "parameters" : [ {
+          "name" : "fiksOrg",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        }, {
+          "name" : "ressursId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/AddRessursTilgangRequestV2"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "201" : {
+            "description" : "Person som er lagt til med privilegie på ressurs",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/PersonV2"
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Utførende person må være administrator på tjenesten"
+          }
+        }
+      }
+    },
+    "/konfigurasjon/api/v2/fiksorgs/{fiksOrg}/ressurser/{ressursId}/tilganger/privilegier/{privilegie}" : {
+      "get" : {
+        "tags" : [ "PersonAdministrasjonV2" ],
+        "summary" : "Henter alle personer som har 'Privilegie' på ressurs",
+        "operationId" : "hentPersonerMedPrivilegiePaRessurs",
+        "parameters" : [ {
+          "name" : "fiksOrg",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        }, {
+          "name" : "ressursId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        }, {
+          "name" : "privilegie",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "pattern" : "^[0-9A-Z_.]+$",
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Personer med privilegie på ressurs",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/RessursTilgangerV2"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/konfigurasjon/api/v2/fiksorgs/{fiksOrg}/tjenester/{tjenesteType}/administratorer" : {
       "get" : {
         "tags" : [ "PersonAdministrasjonV2" ],
@@ -403,6 +545,7 @@
           },
           "navn" : {
             "maxLength" : 150,
+            "minLength" : 2,
             "type" : "string",
             "description" : "Personens fulle navn."
           }
@@ -480,13 +623,81 @@
             "description" : "Fødselsnummeret til personen."
           },
           "navn" : {
-            "maxLength" : 450,
+            "maxLength" : 150,
             "minLength" : 2,
             "type" : "string",
             "description" : "Personens fulle navn."
           }
         },
         "description" : "En forespørsel om å opprette en person."
+      },
+      "RemoveRessursPrivilegieRequestV2" : {
+        "required" : [ "fnr", "privilegie" ],
+        "type" : "object",
+        "properties" : {
+          "fnr" : {
+            "pattern" : "^[0-9]{11}$",
+            "type" : "string",
+            "description" : "Fødselsnummeret til personen."
+          },
+          "privilegie" : {
+            "pattern" : "^[0-9A-Z_.]+$",
+            "type" : "string",
+            "description" : "Navnet på det privilegium som aktøren har eller etterspør for en gitt ressurs"
+          }
+        },
+        "description" : "En forespørsel om å fjerne en person som administrator på tjeneste."
+      },
+      "AddRessursTilgangRequestV2" : {
+        "required" : [ "fnr", "navn", "privilegie" ],
+        "type" : "object",
+        "properties" : {
+          "fnr" : {
+            "pattern" : "^[0-9]{11}$",
+            "type" : "string",
+            "description" : "Fødselsnummeret til personen."
+          },
+          "navn" : {
+            "maxLength" : 150,
+            "minLength" : 2,
+            "type" : "string",
+            "description" : "Personens fulle navn."
+          },
+          "privilegie" : {
+            "pattern" : "^[0-9A-Z_.]+$",
+            "type" : "string",
+            "description" : "Navnet på det privilegium som aktøren har eller etterspør for en gitt ressurs"
+          }
+        },
+        "description" : "En forespørsel om å legge en person til som administrator på tjeneste."
+      },
+      "RessursTilgangerV2" : {
+        "required" : [ "fiksOrg", "personer", "privilegie", "ressurs" ],
+        "type" : "object",
+        "properties" : {
+          "personer" : {
+            "type" : "array",
+            "description" : "Personer som har privilegie på konto",
+            "items" : {
+              "$ref" : "#/components/schemas/PersonV2"
+            }
+          },
+          "fiksOrg" : {
+            "type" : "string",
+            "description" : "FiksOrg",
+            "format" : "uuid"
+          },
+          "ressurs" : {
+            "type" : "string",
+            "description" : "Ressurs",
+            "format" : "uuid"
+          },
+          "privilegie" : {
+            "type" : "string",
+            "description" : "Privilegie"
+          }
+        },
+        "description" : "Liste over personer som har privilegie på ressurs"
       },
       "AddTjenesteAdminRequestV2" : {
         "required" : [ "fnr", "navn" ],
@@ -499,6 +710,7 @@
           },
           "navn" : {
             "maxLength" : 150,
+            "minLength" : 2,
             "type" : "string",
             "description" : "Personens fulle navn."
           }
