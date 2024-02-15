@@ -22,7 +22,7 @@ Husk å registrere virksomhetssertifikat med samme organisasjonsnummer som man v
 
 ### Opprette maskinporten-klient
 - Husk å sende e-post til fiks-utvikling@ks.no med organisasjonsnummeret. Det er mulig å fullføre opprettelsen av maskinport-klient uten at dette er på plass, men det må etterregistreres for å få klienten til å virke på Fiks-plattformen.
-- Gå til https://selvbetjening-samarbeid-prod.difi.no/
+- Gå til https://sjolvbetjening.samarbeid.digdir.no/
 - Logg inn
 - Velg "Gå til integrasjoner", for ver2 for test. Produksjon for prod.
  ![Idporten](../../Tjenester/images/difi-selvbetjening1.png "")
