@@ -376,14 +376,28 @@
           }
         }
       },
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/fiksOrgId"
+        },
+        {
+          "$ref": "#/components/parameters/tjenestekode"
+        },
+        {
+          "$ref": "#/components/parameters/appId"
+        }
+      ]
+    },
+    "/kominn/api/v1/organisasjoner/{fiksOrgId}/tjenester/{tjenestekode}/apper/{appId}/sentralisert": {
       "patch": {
         "tags": [
           "konsument"
         ],
-        "operationId": "oppdaterAppBrukere",
-        "description": "Oppdater brukere som har tilgang til gitt app",
+        "operationId": "oppdaterSentralisertAppBrukere",
+        "description": "Oppdater sentralisert bruker eller gruppe som har tilgang til gitt app",
         "summary": "Oppdater brukere som har tilgang til gitt app",
         "requestBody": {
+          "required": true,
           "content": {
             "application/json": {
               "schema": {
@@ -416,20 +430,6 @@
                   "value": {
                     "operasjon": "FjernSentralisertGruppe",
                     "aktor": "SDG_12345678-1234-1234-1234-123456789012"
-                  }
-                },
-                "LeggTilIdentifisertPerson": {
-                  "description": "Legger til tilgang ved hjelp av fødselsnummer",
-                  "value": {
-                    "operasjon": "LeggTilIdentifisertPerson",
-                    "aktor": "06921848402"
-                  }
-                },
-                "FjernIdentifisertPerson": {
-                  "description": "Fjerner tilgang ved hjelp av fødselsnummer",
-                  "value": {
-                    "operasjon": "FjernIdentifisertPerson",
-                    "aktor": "06921848402"
                   }
                 }
               }
@@ -465,11 +465,133 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ErrorMessage",
-                  "example": {
-                    "message": "Appen finnes ikke",
-                    "code": "404"
+                  "$ref": "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/fiksOrgId"
+        },
+        {
+          "$ref": "#/components/parameters/tjenestekode"
+        },
+        {
+          "$ref": "#/components/parameters/appId"
+        }
+      ]
+    },
+    "/kominn/api/v1/organisasjoner/{fiksOrgId}/tjenester/{tjenestekode}/apper/{appId}/identifisert": {
+      "post": {
+        "tags": [
+          "konsument"
+        ],
+        "operationId": "giIdentifisertBrukereAppTilgang",
+        "description": "Gi bruker tilgang til app",
+        "summary": "Gi bruker tilgang til app",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "aktor": {
+                    "type": "string",
+                    "minLength": 11,
+                    "maxLength": 11,
+                    "example": "28837695882"
+                  },
+                  "navn": {
+                    "type": "string",
+                    "maxLength": 150,
+                    "minLength": 2,
+                    "example": "Test Testesen"
                   }
+                },
+                "required": [
+                  "aktor",
+                  "navn"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": "Oppdatering ok"
+          },
+          "400": {
+            "$ref": "#/components/responses/ugyldigParameterverdi"
+          },
+          "401": {
+            "$ref": "#/components/responses/ikkeAutentisert"
+          },
+          "403": {
+            "$ref": "#/components/responses/manglerTilgang"
+          },
+          "404": {
+            "description": "Appen finnes ikke",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "konsument"
+        ],
+        "operationId": "fjernIdentifisertBrukereAppTilgang",
+        "description": "Fjern tilgang til bruker fra app",
+        "summary": "Fjern tilgang til bruker fra app",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "aktor": {
+                    "type": "string",
+                    "minLength": 11,
+                    "maxLength": 11,
+                    "example": "28837695882"
+                  }
+                },
+                "required": [
+                  "aktor"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": "Oppdatering ok"
+          },
+          "400": {
+            "$ref": "#/components/responses/ugyldigParameterverdi"
+          },
+          "401": {
+            "$ref": "#/components/responses/ikkeAutentisert"
+          },
+          "403": {
+            "$ref": "#/components/responses/manglerTilgang"
+          },
+          "404": {
+            "description": "Appen finnes ikke",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage"
                 }
               }
             }
@@ -1289,10 +1411,8 @@
         "enum": [
           "LeggTilSentralisertBruker",
           "LeggTilSentralisertGruppe",
-          "LeggTilIdentifisertPerson",
           "FjernSentralisertBruker",
-          "FjernSentralisertGruppe",
-          "FjernIdentifisertPerson"
+          "FjernSentralisertGruppe"
         ]
       },
       "OppdaterAppbrukere": {
@@ -1432,11 +1552,7 @@
         "content": {
           "application/json": {
             "schema": {
-              "$ref": "#/components/schemas/ErrorMessage",
-              "example": {
-                "message": "Ugyldig input",
-                "code": 400
-              }
+              "$ref": "#/components/schemas/ErrorMessage"
             }
           }
         }
@@ -1446,11 +1562,7 @@
         "content": {
           "application/json": {
             "schema": {
-              "$ref": "#/components/schemas/ErrorMessage",
-              "example": {
-                "message": "Appen finnes ikke",
-                "code": 404
-              }
+              "$ref": "#/components/schemas/ErrorMessage"
             }
           }
         }
