@@ -2,6 +2,9 @@ pipeline {
   options() {
     disableConcurrentBuilds()
   }
+  environment {
+    HUGO_TOOL=tool(name: 'hugo')
+  }
   agent any
 
   stages {
@@ -17,9 +20,7 @@ pipeline {
 
     stage('check version') {
       steps {
-        script {
-          sh 'hugo version'
-        }
+        sh '$HUGO_TOOL/bin/hugo version'
       }
     }
 
