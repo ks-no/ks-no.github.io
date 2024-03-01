@@ -35,6 +35,10 @@
     {
       "name": "tilgang",
       "description": "Sjekk tilgang til applikasjoner for kommunalt ansatte"
+    },
+    {
+      "name": "api",
+      "description": "Sjekk tilgang til eksterne-api for kommunale systemer"
     }
   ],
   "paths": {
@@ -48,13 +52,7 @@
         "summary": "Sjekk om en gitt bruker har tilgang til en gitt app",
         "parameters": [
           {
-            "name": "appId",
-            "in": "path",
-            "description": "ID til appen",
-            "required": true,
-            "schema": {
-              "$ref": "#/components/schemas/AppId"
-            }
+            "$ref": "#/components/parameters/appId"
           }
         ],
         "requestBody": {
@@ -116,6 +114,53 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/HarNoenSomHelstTilgangResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/UgyldigParameterVerdi"
+          },
+          "401": {
+            "$ref": "#/components/responses/IkkeAutentisert"
+          },
+          "403": {
+            "$ref": "#/components/responses/ManglerTilgang"
+          }
+        }
+      }
+    },
+    "/tilgang/api/v1/api/{appId}": {
+      "post": {
+        "tags": [
+          "api"
+        ],
+        "description": "Sjekk om en gitt systembruker har tilgang til et gitt eksternt api",
+        "operationId": "sjekkTilgangEksternApi",
+        "summary": "Sjekk om en gitt systembruker har tilgang til et gitt eksternt api",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/appId"
+          }
+        ],
+        "requestBody": {
+          "description": "Sjekk om en gitt bruker har tilgang til en gitt app",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SjekkApiTilgangRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SjekkApiTilgangResponse"
                 }
               }
             }
@@ -202,6 +247,37 @@
           "brukerIdent"
         ]
       },
+      "SjekkApiTilgangRequest": {
+        "type": "object",
+        "properties": {
+          "konsument": {
+            "$ref": "#/components/schemas/Organisasjonsnummer"
+          },
+          "kommunenummer": {
+            "$ref": "#/components/schemas/Kommunenummer"
+          },
+          "klientId": {
+            "$ref": "#/components/schemas/KlientId"
+          }
+        },
+        "required": [
+          "konsument",
+          "kommunenummer"
+        ]
+      },
+      "SjekkApiTilgangResponse": {
+        "type": "object",
+        "properties": {
+          "harTilgang": {
+            "type": "boolean",
+            "description": "True hvis brukeren har tilgang til eksternt api",
+            "example": "true"
+          }
+        },
+        "required": [
+          "harTilgang"
+        ]
+      },
       "HarNoenSomHelstTilgangResponse": {
         "type": "object",
         "properties": {
@@ -252,6 +328,17 @@
         "description": "Kommunenummer",
         "pattern": "^[0-9]{4}$",
         "example": "0301"
+      },
+      "Organisasjonsnummer": {
+        "type": "string",
+        "description": "Organisasjonsnummer",
+        "pattern": "^[0-9]{9}$",
+        "example": "999999999"
+      },
+      "KlientId": {
+        "type": "string",
+        "description": "KlientId fra samarbeidsportalen",
+        "example": "f7480539-92b2-460d-8e7f-2bc8a37c6746"
       },
       "Feil": {
         "$ref": "#/components/schemas/ErrorMessage"
@@ -305,6 +392,22 @@
           "message": "Mangler tilgang",
           "errorId": "ee2ed64d-de8b-45f9-b9c6-3363d662d93b",
           "status": 403
+        }
+      }
+    },
+    "parameters": {
+      "appId": {
+        "name": "appId",
+        "in": "path",
+        "description": "ID til appen",
+        "required": true,
+        "schema": {
+          "$ref": "#/components/schemas/AppId"
+        },
+        "examples": {
+          "appId": {
+            "value": "f7480539-92b2-460d-8e7f-2bc8a37c6746"
+          }
         }
       }
     }
