@@ -5,7 +5,11 @@ pipeline {
   environment {
     HUGO_TOOL=tool(name: 'hugo')
   }
-  agent any
+  agent {
+    node {
+      label 'linux||linux-large||linux-large-mem'
+    }
+  }
 
   stages {
 
@@ -20,7 +24,7 @@ pipeline {
 
     stage('check version') {
       steps {
-        sh '$HUGO_TOOL/bin/hugo version'
+        sh 'echo $HUGO_TOOL && $HUGO_TOOL/bin/hugo version'
       }
     }
 
