@@ -10,7 +10,7 @@ KS læring er en plattform som tillater kommunene å lage, dele, arrangere og gj
 | Grensesnitt | Støtte |
 |------|------|
 | Web portal | Ja |
-| Maskin til maskin | [HR API](integrasjon) |
+| Maskin til maskin | [HR API](integrasjon) (Gammel integrasjonsløsning)|
 
 
 ## Beskrivelse
