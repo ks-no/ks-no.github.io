@@ -2,7 +2,7 @@
   "openapi" : "3.0.1",
   "info" : {
     "title" : "KS Fiks: eDialog",
-    "description" : "Tjeneste for administrering av eDialog-mottakere",
+    "description" : "Tjeneste for administrering av knytning mellom mottaker og mal",
     "contact" : {
       "name" : "Fiks brukerstøtte",
       "url" : "https://ks-no.github.io/",
@@ -23,6 +23,9 @@
   }, {
     "name" : "Mottaker",
     "description" : "API for administrering av eDialog-mottakere"
+  }, {
+    "name" : "MottakerOgMal",
+    "description" : "API for administrering av knytning mellom mottaker og mal"
   } ],
   "paths" : {
     "/edialog/api/v1/maler/{malId}" : {
@@ -456,6 +459,134 @@
           }
         }
       }
+    },
+    "/edialog/api/v1/mottakere/{mottakerId}/maler/{malId}" : {
+      "put" : {
+        "tags" : [ "MottakerOgMal" ],
+        "summary" : "Knytter sammen mottaker og mal",
+        "operationId" : "opprettTilknytning",
+        "parameters" : [ {
+          "name" : "mottakerId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "pattern" : "^[a-z]{4}$",
+            "type" : "string"
+          }
+        }, {
+          "name" : "malId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "pattern" : "^[a-z]{4}$",
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Mottaker og mal som ble knyttet sammen",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/MottakerOgMal"
+                }
+              }
+            }
+          },
+          "default" : {
+            "description" : "Feilmelding",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete" : {
+        "tags" : [ "MottakerOgMal" ],
+        "summary" : "Fjerner tilknytning mellom mottaker og mal",
+        "operationId" : "fjernTilknytning",
+        "parameters" : [ {
+          "name" : "mottakerId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "pattern" : "^[a-z]{4}$",
+            "type" : "string"
+          }
+        }, {
+          "name" : "malId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "pattern" : "^[a-z]{4}$",
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Mottaker og mal som tilknytning ble fjernet for",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/MottakerOgMal"
+                }
+              }
+            }
+          },
+          "default" : {
+            "description" : "Feilmelding",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/edialog/api/v1/mottakere/{mottakerId}/maler" : {
+      "get" : {
+        "tags" : [ "MottakerOgMal" ],
+        "summary" : "Henter maler som er tilknyttet oppgitt mottaker",
+        "operationId" : "hentTilknytninger",
+        "parameters" : [ {
+          "name" : "mottakerId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "pattern" : "^[a-z]{4}$",
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Mottaker med maler",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/MottakerOgMaler"
+                }
+              }
+            }
+          },
+          "default" : {
+            "description" : "Feilmelding",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components" : {
@@ -722,6 +853,63 @@
         "properties" : {
           "aktiv" : {
             "type" : "boolean"
+          }
+        }
+      },
+      "MottakerOgMal" : {
+        "required" : [ "mal", "mottaker", "oppdatert" ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string"
+          },
+          "mottaker" : {
+            "$ref" : "#/components/schemas/TilknyttetMottaker"
+          },
+          "mal" : {
+            "$ref" : "#/components/schemas/TilknyttetMal"
+          },
+          "oppdatert" : {
+            "type" : "boolean"
+          }
+        }
+      },
+      "TilknyttetMal" : {
+        "required" : [ "id", "navn" ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string"
+          },
+          "navn" : {
+            "type" : "string"
+          }
+        }
+      },
+      "TilknyttetMottaker" : {
+        "required" : [ "id", "navn" ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string"
+          },
+          "navn" : {
+            "type" : "string"
+          }
+        }
+      },
+      "MottakerOgMaler" : {
+        "required" : [ "maler", "mottaker" ],
+        "type" : "object",
+        "properties" : {
+          "mottaker" : {
+            "$ref" : "#/components/schemas/TilknyttetMottaker"
+          },
+          "maler" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/TilknyttetMal"
+            }
           }
         }
       }
