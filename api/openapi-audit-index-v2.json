@@ -1,0 +1,228 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "KS Fiks: Audit Index service",
+    "contact": {
+      "name": "Fiks-brukerstøtte",
+      "url": "https://ks-no.github.io/",
+      "email": "fiks-utvikling@ks.no"
+    },
+    "version": "v2",
+    "license": {
+      "name": "MIT",
+      "url": "https://opensource.org/licenses/MIT"
+    }
+  },
+  "servers": [
+    {
+      "url": "https://api.fiks.ks.no",
+      "description": "KS Fiks API host",
+      "variables": {}
+    },
+    {
+      "url": "https://api.fiks.test.ks.no",
+      "description": "KS Fiks TEST API host",
+      "variables": {}
+    }
+  ],
+  "security": [
+    {
+      "bearerAuth": []
+    }
+  ],
+  "paths": {
+    "/audit-index/api/v2/index/log": {
+      "post": {
+        "tags": [
+          "AuditIndex"
+        ],
+        "summary": "log",
+        "operationId": "log",
+        "requestBody": {
+          "description": "Meldingene som skal logges",
+          "content": {
+            "application/json": {
+              "schema": {
+                "minItems": 1,
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/AuditLogEntry"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Indekseringsoperasjonen er gjennomført. Merk at indekseringen av en eller flere meldinger kan ha feilet, se de individuelle respons-kodene.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "minItems": 1,
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/LoggedEntry"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Feil i en eller flere av meldingene. Se responsen for detaljer.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    },
+    "schemas": {
+      "LoggedEntry": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      },
+      "AuditLogEntry": {
+        "required": [
+          "eksponertForFiksOrgId",
+          "handling",
+          "requestId",
+          "tjeneste"
+        ],
+        "type": "object",
+        "properties": {
+          "principalIntegrasjonId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "autentiseringType": {
+            "type": "string",
+            "enum": [
+              "PERSON",
+              "INTEGRASJON",
+              "INTEGRASJON_PERSON"
+            ]
+          },
+          "principalFnr": {
+            "type": "string"
+          },
+          "principalClientId": {
+            "type": "string"
+          },
+          "principalSikkerhetsniva": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "principalScope": {
+            "uniqueItems": true,
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "principalOrgno": {
+            "type": "string"
+          },
+          "onBehalfOf": {
+            "pattern": "^[0-9A-ZÆØÅa-zæøå_\\-]+$",
+            "type": "string"
+          },
+          "underRessurs": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "eksponertForFiksOrgId": {
+            "maxItems": 2147483647,
+            "minItems": 1,
+            "uniqueItems": true,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          "tjeneste": {
+            "pattern": "^[0-9A-ZÆØÅ_.]+$",
+            "type": "string"
+          },
+          "handling": {
+            "pattern": "^[0-9A-Z_.]+$",
+            "type": "string"
+          },
+          "payload": {
+            "type": "string"
+          },
+          "requestId": {
+            "pattern": "^[0-9A-ZÆØÅa-zæøå_\\-]+$",
+            "type": "string"
+          },
+          "begrunnelse": {
+            "type": "string"
+          }
+        }
+      },
+      "ErrorMessage": {
+        "type": "object",
+        "description": "Feilmelding fra Fiks-plattformen",
+        "externalDocs": {
+          "description": "Beskrivelse av feilmeldinger",
+          "url": "https://ks-no.github.io/fiks-plattform/integrasjoner/#feilmeldinger"
+        },
+        "properties": {
+          "timestamp": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "status": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "error": {
+            "type": "string"
+          },
+          "errorId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "path": {
+            "type": "string"
+          },
+          "originalPath": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          },
+          "errorCode": {
+            "type": "string"
+          },
+          "errorJson": {
+            "type": "string"
+          }
+        },
+        "example": {
+          "message": "Mangler tilgang",
+          "errorId": "ee2ed64d-de8b-45f9-b9c6-3363d662d93b",
+          "status": 403
+        }
+      }
+    }
+  }
+}
