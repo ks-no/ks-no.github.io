@@ -1,39 +1,75 @@
 {
-  "openapi" : "3.0.1",
-  "info" : {
-    "title" : "KS Fiks: Audit Sok service",
-    "contact" : {
-      "name" : "Fiks-brukerstøtte",
-      "url" : "https://ks-no.github.io/",
-      "email" : "fiks-utvikling@ks.no"
+  "openapi": "3.0.1",
+  "info": {
+    "title": "KS Fiks: Audit Sok service",
+    "contact": {
+      "name": "Fiks-brukerstøtte",
+      "url": "https://ks-no.github.io/",
+      "email": "fiks-utvikling@ks.no"
     },
-    "version" : "v1"
+    "version": "v1",
+    "license": {
+      "name": "MIT",
+      "url": "https://opensource.org/licenses/MIT"
+    }
   },
-  "servers" : [ {
-    "url" : "https://api.fiks.test.ks.no/"
-  } ],
-  "paths" : {
-    "/audit-sok/api/v1/sok" : {
-      "post" : {
-        "tags" : [ "AuditSok" ],
-        "summary" : "Søk",
-        "operationId" : "sok",
-        "requestBody" : {
-          "content" : {
-            "application/json" : {
-              "schema" : {
-                "$ref" : "#/components/schemas/SokRequest"
+  "servers": [
+    {
+      "url": "https://api.fiks.ks.no",
+      "description": "KS Fiks API host",
+      "variables": {}
+    },
+    {
+      "url": "https://api.fiks.test.ks.no",
+      "description": "KS Fiks TEST API host",
+      "variables": {}
+    }
+  ],
+  "security": [
+    {
+      "bearerAuth": []
+    }
+  ],
+  "tags": [
+    {
+      "name": "AuditSok",
+      "description": "Audit søk"
+    }
+  ],
+  "paths": {
+    "/audit-sok/api/v1/sok": {
+      "post": {
+        "tags": [
+          "AuditSok"
+        ],
+        "summary": "Søk",
+        "operationId": "sok",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SokRequest"
               }
             }
           }
         },
-        "responses" : {
-          "default" : {
-            "description" : "default response",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/Sokeresultat"
+        "responses": {
+          "200": {
+            "description": "default response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Sokeresultat"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Feil i en eller flere av meldingene. Se responsen for detaljer.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage"
                 }
               }
             }
@@ -42,222 +78,281 @@
       }
     }
   },
-  "components" : {
-    "schemas" : {
-      "AggregeringData" : {
-        "type" : "object",
-        "properties" : {
-          "id" : {
-            "type" : "string",
-            "format" : "uuid"
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    },
+    "schemas": {
+      "AggregeringData": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
           },
-          "visningsnavn" : {
-            "type" : "string"
+          "visningsnavn": {
+            "type": "string"
           },
-          "antall" : {
-            "type" : "integer",
-            "format" : "int64"
+          "antall": {
+            "type": "integer",
+            "format": "int64"
           },
-          "valgt" : {
-            "type" : "boolean"
+          "valgt": {
+            "type": "boolean"
           }
         }
       },
-      "Aggregeringer" : {
-        "type" : "object",
-        "properties" : {
-          "fiksOrg" : {
-            "uniqueItems" : true,
-            "type" : "array",
-            "items" : {
-              "$ref" : "#/components/schemas/AggregeringData"
+      "Aggregeringer": {
+        "type": "object",
+        "properties": {
+          "fiksOrg": {
+            "uniqueItems": true,
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AggregeringData"
             }
           },
-          "tjeneste" : {
-            "uniqueItems" : true,
-            "type" : "array",
-            "items" : {
-              "$ref" : "#/components/schemas/AggregeringData"
+          "tjeneste": {
+            "uniqueItems": true,
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AggregeringData"
             }
           },
-          "underRessurs" : {
-            "uniqueItems" : true,
-            "type" : "array",
-            "items" : {
-              "$ref" : "#/components/schemas/AggregeringData"
+          "underRessurs": {
+            "uniqueItems": true,
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AggregeringData"
             }
           }
         }
       },
-      "Sokeresultat" : {
-        "type" : "object",
-        "properties" : {
-          "antallTreff" : {
-            "type" : "integer",
-            "format" : "int64"
+      "Sokeresultat": {
+        "type": "object",
+        "properties": {
+          "antallTreff": {
+            "type": "integer",
+            "format": "int64"
           },
-          "treff" : {
-            "type" : "array",
-            "items" : {
-              "$ref" : "#/components/schemas/Treff"
+          "treff": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Treff"
             }
           },
-          "forespurtFra" : {
-            "type" : "integer",
-            "format" : "int32"
+          "forespurtFra": {
+            "type": "integer",
+            "format": "int32"
           },
-          "forespurtAntall" : {
-            "type" : "integer",
-            "format" : "int32"
+          "forespurtAntall": {
+            "type": "integer",
+            "format": "int32"
           },
-          "aggregeringer" : {
-            "$ref" : "#/components/schemas/Aggregeringer"
+          "aggregeringer": {
+            "$ref": "#/components/schemas/Aggregeringer"
           }
         }
       },
-      "Treff" : {
-        "type" : "object",
-        "properties" : {
-          "principalIntegrasjonId" : {
-            "type" : "string",
-            "format" : "uuid"
+      "Treff": {
+        "type": "object",
+        "properties": {
+          "principalIntegrasjonId": {
+            "type": "string",
+            "format": "uuid"
           },
-          "principalFnr" : {
-            "type" : "string"
+          "principalFnr": {
+            "type": "string"
           },
-          "principalClientId" : {
-            "type" : "string"
+          "principalClientId": {
+            "type": "string"
           },
-          "principalSikkerhetsniva" : {
-            "type" : "integer",
-            "format" : "int32"
+          "principalSikkerhetsniva": {
+            "type": "integer",
+            "format": "int32"
           },
-          "principalScope" : {
-            "uniqueItems" : true,
-            "type" : "array",
-            "items" : {
-              "type" : "object"
+          "principalScope": {
+            "uniqueItems": true,
+            "type": "array",
+            "items": {
+              "type": "object"
             }
           },
-          "principalOrgno" : {
-            "type" : "string"
+          "principalOrgno": {
+            "type": "string"
           },
-          "tidspunkt" : {
-            "type" : "integer",
-            "format" : "int64"
+          "tidspunkt": {
+            "type": "integer",
+            "format": "int64"
           },
-          "onBehalfOf" : {
-            "type" : "string"
+          "onBehalfOf": {
+            "type": "string"
           },
-          "underRessurs" : {
-            "type" : "string",
-            "format" : "uuid"
+          "underRessurs": {
+            "type": "string",
+            "format": "uuid"
           },
-          "fiksOrg" : {
-            "uniqueItems" : true,
-            "type" : "array",
-            "items" : {
-              "type" : "string",
-              "format" : "uuid"
+          "fiksOrg": {
+            "uniqueItems": true,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uuid"
             }
           },
-          "tjeneste" : {
-            "type" : "string"
+          "tjeneste": {
+            "type": "string"
           },
-          "handling" : {
-            "type" : "string"
+          "handling": {
+            "type": "string"
           },
-          "payload" : {
-            "type" : "string"
+          "payload": {
+            "type": "string"
           },
-          "requestId" : {
-            "type" : "string"
+          "requestId": {
+            "type": "string"
           },
-          "begrunnelse" : {
-            "type" : "string"
+          "begrunnelse": {
+            "type": "string"
           }
         }
       },
-      "SokRequest" : {
-        "required" : [ "begrunnelse", "fiksOrgId" ],
-        "type" : "object",
-        "properties" : {
-          "begrunnelse" : {
-            "type" : "string",
-            "description" : "Begrunnelse for søk"
+      "SokRequest": {
+        "required": [
+          "begrunnelse",
+          "fiksOrgId"
+        ],
+        "type": "object",
+        "properties": {
+          "begrunnelse": {
+            "type": "string",
+            "description": "Begrunnelse for søk"
           },
-          "fiksOrgId" : {
-            "type" : "string",
-            "description" : "Begrens søkeresultatet til logger eksponert for denne Fiks-organisasjonen",
-            "format" : "uuid"
+          "fiksOrgId": {
+            "type": "string",
+            "description": "Begrens søkeresultatet til logger eksponert for denne Fiks-organisasjonen",
+            "format": "uuid"
           },
-          "term" : {
-            "type" : "string",
-            "description" : "Søketerm"
+          "term": {
+            "type": "string",
+            "description": "Søketerm"
           },
-          "sortering" : {
-            "type" : "string",
-            "description" : "Skal søkeresultatet sorteres på dato heller enn relevans? Relevans-basert sortering er default",
-            "enum" : [ "DATO_ASC", "DATO_DESC", "RELEVANS" ]
+          "sortering": {
+            "type": "string",
+            "description": "Skal søkeresultatet sorteres på dato heller enn relevans? Relevans-basert sortering er default",
+            "enum": [
+              "DATO_ASC",
+              "DATO_DESC",
+              "RELEVANS"
+            ]
           },
-          "fraDato" : {
-            "type" : "integer",
-            "description" : "Begrens søkeresultatet til logger med dato etter denne datoen",
-            "format" : "int64"
+          "fraDato": {
+            "type": "integer",
+            "description": "Begrens søkeresultatet til logger med dato etter denne datoen",
+            "format": "int64"
           },
-          "tilDato" : {
-            "type" : "integer",
-            "description" : "Begrens søkeresultatet til logger med dato frem til denne datoen",
-            "format" : "int64"
+          "tilDato": {
+            "type": "integer",
+            "description": "Begrens søkeresultatet til logger med dato frem til denne datoen",
+            "format": "int64"
           },
-          "organisasjonsnummer" : {
-            "type" : "string",
-            "description" : "Begrens søkeresultatet til logger for denne organisasjonen"
+          "organisasjonsnummer": {
+            "type": "string",
+            "description": "Begrens søkeresultatet til logger for denne organisasjonen"
           },
-          "tjenesteFilter" : {
-            "uniqueItems" : true,
-            "type" : "array",
-            "description" : "Begrens søkeresultatet til logger relatert til denne tjenesten",
-            "items" : {
-              "type" : "string",
-              "description" : "Begrens søkeresultatet til logger relatert til denne tjenesten"
+          "tjenesteFilter": {
+            "uniqueItems": true,
+            "type": "array",
+            "description": "Begrens søkeresultatet til logger relatert til denne tjenesten",
+            "items": {
+              "type": "string",
+              "description": "Begrens søkeresultatet til logger relatert til denne tjenesten"
             }
           },
-          "underRessursFilter" : {
-            "uniqueItems" : true,
-            "type" : "array",
-            "description" : "Begrens søkeresultatet til logger relatert til denne under-ressursen",
-            "items" : {
-              "type" : "string",
-              "description" : "Begrens søkeresultatet til logger relatert til denne under-ressursen",
-              "format" : "uuid"
+          "underRessursFilter": {
+            "uniqueItems": true,
+            "type": "array",
+            "description": "Begrens søkeresultatet til logger relatert til denne under-ressursen",
+            "items": {
+              "type": "string",
+              "description": "Begrens søkeresultatet til logger relatert til denne under-ressursen",
+              "format": "uuid"
             }
           },
-          "requestIdFilter" : {
-            "uniqueItems" : true,
-            "type" : "array",
-            "description" : "Begrens søkeresultatet til logger relatert til denne requestId-en",
-            "items" : {
-              "type" : "string",
-              "description" : "Begrens søkeresultatet til logger relatert til denne requestId-en"
+          "requestIdFilter": {
+            "uniqueItems": true,
+            "type": "array",
+            "description": "Begrens søkeresultatet til logger relatert til denne requestId-en",
+            "items": {
+              "type": "string",
+              "description": "Begrens søkeresultatet til logger relatert til denne requestId-en"
             }
           },
-          "fra" : {
-            "minimum" : 0,
-            "type" : "integer",
-            "description" : "Index for det første søketreffet som skal returneres",
-            "format" : "int32",
-            "default" : 0
+          "fra": {
+            "minimum": 0,
+            "type": "integer",
+            "description": "Index for det første søketreffet som skal returneres",
+            "format": "int32",
+            "default": 0
           },
-          "antall" : {
-            "minimum" : 0,
-            "type" : "integer",
-            "description" : "Antall søketreff som skal returneres",
-            "format" : "int32",
-            "default" : 50
+          "antall": {
+            "minimum": 0,
+            "type": "integer",
+            "description": "Antall søketreff som skal returneres",
+            "format": "int32",
+            "default": 50
           }
         },
-        "description" : "Spesifikasjon for et Audit-søk"
+        "description": "Spesifikasjon for et Audit-søk"
+      },
+      "ErrorMessage": {
+        "type": "object",
+        "description": "Feilmelding fra Fiks-plattformen",
+        "externalDocs": {
+          "description": "Beskrivelse av feilmeldinger",
+          "url": "https://ks-no.github.io/fiks-plattform/integrasjoner/#feilmeldinger"
+        },
+        "properties": {
+          "timestamp": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "status": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "error": {
+            "type": "string"
+          },
+          "errorId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "path": {
+            "type": "string"
+          },
+          "originalPath": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          },
+          "errorCode": {
+            "type": "string"
+          },
+          "errorJson": {
+            "type": "string"
+          }
+        },
+        "example": {
+          "message": "Mangler tilgang",
+          "errorId": "ee2ed64d-de8b-45f9-b9c6-3363d662d93b",
+          "status": 403
+        }
       }
     }
   }
