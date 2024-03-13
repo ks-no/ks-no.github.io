@@ -41,7 +41,7 @@
           "required" : true,
           "schema" : {
             "type" : "string",
-            "enum" : [ "BARNEVERN" ]
+            "enum" : [ "BARNEVERN", "BYGGESAK" ]
           }
         }, {
           "name" : "integrasjonId",
@@ -93,7 +93,7 @@
           "required" : true,
           "schema" : {
             "type" : "string",
-            "enum" : [ "BARNEVERN" ]
+            "enum" : [ "BARNEVERN", "BYGGESAK" ]
           }
         } ],
         "responses" : {
@@ -127,14 +127,14 @@
           "required" : true,
           "schema" : {
             "type" : "string",
-            "enum" : [ "BARNEVERN" ]
+            "enum" : [ "BARNEVERN", "BYGGESAK" ]
           }
         } ],
         "requestBody" : {
           "content" : {
             "application/json" : {
               "schema" : {
-                "$ref" : "#/components/schemas/LeggTilKoblingRequest"
+                "$ref" : "#/components/schemas/ReaktiverKoblingRequest"
               }
             }
           }
@@ -154,7 +154,7 @@
       },
       "post" : {
         "tags" : [ "KonfigurasjonResource" ],
-        "summary" : "Legg til en kobling mellom integrasjon og fiks protokoll konto.",
+        "summary" : "Legger til en kobling mellom integrasjon og fiks protokoll konto.",
         "operationId" : "leggTilKontoMapping",
         "parameters" : [ {
           "name" : "fiksOrgId",
@@ -170,7 +170,7 @@
           "required" : true,
           "schema" : {
             "type" : "string",
-            "enum" : [ "BARNEVERN" ]
+            "enum" : [ "BARNEVERN", "BYGGESAK" ]
           }
         } ],
         "requestBody" : {
@@ -199,7 +199,7 @@
     "/journalpost/konfigurasjon/innsyn/api/v1/{fiksOrgId}/{system}/innsyn/integrasjoner" : {
       "get" : {
         "tags" : [ "KonfigurasjonResource" ],
-        "summary" : "Henter ut en oversikt over integrasjoner som er på nåværende tidspunkt kan brukes til å indeksere meldinger i Innsyn.",
+        "summary" : "Henter ut en oversikt over integrasjoner som er på nåværende tidspunkt kan brukes til å indeksere meldinger i Innsyn. Integrasjoner som allerede er i bruk er utelatt.",
         "operationId" : "hentIntegrasjoner",
         "parameters" : [ {
           "name" : "fiksOrgId",
@@ -215,7 +215,7 @@
           "required" : true,
           "schema" : {
             "type" : "string",
-            "enum" : [ "BARNEVERN" ]
+            "enum" : [ "BARNEVERN", "BYGGESAK" ]
           }
         } ],
         "responses" : {
@@ -235,7 +235,7 @@
     "/journalpost/konfigurasjon/innsyn/api/v1/{fiksOrgId}/{system}/tjenester/status" : {
       "get" : {
         "tags" : [ "KonfigurasjonResource" ],
-        "summary" : "Henter status på påkrevde tjenester i kontekst av innlogget bruker.",
+        "summary" : "Henter status på påkrevde tjenester i kontekst av innlogget bruker. Må være admin på tjenester protokoll og innsyn.",
         "operationId" : "hentStatusTjenester",
         "parameters" : [ {
           "name" : "fiksOrgId",
@@ -251,7 +251,7 @@
           "required" : true,
           "schema" : {
             "type" : "string",
-            "enum" : [ "BARNEVERN" ]
+            "enum" : [ "BARNEVERN", "BYGGESAK" ]
           }
         } ],
         "responses" : {
@@ -271,7 +271,7 @@
     "/journalpost/konfigurasjon/innsyn/api/v1/{fiksOrgId}/{system}/protokollkontoer" : {
       "get" : {
         "tags" : [ "KonfigurasjonResource" ],
-        "summary" : "Henter ut en oversikt over potensielt nye protokoll-kontoer som kan motta innsynsbegjæringer.",
+        "summary" : "Henter ut en oversikt over potensielle kontoer som kan motta innsynsforespørsler. Eksisterende kontoer returneres, siden de kan kobles mot andre integrasjoner",
         "operationId" : "listPotensielleMappiner",
         "parameters" : [ {
           "name" : "fiksOrgId",
@@ -287,16 +287,68 @@
           "required" : true,
           "schema" : {
             "type" : "string",
-            "enum" : [ "BARNEVERN" ]
+            "enum" : [ "BARNEVERN", "BYGGESAK" ]
           }
         } ],
         "responses" : {
           "200" : {
-            "description" : "Henter eksisterende koblinger",
+            "description" : "Henter potensielle protokoll-kontoer",
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/EksisterendeKoblinger"
+                  "$ref" : "#/components/schemas/ProtokollKontoer"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/journalpost/konfigurasjon/innsyn/api/v1/{fiksOrgId}/{system}/koblinger/integrasjon/{integrasjonId}/konto/{kontoId}/slett" : {
+      "delete" : {
+        "tags" : [ "KonfigurasjonResource" ],
+        "summary" : "Slett en kobling mellom integrasjon og fiks protokoll konto.",
+        "operationId" : "slettKontoMapping",
+        "parameters" : [ {
+          "name" : "fiksOrgId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        }, {
+          "name" : "system",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "enum" : [ "BARNEVERN", "BYGGESAK" ]
+          }
+        }, {
+          "name" : "integrasjonId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        }, {
+          "name" : "kontoId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "204" : {
+            "description" : "No Content",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Response"
                 }
               }
             }
@@ -325,8 +377,11 @@
             "type" : "string",
             "format" : "uri"
           },
-          "title" : {
-            "type" : "string"
+          "rels" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
           },
           "uriBuilder" : {
             "$ref" : "#/components/schemas/UriBuilder"
@@ -334,11 +389,8 @@
           "rel" : {
             "type" : "string"
           },
-          "rels" : {
-            "type" : "array",
-            "items" : {
-              "type" : "string"
-            }
+          "title" : {
+            "type" : "string"
           },
           "type" : {
             "type" : "string"
@@ -490,6 +542,9 @@
               }
             }
           },
+          "closed" : {
+            "type" : "boolean"
+          },
           "length" : {
             "type" : "integer",
             "format" : "int32"
@@ -504,13 +559,16 @@
               "language" : {
                 "type" : "string"
               },
-              "script" : {
+              "displayName" : {
+                "type" : "string"
+              },
+              "country" : {
                 "type" : "string"
               },
               "variant" : {
                 "type" : "string"
               },
-              "country" : {
+              "script" : {
                 "type" : "string"
               },
               "unicodeLocaleAttributes" : {
@@ -539,9 +597,6 @@
               "displayVariant" : {
                 "type" : "string"
               },
-              "displayName" : {
-                "type" : "string"
-              },
               "extensionKeys" : {
                 "uniqueItems" : true,
                 "type" : "array",
@@ -557,30 +612,13 @@
               }
             }
           },
-          "lastModified" : {
-            "type" : "string",
-            "format" : "date-time"
-          },
           "date" : {
             "type" : "string",
             "format" : "date-time"
           },
-          "headers" : {
-            "type" : "object",
-            "properties" : {
-              "empty" : {
-                "type" : "boolean"
-              }
-            },
-            "additionalProperties" : {
-              "type" : "array",
-              "items" : {
-                "type" : "object"
-              }
-            }
-          },
-          "closed" : {
-            "type" : "boolean"
+          "lastModified" : {
+            "type" : "string",
+            "format" : "date-time"
           },
           "metadata" : {
             "type" : "object",
@@ -602,6 +640,20 @@
           },
           "entity" : {
             "type" : "object"
+          },
+          "headers" : {
+            "type" : "object",
+            "properties" : {
+              "empty" : {
+                "type" : "boolean"
+              }
+            },
+            "additionalProperties" : {
+              "type" : "array",
+              "items" : {
+                "type" : "object"
+              }
+            }
           }
         }
       },
@@ -689,10 +741,16 @@
             "format" : "date-time"
           },
           "gyldig" : {
-            "type" : "boolean"
+            "type" : "boolean",
+            "description" : "Angir om integrasjon har de nødvendige egenskapene for å kunne brukes i en kobling"
+          },
+          "stats" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Stat"
+            }
           }
-        },
-        "description" : "Integrasjonen som er del av koblingen"
+        }
       },
       "MottakerKonto" : {
         "required" : [ "konto", "system" ],
@@ -708,7 +766,7 @@
         "description" : "Liste over protokollkontoer"
       },
       "ProtokollKonto" : {
-        "required" : [ "kontoId" ],
+        "required" : [ "gyldig", "kontoId" ],
         "type" : "object",
         "properties" : {
           "kontoId" : {
@@ -721,13 +779,14 @@
             "description" : "Navn på protokollkontoen"
           },
           "gyldig" : {
-            "type" : "boolean"
+            "type" : "boolean",
+            "description" : "Angir om kontoen har de nødvendige egenskapene for å kunne brukes i en kobling"
           }
         },
         "description" : "Detaljer om selve protokollkontoen"
       },
       "ProtokollSystem" : {
-        "required" : [ "systemId", "systemNavn" ],
+        "required" : [ "gyldig", "systemId", "systemNavn" ],
         "type" : "object",
         "properties" : {
           "systemId" : {
@@ -740,10 +799,23 @@
             "description" : "Navn til protokollsystemet"
           },
           "gyldig" : {
-            "type" : "boolean"
+            "type" : "boolean",
+            "description" : "Angir om systemet har de nødvendige egenskapene til å kunne brukes i en kobling"
           }
         },
         "description" : "Detaljer om protokollsystemet som kontoen er knyttet til"
+      },
+      "Stat" : {
+        "type" : "object",
+        "properties" : {
+          "meldingsType" : {
+            "type" : "string"
+          },
+          "antall" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        }
       },
       "Integrasjoner" : {
         "type" : "object",
@@ -804,6 +876,22 @@
             "items" : {
               "$ref" : "#/components/schemas/MottakerKonto"
             }
+          }
+        }
+      },
+      "ReaktiverKoblingRequest" : {
+        "required" : [ "integrasjonId", "kontoId" ],
+        "type" : "object",
+        "properties" : {
+          "integrasjonId" : {
+            "type" : "string",
+            "description" : "ID til integrasjonen som skal brukes i koblingen",
+            "format" : "uuid"
+          },
+          "kontoId" : {
+            "type" : "string",
+            "description" : "ID til protokollkonto som skal brukes i koblingen",
+            "format" : "uuid"
           }
         }
       }
