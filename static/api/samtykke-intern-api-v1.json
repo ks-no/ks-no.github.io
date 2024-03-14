@@ -1,0 +1,306 @@
+{
+  "openapi" : "3.0.1",
+  "info" : {
+    "title" : "KS Fiks: Samtykke",
+    "description" : "Fiks Samtykke Intern service",
+    "contact" : {
+      "name" : "Fiks-brukerstøtte",
+      "url" : "https://ks-no.github.io/",
+      "email" : "fiks-utvikling@ks.no"
+    },
+    "version" : "v1"
+  },
+  "servers" : [ {
+    "url" : "https://api.fiks.ks.no",
+    "description" : "KS Fiks API host"
+  }, {
+    "url" : "https://api.fiks.test.ks.no",
+    "description" : "KS Fiks API test host"
+  } ],
+  "tags" : [ {
+    "name" : "samtykke-intern",
+    "description" : "API for å vise og ta stilling til samtykker"
+  } ],
+  "paths" : {
+    "/fiks-samtykke/api/v1/intern/{fiksOrgId}/giSamtykkeSvar" : {
+      "post" : {
+        "tags" : [ "samtykke-intern" ],
+        "description" : "Gir svar for person på samtykke",
+        "operationId" : "giSamtykkeSvar",
+        "parameters" : [ {
+          "name" : "fiksOrgId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/SamtykkeSvarRequest"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "201" : {
+            "description" : "Slettet samtykke"
+          },
+          "default" : {
+            "description" : "Noe gikk galt",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/fiks-samtykke/api/v1/intern/{fiksOrgId}/hentSamtykkerForPerson" : {
+      "post" : {
+        "tags" : [ "samtykke-intern" ],
+        "description" : "Henter samtykker for person",
+        "operationId" : "hentSamtykker",
+        "parameters" : [ {
+          "name" : "fiksOrgId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/HentSamtykkeRequest"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "201" : {
+            "description" : "Hentet samtykker for person"
+          },
+          "default" : {
+            "description" : "Noe gikk galt",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components" : {
+    "schemas" : {
+      "ErrorMessage" : {
+        "type" : "object",
+        "properties" : {
+          "timestamp" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "status" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "error" : {
+            "type" : "string"
+          },
+          "errorId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "path" : {
+            "type" : "string"
+          },
+          "originalPath" : {
+            "type" : "string"
+          },
+          "message" : {
+            "type" : "string"
+          },
+          "errorCode" : {
+            "type" : "string"
+          },
+          "errorJson" : {
+            "type" : "string"
+          }
+        }
+      },
+      "SamtykkeSvarRequest" : {
+        "required" : [ "navn", "saksnummer", "samtykkeSvar" ],
+        "type" : "object",
+        "properties" : {
+          "saksnummer" : {
+            "type" : "string",
+            "description" : "Saksnummer knyttet til samtykket som skal besvares"
+          },
+          "navn" : {
+            "type" : "string",
+            "description" : "Navn på person som svarer"
+          },
+          "samtykkeSvar" : {
+            "type" : "string",
+            "description" : "Svaret til person",
+            "enum" : [ "IKKE_BESVART", "SAMTYKKE_GITT", "SAMTYKKE_AVSLAATT" ]
+          }
+        }
+      },
+      "MultipartFile" : {
+        "type" : "object",
+        "properties" : {
+          "originalFilename" : {
+            "type" : "string"
+          },
+          "name" : {
+            "type" : "string"
+          },
+          "bytes" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "format" : "byte"
+            }
+          },
+          "empty" : {
+            "type" : "boolean"
+          },
+          "resource" : {
+            "$ref" : "#/components/schemas/Resource"
+          },
+          "size" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "inputStream" : {
+            "type" : "object"
+          },
+          "contentType" : {
+            "type" : "string"
+          }
+        },
+        "description" : "Dokument som beskriver samtykket"
+      },
+      "PersonMedSamtykke" : {
+        "required" : [ "navn", "samtykkeStatus" ],
+        "type" : "object",
+        "properties" : {
+          "navn" : {
+            "type" : "string",
+            "description" : "Navn for person"
+          },
+          "samtykkeStatus" : {
+            "type" : "string",
+            "description" : "Status for samtykke",
+            "enum" : [ "IKKE_BESVART", "SAMTYKKE_GITT", "SAMTYKKE_AVSLAATT" ]
+          }
+        },
+        "description" : "Personer som skal gi samtykke for sak"
+      },
+      "Resource" : {
+        "type" : "object",
+        "properties" : {
+          "contentAsByteArray" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "format" : "byte"
+            }
+          },
+          "filename" : {
+            "type" : "string"
+          },
+          "open" : {
+            "type" : "boolean"
+          },
+          "file" : {
+            "type" : "string",
+            "format" : "binary"
+          },
+          "readable" : {
+            "type" : "boolean"
+          },
+          "url" : {
+            "type" : "string",
+            "format" : "url"
+          },
+          "description" : {
+            "type" : "string"
+          },
+          "uri" : {
+            "type" : "string",
+            "format" : "uri"
+          },
+          "inputStream" : {
+            "type" : "object"
+          }
+        }
+      },
+      "Samtykke" : {
+        "required" : [ "akseptfrist", "dokument", "gyldigTil", "personList", "saksnummer" ],
+        "type" : "object",
+        "properties" : {
+          "personList" : {
+            "type" : "array",
+            "description" : "Personer som skal gi samtykke for sak",
+            "items" : {
+              "$ref" : "#/components/schemas/PersonMedSamtykke"
+            }
+          },
+          "saksnummer" : {
+            "type" : "string",
+            "description" : "Saksnummer knyttet til samtykket"
+          },
+          "dokument" : {
+            "$ref" : "#/components/schemas/MultipartFile"
+          },
+          "akseptfrist" : {
+            "type" : "string",
+            "description" : "Dato som forteller signeringsfrist for samtykke",
+            "format" : "date"
+          },
+          "gyldigTil" : {
+            "type" : "string",
+            "description" : "Dato som forteller hvor lenge samtykket er gyldig",
+            "format" : "date"
+          }
+        }
+      },
+      "Samtykker" : {
+        "type" : "object",
+        "properties" : {
+          "samtykkeList" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Samtykke"
+            }
+          }
+        }
+      },
+      "HentSamtykkeRequest" : {
+        "required" : [ "fnr" ],
+        "type" : "object",
+        "properties" : {
+          "fnr" : {
+            "pattern" : "^[0-9]{11}$",
+            "type" : "string",
+            "description" : "Fnr til person som skal hente sine samtykker"
+          }
+        }
+      }
+    }
+  }
+}
