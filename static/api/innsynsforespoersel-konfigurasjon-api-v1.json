@@ -22,6 +22,108 @@
     "description" : "API for konfigurasjon av oppsett for innsynsforespørsler"
   } ],
   "paths" : {
+    "/barnevern/konfigurasjon/api/v1/{fiksOrgId}/status" : {
+      "post" : {
+        "tags" : [ "BarnevernKonfigurasjonController" ],
+        "summary" : "Henter status for barneverntjenesten.",
+        "operationId" : "hentStatus",
+        "parameters" : [ {
+          "name" : "fiksOrgId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Konfigurasjonsdetaljer for barneverntjenesten",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/OpprettInnsynIntegrasjonResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/barnevern/konfigurasjon/api/v1/{fiksOrgId}/innsyn/integrasjon" : {
+      "post" : {
+        "tags" : [ "BarnevernKonfigurasjonController" ],
+        "summary" : "Oppretter en innsyn integrasjon for barneverntjenesten.",
+        "operationId" : "oppprettInnsynIntegrasjon",
+        "parameters" : [ {
+          "name" : "fiksOrgId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/OpprettInnsynIntegrasjonRequest"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Konfigurasjonsdetaljer for innsynintegrasjonen",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/OpprettInnsynIntegrasjonResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/barnevern/konfigurasjon/api/v1/{fiksOrgId}/protokoll/system" : {
+      "post" : {
+        "tags" : [ "BarnevernKonfigurasjonController" ],
+        "summary" : "Oppretter et protokollsystem for bruk av barneverntjenesten.",
+        "operationId" : "oppprettProtokollSystem",
+        "parameters" : [ {
+          "name" : "fiksOrgId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/OpprettProtokollSystemRequest"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Konfigurasjonsdetaljer for systemet",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/OpprettProtokollSystemResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/journalpost/konfigurasjon/innsyn/api/v1/{fiksOrgId}/{system}/koblinger/integrasjon/{integrasjonId}/konto/{kontoId}" : {
       "delete" : {
         "tags" : [ "KonfigurasjonResource" ],
@@ -359,6 +461,152 @@
   },
   "components" : {
     "schemas" : {
+      "Integrasjon" : {
+        "required" : [ "id" ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string",
+            "description" : "IntegrasjonsID",
+            "format" : "uuid"
+          },
+          "orgnr" : {
+            "type" : "string",
+            "description" : "Organisasjonsnr som er koblet til integrasjonen"
+          },
+          "navn" : {
+            "type" : "string",
+            "description" : "Navn på integrasjonen"
+          },
+          "beskrivelse" : {
+            "type" : "string",
+            "description" : "Beskrivelse på integrasjonen"
+          },
+          "opprettet" : {
+            "type" : "string",
+            "description" : "Dato/tid for når integrasjon ble opprettet",
+            "format" : "date-time"
+          },
+          "gyldig" : {
+            "type" : "boolean",
+            "description" : "Angir om integrasjon har de nødvendige egenskapene for å kunne brukes i en kobling"
+          },
+          "stats" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Stat"
+            }
+          }
+        }
+      },
+      "OpprettInnsynIntegrasjonResponse" : {
+        "type" : "object",
+        "properties" : {
+          "innsynIntegrasjon" : {
+            "$ref" : "#/components/schemas/Integrasjon"
+          }
+        }
+      },
+      "InnsynIntegrasjon" : {
+        "required" : [ "integrasjonId" ],
+        "type" : "object",
+        "properties" : {
+          "integrasjonId" : {
+            "type" : "string",
+            "description" : "Id til integrasjon",
+            "format" : "uuid"
+          },
+          "gyldig" : {
+            "type" : "boolean"
+          }
+        }
+      },
+      "ProtokollSystem" : {
+        "required" : [ "gyldig", "systemId", "systemNavn" ],
+        "type" : "object",
+        "properties" : {
+          "systemId" : {
+            "type" : "string",
+            "description" : "ID til protokollsystemet",
+            "format" : "uuid"
+          },
+          "systemNavn" : {
+            "type" : "string",
+            "description" : "Navn til protokollsystemet"
+          },
+          "gyldig" : {
+            "type" : "boolean",
+            "description" : "Angir om systemet har de nødvendige egenskapene til å kunne brukes i en kobling"
+          }
+        },
+        "description" : "Detaljer om protokollsystemet som kontoen er knyttet til"
+      },
+      "Status" : {
+        "type" : "object",
+        "properties" : {
+          "leverandor" : {
+            "type" : "string",
+            "enum" : [ "VISMA", "NETCOMPANY" ]
+          },
+          "innsynIntegrasjon" : {
+            "$ref" : "#/components/schemas/InnsynIntegrasjon"
+          },
+          "protokollSystem" : {
+            "$ref" : "#/components/schemas/ProtokollSystem"
+          }
+        }
+      },
+      "OpprettInnsynIntegrasjonRequest" : {
+        "required" : [ "leverandor" ],
+        "type" : "object",
+        "properties" : {
+          "leverandor" : {
+            "type" : "string",
+            "description" : "Leverandør",
+            "enum" : [ "VISMA", "NETCOMPANY" ]
+          }
+        }
+      },
+      "OpprettProtokollSystemResponse" : {
+        "type" : "object",
+        "properties" : {
+          "protokollIntegrasjon" : {
+            "$ref" : "#/components/schemas/Integrasjon"
+          },
+          "systemId" : {
+            "type" : "string",
+            "description" : "SystemId til protokollsystemet som er opprettet",
+            "format" : "uuid"
+          }
+        }
+      },
+      "OpprettProtokollSystemRequest" : {
+        "required" : [ "kontakteposter", "leverandor", "systembeskrivelse", "systemnavn" ],
+        "type" : "object",
+        "properties" : {
+          "systemnavn" : {
+            "type" : "string",
+            "description" : "Angir navn på protokollsystem"
+          },
+          "systembeskrivelse" : {
+            "type" : "string",
+            "description" : "Beskrivelse av protokollsystem"
+          },
+          "kontakteposter" : {
+            "type" : "array",
+            "description" : "Kontakt-epost adresser",
+            "items" : {
+              "type" : "string",
+              "description" : "Kontakt-epost adresser"
+            }
+          },
+          "leverandor" : {
+            "type" : "string",
+            "description" : "Leverandør",
+            "enum" : [ "VISMA", "NETCOMPANY" ]
+          }
+        }
+      },
       "EntityTag" : {
         "type" : "object",
         "properties" : {
@@ -373,14 +621,7 @@
       "Link" : {
         "type" : "object",
         "properties" : {
-          "uri" : {
-            "type" : "string",
-            "format" : "uri"
-          },
-          "uriBuilder" : {
-            "$ref" : "#/components/schemas/UriBuilder"
-          },
-          "rel" : {
+          "title" : {
             "type" : "string"
           },
           "rels" : {
@@ -389,11 +630,18 @@
               "type" : "string"
             }
           },
-          "title" : {
+          "rel" : {
             "type" : "string"
+          },
+          "uriBuilder" : {
+            "$ref" : "#/components/schemas/UriBuilder"
           },
           "type" : {
             "type" : "string"
+          },
+          "uri" : {
+            "type" : "string",
+            "format" : "uri"
           },
           "params" : {
             "type" : "object",
@@ -499,28 +747,6 @@
       "Response" : {
         "type" : "object",
         "properties" : {
-          "statusInfo" : {
-            "$ref" : "#/components/schemas/StatusType"
-          },
-          "mediaType" : {
-            "$ref" : "#/components/schemas/MediaType"
-          },
-          "allowedMethods" : {
-            "uniqueItems" : true,
-            "type" : "array",
-            "items" : {
-              "type" : "string"
-            }
-          },
-          "cookies" : {
-            "type" : "object",
-            "additionalProperties" : {
-              "$ref" : "#/components/schemas/NewCookie"
-            }
-          },
-          "entityTag" : {
-            "$ref" : "#/components/schemas/EntityTag"
-          },
           "stringHeaders" : {
             "type" : "object",
             "properties" : {
@@ -534,6 +760,22 @@
                 "type" : "string"
               }
             }
+          },
+          "statusInfo" : {
+            "$ref" : "#/components/schemas/StatusType"
+          },
+          "mediaType" : {
+            "$ref" : "#/components/schemas/MediaType"
+          },
+          "allowedMethods" : {
+            "uniqueItems" : true,
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          },
+          "entityTag" : {
+            "$ref" : "#/components/schemas/EntityTag"
           },
           "links" : {
             "uniqueItems" : true,
@@ -619,6 +861,12 @@
           "lastModified" : {
             "type" : "string",
             "format" : "date-time"
+          },
+          "cookies" : {
+            "type" : "object",
+            "additionalProperties" : {
+              "$ref" : "#/components/schemas/NewCookie"
+            }
           },
           "metadata" : {
             "type" : "object",
@@ -714,44 +962,6 @@
           }
         }
       },
-      "Integrasjon" : {
-        "required" : [ "id" ],
-        "type" : "object",
-        "properties" : {
-          "id" : {
-            "type" : "string",
-            "description" : "IntegrasjonsID",
-            "format" : "uuid"
-          },
-          "orgnr" : {
-            "type" : "string",
-            "description" : "Organisasjonsnr som er koblet til integrasjonen"
-          },
-          "navn" : {
-            "type" : "string",
-            "description" : "Navn på integrasjonen"
-          },
-          "beskrivelse" : {
-            "type" : "string",
-            "description" : "Beskrivelse på integrasjonen"
-          },
-          "opprettet" : {
-            "type" : "string",
-            "description" : "Dato/tid for når integrasjon ble opprettet",
-            "format" : "date-time"
-          },
-          "gyldig" : {
-            "type" : "boolean",
-            "description" : "Angir om integrasjon har de nødvendige egenskapene for å kunne brukes i en kobling"
-          },
-          "stats" : {
-            "type" : "array",
-            "items" : {
-              "$ref" : "#/components/schemas/Stat"
-            }
-          }
-        }
-      },
       "MottakerKonto" : {
         "required" : [ "konto", "system" ],
         "type" : "object",
@@ -784,26 +994,6 @@
           }
         },
         "description" : "Detaljer om selve protokollkontoen"
-      },
-      "ProtokollSystem" : {
-        "required" : [ "gyldig", "systemId", "systemNavn" ],
-        "type" : "object",
-        "properties" : {
-          "systemId" : {
-            "type" : "string",
-            "description" : "ID til protokollsystemet",
-            "format" : "uuid"
-          },
-          "systemNavn" : {
-            "type" : "string",
-            "description" : "Navn til protokollsystemet"
-          },
-          "gyldig" : {
-            "type" : "boolean",
-            "description" : "Angir om systemet har de nødvendige egenskapene til å kunne brukes i en kobling"
-          }
-        },
-        "description" : "Detaljer om protokollsystemet som kontoen er knyttet til"
       },
       "Stat" : {
         "type" : "object",
