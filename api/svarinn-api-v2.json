@@ -1,0 +1,573 @@
+{
+  "openapi" : "3.0.1",
+  "info" : {
+    "title" : "KS SvarUt: SvarInn API V2",
+    "description" : "SvarInn API V2",
+    "contact" : {
+      "name" : "Fiks-brukerstøtte",
+      "url" : "https://developers.fiks.ks.no",
+      "email" : "fiks-utvikling@ks.no"
+    },
+    "version" : "v2"
+  },
+  "servers" : [ {
+    "url" : "https://test.svarut.ks.no/tjenester",
+    "description" : "SvarUt TEST"
+  }, {
+    "url" : "https://svarut.ks.no/tjenester",
+    "description" : "SvarUt"
+  } ],
+  "tags" : [ {
+    "name" : "SvarInn",
+    "description" : "API for henting av hendelser for forsendelse"
+  } ],
+  "paths" : {
+    "/svarinn/v2/forsendelser/{forsendelseId}" : {
+      "get" : {
+        "tags" : [ "SvarInn" ],
+        "summary" : "Henter ZIP med alle filene tilhørende forsendelsen med gitt id. Husk at filene kan være store. MIME type er definert i Content-Type headeren, og filnavn i Content-Disposition. Filen er kryptert med den offentlige nøkkelen til mottakersystemet og må dekrypteres etter nedlasting.",
+        "operationId" : "hentForsendelsefil",
+        "parameters" : [ {
+          "name" : "forsendelseId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Kryptert ZIP med forsendelsens filer",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "type" : "string",
+                  "format" : "byte"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch" : {
+        "tags" : [ "SvarInn" ],
+        "summary" : "Markerer forsendelsen som mottatt, mottatt manuelt eller mottak feilet.",
+        "operationId" : "oppdaterStatus",
+        "parameters" : [ {
+          "name" : "forsendelseId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/Statusoppdatering"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "default" : {
+            "description" : "default response",
+            "content" : {
+              "*/*" : { }
+            }
+          }
+        }
+      }
+    },
+    "/svarinn/v2/forsendelser" : {
+      "get" : {
+        "tags" : [ "SvarInn" ],
+        "summary" : "Henter metadata for opptil 200 nye forsendelser på mottakersystemet man er autentisert med. Dersom det ikke finnes noen nye forsendelser returneres tom liste.",
+        "operationId" : "hentNyeForsendelser",
+        "responses" : {
+          "default" : {
+            "description" : "default response",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/Forsendelse"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components" : {
+    "schemas" : {
+      "Avsender" : {
+        "type" : "object",
+        "properties" : {
+          "navn" : {
+            "type" : "string",
+            "description" : "Navn",
+            "example" : "Storevik kommune"
+          },
+          "adresselinje1" : {
+            "type" : "string",
+            "description" : "Første adresselinje",
+            "example" : "Digitaliseringsetaten"
+          },
+          "adresselinje2" : {
+            "type" : "string",
+            "description" : "Andre adresselinje",
+            "example" : "Utviklingsavdelingen"
+          },
+          "adresselinje3" : {
+            "type" : "string",
+            "description" : "Tredje adresselinje",
+            "example" : "Postboks 123"
+          },
+          "postnummer" : {
+            "type" : "string",
+            "description" : "Postnummer",
+            "example" : "0000"
+          },
+          "poststed" : {
+            "type" : "string",
+            "description" : "Poststed",
+            "example" : "Storevik"
+          }
+        },
+        "description" : "Informasjon om forsendelsens avsender"
+      },
+      "Entry" : {
+        "type" : "object",
+        "properties" : {
+          "key" : {
+            "type" : "string",
+            "description" : "Nøkkel som beskriver verdien",
+            "example" : "versjon"
+          },
+          "value" : {
+            "type" : "string",
+            "description" : "Metadata-verdi",
+            "example" : "4"
+          }
+        },
+        "description" : "Ekstra metadata for filen definert av avsender"
+      },
+      "Fil" : {
+        "required" : [ "filnavn", "hash", "mimeType", "storrelse" ],
+        "type" : "object",
+        "properties" : {
+          "filnavn" : {
+            "type" : "string",
+            "description" : "Filnavn med eventuell extension",
+            "example" : "brev.pdf"
+          },
+          "mimeType" : {
+            "type" : "string",
+            "description" : "MIME type",
+            "example" : "application/pdf"
+          },
+          "hash" : {
+            "type" : "string",
+            "description" : "SHA-256 hash av filens innhold",
+            "example" : "82275bb0c47c7e5fe81e3f58242d44e3ca2f5ea438cea0013d9bfdeec736c910"
+          },
+          "type" : {
+            "type" : "string",
+            "description" : "Fritekst for å beskrive dokumentets type, f.eks. Noark dokumenttype",
+            "example" : "B"
+          },
+          "storrelse" : {
+            "type" : "integer",
+            "description" : "Filens størrelse, eller 0 om den ikke er satt",
+            "format" : "int64",
+            "example" : 15324
+          },
+          "ekstraMetadata" : {
+            "type" : "array",
+            "description" : "Ekstra metadata for filen definert av avsender",
+            "items" : {
+              "$ref" : "#/components/schemas/Entry"
+            }
+          }
+        },
+        "description" : "Metadata for filene i forsendelsen"
+      },
+      "Forsendelse" : {
+        "required" : [ "filer", "id", "mottaker", "nedlastingslenke", "niva", "status", "tittel" ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string",
+            "description" : "Forsendelsens unike id.",
+            "format" : "uuid",
+            "example" : "f11f5cba-68ad-422f-ad2c-922cd6060f46"
+          },
+          "avsender" : {
+            "$ref" : "#/components/schemas/Avsender"
+          },
+          "mottaker" : {
+            "$ref" : "#/components/schemas/Mottaker"
+          },
+          "tittel" : {
+            "type" : "string",
+            "description" : "Tittel på forsendelsen",
+            "example" : "Søknad om skjenkebevilling"
+          },
+          "dato" : {
+            "type" : "integer",
+            "description" : "Tidspunkt når forsendelsen ble mottatt av SvarUt. Millisekunder etter epoch.",
+            "format" : "int64",
+            "example" : 1694782865669
+          },
+          "metadataFraAvleverendeSystem" : {
+            "$ref" : "#/components/schemas/MetadataFraAvleverendeSystem"
+          },
+          "metadataForImport" : {
+            "$ref" : "#/components/schemas/MetadataForImport"
+          },
+          "status" : {
+            "type" : "string",
+            "description" : "Forsendelsens nåværende status",
+            "example" : "Klar for mottak"
+          },
+          "niva" : {
+            "type" : "string",
+            "description" : "Sikkerhetsnivå for forsendelsen. 3 eller 4.",
+            "example" : "4"
+          },
+          "filer" : {
+            "type" : "array",
+            "description" : "Metadata for filene i forsendelsen",
+            "items" : {
+              "$ref" : "#/components/schemas/Fil"
+            }
+          },
+          "svarSendesTil" : {
+            "$ref" : "#/components/schemas/SvarSendesTil"
+          },
+          "svarPaForsendelse" : {
+            "type" : "string",
+            "description" : "Id for forsendelse som denne forsendelsen er et svar på.",
+            "format" : "uuid",
+            "example" : "aff355c4-7b57-4eb9-81e0-e4950e7a3776"
+          },
+          "type" : {
+            "type" : "string",
+            "description" : "Type satt på forsendelsen",
+            "example" : "Innkommende dokument"
+          },
+          "eksternRef" : {
+            "type" : "string",
+            "description" : "Ekstern referanse satt på forsendelsen",
+            "example" : "AB123"
+          },
+          "lenker" : {
+            "type" : "array",
+            "description" : "Lenker som er lagt ved forsendelsen",
+            "items" : {
+              "$ref" : "#/components/schemas/Lenke"
+            }
+          },
+          "nedlastingslenke" : {
+            "type" : "string",
+            "description" : "Lenke for å laste ned forsendelsens filer",
+            "example" : "https://svarut.ks.no/tjenester/svarinn/forsendelse/b2cb3edf-7200-4478-a2ad-78dda61651c0"
+          },
+          "avgivendeSystem" : {
+            "type" : "string",
+            "description" : "Navn på systemet som sendte forsendelsen",
+            "example" : "EDIALOG"
+          },
+          "taushetsbelagtPost" : {
+            "type" : "boolean",
+            "description" : "Er forsendelsen markert som taushetsbelagt?",
+            "example" : true
+          }
+        }
+      },
+      "Lenke" : {
+        "required" : [ "lenke", "tekst" ],
+        "type" : "object",
+        "properties" : {
+          "ledetekst" : {
+            "type" : "string",
+            "description" : "Tekst som kommer før lenken",
+            "example" : "Trykk på lenken for mer informasjon"
+          },
+          "lenke" : {
+            "type" : "string",
+            "description" : "URL som lenken peker til",
+            "example" : "https://svarut.ks.no/"
+          },
+          "tekst" : {
+            "type" : "string",
+            "description" : "Teksten som kan trykkes på i lenken",
+            "example" : "SvarUt"
+          }
+        },
+        "description" : "Lenker tilknyttet forsendelsen"
+      },
+      "MetadataForImport" : {
+        "type" : "object",
+        "properties" : {
+          "sakssekvensnummer" : {
+            "type" : "integer",
+            "description" : "Viser rekkefølgen når saksmappen ble opprettet innenfor året",
+            "format" : "int64",
+            "example" : 648677
+          },
+          "saksaar" : {
+            "type" : "integer",
+            "description" : "Viser året saksmappen ble opprettet",
+            "format" : "int32",
+            "example" : 2005
+          },
+          "mappeId" : {
+            "type" : "string",
+            "description" : "Entydig identifikasjon av mappen innenfor det arkivet mappen tilhører",
+            "example" : "fc051651-b853-4b4d-a7cd-fb2beea54356"
+          },
+          "systemId" : {
+            "type" : "string",
+            "description" : "Entydig identifikasjon av arkivenheten innenfor det arkivskapende organet",
+            "example" : "7044a03d-c459-4cbe-a4c3-371cc6751215"
+          },
+          "registreringsId" : {
+            "type" : "string",
+            "description" : "Entydig identifikasjon av registreringen innenfor arkivet",
+            "example" : "5f9e9bc8-ffc1-40c0-8fdd-3b5ee32a2e43"
+          },
+          "journalposttype" : {
+            "type" : "string",
+            "description" : "Navn på type journalpost",
+            "example" : "I"
+          },
+          "journalstatus" : {
+            "type" : "string",
+            "description" : "Status til journalposten, dvs. om dokumentet er registrert, under behandling eller endelig arkivert",
+            "example" : "J"
+          },
+          "dokumentetsDato" : {
+            "type" : "integer",
+            "description" : "Dato som er påført selve dokumentet. Millisekunder etter epoch.",
+            "format" : "int64",
+            "example" : 1104879600000
+          },
+          "tittel" : {
+            "type" : "string",
+            "description" : "Tittel eller navn på arkivenheten",
+            "example" : "Gjennomføringsplan"
+          }
+        },
+        "description" : "Noark 5-metadata som stemmer med mottakende system. Kan brukes til å legge dokumentet på rett sak."
+      },
+      "MetadataFraAvleverendeSystem" : {
+        "type" : "object",
+        "properties" : {
+          "sakssekvensnummer" : {
+            "type" : "integer",
+            "description" : "Viser rekkefølgen når saksmappen ble opprettet innenfor året",
+            "format" : "int64",
+            "example" : 1234
+          },
+          "saksaar" : {
+            "type" : "integer",
+            "description" : "Viser året saksmappen ble opprettet",
+            "format" : "int32",
+            "example" : 2020
+          },
+          "journalaar" : {
+            "type" : "integer",
+            "description" : "Viser året journalposten ble opprettet",
+            "format" : "int64",
+            "example" : 2023
+          },
+          "journalsekvensnummer" : {
+            "type" : "integer",
+            "description" : "Viser rekkefølgen når journalposten ble opprettet under året",
+            "format" : "int64",
+            "example" : 23456
+          },
+          "journalpostnummer" : {
+            "type" : "integer",
+            "description" : "Viser rekkefølgen journalpostene ble opprettet innenfor saksmappen",
+            "format" : "int64",
+            "example" : 15
+          },
+          "journalposttype" : {
+            "type" : "string",
+            "description" : "Navn på type journalpost",
+            "example" : "U"
+          },
+          "journalstatus" : {
+            "type" : "string",
+            "description" : "Status til journalposten, dvs. om dokumentet er registrert, under behandling eller endelig arkivert",
+            "example" : "A"
+          },
+          "journaldato" : {
+            "type" : "integer",
+            "description" : "Datoen journalposten er opprettet/arkivert. Millisekunder etter epoch.",
+            "format" : "int64",
+            "example" : 1694781172651
+          },
+          "dokumentetsDato" : {
+            "type" : "integer",
+            "description" : "Dato som er påført selve dokumentet. Millisekunder etter epoch.",
+            "format" : "int64",
+            "example" : 1694642400000
+          },
+          "tittel" : {
+            "type" : "string",
+            "description" : "Tittel eller navn på arkivenheten",
+            "example" : "Søknad om støtte"
+          },
+          "saksbehandler" : {
+            "type" : "string",
+            "description" : "Navn på person som er saksbehandler",
+            "example" : "Kari Nordmann"
+          },
+          "virksomhetsspesifikkeMetadata" : {
+            "type" : "array",
+            "description" : "Virksomhetsspesifikke metadata for forsendelsen definert av avsender",
+            "items" : {
+              "$ref" : "#/components/schemas/Entry"
+            }
+          }
+        },
+        "description" : "Noark 5-metadata fra avleverende system"
+      },
+      "Mottaker" : {
+        "required" : [ "navn" ],
+        "type" : "object",
+        "properties" : {
+          "organisasjonsnummer" : {
+            "type" : "string",
+            "description" : "Organisasjonsnummer",
+            "example" : "123456789"
+          },
+          "navn" : {
+            "type" : "string",
+            "description" : "Navn",
+            "example" : "Ola Nordmann"
+          },
+          "adresselinje1" : {
+            "type" : "string",
+            "description" : "Første adresselinje",
+            "example" : "Storevik kommune"
+          },
+          "adresselinje2" : {
+            "type" : "string",
+            "description" : "Andre adresselinje",
+            "example" : "Helseetaten"
+          },
+          "adresselinje3" : {
+            "type" : "string",
+            "description" : "Tredje adresselinje",
+            "example" : "Postboks 55"
+          },
+          "postnummer" : {
+            "type" : "string",
+            "description" : "Postnummer",
+            "example" : "0000"
+          },
+          "poststed" : {
+            "type" : "string",
+            "description" : "Poststed",
+            "example" : "Storevik"
+          },
+          "land" : {
+            "type" : "string",
+            "description" : "Land",
+            "example" : "Norge"
+          }
+        },
+        "description" : "Mottaker av forsendelsen"
+      },
+      "SvarSendesTil" : {
+        "required" : [ "navn" ],
+        "type" : "object",
+        "properties" : {
+          "organisasjonsnummer" : {
+            "type" : "string",
+            "description" : "Organisasjonsnummer, vil ikke være satt samtidig som fnr",
+            "example" : "123456789"
+          },
+          "fodselsnummer" : {
+            "type" : "string",
+            "description" : "Fødselsnummer, vil ikke være satt samtidig som orgnr",
+            "example" : "12345678910"
+          },
+          "navn" : {
+            "type" : "string",
+            "description" : "Navn",
+            "example" : "Storevik kommune"
+          },
+          "adresselinje1" : {
+            "type" : "string",
+            "description" : "Første adresselinje",
+            "example" : "Digitaliseringsetaten"
+          },
+          "adresselinje2" : {
+            "type" : "string",
+            "description" : "Andre adresselinje",
+            "example" : "Utviklingsavdelingen"
+          },
+          "adresselinje3" : {
+            "type" : "string",
+            "description" : "Tredje adresselinje",
+            "example" : "Postboks 123"
+          },
+          "postnummer" : {
+            "type" : "string",
+            "description" : "Postnummer",
+            "example" : "0000"
+          },
+          "poststed" : {
+            "type" : "string",
+            "description" : "Poststed",
+            "example" : "Storevik"
+          },
+          "land" : {
+            "type" : "string",
+            "description" : "Land",
+            "example" : "Norge"
+          }
+        },
+        "description" : "Adresse som svar på forsendelsen kan sendes til"
+      },
+      "Feil" : {
+        "required" : [ "feilmelding", "permanent" ],
+        "type" : "object",
+        "properties" : {
+          "feilmelding" : {
+            "type" : "string",
+            "description" : "En menneskelig lesbar feilmelding"
+          },
+          "permanent" : {
+            "type" : "boolean",
+            "description" : "En feil kan være permanent eller midlertidig. Dersom forsendelsen markeres som feilet permanent blir den sendt videre via en annen kanal. Ved en midlertidig feil vil feilmeldingen dukke opp i hendelsesloggen for forsendelsen, men den vil fortsatt ligge klar til nedlasting i SvarInn."
+          }
+        },
+        "description" : "Beskrivelse av feil, påkrevd dersom status er FEILET"
+      },
+      "Statusoppdatering" : {
+        "type" : "object",
+        "properties" : {
+          "status" : {
+            "type" : "string",
+            "description" : "Ny status for forsendelsen",
+            "enum" : [ "MOTTATT", "FEILET" ]
+          },
+          "feil" : {
+            "$ref" : "#/components/schemas/Feil"
+          }
+        }
+      }
+    }
+  }
+}
