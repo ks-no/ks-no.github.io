@@ -263,8 +263,9 @@
         }
       },
       "Stadie": {
+        "description": "Om skatteoppgjøret er ferdig (OPPGJOER) eller et utkast (UTKAST). UTKAST er kun relevant for foreldrebetaling for SFO og barnehage.",
         "type": "string",
-        "enum": ["OPPGJOER", "UTKAST", "UKJENT"]
+        "enum": ["OPPGJOER", "UTKAST"]
       },
       "EgenandelsgrunnlagResponse": {
         "required": [
@@ -337,6 +338,7 @@
             "$ref": "#/components/schemas/PersonType"
           },
           "skjermet": {
+            "description": "Hvis personen er skjermet får vi ikke skattedata om personen. Dette kan for eksempel være en person med strengt fortrolig adresse.",
             "type": "boolean"
           },
           "skatteoppgjoersdato": {
@@ -376,7 +378,7 @@
           "personer",
           "beloep",
           "tekniskNavn",
-          "beskrivelse",
+          "visningstekst",
           "kilde"
         ],
         "type": "object",
@@ -391,10 +393,10 @@
             "type": "integer",
             "format": "int64"
           },
-          "navn": {
+          "tekniskNavn": {
             "type": "string"
           },
-          "beskrivelse": {
+          "visningstekst": {
             "type": "string"
           },
           "kilde": {
@@ -430,21 +432,30 @@
         }
       },
       "Beregningsgruppe": {
-        "required": ["navn", "beskrivelse", "beloep", "type"],
+        "required": [
+          "tekniskNavn",
+          "visningstekst",
+          "beloep",
+          "operasjon",
+          "type"
+        ],
         "type": "object",
         "properties": {
-          "navn": {
+          "tekniskNavn": {
             "type": "string"
           },
-          "beskrivelse": {
+          "visningstekst": {
             "type": "string"
           },
           "beloep": {
             "type": "integer",
             "format": "int64"
           },
+          "operasjon": {
+            "$ref": "#/components/schemas/Operasjonstype"
+          },
           "type": {
-            "$ref": "#/components/schemas/GruppeType"
+            "$ref": "#/components/schemas/Type"
           },
           "beregningsgrunnlag": {
             "type": "array",
@@ -461,21 +472,21 @@
         }
       },
       "Beregningsgrunnlag": {
-        "required": ["navn", "beskrivelse", "beloep", "type"],
+        "required": ["tekniskNavn", "visningstekst", "beloep", "operasjon"],
         "type": "object",
         "properties": {
-          "navn": {
+          "tekniskNavn": {
             "type": "string"
           },
-          "beskrivelse": {
+          "visningstekst": {
             "type": "string"
           },
           "beloep": {
             "type": "integer",
             "format": "int64"
           },
-          "type": {
-            "$ref": "#/components/schemas/GruppeType"
+          "operasjon": {
+            "$ref": "#/components/schemas/Operasjonstype"
           },
           "beregningsposter": {
             "type": "array",
@@ -533,8 +544,8 @@
       },
       "EkstrapostVerdi": {
         "required": [
-          "beskrivelse",
-          "navn",
+          "tekniskNavn",
+          "visningstekst",
           "persontyper",
           "paakrevd",
           "kilde",
@@ -542,10 +553,10 @@
         ],
         "type": "object",
         "properties": {
-          "beskrivelse": {
+          "tekniskNavn": {
             "type": "string"
           },
-          "navn": {
+          "visningstekst": {
             "type": "string"
           },
           "persontyper": {
@@ -579,26 +590,33 @@
       },
       "Beregningspost": {
         "required": [
-          "navn",
-          "beskrivelse",
+          "tekniskNavn",
+          "visningstekst",
+          "operasjon",
           "beloep",
           "kanEndreBeskrivelse",
           "kilde",
-          "gyldig",
           "identifikator"
         ],
         "type": "object",
         "properties": {
-          "navn": {
+          "tekniskNavn": {
             "type": "string"
           },
-          "beskrivelse": {
+          "visningstekst": {
             "type": "string"
           },
           "begrunnelse": {
             "type": "string"
           },
+          "operasjon": {
+            "$ref": "#/components/schemas/Operasjonstype"
+          },
           "beloep": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "korrigertBeloep": {
             "type": "integer",
             "format": "int64"
           },
@@ -608,9 +626,6 @@
           "kanEndreBeskrivelse": {
             "type": "boolean"
           },
-          "gyldig": {
-            "type": "boolean"
-          },
           "identifikator": {
             "pattern": "^[0-9]{11}$",
             "type": "string"
@@ -618,13 +633,13 @@
         }
       },
       "EkstrapostRequest": {
-        "required": ["navn", "beloep"],
+        "required": ["tekniskNavn", "beloep"],
         "type": "object",
         "properties": {
-          "navn": {
+          "tekniskNavn": {
             "type": "string"
           },
-          "beskrivelse": {
+          "visningstekst": {
             "type": "string"
           },
           "beloep": {
@@ -634,13 +649,13 @@
         }
       },
       "ErstatningspostRequest": {
-        "required": ["navn", "beloep"],
+        "required": ["tekniskNavn", "beloep"],
         "type": "object",
         "properties": {
-          "navn": {
+          "tekniskNavn": {
             "type": "string"
           },
-          "beskrivelse": {
+          "visningstekst": {
             "type": "string"
           },
           "beloep": {
@@ -649,12 +664,17 @@
           }
         }
       },
-      "GruppeType": {
+      "Operasjonstype": {
         "type": "string",
         "enum": [
-          "INNTEKT",
-          "FRADRAG"
+          "ADDERE",
+          "SUBTRAHERE"
         ]
+      },
+      "Type": {
+        "description": "En beregningsgruppe kan inneholde enten beregningsgrunnlag eller beregningsposter. Ved type GRUNNLAG inneholder den beregningsgrunnlag, og beregningsposter er NULL. Ved type POSTER inneholder den beregningsposter, og beregningsgrunnlag er NULL.",
+        "type": "string",
+        "enum": ["GRUNNLAG", "POST"]
       },
       "Beregningstype": {
         "type": "string",
