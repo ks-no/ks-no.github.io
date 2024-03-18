@@ -48,7 +48,31 @@
             }
           }
         }
-      },
+      }
+    },
+    "/svarinn/v2/forsendelser" : {
+      "get" : {
+        "tags" : [ "SvarInn" ],
+        "summary" : "Henter metadata for opptil 200 nye forsendelser på mottakersystemet man er autentisert med. Dersom det ikke finnes noen nye forsendelser returneres tom liste.",
+        "operationId" : "hentNyeForsendelser",
+        "responses" : {
+          "default" : {
+            "description" : "default response",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/Forsendelse"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/svarinn/v2/forsendelser/{forsendelseId}/status" : {
       "patch" : {
         "tags" : [ "SvarInn" ],
         "summary" : "Markerer forsendelsen som mottatt, mottatt manuelt eller mottak feilet.",
@@ -75,28 +99,6 @@
             "description" : "default response",
             "content" : {
               "*/*" : { }
-            }
-          }
-        }
-      }
-    },
-    "/svarinn/v2/forsendelser" : {
-      "get" : {
-        "tags" : [ "SvarInn" ],
-        "summary" : "Henter metadata for opptil 200 nye forsendelser på mottakersystemet man er autentisert med. Dersom det ikke finnes noen nye forsendelser returneres tom liste.",
-        "operationId" : "hentNyeForsendelser",
-        "responses" : {
-          "default" : {
-            "description" : "default response",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "type" : "array",
-                  "items" : {
-                    "$ref" : "#/components/schemas/Forsendelse"
-                  }
-                }
-              }
             }
           }
         }
@@ -183,7 +185,7 @@
           },
           "storrelse" : {
             "type" : "integer",
-            "description" : "Filens størrelse, eller 0 om den ikke er satt",
+            "description" : "Filens størrelse",
             "format" : "int64",
             "example" : 15324
           },
@@ -198,7 +200,7 @@
         "description" : "Metadata for filene i forsendelsen"
       },
       "Forsendelse" : {
-        "required" : [ "filer", "id", "mottaker", "nedlastingslenke", "niva", "status", "tittel" ],
+        "required" : [ "filer", "id", "mottaker", "nedlastingslenke", "sikkerhetsniva", "tittel" ],
         "type" : "object",
         "properties" : {
           "id" : {
@@ -219,10 +221,10 @@
             "example" : "Søknad om skjenkebevilling"
           },
           "dato" : {
-            "type" : "integer",
-            "description" : "Tidspunkt når forsendelsen ble mottatt av SvarUt. Millisekunder etter epoch.",
-            "format" : "int64",
-            "example" : 1694782865669
+            "type" : "string",
+            "description" : "Tidspunkt når forsendelsen ble mottatt av SvarUt på ISO 8601-format",
+            "format" : "date-time",
+            "example" : "2024-01-16T18:39:11Z"
           },
           "metadataFraAvleverendeSystem" : {
             "$ref" : "#/components/schemas/MetadataFraAvleverendeSystem"
@@ -230,15 +232,11 @@
           "metadataForImport" : {
             "$ref" : "#/components/schemas/MetadataForImport"
           },
-          "status" : {
+          "sikkerhetsniva" : {
             "type" : "string",
-            "description" : "Forsendelsens nåværende status",
-            "example" : "Klar for mottak"
-          },
-          "niva" : {
-            "type" : "string",
-            "description" : "Sikkerhetsnivå for forsendelsen. 3 eller 4.",
-            "example" : "4"
+            "description" : "Sikkerhetsnivå for forsendelsen. Se https://eid.difi.no/nb/sikkerhet-og-personvern/ulike-sikkerhetsniva.",
+            "example" : "HOYESTE",
+            "enum" : [ "BETYDELIG", "HOYESTE" ]
           },
           "filer" : {
             "type" : "array",
@@ -290,6 +288,28 @@
           }
         }
       },
+      "JournalpostId" : {
+        "type" : "object",
+        "properties" : {
+          "systemId" : {
+            "type" : "string",
+            "description" : "Entydig identifikasjon av arkivenheten innenfor det arkivskapende organet",
+            "example" : "7044a03d-c459-4cbe-a4c3-371cc6751215"
+          },
+          "registreringsId" : {
+            "type" : "string",
+            "description" : "Entydig identifikasjon av registreringen innenfor arkivet",
+            "example" : "5f9e9bc8-ffc1-40c0-8fdd-3b5ee32a2e43"
+          },
+          "journalpostnummer" : {
+            "type" : "integer",
+            "description" : "Viser rekkefølgen på journalpostene innenfor saksmappen",
+            "format" : "int32",
+            "example" : 17
+          }
+        },
+        "description" : "Identifikator for eksisterende journalpost som den nye journalposten skal tilknyttes"
+      },
       "Lenke" : {
         "required" : [ "lenke", "tekst" ],
         "type" : "object",
@@ -312,21 +332,9 @@
         },
         "description" : "Lenker tilknyttet forsendelsen"
       },
-      "MetadataForImport" : {
+      "MappeId" : {
         "type" : "object",
         "properties" : {
-          "sakssekvensnummer" : {
-            "type" : "integer",
-            "description" : "Viser rekkefølgen når saksmappen ble opprettet innenfor året",
-            "format" : "int64",
-            "example" : 648677
-          },
-          "saksaar" : {
-            "type" : "integer",
-            "description" : "Viser året saksmappen ble opprettet",
-            "format" : "int32",
-            "example" : 2005
-          },
           "mappeId" : {
             "type" : "string",
             "description" : "Entydig identifikasjon av mappen innenfor det arkivet mappen tilhører",
@@ -334,13 +342,32 @@
           },
           "systemId" : {
             "type" : "string",
-            "description" : "Entydig identifikasjon av arkivenheten innenfor det arkivskapende organet",
-            "example" : "7044a03d-c459-4cbe-a4c3-371cc6751215"
+            "description" : "Globalt unik identifikasjon av arkivenheten",
+            "example" : "fc051651-b853-4b4d-a7cd-fb2beea54356"
           },
-          "registreringsId" : {
-            "type" : "string",
-            "description" : "Entydig identifikasjon av registreringen innenfor arkivet",
-            "example" : "5f9e9bc8-ffc1-40c0-8fdd-3b5ee32a2e43"
+          "saksaar" : {
+            "type" : "integer",
+            "description" : "Viser året saksmappen ble opprettet",
+            "format" : "int32",
+            "example" : 2005
+          },
+          "sakssekvensnummer" : {
+            "type" : "integer",
+            "description" : "Viser rekkefølgen når saksmappen ble opprettet innenfor året",
+            "format" : "int64",
+            "example" : 648677
+          }
+        },
+        "description" : "Identifikator for eksisterende mappe som den nye journalposten skal tilhøre"
+      },
+      "MetadataForImport" : {
+        "type" : "object",
+        "properties" : {
+          "mappeId" : {
+            "$ref" : "#/components/schemas/MappeId"
+          },
+          "journalpostId" : {
+            "$ref" : "#/components/schemas/JournalpostId"
           },
           "journalposttype" : {
             "type" : "string",
@@ -353,10 +380,10 @@
             "example" : "J"
           },
           "dokumentetsDato" : {
-            "type" : "integer",
-            "description" : "Dato som er påført selve dokumentet. Millisekunder etter epoch.",
-            "format" : "int64",
-            "example" : 1104879600000
+            "type" : "string",
+            "description" : "Dato som er påført selve dokumentet på ISO 8601-format",
+            "format" : "date-time",
+            "example" : "2024-01-16T18:39:11Z"
           },
           "tittel" : {
             "type" : "string",
@@ -410,16 +437,16 @@
             "example" : "A"
           },
           "journaldato" : {
-            "type" : "integer",
-            "description" : "Datoen journalposten er opprettet/arkivert. Millisekunder etter epoch.",
-            "format" : "int64",
-            "example" : 1694781172651
+            "type" : "string",
+            "description" : "Datoen journalposten er opprettet/arkivert på ISO 8601-format",
+            "format" : "date-time",
+            "example" : "2024-01-16T18:39:11Z"
           },
           "dokumentetsDato" : {
-            "type" : "integer",
-            "description" : "Dato som er påført selve dokumentet. Millisekunder etter epoch.",
-            "format" : "int64",
-            "example" : 1694642400000
+            "type" : "string",
+            "description" : "Dato som er påført selve dokumentet på ISO 8601-format",
+            "format" : "date-time",
+            "example" : "2024-01-16T18:39:11Z"
           },
           "tittel" : {
             "type" : "string",
