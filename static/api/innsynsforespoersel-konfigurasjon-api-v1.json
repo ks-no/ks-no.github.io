@@ -22,6 +22,42 @@
     "description" : "API for konfigurasjon av oppsett for innsynsforespørsler"
   } ],
   "paths" : {
+    "/barnevern/konfigurasjon/api/v1/{fiksOrgId}/integrasjon/{integrasjonId}/passord" : {
+      "post" : {
+        "tags" : [ "BarnevernKonfigurasjonController" ],
+        "summary" : "Kan endre på integrasjonspassord",
+        "operationId" : "endreIntegrasjonPassord",
+        "parameters" : [ {
+          "name" : "fiksOrgId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        }, {
+          "name" : "integrasjonId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Det nye passordet",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/BarnevernIntegrasjon"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/barnevern/konfigurasjon/api/v1/{fiksOrgId}/status" : {
       "get" : {
         "tags" : [ "BarnevernKonfigurasjonController" ],
@@ -485,49 +521,52 @@
   },
   "components" : {
     "schemas" : {
-      "Integrasjon" : {
-        "required" : [ "id" ],
+      "BarnevernIntegrasjon" : {
+        "required" : [ "integrasjonId", "integrasjonPassord" ],
         "type" : "object",
         "properties" : {
-          "id" : {
+          "integrasjonId" : {
             "type" : "string",
-            "description" : "IntegrasjonsID",
+            "description" : "Id til integrasjon",
             "format" : "uuid"
           },
-          "orgnr" : {
+          "integrasjonPassord" : {
             "type" : "string",
-            "description" : "Organisasjonsnr som er koblet til integrasjonen"
-          },
-          "navn" : {
-            "type" : "string",
-            "description" : "Navn på integrasjonen"
-          },
-          "beskrivelse" : {
-            "type" : "string",
-            "description" : "Beskrivelse på integrasjonen"
-          },
-          "opprettet" : {
-            "type" : "string",
-            "description" : "Dato/tid for når integrasjon ble opprettet",
-            "format" : "date-time"
-          },
-          "gyldig" : {
-            "type" : "boolean",
-            "description" : "Angir om integrasjon har de nødvendige egenskapene for å kunne brukes i en kobling"
-          },
-          "stats" : {
-            "type" : "array",
-            "items" : {
-              "$ref" : "#/components/schemas/Stat"
-            }
+            "description" : "Passord til integrasjon"
           }
-        }
+        },
+        "description" : "Integrasjon som brukes for å konfigurere protokollsystemet"
       },
       "OpprettInnsynIntegrasjonResponse" : {
         "type" : "object",
         "properties" : {
           "innsynIntegrasjon" : {
-            "$ref" : "#/components/schemas/Integrasjon"
+            "$ref" : "#/components/schemas/BarnevernIntegrasjon"
+          }
+        }
+      },
+      "BarnevernProtokollSystem" : {
+        "required" : [ "integrasjonId" ],
+        "type" : "object",
+        "properties" : {
+          "integrasjonId" : {
+            "type" : "string",
+            "description" : "Id til integrasjon",
+            "format" : "uuid"
+          },
+          "systemId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "kontoId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "systemGyldig" : {
+            "type" : "boolean"
+          },
+          "kontoGyldig" : {
+            "type" : "boolean"
           }
         }
       },
@@ -545,26 +584,6 @@
           }
         }
       },
-      "ProtokollSystem" : {
-        "required" : [ "gyldig", "systemId", "systemNavn" ],
-        "type" : "object",
-        "properties" : {
-          "systemId" : {
-            "type" : "string",
-            "description" : "ID til protokollsystemet",
-            "format" : "uuid"
-          },
-          "systemNavn" : {
-            "type" : "string",
-            "description" : "Navn til protokollsystemet"
-          },
-          "gyldig" : {
-            "type" : "boolean",
-            "description" : "Angir om systemet har de nødvendige egenskapene til å kunne brukes i en kobling"
-          }
-        },
-        "description" : "Detaljer om protokollsystemet som kontoen er knyttet til"
-      },
       "Status" : {
         "type" : "object",
         "properties" : {
@@ -576,7 +595,7 @@
             "$ref" : "#/components/schemas/InnsynIntegrasjon"
           },
           "protokollSystem" : {
-            "$ref" : "#/components/schemas/ProtokollSystem"
+            "$ref" : "#/components/schemas/BarnevernProtokollSystem"
           }
         }
       },
@@ -595,7 +614,7 @@
         "type" : "object",
         "properties" : {
           "protokollIntegrasjon" : {
-            "$ref" : "#/components/schemas/Integrasjon"
+            "$ref" : "#/components/schemas/BarnevernIntegrasjon"
           },
           "systemId" : {
             "type" : "string",
@@ -784,20 +803,6 @@
               "$ref" : "#/components/schemas/Link"
             }
           },
-          "stringHeaders" : {
-            "type" : "object",
-            "properties" : {
-              "empty" : {
-                "type" : "boolean"
-              }
-            },
-            "additionalProperties" : {
-              "type" : "array",
-              "items" : {
-                "type" : "string"
-              }
-            }
-          },
           "statusInfo" : {
             "$ref" : "#/components/schemas/StatusType"
           },
@@ -813,6 +818,20 @@
           },
           "entityTag" : {
             "$ref" : "#/components/schemas/EntityTag"
+          },
+          "stringHeaders" : {
+            "type" : "object",
+            "properties" : {
+              "empty" : {
+                "type" : "boolean"
+              }
+            },
+            "additionalProperties" : {
+              "type" : "array",
+              "items" : {
+                "type" : "string"
+              }
+            }
           },
           "closed" : {
             "type" : "boolean"
@@ -986,6 +1005,44 @@
           }
         }
       },
+      "Integrasjon" : {
+        "required" : [ "id" ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string",
+            "description" : "IntegrasjonsID",
+            "format" : "uuid"
+          },
+          "orgnr" : {
+            "type" : "string",
+            "description" : "Organisasjonsnr som er koblet til integrasjonen"
+          },
+          "navn" : {
+            "type" : "string",
+            "description" : "Navn på integrasjonen"
+          },
+          "beskrivelse" : {
+            "type" : "string",
+            "description" : "Beskrivelse på integrasjonen"
+          },
+          "opprettet" : {
+            "type" : "string",
+            "description" : "Dato/tid for når integrasjon ble opprettet",
+            "format" : "date-time"
+          },
+          "gyldig" : {
+            "type" : "boolean",
+            "description" : "Angir om integrasjon har de nødvendige egenskapene for å kunne brukes i en kobling"
+          },
+          "stats" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Stat"
+            }
+          }
+        }
+      },
       "MottakerKonto" : {
         "required" : [ "konto", "system" ],
         "type" : "object",
@@ -1018,6 +1075,26 @@
           }
         },
         "description" : "Detaljer om selve protokollkontoen"
+      },
+      "ProtokollSystem" : {
+        "required" : [ "gyldig", "systemId", "systemNavn" ],
+        "type" : "object",
+        "properties" : {
+          "systemId" : {
+            "type" : "string",
+            "description" : "ID til protokollsystemet",
+            "format" : "uuid"
+          },
+          "systemNavn" : {
+            "type" : "string",
+            "description" : "Navn til protokollsystemet"
+          },
+          "gyldig" : {
+            "type" : "boolean",
+            "description" : "Angir om systemet har de nødvendige egenskapene til å kunne brukes i en kobling"
+          }
+        },
+        "description" : "Detaljer om protokollsystemet som kontoen er knyttet til"
       },
       "Stat" : {
         "type" : "object",
