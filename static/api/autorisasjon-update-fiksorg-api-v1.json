@@ -1,0 +1,188 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "KS Fiks: Autorisasjon update service for FiksOrg",
+    "description": "KS Fiks: Autorisasjon update service",
+    "contact": {
+      "name": "Fiks brukerstøtte",
+      "url": "https://ks-no.github.io/",
+      "email": "fiks@ks.no"
+    },
+    "version": "v1"
+  },
+  "servers": [
+    {
+      "url": "http://autorisasjon-update-service:8080",
+      "description": "Cluster internal service URI"
+    }
+  ],
+  "security": [
+    {
+      "bearerAuth": []
+    }
+  ],
+  "tags": [
+    {
+      "name": "FiksOrg",
+      "description": "API for administrasjon av FiksOrg"
+    }
+  ],
+  "paths": {
+    "/autorisasjon-update/api/v1/fiksorgs/{fiksOrg}/aktorer/{aktor}": {
+      "patch": {
+        "parameters": [
+          {
+            "name": "fiksOrg",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "aktor",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "tags": [
+          "FiksOrg"
+        ],
+        "description": "Oppdaterer aktor",
+        "summary": "Oppdaterer aktor",
+        "operationId": "oppdaterAktor",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OppdaterAktorRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Aktor oppdatert",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Aktor"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Feil i inputdata",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Ugyldig tilgang",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    },
+    "schemas": {
+      "OppdaterAktorRequest": {
+        "type": "object",
+        "properties": {
+          "aktiv": {
+            "type": "boolean",
+            "description": "Brukes for å aktivere / deaktivere bruker. Deaktivert bruker vil miste alle tilganger"
+          }
+        },
+        "required": [
+          "aktiv"
+        ]
+      },
+      "Aktor": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unik identifikator for aktor"
+          },
+          "aktiv": {
+            "type": "boolean",
+            "description": "Brukes for å aktivere / deaktivere bruker. Deaktivert bruker vil miste alle tilganger"
+          }
+        },
+        "required": [
+          "aktiv",
+          "id"
+        ]
+      },
+      "ErrorMessage": {
+        "type": "object",
+        "description": "Feilmelding fra Fiks-plattformen",
+        "externalDocs": {
+          "description": "Beskrivelse av feilmeldinger",
+          "url": "https://ks-no.github.io/fiks-plattform/integrasjoner/#feilmeldinger"
+        },
+        "properties": {
+          "timestamp": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "status": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "error": {
+            "type": "string"
+          },
+          "errorId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "path": {
+            "type": "string"
+          },
+          "originalPath": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          },
+          "errorCode": {
+            "type": "string"
+          },
+          "errorJson": {
+            "type": "string"
+          }
+        },
+        "example": {
+          "message": "Mangler tilgang",
+          "errorId": "ee2ed64d-de8b-45f9-b9c6-3363d662d93b",
+          "status": 403
+        }
+      }
+    }
+  }
+}
