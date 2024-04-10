@@ -24,6 +24,7 @@
     "/innsyn-stats/api/v1/stats" : {
       "get" : {
         "tags" : [ "InnsynStats" ],
+        "summary" : "Henter statistikk for alle integrasjoner og fiksorganisasjoner. Data oppfriskes hver halvtime.",
         "operationId" : "getAllStats",
         "responses" : {
           "default" : {
@@ -42,6 +43,7 @@
     "/innsyn-stats/api/v1/{fiksOrgId}/stats" : {
       "get" : {
         "tags" : [ "InnsynStats" ],
+        "summary" : "Henter statistikk for meldinger som eies av fiksorganisasjon. Returnerer en entry per integrasjon-meldingstype kombinasjon. Kan begrense resultat til en enkelt integrasjon vha integrasjonId-query-param. Data oppfriskes hver halvtime.",
         "operationId" : "getStats",
         "parameters" : [ {
           "name" : "fiksOrgId",
@@ -66,6 +68,41 @@
               "application/json" : {
                 "schema" : {
                   "$ref" : "#/components/schemas/InnsynOrganisasjonStats"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/innsyn-stats/api/v1/{fiksOrgId}/stats/meldinger" : {
+      "get" : {
+        "tags" : [ "InnsynStats" ],
+        "summary" : "Henter statistikk for meldinger som eies av fiksorganisasjon. Returnerer en entry per integrasjon. Date er real-time data.",
+        "operationId" : "getStatsForMeldinger",
+        "parameters" : [ {
+          "name" : "fiksOrgId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        }, {
+          "name" : "integrasjonId",
+          "in" : "query",
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "default" : {
+            "description" : "default response",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/InnsynIntegrasjonOrganisasjonStats"
                 }
               }
             }
@@ -138,6 +175,57 @@
             "type" : "array",
             "items" : {
               "$ref" : "#/components/schemas/InnsynDocCountStat"
+            }
+          }
+        },
+        "description" : "Stats for eide meldinger for en organisasjon"
+      },
+      "InnsynIntegrasjonDocCountStat" : {
+        "required" : [ "fiksOrgId", "integrasjon", "meldinger" ],
+        "type" : "object",
+        "properties" : {
+          "fiksOrgId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "integrasjon" : {
+            "$ref" : "#/components/schemas/Integrasjon"
+          },
+          "meldinger" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/InnsynIntegrasjonMeldingDocCountStat"
+            }
+          }
+        },
+        "description" : "Stats for en kombinasjon av Fiks organisasjon id, integrasjon og meldingstype"
+      },
+      "InnsynIntegrasjonMeldingDocCountStat" : {
+        "required" : [ "docCount", "harIntegrasjonTilgang", "meldingstype" ],
+        "type" : "object",
+        "properties" : {
+          "meldingstype" : {
+            "type" : "string",
+            "enum" : [ "fakturaV1", "mappeV1", "journalpostV1", "barnevernmappeV1", "barnevernjournalpostV1", "byggesakV1", "innsendtskjemaV1", "skjemakladdV1", "matrikkelenhetV1", "kommunaltjenesteV1", "forsendelseV1", "forsendelseV2" ]
+          },
+          "docCount" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "harIntegrasjonTilgang" : {
+            "type" : "boolean"
+          }
+        },
+        "description" : "Stats for en kombinasjon av Fiks organisasjon id, integrasjon og meldingstype"
+      },
+      "InnsynIntegrasjonOrganisasjonStats" : {
+        "required" : [ "eierStats" ],
+        "type" : "object",
+        "properties" : {
+          "eierStats" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/InnsynIntegrasjonDocCountStat"
             }
           }
         },
