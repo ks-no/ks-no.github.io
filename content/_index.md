@@ -16,7 +16,7 @@ Det er utarbeidet et dokument som går igjennom fiks-plattformen. Dette kan [las
 Brukerdokumentasjon finner en [her](https://ksdif.no/tjenestene/svarut-tjenesten/)
 
 #### Feil
-Hvis du finner feil eller noe som ikke er beskrevet godt nok, setter vi pris på om du sender en e-post til [fiks-utvikling@ks.no](mailto:fiks-utvikling@ks.no) eller lager en pull request på https://github.com/ks-no/ks-no.github.io.
+Hvis du finner feil eller noe som ikke er beskrevet godt nok, setter vi pris på om du sender en e-post til [fiks-utvikling@ks.no](mailto:fiks-utvikling@ks.no) .
 
 #### Abonner på dokumentasjonsendringer
 For å abonnere på endringer i dokumentasjonen kan du benytte vår <a rel="alternate" type="application/rss+xml" href="index.xml">RSS-feed</a>.
