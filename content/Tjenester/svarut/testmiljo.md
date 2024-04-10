@@ -26,6 +26,8 @@ eBoks: http://demo2-www.e-boks.no/default.aspx
 
 For å sette at bruker skal bruke digital postkasse må dette gjøres i Kontakt og reservasjonsregisteret ver1 og ver2: https://brukerprofil-ver1.difi.no/minprofil/ og https://brukerprofil-ver2.difi.no/minprofil/
 
+For å sette opp svarut-konto med Digital Post til innbygger, så må en bruke et organsisasjonsnummer som er satt opp riktig hos Digdir og Altinn. I testmiljø kan man bruke KS sitt organisasjonsnummer, 971 032 146.
+
 ## Minid innlogging
 Alle testbrukere dere får fra oss har minid innlogging. Her anbefaler vi at dere setter tlfnr og epost slik at brukeren kan låses opp om noen skulle sperre den med feilede innloggingsforsøk.
 
