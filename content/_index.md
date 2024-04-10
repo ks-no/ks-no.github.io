@@ -13,7 +13,7 @@ Det er utarbeidet et dokument som går igjennom fiks-plattformen. Dette kan [las
 
 #### Brukerdokumentasjon 
 
-Brukerdokumentasjon finner en [her](https://portal.fiks.ks.no/ks-svarut-m-m/)
+Brukerdokumentasjon finner en [her](https://ksdif.no/tjenestene/svarut-tjenesten/)
 
 #### Feil
 Hvis du finner feil eller noe som ikke er beskrevet godt nok, setter vi pris på om du sender en e-post til [fiks-utvikling@ks.no](mailto:fiks-utvikling@ks.no) eller lager en pull request på https://github.com/ks-no/ks-no.github.io.
