@@ -460,7 +460,7 @@
         }
       }
     },
-    "/edialog/api/v1/mottakere/{mottakerId}/maler/{malId}" : {
+    "/edialog/api/v1/mottakere/{mottakerId}/maler/{malId}/tilknytning" : {
       "put" : {
         "tags" : [ "Tilknytning" ],
         "summary" : "Knytter sammen mottaker og mal",
@@ -497,7 +497,7 @@
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/Tilknytning"
+                  "$ref" : "#/components/schemas/MottakerMedTilknytning"
                 }
               }
             }
@@ -536,12 +536,73 @@
           }
         } ],
         "responses" : {
-          "200" : {
-            "description" : "Mottaker og mal som tilknytning ble fjernet for",
+          "204" : {
+            "description" : "Mottaker og mal som tilknytning ble fjernet for"
+          },
+          "default" : {
+            "description" : "Feilmelding",
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/SlettetTilknytning"
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/edialog/api/v1/tilknytninger/{tilknytningId}" : {
+      "delete" : {
+        "tags" : [ "Tilknytning" ],
+        "summary" : "Fjerner en tilknytning mellom mottaker og mal, og sletter malen",
+        "operationId" : "fjernTilknytningOgMal",
+        "parameters" : [ {
+          "name" : "tilknytningId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "204" : {
+            "description" : "Mottaker og mal som tilknytning ble fjernet for"
+          },
+          "default" : {
+            "description" : "Feilmelding",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/edialog/api/v1/mottakere/{mottakerId}/tilknytninger" : {
+      "get" : {
+        "tags" : [ "Tilknytning" ],
+        "summary" : "Henter tilknytninger for oppgitt mottaker",
+        "operationId" : "hentTilknytninger",
+        "parameters" : [ {
+          "name" : "mottakerId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "pattern" : "^[a-z]{4}$",
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Mottaker med tilknytninger",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/MottakerMedTilknytninger"
                 }
               }
             }
@@ -557,13 +618,11 @@
             }
           }
         }
-      }
-    },
-    "/edialog/api/v1/mottakere/{mottakerId}/maler" : {
-      "get" : {
+      },
+      "post" : {
         "tags" : [ "Tilknytning" ],
-        "summary" : "Henter maler som er tilknyttet oppgitt mottaker",
-        "operationId" : "hentTilknytninger",
+        "summary" : "Oppretter en mal og knytter denne til oppgitt mottaker",
+        "operationId" : "opprettMalOgTilknytning",
         "parameters" : [ {
           "name" : "mottakerId",
           "in" : "path",
@@ -573,13 +632,22 @@
             "type" : "string"
           }
         } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/OpprettMalOgTilknytning"
+              }
+            }
+          }
+        },
         "responses" : {
           "200" : {
-            "description" : "Mottaker med maler",
+            "description" : "Mottaker og mal som ble knyttet sammen",
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/MottakerMedTilknytninger"
+                  "$ref" : "#/components/schemas/MottakerMedTilknytning"
                 }
               }
             }
@@ -865,21 +933,36 @@
           }
         }
       },
-      "SlettetTilknytning" : {
-        "required" : [ "mal", "mottaker", "slettet" ],
+      "MottakerMedTilknytninger" : {
+        "required" : [ "mottaker", "tilknytninger" ],
+        "type" : "object",
+        "properties" : {
+          "mottaker" : {
+            "$ref" : "#/components/schemas/TilknyttetMottaker"
+          },
+          "tilknytninger" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Tilknytning"
+            }
+          }
+        }
+      },
+      "Tilknytning" : {
+        "required" : [ "id", "navn" ],
         "type" : "object",
         "properties" : {
           "id" : {
             "type" : "string"
           },
-          "mottaker" : {
-            "$ref" : "#/components/schemas/TilknyttetMottaker"
+          "navn" : {
+            "type" : "string"
+          },
+          "beskrivelse" : {
+            "type" : "string"
           },
           "mal" : {
             "$ref" : "#/components/schemas/TilknyttetMal"
-          },
-          "slettet" : {
-            "type" : "boolean"
           }
         }
       },
@@ -907,33 +990,25 @@
           }
         }
       },
-      "MottakerMedTilknytninger" : {
-        "required" : [ "mottaker", "tilknytninger" ],
+      "MottakerMedTilknytning" : {
+        "required" : [ "mottaker", "tilknytning" ],
         "type" : "object",
         "properties" : {
           "mottaker" : {
             "$ref" : "#/components/schemas/TilknyttetMottaker"
           },
-          "tilknytninger" : {
-            "type" : "array",
-            "items" : {
-              "$ref" : "#/components/schemas/Tilknytning"
-            }
+          "tilknytning" : {
+            "$ref" : "#/components/schemas/Tilknytning"
           }
         }
       },
-      "Tilknytning" : {
-        "required" : [ "mal", "mottaker", "navn", "oppdatert" ],
+      "OpprettMalOgTilknytning" : {
+        "required" : [ "type" ],
         "type" : "object",
         "properties" : {
-          "id" : {
-            "type" : "string"
-          },
-          "mottaker" : {
-            "$ref" : "#/components/schemas/TilknyttetMottaker"
-          },
-          "mal" : {
-            "$ref" : "#/components/schemas/TilknyttetMal"
+          "type" : {
+            "type" : "string",
+            "enum" : [ "STANDARD", "EGENDEFINERT" ]
           },
           "navn" : {
             "type" : "string"
@@ -941,8 +1016,17 @@
           "beskrivelse" : {
             "type" : "string"
           },
-          "oppdatert" : {
-            "type" : "boolean"
+          "info" : {
+            "type" : "string",
+            "enum" : [ "VISES", "SKJULT" ]
+          },
+          "sensitiv" : {
+            "type" : "string",
+            "enum" : [ "JA", "NEI", "VELGES" ]
+          },
+          "avsender" : {
+            "type" : "string",
+            "enum" : [ "PERSON", "ORGANISASJON", "VELGES" ]
           }
         }
       },
