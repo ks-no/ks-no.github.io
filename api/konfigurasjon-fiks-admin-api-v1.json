@@ -1,0 +1,346 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "KS Fiks: Fiks administrator service V1",
+    "description": "Fiks Konfigurasjon",
+    "contact": {
+      "name": "Fiks-brukerstøtte",
+      "url": "https://ks-no.github.io/",
+      "email": "fiks@ks.no"
+    },
+    "version": "v1"
+  },
+  "servers": [
+    {
+      "url": "https://api.fiks.ks.no",
+      "description": "KS Fiks API host"
+    }
+  ],
+  "security": [
+    {
+      "bearerAuth": []
+    }
+  ],
+  "tags": [
+    {
+      "name": "FiksAdministratorerV1",
+      "description": "API for administrasjon av Fiks administratorer"
+    }
+  ],
+  "paths": {
+    "/konfigurasjon/api/v1/administratorer": {
+      "get": {
+        "tags": [
+          "FiksAdministratorerV1"
+        ],
+        "summary": "Henter Fiks administratorer",
+        "operationId": "hentFiksAdministratorer",
+        "responses": {
+          "200": {
+            "description": "Fiks Administratorer",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FiksAdministratorer"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/IkkeAutentisert"
+          },
+          "403": {
+            "$ref": "#/components/responses/ManglerTilgang"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "FiksAdministratorerV1"
+        ],
+        "operationId": "sokEtterBruker",
+        "description": "Søk etter bruker som kan legges inn som fiks administrator",
+        "summary": "Søk etter bruker som kan legges inn som fiks administrator",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SokEtterBruker"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Person som kan legges inn som fiks administrator",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PersonV2"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/ugyldigParameterverdi"
+          },
+          "401": {
+            "$ref": "#/components/responses/IkkeAutentisert"
+          },
+          "403": {
+            "$ref": "#/components/responses/ManglerTilgang"
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "FiksAdministratorerV1"
+        ],
+        "operationId": "giBrukerFiksAdminTilgang",
+        "description": "Gi bruker tilgang som Fiks administrator",
+        "summary": "Gi bruker tilgang som Fiks administrator",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GiBrukerFiksAdminTilgang"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Person lagt til som Fiks Administrator"
+          },
+          "400": {
+            "$ref": "#/components/responses/ugyldigParameterverdi"
+          },
+          "401": {
+            "$ref": "#/components/responses/IkkeAutentisert"
+          },
+          "403": {
+            "$ref": "#/components/responses/ManglerTilgang"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "FiksAdministratorerV1"
+        ],
+        "operationId": "fjernBrukerFraFiksAdminTilgang",
+        "description": "Fjern tilgang til bruker som Fiks administrator",
+        "summary": "Fjern tilgang til bruker som Fiks administrator",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "aktor": {
+                    "type": "string",
+                    "minLength": 11,
+                    "maxLength": 11,
+                    "example": "28837695882"
+                  }
+                },
+                "required": [
+                  "aktor"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Oppdatering ok"
+          },
+          "400": {
+            "$ref": "#/components/responses/ugyldigParameterverdi"
+          },
+          "401": {
+            "$ref": "#/components/responses/IkkeAutentisert"
+          },
+          "403": {
+            "$ref": "#/components/responses/ManglerTilgang"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    },
+    "responses": {
+      "ugyldigParameterverdi": {
+        "description": "Ugyldig input",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorMessage"
+            }
+          }
+        }
+      },
+      "IkkeAutentisert": {
+        "description": "Ikke autentisert",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorMessage"
+            },
+            "example": {
+              "message": "Ikke autentisert",
+              "status": 401
+            }
+          }
+        }
+      },
+      "ManglerTilgang": {
+        "description": "Ikke autorisert",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorMessage"
+            },
+            "example": {
+              "message": "Ikke autorisert",
+              "status": 403
+            }
+          }
+        }
+      }
+    },
+    "schemas": {
+      "PersonV2": {
+        "required": [
+          "fiksOrg",
+          "fnr",
+          "navn"
+        ],
+        "type": "object",
+        "properties": {
+          "fiksOrg": {
+            "type": "string",
+            "description": "Personens tilknyttede fiksOrg",
+            "format": "uuid"
+          },
+          "fnr": {
+            "pattern": "^[0-9]{11}$",
+            "type": "string",
+            "description": "Fødselsnummeret til personen."
+          },
+          "navn": {
+            "type": "string",
+            "description": "Personens fulle navn."
+          }
+        },
+        "description": "En person tilknyttet en Fiks organisasjon"
+      },
+      "SokEtterBruker": {
+        "required": [
+          "fnr"
+        ],
+        "type": "object",
+        "properties": {
+          "fnr": {
+            "pattern": "^[0-9]{11}$",
+            "type": "string",
+            "description": "Fødselsnummeret til personen."
+          }
+        },
+        "description": "Sok etter person som kan legges til som fiks administrator"
+      },
+      "FiksAdministratorer": {
+        "required": [
+          "fiksAdministratorer"
+        ],
+        "type": "object",
+        "properties": {
+          "fiksAdministratorer": {
+            "type": "array",
+            "description": "Personer som er Fiks administratorer",
+            "items": {
+              "$ref": "#/components/schemas/PersonV2"
+            }
+          }
+        },
+        "description": "Liste over alle personer som er administrator på Fiks platformen"
+      },
+      "GiBrukerFiksAdminTilgang": {
+        "required": [
+          "fnr",
+          "navn"
+        ],
+        "type": "object",
+        "properties": {
+          "fnr": {
+            "pattern": "^[0-9]{11}$",
+            "type": "string",
+            "description": "Fødselsnummeret til personen."
+          },
+          "navn": {
+            "type": "string",
+            "description": "Personens fulle navn."
+          }
+        },
+        "description": "Person som skal få tilgang som Fiks administrator"
+      },
+      "Feil": {
+        "$ref": "#/components/schemas/ErrorMessage"
+      },
+      "ErrorMessage": {
+        "type": "object",
+        "description": "Feilmelding fra Fiks-plattformen",
+        "externalDocs": {
+          "description": "Beskrivelse av feilmeldinger",
+          "url": "https://ks-no.github.io/fiks-plattform/integrasjoner/#feilmeldinger"
+        },
+        "properties": {
+          "timestamp": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "status": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "error": {
+            "type": "string"
+          },
+          "errorId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "path": {
+            "type": "string"
+          },
+          "originalPath": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          },
+          "errorCode": {
+            "type": "string"
+          },
+          "errorJson": {
+            "type": "string"
+          }
+        },
+        "example": {
+          "message": "Mangler tilgang",
+          "errorId": "ee2ed64d-de8b-45f9-b9c6-3363d662d93b",
+          "status": 403
+        }
+      }
+    }
+  }
+}
