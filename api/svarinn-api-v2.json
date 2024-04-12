@@ -75,7 +75,7 @@
     "/svarinn/v2/forsendelser/{forsendelseId}/status" : {
       "patch" : {
         "tags" : [ "SvarInn" ],
-        "summary" : "Markerer forsendelsen som mottatt, mottatt manuelt eller mottak feilet.",
+        "summary" : "Oppdaterer status for forsendelsen",
         "operationId" : "oppdaterStatus",
         "parameters" : [ {
           "name" : "forsendelseId",
@@ -108,37 +108,11 @@
   "components" : {
     "schemas" : {
       "Avsender" : {
+        "required" : [ "postadresse" ],
         "type" : "object",
         "properties" : {
-          "navn" : {
-            "type" : "string",
-            "description" : "Navn",
-            "example" : "Storevik kommune"
-          },
-          "adresselinje1" : {
-            "type" : "string",
-            "description" : "Første adresselinje",
-            "example" : "Digitaliseringsetaten"
-          },
-          "adresselinje2" : {
-            "type" : "string",
-            "description" : "Andre adresselinje",
-            "example" : "Utviklingsavdelingen"
-          },
-          "adresselinje3" : {
-            "type" : "string",
-            "description" : "Tredje adresselinje",
-            "example" : "Postboks 123"
-          },
-          "postnummer" : {
-            "type" : "string",
-            "description" : "Postnummer",
-            "example" : "0000"
-          },
-          "poststed" : {
-            "type" : "string",
-            "description" : "Poststed",
-            "example" : "Storevik"
+          "postadresse" : {
+            "$ref" : "#/components/schemas/Postadresse"
           }
         },
         "description" : "Informasjon om forsendelsens avsender"
@@ -197,7 +171,7 @@
             }
           }
         },
-        "description" : "Metadata for filene i forsendelsen"
+        "description" : "Metadata for fil i forsendelsen"
       },
       "Forsendelse" : {
         "required" : [ "filer", "id", "mottaker", "nedlastingslenke", "sikkerhetsniva", "tittel" ],
@@ -234,9 +208,13 @@
           },
           "sikkerhetsniva" : {
             "type" : "string",
-            "description" : "Sikkerhetsnivå for forsendelsen. Se https://eid.difi.no/nb/sikkerhet-og-personvern/ulike-sikkerhetsniva.",
-            "example" : "HOYESTE",
+            "description" : "Sikkerhetsnivå for forsendelsen. For mer informasjon, se https://eid.difi.no/nb/sikkerhet-og-personvern/ulike-sikkerhetsniva.",
             "enum" : [ "BETYDELIG", "HOYESTE" ]
+          },
+          "taushetsbelagtPost" : {
+            "type" : "boolean",
+            "description" : "Er forsendelsen markert som taushetsbelagt? For mer informasjon, se https://samarbeid.digdir.no/altinn/paminnelse-til-virksomheter-som-sender-og-mottar-taushetsbelagt-post/1881.",
+            "example" : true
           },
           "filer" : {
             "type" : "array",
@@ -280,13 +258,42 @@
             "type" : "string",
             "description" : "Navn på systemet som sendte forsendelsen",
             "example" : "EDIALOG"
-          },
-          "taushetsbelagtPost" : {
-            "type" : "boolean",
-            "description" : "Er forsendelsen markert som taushetsbelagt?",
-            "example" : true
           }
         }
+      },
+      "JournalpostId" : {
+        "type" : "object",
+        "properties" : {
+          "systemId" : {
+            "type" : "string",
+            "description" : "Entydig identifikasjon av arkivenheten innenfor det arkivskapende organet",
+            "example" : "7044a03d-c459-4cbe-a4c3-371cc6751215"
+          },
+          "registreringsId" : {
+            "type" : "string",
+            "description" : "Entydig identifikasjon av registreringen innenfor arkivet",
+            "example" : "5f9e9bc8-ffc1-40c0-8fdd-3b5ee32a2e43"
+          },
+          "journalaar" : {
+            "type" : "integer",
+            "description" : "Viser året journalposten ble opprettet",
+            "format" : "int32",
+            "example" : 2023
+          },
+          "journalpostnummer" : {
+            "type" : "integer",
+            "description" : "Viser rekkefølgen på journalpostene innenfor saksmappen",
+            "format" : "int64",
+            "example" : 17
+          },
+          "journalsekvensnummer" : {
+            "type" : "integer",
+            "description" : "Viser rekkefølgen når journalposten ble opprettet under året",
+            "format" : "int64",
+            "example" : 23456
+          }
+        },
+        "description" : "Identifikator for eksisterende journalpost som den nye journalposten skal tilknyttes"
       },
       "Lenke" : {
         "required" : [ "lenke", "tekst" ],
@@ -308,63 +315,9 @@
             "example" : "SvarUt"
           }
         },
-        "description" : "Lenker tilknyttet forsendelsen"
+        "description" : "Lenke tilknyttet forsendelsen"
       },
-      "MetadataForImport" : {
-        "required" : [ "journalpostId", "mappeId" ],
-        "type" : "object",
-        "properties" : {
-          "mappeId" : {
-            "$ref" : "#/components/schemas/MetadataForImportMappeId"
-          },
-          "journalpostId" : {
-            "$ref" : "#/components/schemas/MetadataForImportJournalpostId"
-          },
-          "journalposttype" : {
-            "type" : "string",
-            "description" : "Navn på type journalpost"
-          },
-          "journalstatus" : {
-            "type" : "string",
-            "description" : "Status til journalposten, dvs. om dokumentet er registrert, under behandling eller endelig arkivert"
-          },
-          "dokumentetsDato" : {
-            "type" : "string",
-            "description" : "Dato som er påført selve dokumentet på ISO 8601-format",
-            "format" : "date-time",
-            "example" : "2024-01-16T18:39:11Z"
-          },
-          "tittel" : {
-            "type" : "string",
-            "description" : "Tittel eller navn på arkivenheten",
-            "example" : "Gjennomføringsplan"
-          }
-        },
-        "description" : "Noark 5-metadata som stemmer med mottakende system. Kan brukes til å legge dokumentet på rett sak."
-      },
-      "MetadataForImportJournalpostId" : {
-        "type" : "object",
-        "properties" : {
-          "systemId" : {
-            "type" : "string",
-            "description" : "Entydig identifikasjon av arkivenheten innenfor det arkivskapende organet",
-            "example" : "7044a03d-c459-4cbe-a4c3-371cc6751215"
-          },
-          "registreringsId" : {
-            "type" : "string",
-            "description" : "Entydig identifikasjon av registreringen innenfor arkivet",
-            "example" : "5f9e9bc8-ffc1-40c0-8fdd-3b5ee32a2e43"
-          },
-          "journalpostnummer" : {
-            "type" : "integer",
-            "description" : "Viser rekkefølgen på journalpostene innenfor saksmappen",
-            "format" : "int32",
-            "example" : 17
-          }
-        },
-        "description" : "Identifikator for eksisterende journalpost som den nye journalposten skal tilknyttes"
-      },
-      "MetadataForImportMappeId" : {
+      "MappeId" : {
         "type" : "object",
         "properties" : {
           "mappeId" : {
@@ -392,15 +345,45 @@
         },
         "description" : "Identifikator for eksisterende mappe som den nye journalposten skal tilhøre"
       },
-      "MetadataFraAvleverendeSystem" : {
-        "required" : [ "journalpostId", "mappeId" ],
+      "MetadataForImport" : {
         "type" : "object",
         "properties" : {
           "mappeId" : {
-            "$ref" : "#/components/schemas/MetadataFraAvleverendeSystemMappeId"
+            "$ref" : "#/components/schemas/MappeId"
           },
           "journalpostId" : {
-            "$ref" : "#/components/schemas/MetadataFraAvleverendeSystemJournalpostId"
+            "$ref" : "#/components/schemas/JournalpostId"
+          },
+          "journalposttype" : {
+            "type" : "string",
+            "description" : "Navn på type journalpost"
+          },
+          "journalstatus" : {
+            "type" : "string",
+            "description" : "Status til journalposten, dvs. om dokumentet er registrert, under behandling eller endelig arkivert"
+          },
+          "dokumentetsDato" : {
+            "type" : "string",
+            "description" : "Dato som er påført selve dokumentet på ISO 8601-format",
+            "format" : "date-time",
+            "example" : "2024-01-16T18:39:11Z"
+          },
+          "tittel" : {
+            "type" : "string",
+            "description" : "Tittel eller navn på arkivenheten",
+            "example" : "Gjennomføringsplan"
+          }
+        },
+        "description" : "Noark 5-metadata som stemmer med mottakende system. Kan brukes til å legge dokumentet på rett sak."
+      },
+      "MetadataFraAvleverendeSystem" : {
+        "type" : "object",
+        "properties" : {
+          "mappeId" : {
+            "$ref" : "#/components/schemas/MappeId"
+          },
+          "journalpostId" : {
+            "$ref" : "#/components/schemas/JournalpostId"
           },
           "journalposttype" : {
             "type" : "string",
@@ -444,70 +427,8 @@
         },
         "description" : "Noark 5-metadata fra avleverende system"
       },
-      "MetadataFraAvleverendeSystemJournalpostId" : {
-        "type" : "object",
-        "properties" : {
-          "systemId" : {
-            "type" : "string",
-            "description" : "Entydig identifikasjon av arkivenheten innenfor det arkivskapende organet",
-            "example" : "7044a03d-c459-4cbe-a4c3-371cc6751215"
-          },
-          "registreringsId" : {
-            "type" : "string",
-            "description" : "Entydig identifikasjon av registreringen innenfor arkivet",
-            "example" : "5f9e9bc8-ffc1-40c0-8fdd-3b5ee32a2e43"
-          },
-          "journalaar" : {
-            "type" : "integer",
-            "description" : "Viser året journalposten ble opprettet",
-            "format" : "int32",
-            "example" : 2023
-          },
-          "journalpostnummer" : {
-            "type" : "integer",
-            "description" : "Viser rekkefølgen på journalpostene innenfor saksmappen",
-            "format" : "int64",
-            "example" : 17
-          },
-          "journalsekvensnummer" : {
-            "type" : "integer",
-            "description" : "Viser rekkefølgen når journalposten ble opprettet under året",
-            "format" : "int64",
-            "example" : 23456
-          }
-        },
-        "description" : "Identifikator for journalposten"
-      },
-      "MetadataFraAvleverendeSystemMappeId" : {
-        "type" : "object",
-        "properties" : {
-          "mappeId" : {
-            "type" : "string",
-            "description" : "Entydig identifikasjon av mappen innenfor det arkivet mappen tilhører",
-            "example" : "fc051651-b853-4b4d-a7cd-fb2beea54356"
-          },
-          "systemId" : {
-            "type" : "string",
-            "description" : "Globalt unik identifikasjon av arkivenheten",
-            "example" : "fc051651-b853-4b4d-a7cd-fb2beea54356"
-          },
-          "saksaar" : {
-            "type" : "integer",
-            "description" : "Viser året saksmappen ble opprettet",
-            "format" : "int32",
-            "example" : 2005
-          },
-          "sakssekvensnummer" : {
-            "type" : "integer",
-            "description" : "Viser rekkefølgen når saksmappen ble opprettet innenfor året",
-            "format" : "int64",
-            "example" : 648677
-          }
-        },
-        "description" : "Identifikator for mappen"
-      },
       "Mottaker" : {
-        "required" : [ "navn" ],
+        "required" : [ "postadresse" ],
         "type" : "object",
         "properties" : {
           "organisasjonsnummer" : {
@@ -515,46 +436,49 @@
             "description" : "Organisasjonsnummer",
             "example" : "123456789"
           },
-          "navn" : {
-            "type" : "string",
-            "description" : "Navn",
-            "example" : "Ola Nordmann"
-          },
-          "adresselinje1" : {
-            "type" : "string",
-            "description" : "Første adresselinje",
-            "example" : "Storevik kommune"
-          },
-          "adresselinje2" : {
-            "type" : "string",
-            "description" : "Andre adresselinje",
-            "example" : "Helseetaten"
-          },
-          "adresselinje3" : {
-            "type" : "string",
-            "description" : "Tredje adresselinje",
-            "example" : "Postboks 55"
-          },
-          "postnummer" : {
-            "type" : "string",
-            "description" : "Postnummer",
-            "example" : "0000"
-          },
-          "poststed" : {
-            "type" : "string",
-            "description" : "Poststed",
-            "example" : "Storevik"
-          },
-          "land" : {
-            "type" : "string",
-            "description" : "Land",
-            "example" : "Norge"
+          "postadresse" : {
+            "$ref" : "#/components/schemas/Postadresse"
           }
         },
         "description" : "Mottaker av forsendelsen"
       },
-      "SvarSendesTil" : {
+      "Postadresse" : {
         "required" : [ "navn" ],
+        "type" : "object",
+        "properties" : {
+          "navn" : {
+            "type" : "string",
+            "description" : "Navn"
+          },
+          "adresselinje1" : {
+            "type" : "string",
+            "description" : "Første adresselinje"
+          },
+          "adresselinje2" : {
+            "type" : "string",
+            "description" : "Andre adresselinje"
+          },
+          "adresselinje3" : {
+            "type" : "string",
+            "description" : "Tredje adresselinje"
+          },
+          "postnummer" : {
+            "type" : "string",
+            "description" : "Postnummer"
+          },
+          "poststed" : {
+            "type" : "string",
+            "description" : "Poststed"
+          },
+          "land" : {
+            "type" : "string",
+            "description" : "Land. Dersom feltet ikke er satt skal adressen være i Norge."
+          }
+        },
+        "description" : "Postadresse svar kan sendes til"
+      },
+      "SvarSendesTil" : {
+        "required" : [ "postadresse" ],
         "type" : "object",
         "properties" : {
           "organisasjonsnummer" : {
@@ -567,40 +491,8 @@
             "description" : "Fødselsnummer, vil ikke være satt samtidig som orgnr",
             "example" : "12345678910"
           },
-          "navn" : {
-            "type" : "string",
-            "description" : "Navn",
-            "example" : "Storevik kommune"
-          },
-          "adresselinje1" : {
-            "type" : "string",
-            "description" : "Første adresselinje",
-            "example" : "Digitaliseringsetaten"
-          },
-          "adresselinje2" : {
-            "type" : "string",
-            "description" : "Andre adresselinje",
-            "example" : "Utviklingsavdelingen"
-          },
-          "adresselinje3" : {
-            "type" : "string",
-            "description" : "Tredje adresselinje",
-            "example" : "Postboks 123"
-          },
-          "postnummer" : {
-            "type" : "string",
-            "description" : "Postnummer",
-            "example" : "0000"
-          },
-          "poststed" : {
-            "type" : "string",
-            "description" : "Poststed",
-            "example" : "Storevik"
-          },
-          "land" : {
-            "type" : "string",
-            "description" : "Land",
-            "example" : "Norge"
+          "postadresse" : {
+            "$ref" : "#/components/schemas/Postadresse"
           }
         },
         "description" : "Adresse som svar på forsendelsen kan sendes til"
