@@ -22,13 +22,21 @@
     "description" : "API for å opprette og slette nytt samtykke"
   } ],
   "paths" : {
-    "/samtykke/api/v1/ekstern/{fiksOrgId}/slettsamtykke" : {
-      "delete" : {
+    "/samtykke/api/v1/ekstern/{fiksOrgId}/aksepterSamtykkeForPart/{samtykkeId}" : {
+      "put" : {
         "tags" : [ "samtykke-ekstern" ],
-        "description" : "Invaliderer samtykke",
-        "operationId" : "invaliderSamtykke",
+        "description" : "Aksepterer samtykke på vegne av part",
+        "operationId" : "aksepterSamtykkeForPart",
         "parameters" : [ {
           "name" : "fiksOrgId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        }, {
+          "name" : "samtykkeId",
           "in" : "path",
           "required" : true,
           "schema" : {
@@ -40,7 +48,103 @@
           "content" : {
             "application/json" : {
               "schema" : {
-                "$ref" : "#/components/schemas/SlettSamtykkeRequest"
+                "$ref" : "#/components/schemas/AksepterForPartRequest"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "201" : {
+            "description" : "Endret samtykke"
+          },
+          "default" : {
+            "description" : "Noe gikk galt",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/samtykke/api/v1/ekstern/{fiksOrgId}/endreSamtykke/{samtykkeId}" : {
+      "put" : {
+        "tags" : [ "samtykke-ekstern" ],
+        "description" : "Endrer samtykke",
+        "operationId" : "endreSamtykke",
+        "parameters" : [ {
+          "name" : "fiksOrgId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        }, {
+          "name" : "samtykkeId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/EndreSamtykkeRequest"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "201" : {
+            "description" : "Endret samtykke"
+          },
+          "default" : {
+            "description" : "Noe gikk galt",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/samtykke/api/v1/ekstern/{fiksOrgId}/invaliderSamtykke/{samtykkeId}" : {
+      "put" : {
+        "tags" : [ "samtykke-ekstern" ],
+        "description" : "Invaliderer samtykke",
+        "operationId" : "invaliderSamtykke",
+        "parameters" : [ {
+          "name" : "fiksOrgId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        }, {
+          "name" : "samtykkeId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/InvaliderSamtykkeRequest"
               }
             }
           }
@@ -140,14 +244,51 @@
           }
         }
       },
-      "SlettSamtykkeRequest" : {
-        "required" : [ "samtykkeId" ],
+      "AksepterForPartRequest" : {
+        "required" : [ "akseptDato", "partFnr", "saksbehandlerId" ],
         "type" : "object",
         "properties" : {
-          "samtykkeId" : {
+          "partFnr" : {
             "type" : "string",
-            "description" : "Saksnummer knyttet til samtykket som skal slettes",
-            "format" : "uuid"
+            "description" : "Fnr til part som gir samtykke"
+          },
+          "akseptDato" : {
+            "type" : "string",
+            "description" : "Dato som forteller når part aksepterte",
+            "format" : "date"
+          },
+          "saksbehandlerId" : {
+            "type" : "string",
+            "description" : "Identifikator til saksbehandler som gir samtykke på vegne av part"
+          }
+        }
+      },
+      "EndreSamtykkeRequest" : {
+        "required" : [ "akseptfrist" ],
+        "type" : "object",
+        "properties" : {
+          "akseptfrist" : {
+            "type" : "string",
+            "description" : "Dato som forteller signeringsfrist for samtykke",
+            "format" : "date"
+          },
+          "sluttDato" : {
+            "type" : "string",
+            "description" : "Dato som forteller hvor lenge samtykket vil være gyldig",
+            "format" : "date"
+          }
+        }
+      },
+      "InvaliderSamtykkeRequest" : {
+        "required" : [ "saksbehandlerId" ],
+        "type" : "object",
+        "properties" : {
+          "saksbehandlerId" : {
+            "type" : "string",
+            "description" : "Saksnummer knyttet til samtykket som skal invalideres"
+          },
+          "begrunnelse" : {
+            "type" : "string"
           }
         }
       },
