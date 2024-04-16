@@ -634,6 +634,45 @@
         }
       }
     },
+    "/digitalt-ledsagerbevis/innbygger/api/v1/ledsagerbevis/{ledsagerbevisId}/ledsagere/{ledsagerId}" : {
+      "delete" : {
+        "tags" : [ "Ledsagerbevis" ],
+        "description" : "Fjerner ledsager",
+        "operationId" : "fjernLedsager",
+        "parameters" : [ {
+          "name" : "ledsagerbevisId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        }, {
+          "name" : "ledsagerId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "204" : {
+            "description" : "OK"
+          },
+          "default" : {
+            "description" : "Noe gikk galt",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/digitalt-ledsagerbevis/innbygger/api/v1/kommuner" : {
       "get" : {
         "tags" : [ "Ledsagerbevis" ],
@@ -681,6 +720,93 @@
                   "items" : {
                     "$ref" : "#/components/schemas/LedsagerbevisInnbyggerRespons"
                   }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/digitalt-ledsagerbevis/innbygger/api/v1/ledsagerbevis/{ledsagerbevisId}/ledsagere" : {
+      "get" : {
+        "tags" : [ "Ledsagerbevis" ],
+        "description" : "Henter ledsagere tilknyttet bevis",
+        "operationId" : "hentLedsagere",
+        "parameters" : [ {
+          "name" : "ledsagerbevisId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/LedsagerResponse"
+                  }
+                }
+              }
+            }
+          },
+          "default" : {
+            "description" : "Noe gikk galt",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post" : {
+        "tags" : [ "Ledsagerbevis" ],
+        "description" : "Legger til ledsager",
+        "operationId" : "leggTilLedsager",
+        "parameters" : [ {
+          "name" : "ledsagerbevisId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/LeggTilLedsagerRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "201" : {
+            "description" : "OK",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/LedsagerResponse"
+                }
+              }
+            }
+          },
+          "default" : {
+            "description" : "Noe gikk galt",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
                 }
               }
             }
@@ -971,7 +1097,7 @@
           "hendelseType" : {
             "type" : "string",
             "description" : "Type hendelse på ledsagerbeviset",
-            "enum" : [ "OPPRETTET", "REVOKERT", "SENDT_ADMINISTRATOR", "SENDT_KOPI", "IKKE_SENDT_KOPI", "IKKE_SENDT_ADMINISTRATOR", "IKKE_SENDT_EIER", "SENDT_EIER", "SENDT_PRINT", "ADMINISTRATOR_LAGT_TIL", "ADMINISTRATOR_FJERNET", "ENDRET_EKSTERN_ID", "ENDRET_TELEFONNUMMER_EIER", "ENDRET_TELEFONNUMMER_ADMINISTRATOR", "ENDRET_ANTALL_LEDSAGERE" ]
+            "enum" : [ "OPPRETTET", "REVOKERT", "SENDT_ADMINISTRATOR", "SENDT_KOPI", "IKKE_SENDT_KOPI", "IKKE_SENDT_ADMINISTRATOR", "IKKE_SENDT_EIER", "SENDT_EIER", "SENDT_PRINT", "ADMINISTRATOR_LAGT_TIL", "ADMINISTRATOR_FJERNET", "ENDRET_EKSTERN_ID", "ENDRET_TELEFONNUMMER_EIER", "ENDRET_TELEFONNUMMER_ADMINISTRATOR", "ENDRET_ANTALL_LEDSAGERE", "LEDSAGER_LAGT_TIL", "LEDSAGER_FJERNET" ]
           },
           "hendelseBeskrivelse" : {
             "type" : "string",
@@ -1306,6 +1432,41 @@
           "innloggetPersonNavn" : {
             "type" : "string",
             "description" : "Navn på innlogget bruker"
+          }
+        }
+      },
+      "LedsagerResponse" : {
+        "required" : [ "ledsagerId", "navn" ],
+        "type" : "object",
+        "properties" : {
+          "navn" : {
+            "type" : "string",
+            "description" : "Navn på person"
+          },
+          "lagtTilAv" : {
+            "type" : "string",
+            "description" : "Navn på person som la til ledsageren, er eier eller administrator"
+          },
+          "ledsagerId" : {
+            "type" : "string",
+            "description" : "Id på ledsageren",
+            "format" : "uuid"
+          }
+        },
+        "description" : "Ledsager tilhørende ledsagerbevis"
+      },
+      "LeggTilLedsagerRequest" : {
+        "required" : [ "navn" ],
+        "type" : "object",
+        "properties" : {
+          "navn" : {
+            "type" : "string",
+            "description" : "Navn på ledsager"
+          },
+          "telefonnummer" : {
+            "pattern" : "^[49]\\d{7}$",
+            "type" : "string",
+            "description" : "Telefonnummer til ledsager"
           }
         }
       },
