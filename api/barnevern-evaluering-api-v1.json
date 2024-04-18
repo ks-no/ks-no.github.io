@@ -1,0 +1,315 @@
+{
+  "openapi" : "3.0.1",
+  "info" : {
+    "title" : "KS Fiks: Barnevern Evaluering",
+    "contact" : {
+      "name" : "Fiks brukerstøtte",
+      "url" : "https://ks-no.github.io/",
+      "email" : "fiks-utvikling@ks.no"
+    },
+    "version" : "v1"
+  },
+  "servers" : [ {
+    "url" : "https://api.fiks.ks.no",
+    "description" : "KS Fiks API host"
+  }, {
+    "url" : "https://api.test.fiks.ks.no",
+    "description" : "KS Fiks TEST API host"
+  } ],
+  "tags" : [ {
+    "name" : "Evaluering",
+    "description" : "API for administrering av data for barnevernstiltak"
+  } ],
+  "paths" : {
+    "/barnevern/api/v1/evaluering/tiltaksplaner/{dokumentId}" : {
+      "get" : {
+        "tags" : [ "Evaluering" ],
+        "summary" : "Henter liste over tiltak",
+        "operationId" : "hentListeOverTiltak",
+        "parameters" : [ {
+          "name" : "dokumentId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "term",
+          "in" : "query",
+          "description" : "Søkeord",
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "fra",
+          "in" : "query",
+          "description" : "Index for det første søketreffet som skal returneres",
+          "schema" : {
+            "maximum" : 9999,
+            "minimum" : 0,
+            "type" : "integer",
+            "format" : "int32",
+            "default" : 0
+          }
+        }, {
+          "name" : "antall",
+          "in" : "query",
+          "description" : "Antall søketreff som skal returneres",
+          "schema" : {
+            "maximum" : 500,
+            "minimum" : 1,
+            "type" : "integer",
+            "format" : "int32",
+            "default" : 50
+          }
+        }, {
+          "name" : "sortering",
+          "in" : "query",
+          "description" : "Skal søkeresultatet sorteres på dato heller enn relevans? Relevans-basert sortering er default",
+          "schema" : {
+            "$ref" : "#/components/schemas/Sortering"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Tiltaksplan",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/TiltaksplanListeResponse"
+                }
+              }
+            }
+          },
+          "default" : {
+            "description" : "Feilmelding",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/barnevern/api/v1/evaluering/tiltaksplan/{dokumentId}" : {
+      "get" : {
+        "tags" : [ "Evaluering" ],
+        "summary" : "Henter tiltaksdetaljer for dokument",
+        "operationId" : "hentTiltak",
+        "parameters" : [ {
+          "name" : "dokumentId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Tiltaksplan",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/TiltaksplanDetaljerResponse"
+                }
+              }
+            }
+          },
+          "default" : {
+            "description" : "Feilmelding",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/barnevern/api/v1/evaluering/tiltaksplan" : {
+      "post" : {
+        "tags" : [ "Evaluering" ],
+        "summary" : "Svar på delmålene",
+        "operationId" : "svarPaTiltaksplan",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/TiltaksplanSvarRequest"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Tilbakemelding",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/TiltaksplanSvarResponse"
+                }
+              }
+            }
+          },
+          "default" : {
+            "description" : "Feilmelding",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components" : {
+    "schemas" : {
+      "DelmalResponse" : {
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string"
+          },
+          "beskrivelse" : {
+            "type" : "string"
+          }
+        }
+      },
+      "EvalueringStatus" : {
+        "type" : "string",
+        "enum" : [ "VENTER_PA_TILBAKEMELDING", "TILBAKEMELDING_REGISTERT", "AVSLUTTET" ]
+      },
+      "TiltaksplanDetaljerResponse" : {
+        "type" : "object",
+        "properties" : {
+          "dokumentId" : {
+            "type" : "string"
+          },
+          "startDato" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "sluttDato" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "sistTilbakeMeldingDato" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "status" : {
+            "$ref" : "#/components/schemas/EvalueringStatus"
+          },
+          "delmal" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/DelmalResponse"
+            }
+          }
+        }
+      },
+      "TiltaksplanListeResponse" : {
+        "type" : "object",
+        "properties" : {
+          "tiltaksplaner" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/TiltaksplanDetaljerResponse"
+            }
+          }
+        }
+      },
+      "ErrorMessage" : {
+        "type" : "object",
+        "properties" : {
+          "timestamp" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "status" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "error" : {
+            "type" : "string"
+          },
+          "errorId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "path" : {
+            "type" : "string"
+          },
+          "originalPath" : {
+            "type" : "string"
+          },
+          "message" : {
+            "type" : "string"
+          },
+          "errorCode" : {
+            "type" : "string"
+          },
+          "errorJson" : {
+            "type" : "string"
+          }
+        }
+      },
+      "Sortering" : {
+        "type" : "string",
+        "enum" : [ "DATO_ASC", "DATO_DESC", "RELEVANS" ]
+      },
+      "TiltaksplanSvarResponse" : {
+        "type" : "object",
+        "properties" : {
+          "melding" : {
+            "type" : "string"
+          }
+        }
+      },
+      "DelmalSvarRequest" : {
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string"
+          },
+          "score" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "gjennomforing" : {
+            "$ref" : "#/components/schemas/Gjennomforing"
+          },
+          "fritekst" : {
+            "type" : "string"
+          }
+        }
+      },
+      "Gjennomforing" : {
+        "type" : "string",
+        "enum" : [ "JA", "NEI", "DELVIS" ]
+      },
+      "TiltaksplanSvarRequest" : {
+        "type" : "object",
+        "properties" : {
+          "dokumentId" : {
+            "type" : "string"
+          },
+          "delmal" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/DelmalSvarRequest"
+            }
+          }
+        }
+      }
+    }
+  }
+}
