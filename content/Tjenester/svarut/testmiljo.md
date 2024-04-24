@@ -1,40 +1,37 @@
 ---
 title: SvarUt Testmiljø
-date: 2018-05-29
+date: 2024-04-24
 hidden: false
 ---
 
-Vi ønsker ikke sensitive data i test miljøet.
-
 For å lage integrasjoner mot SvarUt kan en teste mot vårt testmiljø. Testmiljøet har ingen garantier for oppetid, men vi prøver at det er tilgjengelig
-hele tiden. Test miljøet inneholder de siste endringene også endringer som ikke er produksjonsatt. 
+hele tiden. Testmiljøet inneholder de siste endringene også endringer som ikke er produksjonsatt.
 
-Test miljøet er tilgjengelig på https://test.svarut.ks.no
+Testmiljøet er tilgjengelig på https://test.svarut.ks.no
+
+**Vi ønsker ikke sensitive data i testmiljøet.**
+
+## Testbrukere
+Vi anbefaler at man bruker testbrukere fra Tenor: https://www.skatteetaten.no/skjema/testdata/
 
 ## Print
-
-I test kan en velge grafisk digital som print leverandør, ingen filer vil gå til grafisk digital de vil kun bli simulert sending til print. 
+I test kan en velge Grafisk digital som printleverandør, men det vil kun simuleres at disse sendes print. 
 Vi anbefaler derfor å bruke Manuell print og fra det grensesnittet sette forsendelser til printet.
 
 ## Altinn
-Altinn går i test mot altinn sitt tt02 test miljø. https://tt02.altinn.no Her kan dere lese meldinger sendt til test brukere og test organisasjoner.
+Altinn går i test mot deres tt02-testmiljø: https://tt02.altinn.no. Her kan dere lese meldinger sendt til testbrukere og testorganisasjoner.
 
-## Digital post
-Digipost/eBoks går i test mot Digipost og eBoks test miljø.
-Digipost: https://difitest.digipost.no/
-eBoks: http://demo2-www.e-boks.no/default.aspx
+## Digitale postkasser
+Digipost og e-Boks har egne testmiljøer:  
+Digipost: https://difitest.digipost.no/  
+e-Boks: https://demo2-www.e-boks.no/privat  
 
-For å sette at bruker skal bruke digital postkasse må dette gjøres i Kontakt og reservasjonsregisteret ver1 og ver2: https://brukerprofil-ver1.difi.no/minprofil/ og https://brukerprofil-ver2.difi.no/minprofil/
+Valg av digital postkasse gjøres i Kontakt- og reservasjonsregisteret på https://minprofil.test.kontaktregisteret.no/
 
-For å sette opp svarut-konto med Digital Post til innbygger, så må en bruke et organsisasjonsnummer som er satt opp riktig hos Digdir og Altinn. I testmiljø kan man bruke KS sitt organisasjonsnummer, 971 032 146.
+For å sette opp en SvarUt-konto for Digital Post til innbygger må en bruke et organsisasjonsnummer som er satt opp riktig hos Digdir og Altinn. I testmiljøet kan man bruke KS sitt organisasjonsnummer, 971 032 146.
 
-## Minid innlogging
-Alle testbrukere dere får fra oss har minid innlogging. Her anbefaler vi at dere setter tlfnr og epost slik at brukeren kan låses opp om noen skulle sperre den med feilede innloggingsforsøk.
-
-## Svarinn 
-For å teste svarinn må en registrere orgnr i mottakersystemet. De fleste av testbrukerene har tilgang til et orgnr. Orgnr finner dere ved å logge inn i altinn test.
-https://tt02.altinn.no . Orgnr du har tilgang til der kan legges inn i SvarInn konfigurasjonen.
+## SvarInn 
+For å teste SvarInn må en registrere et organisasjonsnummer i mottakersystemet. De fleste av testbrukerene har tilgang til et organisasjonsnummer. Dette kan finnes ved å logge inn i Altinn sitt testmiljø.
 
 ## Tilgang til SvarUt test
-Alle får tilgang til SvarUt test, send en mail til svarut-utvikling@ks.no så tildeler vi dere test oppsett. Har dere idporten testbrukere fra før send med fnr til disse.
-Hvis dere ikke har så får dere en av KS.
+For å få tilgang til testmiljøet kan man sende en mail til fiks@ks.no.
