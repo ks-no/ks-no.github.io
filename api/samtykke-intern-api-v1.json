@@ -22,6 +22,46 @@
     "description" : "API for å vise og ta stilling til samtykker"
   } ],
   "paths" : {
+    "/samtykke-service/api/v1/intern/{fiksOrgId}/aksepterSamtykke" : {
+      "post" : {
+        "tags" : [ "samtykke-intern" ],
+        "description" : "Person aksepterer på samtykke",
+        "operationId" : "aksepterSamtykke",
+        "parameters" : [ {
+          "name" : "fiksOrgId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/SamtykkeSvarRequest"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "201" : {
+            "description" : "Aksepter samtykke"
+          },
+          "default" : {
+            "description" : "Noe gikk galt",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/samtykke-service/api/v1/intern/{fiksOrgId}/giSamtykkePrivilegier" : {
       "post" : {
         "tags" : [ "samtykke-intern" ],
@@ -55,46 +95,6 @@
                 }
               }
             }
-          },
-          "default" : {
-            "description" : "Noe gikk galt",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/ErrorMessage"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/samtykke-service/api/v1/intern/{fiksOrgId}/giSamtykkeSvar" : {
-      "post" : {
-        "tags" : [ "samtykke-intern" ],
-        "description" : "Gir svar for person på samtykke",
-        "operationId" : "giSamtykkeSvar",
-        "parameters" : [ {
-          "name" : "fiksOrgId",
-          "in" : "path",
-          "required" : true,
-          "schema" : {
-            "type" : "string",
-            "format" : "uuid"
-          }
-        } ],
-        "requestBody" : {
-          "content" : {
-            "application/json" : {
-              "schema" : {
-                "$ref" : "#/components/schemas/SamtykkeSvarRequest"
-              }
-            }
-          }
-        },
-        "responses" : {
-          "201" : {
-            "description" : "Gi svar for samtykke"
           },
           "default" : {
             "description" : "Noe gikk galt",
@@ -153,10 +153,96 @@
           }
         }
       }
+    },
+    "/samtykke-service/api/v1/intern/{fiksOrgId}/giSamtykkeSvar" : {
+      "post" : {
+        "tags" : [ "samtykke-intern" ],
+        "description" : "Person trekker samtykke",
+        "operationId" : "trekkSamtykke",
+        "parameters" : [ {
+          "name" : "fiksOrgId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/SamtykkeSvarRequest"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "201" : {
+            "description" : "Gi svar for samtykke"
+          },
+          "default" : {
+            "description" : "Noe gikk galt",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components" : {
     "schemas" : {
+      "ErrorMessage" : {
+        "type" : "object",
+        "properties" : {
+          "timestamp" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "status" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "error" : {
+            "type" : "string"
+          },
+          "errorId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "path" : {
+            "type" : "string"
+          },
+          "originalPath" : {
+            "type" : "string"
+          },
+          "message" : {
+            "type" : "string"
+          },
+          "errorCode" : {
+            "type" : "string"
+          },
+          "errorJson" : {
+            "type" : "string"
+          }
+        }
+      },
+      "SamtykkeSvarRequest" : {
+        "required" : [ "samtykkeId" ],
+        "type" : "object",
+        "properties" : {
+          "samtykkeId" : {
+            "type" : "string",
+            "description" : "Saksnummer knyttet til samtykket som skal besvares",
+            "format" : "uuid"
+          }
+        }
+      },
       "PersonMedSamtykke" : {
         "required" : [ "navn", "samtykkeStatus" ],
         "type" : "object",
@@ -221,41 +307,6 @@
           }
         }
       },
-      "ErrorMessage" : {
-        "type" : "object",
-        "properties" : {
-          "timestamp" : {
-            "type" : "integer",
-            "format" : "int64"
-          },
-          "status" : {
-            "type" : "integer",
-            "format" : "int32"
-          },
-          "error" : {
-            "type" : "string"
-          },
-          "errorId" : {
-            "type" : "string",
-            "format" : "uuid"
-          },
-          "path" : {
-            "type" : "string"
-          },
-          "originalPath" : {
-            "type" : "string"
-          },
-          "message" : {
-            "type" : "string"
-          },
-          "errorCode" : {
-            "type" : "string"
-          },
-          "errorJson" : {
-            "type" : "string"
-          }
-        }
-      },
       "SamtykkeTilgangRequest" : {
         "required" : [ "integrasjonId" ],
         "type" : "object",
@@ -264,21 +315,6 @@
             "type" : "string",
             "description" : "ID til integrasjon som skal ha privilegie",
             "format" : "uuid"
-          }
-        }
-      },
-      "SamtykkeSvarRequest" : {
-        "required" : [ "samtykkeId", "samtykkeSvar" ],
-        "type" : "object",
-        "properties" : {
-          "samtykkeId" : {
-            "type" : "string",
-            "description" : "Saksnummer knyttet til samtykket som skal besvares",
-            "format" : "uuid"
-          },
-          "samtykkeSvar" : {
-            "type" : "boolean",
-            "description" : "Svaret på samtykket, true=samtykke gitt, false=samtykke avslått"
           }
         }
       }
