@@ -2,7 +2,7 @@
   "openapi" : "3.0.1",
   "info" : {
     "title" : "KS Fiks: Protokoll",
-    "description" : "Fiks Protokoll service",
+    "description" : "Fiks Protokoll service. Endepunkt kun tilgjengelig for personer via forvaltning.fiks.ks.no",
     "contact" : {
       "name" : "Fiks-brukerstøtte",
       "url" : "https://ks-no.github.io/",
@@ -11,14 +11,14 @@
     "version" : "v1"
   },
   "servers" : [ {
-    "url" : "https://api.fiks.ks.no",
+    "url" : "https://forvaltning.fiks.ks.no",
     "description" : "KS Fiks API host"
-  }, {
-    "url" : "https://api.fiks.test.ks.no",
-    "description" : "KS Fiks API test host"
   } ],
   "tags" : [ {
     "name" : "Protokoll-konfigurasjon",
+    "description" : "API for konfigurering av Fiks Protokoll"
+  }, {
+    "name" : "Protokoll-konfigurasjon-kun-person",
     "description" : "API for konfigurering av Fiks Protokoll"
   } ],
   "paths" : {
@@ -619,6 +619,43 @@
             }
           }
         }
+      },
+      "delete" : {
+        "tags" : [ "Protokoll-konfigurasjon-kun-person" ],
+        "description" : "Slett system",
+        "operationId" : "deleteSystem",
+        "parameters" : [ {
+          "name" : "fiksOrgId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        }, {
+          "name" : "systemId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "204" : {
+            "description" : "Sletter system"
+          },
+          "default" : {
+            "description" : "Noe gikk galt",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
       }
     },
     "/fiks-protokoll/api/v1/konfigurasjon/{fiksOrgId}/systemer/{systemId}/kontoer/{kontoId}/tilganger" : {
@@ -1017,6 +1054,202 @@
           }
         }
       }
+    },
+    "/fiks-protokoll/api/v1/konfigurasjon/{fiksOrgId}/systemer" : {
+      "get" : {
+        "tags" : [ "Protokoll-konfigurasjon-kun-person" ],
+        "description" : "Hent systemer på fiksOrg",
+        "operationId" : "getSystemerForFiksOrg",
+        "parameters" : [ {
+          "name" : "fiksOrgId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Systemer på fiksOrg",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/ProtokollSystemSummaryResponse"
+                  }
+                }
+              }
+            }
+          },
+          "default" : {
+            "description" : "Noe gikk galt",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post" : {
+        "tags" : [ "Protokoll-konfigurasjon-kun-person" ],
+        "description" : "Opprett system",
+        "operationId" : "createSystem",
+        "parameters" : [ {
+          "name" : "fiksOrgId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/CreateProtokollSystemRequest"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "201" : {
+            "description" : "Oppretter nytt system",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/CreateProtokollSystemResponse"
+                }
+              }
+            }
+          },
+          "default" : {
+            "description" : "Noe gikk galt",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/fiks-protokoll/api/v1/konfigurasjon/{fiksOrgId}/systemer/{systemId}/integrasjon-privilegium" : {
+      "put" : {
+        "tags" : [ "Protokoll-konfigurasjon-kun-person" ],
+        "description" : "Oppdaterer privilegiene til integrasjonen",
+        "operationId" : "updateIntegrasjonsPrivilegium",
+        "parameters" : [ {
+          "name" : "fiksOrgId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        }, {
+          "name" : "systemId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/UpdateIntegrasjonPrivilegiumRequest"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Oppdaterer privilegiene til integrasjonen",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ProtokollSystemResponse"
+                }
+              }
+            }
+          },
+          "default" : {
+            "description" : "Noe gikk galt",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/fiks-protokoll/api/v1/konfigurasjon/{fiksOrgId}/systemer/{systemId}/orgnummer" : {
+      "put" : {
+        "tags" : [ "Protokoll-konfigurasjon-kun-person" ],
+        "description" : "Oppdater orgnummer på integrasjon ",
+        "operationId" : "updateSystemOrgnummer",
+        "parameters" : [ {
+          "name" : "fiksOrgId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        }, {
+          "name" : "systemId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/UpdateOrgnummerRequest"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Oppdater systemets integrasjons orgnummer",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ProtokollSystemResponse"
+                }
+              }
+            }
+          },
+          "default" : {
+            "description" : "Noe gikk galt",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components" : {
@@ -1347,7 +1580,7 @@
             "$ref" : "#/components/schemas/EksternProtokollSystemResponse"
           }
         },
-        "description" : "Systemer som ble funnet av søk"
+        "description" : "Kontoer systemet har har forespurt tilgang til"
       },
       "EksternProtokollSystemResponse" : {
         "required" : [ "beskrivelse", "fiksOrg", "id", "navn" ],
@@ -1370,7 +1603,7 @@
             "$ref" : "#/components/schemas/FiksOrgResponse"
           }
         },
-        "description" : "Systemer som ble funnet av søk"
+        "description" : "Eiersystem"
       },
       "PartSummaryResponse" : {
         "required" : [ "navn", "protokollnavn", "protokollversjon" ],
@@ -1698,6 +1931,107 @@
           "leverandorKontaktpunkt" : {
             "type" : "string",
             "description" : "Kontaktpunkt for systemleverendør"
+          }
+        }
+      },
+      "CreateProtokollSystemResponse" : {
+        "required" : [ "integrasjonPassord", "system" ],
+        "type" : "object",
+        "properties" : {
+          "system" : {
+            "$ref" : "#/components/schemas/ProtokollSystemResponse"
+          },
+          "integrasjonPassord" : {
+            "type" : "string",
+            "description" : "Integrasjonspassord for systemet"
+          }
+        }
+      },
+      "CreateProtokollSystemRequest" : {
+        "required" : [ "beskrivelse", "eposter", "konfigureresAvIntegrasjon", "navn", "offentlig", "orgnummer" ],
+        "type" : "object",
+        "properties" : {
+          "orgnummer" : {
+            "pattern" : "^[0-9]{9}$",
+            "type" : "string",
+            "description" : "Orgnummer for oppretting av integrasjon"
+          },
+          "navn" : {
+            "pattern" : "^[A-ZÆØÅa-zæøå0-9ÁáÀàÂâÉéÈèÊêÍíÌìÎîÓóÒòÔôÚúÙùÛûÝýÄäËëÏïÖöÜü,.!?\\-:;/\\\\'()&+*=%§]+[A-ZÆØÅa-zæøå0-9ÁáÀàÂâÉéÈèÊêÍíÌìÎîÓóÒòÔôÚúÙùÛûÝýÄäËëÏïÖöÜü ,.!?\\-:;/\\\\'()&+*=%§]*[A-ZÆØÅa-zæøå0-9ÁáÀàÂâÉéÈèÊêÍíÌìÎîÓóÒòÔôÚúÙùÛûÝýÄäËëÏïÖöÜü,.!?\\-:;/\\\\'()&+*=%§]+$",
+            "type" : "string",
+            "description" : "Navn på system"
+          },
+          "beskrivelse" : {
+            "type" : "string",
+            "description" : "Beskrivelse av system"
+          },
+          "eposter" : {
+            "type" : "array",
+            "description" : "Kontakteposter",
+            "items" : {
+              "type" : "string",
+              "description" : "Kontakteposter"
+            }
+          },
+          "offentlig" : {
+            "type" : "boolean",
+            "description" : "Offentlig, styrer om systemet skal være synling for andre Fiks organisasjoner"
+          },
+          "automatiskGodkjenning" : {
+            "type" : "boolean",
+            "description" : "Automatisk godkjenning, styrer om systemet automatisk skal godkjenne forespørsler om tilgang"
+          },
+          "konfigureresAvIntegrasjon" : {
+            "type" : "boolean",
+            "description" : "Konfigureres av integrasjon"
+          },
+          "leverandorNavn" : {
+            "type" : "string",
+            "description" : "Systemleverandør"
+          },
+          "leverandorKontaktpunkt" : {
+            "type" : "string",
+            "description" : "Kontaktpunkt for systemleverendør"
+          }
+        }
+      },
+      "ProtokollSystemSummaryResponse" : {
+        "required" : [ "beskrivelse", "id", "navn" ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string",
+            "description" : "System-id",
+            "format" : "uuid"
+          },
+          "navn" : {
+            "type" : "string",
+            "description" : "Navn på system"
+          },
+          "beskrivelse" : {
+            "type" : "string",
+            "description" : "Beskrivelse av system"
+          }
+        }
+      },
+      "UpdateIntegrasjonPrivilegiumRequest" : {
+        "required" : [ "konfigureresAvIntegrasjon" ],
+        "type" : "object",
+        "properties" : {
+          "konfigureresAvIntegrasjon" : {
+            "type" : "boolean",
+            "description" : "Skal systemet konfigureres av integrasjonen?"
+          }
+        }
+      },
+      "UpdateOrgnummerRequest" : {
+        "required" : [ "orgnummer" ],
+        "type" : "object",
+        "properties" : {
+          "orgnummer" : {
+            "pattern" : "^[0-9]{9}$",
+            "type" : "string",
+            "description" : "Organisasjonsnummer"
           }
         }
       }
