@@ -1,0 +1,234 @@
+{
+  "openapi" : "3.0.1",
+  "info" : {
+    "title" : "KS Fiks: Samtykke",
+    "description" : "Fiks Samtykke Konfigurasjon service",
+    "contact" : {
+      "name" : "Fiks-brukerstøtte",
+      "url" : "https://ks-no.github.io/",
+      "email" : "fiks-utvikling@ks.no"
+    },
+    "version" : "v1"
+  },
+  "servers" : [ {
+    "url" : "https://forvaltning.fiks.ks.no",
+    "description" : "KS Fiks API host"
+  }, {
+    "url" : "https://forvaltning.fiks.test.ks.no",
+    "description" : "KS Fiks API test host"
+  } ],
+  "tags" : [ {
+    "name" : "samtykke-konfigurasjon",
+    "description" : "API for å konfigurere samtykke-løsningen"
+  } ],
+  "paths" : {
+    "/samtykke/api/v1/konfigurasjon/{fiksOrgId}/giSamtykkePrivilegier" : {
+      "post" : {
+        "tags" : [ "samtykke-konfigurasjon" ],
+        "description" : "Gir samtykke-privilegier til integrasjon",
+        "operationId" : "giSamtykkePrivilegierTilIntegrasjon",
+        "parameters" : [ {
+          "name" : "fiksOrgId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/SamtykkeTilgangRequest"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Gi samtykke-privilegier til integrasjon",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Samtykker"
+                }
+              }
+            }
+          },
+          "default" : {
+            "description" : "Noe gikk galt",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/samtykke/api/v1/konfigurasjon/{fiksOrgId}/konfigurerSamtykke" : {
+      "post" : {
+        "tags" : [ "samtykke-konfigurasjon" ],
+        "description" : "Initialiserer og konfigurerer samtykke-tjeneste for fiksOrg",
+        "operationId" : "initKonfigSamtykke",
+        "parameters" : [ {
+          "name" : "fiksOrgId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/SamtykkeTilgangRequest"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Konfigurerer samtykke for fiksOrg",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Samtykker"
+                }
+              }
+            }
+          },
+          "default" : {
+            "description" : "Noe gikk galt",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components" : {
+    "schemas" : {
+      "PersonMedSamtykke" : {
+        "required" : [ "navn", "samtykkeStatus" ],
+        "type" : "object",
+        "properties" : {
+          "navn" : {
+            "type" : "string",
+            "description" : "Navn for person"
+          },
+          "samtykkeStatus" : {
+            "type" : "string",
+            "description" : "Status for samtykke",
+            "enum" : [ "IKKE_BESVART", "SAMTYKKE_GITT", "SAMTYKKE_AVSLAATT" ]
+          }
+        },
+        "description" : "Personer som skal gi samtykke for sak"
+      },
+      "Samtykke" : {
+        "required" : [ "akseptfrist", "dokumentId", "mappeId", "personList", "samtykkeId", "sluttDato" ],
+        "type" : "object",
+        "properties" : {
+          "personList" : {
+            "type" : "array",
+            "description" : "Personer som skal gi samtykke for sak",
+            "items" : {
+              "$ref" : "#/components/schemas/PersonMedSamtykke"
+            }
+          },
+          "samtykkeId" : {
+            "type" : "string",
+            "description" : "Saksnummer knyttet til samtykket",
+            "format" : "uuid"
+          },
+          "mappeId" : {
+            "type" : "string",
+            "description" : "Samtykke-id"
+          },
+          "akseptfrist" : {
+            "type" : "string",
+            "description" : "Dato som forteller signeringsfrist for samtykke",
+            "format" : "date"
+          },
+          "sluttDato" : {
+            "type" : "string",
+            "description" : "Dato som forteller hvor lenge samtykket er gyldig",
+            "format" : "date"
+          },
+          "dokumentId" : {
+            "type" : "string",
+            "description" : "Id for dokumentet som beskriver samtykke"
+          }
+        }
+      },
+      "Samtykker" : {
+        "required" : [ "samtykker" ],
+        "type" : "object",
+        "properties" : {
+          "samtykker" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Samtykke"
+            }
+          }
+        }
+      },
+      "ErrorMessage" : {
+        "type" : "object",
+        "properties" : {
+          "timestamp" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "status" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "error" : {
+            "type" : "string"
+          },
+          "errorId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "path" : {
+            "type" : "string"
+          },
+          "originalPath" : {
+            "type" : "string"
+          },
+          "message" : {
+            "type" : "string"
+          },
+          "errorCode" : {
+            "type" : "string"
+          },
+          "errorJson" : {
+            "type" : "string"
+          }
+        }
+      },
+      "SamtykkeTilgangRequest" : {
+        "required" : [ "integrasjonId" ],
+        "type" : "object",
+        "properties" : {
+          "integrasjonId" : {
+            "type" : "string",
+            "description" : "ID til integrasjon som skal ha privilegie",
+            "format" : "uuid"
+          }
+        }
+      }
+    }
+  }
+}
