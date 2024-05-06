@@ -6,11 +6,9 @@ aliases: ["/fiks-platform/integrasjoner", "/fiks-plattform/integrasjoner", "/int
 
 En _integrasjon_ på Fiks-plattformen er en maskin-til-maskin klient som benytter tjenestelaget for å utføre oppgaver på vegne av en fiks-organisasjon. Dette kan for eksempel være et arkivsystem som sender saker gjennom [Fiks SvarInn]({{< ref "fiksio.md" >}}), eller et fagsystem som oppdaterer meldinger i [Fiks Innsyn]({{< ref "innsyn.md" >}}).
 
-Når en Fiks-organisasjon tar i bruk plattformen vil man se at det allerede finnes en del forhåndsdefinerte integrasjoner, for eksempel en SvarUt-integrasjon mot Fiks Innsyn. Dette er "globale integrasjoner" som blir tilgjengelig for alle Fiks-organisasjoner uten at hver organisasjon trenger å opprette dem. Ta kontakt med fiks-kundeservice om du på denne måten ønsker å gjøre en av dine integrasjoner tilgjengelig på hele plattformen. Dette er for det meste relevant for leverandører av skyløsninger for flere kommuner.
+Hver Fiks-organisasjon oppretter sine egne integrasjoner - dette gjøres gjennom Fiks forvaltning konfigurasjon. Når man oppretter integrasjonen,  definerer man hvilken organisasjon som skal ha rett til å sende forespørseler til Fiks-plattformen på vegne av denne. Organisasjonen kan være Fiks-organisasjonen selv, eller en tredjepart som har driftsansvar. Se under for detaljer om opprettelse av integrasjoner.
 
-Hver Fiks-organisasjon kan også opprette sine egne "lokale" integrasjoner - dette gjøres gjennom Fiks Konfigurasjon. Her opprettes integrasjonen, og man definerer hvilken organisasjon som skal ha rett til å sende forespørseler til Fiks-plattformen på vegne av denne. Organisasjonen kan være Fiks-organisasjonen selv, eller en tredjepart som har driftsansvar. Se under for detaljer om opprettelse av integrasjoner.
-
-Etter organisasjonen er opprettet må den autoriseres for å kunne handle på vegne av en Fiks-organisasjon. Om man for eksempel ønsker å autorisere en integrasjon for å indeksere meldinger [Fiks Innsyn]({{< ref "innsyn.md" >}}) må det relevante privilegiet tildeles på konfigurasjonssiden for denne tjenesten. Dette gjelder også for globale integrasjoner.
+Etter organisasjonen er opprettet må den autoriseres for å kunne handle på vegne av en Fiks-organisasjon. Om man for eksempel ønsker å autorisere en integrasjon for å indeksere meldinger [Fiks Innsyn]({{< ref "innsyn.md" >}}) må det relevante privilegiet tildeles på konfigurasjonssiden for denne tjenesten. 
 
 ## Hvordan komme i gang med utviklingen
 
