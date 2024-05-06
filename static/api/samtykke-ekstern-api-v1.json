@@ -154,6 +154,52 @@
         }
       }
     },
+    "/samtykke/api/v1/ekstern/{fiksOrgId}/hentSamtykke/{samtykkeId}" : {
+      "get" : {
+        "tags" : [ "samtykke-ekstern" ],
+        "description" : "Henter et samtykke for person",
+        "operationId" : "hentSamtykke",
+        "parameters" : [ {
+          "name" : "fiksOrgId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        }, {
+          "name" : "samtykkeId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Henter samtykke",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Samtykker"
+                }
+              }
+            }
+          },
+          "default" : {
+            "description" : "Noe gikk galt",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/samtykke/api/v1/ekstern/{fiksOrgId}/invaliderSamtykke/{samtykkeId}" : {
       "put" : {
         "tags" : [ "samtykke-ekstern" ],
@@ -370,12 +416,12 @@
         "description" : "Info om saksbehandler som trekker samtykke på vegne av part"
       },
       "EndreSamtykkeRequest" : {
-        "required" : [ "saksbehandler", "samtykkeFrist" ],
+        "required" : [ "akseptfrist", "saksbehandler" ],
         "type" : "object",
         "properties" : {
-          "samtykkeFrist" : {
+          "akseptfrist" : {
             "type" : "string",
-            "description" : "Dato på ISO-8601 format som forteller samtykkefrist for samtykket",
+            "description" : "Dato på ISO-8601 format som forteller akseptfrist for samtykket",
             "format" : "date"
           },
           "sluttDato" : {
@@ -419,18 +465,6 @@
           }
         }
       },
-      "InvaliderSamtykkeRequest" : {
-        "required" : [ "saksbehandler" ],
-        "type" : "object",
-        "properties" : {
-          "saksbehandler" : {
-            "$ref" : "#/components/schemas/Saksbehandler"
-          },
-          "begrunnelse" : {
-            "type" : "string"
-          }
-        }
-      },
       "Mappe" : {
         "type" : "object",
         "properties" : {
@@ -451,6 +485,81 @@
         },
         "description" : "Informasjon om mappe knyttet til samtykket"
       },
+      "PersonMedSamtykke" : {
+        "required" : [ "navn", "samtykkeStatus" ],
+        "type" : "object",
+        "properties" : {
+          "navn" : {
+            "type" : "string",
+            "description" : "Navn for person"
+          },
+          "samtykkeStatus" : {
+            "type" : "string",
+            "description" : "Status for samtykke",
+            "enum" : [ "IKKE_BESVART", "SAMTYKKE_GITT", "SAMTYKKE_AVSLAATT" ]
+          }
+        },
+        "description" : "Personer som skal gi samtykke for sak"
+      },
+      "Samtykke" : {
+        "required" : [ "akseptfrist", "dokumentLenke", "mappe", "personList", "samtykkeId", "sluttDato" ],
+        "type" : "object",
+        "properties" : {
+          "personList" : {
+            "type" : "array",
+            "description" : "Personer som skal gi samtykke for sak",
+            "items" : {
+              "$ref" : "#/components/schemas/PersonMedSamtykke"
+            }
+          },
+          "samtykkeId" : {
+            "type" : "string",
+            "description" : "Id for samtykket",
+            "format" : "uuid"
+          },
+          "mappe" : {
+            "$ref" : "#/components/schemas/Mappe"
+          },
+          "akseptfrist" : {
+            "type" : "string",
+            "description" : "Dato Dato på ISO-8601 format som forteller signeringsfrist for samtykke",
+            "format" : "date"
+          },
+          "sluttDato" : {
+            "type" : "string",
+            "description" : "Dato Dato på ISO-8601 format som forteller hvor lenge samtykket er gyldig",
+            "format" : "date"
+          },
+          "dokumentLenke" : {
+            "type" : "string",
+            "description" : "Id for dokumentet som beskriver samtykke"
+          }
+        }
+      },
+      "Samtykker" : {
+        "required" : [ "samtykker" ],
+        "type" : "object",
+        "properties" : {
+          "samtykker" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Samtykke"
+            }
+          }
+        }
+      },
+      "InvaliderSamtykkeRequest" : {
+        "required" : [ "saksbehandler" ],
+        "type" : "object",
+        "properties" : {
+          "saksbehandler" : {
+            "$ref" : "#/components/schemas/Saksbehandler"
+          },
+          "begrunnelse" : {
+            "type" : "string"
+          }
+        }
+      },
       "OpprettSamtykkeRequest" : {
         "required" : [ "akseptfrist", "mappe", "personer", "saksbehandler" ],
         "type" : "object",
@@ -463,7 +572,7 @@
           },
           "akseptfrist" : {
             "type" : "string",
-            "description" : "Dato på ISO-8601 format som forteller signeringsfrist for samtykke",
+            "description" : "Dato på ISO-8601 format som forteller akseptfrist for samtykke",
             "format" : "date"
           },
           "sluttDato" : {
