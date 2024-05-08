@@ -482,6 +482,51 @@
         }
       }
     },
+    "/fiks-protokoll/api/v1/konfigurasjon/{fiksOrgId}/protokoller/{protokollnavn}" : {
+      "get" : {
+        "tags" : [ "Protokoll-konfigurasjon" ],
+        "description" : "Henter parter",
+        "operationId" : "getParterForProtokoll",
+        "parameters" : [ {
+          "name" : "protokollnavn",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "fiksOrgId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Henter parter",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ParterResponse"
+                }
+              }
+            }
+          },
+          "default" : {
+            "description" : "Noe gikk galt",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/fiks-protokoll/api/v1/konfigurasjon/{fiksOrgId}/protokoller/{protokollnavn}/{protokollversjon}" : {
       "get" : {
         "tags" : [ "Protokoll-konfigurasjon" ],
@@ -1007,6 +1052,69 @@
         }
       }
     },
+    "/fiks-protokoll/api/v1/konfigurasjon/{fiksOrgId}/systemer/{systemId}/kontoer/{kontoId}/parter" : {
+      "post" : {
+        "tags" : [ "Protokoll-konfigurasjon" ],
+        "description" : "Oppdater parter på konto",
+        "operationId" : "updateParter",
+        "parameters" : [ {
+          "name" : "fiksOrgId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        }, {
+          "name" : "systemId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        }, {
+          "name" : "kontoId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/UpdateParterRequest"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Parter tilknyttet konto",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/UpdateParterResponse"
+                }
+              }
+            }
+          },
+          "default" : {
+            "description" : "Noe gikk galt",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/fiks-protokoll/api/v1/konfigurasjon/{fiksOrgId}/systemer/{systemId}/info" : {
       "put" : {
         "tags" : [ "Protokoll-konfigurasjon" ],
@@ -1332,10 +1440,10 @@
             }
           }
         },
-        "description" : "Part protokollkontoen implementerer"
+        "description" : "Parter protokollkontoen implementerer"
       },
       "ProtokollKontoResponse" : {
-        "required" : [ "beskrivelse", "id", "navn", "offentligNokkel", "part" ],
+        "required" : [ "beskrivelse", "id", "navn", "offentligNokkel", "parts" ],
         "type" : "object",
         "properties" : {
           "id" : {
@@ -1351,8 +1459,12 @@
             "type" : "string",
             "description" : "Beskrivelse av kontoen"
           },
-          "part" : {
-            "$ref" : "#/components/schemas/PartResponse"
+          "parts" : {
+            "type" : "array",
+            "description" : "Part protokollkontoen implementerer",
+            "items" : {
+              "$ref" : "#/components/schemas/PartResponse"
+            }
           },
           "offentligNokkel" : {
             "$ref" : "#/components/schemas/OffentligNokkelResponse"
@@ -1405,7 +1517,7 @@
         }
       },
       "CreateProtokollKontoRequest" : {
-        "required" : [ "beskrivelse", "navn", "offentligNokkel", "part", "stottetProtokollNavn", "stottetProtokollVersjon" ],
+        "required" : [ "beskrivelse", "navn", "offentligNokkel", "parts", "stottetProtokollNavn" ],
         "type" : "object",
         "properties" : {
           "navn" : {
@@ -1421,19 +1533,34 @@
             "type" : "string",
             "description" : "Protokoll kontoen støtter"
           },
-          "stottetProtokollVersjon" : {
-            "type" : "string",
-            "description" : "Protokollversjon kontoen støttet"
-          },
-          "part" : {
-            "type" : "string",
-            "description" : "Part kontoen implementerer"
+          "parts" : {
+            "type" : "array",
+            "description" : "Part kontoen implementerer",
+            "items" : {
+              "$ref" : "#/components/schemas/PartRequest"
+            }
           },
           "offentligNokkel" : {
             "type" : "string",
             "description" : "Offentlig nøkkel"
           }
         }
+      },
+      "PartRequest" : {
+        "required" : [ "partNavn", "stottetProtokollVersjon" ],
+        "type" : "object",
+        "properties" : {
+          "partNavn" : {
+            "pattern" : "^[A-ZÆØÅa-zæøå0-9ÁáÀàÂâÉéÈèÊêÍíÌìÎîÓóÒòÔôÚúÙùÛûÝýÄäËëÏïÖöÜü,.!?\\-:;/\\\\'()&+*=%§]+[A-ZÆØÅa-zæøå0-9ÁáÀàÂâÉéÈèÊêÍíÌìÎîÓóÒòÔôÚúÙùÛûÝýÄäËëÏïÖöÜü ,.!?\\-:;/\\\\'()&+*=%§]*[A-ZÆØÅa-zæøå0-9ÁáÀàÂâÉéÈèÊêÍíÌìÎîÓóÒòÔôÚúÙùÛûÝýÄäËëÏïÖöÜü,.!?\\-:;/\\\\'()&+*=%§]+$",
+            "type" : "string",
+            "description" : "Navn på konto"
+          },
+          "stottetProtokollVersjon" : {
+            "type" : "string",
+            "description" : "Protokoll version"
+          }
+        },
+        "description" : "Part kontoen implementerer"
       },
       "FiksOrgResponse" : {
         "required" : [ "id", "navn" ],
@@ -1475,6 +1602,17 @@
           "fiksOrgNavn" : {
             "type" : "string",
             "description" : "Navn for fiksOrg"
+          }
+        }
+      },
+      "ParterResponse" : {
+        "type" : "object",
+        "properties" : {
+          "parter" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/PartResponse"
+            }
           }
         }
       },
@@ -1557,7 +1695,7 @@
         }
       },
       "EksternProtokollKontoResponse" : {
-        "required" : [ "beskrivelse", "id", "navn", "part", "system" ],
+        "required" : [ "beskrivelse", "id", "navn", "parter", "system" ],
         "type" : "object",
         "properties" : {
           "id" : {
@@ -1573,8 +1711,12 @@
             "type" : "string",
             "description" : "Beskrivelse av kontoen"
           },
-          "part" : {
-            "$ref" : "#/components/schemas/PartResponse"
+          "parter" : {
+            "type" : "array",
+            "description" : "Parter protokollkontoen implementerer",
+            "items" : {
+              "$ref" : "#/components/schemas/PartResponse"
+            }
           },
           "system" : {
             "$ref" : "#/components/schemas/EksternProtokollSystemResponse"
@@ -1623,7 +1765,7 @@
             "description" : "Protokollversjon"
           }
         },
-        "description" : "Part protokollkontoen implementerer"
+        "description" : "Parter protokollkontoen implementerer"
       },
       "ProtokollKontoMetrikkResponse" : {
         "type" : "object",
@@ -1642,7 +1784,7 @@
         "description" : "Metrikk for konto"
       },
       "ProtokollKontoSummaryResponse" : {
-        "required" : [ "beskrivelse", "id", "navn", "part" ],
+        "required" : [ "beskrivelse", "id", "navn", "parter" ],
         "type" : "object",
         "properties" : {
           "id" : {
@@ -1658,8 +1800,12 @@
             "type" : "string",
             "description" : "Beskrivelse av kontoen"
           },
-          "part" : {
-            "$ref" : "#/components/schemas/PartSummaryResponse"
+          "parter" : {
+            "type" : "array",
+            "description" : "Parter protokollkontoen implementerer",
+            "items" : {
+              "$ref" : "#/components/schemas/PartSummaryResponse"
+            }
           },
           "metrikk" : {
             "$ref" : "#/components/schemas/ProtokollKontoMetrikkResponse"
@@ -1893,6 +2039,32 @@
           "offentligNokkel" : {
             "type" : "string",
             "description" : "Offentlig nøkkel"
+          }
+        }
+      },
+      "UpdateParterResponse" : {
+        "required" : [ "parter" ],
+        "type" : "object",
+        "properties" : {
+          "parter" : {
+            "type" : "array",
+            "description" : "Parter tilknyttet konto",
+            "items" : {
+              "$ref" : "#/components/schemas/PartSummaryResponse"
+            }
+          }
+        }
+      },
+      "UpdateParterRequest" : {
+        "required" : [ "parts" ],
+        "type" : "object",
+        "properties" : {
+          "parts" : {
+            "type" : "array",
+            "description" : "Part kontoen implementerer",
+            "items" : {
+              "$ref" : "#/components/schemas/PartRequest"
+            }
           }
         }
       },
