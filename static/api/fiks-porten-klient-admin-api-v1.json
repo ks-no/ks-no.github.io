@@ -26,6 +26,346 @@
       "variables": {}
     }
   ],
-  "paths": {},
-  "components": {}
+  "security": [
+    {
+      "bearerAuth": []
+    }
+  ],
+  "tags": [
+    {
+      "name": "clients",
+      "description": "Administrere fiks-porten klienter"
+    }
+  ],
+  "paths": {
+    "/fiksporten/api/v1/clients": {
+      "post": {
+        "summary": "Opprett ny fiks-porten klient",
+        "description": "Opprett ny fiks-porten klient",
+        "operationId": "opprettKlient",
+        "tags": [
+          "clients"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateFiksPortenClient"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Klient opprettet",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FiksPortenClientDefinition"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequestResponse"
+          },
+          "401": {
+            "$ref": "#/components/responses/NotAuthenticatedResponse"
+          },
+          "403": {
+            "$ref": "#/components/responses/UnauthorizedResponse"
+          }
+        }
+      },
+      "get": {
+        "summary": "Hent alle fiks-porten klienter",
+        "description": "Hent alle fiks-porten klienter",
+        "operationId": "hentKlienter",
+        "tags": [
+          "clients"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FiksPortenClientDefinitionList"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/NotAuthenticatedResponse"
+          },
+          "403": {
+            "$ref": "#/components/responses/UnauthorizedResponse"
+          }
+        }
+      }
+    },
+    "/fiksporten/api/v1/clients/{id}": {
+      "delete": {
+        "summary": "Slett fiks-porten klient",
+        "description": "Slett fiks-porten klient",
+        "operationId": "slettKlient",
+        "tags": [
+          "clients"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Klient id",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Klient slettet"
+          },
+          "401": {
+            "$ref": "#/components/responses/NotAuthenticatedResponse"
+          },
+          "403": {
+            "$ref": "#/components/responses/UnauthorizedResponse"
+          }
+        }
+      },
+      "patch": {
+        "summary": "Oppdater fiks-porten klient",
+        "description": "Oppdater fiks-porten klient",
+        "operationId": "oppdaterKlient",
+        "tags": [
+          "clients"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Klient id",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateFiksPortenClient"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Klient oppdatert",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FiksPortenClientDefinition"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequestResponse"
+          },
+          "401": {
+            "$ref": "#/components/responses/NotAuthenticatedResponse"
+          },
+          "403": {
+            "$ref": "#/components/responses/UnauthorizedResponse"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    },
+    "responses": {
+      "BadRequestResponse": {
+        "description": "Ugyldig input",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorMessage"
+            },
+            "example": {
+              "message": "Ugyldig input",
+              "status": 400
+            }
+          }
+        }
+      },
+      "NotAuthenticatedResponse": {
+        "description": "Ikke autentisert",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorMessage"
+            },
+            "example": {
+              "message": "Ikke autentisert",
+              "status": 401
+            }
+          }
+        }
+      },
+      "UnauthorizedResponse": {
+        "description": "Ikke autorisert",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorMessage"
+            },
+            "example": {
+              "message": "Ikke autorisert",
+              "status": 403
+            }
+          }
+        }
+      }
+    },
+    "parameters": {},
+    "schemas": {
+      "CreateFiksPortenClient": {
+        "type": "object",
+        "properties": {
+          "service": {
+            "type": "string",
+            "description": "Navn på service (k8s) som skal tilgjengeliggjøre den offentlige nøkkelen"
+          },
+          "expiration": {
+            "type": "string",
+            "format": "duration",
+            "description": "Tidspunkt for når klienten utløper (ISO8601 duration format)",
+            "example": "PT1M"
+          }
+        },
+        "required": [
+          "service"
+        ]
+      },
+      "UpdateFiksPortenClient": {
+        "type": "object",
+        "properties": {
+          "service": {
+            "type": "string",
+            "description": "Navn på service (k8s) som skal tilgjengeliggjøre den offentlige nøkkelen"
+          },
+          "expiration": {
+            "type": "string",
+            "format": "duration",
+            "description": "Tidspunkt for når klienten utløper (ISO8601 duration format)",
+            "example": "PT1M"
+          }
+        }
+      },
+      "FiksPortenClientDefinition": {
+        "type": "object",
+        "description": "Klient for fiks-porten",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Klientens id"
+          },
+          "service": {
+            "type": "string",
+            "description": "Navn på service (k8s) som skal tilgjengeliggjøre den offentlige nøkkelen"
+          },
+          "expiration": {
+            "type": "string",
+            "format": "duration",
+            "description": "Tidspunkt for når klienten utløper (ISO8601 duration format)",
+            "example": "PT1M"
+          }
+        },
+        "readOnly": true,
+        "required": [
+          "id",
+          "service"
+        ]
+      },
+      "FiksPortenClientDefinitionList": {
+        "type": "object",
+        "properties": {
+          "clients": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FiksPortenClientDefinition"
+            }
+          }
+        },
+        "readOnly": true,
+        "required": [
+          "clients"
+        ]
+      },
+      "Error": {
+        "$ref": "#/components/schemas/ErrorMessage"
+      },
+      "ErrorMessage": {
+        "type": "object",
+        "description": "Feilmelding fra Fiks-plattformen",
+        "externalDocs": {
+          "description": "Beskrivelse av feilmeldinger",
+          "url": "https://ks-no.github.io/fiks-plattform/integrasjoner/#feilmeldinger"
+        },
+        "properties": {
+          "timestamp": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "status": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "error": {
+            "type": "string"
+          },
+          "errorId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "path": {
+            "type": "string"
+          },
+          "originalPath": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          },
+          "errorCode": {
+            "type": "string"
+          },
+          "errorJson": {
+            "type": "string"
+          }
+        },
+        "example": {
+          "message": "Mangler tilgang",
+          "errorId": "ee2ed64d-de8b-45f9-b9c6-3363d662d93b",
+          "status": 403
+        }
+      }
+    }
+  }
 }
