@@ -70,6 +70,54 @@
         }
       }
     },
+    "/samtykke/api/v1/ekstern/{fiksOrgId}/endreInnbyggertjenesteTilgangForPart/{samtykkeId}" : {
+      "put" : {
+        "tags" : [ "samtykke-ekstern" ],
+        "description" : "Aksepterer samtykke på vegne av part",
+        "operationId" : "endreInnbyggertjenesterTilgangForPart",
+        "parameters" : [ {
+          "name" : "fiksOrgId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        }, {
+          "name" : "samtykkeId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/EndreInnbyggertjenesterTilgangForPartRequest"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Endret tilgang til innbyggertjenester for part"
+          },
+          "default" : {
+            "description" : "Noe gikk galt",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/samtykke/api/v1/ekstern/{fiksOrgId}/endreSamtykke/{samtykkeId}" : {
       "put" : {
         "tags" : [ "samtykke-ekstern" ],
@@ -406,7 +454,7 @@
         "properties" : {
           "saksbehandlerId" : {
             "type" : "string",
-            "description" : "Identifikator til saksbehandler som trekker samtykke på vegne av part"
+            "description" : "Identifikator til saksbehandler"
           },
           "fagsystem" : {
             "type" : "string",
@@ -414,6 +462,20 @@
           }
         },
         "description" : "Info om saksbehandler som trekker samtykke på vegne av part"
+      },
+      "EndreInnbyggertjenesterTilgangForPartRequest" : {
+        "required" : [ "partFnr", "skalHaTilgang" ],
+        "type" : "object",
+        "properties" : {
+          "partFnr" : {
+            "type" : "string",
+            "description" : "Fnr til part som har endret tilgang til innbyggertjenester"
+          },
+          "skalHaTilgang" : {
+            "type" : "boolean",
+            "description" : "Skal innbygger få tilgang"
+          }
+        }
       },
       "EndreSamtykkeRequest" : {
         "required" : [ "akseptfrist", "saksbehandler" ],
@@ -527,7 +589,7 @@
         "description" : "Informasjon om mappe knyttet til samtykket"
       },
       "PersonEkstern" : {
-        "required" : [ "fnr", "navn", "samtykkeStatus" ],
+        "required" : [ "fnr", "harTilgangTilInnbyggertjenester", "navn", "samtykkeStatus" ],
         "type" : "object",
         "properties" : {
           "fnr" : {
@@ -542,7 +604,11 @@
           "samtykkeStatus" : {
             "type" : "string",
             "description" : "Status for samtykke",
-            "enum" : [ "IKKE_BESVART", "SAMTYKKE_GITT", "SAMTYKKE_AVSLAATT" ]
+            "enum" : [ "VENTER_PAA_SVAR", "SAMTYKKET", "IKKE_SAMTYKKET", "TRUKKET" ]
+          },
+          "harTilgangTilInnbyggertjenester" : {
+            "type" : "boolean",
+            "description" : "Har person tilgang til innbyggertjenester"
           }
         }
       },
@@ -643,7 +709,7 @@
         }
       },
       "Person" : {
-        "required" : [ "fnr", "navn" ],
+        "required" : [ "fnr", "harTilgangTilInnbyggerTjenester", "navn" ],
         "type" : "object",
         "properties" : {
           "fnr" : {
@@ -654,6 +720,10 @@
           "navn" : {
             "type" : "string",
             "description" : "Navn for person"
+          },
+          "harTilgangTilInnbyggerTjenester" : {
+            "type" : "boolean",
+            "description" : "Har part tilgang til innbyggertjenester?"
           }
         }
       },
