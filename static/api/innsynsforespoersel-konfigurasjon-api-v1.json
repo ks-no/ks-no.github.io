@@ -61,6 +61,75 @@
         }
       }
     },
+    "/barnevern/konfigurasjon/api/v1/{fiksOrgId}/barnevernkontor" : {
+      "get" : {
+        "tags" : [ "BarnevernKonfigurasjonController" ],
+        "summary" : "Henter barnevernkontor for kommune",
+        "operationId" : "hentBarnevernKontor",
+        "parameters" : [ {
+          "name" : "fiksOrgId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "BarnevernKontor",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/BarnevernKontorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/barnevern/konfigurasjon/api/v1/{fiksOrgId}/edialog/skjemaid" : {
+      "get" : {
+        "tags" : [ "BarnevernKonfigurasjonController" ],
+        "summary" : "Henter edialog skjemaId for orgnummer og skjematype",
+        "operationId" : "hentEdialogSkjemaId",
+        "parameters" : [ {
+          "name" : "fiksOrgId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        }, {
+          "name" : "orgnr",
+          "in" : "query",
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "type",
+          "in" : "query",
+          "schema" : {
+            "type" : "string",
+            "enum" : [ "SVAR", "KLAGE", "DEFAULT" ]
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "SkjemaId",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/barnevern/konfigurasjon/api/v1/{fiksOrgId}/svarut/kontoer/{kontoId}" : {
       "get" : {
         "tags" : [ "BarnevernKonfigurasjonController" ],
@@ -364,7 +433,7 @@
         }
       }
     },
-    "/barnevern/konfigurasjon/api/v1/{fiksOrgId}/svarut/kontoer" : {
+    "/barnevern/konfigurasjon/api/v1/{fiksOrgId}/svarut/konto/{orgNr}" : {
       "get" : {
         "tags" : [ "BarnevernKonfigurasjonController" ],
         "summary" : "Henter svarut kontoer",
@@ -376,6 +445,13 @@
           "schema" : {
             "type" : "string",
             "format" : "uuid"
+          }
+        }, {
+          "name" : "orgNr",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
           }
         } ],
         "responses" : {
@@ -1678,7 +1754,32 @@
             "description" : "Passord til integrasjon"
           }
         },
-        "description" : "Integrasjon som brukes for å konfigurere innsynintegrasjon"
+        "description" : "Integrasjon som brukes for å jobbe mot samtykke-tjenesten"
+      },
+      "BarnevernKontor" : {
+        "type" : "object",
+        "properties" : {
+          "kode" : {
+            "type" : "string"
+          },
+          "navn" : {
+            "type" : "string"
+          },
+          "orgnummer" : {
+            "type" : "string"
+          }
+        }
+      },
+      "BarnevernKontorResponse" : {
+        "type" : "object",
+        "properties" : {
+          "barnevernKontor" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/BarnevernKontor"
+            }
+          }
+        }
       },
       "Adresse" : {
         "type" : "object",
@@ -1986,6 +2087,9 @@
           "innsynIntegrasjon" : {
             "$ref" : "#/components/schemas/BarnevernIntegrasjon"
           },
+          "samtykkeIntegrasjon" : {
+            "$ref" : "#/components/schemas/BarnevernIntegrasjon"
+          },
           "systemId" : {
             "type" : "string",
             "description" : "SystemId til protokollsystemet som er opprettet",
@@ -2017,6 +2121,9 @@
             "type" : "string",
             "description" : "Leverandør",
             "enum" : [ "VISMA", "NETCOMPANY" ]
+          },
+          "offentligNokkel" : {
+            "type" : "string"
           }
         }
       },
@@ -2034,10 +2141,6 @@
       "Link" : {
         "type" : "object",
         "properties" : {
-          "uri" : {
-            "type" : "string",
-            "format" : "uri"
-          },
           "title" : {
             "type" : "string"
           },
@@ -2055,6 +2158,10 @@
           },
           "type" : {
             "type" : "string"
+          },
+          "uri" : {
+            "type" : "string",
+            "format" : "uri"
           },
           "params" : {
             "type" : "object",
@@ -2160,12 +2267,6 @@
       "Response" : {
         "type" : "object",
         "properties" : {
-          "cookies" : {
-            "type" : "object",
-            "additionalProperties" : {
-              "$ref" : "#/components/schemas/NewCookie"
-            }
-          },
           "links" : {
             "uniqueItems" : true,
             "type" : "array",
@@ -2281,18 +2382,10 @@
             "type" : "string",
             "format" : "date-time"
           },
-          "headers" : {
+          "cookies" : {
             "type" : "object",
-            "properties" : {
-              "empty" : {
-                "type" : "boolean"
-              }
-            },
             "additionalProperties" : {
-              "type" : "array",
-              "items" : {
-                "type" : "object"
-              }
+              "$ref" : "#/components/schemas/NewCookie"
             }
           },
           "metadata" : {
@@ -2315,6 +2408,20 @@
           },
           "entity" : {
             "type" : "object"
+          },
+          "headers" : {
+            "type" : "object",
+            "properties" : {
+              "empty" : {
+                "type" : "boolean"
+              }
+            },
+            "additionalProperties" : {
+              "type" : "array",
+              "items" : {
+                "type" : "object"
+              }
+            }
           }
         }
       },
@@ -2428,14 +2535,28 @@
           "navn" : {
             "type" : "string"
           },
+          "stottetProtokollNavn" : {
+            "type" : "string"
+          },
           "beskrivelse" : {
             "type" : "string"
           },
-          "part" : {
-            "$ref" : "#/components/schemas/PartResponse"
+          "parts" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/PartResponse"
+            }
           },
           "offentligNokkel" : {
             "$ref" : "#/components/schemas/OffentligNokkelResponse"
+          },
+          "opprettet" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "sistEndret" : {
+            "type" : "string",
+            "format" : "date-time"
           }
         }
       },
@@ -2496,13 +2617,24 @@
           "stottetProtokollNavn" : {
             "type" : "string"
           },
-          "stottetProtokollVersjon" : {
-            "type" : "string"
-          },
-          "part" : {
-            "type" : "string"
+          "parts" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/PartRequest"
+            }
           },
           "offentligNokkel" : {
+            "type" : "string"
+          }
+        }
+      },
+      "PartRequest" : {
+        "type" : "object",
+        "properties" : {
+          "partNavn" : {
+            "type" : "string"
+          },
+          "stottetProtokollVersjon" : {
             "type" : "string"
           }
         }
@@ -2608,11 +2740,17 @@
           "navn" : {
             "type" : "string"
           },
+          "stottetProtokollNavn" : {
+            "type" : "string"
+          },
           "beskrivelse" : {
             "type" : "string"
           },
-          "part" : {
-            "$ref" : "#/components/schemas/PartResponse"
+          "parter" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/PartResponse"
+            }
           },
           "system" : {
             "$ref" : "#/components/schemas/EksternProtokollSystemResponse"
@@ -2674,11 +2812,17 @@
           "navn" : {
             "type" : "string"
           },
+          "stottetProtokollNavn" : {
+            "type" : "string"
+          },
           "beskrivelse" : {
             "type" : "string"
           },
-          "part" : {
-            "$ref" : "#/components/schemas/PartSummaryResponse"
+          "parter" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/PartSummaryResponse"
+            }
           },
           "metrikk" : {
             "$ref" : "#/components/schemas/ProtokollKontoMetrikkResponse"
@@ -2746,6 +2890,14 @@
           },
           "fiksOrg" : {
             "$ref" : "#/components/schemas/FiksOrgResponse"
+          },
+          "opprettet" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "sistEndret" : {
+            "type" : "string",
+            "format" : "date-time"
           }
         }
       },
