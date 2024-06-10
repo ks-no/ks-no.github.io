@@ -437,6 +437,45 @@ Svar
 Det er mulig å bruke Skatteetatens delingstjeneste for skatte og inntektsopplysninger som en proxy-tjeneste i Fiks register og samtidig benytte seg av roller, rettighetsstyring og dataminimering som Fiks register tilbyr. Oppbygging av URL gjøres så likt som mulig Skatteetatens egen URL. Datamodellen forblir uendret.
 
 URL for proxy-api (GET):
+```<MILJØ_URL>/skatteetaten/formueinntekt/summertskatt/api/v2/{ROLLE_ID}/{STADIE}/{RETTIGHETSPAKKE}/{INNTEKTSAAR}/{PERSONIDENTIFIKATOR}```
+
+#### API-dokumentasjon
+Skatteetaten har lagt ut dokumentasjon her [Summert skattegrunnlag](https://skatteetaten.github.io/api-dokumentasjon/api/summertskattegrunnlag) og [Swagger](https://app.swaggerhub.com/apis/skatteetaten/summert-skattegrunnlag-api/2.0.0)
+
+#### Eksempel
+
+```json
+{
+  "personidentifikator": "03870349520",
+  "inntektsaar": "2021",
+  "skjermet": false,
+  "grunnlag": [
+    {
+      "tekniskNavn": "samledeOpptjenteRenterIInnenlandskeBanker",
+      "beloep": 19015,
+      "kategori": "inntekt"
+    },
+    {
+      "tekniskNavn": "samletPensjonFraFolketrygden",
+      "beloep": 894828,
+      "kategori": "inntekt"
+    },
+    {
+      "tekniskNavn": "samletAvkastningAvKapitalforsikringsavtale",
+      "beloep": 286299,
+      "kategori": "inntekt"
+    }
+  ],
+  "skatteoppgjoersdato": "2022-02-10",
+  "stadie": "oppgjoer",
+  "ajourholdstidspunkt": "2022-02-10T15:17:37Z"
+}
+```
+
+### Oppslag via proxy (gammel)
+Det er mulig å bruke Skatteetatens delingstjeneste for skatte og inntektsopplysninger som en proxy-tjeneste i Fiks register og samtidig benytte seg av roller, rettighetsstyring og dataminimering som Fiks register tilbyr. Oppbygging av URL gjøres så likt som mulig Skatteetatens egen URL. Datamodellen forblir uendret.
+
+URL for proxy-api (GET):
 ```<MILJØ_URL>/skatteetaten/formueinntekt/summertskatt/api/v1/{ROLLE_ID}/{STADIE}/{RETTIGHETSPAKKE}/{INNTEKTSAAR}/{PERSONIDENTIFIKATOR}```
 
 #### API-dokumentasjon
