@@ -8,6 +8,10 @@
       "url": "https://ks-no.github.io/",
       "email": "fiks@ks.no"
     },
+    "license": {
+      "name": "MIT",
+      "url": "https://opensource.org/licenses/MIT"
+    },
     "version": "v1"
   },
   "servers": [
@@ -32,13 +36,7 @@
       "get": {
         "parameters": [
           {
-            "name": "fiksorg",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
+            "$ref": "#/components/parameters/fiksorg"
           }
         ],
         "tags": [
@@ -58,15 +56,11 @@
               }
             }
           },
+          "400": {
+            "$ref": "#/components/responses/ugyldigParameterverdi"
+          },
           "403": {
-            "description": "Ugyldig tilgang",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorMessage"
-                }
-              }
-            }
+            "$ref": "#/components/responses/manglerTilgang"
           }
         }
       }
@@ -75,22 +69,10 @@
       "get": {
         "parameters": [
           {
-            "name": "fiksorg",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
+            "$ref": "#/components/parameters/fiksorg"
           },
           {
-            "name": "gruppe",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
+            "$ref": "#/components/parameters/gruppe"
           }
         ],
         "tags": [
@@ -110,15 +92,47 @@
               }
             }
           },
+          "400": {
+            "$ref": "#/components/responses/ugyldigParameterverdi"
+          },
           "403": {
-            "description": "Ugyldig tilgang",
+            "$ref": "#/components/responses/manglerTilgang"
+          }
+        }
+      }
+    },
+    "/autorisasjon-query/api/v1/organisasjoner/{fiksorg}/grupper/{gruppe}/medlemmer": {
+      "get": {
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/fiksorg"
+          },
+          {
+            "$ref": "#/components/parameters/gruppe"
+          }
+        ],
+        "tags": [
+          "Grupper"
+        ],
+        "description": "Henter medlemmer i gruppe",
+        "summary": "Henter alle medlemmer i gruppe",
+        "operationId": "hentMedlemmerIGruppe",
+        "responses": {
+          "200": {
+            "description": "Medlemmer i gruppe",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ErrorMessage"
+                  "$ref": "#/components/schemas/Brukere"
                 }
               }
             }
+          },
+          "400": {
+            "$ref": "#/components/responses/ugyldigParameterverdi"
+          },
+          "403": {
+            "$ref": "#/components/responses/manglerTilgang"
           }
         }
       }
@@ -132,7 +146,55 @@
         "bearerFormat": "JWT"
       }
     },
+    "parameters": {
+      "fiksorg": {
+        "name": "fiksorg",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "$ref": "#/components/schemas/FiksOrgId"
+        }
+      },
+      "gruppe": {
+        "name": "gruppe",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "$ref": "#/components/schemas/GruppeId"
+        }
+      }
+    },
     "schemas": {
+      "GruppeId": {
+        "type": "string",
+        "format": "uuid",
+        "description": "Gruppe id",
+        "example": "eae3db69-92fa-436d-98a0-61b27de52cf7"
+      },
+      "FiksOrgId": {
+        "type": "string",
+        "format": "uuid",
+        "description": "Fiksorg id",
+        "example": "5c6a590a-f34c-4694-a668-c56e161feb2f"
+      },
+      "PersonId": {
+        "type": "string",
+        "format": "uuid",
+        "description": "Unik bruker id",
+        "example": "17d86466-6672-45fe-8414-cc39f693ba7d"
+      },
+      "EksternRef": {
+        "type": "string",
+        "format": "uuid",
+        "description": "Ekstern referanse",
+        "example": "325b9601-97b5-4788-992b-24720da01bd0"
+      },
+      "Fodselsnummer": {
+        "description": "Fødselsnummer",
+        "type": "string",
+        "pattern": "^[0-9]{11}$",
+        "example": "09274734199"
+      },
       "Gruppe": {
         "type": "object",
         "properties": {
@@ -144,12 +206,13 @@
             "pattern": "^[A-ZÆØÅa-zæøå0-9ÁáÀàÂâÉéÈèÊêÍíÌìÎîÓóÒòÔôÚúÙùÛûÝýÄäËëÏïÖöÜü,.!?\\-:;/\\\\'()&+*=%§]+[A-ZÆØÅa-zæøå0-9ÁáÀàÂâÉéÈèÊêÍíÌìÎîÓóÒòÔôÚúÙùÛûÝýÄäËëÏïÖöÜü ,.!?\\-:;/\\\\'()&+*=%§]*[A-ZÆØÅa-zæøå0-9ÁáÀàÂâÉéÈèÊêÍíÌìÎîÓóÒòÔôÚúÙùÛûÝýÄäËëÏïÖöÜü,.!?\\-:;/\\\\'()&+*=%§]+$"
           },
           "id": {
-            "type": "string",
-            "description": "Gruppe id",
-            "format": "uuid"
+            "$ref": "#/components/schemas/GruppeId"
           },
           "kilde": {
             "$ref": "#/components/schemas/GruppeKilde"
+          },
+          "eksternRef": {
+            "$ref": "#/components/schemas/EksternRef"
           }
         },
         "required": [
@@ -162,9 +225,7 @@
         "type": "object",
         "properties": {
           "fiksorg": {
-            "type": "string",
-            "description": "Fiksorg som gruppene tilhører",
-            "format": "uuid"
+            "$ref": "#/components/schemas/FiksOrgId"
           },
           "grupper": {
             "type": "array",
@@ -184,6 +245,43 @@
         "enum": [
           "EKSTERN",
           "INTERN"
+        ]
+      },
+      "Bruker": {
+        "type": "object",
+        "properties": {
+          "personId": {
+            "$ref": "#/components/schemas/PersonId"
+          },
+          "fodselsnummer": {
+            "$ref": "#/components/schemas/Fodselsnummer"
+          },
+          "aktiv": {
+            "type": "boolean",
+            "description": "Brukes for å aktivere / deaktivere bruker. Deaktivert bruker vil miste alle tilganger"
+          },
+          "eksternRef": {
+            "$ref": "#/components/schemas/EksternRef"
+          }
+        },
+        "required": [
+          "personId",
+          "fodselsnummer",
+          "aktiv"
+        ]
+      },
+      "Brukere": {
+        "type": "object",
+        "properties": {
+          "brukere": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Bruker"
+            }
+          }
+        },
+        "required": [
+          "brukere"
         ]
       },
       "ErrorMessage": {
@@ -229,6 +327,36 @@
           "message": "Mangler tilgang",
           "errorId": "ee2ed64d-de8b-45f9-b9c6-3363d662d93b",
           "status": 403
+        }
+      }
+    },
+    "responses": {
+      "ugyldigParameterverdi": {
+        "description": "Ugyldig input",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorMessage"
+            },
+            "example": {
+              "message": "Ugyldig input",
+              "status": 400
+            }
+          }
+        }
+      },
+      "manglerTilgang": {
+        "description": "Ugyldig tilgang",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorMessage"
+            },
+            "example": {
+              "message": "Ugyldig tilgang",
+              "status": 403
+            }
+          }
         }
       }
     }
