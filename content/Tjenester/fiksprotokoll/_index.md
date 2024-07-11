@@ -12,14 +12,15 @@ Videre at det kun sendes meldinger mellom avsender- og mottakersystem som er for
 
 ## Status protokoller
 
-| Protokoll                                                     | Status                                                              | Estimert ferdig |
-|---------------------------------------------------------------|---------------------------------------------------------------------|-----------------|
-| Fiks arkiv                                                    | Under implementering hos leverandører. I pilot                      | 4. april        |
-| Fiks politisk behandling                                      | Protokoll har vært under utvikling og er satt på pause.             | Uklart          |
-| Fiks plan                                                     | Under implementering hos leverandører. Pilot når de første er klar. | 29. mai         |
-| Fiks matrikkelføring                                          | I pilot-testing og delvis i produksjon                              | 28. februar     |
-| Barnevern - fagsysteminnrapportering til Barnevernsregisteret | Pilot i produksjon                                                  | Ferdig          |
+| Protokoll                                                     | Status                                                                      | Estimert ferdig    |
+|---------------------------------------------------------------|-----------------------------------------------------------------------------|--------------------|
+| Fiks arkiv                                                    | Under implementering hos leverandører. Protokoll ferdigstilt.               | Ferdig             |
+| Fiks politisk behandling                                      | Protokoll har vært under utvikling og er satt på pause.                     | Pause              |
+| Fiks plan                                                     | Under implementering hos leverandører. Pilotversjon av protokollen lansert. | 4 kvartal 2024 (*) |
+| Fiks matrikkelføring                                          | I pilot-testing og i produksjon. Protokoll ferdigstilt.                     | Ferdig             |
+| Barnevern - fagsysteminnrapportering til Barnevernsregisteret | Brukes i produksjon                                                         | Ferdig             |
 
+(*) Fiks Plan er lansert med ulik pilot status fordelt på tjenestene pga eksterne avhengigheter. Les mer i [wiki](https://github.com/ks-no/fiks-plan-specification/wiki) for Fiks Plan.
 
 #### Plan
 ![plan for fiks protokoller](/Tjenester/images/fiks-protokoller-gantt.png)
@@ -53,8 +54,16 @@ I tillegg er det to veiledninger for hvordan du kan generere nytt passord til sy
 * [Generer nytt passord]({{< ref "nytt_passord.md" >}})
 * [Ny offentlig nøkkel]({{< ref "laste_opp_ny_offentlig_nokkel.md" >}})
 
-### Tjenester under Fiks protokoll 
-{{% children style="h5" depth="1" /%}}
+### Protokoller under Fiks protokoll
+* [Fiks Arkiv]({{< arkiv.md" >}})
+* [Fiks Plan]({{< plan.md" >}})
+* [Fiks Matrikkelføring]({{< matrikkelfoering.md" >}})
+* [Barnevern - fagsysteminnrapportering til Barnevernsregisteret (SSB)]({{< ssbbarnevern.md" >}})
+* [Fiks arkivlett byggesak]({{< arkivlett.md" >}})
+
+### Tjenester under Fiks protokoll
+* [Fiks IO]({{< fiksio.md" >}})
+
 
 ### Termer
 * Protokollsystem - Representerer et system som skal sende og motta meldinger over Fiks Protokoll. Dette vil være et arkiv, et fagsystem som skal arkivere, en matrikkelklient etc. Merk: Et system kan bruke flere protokoller, f.eks. både Fiks Arkiv og Fiks Plan.
