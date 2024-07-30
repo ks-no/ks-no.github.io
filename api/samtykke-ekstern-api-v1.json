@@ -5,7 +5,7 @@
     "description" : "Fiks Samtykke Ekstern service",
     "contact" : {
       "name" : "Fiks-brukerstøtte",
-      "url" : "https://ks-no.github.io/",
+      "url" : "https://developer.fiks.ks.no",
       "email" : "fiks-utvikling@ks.no"
     },
     "version" : "v1"
@@ -347,7 +347,7 @@
         }
       },
       "EndreInnbyggertjenesterTilgangForPartRequest" : {
-        "required" : [ "partFnr", "skalHaTilgang" ],
+        "required" : [ "partFnr", "saksbehandler", "skalHaTilgang" ],
         "type" : "object",
         "properties" : {
           "partFnr" : {
@@ -357,22 +357,6 @@
           "skalHaTilgang" : {
             "type" : "boolean",
             "description" : "Skal innbygger få tilgang"
-          }
-        }
-      },
-      "EndreSamtykkeRequest" : {
-        "required" : [ "akseptfrist", "saksbehandler" ],
-        "type" : "object",
-        "properties" : {
-          "akseptfrist" : {
-            "type" : "string",
-            "description" : "Dato på ISO-8601 format som forteller akseptfrist for samtykket",
-            "format" : "date"
-          },
-          "utlopsDato" : {
-            "type" : "string",
-            "description" : "Dato på ISO-8601 format som forteller hvor lenge samtykket vil være gyldig",
-            "format" : "date"
           },
           "saksbehandler" : {
             "$ref" : "#/components/schemas/Saksbehandler"
@@ -394,8 +378,27 @@
         },
         "description" : "Info om saksbehandler som oppretter samtykke"
       },
+      "EndreSamtykkeRequest" : {
+        "required" : [ "saksbehandler", "svarfrist" ],
+        "type" : "object",
+        "properties" : {
+          "svarfrist" : {
+            "type" : "string",
+            "description" : "Dato på ISO-8601 format som forteller svarfrist for samtykket",
+            "format" : "date"
+          },
+          "utlopsdato" : {
+            "type" : "string",
+            "description" : "Dato på ISO-8601 format som forteller hvor lenge samtykket vil være gyldig",
+            "format" : "date"
+          },
+          "saksbehandler" : {
+            "$ref" : "#/components/schemas/Saksbehandler"
+          }
+        }
+      },
       "SamtykkeHendelse" : {
-        "required" : [ "hendelseType", "sekvensnummer", "tidspunkt" ],
+        "required" : [ "hendelseBeskrivelse", "hendelseType", "sekvensnummer", "tidspunkt" ],
         "type" : "object",
         "properties" : {
           "sekvensnummer" : {
@@ -409,12 +412,13 @@
             "enum" : [ "OPPRETTET", "AKSEPTERT_AV_PART", "AVSLAATT_AV_PART", "TRUKKET_AV_PART", "OPPDATERT_PAA_VEGNE_AV_PART", "REDIGERT", "ENDRET_TILGANG_TIL_PART" ]
           },
           "hendelseBeskrivelse" : {
+            "maxLength" : 500,
             "type" : "string",
             "description" : "Beskrivelse av hendelsen"
           },
           "tidspunkt" : {
             "type" : "string",
-            "description" : "Tidspunkt hendelsen inntraff",
+            "description" : "Dato på ISO-8601 format som forteller når hendelsen inntraff",
             "format" : "date-time"
           },
           "partFnr" : {
@@ -424,6 +428,10 @@
           "saksbehandlerId" : {
             "type" : "string",
             "description" : "Id til involvert saksbehandler"
+          },
+          "fagsystem" : {
+            "type" : "string",
+            "description" : "Fagsystem benyttet av involvert saksbehandler"
           }
         }
       },
@@ -438,49 +446,26 @@
           }
         }
       },
-      "Dokument" : {
-        "required" : [ "filnavn", "lenke", "mimeType", "storrelse", "tittel" ],
-        "type" : "object",
-        "properties" : {
-          "filnavn" : {
-            "type" : "string",
-            "description" : "Filnavn for dokumentet"
-          },
-          "mimeType" : {
-            "type" : "string",
-            "description" : "MimeType for dokumentet"
-          },
-          "tittel" : {
-            "type" : "string",
-            "description" : "Tittel for dokumentet"
-          },
-          "storrelse" : {
-            "type" : "integer",
-            "description" : "Størrelse for dokumentet",
-            "format" : "int64"
-          },
-          "lenke" : {
-            "type" : "string",
-            "description" : "Lenke til dokumentet"
-          }
-        },
-        "description" : "Data for dokument som beskriver samtykke"
-      },
       "Mappe" : {
+        "required" : [ "mappeId", "systemId" ],
         "type" : "object",
         "properties" : {
           "mappeId" : {
-            "type" : "string"
+            "type" : "string",
+            "description" : "ID for mappe tilknyttet samtykket"
           },
           "systemId" : {
-            "type" : "string"
+            "type" : "string",
+            "description" : "ID for system tilknyttet samtykket"
           },
           "saksaar" : {
             "type" : "integer",
+            "description" : "Saksår tilknyttet samtykket",
             "format" : "int32"
           },
           "sakssekvensnummer" : {
             "type" : "integer",
+            "description" : "Sakssekvensnummer tilknyttet samtykket",
             "format" : "int64"
           }
         },
@@ -523,7 +508,7 @@
         "description" : "Parter som skal gi samtykke for sak"
       },
       "SamtykkeEkstern" : {
-        "required" : [ "akseptfrist", "dokument", "mappe", "personer", "samtykkeId", "samtykkeNavn", "samtykkeStatus", "utlopsDato" ],
+        "required" : [ "mappe", "personer", "samtykkeId", "samtykkeNavn", "samtykkeStatus" ],
         "type" : "object",
         "properties" : {
           "personer" : {
@@ -546,18 +531,15 @@
           "mappe" : {
             "$ref" : "#/components/schemas/Mappe"
           },
-          "akseptfrist" : {
+          "svarfrist" : {
             "type" : "string",
             "description" : "Dato Dato på ISO-8601 format som forteller signeringsfrist for samtykke",
             "format" : "date"
           },
-          "utlopsDato" : {
+          "utlopsdato" : {
             "type" : "string",
             "description" : "Dato Dato på ISO-8601 format som forteller hvor lenge samtykket er gyldig",
             "format" : "date"
-          },
-          "dokument" : {
-            "$ref" : "#/components/schemas/Dokument"
           }
         }
       },
@@ -597,10 +579,11 @@
         }
       },
       "OpprettSamtykkeRequest" : {
-        "required" : [ "akseptfrist", "mappe", "personer", "saksbehandler", "samtykkeNavn" ],
+        "required" : [ "mappe", "personer", "saksbehandler", "samtykkeNavn", "svarfrist" ],
         "type" : "object",
         "properties" : {
           "samtykkeNavn" : {
+            "maxLength" : 100,
             "type" : "string",
             "description" : "Navn på samtykket som skal opprettes"
           },
@@ -610,12 +593,12 @@
           "mappe" : {
             "$ref" : "#/components/schemas/Mappe"
           },
-          "akseptfrist" : {
+          "svarfrist" : {
             "type" : "string",
-            "description" : "Dato på ISO-8601 format som forteller akseptfrist for samtykke",
+            "description" : "Dato på ISO-8601 format som forteller svarfrist for samtykke",
             "format" : "date"
           },
-          "utlopsDato" : {
+          "utlopsdato" : {
             "type" : "string",
             "description" : "Dato på ISO-8601 format som forteller hvor lenge samtykket vil være gyldig",
             "format" : "date"
