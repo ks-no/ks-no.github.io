@@ -154,52 +154,6 @@
         }
       }
     },
-    "/samtykke/api/v1/ekstern/{fiksOrgId}/hentSamtykke/{samtykkeId}" : {
-      "get" : {
-        "tags" : [ "samtykke-ekstern" ],
-        "description" : "Henter et samtykke for person",
-        "operationId" : "hentSamtykke",
-        "parameters" : [ {
-          "name" : "fiksOrgId",
-          "in" : "path",
-          "required" : true,
-          "schema" : {
-            "type" : "string",
-            "format" : "uuid"
-          }
-        }, {
-          "name" : "samtykkeId",
-          "in" : "path",
-          "required" : true,
-          "schema" : {
-            "type" : "string",
-            "format" : "uuid"
-          }
-        } ],
-        "responses" : {
-          "200" : {
-            "description" : "Henter samtykke",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/SamtykkerEkstern"
-                }
-              }
-            }
-          },
-          "default" : {
-            "description" : "Noe gikk galt",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/ErrorMessage"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
     "/samtykke/api/v1/ekstern/{fiksOrgId}/oppdaterStatusForPart/{samtykkeId}" : {
       "put" : {
         "tags" : [ "samtykke-ekstern" ],
@@ -446,6 +400,29 @@
           }
         }
       },
+      "OppdaterStatusForPartRequest" : {
+        "required" : [ "partFnr", "saksbehandler", "samtykkeSvarStatus" ],
+        "type" : "object",
+        "properties" : {
+          "partFnr" : {
+            "type" : "string",
+            "description" : "Fnr til part som får oppdatert status"
+          },
+          "oppdatertDato" : {
+            "type" : "string",
+            "description" : "Dato på ISO-8601 format som forteller når status ble oppdatert",
+            "format" : "date"
+          },
+          "saksbehandler" : {
+            "$ref" : "#/components/schemas/Saksbehandler"
+          },
+          "samtykkeSvarStatus" : {
+            "type" : "string",
+            "description" : "Ny status for samtykke",
+            "enum" : [ "VENTER_PAA_SVAR", "SAMTYKKET", "IKKE_SAMTYKKET", "TRUKKET" ]
+          }
+        }
+      },
       "Mappe" : {
         "required" : [ "mappeId", "systemId" ],
         "type" : "object",
@@ -470,113 +447,6 @@
           }
         },
         "description" : "Informasjon om mappe knyttet til samtykket"
-      },
-      "PersonEkstern" : {
-        "required" : [ "fnr", "harTilgangTilInnbyggertjenester", "navn", "samtykkeSvarStatus" ],
-        "type" : "object",
-        "properties" : {
-          "fnr" : {
-            "pattern" : "^[0-9]{11}$",
-            "type" : "string",
-            "description" : "Personnummer for person"
-          },
-          "navn" : {
-            "type" : "string",
-            "description" : "Navn for person"
-          },
-          "samtykkeSvarStatus" : {
-            "type" : "string",
-            "description" : "Status for samtykke",
-            "enum" : [ "VENTER_PAA_SVAR", "SAMTYKKET", "IKKE_SAMTYKKET", "TRUKKET" ]
-          },
-          "harTilgangTilInnbyggertjenester" : {
-            "type" : "boolean",
-            "description" : "Har person tilgang til innbyggertjenester"
-          }
-        }
-      },
-      "PersonerEkstern" : {
-        "type" : "object",
-        "properties" : {
-          "personer" : {
-            "type" : "array",
-            "items" : {
-              "$ref" : "#/components/schemas/PersonEkstern"
-            }
-          }
-        },
-        "description" : "Parter som skal gi samtykke for sak"
-      },
-      "SamtykkeEkstern" : {
-        "required" : [ "mappe", "personer", "samtykkeId", "samtykkeNavn", "samtykkeStatus" ],
-        "type" : "object",
-        "properties" : {
-          "personer" : {
-            "$ref" : "#/components/schemas/PersonerEkstern"
-          },
-          "samtykkeId" : {
-            "type" : "string",
-            "description" : "Id for samtykket",
-            "format" : "uuid"
-          },
-          "samtykkeNavn" : {
-            "type" : "string",
-            "description" : "Navn på samtykket"
-          },
-          "samtykkeStatus" : {
-            "type" : "string",
-            "description" : "Status på samtykket",
-            "enum" : [ "SAMTYKKET", "TRUKKET", "IKKE_SAMTYKKET", "VENTER_PAA_SVAR", "SVARFRIST_PASSERT", "UTLOPT" ]
-          },
-          "mappe" : {
-            "$ref" : "#/components/schemas/Mappe"
-          },
-          "svarfrist" : {
-            "type" : "string",
-            "description" : "Dato på ISO-8601 format som forteller signeringsfrist for samtykke",
-            "format" : "date"
-          },
-          "utlopsdato" : {
-            "type" : "string",
-            "description" : "Dato på ISO-8601 format som forteller hvor lenge samtykket er gyldig",
-            "format" : "date"
-          }
-        }
-      },
-      "SamtykkerEkstern" : {
-        "required" : [ "samtykker" ],
-        "type" : "object",
-        "properties" : {
-          "samtykker" : {
-            "type" : "array",
-            "items" : {
-              "$ref" : "#/components/schemas/SamtykkeEkstern"
-            }
-          }
-        }
-      },
-      "OppdaterStatusForPartRequest" : {
-        "required" : [ "partFnr", "saksbehandler", "samtykkeSvarStatus" ],
-        "type" : "object",
-        "properties" : {
-          "partFnr" : {
-            "type" : "string",
-            "description" : "Fnr til part som får oppdatert status"
-          },
-          "oppdatertDato" : {
-            "type" : "string",
-            "description" : "Dato på ISO-8601 format som forteller når status ble oppdatert",
-            "format" : "date"
-          },
-          "saksbehandler" : {
-            "$ref" : "#/components/schemas/Saksbehandler"
-          },
-          "samtykkeSvarStatus" : {
-            "type" : "string",
-            "description" : "Ny status for samtykke",
-            "enum" : [ "VENTER_PAA_SVAR", "SAMTYKKET", "IKKE_SAMTYKKET", "TRUKKET" ]
-          }
-        }
       },
       "OpprettSamtykkeRequest" : {
         "required" : [ "mappe", "personer", "saksbehandler", "samtykkeNavn", "svarfrist" ],
