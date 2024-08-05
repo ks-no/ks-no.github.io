@@ -156,8 +156,8 @@ Meldingstype: `no.ks.fiks.kvittering.serverfeil.v1`
 
 ##### Årsaker
 
-Hvis man får denne Fiks IO serverfeil meldingen tilbake så betyr det at noe har gått galt og Fiks IO har håndtert det. 
-Akkurat nå sendes meldingen når det har vært forsøkt levert 3 ganger. F.eks. mottaker har hentet ned meldingen uten å “acke” meldingen 3 ganger, eller at mottaker har nacket med requeue 3 ganger.
+Hvis man får denne Fiks IO serverfeil meldingen tilbake så betyr det at noe har gått galt i levering til mottaker. 
+Akkurat nå sendes denne meldingen kun når det har vært forsøkt levert 3 ganger. F.eks. mottaker har hentet ned meldingen uten å “acke” meldingen 3 ganger, eller at mottaker har nacket med requeue (nackWithReque) 3 ganger.
 
 Merk at de fleste protokollene har også en serverfeil meldingstype som kan sendes fra mottaker av din melding. 
 Hvis man får protokollens serverfeil melding tilbake, f.eks. for Fiks-Arkiv med meldingstypen `no.ks.fiks.arkiv.v1.feilmelding.serverfeil`, så vil det bety at mottaker feilet og sendte denne meldingen kontrollert tilbake med en mulighet for å beskrive hva som gikk galt (forhåpentligvis acket meldingen og sendte denne serverfeil meldingen tilbake).
@@ -287,11 +287,14 @@ Merk at det er egentlig bare ett Fiks IO API som begge systemene bruker, men det
 Når man har mottatt en melding og vellykket håndtert den så skal man sørge for å bekrefte meldingen som mottatt ([Ack](https://www.rabbitmq.com/docs/confirms)).
 Dette tar bort meldingen fra køen.
 
-##### Avvis og send tilbake på køen (NackWithReque)
-Meldinger støtter dette men vi anbefaler det ikke da det betyr at meldingen bare kommer på nytt fra Fiks IO og dette teller som forsøk på å hente meldingen. 
-Dette betyr at man fort "bruker opp" antall forsøk på å lese meldingen og den havner i DLQ (dead-letter-queue) og deretter blir til en feilmelding tilbake til avsender.
-
 ##### Avvis (Nack)
 Meldinger støtter dette men vi anbefaler det ikke da det betyr at man totalt avviser meldingen.
-Meldinger som avvises vil **ikke** føre til feilmelding tilbake til avsender fra Fiks IO. 
-Hvis man bruker dette må man være sikker på at avsender håndterer manglende respons på avsendt melding. 
+Meldinger som avvises vil **ikke** føre til feilmelding tilbake til avsender fra Fiks IO.
+Hvis man bruker dette må man være sikker på at avsender håndterer manglende respons på avsendt melding.
+
+##### Avvis og send tilbake på køen (NackWithReque)
+Meldinger støtter dette men vi anbefaler stort sett ikke å bruke dette da det betyr at meldingen bare kommer på nytt fra Fiks IO og dette teller som forsøk på å hente meldingen. 
+Dette betyr at man fort "bruker opp" antall forsøk på å lese meldingen og den havner i DLQ (dead-letter-queue) og deretter blir til en feilmelding tilbake til avsender.
+Det vil være tilfeller hvor man allikevel ønsker å gjøre dette, f.eks. hvis man får en uventet feil og ikke har noen annen måte å gi tilbakemelding til avsender at mottak feilet. 
+
+
