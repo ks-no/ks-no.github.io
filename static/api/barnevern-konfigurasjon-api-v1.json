@@ -22,34 +22,6 @@
     "description" : "API for konfigurasjon av oppsett for innsynsforespørsler"
   } ],
   "paths" : {
-    "/barnevern/konfigurasjon/api/v1/{fiksOrgId}/bydelskontor/{kontorId}/aktiver" : {
-      "delete" : {
-        "tags" : [ "BarnevernKonfigurasjon" ],
-        "summary" : "Aktiverer bydelskontor etter at oppsett er utført.",
-        "operationId" : "aktiverBydelskontor",
-        "parameters" : [ {
-          "name" : "fiksOrgId",
-          "in" : "path",
-          "required" : true,
-          "schema" : {
-            "type" : "string",
-            "format" : "uuid"
-          }
-        }, {
-          "name" : "kontorId",
-          "in" : "path",
-          "required" : true,
-          "schema" : {
-            "type" : "string"
-          }
-        } ],
-        "responses" : {
-          "204" : {
-            "description" : "Fjernet"
-          }
-        }
-      }
-    },
     "/barnevern/konfigurasjon/api/v1/{fiksOrgId}/bydelskontor/{kontorId}/endre" : {
       "put" : {
         "tags" : [ "BarnevernKonfigurasjon" ],
@@ -130,7 +102,7 @@
         }
       }
     },
-    "/barnevern/konfigurasjon/api/v1/{fiksOrgId}/kontor/{kontorId}/endre" : {
+    "/barnevern/konfigurasjon/api/v1/{fiksOrgId}/kontor/nytt" : {
       "put" : {
         "tags" : [ "BarnevernKonfigurasjon" ],
         "summary" : "Legger til ny enhet med ny info. Oppretter ny edialog mottaker/svarut konto.",
@@ -143,19 +115,12 @@
             "type" : "string",
             "format" : "uuid"
           }
-        }, {
-          "name" : "kontorId",
-          "in" : "path",
-          "required" : true,
-          "schema" : {
-            "type" : "string"
-          }
         } ],
         "requestBody" : {
           "content" : {
             "application/json" : {
               "schema" : {
-                "$ref" : "#/components/schemas/EndreEnhetRequest"
+                "$ref" : "#/components/schemas/LeggTilEnhetRequest"
               }
             }
           }
@@ -262,97 +227,12 @@
           "in" : "path",
           "required" : true,
           "schema" : {
-            "type" : "string",
-            "format" : "uuid"
+            "type" : "string"
           }
         } ],
         "responses" : {
           "204" : {
             "description" : "Fjernet"
-          }
-        }
-      }
-    },
-    "/barnevern/konfigurasjon/api/v1/{fiksOrgId}/kontor/{kontorId}/orgnr/{orgnr}" : {
-      "put" : {
-        "tags" : [ "BarnevernKonfigurasjon" ],
-        "summary" : "Knytt gammelt orgnr til kontor.",
-        "operationId" : "registrerGammeltOrgnrPaEnhet",
-        "parameters" : [ {
-          "name" : "fiksOrgId",
-          "in" : "path",
-          "required" : true,
-          "schema" : {
-            "type" : "string",
-            "format" : "uuid"
-          }
-        }, {
-          "name" : "kontorId",
-          "in" : "path",
-          "required" : true,
-          "schema" : {
-            "type" : "string",
-            "format" : "uuid"
-          }
-        }, {
-          "name" : "orgnr",
-          "in" : "path",
-          "required" : true,
-          "schema" : {
-            "type" : "string"
-          }
-        } ],
-        "responses" : {
-          "200" : {
-            "description" : "Endret",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/KontorModel"
-                }
-              }
-            }
-          }
-        }
-      },
-      "delete" : {
-        "tags" : [ "BarnevernKonfigurasjon" ],
-        "summary" : "Fjern gammelt orgnr fra kontor",
-        "operationId" : "fjernGammeltOrgnrPaEnhet",
-        "parameters" : [ {
-          "name" : "fiksOrgId",
-          "in" : "path",
-          "required" : true,
-          "schema" : {
-            "type" : "string",
-            "format" : "uuid"
-          }
-        }, {
-          "name" : "kontorId",
-          "in" : "path",
-          "required" : true,
-          "schema" : {
-            "type" : "string",
-            "format" : "uuid"
-          }
-        }, {
-          "name" : "orgnr",
-          "in" : "path",
-          "required" : true,
-          "schema" : {
-            "type" : "string"
-          }
-        } ],
-        "responses" : {
-          "200" : {
-            "description" : "Endret",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/KontorModel"
-                }
-              }
-            }
           }
         }
       }
@@ -596,12 +476,20 @@
         }
       }
     },
-    "/barnevern/konfigurasjon/api/v1/enhetsregister/{orgnr}" : {
+    "/barnevern/konfigurasjon/api/v1/{fiksOrgId}/enhetsregister/{orgnr}" : {
       "get" : {
         "tags" : [ "BarnevernKonfigurasjon" ],
         "summary" : "Oppslag mot Enhetsregisteret",
         "operationId" : "oppslagEnhetsregister",
         "parameters" : [ {
+          "name" : "fiksOrgId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        }, {
           "name" : "orgnr",
           "in" : "path",
           "required" : true,
@@ -1414,32 +1302,41 @@
         },
         "description" : "Integrasjon som brukes for å jobbe mot samtykke-tjenesten"
       },
-      "EndreEnhetRequest" : {
+      "LeggTilEnhetRequest" : {
+        "required" : [ "brukEnhetsregisterInfo", "orgnr" ],
         "type" : "object",
         "properties" : {
-          "nyttOrgnr" : {
-            "type" : "string"
+          "orgnr" : {
+            "type" : "string",
+            "description" : "Orgnr til enhet som skal håndtere barnevernsaker"
           },
           "brukEnhetsregisterInfo" : {
-            "type" : "boolean"
+            "type" : "boolean",
+            "description" : "Angir om man skal gjøre oppslag mot enhetsregister for å finne navn/postadresse, eller om man skal bruke egendefinerte verdier for disse"
           },
           "navn" : {
-            "type" : "string"
+            "type" : "string",
+            "description" : "Navn på enhet. Påkrevd hvis brukEnhetsregisterInfo er false"
           },
           "adresselinje1" : {
-            "type" : "string"
+            "type" : "string",
+            "description" : "Postadresse på enhet. Påkrevd hvis brukEnhetsregisterInfo er false"
           },
           "adresselinje2" : {
-            "type" : "string"
+            "type" : "string",
+            "description" : "Postadresse på enhet."
           },
           "adresselinje3" : {
-            "type" : "string"
+            "type" : "string",
+            "description" : "Postadresse på enhet."
           },
           "postnummer" : {
-            "type" : "string"
+            "type" : "string",
+            "description" : "Postnummer på enhet. Påkrevd hvis brukEnhetsregisterInfo er false"
           },
           "poststed" : {
-            "type" : "string"
+            "type" : "string",
+            "description" : "Poststed på enhet. Påkrevd hvis brukEnhetsregisterInfo er false"
           }
         }
       },
@@ -1767,44 +1664,6 @@
           }
         }
       },
-      "LeggTilEnhetRequest" : {
-        "required" : [ "brukEnhetsregisterInfo", "orgnr" ],
-        "type" : "object",
-        "properties" : {
-          "orgnr" : {
-            "type" : "string",
-            "description" : "Orgnr til enhet som skal håndtere barnevernsaker"
-          },
-          "brukEnhetsregisterInfo" : {
-            "type" : "boolean",
-            "description" : "Angir om man skal gjøre oppslag mot enhetsregister for å finne navn/postadresse, eller om man skal bruke egendefinerte verdier for disse"
-          },
-          "navn" : {
-            "type" : "string",
-            "description" : "Navn på enhet. Påkrevd hvis brukEnhetsregisterInfo er false"
-          },
-          "adresselinje1" : {
-            "type" : "string",
-            "description" : "Postadresse på enhet. Påkrevd hvis brukEnhetsregisterInfo er false"
-          },
-          "adresselinje2" : {
-            "type" : "string",
-            "description" : "Postadresse på enhet."
-          },
-          "adresselinje3" : {
-            "type" : "string",
-            "description" : "Postadresse på enhet."
-          },
-          "postnummer" : {
-            "type" : "string",
-            "description" : "Postnummer på enhet. Påkrevd hvis brukEnhetsregisterInfo er false"
-          },
-          "poststed" : {
-            "type" : "string",
-            "description" : "Poststed på enhet. Påkrevd hvis brukEnhetsregisterInfo er false"
-          }
-        }
-      },
       "KontorModels" : {
         "type" : "object",
         "properties" : {
@@ -1846,6 +1705,10 @@
           "title" : {
             "type" : "string"
           },
+          "uri" : {
+            "type" : "string",
+            "format" : "uri"
+          },
           "uriBuilder" : {
             "$ref" : "#/components/schemas/UriBuilder"
           },
@@ -1857,10 +1720,6 @@
             "items" : {
               "type" : "string"
             }
-          },
-          "uri" : {
-            "type" : "string",
-            "format" : "uri"
           },
           "type" : {
             "type" : "string"
@@ -1976,9 +1835,6 @@
               "$ref" : "#/components/schemas/Link"
             }
           },
-          "statusInfo" : {
-            "$ref" : "#/components/schemas/StatusType"
-          },
           "mediaType" : {
             "$ref" : "#/components/schemas/MediaType"
           },
@@ -1987,6 +1843,12 @@
             "type" : "array",
             "items" : {
               "type" : "string"
+            }
+          },
+          "cookies" : {
+            "type" : "object",
+            "additionalProperties" : {
+              "$ref" : "#/components/schemas/NewCookie"
             }
           },
           "entityTag" : {
@@ -2006,11 +1868,8 @@
               }
             }
           },
-          "cookies" : {
-            "type" : "object",
-            "additionalProperties" : {
-              "$ref" : "#/components/schemas/NewCookie"
-            }
+          "statusInfo" : {
+            "$ref" : "#/components/schemas/StatusType"
           },
           "closed" : {
             "type" : "boolean"
