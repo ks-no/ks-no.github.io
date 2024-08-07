@@ -55,14 +55,14 @@ I tillegg er det to veiledninger for hvordan du kan generere nytt passord til sy
 * [Ny offentlig nøkkel]({{< ref "laste_opp_ny_offentlig_nokkel.md" >}})
 
 ### Protokoller under Fiks protokoll
-* [Fiks Arkiv]({{< arkiv.md" >}})
-* [Fiks Plan]({{< plan.md" >}})
-* [Fiks Matrikkelføring]({{< matrikkelfoering.md" >}})
-* [Barnevern - fagsysteminnrapportering til Barnevernsregisteret (SSB)]({{< ssbbarnevern.md" >}})
-* [Fiks arkivlett byggesak]({{< arkivlett.md" >}})
+* [Fiks Arkiv]({{< ref "arkiv.md" >}})
+* [Fiks Plan]({{< ref "plan.md" >}})
+* [Fiks Matrikkelføring]({{< ref "matrikkelfoering.md" >}})
+* [Barnevern - fagsysteminnrapportering til Barnevernsregisteret (SSB)]({{< ref "ssbbarnevern.md" >}})
+* [Fiks arkivlett byggesak]({{< ref "arkivlett.md" >}})
 
 ### Tjenester under Fiks protokoll
-* [Fiks IO]({{< fiksio.md" >}})
+* [Fiks IO]({{< ref "fiksio.md" >}})
 
 
 ### Termer
