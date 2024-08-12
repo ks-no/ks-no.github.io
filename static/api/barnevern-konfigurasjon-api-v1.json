@@ -340,6 +340,34 @@
         }
       }
     },
+    "/barnevern/konfigurasjon/api/v1/{fiksOrgId}/barnevernkontor" : {
+      "get" : {
+        "tags" : [ "BarnevernKonfigurasjon" ],
+        "summary" : "Henter barnevernkontor for kommune som støtter bydeler",
+        "operationId" : "hentBarnevernKontor",
+        "parameters" : [ {
+          "name" : "fiksOrgId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "BarnevernKontor",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Bydelskontor"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/barnevern/konfigurasjon/api/v1/{fiksOrgId}/ressurser" : {
       "get" : {
         "tags" : [ "BarnevernKonfigurasjon" ],
@@ -774,7 +802,7 @@
       "get" : {
         "tags" : [ "BarnevernKonfigurasjonWizard" ],
         "summary" : "Henter barnevernkontor for kommune som støtter bydeler",
-        "operationId" : "hentBarnevernKontor",
+        "operationId" : "hentBarnevernKontor_1",
         "parameters" : [ {
           "name" : "fiksOrgId",
           "in" : "path",
@@ -1495,6 +1523,101 @@
           }
         }
       },
+      "AdministratorModel" : {
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "fdato" : {
+            "type" : "string"
+          },
+          "navn" : {
+            "type" : "string"
+          }
+        }
+      },
+      "Bydelskontor" : {
+        "type" : "object",
+        "properties" : {
+          "kontor" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/KontorBydelModel"
+            }
+          }
+        }
+      },
+      "KontaktpersonModel" : {
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "personId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "navn" : {
+            "type" : "string"
+          },
+          "epost" : {
+            "type" : "string"
+          },
+          "admin" : {
+            "type" : "boolean"
+          }
+        }
+      },
+      "KontorBydelModel" : {
+        "type" : "object",
+        "properties" : {
+          "kontorId" : {
+            "type" : "string"
+          },
+          "orgnr" : {
+            "type" : "string"
+          },
+          "navn" : {
+            "type" : "string"
+          },
+          "adresselinje1" : {
+            "type" : "string"
+          },
+          "adresselinje2" : {
+            "type" : "string"
+          },
+          "adresselinje3" : {
+            "type" : "string"
+          },
+          "postnummer" : {
+            "type" : "string"
+          },
+          "poststed" : {
+            "type" : "string"
+          },
+          "aktiv" : {
+            "type" : "boolean"
+          },
+          "brukEnhetsregisterInfo" : {
+            "type" : "boolean"
+          },
+          "kontaktpersoner" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/KontaktpersonModel"
+            }
+          },
+          "administratorer" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/AdministratorModel"
+            }
+          }
+        }
+      },
       "BarnevernProtokollSystem" : {
         "required" : [ "integrasjonId" ],
         "type" : "object",
@@ -1588,28 +1711,6 @@
           }
         },
         "description" : "Informasjon om person som skal få admin rettigheter"
-      },
-      "KontaktpersonModel" : {
-        "type" : "object",
-        "properties" : {
-          "id" : {
-            "type" : "string",
-            "format" : "uuid"
-          },
-          "personId" : {
-            "type" : "string",
-            "format" : "uuid"
-          },
-          "navn" : {
-            "type" : "string"
-          },
-          "epost" : {
-            "type" : "string"
-          },
-          "admin" : {
-            "type" : "boolean"
-          }
-        }
       },
       "EnhetModel" : {
         "type" : "object",
@@ -1712,6 +1813,10 @@
       "Link" : {
         "type" : "object",
         "properties" : {
+          "uri" : {
+            "type" : "string",
+            "format" : "uri"
+          },
           "title" : {
             "type" : "string"
           },
@@ -1729,10 +1834,6 @@
           },
           "type" : {
             "type" : "string"
-          },
-          "uri" : {
-            "type" : "string",
-            "format" : "uri"
           },
           "params" : {
             "type" : "object",
@@ -1838,6 +1939,12 @@
       "Response" : {
         "type" : "object",
         "properties" : {
+          "cookies" : {
+            "type" : "object",
+            "additionalProperties" : {
+              "$ref" : "#/components/schemas/NewCookie"
+            }
+          },
           "links" : {
             "uniqueItems" : true,
             "type" : "array",
@@ -1874,6 +1981,9 @@
                 "type" : "string"
               }
             }
+          },
+          "closed" : {
+            "type" : "boolean"
           },
           "length" : {
             "type" : "integer",
@@ -1950,13 +2060,18 @@
             "type" : "string",
             "format" : "date-time"
           },
-          "closed" : {
-            "type" : "boolean"
-          },
-          "cookies" : {
+          "headers" : {
             "type" : "object",
+            "properties" : {
+              "empty" : {
+                "type" : "boolean"
+              }
+            },
             "additionalProperties" : {
-              "$ref" : "#/components/schemas/NewCookie"
+              "type" : "array",
+              "items" : {
+                "type" : "object"
+              }
             }
           },
           "metadata" : {
@@ -1979,20 +2094,6 @@
           },
           "entity" : {
             "type" : "object"
-          },
-          "headers" : {
-            "type" : "object",
-            "properties" : {
-              "empty" : {
-                "type" : "boolean"
-              }
-            },
-            "additionalProperties" : {
-              "type" : "array",
-              "items" : {
-                "type" : "object"
-              }
-            }
           }
         }
       },
@@ -2056,21 +2157,6 @@
           "fiksOrgId" : {
             "type" : "string",
             "format" : "uuid"
-          }
-        }
-      },
-      "AdministratorModel" : {
-        "type" : "object",
-        "properties" : {
-          "id" : {
-            "type" : "string",
-            "format" : "uuid"
-          },
-          "fdato" : {
-            "type" : "string"
-          },
-          "navn" : {
-            "type" : "string"
           }
         }
       },
