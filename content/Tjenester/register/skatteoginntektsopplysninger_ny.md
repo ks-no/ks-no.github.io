@@ -47,164 +47,578 @@ Det finnes også en del ulike poster som har andre kilder enn Skatteetaten. Diss
 #### Eksempel med bruk av API-overbygg
 Payload
 ```json
-    {
-  "personer": [
-    {
-      "identifikator": "10498896321",
-      "type": "SOEKER",
-      "ekstraposter": [
-        {
-          "tekniskNavn": "string",
-          "visningstekst": "string",
-          "beloep": 0
-        }
-      ]
-    }
-  ],
-  "inntektsaar": 2021,
-  "beregningstype": "PRAKTISK_BISTAND"
+{
+   "beregningstype":"LANGTIDSOPPHOLD_INSTITUSJON",
+   "inntektsaar":2023,
+   "personer":[
+      {
+         "identifikator":"04817299771",
+         "type":"SOEKER",
+         "ekstraposter":[
+            
+         ]
+      },
+      {
+         "identifikator":"27847099416",
+         "type":"PARTNER",
+         "ekstraposter":[
+            {
+               "tekniskNavn":"kommune.tenktEtterlattePensjon",
+               "beloep":0
+            }
+         ]
+      }
+   ]
 }
 ```
 
 Svar
 ```json
 {
-  "inntektsaar": 0,
-  "stadie": "OPPGJOER",
-  "personer": [
-    {
-      "identifikator": "22119408289",
-      "navn": {
-        "etternavn": "string",
-        "fornavn": "string",
-        "mellomnavn": "string"
+   "inntektsaar":2023,
+   "stadie":"OPPGJOER",
+   "personer":[
+      {
+         "identifikator":"04817299771",
+         "type":"SOEKER",
+         "skjermet":false,
+         "stadie":"OPPGJOER",
+         "navn":{
+            "etternavn":"PÅFUNN",
+            "fornavn":"UPERSONLIG",
+            "mellomnavn":null
+         },
+         "skatteoppgjoersdato":"2024-02-15",
+         "registreringstidpunkt":"2024-02-15T09:47:37.874Z"
       },
-      "type": "SOEKER",
-      "skjermet": true,
-      "skatteoppgjoersdato": "2024-08-13",
-      "stadie": "OPPGJOER",
-      "registreringstidpunkt": "2024-08-13T13:40:20.722Z"
-    }
-  ],
-  "visningsposter": [
-    {
-      "kategori": "INNTEKT",
-      "poster": [
-        {
-          "personer": [
+      {
+         "identifikator":"27847099416",
+         "type":"PARTNER",
+         "skjermet":false,
+         "stadie":"OPPGJOER",
+         "navn":{
+            "etternavn":"DAMESYKKEL",
+            "fornavn":"OPPRIKTIG",
+            "mellomnavn":null
+         },
+         "skatteoppgjoersdato":"2024-02-19",
+         "registreringstidpunkt":"2024-02-19T07:21:24.518Z"
+      }
+   ],
+   "visningsposter":[
+      {
+         "kategori":"INNTEKT",
+         "poster":[
             {
-              "identifikator": "58443237337",
-              "beloep": 0
+               "personer":[
+                  {
+                     "identifikator":"04817299771",
+                     "beloep":4392
+                  },
+                  {
+                     "identifikator":"27847099416",
+                     "beloep":3600
+                  }
+               ],
+               "beloep":7992,
+               "tekniskNavn":"avkortetFordelVedElektroniskKommunikasjon",
+               "visningstekst":"Fordel elektronisk kommunikasjon",
+               "infotekst":null
+            },
+            {
+               "personer":[
+                  {
+                     "identifikator":"04817299771",
+                     "beloep":767670
+                  },
+                  {
+                     "identifikator":"27847099416",
+                     "beloep":142622
+                  }
+               ],
+               "beloep":910292,
+               "tekniskNavn":"samletLoennsinntektMedTrygdeavgiftspliktOgMedTrekkplikt",
+               "visningstekst":"Lønn og naturalytelser med mer",
+               "infotekst":null
+            },
+            {
+               "personer":[
+                  {
+                     "identifikator":"04817299771",
+                     "beloep":0
+                  }
+               ],
+               "beloep":0,
+               "tekniskNavn":"/beregnetSkattFastland/skattOgAvgift/trygdeavgiftAvNaeringsinntekt",
+               "visningstekst":"Personinntekt fra næringsinntekt",
+               "infotekst":"Samlepost for pårørendes næringsinntekt. Se veileder for mer informasjon."
+            },
+            {
+               "personer":[
+                  {
+                     "identifikator":"04817299771",
+                     "beloep":2163
+                  }
+               ],
+               "beloep":2163,
+               "tekniskNavn":"samledeOpptjenteRenterIInnenlandskeBanker",
+               "visningstekst":"Renter av bankinnskudd",
+               "infotekst":null
+            },
+            {
+               "personer":[
+                  {
+                     "identifikator":"27847099416",
+                     "beloep":2234
+                  }
+               ],
+               "beloep":2234,
+               "tekniskNavn":"renteinntektAvSkadeforsikring",
+               "visningstekst":"Renter av skadeforsikring",
+               "infotekst":null
+            },
+            {
+               "personer":[
+                  {
+                     "identifikator":"04817299771",
+                     "beloep":27493
+                  }
+               ],
+               "beloep":27493,
+               "tekniskNavn":"utbytteFraAksje",
+               "visningstekst":"Aksjeutbytte",
+               "infotekst":null
+            },
+            {
+               "personer":[
+                  {
+                     "identifikator":"04817299771",
+                     "beloep":19795
+                  }
+               ],
+               "beloep":19795,
+               "tekniskNavn":"oppjustertTilleggTilUtbytteFraAksje",
+               "visningstekst":"Oppjustering av aksjeutbytte",
+               "infotekst":null
             }
-          ],
-          "beloep": 0,
-          "tekniskNavn": "string",
-          "visningstekst": "string",
-          "infotekst": "string"
-        }
+         ]
+      },
+      {
+         "kategori":"FRADRAG",
+         "poster":[
+            {
+               "personer":[
+                  {
+                     "identifikator":"04817299771",
+                     "beloep":234591
+                  }
+               ],
+               "beloep":234591,
+               "tekniskNavn":"/beregnetSkattFastland/informasjonTilSkattelister/beregnetSkatt",
+               "visningstekst":"Beregnet skatt",
+               "infotekst":null
+            },
+            {
+               "personer":[
+                  {
+                     "identifikator":"04817299771",
+                     "beloep":8211577
+                  },
+                  {
+                     "identifikator":"27847099416",
+                     "beloep":0
+                  }
+               ],
+               "beloep":8211577,
+               "tekniskNavn":"/fastland/beloepTilgode",
+               "visningstekst":"For mye innbetalt skatt - til utbetaling",
+               "infotekst":null
+            },
+            {
+               "personer":[
+                  {
+                     "identifikator":"04817299771",
+                     "beloep":0
+                  }
+               ],
+               "beloep":0,
+               "tekniskNavn":"/beregnetSkattFastland/skattOgAvgift/formuesskattTilKommune/beloep",
+               "visningstekst":"Formuesskatt til kommune",
+               "infotekst":"Kommuner som gir fradrag for formueskatt må justere denne bort. Se veileder for mer informasjon."
+            },
+            {
+               "personer":[
+                  {
+                     "identifikator":"04817299771",
+                     "beloep":0
+                  }
+               ],
+               "beloep":0,
+               "tekniskNavn":"/beregnetSkattFastland/skattOgAvgift/formuesskattTilStat/beloep",
+               "visningstekst":"Formueskatt til stat",
+               "infotekst":"Kommuner som gir fradrag for formueskatt må justere denne bort. Se veileder for mer informasjon."
+            },
+            {
+               "personer":[
+                  {
+                     "identifikator":"04817299771",
+                     "beloep":0
+                  }
+               ],
+               "beloep":0,
+               "tekniskNavn":"/beregnetSkattFastland/skattefradrag/skattefradragForFormuesskattBetaltIUtlandet",
+               "visningstekst":"Skattefradrag for formuesskatt betalt i utlandet",
+               "infotekst":"Kommuner som gir fradrag for skatt betalt i utlandet må justere denne bort. Se veileder for mer informasjon."
+            },
+            {
+               "personer":[
+                  {
+                     "identifikator":"04817299771",
+                     "beloep":0
+                  }
+               ],
+               "beloep":0,
+               "tekniskNavn":"/beregnetSkattFastland/skattefradrag/skattefradragForInntektsskattBetaltIUtlandet",
+               "visningstekst":"Skattefradrag for inntektsskatt betalt i utlandet",
+               "infotekst":"Kommuner som gir fradrag for skatt betalt i utlandet må justere denne bort. Se veileder for mer informasjon."
+            },
+            {
+               "personer":[
+                  {
+                     "identifikator":"04817299771",
+                     "beloep":0
+                  },
+                  {
+                     "identifikator":"27847099416",
+                     "beloep":9290575
+                  }
+               ],
+               "beloep":9290575,
+               "tekniskNavn":"/fastland/restskatt",
+               "visningstekst":"Skyldig restskatt",
+               "infotekst":null
+            },
+            {
+               "personer":[
+                  {
+                     "identifikator":"04817299771",
+                     "beloep":0
+                  },
+                  {
+                     "identifikator":"27847099416",
+                     "beloep":0
+                  }
+               ],
+               "beloep":0,
+               "tekniskNavn":"/fastland/avregnetForskuddstrekk",
+               "visningstekst":"Sum innbetalt skatt",
+               "infotekst":null
+            },
+            {
+               "personer":[
+                  {
+                     "identifikator":"27847099416",
+                     "beloep":876
+                  }
+               ],
+               "beloep":876,
+               "tekniskNavn":"betalteForsinkelsesrenter",
+               "visningstekst":"Betalte forsinkelsesrenter",
+               "infotekst":null
+            }
+         ]
+      },
+      {
+         "kategori":"FORMUE",
+         "poster":[
+            {
+               "personer":[
+                  {
+                     "identifikator":"04817299771",
+                     "beloep":108147
+                  }
+               ],
+               "beloep":108147,
+               "tekniskNavn":"innskudd",
+               "visningstekst":"Bankinnskudd",
+               "infotekst":null
+            },
+            {
+               "personer":[
+                  {
+                     "identifikator":"04817299771",
+                     "beloep":1135929
+                  }
+               ],
+               "beloep":1135929,
+               "tekniskNavn":"bruttoformue",
+               "visningstekst":"Bruttoformue",
+               "infotekst":null
+            }
+         ]
+      },
+      {
+         "kategori":"GJELD",
+         "poster":[
+            {
+               "personer":[
+                  {
+                     "identifikator":"27847099416",
+                     "beloep":29188
+                  }
+               ],
+               "beloep":29188,
+               "tekniskNavn":"samletGjeld",
+               "visningstekst":"Sum gjeld",
+               "infotekst":null
+            }
+         ]
+      },
+      {
+         "kategori":"ANNET",
+         "poster":[
+            {
+               "personer":[
+                  {
+                     "identifikator":"04817299771",
+                     "beloep":717063
+                  },
+                  {
+                     "identifikator":"27847099416",
+                     "beloep":80318
+                  }
+               ],
+               "beloep":797381,
+               "tekniskNavn":"alminneligInntektFoerSaerfradrag",
+               "visningstekst":"Alminnelig inntekt før særfradrag",
+               "infotekst":null
+            },
+            {
+               "personer":[
+                  {
+                     "identifikator":"04817299771",
+                     "beloep":104450
+                  },
+                  {
+                     "identifikator":"27847099416",
+                     "beloep":67262
+                  }
+               ],
+               "beloep":171712,
+               "tekniskNavn":"minstefradragIInntekt",
+               "visningstekst":"Minstefradrag i egen inntekt",
+               "infotekst":null
+            },
+            {
+               "personer":[
+                  {
+                     "identifikator":"04817299771",
+                     "beloep":821513
+                  },
+                  {
+                     "identifikator":"27847099416",
+                     "beloep":148456
+                  }
+               ],
+               "beloep":969969,
+               "tekniskNavn":"sumInntekterIAlminneligInntektFoerFordelingsfradrag",
+               "visningstekst":"Sum inntekter",
+               "infotekst":null
+            },
+            {
+               "personer":[
+                  {
+                     "identifikator":"04817299771",
+                     "beloep":1284727
+                  }
+               ],
+               "beloep":1284727,
+               "tekniskNavn":"verdiFoerVerdsettingsrabattForAksje",
+               "visningstekst":"Aksjer",
+               "infotekst":null
+            }
+         ]
+      }
+   ],
+   "beregningsbeloep":567127,
+   "inntekt":{
+      "beloep":801718,
+      "beregning":[
+         {
+            "tekniskNavn":"arbeidsinntekt",
+            "visningstekst":"Arbeidsinntekt",
+            "beloep":772062,
+            "operasjon":"ADDERE",
+            "type":"POST",
+            "beregningsgrunnlag":[
+               
+            ],
+            "beregningsposter":[
+               {
+                  "tekniskNavn":"samletLoennsinntektMedTrygdeavgiftspliktOgMedTrekkplikt",
+                  "visningstekst":"Lønn og naturalytelser med mer",
+                  "operasjon":"ADDERE",
+                  "beloep":767670,
+                  "kilde":"SKATTEETATEN",
+                  "kanEndreVisningstekst":false,
+                  "identifikator":"04817299771",
+                  "infotekst":null,
+                  "eksempeltekst":null
+               },
+               {
+                  "tekniskNavn":"avkortetFordelVedElektroniskKommunikasjon",
+                  "visningstekst":"Fordel elektronisk kommunikasjon",
+                  "operasjon":"ADDERE",
+                  "beloep":4392,
+                  "kilde":"SKATTEETATEN",
+                  "kanEndreVisningstekst":false,
+                  "identifikator":"04817299771",
+                  "infotekst":null,
+                  "eksempeltekst":null
+               }
+            ]
+         },
+         {
+            "tekniskNavn":"renteinntekt",
+            "visningstekst":"Renteinntekt",
+            "beloep":2163,
+            "operasjon":"ADDERE",
+            "type":"POST",
+            "beregningsgrunnlag":[
+               
+            ],
+            "beregningsposter":[
+               {
+                  "tekniskNavn":"samledeOpptjenteRenterIInnenlandskeBanker",
+                  "visningstekst":"Renter av bankinnskudd",
+                  "operasjon":"ADDERE",
+                  "beloep":2163,
+                  "kilde":"SKATTEETATEN",
+                  "kanEndreVisningstekst":false,
+                  "identifikator":"04817299771",
+                  "infotekst":null,
+                  "eksempeltekst":null
+               }
+            ]
+         },
+         {
+            "tekniskNavn":"avkastningFormue",
+            "visningstekst":"Avkastning av formue",
+            "beloep":27493,
+            "operasjon":"ADDERE",
+            "type":"POST",
+            "beregningsgrunnlag":[
+               
+            ],
+            "beregningsposter":[
+               {
+                  "tekniskNavn":"utbytteFraAksje",
+                  "visningstekst":"Aksjeutbytte",
+                  "operasjon":"ADDERE",
+                  "beloep":27493,
+                  "kilde":"SKATTEETATEN",
+                  "kanEndreVisningstekst":false,
+                  "identifikator":"04817299771",
+                  "infotekst":null,
+                  "eksempeltekst":null
+               }
+            ]
+         }
       ]
-    }
-  ],
-  "beregningsbeloep": 0,
-  "inntekt": {
-    "beloep": 0,
-    "beregning": [
-      {
-        "tekniskNavn": "string",
-        "visningstekst": "string",
-        "beloep": 0,
-        "operasjon": "ADDERE",
-        "type": "GRUNNLAG",
-        "beregningsgrunnlag": [
-          {
-            "tekniskNavn": "string",
-            "visningstekst": "string",
-            "beloep": 0,
-            "operasjon": "ADDERE",
-            "beregningsposter": [
-              {
-                "tekniskNavn": "string",
-                "visningstekst": "string",
-                "operasjon": "ADDERE",
-                "beloep": 0,
-                "kilde": "SKATTEETATEN",
-                "kanEndreVisningstekst": true,
-                "identifikator": "39813924484",
-                "infotekst": "string",
-                "eksempeltekst": "string"
-              }
+   },
+   "fradrag":{
+      "beloep":234591,
+      "beregning":[
+         {
+            "tekniskNavn":"skatt",
+            "visningstekst":"Skatt",
+            "beloep":234591,
+            "operasjon":"ADDERE",
+            "type":"GRUNNLAG",
+            "beregningsgrunnlag":[
+               {
+                  "tekniskNavn":"beregnetSkatt",
+                  "visningstekst":"Beregnet skatt",
+                  "beloep":234591,
+                  "operasjon":"ADDERE",
+                  "beregningsposter":[
+                     {
+                        "tekniskNavn":"/beregnetSkattFastland/informasjonTilSkattelister/beregnetSkatt",
+                        "visningstekst":"Beregnet skatt",
+                        "operasjon":"ADDERE",
+                        "beloep":234591,
+                        "kilde":"SKATTEETATEN",
+                        "kanEndreVisningstekst":false,
+                        "identifikator":"04817299771",
+                        "infotekst":null,
+                        "eksempeltekst":null
+                     }
+                  ]
+               }
+            ],
+            "beregningsposter":[
+               
             ]
-          }
-        ],
-        "beregningsposter": [
-          {
-            "tekniskNavn": "string",
-            "visningstekst": "string",
-            "operasjon": "ADDERE",
-            "beloep": 0,
-            "kilde": "SKATTEETATEN",
-            "kanEndreVisningstekst": true,
-            "identifikator": "76735691715",
-            "infotekst": "string",
-            "eksempeltekst": "string"
-          }
-        ]
-      }
-    ]
-  },
-  "fradrag": {
-    "beloep": 0,
-    "beregning": [
-      {
-        "tekniskNavn": "string",
-        "visningstekst": "string",
-        "beloep": 0,
-        "operasjon": "ADDERE",
-        "type": "GRUNNLAG",
-        "beregningsgrunnlag": [
-          {
-            "tekniskNavn": "string",
-            "visningstekst": "string",
-            "beloep": 0,
-            "operasjon": "ADDERE",
-            "beregningsposter": [
-              {
-                "tekniskNavn": "string",
-                "visningstekst": "string",
-                "operasjon": "ADDERE",
-                "beloep": 0,
-                "kilde": "SKATTEETATEN",
-                "kanEndreVisningstekst": true,
-                "identifikator": "74764057758",
-                "infotekst": "string",
-                "eksempeltekst": "string"
-              }
+         },
+         {
+            "tekniskNavn":"forsorgerfradrag",
+            "visningstekst":"Forsørgerfradrag",
+            "beloep":0,
+            "operasjon":"ADDERE",
+            "type":"GRUNNLAG",
+            "beregningsgrunnlag":[
+               {
+                  "tekniskNavn":"mellomregningPaarorende",
+                  "visningstekst":"Forsørgerfradrag OPPRIKTIG DAMESYKKEL (PARTNER)",
+                  "beloep":0,
+                  "operasjon":"ADDERE",
+                  "beregningsposter":[
+                     {
+                        "tekniskNavn":"kommune.tenktEtterlattePensjon",
+                        "visningstekst":"Tenkt etterlattepensjon",
+                        "operasjon":"ADDERE",
+                        "beloep":0,
+                        "kilde":"MANUELL_INPUT",
+                        "kanEndreVisningstekst":false,
+                        "identifikator":"27847099416",
+                        "infotekst":null,
+                        "eksempeltekst":"Tenkt etterlattepensjon beregnes etter reglene i egenandelsforskriften. Hvis etterlattepensjon ikke er aktuelt, fyller du inn 0."
+                     },
+                     {
+                        "tekniskNavn":"avkortetFordelVedElektroniskKommunikasjon",
+                        "visningstekst":"Fordel elektronisk kommunikasjon",
+                        "operasjon":"SUBTRAHERE",
+                        "beloep":3600,
+                        "kilde":"SKATTEETATEN",
+                        "kanEndreVisningstekst":false,
+                        "identifikator":"27847099416",
+                        "infotekst":null,
+                        "eksempeltekst":null
+                     },
+                     {
+                        "tekniskNavn":"samletLoennsinntektMedTrygdeavgiftspliktOgMedTrekkplikt",
+                        "visningstekst":"Lønn og naturalytelser med mer",
+                        "operasjon":"SUBTRAHERE",
+                        "beloep":142622,
+                        "kilde":"SKATTEETATEN",
+                        "kanEndreVisningstekst":false,
+                        "identifikator":"27847099416",
+                        "infotekst":null,
+                        "eksempeltekst":null
+                     }
+                  ]
+               }
+            ],
+            "beregningsposter":[
+               
             ]
-          }
-        ],
-        "beregningsposter": [
-          {
-            "tekniskNavn": "string",
-            "visningstekst": "string",
-            "operasjon": "ADDERE",
-            "beloep": 0,
-            "kilde": "SKATTEETATEN",
-            "kanEndreVisningstekst": true,
-            "identifikator": "35224467268",
-            "infotekst": "string",
-            "eksempeltekst": "string"
-          }
-        ]
-      }
-    ]
-  },
-  "soeketidspunkt": "2024-08-13T13:40:20.722Z",
-  "beregningstype": "PRAKTISK_BISTAND",
-  "feilmeldinger": [
-    {
-      "kode": "string",
-      "melding": "string"
-    }
-  ]
+         }
+      ]
+   },
+   "soeketidspunkt":"2024-08-13T13:47:36.829089195Z",
+   "beregningstype":"LANGTIDSOPPHOLD_INSTITUSJON",
+   "feilmeldinger":[
+      
+   ]
 }
 ```
