@@ -44,3 +44,167 @@ URL for fiks-api (POST): ```<MILJØ_URL>/register/api/v1/ks/{rolleId}/skatteogin
 #### Manuelle poster
 Det finnes også en del ulike poster som har andre kilder enn Skatteetaten. Disse kan sendes med som en del av requesten, og vil da bli kalkulert sammen med data fra Skatteetaten. For å hente ut hvilke poster som er gyldig kan endepunktet ```<MILJØ_URL>/register/api/v1/ks/{rolleId}/skatteoginntektsopplysninger/verdier``` brukes.
 
+#### Eksempel med bruk av API-overbygg
+Payload
+```json
+    {
+  "personer": [
+    {
+      "identifikator": "10498896321",
+      "type": "SOEKER",
+      "ekstraposter": [
+        {
+          "tekniskNavn": "string",
+          "visningstekst": "string",
+          "beloep": 0
+        }
+      ]
+    }
+  ],
+  "inntektsaar": 2021,
+  "beregningstype": "PRAKTISK_BISTAND"
+}
+```
+
+Svar
+```json
+{
+  "inntektsaar": 0,
+  "stadie": "OPPGJOER",
+  "personer": [
+    {
+      "identifikator": "22119408289",
+      "navn": {
+        "etternavn": "string",
+        "fornavn": "string",
+        "mellomnavn": "string"
+      },
+      "type": "SOEKER",
+      "skjermet": true,
+      "skatteoppgjoersdato": "2024-08-13",
+      "stadie": "OPPGJOER",
+      "registreringstidpunkt": "2024-08-13T13:40:20.722Z"
+    }
+  ],
+  "visningsposter": [
+    {
+      "kategori": "INNTEKT",
+      "poster": [
+        {
+          "personer": [
+            {
+              "identifikator": "58443237337",
+              "beloep": 0
+            }
+          ],
+          "beloep": 0,
+          "tekniskNavn": "string",
+          "visningstekst": "string",
+          "infotekst": "string"
+        }
+      ]
+    }
+  ],
+  "beregningsbeloep": 0,
+  "inntekt": {
+    "beloep": 0,
+    "beregning": [
+      {
+        "tekniskNavn": "string",
+        "visningstekst": "string",
+        "beloep": 0,
+        "operasjon": "ADDERE",
+        "type": "GRUNNLAG",
+        "beregningsgrunnlag": [
+          {
+            "tekniskNavn": "string",
+            "visningstekst": "string",
+            "beloep": 0,
+            "operasjon": "ADDERE",
+            "beregningsposter": [
+              {
+                "tekniskNavn": "string",
+                "visningstekst": "string",
+                "operasjon": "ADDERE",
+                "beloep": 0,
+                "kilde": "SKATTEETATEN",
+                "kanEndreVisningstekst": true,
+                "identifikator": "39813924484",
+                "infotekst": "string",
+                "eksempeltekst": "string"
+              }
+            ]
+          }
+        ],
+        "beregningsposter": [
+          {
+            "tekniskNavn": "string",
+            "visningstekst": "string",
+            "operasjon": "ADDERE",
+            "beloep": 0,
+            "kilde": "SKATTEETATEN",
+            "kanEndreVisningstekst": true,
+            "identifikator": "76735691715",
+            "infotekst": "string",
+            "eksempeltekst": "string"
+          }
+        ]
+      }
+    ]
+  },
+  "fradrag": {
+    "beloep": 0,
+    "beregning": [
+      {
+        "tekniskNavn": "string",
+        "visningstekst": "string",
+        "beloep": 0,
+        "operasjon": "ADDERE",
+        "type": "GRUNNLAG",
+        "beregningsgrunnlag": [
+          {
+            "tekniskNavn": "string",
+            "visningstekst": "string",
+            "beloep": 0,
+            "operasjon": "ADDERE",
+            "beregningsposter": [
+              {
+                "tekniskNavn": "string",
+                "visningstekst": "string",
+                "operasjon": "ADDERE",
+                "beloep": 0,
+                "kilde": "SKATTEETATEN",
+                "kanEndreVisningstekst": true,
+                "identifikator": "74764057758",
+                "infotekst": "string",
+                "eksempeltekst": "string"
+              }
+            ]
+          }
+        ],
+        "beregningsposter": [
+          {
+            "tekniskNavn": "string",
+            "visningstekst": "string",
+            "operasjon": "ADDERE",
+            "beloep": 0,
+            "kilde": "SKATTEETATEN",
+            "kanEndreVisningstekst": true,
+            "identifikator": "35224467268",
+            "infotekst": "string",
+            "eksempeltekst": "string"
+          }
+        ]
+      }
+    ]
+  },
+  "soeketidspunkt": "2024-08-13T13:40:20.722Z",
+  "beregningstype": "PRAKTISK_BISTAND",
+  "feilmeldinger": [
+    {
+      "kode": "string",
+      "melding": "string"
+    }
+  ]
+}
+```
