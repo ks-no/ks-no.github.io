@@ -37,6 +37,10 @@
     {
       "name": "Utsendelser pdf maler",
       "description": "API for Send brev - Pdf maler"
+    },
+    {
+      "name": "Mottaker",
+      "description": "API for Send brev - Søk på mottaker"
     }
   ],
   "paths": {
@@ -481,7 +485,7 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/Mottaker"
+                    "$ref": "#/components/schemas/ForsendelseMottaker"
                   }
                 }
               }
@@ -605,7 +609,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ImportertMottaker"
+                  "$ref": "#/components/schemas/Mottaker"
                 }
               }
             }
@@ -1590,6 +1594,78 @@
         }
       }
     },
+    "/send-brev/api/v1/kontoer/{kontoId}/mottaker": {
+      "post": {
+        "tags": [
+          "Mottaker"
+        ],
+        "description": "Skal innehente mer informasjon tilknyttet mottaker, enten for person eller organisasjon",
+        "summary": "Søker etter mer informasjon om mottaker",
+        "operationId": "oppslag",
+        "parameters": [
+          {
+            "name": "kontoId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OppslagRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Mottaker",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Mottaker"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Ukjent",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Ingen tilgang",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Systemfeil",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/send-brev/api/v1/maler/{malId}": {
       "get": {
         "tags": [
@@ -2005,7 +2081,7 @@
         },
         "description": "Config for PDF import"
       },
-      "Mottaker": {
+      "ForsendelseMottaker": {
         "required": [
           "navn",
           "postnummer"
@@ -2057,7 +2133,7 @@
               "KLARTE_IKKE_SENDE"
             ]
           },
-          "svarUtUtsendelseId": {
+          "utsendelseId": {
             "type": "string",
             "description": "Utsendelse ID mottatt fra SvarUt, etter utsending",
             "format": "uuid"
@@ -2065,14 +2141,16 @@
         },
         "description": "Mottaker for utsendelse"
       },
-      "ImportertMottaker": {
+      "Mottaker": {
         "type": "object",
         "properties": {
           "fnr": {
+            "pattern": "^[0-9]{11}$",
             "type": "string"
           },
           "orgNr": {
-            "type": "string"
+            "type": "string",
+            "pattern": "^[0-9]{9}$"
           },
           "navn": {
             "type": "string"
@@ -2497,6 +2575,51 @@
           }
         },
         "description": "Metadata for opprettelse av pdf mal"
+      },
+      "OppslagRequest": {
+        "required": [
+          "navn",
+          "postnummer",
+          "poststed"
+        ],
+        "type": "object",
+        "properties": {
+          "orgNummer": {
+            "type": "string"
+          },
+          "fodselsnummer": {
+            "pattern": "^[0-9]{11}$",
+            "type": "string"
+          },
+          "navn": {
+            "type": "string"
+          },
+          "adresse1": {
+            "type": "string"
+          },
+          "adresse2": {
+            "type": "string"
+          },
+          "adresse3": {
+            "type": "string"
+          },
+          "postnummer": {
+            "type": "string"
+          },
+          "poststed": {
+            "type": "string"
+          },
+          "land": {
+            "type": "string"
+          },
+          "tittel": {
+            "type": "string"
+          },
+          "filnavn": {
+            "type": "string"
+          }
+        },
+        "description": "Modell for å opprette mottaker tilknyttet utsendelse"
       }
     }
   }
