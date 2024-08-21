@@ -1,0 +1,158 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "KS Fiks: Varsling",
+    "description": "Service for varsling med SMS og epost",
+    "contact": {
+      "name": "Fiks-brukerstøtte",
+      "url": "https://ks-no.github.io/",
+      "email": "fiks-utvikling@ks.no"
+    },
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://api.fiks.ks.no",
+      "description": "KS Fiks API host"
+    }
+  ],
+  "security": [
+    {
+      "bearerAuth": []
+    }
+  ],
+  "tags": [
+    {
+      "name": "EmailV1",
+      "description": "API for å håndtere funksjonalitet for sending av epost"
+    }
+  ],
+  "paths": {
+    "/varsling/api/v1/sendEmail/{kontoId}": {
+      "post": {
+        "tags": [
+          "EmailV1"
+        ],
+        "summary": "Sender epost",
+        "parameters": [
+          {
+            "name": "kontoId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "UUID for kontoen som eposten skal sendes fra"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "fodselsnummer": {
+                    "pattern": "^[0-9]{11}$",
+                    "type": "string",
+                    "description": "Fødselsnummer til mottaker"
+                  },
+                  "tekst": {
+                    "maxLength": 10000,
+                    "minLength": 0,
+                    "type": "string",
+                    "description": "Email tekst. Max 10000 tegn"
+                  },
+                  "subject": {
+                    "type": "string",
+                    "description": "Emne for e-posten"
+                  },
+                  "fromName": {
+                    "maxLength": 100,
+                    "minLength": 0,
+                    "type": "string",
+                    "description": "Navn på avsenderen"
+                  },
+                  "fromEmail": {
+                    "type": "string",
+                    "format": "email",
+                    "description": "E-postadresse til avsenderen"
+                  }
+                },
+                "required": [
+                  "fodselsnummer",
+                  "tekst",
+                  "subject",
+                  "fromName",
+                  "fromEmail"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Epost sendt"
+          },
+          "default": {
+            "description": "Noe gikk galt",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    },
+    "schemas": {
+      "ErrorMessage": {
+        "type": "object",
+        "properties": {
+          "timestamp": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "status": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "error": {
+            "type": "string"
+          },
+          "errorId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "path": {
+            "type": "string"
+          },
+          "originalPath": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          },
+          "errorCode": {
+            "type": "string"
+          },
+          "errorJson": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}
