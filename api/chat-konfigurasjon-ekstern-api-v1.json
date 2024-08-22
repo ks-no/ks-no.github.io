@@ -198,6 +198,27 @@
         }
       }
     },
+    "/fiks-chat-konfigurasjon/api/v1/ekstern/log" : {
+      "post" : {
+        "tags" : [ "chat-konfigurasjon-ekstern" ],
+        "description" : "Logger melding",
+        "operationId" : "logMelding",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/LogMelding"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "201" : {
+            "description" : "Created"
+          }
+        }
+      }
+    },
     "/fiks-chat-konfigurasjon/api/v1/ekstern/opprettchatbruker" : {
       "post" : {
         "tags" : [ "chat-konfigurasjon-ekstern" ],
@@ -276,6 +297,44 @@
         "responses" : {
           "204" : {
             "description" : "Sletter team"
+          },
+          "default" : {
+            "description" : "Noe gikk galt",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/fiks-chat-konfigurasjon/api/v1/ekstern/bruker/sok" : {
+      "post" : {
+        "tags" : [ "chat-konfigurasjon-ekstern" ],
+        "description" : "Søker på personalia i Folkeregister",
+        "operationId" : "sokFolkeregister",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/SokFolkeregisterRequest"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Opprettet ny chatbruker og la til i channel",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/FolkeregisterResultat"
+                }
+              }
+            }
           },
           "default" : {
             "description" : "Noe gikk galt",
@@ -490,6 +549,37 @@
           }
         }
       },
+      "LogMelding" : {
+        "required" : [ "level", "melding" ],
+        "type" : "object",
+        "properties" : {
+          "level" : {
+            "type" : "string",
+            "description" : "Log level",
+            "enum" : [ "ERROR", "WARN", "INFO", "DEBUG" ]
+          },
+          "melding" : {
+            "maxLength" : 2000,
+            "minLength" : 0,
+            "type" : "string",
+            "description" : "Melding som skal logges"
+          }
+        }
+      },
+      "OpprettChatbrukerResponse" : {
+        "type" : "object",
+        "properties" : {
+          "brukerId" : {
+            "type" : "string"
+          },
+          "opprettet" : {
+            "type" : "boolean"
+          },
+          "lagtTilKanal" : {
+            "type" : "boolean"
+          }
+        }
+      },
       "OpprettChatbrukerRequest" : {
         "required" : [ "fiksOrgId", "fnr", "roomId", "saksbehandlerFnr" ],
         "type" : "object",
@@ -553,6 +643,41 @@
             "pattern" : "^[0-9]{11}$",
             "type" : "string",
             "description" : "Fødselsnummer til saksbehandler som skal opprette kanal"
+          }
+        }
+      },
+      "FolkeregisterResultat" : {
+        "type" : "object",
+        "properties" : {
+          "fnr" : {
+            "type" : "string"
+          },
+          "fornavn" : {
+            "type" : "string"
+          },
+          "etternavn" : {
+            "type" : "string"
+          }
+        }
+      },
+      "SokFolkeregisterRequest" : {
+        "required" : [ "fiksOrgId", "fnr", "saksbehandlerFnr" ],
+        "type" : "object",
+        "properties" : {
+          "fnr" : {
+            "pattern" : "^[0-9]{11}$",
+            "type" : "string",
+            "description" : "Personnummer for chatbruker"
+          },
+          "saksbehandlerFnr" : {
+            "pattern" : "^[0-9]{11}$",
+            "type" : "string",
+            "description" : "Personnummer for saksbehandler som ønsker legge til bruker "
+          },
+          "fiksOrgId" : {
+            "type" : "string",
+            "description" : "FiksOrgId for kommunen som chatbruker skal knyttes til",
+            "format" : "uuid"
           }
         }
       }
