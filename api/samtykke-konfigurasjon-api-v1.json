@@ -22,100 +22,6 @@
     "description" : "API for å konfigurere samtykke-løsningen"
   } ],
   "paths" : {
-    "/samtykke/api/v1/konfigurasjon/{fiksOrgId}/giSamtykkePrivilegier" : {
-      "post" : {
-        "tags" : [ "samtykke-konfigurasjon" ],
-        "description" : "Gir samtykke-privilegier til integrasjon",
-        "operationId" : "giSamtykkePrivilegierTilIntegrasjon",
-        "parameters" : [ {
-          "name" : "fiksOrgId",
-          "in" : "path",
-          "required" : true,
-          "schema" : {
-            "type" : "string",
-            "format" : "uuid"
-          }
-        } ],
-        "requestBody" : {
-          "content" : {
-            "application/json" : {
-              "schema" : {
-                "$ref" : "#/components/schemas/SamtykkeTilgangRequest"
-              }
-            }
-          }
-        },
-        "responses" : {
-          "200" : {
-            "description" : "Gi samtykke-privilegier til integrasjon",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/Samtykker"
-                }
-              }
-            }
-          },
-          "default" : {
-            "description" : "Noe gikk galt",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/ErrorMessage"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/samtykke/api/v1/konfigurasjon/{fiksOrgId}/konfigurerSamtykke" : {
-      "post" : {
-        "tags" : [ "samtykke-konfigurasjon" ],
-        "description" : "Initialiserer og konfigurerer samtykke-tjeneste for fiksOrg",
-        "operationId" : "initKonfigSamtykke",
-        "parameters" : [ {
-          "name" : "fiksOrgId",
-          "in" : "path",
-          "required" : true,
-          "schema" : {
-            "type" : "string",
-            "format" : "uuid"
-          }
-        } ],
-        "requestBody" : {
-          "content" : {
-            "application/json" : {
-              "schema" : {
-                "$ref" : "#/components/schemas/SamtykkeTilgangRequest"
-              }
-            }
-          }
-        },
-        "responses" : {
-          "200" : {
-            "description" : "Konfigurerer samtykke for fiksOrg",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/Samtykker"
-                }
-              }
-            }
-          },
-          "default" : {
-            "description" : "Noe gikk galt",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/ErrorMessage"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
     "/samtykke/api/v1/konfigurasjon/{fiksOrgId}/opprettTilgang" : {
       "post" : {
         "tags" : [ "samtykke-konfigurasjon" ],
@@ -166,155 +72,18 @@
   },
   "components" : {
     "schemas" : {
-      "Dokument" : {
-        "required" : [ "filnavn", "lenke", "mimeType", "storrelse", "tittel" ],
+      "IntegrasjonTilgang" : {
+        "required" : [ "integrasjonId", "integrasjonPassord" ],
         "type" : "object",
         "properties" : {
-          "filnavn" : {
+          "integrasjonId" : {
             "type" : "string",
-            "description" : "Filnavn for dokumentet"
-          },
-          "mimeType" : {
-            "type" : "string",
-            "description" : "MimeType for dokumentet"
-          },
-          "tittel" : {
-            "type" : "string",
-            "description" : "Tittel for dokumentet"
-          },
-          "storrelse" : {
-            "type" : "integer",
-            "description" : "Størrelse for dokumentet",
-            "format" : "int64"
-          },
-          "lenke" : {
-            "type" : "string",
-            "description" : "Lenke til dokumentet"
-          }
-        },
-        "description" : "Data for dokument som beskriver samtykke"
-      },
-      "Mappe" : {
-        "required" : [ "mappeId", "systemId" ],
-        "type" : "object",
-        "properties" : {
-          "mappeId" : {
-            "type" : "string",
-            "description" : "ID for mappe tilknyttet samtykket"
-          },
-          "systemId" : {
-            "type" : "string",
-            "description" : "ID for system tilknyttet samtykket"
-          },
-          "saksaar" : {
-            "type" : "integer",
-            "description" : "Saksår tilknyttet samtykket",
-            "format" : "int32"
-          },
-          "sakssekvensnummer" : {
-            "type" : "integer",
-            "description" : "Sakssekvensnummer tilknyttet samtykket",
-            "format" : "int64"
-          }
-        },
-        "description" : "Informasjon om mappe knyttet til samtykket"
-      },
-      "PersonMedSamtykke" : {
-        "required" : [ "navn", "samtykkeSvarDato", "samtykkeSvarStatus" ],
-        "type" : "object",
-        "properties" : {
-          "navn" : {
-            "type" : "string",
-            "description" : "Navn for person"
-          },
-          "samtykkeSvarStatus" : {
-            "type" : "string",
-            "description" : "Status for samtykke",
-            "enum" : [ "VENTER_PAA_SVAR", "SAMTYKKET", "IKKE_SAMTYKKET", "TRUKKET" ]
-          },
-          "samtykkeSvarDato" : {
-            "type" : "string",
-            "description" : "Når samtykke-svar-status sist ble oppdatert",
-            "format" : "date"
-          }
-        },
-        "description" : "Andre parter som skal gi samtykke for sak"
-      },
-      "Samtykke" : {
-        "required" : [ "dokument", "fiksOrgId", "harUtlopt", "mappe", "medvirkendePartList", "samtykkeId", "samtykkeNavn", "samtykkeStatus", "samtykkendePart", "svarfrist", "utlopsdato" ],
-        "type" : "object",
-        "properties" : {
-          "samtykkendePart" : {
-            "$ref" : "#/components/schemas/PersonMedSamtykke"
-          },
-          "medvirkendePartList" : {
-            "type" : "array",
-            "description" : "Andre parter som skal gi samtykke for sak",
-            "items" : {
-              "$ref" : "#/components/schemas/PersonMedSamtykke"
-            }
-          },
-          "samtykkeId" : {
-            "type" : "string",
-            "description" : "Id for samtykket",
+            "description" : "Id til integrasjon",
             "format" : "uuid"
           },
-          "fiksOrgId" : {
+          "integrasjonPassord" : {
             "type" : "string",
-            "description" : "Id for samtykket",
-            "format" : "uuid"
-          },
-          "samtykkeNavn" : {
-            "type" : "string",
-            "description" : "Navn på samtykket"
-          },
-          "samtykkeStatus" : {
-            "type" : "string",
-            "description" : "Status på samtykket",
-            "enum" : [ "SAMTYKKET", "TRUKKET", "IKKE_SAMTYKKET", "VENTER_PAA_SVAR", "SVARFRIST_PASSERT", "UTLOPT" ]
-          },
-          "mappe" : {
-            "$ref" : "#/components/schemas/Mappe"
-          },
-          "svarfrist" : {
-            "type" : "string",
-            "description" : "Dato på ISO-8601 format som forteller signeringsfrist for samtykke",
-            "format" : "date"
-          },
-          "utlopsdato" : {
-            "type" : "string",
-            "description" : "Dato på ISO-8601 format som forteller når samtykket utløper",
-            "format" : "date"
-          },
-          "harUtlopt" : {
-            "type" : "boolean",
-            "description" : "Boolsk verdi som forteller om samtykket er utløpt"
-          },
-          "dokument" : {
-            "$ref" : "#/components/schemas/Dokument"
-          }
-        }
-      },
-      "Samtykker" : {
-        "type" : "object",
-        "properties" : {
-          "samtykkerVenter" : {
-            "type" : "array",
-            "items" : {
-              "$ref" : "#/components/schemas/Samtykke"
-            }
-          },
-          "samtykkerAktiv" : {
-            "type" : "array",
-            "items" : {
-              "$ref" : "#/components/schemas/Samtykke"
-            }
-          },
-          "samtykkerUtgaatt" : {
-            "type" : "array",
-            "items" : {
-              "$ref" : "#/components/schemas/Samtykke"
-            }
+            "description" : "Passord til integrasjon"
           }
         }
       },
@@ -350,32 +119,6 @@
           },
           "errorJson" : {
             "type" : "string"
-          }
-        }
-      },
-      "SamtykkeTilgangRequest" : {
-        "required" : [ "integrasjonId" ],
-        "type" : "object",
-        "properties" : {
-          "integrasjonId" : {
-            "type" : "string",
-            "description" : "ID til integrasjon som skal ha privilegie",
-            "format" : "uuid"
-          }
-        }
-      },
-      "IntegrasjonTilgang" : {
-        "required" : [ "integrasjonId", "integrasjonPassord" ],
-        "type" : "object",
-        "properties" : {
-          "integrasjonId" : {
-            "type" : "string",
-            "description" : "Id til integrasjon",
-            "format" : "uuid"
-          },
-          "integrasjonPassord" : {
-            "type" : "string",
-            "description" : "Passord til integrasjon"
           }
         }
       },
