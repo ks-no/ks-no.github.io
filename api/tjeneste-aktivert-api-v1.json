@@ -1,0 +1,265 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "KS Fiks: Aktiverte tjenester",
+    "description": "Fiks konfigurasjon: Aktiverte tjenester",
+    "contact": {
+      "name": "Fiks-brukerstøtte",
+      "url": "https://ks-no.github.io/",
+      "email": "fiks-utvikling@ks.no"
+    },
+    "version": "v1",
+    "license": {
+      "name": "MIT",
+      "url": "https://opensource.org/licenses/MIT"
+    }
+  },
+  "servers": [
+    {
+      "url": "https://api.fiks.test.ks.no",
+      "description": "KS Fiks API host"
+    }
+  ],
+  "security": [
+    {
+      "bearerAuth": []
+    }
+  ],
+  "tags": [
+    {
+      "name": "AktiverteTjenester",
+      "description": "API for oppslag på aktiverte tjenester"
+    }
+  ],
+  "paths": {
+    "/konfigurasjon/api/v1/aktiverte-tjenester/{tjenestekode}/organisasjoner": {
+      "get": {
+        "description": "Henter informasjon om hvilke organisasjoner som har aktivert en gitt tjeneste",
+        "tags": [
+          "AktiverteTjenester"
+        ],
+        "summary": "Henter informasjon om hvilke organisasjoner som har aktivert en gitt tjeneste. Kun tilgang for integrasjon med KONFIGURASJON_QUERY på ROOT",
+        "operationId": "hentOrganisasjonerMedAktivertTjeneste",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/tjenestekode"
+          },
+          {
+            "$ref": "#/components/parameters/organisasjonstype"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Aktivert tjeneste",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AktivertTjenesterOversikt"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/ugyldigParameterverdi"
+          },
+          "403": {
+            "$ref": "#/components/responses/manglerTilgang"
+          },
+          "404": {
+            "$ref": "#/components/responses/ukjentRessurs"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    },
+    "parameters": {
+      "tjenestekode": {
+        "name": "tjenestekode",
+        "in": "path",
+        "description": "Kode for tjenesten",
+        "required": true,
+        "schema": {
+          "$ref": "#/components/schemas/Tjenestekode"
+        }
+      },
+      "organisasjonstype": {
+        "name": "organisasjonstype",
+        "in": "query",
+        "description": "Filtrer på organisasjonstype",
+        "required": false,
+        "schema": {
+          "$ref": "#/components/schemas/Organisasjonstype"
+        }
+      }
+    },
+    "responses": {
+      "ugyldigParameterverdi": {
+        "description": "Ugyldig input",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorMessage"
+            }
+          }
+        }
+      },
+      "manglerTilgang": {
+        "description": "Ikke autorisert",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorMessage"
+            },
+            "example": {
+              "message": "Ikke autorisert",
+              "status": 403
+            }
+          }
+        }
+      },
+      "ukjentRessurs": {
+        "description": "Finner ingen ressurs for oppgitte parametre",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorMessage"
+            },
+            "example": {
+              "message": "Finner ingen ressurs for oppgitte parametre",
+              "status": 404
+            }
+          }
+        }
+      }
+    },
+    "schemas": {
+      "Tjenestekode": {
+        "type": "string",
+        "description": "Kode for tjenesten",
+        "pattern": "^[A-Z0-9_.]+$",
+        "example": "TJENESTEN"
+      },
+      "AktivertTjenesterOversikt": {
+        "type": "object",
+        "readOnly": true,
+        "properties": {
+          "tjenestekode": {
+            "$ref": "#/components/schemas/Tjenestekode"
+          },
+          "organisasjoner": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Organisasjon"
+            }
+          }
+        },
+        "required": [
+          "tjenestekode",
+          "organisasjoner"
+        ]
+      },
+      "fiksOrganisasjonId": {
+        "type": "string",
+        "format": "uuid",
+        "description": "Fiks Organisasjon Id",
+        "example": "123e4567-e89b-12d3-a456-426614174000"
+      },
+      "Organisasjon": {
+        "type": "object",
+        "properties": {
+          "organisasjonsnummer": {
+            "type": "string",
+            "description": "Organisasjonsnummer",
+            "pattern": "^[0-9]{9}$",
+            "example": "123456789"
+          },
+          "fiksOrganisasjonId": {
+            "$ref": "#/components/schemas/fiksOrganisasjonId"
+          },
+          "navn": {
+            "type": "string",
+            "description": "Navn på organisasjonen",
+            "example": "Organisasjon AS"
+          },
+          "type": {
+            "$ref": "#/components/schemas/Organisasjonstype"
+          }
+        },
+        "required": [
+          "organisasjonsnummer",
+          "fiksOrganisasjonId",
+          "navn",
+          "type"
+        ]
+      },
+      "Organisasjonstype": {
+        "type": "string",
+        "description": "Organisasjonens type",
+        "enum": [
+          "UKJENT",
+          "KOMMUNE",
+          "FYLKESKOMMUNE",
+          "KOMMUNAL_VIRKSOMHET",
+          "KOMMUNAL_VIRKSOMHET_IKS",
+          "STATLIG_VIRKSOMHET",
+          "LEVERANDOR",
+          "PRIVAT_VIRKSOMHET"
+        ],
+        "example": "KOMMUNE"
+      },
+      "ErrorMessage": {
+        "type": "object",
+        "description": "Feilmelding fra Fiks-plattformen",
+        "externalDocs": {
+          "description": "Beskrivelse av feilmeldinger",
+          "url": "https://ks-no.github.io/fiks-plattform/integrasjoner/#feilmeldinger"
+        },
+        "properties": {
+          "timestamp": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "status": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "error": {
+            "type": "string"
+          },
+          "errorId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "path": {
+            "type": "string"
+          },
+          "originalPath": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          },
+          "errorCode": {
+            "type": "string"
+          },
+          "errorJson": {
+            "type": "string"
+          }
+        },
+        "example": {
+          "message": "Mangler tilgang",
+          "errorId": "ee2ed64d-de8b-45f9-b9c6-3363d662d93b",
+          "status": 403
+        }
+      }
+    }
+  }
+}
