@@ -19,8 +19,12 @@ Videre at det kun sendes meldinger mellom avsender- og mottakersystem som er for
 | Fiks plan                                                     | Under implementering hos leverandører. Pilotversjon av protokollen lansert. | 4 kvartal 2024 (*) |
 | Fiks matrikkelføring                                          | I pilot-testing og i produksjon. Protokoll ferdigstilt.                     | Ferdig             |
 | Barnevern - fagsysteminnrapportering til Barnevernsregisteret | Brukes i produksjon                                                         | Ferdig             |
+| Fiks Link - erstatning for GI Link                            | Protokoll under utvikling                                                   | 4 kvartal 2024     |
+| Fiks Saksfaser                                                | Protokoll under utvikling                                                   | Ikke avklart (**)  |
 
 (*) Fiks Plan er lansert med ulik pilot status fordelt på tjenestene pga eksterne avhengigheter. Les mer i [wiki](https://github.com/ks-no/fiks-plan-specification/wiki) for Fiks Plan.
+
+(**) Fiks Saksfaser er i veldig tidlig utvikling og ikke klart når den er estimert ferdig
 
 #### Plan
 ![plan for fiks protokoller](/Tjenester/images/fiks-protokoller-gantt.png)
@@ -53,6 +57,25 @@ Vi har også laget en huskeliste for hva man må ha klart og hvilke personer med
 I tillegg er det to veiledninger for hvordan du kan generere nytt passord til systemet, og hvordan du laster opp ny offentlig nøkkel til en konto.
 * [Generer nytt passord]({{< ref "nytt_passord.md" >}})
 * [Ny offentlig nøkkel]({{< ref "laste_opp_ny_offentlig_nokkel.md" >}})
+
+#### API
+Man kan opprette, vedlikeholde og få informasjon om kontoer via API etter et system er opprettet. 
+Når man har opprettet et system får man en integrasjon som gir tilgang til API'ene.
+Det er spesielt 2 API man kan bruke til dette, ett for Fiks Protokoll og ett for Fiks IO Katalog.
+
+Via [Fiks Protokoll API](https://editor.swagger.io/?url=https://developers.fiks.ks.no/api/fiks-protokoll-konfigurasjon-api-v1.json) kan man blant annet:
+- Opprette konto på system
+- Vedlikeholde tilganger om å sende meldinger mellom systemer
+- Hente informasjon om protokoll og parter for konto
+- Oppdatere konto med nøkler, parter osv.
+
+Fiks IO Katalog API er en oppslagstjeneste som brukes for å hente offentlig nøkkel og hente informasjon om en konto.
+
+Via [Fiks IO Katalog API](https://editor.swagger.io/?url=https://developers.fiks.ks.no/api/fiksio-katalog-api-v1.json) kan man blant annet: 
+- Hente offentlig nøkkel for konto
+- Søke etter konto via lookup 
+- Hente konto informasjon, som f.eks. status med antall konsumenter på køen
+
 
 ### Protokoller under Fiks protokoll
 * [Fiks Arkiv]({{< ref "arkiv.md" >}})
@@ -190,7 +213,9 @@ Det anbefales at man overvåker at man har en fungerende mottakende komponent so
 Siden meldinger har en time-to-live kan man risikere at disse til slutt går ut på tid og man ikke får hentet dem.
 Det er selvfølgelig også i ens egen interesse å svare på meldinger så fort som mulig. 
 
-Hvordan man overvåker at man kan sende og motta meldinger er opp til en selv men vi anbefaler at man i det minste overvåker koblingsstatus til Fiks-IO for henting av meldinger. Klienten for .NET har f.eks. en IsOpen() metode som viser om det er en aktiv kobling.
+Hvordan man overvåker at man kan sende og motta meldinger er opp til en selv men vi anbefaler at man i det minste overvåker koblingsstatus til Fiks-IO for henting av meldinger. 
+Klienten for .NET har både en **IsOpen()** metode som viser om klienten selv ser at den har en aktiv kobling, og mulighet for å spørre Fiks IO API om status for en gitt konto via **Status()** eller **Lookup()** metodene.
+Status vil da gi informasjon som f.eks. **antall konsumenter** for kontoen.
 
 
 #### Status i fiks forvaltning
