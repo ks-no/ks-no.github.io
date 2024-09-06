@@ -23,6 +23,8 @@ Fiks register tilbyr skatte- og inntektsopplysninger for kommunalt ansatte via e
 
 ___For å bruke API-ene, både proxy og vårt overbygg, må rollen som opprettes være i rett tjenesteområde.___
 
+___OBS: PRAKTISK BISTAND er foreløpig ikke tilgjengelig i dette API-et, men er fortsatt tilgjengelig i det eldre API-et.___
+
 ### Miljø
 
 | Miljø              | URL                                |
