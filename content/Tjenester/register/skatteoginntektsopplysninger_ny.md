@@ -23,6 +23,8 @@ Fiks register tilbyr skatte- og inntektsopplysninger for kommunalt ansatte via e
 
 ___For å bruke API-ene, både proxy og vårt overbygg, må rollen som opprettes være i rett tjenesteområde.___
 
+___OBS: PRAKTISK BISTAND er foreløpig ikke tilgjengelig i dette API-et, men er fortsatt tilgjengelig i det eldre API-et.___
+
 ### Miljø
 
 | Miljø              | URL                                |
@@ -40,6 +42,13 @@ URL for fiks-api (POST): ```<MILJØ_URL>/register/api/v1/ks/{rolleId}/skatteogin
 #### API-dokumentasjon
 [Swagger dokumentasjon for overbygg finner du her.](https://editor.swagger.io/?url=https://developers.fiks.ks.no/api/register-skatteoginntektsopplysninger-beregning-api-v1.json) Bruk også dokumentasjon fra Skatteetaten.
 
+
+### Feilkoder for egenandelsberegning
+
+| Kode  | Feilmelding                                                                                             |
+| ------| --------------------------------------------------------------------------------------------------------|
+| SI-01 | Klarte ikke å hente navn                                                                                |
+| SI-02 | Du mangler rettighet i Altinn for å få informasjon om skatt til gode, restskatt og innbetalt skatt.      |
 
 #### Ekstraposter
 Det finnes også en del ulike poster som har andre kilder enn Skatteetaten. Disse kan sendes med som en del av requesten, og vil da bli kalkulert sammen med data fra Skatteetaten. For å hente ut hvilke poster som er gyldig kan endepunktet ```<MILJØ_URL>/register/api/v1/ks/{rolleId}/skatteoginntektsopplysninger/verdier``` brukes.
