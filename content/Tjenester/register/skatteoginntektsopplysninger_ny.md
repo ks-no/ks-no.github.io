@@ -41,6 +41,13 @@ URL for fiks-api (POST): ```<MILJØ_URL>/register/api/v1/ks/{rolleId}/skatteogin
 [Swagger dokumentasjon for overbygg finner du her.](https://editor.swagger.io/?url=https://developers.fiks.ks.no/api/register-skatteoginntektsopplysninger-beregning-api-v1.json) Bruk også dokumentasjon fra Skatteetaten.
 
 
+### Feilkoder for egenandelsberegning
+
+| Kode  | Feilmelding                                                                                             |
+| ------| --------------------------------------------------------------------------------------------------------|
+| SI-01 | Klarte ikke å hente navn                                                                                |
+| SI-02 | Du mangler rettighet i Altinn for å få informasjon om skatt til gode, restskatt og innbetalt skatt.      |
+
 #### Ekstraposter
 Det finnes også en del ulike poster som har andre kilder enn Skatteetaten. Disse kan sendes med som en del av requesten, og vil da bli kalkulert sammen med data fra Skatteetaten. For å hente ut hvilke poster som er gyldig kan endepunktet ```<MILJØ_URL>/register/api/v1/ks/{rolleId}/skatteoginntektsopplysninger/verdier``` brukes.
 
