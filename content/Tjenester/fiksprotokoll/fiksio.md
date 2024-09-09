@@ -165,6 +165,8 @@ Hvis man får protokollens serverfeil melding tilbake, f.eks. for Fiks-Arkiv med
 ### Håndtering av store filer
 Fiks IO støtter sending av store filer ved at alle meldinger større enn 5 megabyte mellomlagres i Fiks Dokumentlager, i en dedikert konto som opprettes sammen med Fiks IO kontoen. En referanse til denne lagrede filen blir så sendt over AMQP. Filer sendt på slik måte får en time-to-live i dokumentlager lik time-to-live for meldingen + 24 timer. Etter dette vil de automatisk slettes.
 
+For øyeblikket støttes filer opp til 5 gigabyte. 
+
 Hvis man benytter java eller .net klienten utviklet av KS vil denne mellomlagringen oppleves sømløst - klienten streamer automatisk filer fra dokumentlageret om dette er benyttet.
 
 ### Klienter
