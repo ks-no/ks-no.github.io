@@ -31,10 +31,10 @@ SamtykkeStatus kan være følgende verdier:
 
 #### SamtykkeSvarStatus
 SamtykkeSvarStatus kan være følgende verdier:
-- VENTER_PAA_SVAR("VenterPaaSvar"): Forteller at part ikke har tatt stilling til samtykket.
-- SAMTYKKET ("Samtykket"): Forteller at part har samtykket.
-- IKKE_SAMTYKKET("IkkeSamtykket"): Forteller at part har avslått samtykket.
-- TRUKKET("Trukket"): Forteller at part har trukket samtykket.
+- VENTER_PAA_SVAR: Forteller at part ikke har tatt stilling til samtykket.
+- SAMTYKKET: Forteller at part har samtykket.
+- IKKE_SAMTYKKET: Forteller at part har avslått samtykket.
+- TRUKKET: Forteller at part har trukket samtykket.
 
 ### Ekstern-api
 #### [api-spec](https://editor.swagger.io/?url=https://developers.fiks.ks.no/api/samtykke-ekstern-api-v1.json)
