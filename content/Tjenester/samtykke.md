@@ -72,36 +72,8 @@ Altså:
 #### PUT /endreInnbyggertjenesteTilgangForPart/{samtykkeId}
 Dette endepunktet brukes av en saksbehandler for å endre tilgang til innbyggertjenester for en part i et samtykke. 
 
-### Intern-api
-#### [api-spec](https://editor.swagger.io/?url=https://developers.fiks.ks.no/api/samtykke-intern-api-v1.json)
-#### POST /aksepterSamtykke/
-Dette endepunktet brukes av innbygger for å akseptere et samtykke. Dette endepunktet er kun tilgjengelig for innbyggere med tilgang til innbyggertjenester.
-Merk at denne handlingen kun kan utføres for et samtykke med status "Venter på svar".
-
-#### POST /trekkSamtykke/
-Dette endepunktet brukes av innbygger for å trekke et samtykke. Dette endepunktet er kun tilgjengelig for innbyggere med tilgang til innbyggertjenester.
-Merk at denne handlingen kun kan utføres for et samtykke med status "Samtykket".
-
-#### GET /hentSamtykke/{samtykkeId}
-Dette endepunktet brukes for å hente et samtykke. Dette endepunktet er kun tilgjengelig for innbyggere med tilgang til innbyggertjenester.
-
-#### GET /hentSamtykkerForSak/{dokumentId}
-Dette endepunktet brukes for å hente samtykker for en sak. Dette endepunktet er kun tilgjengelig for innbyggere med tilgang til innbyggertjenester.
-
-### Konfigurasjon-api
-#### [api-spec](https://editor.swagger.io/?url=https://developers.fiks.ks.no/api/samtykke-konfigurasjon-api-v1.json)
-#### POST /opprettTilgang
-Dette endepunktet benyttes av en administrator for å opprette tilgang til en organisasjon mot samtykke-ekstern-api.
-Det returneres en integrasjonsId som brukes for å autentisere mot API-et med tilhørende passord.
-
 ## Diverse
 - linker
-  - Base-path innbygger-api dev: ``https://forvaltning.fiks.dev.ks.no/samtykke/api/v1/innbygger/``
-  - Base-path innbygger-api test: ``https://forvaltning.fiks.test.ks.no/samtykke/api/v1/innbygger/``
-  - Base-path innbygger-api prod: ``https://forvaltning.fiks.ks.no/samtykke/api/v1/innbygger/``
   - Base-path ekstern-api dev: ``https://api.fiks.dev.ks.no/samtykke/api/v1/ekstern/``
   - Base-path ekstern-api test: ``https://api.fiks.test.ks.no/samtykke/api/v1/ekstern/``
-  - Base-path ekstern-api prod: ``https://api.fiks.ks.no/samtykke/api/v1/ekstern/``  
-  - Base-path innbygger-api dev: ``https://forvaltning.fiks.dev.ks.no/samtykke/api/v1/konfigurasjon/``
-  - Base-path innbygger-api test: ``https://forvaltning.fiks.test.ks.no/samtykke/api/v1/konfigurasjon/``
-  - Base-path innbygger-api prod: ``https://forvaltning.fiks.ks.no/samtykke/api/v1/konfigurasjon/``
+  - Base-path ekstern-api prod: ``https://api.fiks.ks.no/samtykke/api/v1/ekstern/``
