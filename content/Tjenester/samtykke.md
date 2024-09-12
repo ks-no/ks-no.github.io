@@ -44,7 +44,7 @@ Vær oppmerksom på flagget "harTilgangTilInnbyggerTjenester" som styrer om innb
 Dette api-endepunktet returnerer en nyopprettet SamtykkeId (UUID)
 
 #### PUT /endreSamtykke/{samtykkeId}
-En saksbehandler kan endre et samtykke. Ptt er det svarfrist og utløpsdato som kan endres via dette endepunktet. 
+En saksbehandler kan endre et samtykke. Svarfrist og utløpsdato er verdiene som på nåværende tidspunkt kan endres via dette endepunktet. 
 Det er ingen validering på disse datoene mot hverandre eller bakover i tid verken ved opprettelse eller endring på vår side grunnet behov for opprettelse av historiske samtykker.
 
 #### GET /samtykkeHistorikk/{samtykkeId}
