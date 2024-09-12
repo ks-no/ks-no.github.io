@@ -22,12 +22,12 @@ Det er to typer statuser som er definert i samtykke-løsningen. En overordnet sa
 
 #### SamtykkeStatus
 SamtykkeStatus kan være følgende verdier:
-- SAMTYKKET("Samtykket"): Forteller at alle partene for et samtykke har samtykket.
-- TRUKKET ("Trukket"): Forteller at minst en part tilknyttet et samtykket har trukket samtykket.
-- IKKE_SAMTYKKET("IkkeSamtykket"): Forteller at minst en part tilknyttet samtykket har avslått samtykket.
-- VENTER_PAA_SVAR("VenterPaaSvar"): Forteller at det er minst en part som fortsatt har status "VenterPaaSvar" tilknyttet samtykket
-- SVARFRIST_PASSERT("SvarfristPassert"): Forteller at svarfristen er passert.
-- UTLOPT("Utlopt"): Forteller at samtykket har utløpt.
+- SAMTYKKET: Forteller at alle partene for et samtykke har samtykket.
+- TRUKKET: Forteller at minst en part tilknyttet et samtykket har trukket samtykket.
+- IKKE_SAMTYKKET: Forteller at minst en part tilknyttet samtykket har avslått samtykket.
+- VENTER_PAA_SVAR: Forteller at det er minst en part som fortsatt har status "VenterPaaSvar" tilknyttet samtykket
+- SVARFRIST_PASSERT: Forteller at svarfristen er passert.
+- UTLOPT: Forteller at samtykket har utløpt.
 
 #### SamtykkeSvarStatus
 SamtykkeSvarStatus kan være følgende verdier:
