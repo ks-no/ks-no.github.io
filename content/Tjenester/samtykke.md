@@ -9,7 +9,8 @@ alias: [/fiks-plattform/tjenester/samtykke/]
 Fiks samtykke er en løsning laget for Norges innbyggere for å kunne ta stilling til ulike samtykker. Løsningen består av en web-portal brukt av innbyggere til å ta stilling til samtykke og et API for eksterne fag-system brukt saksbehandlere til å opprette og endre samtykker.
 
 Første iterasjon av denne tjenesten omfatter samtykker knyttet til Barnevern, og det er den løsningen som i hovedsak beskrives her.
-
+Flyten fra et fagsystem sitt ståsted er at et samtykke opprettes via ekstern-api og en samtykkeId returneres.
+Deretter sendes samtykke-dokument via SvarUt til involverte parter, der samtykke-id må være med som ekstern-referanse. Videre blir journalpost indeksert og via innsyn eksponert via vår webportal for parter som har tilgang til innbyggertjenester.
 ## Tilgjengelige grensesnitt
 | Grensesnitt | Støtte |
 |------|------|
