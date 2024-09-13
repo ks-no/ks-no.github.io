@@ -42,6 +42,7 @@ Sakssystemer kan kalle SvarUt for å laste ned forsendelser direkte via REST API
 
 For å sikre bakoverkompabilitet versjoneres servicen. Når grensesnittet endres deployes en ny versjon slik at eksisterende klienter selv kan velge når de ønsker å ta i bruk ny versjon. Se tabell under for hvilke versjoner som til enhver tid er støttet. Hver versjon dokumenteres separat.
 
-| Dokumentasjon                                            | Status | Endringer |
-|----------------------------------------------------------|--------|-----------|
-| [MottaksService V1 REST](/tjenester/svarut/svarinn-rest) | Stabil | NA        |
+| Dokumentasjon                                     | Spesifikasjon                                                    | Status     | Endringer                                                                                                                                                |
+|---------------------------------------------------|------------------------------------------------------------------|------------|----------------------------------------------------------------------------------------------------------------------------------------------------------|
+| [SvarInn V1](/tjenester/svarut/svarinn/svarinnv1) | [OpenAPI](https://developers.fiks.ks.no/api/svarinn-api-v1.json) | Deprecated | NA                                                                                                                                                       |
+| [SvarInn V2](/tjenester/svarut/svarinn-rest)      | [OpenAPI](https://developers.fiks.ks.no/api/svarinn-api-v2.json) | Stabil     | <ul><li>Endepunkter for oppdatering av status slått sammen</li><li>Endret navn og type på enkelte felter</li><li>Nye felter for Noark-metadata</li></ul> |
