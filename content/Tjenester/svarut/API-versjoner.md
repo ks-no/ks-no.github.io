@@ -10,7 +10,7 @@ Dersom JSON-strukturen bli forandret vil det komme en ny versjon av servicen. Al
 
 | Versjon                                         | Status     | Endringer                                                                                                                                      |
 |-------------------------------------------------|------------|------------------------------------------------------------------------------------------------------------------------------------------------|
-| [REST V1](/tjenester/svarut/integrasjon/restv1) | Deprecated | <ul><li>Funksjonaliteten i V11 flyttet til http/json basert api.</li></ul>                                                                     |
+| [REST V1](/tjenester/svarut/integrasjon/restv1) | Deprecated | <ul><li>Funksjonaliteten i SOAP V11 flyttet til REST basert API</li></ul>                                                                      |
 | [REST V2](/tjenester/svarut/restv2)             | Stabil     | <ul><li>Benytter Fiks integrasjonsautentisering og Maskinporten</li><li>Endepunkter gruppert slik at de kan versjoneres hver for seg</li></ul> |
 
 ## SOAP API for forsendelser
@@ -44,5 +44,5 @@ For å sikre bakoverkompabilitet versjoneres servicen. Når grensesnittet endres
 
 | Dokumentasjon                                     | Spesifikasjon                                                    | Status     | Endringer                                                                                                                                                |
 |---------------------------------------------------|------------------------------------------------------------------|------------|----------------------------------------------------------------------------------------------------------------------------------------------------------|
-| [SvarInn V1](/tjenester/svarut/svarinn/svarinnv1) | [OpenAPI](https://developers.fiks.ks.no/api/svarinn-api-v1.json) | Deprecated | NA                                                                                                                                                       |
+| [SvarInn V1](/tjenester/svarut/svarinn/svarinnv1) | [OpenAPI](https://developers.fiks.ks.no/api/svarinn-api-v1.json) | Deprecated |                                                                                                                                                          |
 | [SvarInn V2](/tjenester/svarut/svarinn-rest)      | [OpenAPI](https://developers.fiks.ks.no/api/svarinn-api-v2.json) | Stabil     | <ul><li>Endepunkter for oppdatering av status slått sammen</li><li>Endret navn og type på enkelte felter</li><li>Nye felter for Noark-metadata</li></ul> |

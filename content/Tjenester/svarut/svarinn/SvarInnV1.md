@@ -1,7 +1,6 @@
 ---
-title: 'API: SvarInn REST'
+title: 'SvarInn V1'
 date: 2017-01-01
-aliases: [/svarut/integrasjon/mottaksservice-rest, /tjenester/svarut/integrasjon/mottaksservice-rest/]
 ---
 
 Her beskrives funksjonalitet for Mottaksservice V1. For å sikre bakoverkompatibilitet for klientene så vil denne versjonen ikke endres.
