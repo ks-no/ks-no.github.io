@@ -60,7 +60,8 @@ I tillegg er det to veiledninger for hvordan du kan generere nytt passord til sy
 
 #### API
 Man kan opprette, vedlikeholde og få informasjon om kontoer via API etter et system er opprettet. 
-Når man har opprettet et system får man en integrasjon som gir tilgang til API'ene.
+Når man har opprettet et system får man en integrasjon som gir tilgang til API'ene. 
+Les mer om hvordan man setter opp en integrasjon via API her under [Felles -> Integrasjoner](https://developers.fiks.ks.no/felles/integrasjoner/).
 Det er spesielt 2 API man kan bruke til dette, ett for Fiks Protokoll og ett for Fiks IO Katalog.
 
 Via [Fiks Protokoll API](https://editor.swagger.io/?url=https://developers.fiks.ks.no/api/fiks-protokoll-konfigurasjon-api-v1.json) kan man blant annet:
