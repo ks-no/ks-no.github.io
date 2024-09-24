@@ -64,7 +64,7 @@ Når man har opprettet et system får man en integrasjon som gir tilgang til API
 Les mer om hvordan man setter opp en integrasjon via API her under [Felles -> Integrasjoner](https://developers.fiks.ks.no/felles/integrasjoner/).
 Det er spesielt 2 API man kan bruke til dette, ett for Fiks Protokoll og ett for Fiks IO Katalog.
 
-Via [Fiks Protokoll API](https://editor.swagger.io/?url=https://developers.fiks.ks.no/api/fiks-protokoll-konfigurasjon-api-v1.json) kan man blant annet:
+Via [Fiks Protokoll API (OpenAPI Specification)](https://editor.swagger.io/?url=https://developers.fiks.ks.no/api/fiks-protokoll-konfigurasjon-api-v1.json) kan man blant annet:
 - Opprette konto på system
 - Vedlikeholde tilganger om å sende meldinger mellom systemer
 - Hente informasjon om protokoll og parter for konto
@@ -72,7 +72,7 @@ Via [Fiks Protokoll API](https://editor.swagger.io/?url=https://developers.fiks.
 
 Fiks IO Katalog API er en oppslagstjeneste som brukes for å hente offentlig nøkkel og hente informasjon om en konto.
 
-Via [Fiks IO Katalog API](https://editor.swagger.io/?url=https://developers.fiks.ks.no/api/fiksio-katalog-api-v1.json) kan man blant annet: 
+Via [Fiks IO Katalog API (OpenAPI Specification)](https://editor.swagger.io/?url=https://developers.fiks.ks.no/api/fiksio-katalog-api-v1.json) kan man blant annet: 
 - Hente offentlig nøkkel for konto
 - Søke etter konto via lookup 
 - Hente konto informasjon, som f.eks. status med antall konsumenter på køen
@@ -124,17 +124,8 @@ Forvalting:
 
 API:
 `POST /fiks-protokoll/api/v1/konfigurasjon/{fiksOrgId}/systemer/{systemId}/kontoer`
-Payload:
-```json
-{
-  "navn": "Arkivsystem",
-  "beskrivelse": "Arkivsystem beskrivelse",
-  "stottetProtokollNavn": "	no.ks.fiks.arkiv",
-  "stottetProtokollVersjon": "v1",
-  "part": "arkiv.levenrandor",
-  "offentligNokkel": "......"
-}
-```
+
+[OpenAPI Specification (Fiks Protokoll API)](https://editor.swagger.io/?url=https://developers.fiks.ks.no/api/fiks-protokoll-konfigurasjon-api-v1.json)
 
 ### Tilganger
 
@@ -156,6 +147,9 @@ API:
 Tilsvarende for å fjerne tilgang
 `DELETE /fiks-protokoll/api/v1/konfigurasjon/{fiksOrgId}/systemer/{systemId}/kontoer/{kontoId}/tilganger/{eksternSystemId}`
 
+[OpenAPI Specification (Fiks Protokoll API)](https://editor.swagger.io/?url=https://developers.fiks.ks.no/api/fiks-protokoll-konfigurasjon-api-v1.json)
+
+
 #### Be om tilgang til system
 En kan legge inn forespørsel om tilgang til konto, for system. Ved hjelp av API. Dette er ikke ferdig implementert i forvaltning.
 
@@ -168,41 +162,20 @@ Tilsvarende for å fjerne forespørsel
 
 `DELETE {fiksOrgId}/systemer/{systemId}/forespurteTilganger/{eksternKonto}`
 
+[OpenAPI Specification (Fiks Protokoll API)](https://editor.swagger.io/?url=https://developers.fiks.ks.no/api/fiks-protokoll-konfigurasjon-api-v1.json)
 
 
 Merk: Søk etter systemer er ikke implementert ennå, så det kan være vanskelig å finne systemer å be om tilgang til
 
 #### Kontoer et system kan sende meldinger til
-Hvilke kontoer et system kan sende meldinger til finnes på system-responsen fra `GET /fiks-protokoll/api/v1/konfigurasjon/{fiksOrgId}/systemer/{systemId}`. Der vil `tilgangTilKontoer` ha en liste over kontoer (`EksternProtokollKontoResponseEksternProtokollKontoResponse`) systemet kan sende meldinger til.
+API'et støtter å hente hvilke kontoer et system kan sende meldinger til.
 Kun kontoer som er parter fra samme protokoll (samme navn og versjon) og som er støttet part (er i listen av stottedeParter hos motaker) som kan sende meldinger til hverandre. Dersom et system ikke ha en konto som er støttet part, så må en slik konto opprettes før meldinger kan sendes. 
 
-Definisjon av `EksternProtokollKontoResponseEksternProtokollKontoResponse`:
-```json
-{
-  "id": "ID på kontoen. Det er denne IDen Fiks IO skal sende til",
-  "navn": "Navn på konto",
-  "beskrivelse": "Beskrivelse av konto",
-  "part": {
-    // Definerer parten som kontoen implementerer
-    "navn": "Navn på part (f.eks. arkiv.full)",
-    "beskrivelse": "Beskrivelse av parten",
-    "protokollnavn": "Navn på protokoll (f.eks. no.ks.fiks.arkiv)",
-    "protokollversjon": "Protokollversjon (f.eks. v1)",
-    "avsenderMeldingstyper": [
-      // Liste av meldingstyper kontoen støtter å sende
-    ],
-    "mottakerMeldingstyper": [
-      // Liste av meldingstyper kontoen støtter å motta
-    ],
-    "stottedeParter": [
-      // Liste av parter som kan sende meldinger til kontoen.
-    ]
-  },
-  "system": {
-    // Beskrivelse av systemet som eier kontoen
-  }
-}
-```
+API: `GET /fiks-protokoll/api/v1/konfigurasjon/{fiksOrgId}/systemer/{systemId}`
+
+I responsen vil `tilgangTilKontoer` ha en liste over kontoer (`EksternProtokollKontoResponseEksternProtokollKontoResponse`) systemet kan sende meldinger til.
+
+[OpenAPI Specification (FIks Protokoll API)](https://editor.swagger.io/?url=https://developers.fiks.ks.no/api/fiks-protokoll-konfigurasjon-api-v1.json)
 
 
 ### Sende og motta meldinger fra protokoll konto 
@@ -217,6 +190,12 @@ Det er selvfølgelig også i ens egen interesse å svare på meldinger så fort 
 Hvordan man overvåker at man kan sende og motta meldinger er opp til en selv men vi anbefaler at man i det minste overvåker koblingsstatus til Fiks-IO for henting av meldinger. 
 Klienten for .NET har både en **IsOpen()** metode som viser om klienten selv ser at den har en aktiv kobling, og mulighet for å spørre Fiks IO API om status for en gitt konto via **Status()** eller **Lookup()** metodene.
 Status vil da gi informasjon som f.eks. **antall konsumenter** for kontoen.
+
+#### Get status for konto:
+
+API: `GET /fiks-io/katalog/api/v1/kontoer/{kontoId}/status`
+
+[OpenAPI Specification (Fiks IO katalog API)](https://editor.swagger.io/?url=https://developers.fiks.ks.no/api/fiksio-katalog-api-v1.json)
 
 
 #### Status i fiks forvaltning
