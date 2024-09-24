@@ -124,17 +124,8 @@ Forvalting:
 
 API:
 `POST /fiks-protokoll/api/v1/konfigurasjon/{fiksOrgId}/systemer/{systemId}/kontoer`
-Payload:
-```json
-{
-  "navn": "Arkivsystem",
-  "beskrivelse": "Arkivsystem beskrivelse",
-  "stottetProtokollNavn": "	no.ks.fiks.arkiv",
-  "stottetProtokollVersjon": "v1",
-  "part": "arkiv.levenrandor",
-  "offentligNokkel": "......"
-}
-```
+
+[OpenAPI Specification](https://editor.swagger.io/?url=https://developers.fiks.ks.no/api/fiks-protokoll-konfigurasjon-api-v1.json)
 
 ### Tilganger
 
@@ -156,6 +147,9 @@ API:
 Tilsvarende for å fjerne tilgang
 `DELETE /fiks-protokoll/api/v1/konfigurasjon/{fiksOrgId}/systemer/{systemId}/kontoer/{kontoId}/tilganger/{eksternSystemId}`
 
+[OpenAPI Specification](https://editor.swagger.io/?url=https://developers.fiks.ks.no/api/fiks-protokoll-konfigurasjon-api-v1.json)
+
+
 #### Be om tilgang til system
 En kan legge inn forespørsel om tilgang til konto, for system. Ved hjelp av API. Dette er ikke ferdig implementert i forvaltning.
 
@@ -168,41 +162,20 @@ Tilsvarende for å fjerne forespørsel
 
 `DELETE {fiksOrgId}/systemer/{systemId}/forespurteTilganger/{eksternKonto}`
 
+[OpenAPI Specification](https://editor.swagger.io/?url=https://developers.fiks.ks.no/api/fiks-protokoll-konfigurasjon-api-v1.json)
 
 
 Merk: Søk etter systemer er ikke implementert ennå, så det kan være vanskelig å finne systemer å be om tilgang til
 
 #### Kontoer et system kan sende meldinger til
-Hvilke kontoer et system kan sende meldinger til finnes på system-responsen fra `GET /fiks-protokoll/api/v1/konfigurasjon/{fiksOrgId}/systemer/{systemId}`. Der vil `tilgangTilKontoer` ha en liste over kontoer (`EksternProtokollKontoResponseEksternProtokollKontoResponse`) systemet kan sende meldinger til.
+API'et støtter å hente hvilke kontoer et system kan sende meldinger til.
 Kun kontoer som er parter fra samme protokoll (samme navn og versjon) og som er støttet part (er i listen av stottedeParter hos motaker) som kan sende meldinger til hverandre. Dersom et system ikke ha en konto som er støttet part, så må en slik konto opprettes før meldinger kan sendes. 
 
-Definisjon av `EksternProtokollKontoResponseEksternProtokollKontoResponse`:
-```json
-{
-  "id": "ID på kontoen. Det er denne IDen Fiks IO skal sende til",
-  "navn": "Navn på konto",
-  "beskrivelse": "Beskrivelse av konto",
-  "part": {
-    // Definerer parten som kontoen implementerer
-    "navn": "Navn på part (f.eks. arkiv.full)",
-    "beskrivelse": "Beskrivelse av parten",
-    "protokollnavn": "Navn på protokoll (f.eks. no.ks.fiks.arkiv)",
-    "protokollversjon": "Protokollversjon (f.eks. v1)",
-    "avsenderMeldingstyper": [
-      // Liste av meldingstyper kontoen støtter å sende
-    ],
-    "mottakerMeldingstyper": [
-      // Liste av meldingstyper kontoen støtter å motta
-    ],
-    "stottedeParter": [
-      // Liste av parter som kan sende meldinger til kontoen.
-    ]
-  },
-  "system": {
-    // Beskrivelse av systemet som eier kontoen
-  }
-}
-```
+`GET /fiks-protokoll/api/v1/konfigurasjon/{fiksOrgId}/systemer/{systemId}`
+
+I responsen vil `tilgangTilKontoer` ha en liste over kontoer (`EksternProtokollKontoResponseEksternProtokollKontoResponse`) systemet kan sende meldinger til.
+
+[OpenAPI Specification](https://editor.swagger.io/?url=https://developers.fiks.ks.no/api/fiks-protokoll-konfigurasjon-api-v1.json)
 
 
 ### Sende og motta meldinger fra protokoll konto 
