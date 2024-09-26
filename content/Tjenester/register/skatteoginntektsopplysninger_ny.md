@@ -5,7 +5,7 @@ aliases: [/fiks-plattform/tjenester/fiksregister/skatteoginntektsopplysninger_ny
 ---
 
 ### Kort beskrivelse
-Fiks register tilbyr skatte- og inntektsopplysninger for kommunalt ansatte via et web-basert grensesnitt for innbyggere som søker om kommunale tjenester. Dette grensesnittet er også tilgjengelig som API for kommunene sine fagsystem. API-grensesnittet er ikke ferdig utviklet og endringer kan fortsatt forekomme.
+Fiks register tilbyr skatte- og inntektsopplysninger for kommunalt ansatte via et web-basert grensesnitt for innbyggere som søker om kommunale tjenester. Dette grensesnittet er også tilgjengelig som API for kommunene sine fagsystem.
 
 ## Tilgjengelige grensesnitt
 | Grensesnitt       | Støtte                                                                                                                      |
