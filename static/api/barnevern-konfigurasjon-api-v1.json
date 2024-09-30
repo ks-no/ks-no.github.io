@@ -122,7 +122,7 @@
         }
       }
     },
-    "/barnevern/konfigurasjon/api/v1/{fiksOrgId}/kontaktperson/{kontaktPersonId}" : {
+    "/barnevern/konfigurasjon/api/v1/{fiksOrgId}/kontaktperson/{id}" : {
       "put" : {
         "tags" : [ "BarnevernKonfigurasjon" ],
         "summary" : "Endrer kontaktperson til kommune",
@@ -136,7 +136,7 @@
             "format" : "uuid"
           }
         }, {
-          "name" : "kontaktPersonId",
+          "name" : "id",
           "in" : "path",
           "required" : true,
           "schema" : {
@@ -154,8 +154,15 @@
           }
         },
         "responses" : {
-          "204" : {
-            "description" : "Fjernet"
+          "200" : {
+            "description" : "Endret kontaktperson",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/KontaktpersonModel"
+                }
+              }
+            }
           },
           "default" : {
             "description" : "Feilmelding",
@@ -182,7 +189,7 @@
             "format" : "uuid"
           }
         }, {
-          "name" : "kontaktPersonId",
+          "name" : "id",
           "in" : "path",
           "required" : true,
           "schema" : {
@@ -714,60 +721,6 @@
         }
       }
     },
-    "/barnevern/konfigurasjon/api/v1/{fiksOrgId}/bydelskontor/{kontorId}/kontaktperson" : {
-      "post" : {
-        "tags" : [ "BarnevernKonfigurasjon" ],
-        "summary" : "Registrer kontaktperson for bydel",
-        "operationId" : "leggTilKontaktpersonForBydel",
-        "parameters" : [ {
-          "name" : "fiksOrgId",
-          "in" : "path",
-          "required" : true,
-          "schema" : {
-            "type" : "string",
-            "format" : "uuid"
-          }
-        }, {
-          "name" : "kontorId",
-          "in" : "path",
-          "required" : true,
-          "schema" : {
-            "type" : "string"
-          }
-        } ],
-        "requestBody" : {
-          "content" : {
-            "application/json" : {
-              "schema" : {
-                "$ref" : "#/components/schemas/KontaktPerson"
-              }
-            }
-          }
-        },
-        "responses" : {
-          "201" : {
-            "description" : "Opprettet",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/KontaktpersonModel"
-                }
-              }
-            }
-          },
-          "default" : {
-            "description" : "Feilmelding",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/ErrorMessage"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
     "/barnevern/konfigurasjon/api/v1/{fiksOrgId}/bydelskontor/administrator" : {
       "post" : {
         "tags" : [ "BarnevernKonfigurasjon" ],
@@ -798,6 +751,53 @@
               "application/json" : {
                 "schema" : {
                   "$ref" : "#/components/schemas/AdministratorMedTilgangModel"
+                }
+              }
+            }
+          },
+          "default" : {
+            "description" : "Feilmelding",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/barnevern/konfigurasjon/api/v1/{fiksOrgId}/bydelskontor/kontaktperson" : {
+      "post" : {
+        "tags" : [ "BarnevernKonfigurasjon" ],
+        "summary" : "Registrer kontaktperson for bydel",
+        "operationId" : "oppdaterKontaktpersonForBydel",
+        "parameters" : [ {
+          "name" : "fiksOrgId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/KontaktpersonMedTilganger"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "201" : {
+            "description" : "Opprettet",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/KontaktpersonEnheterModel"
                 }
               }
             }
@@ -1078,7 +1078,7 @@
         }
       }
     },
-    "/barnevern/konfigurasjon/api/v1/oppsett/{fiksOrgId}/kontaktperson/{kontaktPersonId}" : {
+    "/barnevern/konfigurasjon/api/v1/oppsett/{fiksOrgId}/kontaktperson/{id}" : {
       "put" : {
         "tags" : [ "BarnevernKonfigurasjonWizard" ],
         "summary" : "Endrer kontaktperson til kommune",
@@ -1092,7 +1092,7 @@
             "format" : "uuid"
           }
         }, {
-          "name" : "kontaktPersonId",
+          "name" : "id",
           "in" : "path",
           "required" : true,
           "schema" : {
@@ -1145,7 +1145,7 @@
             "format" : "uuid"
           }
         }, {
-          "name" : "kontaktPersonId",
+          "name" : "id",
           "in" : "path",
           "required" : true,
           "schema" : {
@@ -1846,6 +1846,34 @@
         },
         "description" : "Integrasjon som brukes for å jobbe mot samtykke-api'et"
       },
+      "KontaktpersonModel" : {
+        "required" : [ "admin", "epost", "id", "navn" ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string",
+            "description" : "Id til kontaktperson.",
+            "format" : "uuid"
+          },
+          "personId" : {
+            "type" : "string",
+            "description" : "PersonId til kontaktperson. Peker på konfigurasjon-id til brukeren.",
+            "format" : "uuid"
+          },
+          "navn" : {
+            "type" : "string",
+            "description" : "Navn til kontaktperson. Trenger ikke peke på en person."
+          },
+          "epost" : {
+            "type" : "string",
+            "description" : "Epost til kontaktperson."
+          },
+          "admin" : {
+            "type" : "boolean",
+            "description" : "Angir om person også er administrator."
+          }
+        }
+      },
       "KontaktPerson" : {
         "required" : [ "epost", "navn" ],
         "type" : "object",
@@ -1987,8 +2015,7 @@
               "description" : "Angir hvilke bydelskontor en er kontaktperson på."
             }
           }
-        },
-        "description" : "Oversikt over kontaktpersoner."
+        }
       },
       "AdministratorModel" : {
         "required" : [ "fdato", "id", "navn" ],
@@ -2026,34 +2053,6 @@
           }
         },
         "description" : "Brukes som response på kall for å hente barnevernkontor til kommuner som støtter bydeler etter at oppsett er utført."
-      },
-      "KontaktpersonModel" : {
-        "required" : [ "admin", "epost", "id", "navn" ],
-        "type" : "object",
-        "properties" : {
-          "id" : {
-            "type" : "string",
-            "description" : "Id til kontaktperson.",
-            "format" : "uuid"
-          },
-          "personId" : {
-            "type" : "string",
-            "description" : "PersonId til kontaktperson. Peker på konfigurasjon-id til brukeren.",
-            "format" : "uuid"
-          },
-          "navn" : {
-            "type" : "string",
-            "description" : "Navn til kontaktperson. Trenger ikke peke på en person."
-          },
-          "epost" : {
-            "type" : "string",
-            "description" : "Epost til kontaktperson."
-          },
-          "admin" : {
-            "type" : "boolean",
-            "description" : "Angir om person også er administrator."
-          }
-        }
       },
       "KontorBydelModel" : {
         "type" : "object",
@@ -2265,6 +2264,42 @@
           }
         },
         "description" : "Informasjon om person som skal få admin rettigheter"
+      },
+      "KontaktpersonMedTilganger" : {
+        "required" : [ "epost", "kontaktpersonAndreAvdelinger", "kontaktpersonTjeneste", "navn" ],
+        "type" : "object",
+        "properties" : {
+          "kontaktpersonId" : {
+            "type" : "string",
+            "description" : "Id til kontakt som skal oppdateres.",
+            "format" : "uuid"
+          },
+          "navn" : {
+            "maxLength" : 200,
+            "minLength" : 0,
+            "type" : "string",
+            "description" : "Navn til kontakt som skal oppdateres."
+          },
+          "epost" : {
+            "maxLength" : 200,
+            "minLength" : 0,
+            "type" : "string",
+            "description" : "Epost-adresse til kontakt som skal oppdateres."
+          },
+          "kontaktpersonAndreAvdelinger" : {
+            "type" : "array",
+            "description" : "Angir hvilken avdelinger hen skal være kontaktperson i.",
+            "items" : {
+              "type" : "string",
+              "description" : "Angir hvilken avdelinger hen skal være kontaktperson i."
+            }
+          },
+          "kontaktpersonTjeneste" : {
+            "type" : "boolean",
+            "description" : "Angir om person skal være kontaktperson på tjenestenivå"
+          }
+        },
+        "description" : "Informasjon om kontaktperson"
       },
       "EnhetModel" : {
         "type" : "object",
