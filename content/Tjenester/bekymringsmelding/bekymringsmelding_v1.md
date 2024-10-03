@@ -1,5 +1,5 @@
 ---
-title: Fiks bekymringsmelding
+title: Fiks bekymringsmelding V1
 date: 2019-11-25 
 aliases: ["/fiks-platform/tjenester/bekymringsmelding", "/fiks-platform/tjenester_under_utvikling/bekymringsmelding", "/fiks-plattform/tjenester/bekymringsmelding/"]
 ---
