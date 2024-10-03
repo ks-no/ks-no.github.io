@@ -32,7 +32,7 @@ Det må sendes med to krypterte filer, en AsiC-E-fil og en PDF-fil. De offentlig
 AsiC-E-filen må inneholde to filer, «bekymringsmelding.json» og «bekymringsmelding.pdf». «bekymringsmelding.json» er en JSON-fil definert i JSON-skjema for [privat bekymringsmelding](https://raw.githubusercontent.com/ks-no/fiks-io-bekymringsmelding-protokoll/master/schema/domain/v2/privat.bekymringsmelding.v2.json) eller [offentlig bekymringsmelding](https://raw.githubusercontent.com/ks-no/fiks-io-bekymringsmelding-protokoll/master/schema/domain/v2/offentlig.bekymringsmelding.v2.json) - avhengig om meldingstypen er en privat eller offentlig bekymringsmelding. Skjemadefinisjon med eksempler finner man [her](https://github.com/ks-no/fiks-io-bekymringsmelding-protokoll). AsiC-E-filen må være kryptert med mottakersystemets offentlige nøkkel.
 
 **PDF-fil**
-«bekymringsmelding.pdf» vil være selve bekymringsmeldingen på PDF-format og må være kryptert med printleverandørens offentlige nøkkel. Fagsystemet har ansvar for å lage PDF. Eksempler på PDF for [privat melder](http://ks-no.github.io/images/eksempel-privat-melder.pdf) og [offentlig melder](http://ks-no.github.io/images/eksempel-offentlig-melder.pdf). 
+«bekymringsmelding.pdf» vil være selve bekymringsmeldingen på PDF-format og må være kryptert med printleverandørens offentlige nøkkel. Fagsystemet har ansvar for å lage PDF. Eksempler på PDF for [privat melder](http://ks-no.github.io/images/eksempel-privat-melder.pdf) og [offentlig melder](http://ks-no.github.io/images/eksempel-offentlig-melder-v2.pdf). 
 
 
 **Sekvensdiagram**
