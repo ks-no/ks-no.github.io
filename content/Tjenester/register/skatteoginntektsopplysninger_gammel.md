@@ -30,7 +30,7 @@ ___For å bruke API-ene, både proxy og vårt overbygg, må rollen som opprettes
 | Test (Integrasjon) | http&#8203;s://api.fiks.test.ks.no |
 | Produksjon         | http&#8203;s://api.fiks.ks.no      |
 
-APIene er tilgjengelig via Fiks-plattformen som proxy-tjeneste eller via vårt overbygg. ___Hendelseslister er ikke tilgjengelig via vår løsning pr nå og må hentes fra skatteetatens eget API.___
+APIene er tilgjengelig via Fiks-plattformen som proxy-tjeneste eller via vårt overbygg.
 
 ### Oppslag via overbygg
 Vi har laget vårt eget overbygg som gir mulighet for å søke på flere personer. Vi søker om personene har stadie ___OPPGJØR___. Ved redusert foreldrebetaling SFO/barnehage, søkes det også etter ___UTKAST___ dersom de ikke har ___OPPGJØR___. Datamodellen er en sammenstilling av det som kommer fra skatteetaten sine APIer og har summert alle poster som hører sammen. For hver tjeneste finnes det en beregningstype som må sendes inn som en del av payloaden, dette erstatter behovet for å bruke rettighetspakke.
