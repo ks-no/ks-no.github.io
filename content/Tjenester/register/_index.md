@@ -4,6 +4,10 @@ date: 2023-01-04
 
 ---
 
+## Kort beskrivelse
+Fiks register en en samling av register tjenester. Fiks register inneholder:
+{{% children  /%}}
+
 ## Revisjoner
 | Dato       | Kommentar                                                       | 
 | -----------| ----------------------------------------------------------------| 
@@ -16,10 +20,5 @@ date: 2023-01-04
 | 16.10.2023 | Oppdatert skatte- og inntektsopplysninger med nytt API-eksempel |
 | 14.08.2024 | Andre versjon av skatte- og inntektsopplysninger                |
 | 06.09.2024 | Oppdatert skatte- og inntektsopplysninger med feilkoder         |
-
-## Kort beskrivelse
-Fiks register en en samling av register tjenester. Fiks register inneholder:
-{{% children  /%}}
-
 
 
