@@ -907,6 +907,47 @@
         }
       }
     },
+    "/konfigurasjon/api/v1/organisasjoner/{fiksOrgId}/tjenester/{tjenesteKode}/integrasjoner": {
+      "get": {
+        "tags": [
+          "OrganisasjonKonfigurasjon"
+        ],
+        "summary": "Henter tilknyttede integrasjoner for tjenesten i organisasjonen, samt tilgjengelige privilegier for den respektive tjenesten.",
+        "description": "Henter tilknyttede integrasjoner for tjenesten i organisasjonen, samt tilgjengelige privilegier for den respektive tjenesten.",
+        "operationId": "getIntegrasjonerForTjenesteInOrganisasjon",
+        "parameters": [
+          {
+            "name": "fiksOrgId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "tjenesteKode",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Alle integrasjoner for tjenesten i organisasjonen, samt tilganger for den respektive tjenesten.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TjenesteIntegrasjoner"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/konfigurasjon/api/v1/organisasjoner/{fiksOrgId}/tjenester": {
       "get": {
         "tags": [
@@ -2880,6 +2921,87 @@
           }
         },
         "description": "En liste over alle tjenester"
+      },
+      "TjenesteIntegrasjoner": {
+        "type": "object",
+        "description": "Integrasjoner som er tilknyttet en tjeneste i en fiksorg og tilgjengelige priviegier som kan bli gitt til disse.",
+        "required": [
+          "tilknyttedeIntegrasjoner",
+          "tilgjengeligePrivilegier"
+        ],
+        "properties": {
+          "tilknyttedeIntegrasjoner": {
+            "type": "array",
+            "description": "En liste over integrasjonene som er tilknyttet denne tjenesten innenfor gitt organisasjon.",
+            "items": {
+              "$ref": "#/components/schemas/TjenesteIntegrasjon"
+            }
+          },
+          "tilgjengeligePrivilegier": {
+            "type": "array",
+            "description": "En liste over privilegier man kan gi til en integrasjon for denne tjenesten.",
+            "items": {
+              "$ref": "#/components/schemas/IntegrasjonPrivilegie"
+            }
+          }
+        }
+      },
+      "TjenesteIntegrasjon": {
+        "type": "object",
+        "description": "En integrasjon som kan bli eller er tilknyttet en eller flere tjenester.",
+        "required": [
+          "uuid",
+          "navn",
+          "beskrivelse",
+          "opprettet",
+          "privilegier"
+        ],
+        "properties": {
+          "uuid": {
+            "type": "string",
+            "description": "Integrasjonens unike id.",
+            "format": "uuid"
+          },
+          "navn": {
+            "pattern": "^[A-Za-zæøåÆØÅ0-9_.,/\\-_ ]+$",
+            "type": "string",
+            "description": "Et kort navn for integrasjonen."
+          },
+          "beskrivelse": {
+            "type": "string",
+            "description": "En beskrivelse av integrasjonen."
+          },
+          "opprettet": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Dato for når integrasjonen ble opprettet."
+          },
+          "privilegier": {
+            "type": "array",
+            "description": "Liste med tilganger som denne integrasjonen har fått for denne tjenesten.",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "IntegrasjonPrivilegie": {
+        "type": "object",
+        "description": "Et privilegie en integrasjon har eller kan få.",
+        "required": [
+          "navn",
+          "beskrivelse"
+        ],
+        "properties": {
+          "navn": {
+            "type": "string",
+            "description": "Et unikt navn på privilegiet."
+          },
+          "beskrivelse": {
+            "type": "string",
+            "description": "En beskrivelse av hva privilegiet er."
+          }
+        }
       }
     }
   }
