@@ -115,6 +115,98 @@
         }
       }
     },
+    "/register/api/v1/ks/{rolleId}/skatteoginntektsopplysninger/beregning/praktisk-bistand": {
+      "post": {
+        "tags": [
+          "Beregning"
+        ],
+        "description": "Beregner grunnlag for egenandel for angitte fødselsnummer og kommunalt tjenesteområde",
+        "operationId": "beregningPraktiskBistand",
+        "parameters": [
+          {
+            "name": "rolleId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BeregningRequestPraktiskBistandApiModel"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BeregningResponsePraktiskBistandApiModel"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Feil input",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Ikke tilgang",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Ikke tilgang",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Ingen treff",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "410": {
+            "description": "Finnes ikke lenger",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/register/api/v1/ks/{rolleId}/skatteoginntektsopplysninger/beregning/pdf": {
       "post": {
         "tags": [
@@ -421,6 +513,61 @@
           }
         }
       },
+      "BeregningResponsePraktiskBistandApiModel": {
+        "required": [
+          "inntektsaar",
+          "stadie",
+          "visningsposter",
+          "personer",
+          "beregningsbeloep",
+          "inntekt",
+          "soeketidspunkt",
+          "beregningstype",
+          "feilmeldinger"
+        ],
+        "type": "object",
+        "properties": {
+          "inntektsaar": {
+            "$ref": "#/components/schemas/InntektsaarApiModel"
+          },
+          "stadie": {
+            "$ref": "#/components/schemas/StadieApiModel"
+          },
+          "personer": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PersonApiModel"
+            }
+          },
+          "visningsposter": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/VisningsposterPraktiskBistandApiModel"
+            }
+          },
+          "beregningsbeloep": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "inntekt": {
+            "$ref": "#/components/schemas/BeregningsgrupperApiModel"
+          },
+          "soeketidspunkt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "beregningstype": {
+            "type": "string",
+            "enum": ["PRAKTISK_BISTAND"]
+          },
+          "feilmeldinger": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FeilmeldingApiModel"
+            }
+          }
+        }
+      },
       "PersonApiModel": {
         "required": [
           "identifikator",
@@ -503,6 +650,29 @@
           "GJELD",
           "ANNET"
         ]
+      },
+      "VisningsposterPraktiskBistandApiModel": {
+        "required": [
+          "kategori",
+          "poster"
+        ],
+        "type": "object",
+        "properties": {
+          "kategori": {
+            "$ref": "#/components/schemas/VisningskategoriPraktiskBistandApiModel"
+          },
+          "poster": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/VisningspostApiModel"
+            }
+          }
+        }
+      },
+      "VisningskategoriPraktiskBistandApiModel": {
+        "type": "string",
+        "description": "Kan være INNTEKT, GEVINST eller TAP",
+        "example": "INNTEKT"
       },
       "VisningspostApiModel": {
         "required": [
@@ -658,6 +828,24 @@
           },
           "beregningstype": {
             "$ref": "#/components/schemas/BeregningstypeApiModel"
+          }
+        }
+      },
+      "BeregningRequestPraktiskBistandApiModel": {
+        "required": [
+          "personer",
+          "inntektsaar"
+        ],
+        "type": "object",
+        "properties": {
+          "personer": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PersonRequestApiModel"
+            }
+          },
+          "inntektsaar": {
+            "$ref": "#/components/schemas/InntektsaarApiModel"
           }
         }
       },
@@ -943,6 +1131,10 @@
             "type": "string"
           }
         }
+      },
+      "InntektsaarApiModel": {
+        "type": "integer",
+        "format": "int32"
       }
     }
   }
