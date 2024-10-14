@@ -9,6 +9,11 @@ alias: [/fiks-plattform/tjenester/samtykke/]
 Fiks samtykke er en løsning laget for Norges innbyggere for å kunne ta stilling til ulike samtykker. Løsningen består av en web-portal brukt av innbyggere til å ta stilling til samtykke og et API for eksterne fag-system brukt saksbehandlere til å opprette og endre samtykker.
 
 Første iterasjon av denne tjenesten omfatter samtykker knyttet til Barnevern, og det er den løsningen som i hovedsak beskrives her.
+Den overordnede flyten her er som følger:
+- Samtykke opprettes via /opprettSamtykke i dette API-et og en samtykke-id returneres
+- Dokument for samtykke lastes opp kryptert til Dokumentlager
+- Journalpost indekseres med url til dokumentet i Dokumentlager og med samtykke-id returnert av opprettSamtykke-kallet
+
 
 ## Tilgjengelige grensesnitt
 | Grensesnitt | Støtte |
@@ -46,6 +51,10 @@ Dette api-endepunktet returnerer en nyopprettet SamtykkeId (UUID)
 #### PUT /endreSamtykke/{samtykkeId}
 En saksbehandler kan endre et samtykke. Svarfrist og utløpsdato er verdiene som på nåværende tidspunkt kan endres via dette endepunktet. 
 Det er ingen validering på disse datoene mot hverandre eller bakover i tid verken ved opprettelse eller endring på vår side grunnet behov for opprettelse av historiske samtykker.
+
+#### PUT /invaliderSamtykke/{samtykkeId}
+En saksbehandler kan invalidere et samtykke. Dette er en ugjenkallelig operasjon. Et samtykke som er invalidert vil ikke lenger vises for involverte parter via innbyggertjenerter.
+Et invalidert samtykke vil heller ikke kunne endres ytterligere etter invalidering.
 
 #### GET /samtykkeHistorikk/{samtykkeId}
 Et fagsystem kan hente samtykkeHistorikk for et samtykke. Dette gir en oversikt over alle endringer som er gjort på samtykket.
