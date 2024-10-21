@@ -252,6 +252,68 @@
         }
       }
     },
+    "/register/api/v1/ks/innbyggerliste/v1/{fiksOrgId}/barnehage": {
+      "post": {
+        "tags": [
+          "innbyggerliste"
+        ],
+        "description": "Søk på personer født innenfor et gitt tidsintervall (Max intervall på 12 mnd)",
+        "operationId": "opprettBarnehage",
+        "parameters": [
+          {
+            "name": "fiksOrgId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OpprettBarnehageInnbyggerliste"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InnbyggerlisteFerdig"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Opprettet",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InnbyggerlisteRef"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Ikke tilgang",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/register/api/v1/ks/innbyggerliste/v1/{fiksOrgId}/listesoek/csv": {
       "post": {
         "tags": [
@@ -290,7 +352,6 @@
               ]
             }
           }
-
         ],
         "requestBody": {
           "content": {
@@ -538,6 +599,41 @@
   },
   "components": {
     "schemas": {
+      "OpprettBarnehageInnbyggerliste": {
+        "type": "object",
+        "required": [
+          "rolleId",
+          "foedt",
+          "kommunenummer"
+        ],
+        "properties": {
+          "rolleId": {
+            "type": "string",
+            "format": "uuid",
+            "example": "d290f1ee-6c54-4b01-90e6-d701748f0851"
+          },
+          "kommunenummer": {
+            "pattern": "\\d{4}",
+            "type": "string",
+            "example": "1234"
+          },
+          "kommuneTilhoerighet": {
+            "type": "string",
+            "enum": [
+              "BOSTED",
+              "OPPHOLD"
+            ],
+            "example": "BOSTED"
+          },
+          "foedt": {
+            "$ref": "#/components/schemas/DatoIntervall"
+          },
+          "beskrivelse": {
+            "type": "string",
+            "example": "Innbyggerliste for alle under 3 mnd"
+          }
+        }
+      },
       "GyldigeVerdier": {
         "required": [
           "innbyggerStatus",
@@ -638,6 +734,26 @@
           }
         },
         "description": "Fødselsår, fra og med, til og med"
+      },
+      "DatoIntervall": {
+        "type": "object",
+        "required": [
+            "fraDato",
+            "tilDato"
+        ],
+        "properties": {
+          "fraDato": {
+            "type": "string",
+            "format": "date",
+            "example": "2024-7-15"
+          },
+          "tilDato": {
+            "type": "string",
+            "format": "date",
+            "example": "2024-10-15"
+          }
+        },
+        "description": "Fra og til dato (maks intervall på 12 mnd)"
       },
       "EksportFormatDefinisjon": {
         "type": "string",
@@ -993,7 +1109,6 @@
           "LISTESOEK"
         ]
       },
-
       "PersonSoekDefinisjon": {
         "required": [
           "rolleId"
