@@ -4,6 +4,9 @@ date: 2024-10-03
 aliases: ["/fiks-platform/tjenester/bekymringsmelding/v2", "/fiks-platform/tjenester_under_utvikling/bekymringsmelding/v2", "/fiks-plattform/tjenester/bekymringsmelding/v2"]
 ---
 
+##### Endringer fra forrige versjon til denne
+* Nytt valgfritt felt på offentlig bekymringsmelding ```andreSynspunkter```, se nye protokollen [her](https://raw.githubusercontent.com/ks-no/fiks-io-bekymringsmelding-protokoll/master/schema/domain/v2/offentlig.bekymringsmelding.v2.json).  
+
 ##### Fagsystem som konsument
 Ved bruk av Fiks IO som leveringskanal må fagsystemet støtte meldingsprotokollen ```no.ks.fiks.bekymringsmelding.v2```, som er definert til bruk av bekymringsmeldinger. Meldingsprotokollen vil inneholde kontrakter i form av JSON-skjema som gjelder både for mottak og svar på Fiks IO-meldinger.
 
