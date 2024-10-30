@@ -10,7 +10,7 @@ Fiks Protokoll er en tjenestegruppe, hvor blant annet [Fiks IO](https://ks-no.gi
 I tillegg til meldingsutveksling via Fiks IO validerer Fiks Protokoll at det kun er gyldige meldingstyper som sendes for de ulike protokollene (f.eks Fiks Arkiv eller Fiks Plan).
 Videre at det kun sendes meldinger mellom avsender- og mottakersystem som er forhåndsgodkjent av systemadministratorene.
 
-## Status protokoller
+## Status og plan for protokoller
 
 | Protokoll                                                     | Status                                                                      | Estimert ferdig    |
 |---------------------------------------------------------------|-----------------------------------------------------------------------------|--------------------|
@@ -25,9 +25,6 @@ Videre at det kun sendes meldinger mellom avsender- og mottakersystem som er for
 (*) Fiks Plan er lansert med ulik pilot status fordelt på tjenestene pga eksterne avhengigheter. Les mer i [wiki](https://github.com/ks-no/fiks-plan-specification/wiki) for Fiks Plan.
 
 (**) Fiks Saksfaser er i veldig tidlig utvikling og ikke klart når den er estimert ferdig
-
-#### Plan
-![plan for fiks protokoller](/Tjenester/images/fiks-protokoller-gantt.png)
 
 Protokoller i pilot kan oppleve å få endringer som må utbedres fortløpende. Dette vil være små endringer som kommer etter erfaringer en har gjort i produksjonskjøring. Disse er stabile nok til å ta i bruk i vanlig drift.
 
