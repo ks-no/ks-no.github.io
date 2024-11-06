@@ -50,15 +50,15 @@ Disse kan sendes med som en del av requesten, og vil da bli kalkulert sammen med
 
 #### Beregningsendepunkter
 
-Beregning for langtidsopphold (POST):
+**Beregning for langtidsopphold (POST)**
 
 ```<MILJØ_URL>/register/api/v1/ks/{rolleId}/skatteoginntektsopplysninger/beregning```
 
-Beregning for langtidsopphold som PDF (POST):
+**Beregning for langtidsopphold som PDF (POST)**
 
 ```<MILJØ_URL>/register/api/v1/ks/{rolleId}/skatteoginntektsopplysninger/beregning/pdf```
 
-Beregning for praktisk bistand (POST):
+**Beregning for praktisk bistand (POST)**
 
 ```<MILJØ_URL>/register/api/v1/ks/{rolleId}/skatteoginntektsopplysninger/beregning/praktisk-bistand```
 
@@ -77,7 +77,7 @@ Filen med prefiks **visning** inneholder alle poster tilknyttet rettighetspakken
 
 #### Verdier
 
-Gyldige persontyper og ekstraposter (POST):
+**Gyldige persontyper og ekstraposter (POST)**
 
 ```<MILJØ_URL>/register/api/v1/ks/{rolleId}/skatteoginntektsopplysninger/verdier```.
 
