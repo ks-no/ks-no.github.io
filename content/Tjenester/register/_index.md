@@ -10,7 +10,7 @@ Fiks register en en samling av register tjenester. Fiks register inneholder:
 
 ## Revisjoner
 | Dato       | Kommentar                                                       | 
-| -----------| ----------------------------------------------------------------| 
+| -----------|-----------------------------------------------------------------| 
 | 28.10.2020 | Første versjon av Folkeregisteret                               | 
 | 19.11.2020 | Utvidet dokumentasjon av Folkeregisteret                        |  
 | 27.11.2020 | Oppdatert Folkeregisteret med API-eksempler                     | 
@@ -20,5 +20,6 @@ Fiks register en en samling av register tjenester. Fiks register inneholder:
 | 16.10.2023 | Oppdatert skatte- og inntektsopplysninger med nytt API-eksempel |
 | 14.08.2024 | Andre versjon av skatte- og inntektsopplysninger                |
 | 06.09.2024 | Oppdatert skatte- og inntektsopplysninger med feilkoder         |
+| 06.11.2024 | Utvidet dokumentasjon av skatte- og inntektsopplysninger        |
 
 

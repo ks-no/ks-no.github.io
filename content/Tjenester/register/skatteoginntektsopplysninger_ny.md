@@ -23,7 +23,7 @@ Fiks register tilbyr skatte- og inntektsopplysninger for kommunalt ansatte via e
 
 ___For å bruke API-ene, både proxy og vårt overbygg, må rollen som opprettes være i rett tjenesteområde.___
 
-___OBS: PRAKTISK BISTAND og BARNEHAGE_SFO er foreløpig ikke tilgjengelig i dette API-et, men er fortsatt tilgjengelig i det eldre API-et.___
+___OBS: BARNEHAGE_SFO er foreløpig ikke tilgjengelig i dette API-et, men er fortsatt tilgjengelig i det eldre API-et.___
 
 ### Miljø
 
@@ -35,23 +35,63 @@ ___OBS: PRAKTISK BISTAND og BARNEHAGE_SFO er foreløpig ikke tilgjengelig i dett
 APIene er tilgjengelig via Fiks-plattformen som proxy-tjeneste eller via vårt overbygg.
 
 ### Oppslag via overbygg
-Vi har laget vårt eget overbygg som gir mulighet for å søke på flere personer. Vi søker om personene har stadie ___OPPGJØR___. Ved redusert foreldrebetaling SFO/barnehage, søkes det også etter ___UTKAST___ dersom de ikke har ___OPPGJØR___. Datamodellen er en sammenstilling av det som kommer fra skatteetaten sine APIer og har summert alle poster som hører sammen. For hver tjeneste finnes det en beregningstype som må sendes inn som en del av payloaden, dette erstatter behovet for å bruke rettighetspakke.
-
-URL for fiks-api (POST): ```<MILJØ_URL>/register/api/v1/ks/{rolleId}/skatteoginntektsopplysninger/beregning``` [Payload, se swagger dokumentasjon](https://editor.swagger.io/?url=https://developers.fiks.ks.no/api/register-skatteoginntektsopplysninger-beregning-api-v1.json)
+Vi har laget vårt eget overbygg som gir mulighet for å søke på flere personer.
+Vi søker om personene har stadie ___OPPGJØR___.
+Ved redusert foreldrebetaling SFO/barnehage, søkes det også etter ___UTKAST___ dersom de ikke har ___OPPGJØR___.
+Datamodellen er en sammenstilling av det som kommer fra skatteetaten sine APIer og har summert alle poster som hører sammen.
+For hver tjeneste finnes det en beregningstype som må sendes inn som en del av payloaden, dette erstatter behovet for å bruke rettighetspakke.
 
 #### API-dokumentasjon
 [Swagger dokumentasjon for overbygg finner du her.](https://editor.swagger.io/?url=https://developers.fiks.ks.no/api/register-skatteoginntektsopplysninger-beregning-api-v1.json) Bruk også dokumentasjon fra Skatteetaten.
 
+#### Ekstraposter
+Det finnes også en del ulike poster som har andre kilder enn Skatteetaten.
+Disse kan sendes med som en del av requesten, og vil da bli kalkulert sammen med data fra Skatteetaten.
 
-### Feilkoder for egenandelsberegning
+#### Endepunkter
+
+##### Beregningsendepunkter
+
+**Beregning for langtidsopphold (POST)**
+
+```<MILJØ_URL>/register/api/v1/ks/{rolleId}/skatteoginntektsopplysninger/beregning```
+
+**Beregning for langtidsopphold som PDF (POST)**
+
+```<MILJØ_URL>/register/api/v1/ks/{rolleId}/skatteoginntektsopplysninger/beregning/pdf```
+
+**Beregning for praktisk bistand (POST)**
+
+```<MILJØ_URL>/register/api/v1/ks/{rolleId}/skatteoginntektsopplysninger/beregning/praktisk-bistand```
+
+For payload for beregningsendepunktene, se [swagger dokumentasjon](https://editor.swagger.io/?url=https://developers.fiks.ks.no/api/register-skatteoginntektsopplysninger-beregning-api-v1.json).
+
+##### YAML-filer
+
+I løsningen er postene som blir brukt i beregningen definert i YAML-filer som forteller hvordan disse behandles, f.eks. ved at verdien deres skal legges til eller trekkes fra.
+Disse filene er mulig å hente ut i en ZIP-fil ved å gjøre en GET-spørring mot:
+
+```<MILJØ_URL>/register/api/v1/ks/{rolleId}/skatteoginntektsopplysninger/yaml/{beregningstype}/{inntektsaar}```
+
+ZIP-filen vil inneholde to filer for den spesifiserte beregningstypen for det gitte inntektsåret.
+Filen med prefiks **beregning** innholder alle poster brukt i beregningen og grupperinger av disse.
+Filen med prefiks **visning** inneholder alle poster tilknyttet rettighetspakken og *vår* gruppering av disse.
+
+##### Verdier
+
+**Gyldige persontyper og ekstraposter (POST)**
+
+```<MILJØ_URL>/register/api/v1/ks/{rolleId}/skatteoginntektsopplysninger/verdier```.
+
+For payload, se [swagger dokumentasjon](https://editor.swagger.io/?url=https://developers.fiks.ks.no/api/register-skatteoginntektsopplysninger-beregning-api-v1.json).
+
+#### Feilkoder for egenandelsberegning
 
 | Kode  | Feilmelding                                                                                             |
 | ------| --------------------------------------------------------------------------------------------------------|
 | SI-01 | Klarte ikke å hente navn                                                                                |
 | SI-02 | Du mangler rettighet i Altinn for å få informasjon om skatt til gode, restskatt og innbetalt skatt.      |
 
-#### Ekstraposter
-Det finnes også en del ulike poster som har andre kilder enn Skatteetaten. Disse kan sendes med som en del av requesten, og vil da bli kalkulert sammen med data fra Skatteetaten. For å hente ut hvilke poster som er gyldig kan endepunktet ```<MILJØ_URL>/register/api/v1/ks/{rolleId}/skatteoginntektsopplysninger/verdier``` brukes.
 
 #### Eksempel med bruk av API-overbygg
 Payload
