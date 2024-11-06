@@ -48,7 +48,9 @@ For hver tjeneste finnes det en beregningstype som må sendes inn som en del av 
 Det finnes også en del ulike poster som har andre kilder enn Skatteetaten.
 Disse kan sendes med som en del av requesten, og vil da bli kalkulert sammen med data fra Skatteetaten.
 
-#### Beregningsendepunkter
+#### Endepunkter
+
+##### Beregningsendepunkter
 
 **Beregning for langtidsopphold (POST)**
 
@@ -64,7 +66,7 @@ Disse kan sendes med som en del av requesten, og vil da bli kalkulert sammen med
 
 For payload for beregningsendepunktene, se [swagger dokumentasjon](https://editor.swagger.io/?url=https://developers.fiks.ks.no/api/register-skatteoginntektsopplysninger-beregning-api-v1.json).
 
-#### YAML-filer
+##### YAML-filer
 
 I løsningen er postene som blir brukt i beregningen definert i YAML-filer som forteller hvordan disse behandles, f.eks. ved at verdien deres skal legges til eller trekkes fra.
 Disse filene er mulig å hente ut i en ZIP-fil ved å gjøre en GET-spørring mot:
@@ -75,7 +77,7 @@ ZIP-filen vil inneholde to filer for den spesifiserte beregningstypen for det gi
 Filen med prefiks **beregning** innholder alle poster brukt i beregningen og grupperinger av disse.
 Filen med prefiks **visning** inneholder alle poster tilknyttet rettighetspakken og *vår* gruppering av disse.
 
-#### Verdier
+##### Verdier
 
 **Gyldige persontyper og ekstraposter (POST)**
 
