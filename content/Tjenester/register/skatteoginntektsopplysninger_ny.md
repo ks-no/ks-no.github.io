@@ -50,7 +50,7 @@ Disse kan sendes med som en del av requesten, og vil da bli kalkulert sammen med
 
 #### Endepunkter
 
-##### Beregningsendepunkter
+For payload for POST-spørringene, se [swagger dokumentasjon](https://editor.swagger.io/?url=https://developers.fiks.ks.no/api/register-skatteoginntektsopplysninger-beregning-api-v1.json).
 
 **Beregning for langtidsopphold (POST)**
 
@@ -64,9 +64,7 @@ Disse kan sendes med som en del av requesten, og vil da bli kalkulert sammen med
 
 ```<MILJØ_URL>/register/api/v1/ks/{rolleId}/skatteoginntektsopplysninger/beregning/praktisk-bistand```
 
-For payload for beregningsendepunktene, se [swagger dokumentasjon](https://editor.swagger.io/?url=https://developers.fiks.ks.no/api/register-skatteoginntektsopplysninger-beregning-api-v1.json).
-
-##### YAML-filer
+**YAML-filer (GET)**
 
 I løsningen er postene som blir brukt i beregningen definert i YAML-filer som forteller hvordan disse behandles, f.eks. ved at verdien deres skal legges til eller trekkes fra.
 Disse filene er mulig å hente ut i en ZIP-fil ved å gjøre en GET-spørring mot:
@@ -75,15 +73,11 @@ Disse filene er mulig å hente ut i en ZIP-fil ved å gjøre en GET-spørring mo
 
 ZIP-filen vil inneholde to filer for den spesifiserte beregningstypen for det gitte inntektsåret.
 Filen med prefiks **beregning** innholder alle poster brukt i beregningen og grupperinger av disse.
-Filen med prefiks **visning** inneholder alle poster tilknyttet rettighetspakken og *vår* gruppering av disse.
-
-##### Verdier
+Filen med prefiks **visning** inneholder alle poster fra Skatteetaten og *vår* gruppering av disse.
 
 **Gyldige persontyper og ekstraposter (POST)**
 
 ```<MILJØ_URL>/register/api/v1/ks/{rolleId}/skatteoginntektsopplysninger/verdier```.
-
-For payload, se [swagger dokumentasjon](https://editor.swagger.io/?url=https://developers.fiks.ks.no/api/register-skatteoginntektsopplysninger-beregning-api-v1.json).
 
 #### Feilkoder for egenandelsberegning
 
