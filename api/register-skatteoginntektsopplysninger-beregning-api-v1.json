@@ -125,6 +125,98 @@
         }
       }
     },
+    "/register/api/v1/ks/{rolleId}/skatteoginntektsopplysninger/beregning/redusert-foreldrebetaling": {
+      "post": {
+        "tags": [
+          "Beregning"
+        ],
+        "description": "Beregner grunnlag for egenandel for angitte fødselsnummer og tjenesteområdet redusert foreldrebetaling",
+        "operationId": "beregningRedusertForeldrebetaling",
+        "parameters": [
+          {
+            "name": "rolleId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BeregningRequestRedusertForeldrebetalingApiModel"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BeregningResponseRedusertForeldrebetalingApiModel"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Feil input",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Ikke tilgang",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Ikke tilgang",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Ingen treff",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "410": {
+            "description": "Finnes ikke lenger",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/register/api/v1/ks/{rolleId}/skatteoginntektsopplysninger/beregning/praktisk-bistand": {
       "post": {
         "tags": [
@@ -526,6 +618,67 @@
           }
         }
       },
+      "BeregningResponseRedusertForeldrebetalingApiModel": {
+        "required": [
+          "inntektsaar",
+          "stadie",
+          "visningsposter",
+          "personer",
+          "beregningsbeloep",
+          "inntekt",
+          "fradrag",
+          "soeketidspunkt",
+          "beregningstype",
+          "feilmeldinger"
+        ],
+        "type": "object",
+        "properties": {
+          "inntektsaar": {
+            "$ref": "#/components/schemas/InntektsaarApiModel"
+          },
+          "stadie": {
+            "$ref": "#/components/schemas/StadieApiModel"
+          },
+          "personer": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PersonApiModel"
+            }
+          },
+          "visningsposter": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/VisningsposterRedusertForeldrebetalingApiModel"
+            }
+          },
+          "beregningsbeloep": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "inntekt": {
+            "$ref": "#/components/schemas/BeregningsgrupperApiModel"
+          },
+          "fradrag": {
+            "$ref": "#/components/schemas/BeregningsgrupperApiModel"
+          },
+          "soeketidspunkt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "beregningstype": {
+            "type": "string",
+            "enum": [
+              "BARNEHAGE_SFO"
+            ]
+          },
+          "feilmeldinger": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FeilmeldingApiModel"
+            }
+          }
+        }
+      },
       "BeregningResponsePraktiskBistandApiModel": {
         "required": [
           "inntektsaar",
@@ -574,7 +727,9 @@
           },
           "beregningstype": {
             "type": "string",
-            "enum": ["PRAKTISK_BISTAND"]
+            "enum": [
+              "PRAKTISK_BISTAND"
+            ]
           },
           "feilmeldinger": {
             "type": "array",
@@ -669,6 +824,24 @@
           "ANNET"
         ]
       },
+      "VisningsposterRedusertForeldrebetalingApiModel": {
+        "required": [
+          "kategori",
+          "poster"
+        ],
+        "type": "object",
+        "properties": {
+          "kategori": {
+            "$ref": "#/components/schemas/VisningskategoriRedusertForeldrebetalingApiModel"
+          },
+          "poster": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/VisningspostApiModel"
+            }
+          }
+        }
+      },
       "VisningsposterPraktiskBistandApiModel": {
         "required": [
           "kategori",
@@ -686,6 +859,11 @@
             }
           }
         }
+      },
+      "VisningskategoriRedusertForeldrebetalingApiModel": {
+        "type": "string",
+        "description": "Kan være INNTEKT, GEVINST eller TAP",
+        "example": "INNTEKT"
       },
       "VisningskategoriPraktiskBistandApiModel": {
         "type": "string",
@@ -848,6 +1026,24 @@
             "type": "integer",
             "format": "int32",
             "example": 2023
+          },
+          "personer": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PersonRequestApiModel"
+            }
+          }
+        }
+      },
+      "BeregningRequestRedusertForeldrebetalingApiModel": {
+        "required": [
+          "inntektsaar",
+          "personer"
+        ],
+        "type": "object",
+        "properties": {
+          "inntektsaar": {
+            "$ref": "#/components/schemas/InntektsaarApiModel"
           },
           "personer": {
             "type": "array",
@@ -1209,32 +1405,32 @@
           "inntektsaar": 2023,
           "stadie": "OPPGJOER",
           "personer": [
-              {
-                "identifikator": "77087900851",
-                "navn": {
-                  "etternavn": "Nordmann",
-                  "fornavn": "Ola",
-                  "mellomnavn": "Håkon"
-                },
-                "type": "SOEKER",
-                "skjermet": false,
-                "skatteoppgjoersdato": "2023-05-22",
-                "stadie": "OPPGJOER",
-                "registreringstidpunkt": "2023-05-22T16:00:00Z"
+            {
+              "identifikator": "77087900851",
+              "navn": {
+                "etternavn": "Nordmann",
+                "fornavn": "Ola",
+                "mellomnavn": "Håkon"
               },
-              {
-                "identifikator": "74585691235",
-                "navn": {
-                  "etternavn": "Nordmann",
-                  "fornavn": "Kari",
-                  "mellomnavn": null
-                },
-                "type": "EKTEFELLE",
-                "skjermet": false,
-                "skatteoppgjoersdato": "2023-05-22",
-                "stadie": "OPPGJOER",
-                "registreringstidpunkt": "2023-05-22T16:00:00Z"
-              }
+              "type": "SOEKER",
+              "skjermet": false,
+              "skatteoppgjoersdato": "2023-05-22",
+              "stadie": "OPPGJOER",
+              "registreringstidpunkt": "2023-05-22T16:00:00Z"
+            },
+            {
+              "identifikator": "74585691235",
+              "navn": {
+                "etternavn": "Nordmann",
+                "fornavn": "Kari",
+                "mellomnavn": null
+              },
+              "type": "EKTEFELLE",
+              "skjermet": false,
+              "skatteoppgjoersdato": "2023-05-22",
+              "stadie": "OPPGJOER",
+              "registreringstidpunkt": "2023-05-22T16:00:00Z"
+            }
           ],
           "visningsposter": [
             {
