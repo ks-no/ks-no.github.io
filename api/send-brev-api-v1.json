@@ -1112,6 +1112,96 @@
         }
       }
     },
+    "/send-brev/api/v1/kontoer/{kontoId}/utsendelser/{utsendelsesId}/mottakere/sok": {
+      "post": {
+        "tags": [
+          "Utsendelser"
+        ],
+        "description": "Finner mottakere for utsendelsen basert på søkekriterier",
+        "summary": "Finner mottakere for utsendelsen",
+        "operationId": "finnMottakere",
+        "parameters": [
+          {
+            "name": "utsendelsesId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "kontoId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "sidenummer",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 0
+            }
+          },
+          {
+            "name": "antallPerSide",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 20
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MottakerSokRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Treff på søk",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MottakerSokResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Ingen tilgang",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Systemfeil",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/send-brev/api/v1/kontoer/{kontoId}/utsendelser/{utsendelsesId}/mottakere/slett-mottakere": {
       "post": {
         "tags": [
@@ -2854,6 +2944,66 @@
           }
         },
         "description": "Modell for å opprette mottaker tilknyttet utsendelse"
+      },
+      "MottakerSokRequest": {
+        "type": "object",
+        "properties": {
+          "soketerm": {
+            "type": "string",
+            "description": "Søketerm for søk på navn, adresse, osv."
+          },
+          "kunMedFeil": {
+            "type": "boolean",
+            "description": "Dersom denne settes til true vil kun mottakere med feil returneres"
+          }
+        },
+        "description": "Modell for å søke etter mottakere"
+      },
+      "MottakerSokResponse": {
+        "required": [
+          "sidenummer, antallPerSide, totaltAntallTreff",
+          "treff"
+        ],
+        "type": "object",
+        "properties": {
+          "sidenummer": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Returnert sidenummer"
+          },
+          "antallPerSide": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Returnert antall treff per side"
+          },
+          "totaltAntallTreff": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Det totale antallet treff uten paginering"
+          },
+          "antallValidertOk": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Antall mottakere som er validert ok"
+          },
+          "antallValidertFeil": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Antall mottakere som er validert med feil"
+          },
+          "antallTreff": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Antall treff på denne siden"
+          },
+          "treff": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Mottaker"
+            }
+          }
+        },
+        "description": "Modell med søketreff for mottakere"
       },
       "MalMetadataRespons": {
         "required": [
