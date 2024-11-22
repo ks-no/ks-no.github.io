@@ -19,8 +19,8 @@ Videre at det kun sendes meldinger mellom avsender- og mottakersystem som er for
 | Fiks plan                                                     | Under implementering hos leverandører. Pilotversjon av protokollen lansert. | 4 kvartal 2024 (*) |
 | Fiks matrikkelføring                                          | I pilot-testing og i produksjon. Protokoll ferdigstilt.                     | Ferdig             |
 | Barnevern - fagsysteminnrapportering til Barnevernsregisteret | Brukes i produksjon                                                         | Ferdig             |
-| Fiks Link - erstatning for GI Link                            | Protokoll under utvikling                                                   | 4 kvartal 2024     |
-| Fiks Saksfaser                                                | Protokoll under utvikling                                                   | Ikke avklart (**)  |
+| Fiks Link - erstatning for GI Link                            | Test-versjon releaset. Protokoll klar for testing.                          | 4 kvartal 2024     |
+| Fiks Saksfaser                                                | Test-versjon releaset. Protokoll klar for testing.                          | Ikke avklart (**)  |
 
 (*) Fiks Plan er lansert med ulik pilot status fordelt på tjenestene pga eksterne avhengigheter. Les mer i [wiki](https://github.com/ks-no/fiks-plan-specification/wiki) for Fiks Plan.
 
