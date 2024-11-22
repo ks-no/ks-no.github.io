@@ -47,6 +47,7 @@ For hver tjeneste finnes det en beregningstype som må sendes inn som en del av 
 #### Ekstraposter
 Det finnes også en del ulike poster som har andre kilder enn Skatteetaten.
 Disse kan sendes med som en del av requesten, og vil da bli kalkulert sammen med data fra Skatteetaten.
+Oversikt over gyldige ekstraposter kan hentes fra verdier endepunktet.
 
 #### Endepunkter
 
@@ -64,8 +65,11 @@ For payload for POST-spørringene, se [swagger dokumentasjon](https://editor.swa
 
 ```<MILJØ_URL>/register/api/v1/ks/{rolleId}/skatteoginntektsopplysninger/beregning/praktisk-bistand```
 
-**YAML-filer (GET)**
+**Gyldige persontyper og ekstraposter (POST)**
 
+```<MILJØ_URL>/register/api/v1/ks/{rolleId}/skatteoginntektsopplysninger/verdier```.
+
+#### YAML-filer
 I løsningen er postene som blir brukt i beregningen definert i YAML-filer som forteller hvordan disse behandles, f.eks. ved at verdien deres skal legges til eller trekkes fra.
 Disse filene er mulig å hente ut i en ZIP-fil ved å gjøre en GET-spørring mot:
 
@@ -74,10 +78,6 @@ Disse filene er mulig å hente ut i en ZIP-fil ved å gjøre en GET-spørring mo
 ZIP-filen vil inneholde to filer for den spesifiserte beregningstypen for det gitte inntektsåret.
 Filen med prefiks **beregning** innholder alle poster brukt i beregningen og grupperinger av disse.
 Filen med prefiks **visning** inneholder alle poster fra Skatteetaten og *vår* gruppering av disse.
-
-**Gyldige persontyper og ekstraposter (POST)**
-
-```<MILJØ_URL>/register/api/v1/ks/{rolleId}/skatteoginntektsopplysninger/verdier```.
 
 #### Feilkoder for egenandelsberegning
 
