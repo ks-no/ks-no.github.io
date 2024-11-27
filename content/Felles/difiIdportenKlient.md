@@ -21,7 +21,8 @@ Man må ha virksomhetsertifikat fra Commfides eller Buypass. Test sertifikat for
 Husk å registrere virksomhetssertifikat med samme organisasjonsnummer som man vil bruke hos maskinporten og eventuelt tjenster hos KS som f.eks. [Fiks-Protokoll](https://developers.fiks.ks.no/fiks-plattform/tjenester/fiksprotokoll/) og [Fiks-IO](https://developers.fiks.ks.no/fiks-plattform/tjenester/fiksprotokoll/fiksio/).
 
 ### Opprette maskinporten-klient
-- Husk å sende e-post til fiks-utvikling@ks.no med organisasjonsnummeret. Det er mulig å fullføre opprettelsen av maskinport-klient uten at dette er på plass, men det må etterregistreres for å få klienten til å virke på Fiks-plattformen.
+- Husk å sende e-post til fiks-utvikling@ks.no med organisasjonsnummeret, slik at vi blant annet får gitt tilgang til "ks:fiks"-scopet.
+Det er mulig å fullføre opprettelsen av maskinport-klient uten at dette er på plass, men det må etterregistreres for å få klienten til å virke på Fiks-plattformen.
 - Gå til https://sjolvbetjening.samarbeid.digdir.no/
 - Logg inn
 - Velg "Gå til integrasjoner", for ver2 for test. Produksjon for prod.
