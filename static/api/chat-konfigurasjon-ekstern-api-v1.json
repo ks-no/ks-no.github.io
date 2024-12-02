@@ -167,11 +167,19 @@
         }
       }
     },
-    "/fiks-chat-konfigurasjon/api/v1/ekstern/leggtilsaksbehandleriteam" : {
-      "put" : {
+    "/fiks-chat-konfigurasjon/api/v1/ekstern/room/{roomId}/saksbehandler" : {
+      "post" : {
         "tags" : [ "chat-konfigurasjon-ekstern" ],
         "description" : "Legger til en saksbehandler i team i RocketChat",
         "operationId" : "leggTilSaksbehandler",
+        "parameters" : [ {
+          "name" : "roomId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
         "requestBody" : {
           "content" : {
             "application/json" : {
@@ -183,7 +191,67 @@
         },
         "responses" : {
           "201" : {
-            "description" : "La til saksbehandler i team"
+            "description" : "La til saksbehandler i team",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/LeggTilSaksbehandlerITeamResponse"
+                }
+              }
+            }
+          },
+          "default" : {
+            "description" : "Noe gikk galt",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/fiks-chat-konfigurasjon/api/v1/ekstern/room/{roomId}/saksbehandler/{userId}" : {
+      "post" : {
+        "tags" : [ "chat-konfigurasjon-ekstern" ],
+        "description" : "Legger til en saksbehandler i team i RocketChat",
+        "operationId" : "leggTilSaksbehandlerMedUserId",
+        "parameters" : [ {
+          "name" : "roomId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "userId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/LeggTilSaksbehandlerITeamUserIdRequest"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "201" : {
+            "description" : "La til saksbehandler i team",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/LeggTilSaksbehandlerITeamResponse"
+                }
+              }
+            }
           },
           "default" : {
             "description" : "Noe gikk galt",
@@ -348,6 +416,44 @@
           }
         }
       }
+    },
+    "/fiks-chat-konfigurasjon/api/v1/ekstern/saksbehandler/sok" : {
+      "post" : {
+        "tags" : [ "chat-konfigurasjon-ekstern" ],
+        "description" : "Søker etter saksbehandlere i team i RocketChat",
+        "operationId" : "sokSaksbehandlere",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/SokSaksbehandlerITeamRequest"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Søk etter saksbehandler i fiksorg",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/SokSaksbehandlerITeamResponse"
+                }
+              }
+            }
+          },
+          "default" : {
+            "description" : "Noe gikk galt",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components" : {
@@ -468,23 +574,11 @@
       "User" : {
         "type" : "object",
         "properties" : {
-          "get_id" : {
+          "id" : {
             "type" : "string"
           },
           "username" : {
             "type" : "string"
-          },
-          "name" : {
-            "type" : "string"
-          },
-          "status" : {
-            "type" : "string"
-          },
-          "statusText" : {
-            "type" : "string"
-          },
-          "outside" : {
-            "type" : "boolean"
           }
         }
       },
@@ -517,7 +611,7 @@
         }
       },
       "LeggTilSaksbehandlerITeamRequest" : {
-        "required" : [ "fiksOrgId", "roomId", "saksbehandlerFnr" ],
+        "required" : [ "fiksOrgId", "saksbehandlerFnr" ],
         "type" : "object",
         "properties" : {
           "saksbehandlerFnr" : {
@@ -530,17 +624,21 @@
             "type" : "string",
             "description" : "Personnummer for saksbehandler som skal legges til"
           },
-          "fornavn" : {
+          "fiksOrgId" : {
             "type" : "string",
-            "description" : "Fornavn til saksbehandler som skal legges til."
-          },
-          "etternavn" : {
+            "description" : "Id for fiksOrg som saksbehandler skal legges til",
+            "format" : "uuid"
+          }
+        }
+      },
+      "LeggTilSaksbehandlerITeamUserIdRequest" : {
+        "required" : [ "fiksOrgId", "saksbehandlerFnr" ],
+        "type" : "object",
+        "properties" : {
+          "saksbehandlerFnr" : {
+            "pattern" : "^[0-9]{11}$",
             "type" : "string",
-            "description" : "Etternavn til saksbehandler som skal legges til"
-          },
-          "roomId" : {
-            "type" : "string",
-            "description" : "Id til team-rommet som saksbehandler skal legges til i."
+            "description" : "Personnummer for saksbehandler som utfører handlingen"
           },
           "fiksOrgId" : {
             "type" : "string",
@@ -677,6 +775,41 @@
           "fiksOrgId" : {
             "type" : "string",
             "description" : "FiksOrgId for kommunen som chatbruker skal knyttes til",
+            "format" : "uuid"
+          }
+        }
+      },
+      "SokSaksbehandlerITeamResponse" : {
+        "type" : "object",
+        "properties" : {
+          "usernames" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/User"
+            }
+          }
+        }
+      },
+      "SokSaksbehandlerITeamRequest" : {
+        "required" : [ "fiksOrgId", "roomId", "saksbehandlerFnr" ],
+        "type" : "object",
+        "properties" : {
+          "saksbehandlerFnr" : {
+            "pattern" : "^[0-9]{11}$",
+            "type" : "string",
+            "description" : "Personnummer for saksbehandler som utfører handlingen"
+          },
+          "navn" : {
+            "type" : "string",
+            "description" : "Navn til saksbehandler som skal legges til."
+          },
+          "roomId" : {
+            "type" : "string",
+            "description" : "Id til team-rommet som saksbehandler skal legges til i."
+          },
+          "fiksOrgId" : {
+            "type" : "string",
+            "description" : "Id for fiksOrg som saksbehandler skal legges til",
             "format" : "uuid"
           }
         }
