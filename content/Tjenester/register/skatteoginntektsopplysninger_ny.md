@@ -65,6 +65,18 @@ For payload for POST-spørringene, se [swagger dokumentasjon](https://editor.swa
 
 ```<MILJØ_URL>/register/api/v1/ks/{rolleId}/skatteoginntektsopplysninger/beregning/praktisk-bistand```
 
+**Beregning for praktisk bistand som pdf (POST)**
+
+```<MILJØ_URL>/register/api/v1/ks/{rolleId}/skatteoginntektsopplysninger/beregning/praktisk-bistand/pdf```
+
+**Beregning for redusert foreldrebetaling (POST)**
+
+```<MILJØ_URL>/register/api/v1/ks/{rolleId}/skatteoginntektsopplysninger/beregning/redusert-foreldrebetaling```
+
+**Beregning for redusert foreldrebetaling som pdf (POST)**
+
+```<MILJØ_URL>/register/api/v1/ks/{rolleId}/skatteoginntektsopplysninger/beregning/redusert-foreldrebetaling/pdf```
+
 **Gyldige persontyper og ekstraposter (POST)**
 
 ```<MILJØ_URL>/register/api/v1/ks/{rolleId}/skatteoginntektsopplysninger/verdier```.
