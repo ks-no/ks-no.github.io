@@ -1,5 +1,5 @@
 ---
-title: Fiks arkivlett byggesak
+title: Protokoll - Fiks arkivlett byggesak
 date: 2020-05-12
 aliases: ["/fiks-plattform/tjenester/fiksprotokoll/arkivlett"]
 ---

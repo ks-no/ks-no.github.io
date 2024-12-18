@@ -1,5 +1,5 @@
 ---
-title: Fiks arkiv
+title: Protokoll - Fiks arkiv
 date: 2021-07-29
 alias: ["/fiks-plattform/tjenester/fiksprotokoll/arkiv"]
 ---

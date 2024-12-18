@@ -7,7 +7,7 @@ aliases: ["/fiks-platform/difiidportenklient", "/fiks-plattform/difiidportenklie
 For å ta i bruk maskinporten må man gjøre følgende:
 - Avtale med Digdir om bruk av maskinporten
 - Virksomhetssertifikater for test- og produksjonsmiljøet
-- Sendt e-post til fiks-utvikling@ks.no hvor dere informerer om at det er inngått en avtale med Digdir om bruk av maskinporten og hvilket organisasjonsnummeret det gjelder
+- Sendt e-post til fiks-utvikling@ks.no hvor dere informerer om at det er inngått en avtale med Digdir om bruk av maskinporten og hvilket organisasjonsnummer det gjelder
 - Opprett maskinporten-klient hos Digdir
 
 Les videre for beskrivelser om hvordan man kan få dette på plass. 

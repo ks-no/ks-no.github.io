@@ -1,5 +1,5 @@
 ---
-title: Barnevern - fagsysteminnrapportering til Barnevernsregisteret
+title: Protokoll - Barnevern - fagsysteminnrapportering til Barnevernsregisteret
 date: 2023-03-22
 aliases: []
 ---

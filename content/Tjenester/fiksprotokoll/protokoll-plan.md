@@ -1,5 +1,5 @@
 ---
-title: Fiks plan
+title: Protokoll - Fiks plan
 date: 2022-06-16
 aliases: [/fiks-plattform/tjenester/fiksprotokoll/plan]
 ---

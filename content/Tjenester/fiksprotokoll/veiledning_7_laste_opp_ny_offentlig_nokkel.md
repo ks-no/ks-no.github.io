@@ -1,5 +1,5 @@
 ---
-title: Ny offentlig nøkkel
+title: Veiledning - Ny offentlig nøkkel
 date: 2022-09-23
 alias: [/fiks-plattform/tjenester/fiksprotokoll/brukerveiledning/laste_opp_ny_offentlig_nokkel, /tjenester/fiksprotokoll/laste_opp_ny_offentlig_nokkel]
 ---

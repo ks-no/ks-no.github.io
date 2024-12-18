@@ -1,5 +1,5 @@
 ---
-title: Generer nytt passord
+title: Veiledning - Generer nytt passord
 date: 2022-09-23
 alias: [/fiks-plattform/tjenester/fiksprotokoll/brukerveiledning/nytt_passord, /tjenester/fiksprotokoll/nytt_passord]
 ---

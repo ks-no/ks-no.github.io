@@ -6,9 +6,15 @@ aliases: [/fiks-platform/tjenester/fiksprotokoll, /fiks-plattform/tjenester/fiks
 
 ## Kort beskrivelse
 
-Fiks Protokoll er en tjenestegruppe, hvor blant annet [Fiks IO](https://ks-no.github.io/tjenester/fiksprotokoll/fiksio) er tjenesten som sørger for den asynkrone maskin-til-maskin meldingsutvekslingen.
-I tillegg til meldingsutveksling via Fiks IO validerer Fiks Protokoll at det kun er gyldige meldingstyper som sendes for de ulike protokollene (f.eks Fiks Arkiv eller Fiks Plan).
-Videre at det kun sendes meldinger mellom avsender- og mottakersystem som er forhåndsgodkjent av systemadministratorene.
+Fiks Protokoll er en tjenestegruppe som gjør det mulig å sende asynkrone, ende-til-ende krypterte meldinger fra maskin til maskin. 
+[Fiks IO](https://ks-no.github.io/tjenester/fiksprotokoll/fiksio) er tjenesten som sørger for den asynkrone maskin-til-maskin meldingsutvekslingen. 
+
+Fiks Protokoll støtter meldinger definert under et sett med protokoller. Protokollene er versjonert og nye protokoller er under utvikling.
+
+Fiks Protokoll validerer at det kun er gyldige meldingstyper som sendes for de ulike protokollene.
+Den kan også validere at det kun kan sendes meldinger mellom avsender- og mottakersystem som er forhåndsgodkjent av systemadministratorene.
+
+
 
 ## Status og plan for protokoller
 
@@ -24,7 +30,7 @@ Videre at det kun sendes meldinger mellom avsender- og mottakersystem som er for
 
 (*) Fiks Plan er lansert med ulik pilot status fordelt på tjenestene pga eksterne avhengigheter. Les mer i [wiki](https://github.com/ks-no/fiks-plan-specification/wiki) for Fiks Plan.
 
-(**) Fiks Saksfaser er i veldig tidlig utvikling og ikke klart når den er estimert ferdig
+(**) Fiks Saksfaser er lansert med en test-versjon, men det er ikke klart når den er estimert ferdig
 
 Protokoller i pilot kan oppleve å få endringer som må utbedres fortløpende. Dette vil være små endringer som kommer etter erfaringer en har gjort i produksjonskjøring. Disse er stabile nok til å ta i bruk i vanlig drift.
 
@@ -32,10 +38,10 @@ Det er også variasjon i adopsjonsgrad av protokollene, spesielt for Fiks arkiv.
 Det pågår arbeid med kartlegging av adopsjonsgrad og implementeringsprogresjon for protokollene. Estimering kan påvirkes av resultatet av dette da deler av en protokoll kan vise seg å ikke være implementert av noen enda eller tilstrekkelig testet.
 
 ## Tilgjengelige grensesnitt
-| Grensesnitt       | Støtte                                                                                                           |
-|-------------------|------------------------------------------------------------------------------------------------------------------|
-| Web portal        | Nei                                                                                                              |
-| Maskin til maskin | [API](https://editor.swagger.io/?url=https://developers.fiks.ks.no/api/fiks-protokoll-konfigurasjon-api-v1.json) |
+| Grensesnitt       | Støtte      |
+|-------------------|-------------|
+| Web portal        | Nei         |
+| Maskin til maskin | [API](#api) |
 
 ### Hvordan komme i gang med Fiks protokoll
 
@@ -45,15 +51,15 @@ Noe av dette må gjøres gjennom grensesnittet i Fiks Konfigurasjon ([forvaltnin
 
 Vi har også laget en huskeliste for hva man må ha klart og hvilke personer med gitt rettighet i Fiks forvaltning som må være med på å sette dette opp.
 
-* [Huskeliste før man starter på oppsett]({{< ref "huskeliste_for_opprette_protokoll.md" >}})
-* [Ta i bruk Fiks Protokoll]({{< ref "ta_ibruk_protokoll.md" >}})
-* [Opprette system]({{< ref "opprette_system.md" >}})
-* [Opprette konto]({{< ref "opprette_konto.md" >}})
-* [Gi tilgang til system]({{< ref "gi_tilgang_til_system.md" >}})
+* [Huskeliste før man starter på oppsett]({{< ref "veiledning_1_huskeliste_for_opprette_protokoll.md" >}})
+* [Ta i bruk Fiks Protokoll]({{< ref "veiledning_2_ta_ibruk_protokoll.md" >}})
+* [Opprette system]({{< ref "veiledning_3_opprette_system.md" >}})
+* [Opprette konto]({{< ref "veiledning_4_opprette_konto.md" >}})
+* [Gi tilgang til system]({{< ref "veiledning_5_gi_tilgang_til_system.md" >}})
 
 I tillegg er det to veiledninger for hvordan du kan generere nytt passord til systemet, og hvordan du laster opp ny offentlig nøkkel til en konto.
-* [Generer nytt passord]({{< ref "nytt_passord.md" >}})
-* [Ny offentlig nøkkel]({{< ref "laste_opp_ny_offentlig_nokkel.md" >}})
+* [Generer nytt passord]({{< ref "veiledning_6_nytt_passord.md" >}})
+* [Ny offentlig nøkkel]({{< ref "veiledning_7_laste_opp_ny_offentlig_nokkel.md" >}})
 
 #### API
 Man kan opprette, vedlikeholde og få informasjon om kontoer via API etter et system er opprettet. 
@@ -76,11 +82,13 @@ Via [Fiks IO Katalog API (OpenAPI Specification)](https://editor.swagger.io/?url
 
 
 ### Protokoller under Fiks protokoll
-* [Fiks Arkiv]({{< ref "arkiv.md" >}})
-* [Fiks Plan]({{< ref "plan.md" >}})
-* [Fiks Matrikkelføring]({{< ref "matrikkelfoering.md" >}})
-* [Barnevern - fagsysteminnrapportering til Barnevernsregisteret (SSB)]({{< ref "ssbbarnevern.md" >}})
-* [Fiks arkivlett byggesak]({{< ref "arkivlett.md" >}})
+* [Fiks Arkiv]({{< ref "protokoll-arkiv.md" >}})
+* [Fiks Plan]({{< ref "protokoll-plan.md" >}})
+* [Fiks Matrikkelføring]({{< ref "protokoll-matrikkelfoering.md" >}})
+* [Barnevern - fagsysteminnrapportering til Barnevernsregisteret (SSB)]({{< ref "protokoll-ssbbarnevern.md" >}})
+* [Fiks arkivlett byggesak]({{< ref "protokoll-arkivlett.md" >}})
+* [Fiks Link](({{< ref "protokoll-link.md" >}})
+* [Fiks Saksfaser]({{< ref "protokoll-saksfaser.md" >}})
 
 ### Tjenester under Fiks protokoll
 * [Fiks IO]({{< ref "fiksio.md" >}})
