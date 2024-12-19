@@ -105,6 +105,8 @@ Kryptering er også påkrevid og skjer med den private delen av sertifikatet som
 
 Merk at man for å oppnå reell ende-til-ende kryptering, i betydningen at KS ikke har noen mulighet til å lese den overførte meldingen, bør innhente mottakers sertifikater gjennom egne kanaler og selv verifisere disse. Fiks IO tilbyr automatisk oppslag i katalogen som en tjeneste for å lette dette arbeidet, men man bør være klar over at det å benytte denne gir noe svekket sikkerhet.  
 
+![em fiks-io sertifikater og nokler](/images/Fiks_IO_sertifikater_og_nokler.png)
+
 ### Kontokatalogen
 For å sende en melding i Fiks IO må man kjenne konto-id'en til mottakeren, men for å støtte mer dynamisk bruk tilbys Fiks IO Kontokatalog. Dette er et register over Fiks IO kontoer og tilknyttede adresser. En adresse består av:
 
