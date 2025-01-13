@@ -1,0 +1,263 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "KS Fiks: Person administrasjon service V3",
+    "description": "Fiks Konfigurasjon",
+    "contact": {
+      "name": "Fiks-brukerstøtte",
+      "url": "https://ks-no.github.io/",
+      "email": "fiks@ks.no"
+    },
+    "license": {
+      "name": "MIT",
+      "url": "https://opensource.org/licenses/MIT"
+    },
+    "version": "1"
+  },
+  "servers": [
+    {
+      "url": "https://api.fiks.ks.no",
+      "description": "KS Fiks API host"
+    }
+  ],
+  "security": [
+    {
+      "bearerAuth": []
+    }
+  ],
+  "tags": [
+    {
+      "name": "TilgangerV1",
+      "description": "API for å finne tilganger"
+    }
+  ],
+  "paths": {
+    "/konfigurasjon/api/v1/organisasjoner/tilganger/{fiksOrgId}": {
+      "get": {
+        "tags": [
+          "TilgangerV1"
+        ],
+        "summary": "Henter alle tilganger for en organisasjon",
+        "description": "Henter alle tilganger for en organisasjon",
+        "operationId": "hentTilganger",
+        "parameters": [
+          {
+            "name": "fiksOrgId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/UnikId"
+            }
+          },
+          {
+            "name": "privilegium",
+            "in": "query",
+            "description": "Filtrer på privilegium",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/Privilegium"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Tilganger for organisasjon",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/RessursTilganger"
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "$ref": "#/components/responses/ManglerTilgang"
+          },
+          "404": {
+            "$ref": "#/components/responses/IkkeEksisterendeRessurs"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    },
+    "schemas": {
+      "UnikId": {
+        "type": "string",
+        "format": "uuid",
+        "example": "123e4567-e89b-12d3-a456-426614174000"
+      },
+      "Privilegium": {
+        "type": "string",
+        "pattern": "^[A-Z0-9_\\.]+$",
+        "minLength": 2,
+        "example": "TJENESTE_LES"
+      },
+      "Aktor": {
+        "type": "object",
+        "description": "En aktør er en enhet som har blitt gitt tilgang til en ressurs",
+        "properties": {
+          "id": {
+            "$ref": "#/components/schemas/UnikId"
+          },
+          "navn": {
+            "type": "string",
+            "example": "Kari Nordmann"
+          },
+          "type": {
+            "$ref": "#/components/schemas/AktorType"
+          }
+        },
+        "required": [
+          "id",
+          "navn",
+          "type"
+        ]
+      },
+      "AktorType": {
+        "type": "string",
+        "enum": [
+          "INTERN_BRUKER",
+          "INTEGRASJON",
+          "EKSTERN_BRUKER",
+          "EKSTERN_GRUPPE"
+        ],
+        "example": "INTERN_BRUKER"
+      },
+      "RessursTilgang": {
+        "type": "object",
+        "properties": {
+          "ressurs": {
+            "$ref": "#/components/schemas/Ressurs"
+          },
+          "aktor": {
+            "$ref": "#/components/schemas/Aktor"
+          }
+        }
+      },
+      "Ressurs": {
+        "type": "object",
+        "properties": {
+          "ressursId": {
+            "$ref": "#/components/schemas/UnikId"
+          },
+          "navn": {
+            "type": "string",
+            "example": "Min ressurs"
+          }
+        },
+        "required": [
+          "id",
+          "navn"
+        ]
+      },
+      "RessursTilganger": {
+        "type": "object",
+        "properties": {
+          "fiksOrgId": {
+            "$ref": "#/components/schemas/UnikId"
+          },
+          "privilegium": {
+            "$ref": "#/components/schemas/Privilegium"
+          },
+          "tilganger": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RessursTilgang"
+            }
+          }
+        },
+        "required": [
+          "fiksOrgId",
+          "privilegium",
+          "tilganger"
+        ]
+      },
+      "ErrorMessage": {
+        "type": "object",
+        "description": "Feilmelding fra Fiks-plattformen",
+        "externalDocs": {
+          "description": "Beskrivelse av feilmeldinger",
+          "url": "https://ks-no.github.io/fiks-plattform/integrasjoner/#feilmeldinger"
+        },
+        "properties": {
+          "timestamp": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "status": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "error": {
+            "type": "string"
+          },
+          "errorId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "path": {
+            "type": "string"
+          },
+          "originalPath": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          },
+          "errorCode": {
+            "type": "string"
+          },
+          "errorJson": {
+            "type": "string"
+          }
+        },
+        "example": {
+          "message": "Mangler tilgang",
+          "errorId": "ee2ed64d-de8b-45f9-b9c6-3363d662d93b",
+          "status": 403
+        }
+      }
+    },
+    "responses": {
+      "ManglerTilgang": {
+        "description": "Ikke autorisert",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorMessage"
+            },
+            "example": {
+              "message": "Ikke autorisert",
+              "status": 403
+            }
+          }
+        }
+      },
+      "IkkeEksisterendeRessurs": {
+        "description": "Du har oppgitt en ressurs som ikke finnes",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorMessage"
+            },
+            "example": {
+              "message": "Finner ikke ressurs",
+              "status": 404
+            }
+          }
+        }
+      }
+    }
+  }
+}
