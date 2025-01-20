@@ -145,7 +145,14 @@
         },
         "responses" : {
           "201" : {
-            "description" : "Oppretter ny bydel."
+            "description" : "Oppretter ny bydel.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/BydelApiModel"
+                }
+              }
+            }
           }
         }
       }
@@ -470,6 +477,34 @@
         }
       }
     },
+    "/bekymringsmelding/api/v2/konfigurasjon/{fiksOrgId}/fagsystem/versjoner" : {
+      "get" : {
+        "tags" : [ "bekymringsmeldingKonfigurasjon" ],
+        "description" : "Hente fagsystemer og støttede versjoner for bekymringsmeldinger",
+        "operationId" : "getFagsystemStottedeVersjoner",
+        "parameters" : [ {
+          "name" : "fiksOrgId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Returnerer fagsystemer og støttede versjoner for bekymringsmeldinger",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/FagsystemStottedeVersjonerApiModel"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/bekymringsmelding/api/v2/konfigurasjon/{fiksOrgId}/bydeler/{ressursId}/standardmottaker" : {
       "put" : {
         "tags" : [ "bekymringsmeldingKonfigurasjon" ],
@@ -502,6 +537,55 @@
   },
   "components" : {
     "schemas" : {
+      "BydelApiModel" : {
+        "required" : [ "bydelsnavn", "bydelsnummer", "deaktivert", "fiksOrgId", "kontaktinformasjon", "konto", "ressursId", "standardMottaker" ],
+        "type" : "object",
+        "properties" : {
+          "bydelsnummer" : {
+            "pattern" : "^\\d{2}$",
+            "type" : "string"
+          },
+          "bydelsnavn" : {
+            "type" : "string"
+          },
+          "standardMottaker" : {
+            "type" : "boolean",
+            "description" : "Standard mottaker til kommunen hvor bekymringsmeldinger blir levert hvis bydel ikke er valgt"
+          },
+          "ressursId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "konto" : {
+            "$ref" : "#/components/schemas/KontoApiModel"
+          },
+          "kontaktinformasjon" : {
+            "$ref" : "#/components/schemas/KontaktinformasjonApiModel"
+          },
+          "varselEposter" : {
+            "type" : "array",
+            "description" : "Liste av epostadresser som får varselepost hvis det er bekymringsmeldinger som ikke er kvittert ut i Manuell Mottak",
+            "items" : {
+              "pattern" : "^[A-Za-zæøåÆØÅ0-9-_]+([.+][A-Za-zæøåÆØÅ0-9-_]+)*@[A-Za-zæøåÆØÅ0-9-]+(\\.[A-Za-zæøåÆØÅ0-9-]+)*(\\.[A-Za-z]{2,})$",
+              "type" : "string",
+              "description" : "Liste av epostadresser som får varselepost hvis det er bekymringsmeldinger som ikke er kvittert ut i Manuell Mottak"
+            }
+          },
+          "fiksOrgId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "stottetVersjon" : {
+            "type" : "string",
+            "description" : "Hvilke versjon av bekymringsmelding bydel støtter å motta og produsere",
+            "enum" : [ "V1", "V2" ]
+          },
+          "deaktivert" : {
+            "type" : "boolean",
+            "description" : "Om bydelen er deaktivert. Det er ikke mulig å sende bekymringsmeldinger til deaktiverte bydeler"
+          }
+        }
+      },
       "KontaktinformasjonApiModel" : {
         "required" : [ "epost", "postadresseAdresselinje1", "postadresseNavn", "postadressePostnr", "postadressePoststed", "telefon" ],
         "type" : "object",
@@ -626,55 +710,6 @@
           }
         }
       },
-      "BydelApiModel" : {
-        "required" : [ "bydelsnavn", "bydelsnummer", "deaktivert", "fiksOrgId", "kontaktinformasjon", "konto", "ressursId", "standardMottaker" ],
-        "type" : "object",
-        "properties" : {
-          "bydelsnummer" : {
-            "pattern" : "^\\d{2}$",
-            "type" : "string"
-          },
-          "bydelsnavn" : {
-            "type" : "string"
-          },
-          "standardMottaker" : {
-            "type" : "boolean",
-            "description" : "Standard mottaker til kommunen hvor bekymringsmeldinger blir levert hvis bydel ikke er valgt"
-          },
-          "ressursId" : {
-            "type" : "string",
-            "format" : "uuid"
-          },
-          "konto" : {
-            "$ref" : "#/components/schemas/KontoApiModel"
-          },
-          "kontaktinformasjon" : {
-            "$ref" : "#/components/schemas/KontaktinformasjonApiModel"
-          },
-          "varselEposter" : {
-            "type" : "array",
-            "description" : "Liste av epostadresser som får varselepost hvis det er bekymringsmeldinger som ikke er kvittert ut i Manuell Mottak",
-            "items" : {
-              "pattern" : "^[A-Za-zæøåÆØÅ0-9-_]+([.+][A-Za-zæøåÆØÅ0-9-_]+)*@[A-Za-zæøåÆØÅ0-9-]+(\\.[A-Za-zæøåÆØÅ0-9-]+)*(\\.[A-Za-z]{2,})$",
-              "type" : "string",
-              "description" : "Liste av epostadresser som får varselepost hvis det er bekymringsmeldinger som ikke er kvittert ut i Manuell Mottak"
-            }
-          },
-          "fiksOrgId" : {
-            "type" : "string",
-            "format" : "uuid"
-          },
-          "stottetVersjon" : {
-            "type" : "string",
-            "description" : "Hvilke versjon av bekymringsmelding bydel støtter å motta og produsere",
-            "enum" : [ "V1", "V2" ]
-          },
-          "deaktivert" : {
-            "type" : "boolean",
-            "description" : "Om bydelen er deaktivert. Det er ikke mulig å sende bekymringsmeldinger til deaktiverte bydeler"
-          }
-        }
-      },
       "BydelResultApiModel" : {
         "required" : [ "bydeler", "totaltAntallTreff" ],
         "type" : "object",
@@ -690,6 +725,35 @@
             }
           }
         }
+      },
+      "FagsystemStottedeVersjonerApiModel" : {
+        "type" : "object",
+        "properties" : {
+          "fagsystemer" : {
+            "type" : "array",
+            "description" : "Liste over støttede versjoner for fagsystemer",
+            "items" : {
+              "$ref" : "#/components/schemas/FagsystemStottetVersjonApiModel"
+            }
+          }
+        }
+      },
+      "FagsystemStottetVersjonApiModel" : {
+        "type" : "object",
+        "properties" : {
+          "navn" : {
+            "type" : "string",
+            "description" : "Fagsystemets navn"
+          },
+          "versjoner" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "enum" : [ "V1", "V2" ]
+            }
+          }
+        },
+        "description" : "Liste over støttede versjoner for fagsystemer"
       }
     }
   }
