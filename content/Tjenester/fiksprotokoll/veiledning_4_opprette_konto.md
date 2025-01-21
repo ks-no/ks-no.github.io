@@ -49,3 +49,11 @@ Da er kontoen opprettet. Konto-id er IDen som Fiks IO trenger for å sende og mo
 
 For å begynne å sende meldinger må systemet fått tilgang til en konto i et annet system. 
 ![fiks protokoll](/images/protokoll-brukerveiledning/3_opprettet_ferdig.png "Konto opprettet")
+
+Når man har opprettet kontoen så vil man se en advarsel som sier at det finnes x antall kontoer som ikke har kobling.
+Dette betyr at den kontoen du akkurat har laget ikke enda har noe system "bak" som lytter til meldinger, som er helt naturlig da man nettopp har laget kontoen.
+Når systemet "bak" har fått detaljene for kontoen (integrasjonsid, passord og kontoid) og systemet har fått koblet seg opp, så vil denne advarselen forsvinne.
+
+Advarselen vil dukke opp igjen hvis systemet "bak" mister koblingen av en eller annen grunn.
+
+![fiks protokoll](/images/protokoll-brukerveiledning/3_opprettet_ferdig_advarsel.png "Konto opprettet - advarsel")
