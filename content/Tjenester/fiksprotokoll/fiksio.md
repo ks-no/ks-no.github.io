@@ -101,7 +101,7 @@ Autentisering av klienter mot REST service for sending av meldinger og AMQP serv
 
 I utgangspunktet legger ikke Fiks IO føringer på hvordan (eller om) en melding sendt over plattformen sikres, men alle klienter som utvikles av KS, og alle protokoller som Fiks spesifiserer, vil benytte signerte og krypterte meldinger gjennom [ASIC-E](https://github.com/difi/asic) containere. Denne standarden benyttes også av DIFI i forbindelse med integrasjonspunktet. 
 I klientene er signering påkrevd, og kan settes opp med sertifikatet som blir benyttet for autentisering mot maskinporten eller et annet sertifikat/nøkkelpar. 
-Kryptering er også påkrevid og skjer med den private delen av sertifikatet som mottaker har publisert i Fiks IO Kontokatalog.
+Kryptering er også påkrevi og skjer med den private delen av sertifikatet som mottaker har publisert i Fiks IO Kontokatalog.
 
 Merk at man for å oppnå reell ende-til-ende kryptering, i betydningen at KS ikke har noen mulighet til å lese den overførte meldingen, bør innhente mottakers sertifikater gjennom egne kanaler og selv verifisere disse. Fiks IO tilbyr automatisk oppslag i katalogen som en tjeneste for å lette dette arbeidet, men man bør være klar over at det å benytte denne gir noe svekket sikkerhet.  
 
