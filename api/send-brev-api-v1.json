@@ -1088,69 +1088,6 @@
       }
     },
     "/send-brev/api/v1/kontoer/{kontoId}/utsendelser/{utsendelsesId}/mottakere": {
-      "get": {
-        "tags": [
-          "Mottakere"
-        ],
-        "description": "Henter ut en liste med mottakere koblet mot utsendelse",
-        "summary": "Henter ut en liste med mottakere koblet mot utsendelse",
-        "operationId": "hentMottakere",
-        "parameters": [
-          {
-            "name": "utsendelsesId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          },
-          {
-            "name": "kontoId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Mottakere for utsendelse",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/ForsendelseMottaker"
-                  }
-                }
-              }
-            }
-          },
-          "403": {
-            "description": "Ingen tilgang",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorMessage"
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Systemfeil",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorMessage"
-                }
-              }
-            }
-          }
-        }
-      },
       "post": {
         "tags": [
           "Mottakere"
@@ -2858,53 +2795,6 @@
         },
         "description": "Config for PDF import"
       },
-      "ForsendelseMottaker": {
-        "required": [
-          "postadresse",
-          "mottakerId"
-        ],
-        "type": "object",
-        "properties": {
-          "organisasjonsnummer": {
-            "pattern": "^[0-9]{9}$",
-            "type": "string"
-          },
-          "fodselsnummer": {
-            "pattern": "^[0-9]{11}$",
-            "type": "string"
-          },
-          "mottakerId": {
-            "type": "string",
-            "description": "Unik id for mottaker",
-            "format": "uuid"
-          },
-          "postadresse": {
-            "$ref": "#/components/schemas/Postadresse"
-          },
-          "tittel": {
-            "type": "string"
-          },
-          "filnavn": {
-            "type": "string"
-          },
-          "status": {
-            "type": "string",
-            "description": "Utsendelse status for mottaker",
-            "enum": [
-              "OPPRETTET",
-              "UNDER_UTSENDING",
-              "SENDT",
-              "KLARTE_IKKE_SENDE"
-            ]
-          },
-          "svarutForsendelseId": {
-            "type": "string",
-            "description": "Forsendelse-id mottatt fra SvarUt, etter utsending",
-            "format": "uuid"
-          }
-        },
-        "description": "Mottaker for utsendelse"
-      },
       "Mottaker": {
         "type": "object",
         "properties": {
@@ -2936,6 +2826,14 @@
             "items": {
               "$ref": "#/components/schemas/MottakerValideringsfeil"
             }
+          },
+          "tittel": {
+            "type": "string",
+            "description": "Tittel på brevet som denne mottaker skal ha, vil overskrive tittel knyttet mot utsendelsen."
+          },
+          "filnavn": {
+            "type": "string",
+            "description": "Filnavn som skal sendes med denne mottakeren."
           }
         },
         "description": "Mottaker som er lagt til utsendelse",
@@ -3030,7 +2928,7 @@
             "type": "array",
             "description": "Utsendelsene som samsvarer ",
             "items": {
-              "$ref": "#/components/schemas/Utsendelse"
+              "$ref": "#/components/schemas/UtsendelseSok"
             }
           }
         },
@@ -3142,6 +3040,65 @@
           },
           "mottakerStatistikk": {
             "$ref": "#/components/schemas/MottakerStatistikk"
+          }
+        }
+      },
+      "UtsendelseSok": {
+        "required": [
+          "konto",
+          "id"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "UtsendelsesID",
+            "format": "uuid"
+          },
+          "kontoId": {
+            "type": "string",
+            "description": "KontoId",
+            "format": "uuid"
+          },
+          "tittel": {
+            "type": "string",
+            "description": "Tittel"
+          },
+          "opprettetDato": {
+            "type": "string",
+            "description": "Dato for opprettelse av utsendelse",
+            "format": "date-time"
+          },
+          "startetDato": {
+            "type": "string",
+            "description": "Dato for når utsendelse vart startet",
+            "format": "date-time"
+          },
+          "ferdigDato": {
+            "type": "string",
+            "description": "Dato for når utsendelse vart ferdigstilt",
+            "format": "date-time"
+          },
+          "sistEndretDato": {
+            "type": "string",
+            "description": "Dato for når utsendelse vart sist endret",
+            "format": "date-time"
+          },
+          "status": {
+            "$ref": "#/components/schemas/UtsendelseStatusType"
+          },
+          "antallMottakere": {
+            "type": "integer",
+            "description": "Antall mottakere",
+            "format": "int32"
+          },
+          "opprettetAv": {
+            "type": "string",
+            "description": "Bruker som opprettet utsendelsen"
+          },
+          "sendtAv": {
+            "type": "string",
+            "description": "Bruker som startet utsendelsen"
           }
         }
       },
