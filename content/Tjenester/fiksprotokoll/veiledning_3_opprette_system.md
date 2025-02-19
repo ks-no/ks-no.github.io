@@ -56,4 +56,10 @@ Trykk "Gå til system" for å gå til systemet
 Du har nå opprettet et Protokollsystem. På landingssiden vises nøkkelinformasjon om systemet.
 
 Merk: Systemet vil kun være tilgjenglig for andre systemer i egen organisasjon. Dette kan endres under "Konfigurasjon"
-![fiks protokoll](/images/protokoll-brukerveiledning/2_opprettet.png "System opprettet")
+![fiks protokoll](/images/protokoll-brukerveiledning/2_opprettet.png 'System opprettet')
+
+## Steg 8: Konfigurering av system
+Nå som systemet er opprettet, vil du kunne konfigurere det dersom det er behov. Dette gjøres ved å trykke på “Konfigurasjon” i tabulatoren. Her kan du endre leverandørkontaktpunkt, organisasjonsnummer på virksomhetssertifikatet, passord for integrasjonen og aktivere/deaktivere konfigurasjon via API. Du har også muligheten til å slette systemet her.
+
+Dersom API ikke ble aktivert under opprettelsen av systemet, kan dette gjøres her. Dette gir deg muligheten til å konfigurere systemet gjennom API i stedet for via webgrensesnittet. Forsøk på konfigurasjon via API uten at dette er aktivert, vil resultere i en `NotAuthorizedException` med meldingen`har ikke privilegiet FIKS.KONFIGURER på ressurs`.
+![fiks protokoll](/images/protokoll-brukerveiledning/8_konfigurasjon.png 'Konfigurasjon')
