@@ -216,6 +216,6 @@ Dette vil man også se hvis man går inn på kontoen.
 
 Her er en forenklet oversikt over Fiks Protokoll arkitekturen
 
-![fiks protokoll arkitektur innsikt](/Tjenester/images/fiks-protokoll-arkitektur-innsikt.png "Op")
+![fiks protokoll arkitektur innsikt](/Tjenester/images/fiks-protokoll-arkitektur-innsikt.png "Fiks Protokoll arkitektur oversikt")
 
 
