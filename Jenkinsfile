@@ -1,6 +1,7 @@
 pipeline {
   options() {
     disableConcurrentBuilds()
+    buildDiscarder(logRotator(numToKeepStr: '40', artifactNumToKeepStr: '40'))
   }
   agent {
     label 'linux || linux-large'
