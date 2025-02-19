@@ -24,7 +24,11 @@ pipeline {
         }
       }
     }
-
+    stage('build') {
+      steps {
+        sh 'hugo --cleanDestinationDir '
+      }
+    }
     stage('deploy') {
       when{
         branch 'source'
