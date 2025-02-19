@@ -2,7 +2,9 @@ pipeline {
   options() {
     disableConcurrentBuilds()
   }
-  agent any
+  agent {
+    label 'linux || linux-large'
+  }
 
   stages {
 
