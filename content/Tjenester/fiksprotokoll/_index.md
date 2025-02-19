@@ -212,8 +212,10 @@ På system-siden vil man få en advarsel hvis man har protokollkonto(er) som ikk
 Hvis man går inn på listen over kontoer vil man også se status for hver kont: koblingsstatus som viser om det mangler noe som henter meldinger fra køen og antall meldinger som ligger på køen.
 Dette vil man også se hvis man går inn på kontoen.
 
+### Arkitektur
 
+Her er en forenklet oversikt over Fiks Protokoll arkitekturen
 
-
+![fiks protokoll arkitektur innsikt](/Tjenester/images/fiks-protokoll-arkitektur-innsikt.png "Fiks Protokoll arkitektur oversikt")
 
 
