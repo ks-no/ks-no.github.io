@@ -26,13 +26,13 @@ Funksjonaliteten skal gjøre purringen tilgjengelig på MinSide samt knytte den 
 ### Faktura for eier av eiendom 
 Funksjonaliteten skal kunne knytte faktura for eiendomsavgift til Gnr og Bnr fremfor et personnummer. Med dette vil faktura kunne vises i MinSide til begge parter som har betalingsplikt på kommunale avgifter og eier bolig sammen. Det vil føre til færre henvendelser om å bytte fakturamottaker eller ikke-mottatt faktura. 
 
-## Sende kommentar på faktura - under utvikling 
+## Sende kommentar på faktura - under vurdering 
 Funksjonaliteten skal gi en mulighet for å sende en kommentar direkte på en faktura til riktig fagetat for innbyggere som har spørsmål til innholdet i fakturaen.
 
 Dette er under utvikling, enten kan kommentar sendes via eDialog/SvarUT eller via en Fiks IO melding. Valget er ikke tatt enda.
  
 
-## Betalingsutsettelse - under utvikling
+## Betalingsutsettelse - under vurdering
 Funksjonaliteten skal gi mulighet til å velge betalingsutsettelse på en faktura for innbyggere som ikke kan betale regningen i tide.
 
 Det vil bli laget en protokoll for Fiks IO som vil kunne sende en forespørsel om betalingsutsettelse til fakturasystem, fakturasystem må svare tilbake om det er innvilget eller ikke, innen 10 sekund. Dette skjer mens brukeren venter på min kommune. 
