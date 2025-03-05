@@ -1,0 +1,336 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "KS Fiks: Print Stralfors",
+    "description": "Service for print hos Strålfors",
+    "contact": {
+      "name": "Fiks-brukerstøtte",
+      "url": "https://ks-no.github.io/",
+      "email": "fiks-utvikling@ks.no"
+    },
+    "version": "v2"
+  },
+  "security": [
+    {
+      "bearerAuth": []
+    }
+  ],
+  "servers": [
+    {
+      "url": "https://api.fiks.ks.no",
+      "description": "KS Fiks API host"
+    }
+  ],
+  "tags": [
+    {
+      "name": "PrintStralfors",
+      "description": "API for å håndtere print av brev hos Strålfors"
+    },
+    {
+      "name": "Kvittering",
+      "description": "API for å hente printkvitteringer hos Strålfors"
+    }
+  ],
+  "paths": {
+    "/stralfors/api/v1/print/{dinReferanse}": {
+      "post": {
+        "tags": [
+          "PrintStralfors"
+        ],
+        "summary": "Sender brev til å bli printet hos Strålfors",
+        "operationId": "print",
+        "parameters": [
+          {
+            "name": "dinReferanse",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PrintRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Brev sendt til print"
+          },
+          "default": {
+            "description": "Noe gikk galt",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/stralfors/api/v1/kvitteringer": {
+      "post": {
+        "tags": [ "Kvittering" ],
+        "summary": "Henter print kvitteringer",
+        "operationId": "hentPrintKvitteringer",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/HentPrintKvitteringerRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Liste over kvitteringer",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/KvitteringerResponse"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Noe gikk galt",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    },
+    "schemas": {
+      "ErrorMessage": {
+        "type": "object",
+        "properties": {
+          "timestamp": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "status": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "error": {
+            "type": "string"
+          },
+          "errorId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "path": {
+            "type": "string"
+          },
+          "originalPath": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          },
+          "errorCode": {
+            "type": "string"
+          },
+          "errorJson": {
+            "type": "string"
+          }
+        }
+      },
+      "PrintRequest": {
+        "type": "object",
+        "required": [
+          "printFilDokumentlagerId",
+          "printType",
+          "tjeneste",
+          "adresse",
+          "dobbelsidig",
+          "fiksOrgId"
+        ],
+
+        "properties": {
+          "printType": {
+            "$ref": "#/components/schemas/PrintType"
+          },
+          "tjeneste": {
+            "$ref": "#/components/schemas/AvsenderTjeneste"
+          },
+          "fiksOrgId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "kontoId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "konteringskode": {
+            "type": "string"
+          },
+          "adresse": {
+            "$ref": "#/components/schemas/Adresse"
+          },
+          "printFilDokumentlagerId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "dobbelsidig": {
+            "type": "boolean"
+          },
+          "giroark": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        }
+      },
+      "Adresse": {
+        "type": "object",
+        "required": [
+          "navn",
+          "poststed",
+          "adresse1",
+          "postnummer"
+        ],
+        "properties": {
+          "navn": {
+            "type": "string"
+          },
+          "adresse1": {
+            "type": "string"
+          },
+          "adresse2": {
+            "type": "string"
+          },
+          "adresse3": {
+            "type": "string"
+          },
+          "postnummer": {
+            "type": "string"
+          },
+          "poststed": {
+            "type": "string"
+          },
+          "land": {
+            "type": "string"
+          }
+        }
+      },
+      "PrintType": {
+        "type": "string",
+        "description": "Type print",
+        "enum": [
+          "BREV",
+          "SENSITIVT_BREV",
+          "PLASTKORT"
+        ]
+      },
+      "AvsenderTjeneste": {
+        "type": "string",
+        "description": "Logg for print",
+        "enum": [
+          "SVARUT",
+          "BEKYMRINGSMELDING",
+          "LEDSAGERBEVIS"
+        ]
+      },
+      "KvitteringerResponse": {
+        "type" : "object",
+        "required": [ "kvitteringer", "nesteLopenummer" ],
+        "properties": {
+          "kvitteringer": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Kvittering"
+            }
+          },
+          "nesteLopenummer": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "Kvittering": {
+        "type": "object",
+        "required": [ "id", "hentet", "opprettet", "lopenummer" ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "hentet": {
+            "type": "string",
+            "description": "Dato for når kvittering ble hentet fra Strålfors",
+            "format": "date-time"
+          },
+          "opprettet": {
+            "type": "string",
+            "description": "Dato for når kvittering ble opprettet av Strålfors",
+            "format": "date-time"
+          },
+          "lopenummer": {
+            "type": "integer",
+            "description": "Løpenummer for kvittering",
+            "format": "int32"
+          },
+          "konvoluttKostnad": {
+            "type": "number",
+            "description": "Kostnad for konvolutt"
+          },
+          "arkKostnad": {
+            "type": "number",
+            "description": "Kostnad for ark print"
+          },
+          "antallArk": {
+            "type": "integer",
+            "description": "Antall ark printet",
+            "format": "int32"
+          }
+        }
+      },
+      "HentPrintKvitteringerRequest": {
+        "type": "object",
+        "required": [ "fraLopenummer", "antall", "tjeneste" ],
+        "properties": {
+          "fraLopenummer": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Henter alle kvitteringer for tjeneste etter dette tidspunktet"
+          },
+          "antall": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Antall kvitteringer som skal hentes ut"
+          },
+          "tjeneste": {
+            "$ref": "#/components/schemas/AvsenderTjeneste"
+          }
+        }
+      }
+    }
+  }
+}
