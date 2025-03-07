@@ -49,6 +49,9 @@ Det finnes også en del ulike poster som har andre kilder enn Skatteetaten.
 Disse kan sendes med som en del av requesten, og vil da bli kalkulert sammen med data fra Skatteetaten.
 Oversikt over gyldige ekstraposter kan hentes fra verdier endepunktet.
 
+Merk: ved å sende inn postene `kommune.oektNaeringsinntekt` og `kommune.redusertNaeringsinntekt` vil man ikke få disse tilbake igjen i responsen, men det vil påvirke posten naeringsinntektForPaaroerende.
+Les mer om næringsinntekt for pårørende [her](https://ksdigital.no/tjenestene/fiks-register/fiks-skatte-og-inntektsopplysninger/fiks_skatt_inntekt_langtidsopphold-veileder/#oversikt-manuelle-poster)
+
 #### Endepunkter
 
 For payload for POST-spørringene, se [swagger dokumentasjon](https://editor.swagger.io/?url=https://developers.fiks.ks.no/api/register-skatteoginntektsopplysninger-beregning-api-v1.json).
