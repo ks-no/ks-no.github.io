@@ -1,0 +1,206 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "KS Fiks: Print Stralfors",
+    "description": "Service for uthenting av kostnader",
+    "contact": {
+      "name": "Fiks-brukerstøtte",
+      "url": "https://ks-no.github.io/",
+      "email": "fiks-utvikling@ks.no"
+    },
+    "version": "v1"
+  },
+  "servers": [
+    {
+      "url": "https://forvaltning.fiks.ks.no",
+      "description": "KS Fiks API host"
+    }
+  ],
+  "security": [
+    {
+      "bearerAuth": []
+    }
+  ],
+  "tags": [
+    {
+      "name": "PrintStralforsKostnad",
+      "description": "API for operasjoner relatert til kostnader"
+    }
+  ],
+  "paths": {
+    "/stralfors/api/v1/kostnader": {
+      "get": {
+        "tags": [
+          "PrintStralforsKostnad"
+        ],
+        "summary": "Henter kostnader for en måned",
+        "operationId": "hentKostnader",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/KostnaderRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Kostnader",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Kostnader"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Noe gikk galt",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    },
+    "schemas": {
+      "KostnaderRequest": {
+        "type": "object",
+        "required": [
+          "year",
+          "month"
+        ],
+        "properties": {
+          "year": {
+            "description": "Året man ønsker å hente kostnader for.",
+            "type": "integer",
+            "format": "int32",
+            "minimum": 0,
+            "maximum": 9999
+          },
+          "month": {
+            "description": "Måneden innenfor året man ønsker å hente kostnader for.",
+            "type": "integer",
+            "format": "int32",
+            "minimum": 1,
+            "maximum": 12
+          },
+          "organisasjoner": {
+            "description": "Id til organisasjoner man ønsker å hente kostnader for. Tom liste eller null betyr at man henter for alle.",
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "uniqueItems": true
+          },
+          "tjeneste": {
+            "description": "Tjenesten man ønsker å hente kostnader for. Hvis ikke satt hentes det for alle tjenester.",
+            "$ref": "#/components/schemas/Tjeneste"
+          }
+        }
+      },
+      "Kostnader": {
+        "type": "object",
+        "properties": {
+          "kostnader": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/OrganisasjonKostnader"
+            }
+          }
+        }
+      },
+      "OrganisasjonKostnader": {
+        "type": "object",
+        "properties": {
+          "fiksOrganisasjonId": {
+            "description": "Id til organisasjonen.",
+            "type": "string",
+            "format": "uuid"
+          },
+          "tjenester": {
+            "description": "Tjenester med tilhørende kostnader.",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TjenesteKostnad"
+            }
+          }
+        }
+      },
+      "TjenesteKostnad": {
+        "type": "object",
+        "properties": {
+          "tjeneste": {
+            "description": "Tjenesten denne kostnaden gjelder.",
+            "$ref": "#/components/schemas/Tjeneste"
+          },
+          "pris": {
+            "description": "Pris for tjenesten denne måneden.",
+            "type": "number",
+            "format": "double"
+          }
+        }
+      },
+      "Tjeneste": {
+        "type": "string",
+        "description": "Tjenesten som sendte printjobben",
+        "enum": [
+          "SVARUT",
+          "BEKYMRINGSMELDING",
+          "LEDSAGERBEVIS"
+        ]
+      },
+      "ErrorMessage": {
+        "type": "object",
+        "properties": {
+          "timestamp": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "status": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "error": {
+            "type": "string"
+          },
+          "errorId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "path": {
+            "type": "string"
+          },
+          "originalPath": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          },
+          "errorCode": {
+            "type": "string"
+          },
+          "errorJson": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}
