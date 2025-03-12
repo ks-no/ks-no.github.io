@@ -32,13 +32,88 @@
     }
   ],
   "paths": {
-    "/stralfors/api/v1/admin/advarsel": {
+    "/stralfors/api/v1/admin/printjobber": {
       "get": {
         "tags": [
           "Csv"
         ],
-        "summary": "Henter brev som ikke er printet innenfor fristen i måned",
-        "operationId": "advarsel",
+        "summary": "Henter CSV med liste over printjobber",
+        "operationId": "hentPrintjobber",
+        "parameters": [
+          {
+            "name": "fraDato",
+            "description": "Startdato for å filtrere forsendelser (inkludert)",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          },
+          {
+            "name": "tilDato",
+            "description": "Sluttdato for å filtrere forsendelser (inkludert)",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          },
+          {
+            "name": "eldreEnnTimer",
+            "description": "Parameter for å hente forsendelser som er eldre enn X timer siden det ble sendt til print, innen virkedager",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "minimum": 1,
+              "maximum": 100
+            }
+          },
+          {
+            "name": "erPrintet",
+            "description": "Parameter for å hente forsendelser som er printet eller ei",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "CSV som inneholder forsendelseId, dato for når brevet ble sendt til print og dato for når brevet ble printet",
+            "content": {
+              "text/csv": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Noe gikk galt",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/stralfors/api/v1/admin/printjobber/prikkbelastning": {
+      "get": {
+        "tags": [
+          "Csv"
+        ],
+        "summary": "Henter CSV med liste over printjobber",
+        "operationId": "hentPrintjobberMedPrikkbelastning",
         "parameters": [
           {
             "name": "year",
@@ -47,7 +122,8 @@
             "schema": {
               "type": "integer",
               "format": "int32"
-            }
+            },
+            "description": "År for å filtrere listen av forsendelser"
           },
           {
             "name": "month",
@@ -55,18 +131,31 @@
             "required": true,
             "schema": {
               "type": "integer",
-              "format": "int32"
-            }
+              "format": "int32",
+              "minimum": 1,
+              "maximum": 12
+            },
+            "description": "Måned for å filtrere listen av forsendelser. Dersom måned er satt, må også år være satt. 1 = januar, 12 = desember"
           }
         ],
         "responses": {
           "200": {
-            "description": "CSV med filer som ikke er printet innenfor fristen i måned",
+            "description": "CSV som inneholder forsendelseId, dato for når brevet ble sendt til print og dato for når brevet ble printet",
             "content": {
               "text/csv": {
                 "schema": {
                   "type": "string",
                   "format": "binary"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Noe gikk galt",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage"
                 }
               }
             }
@@ -80,7 +169,7 @@
           "PrintStralforsAdmin"
         ],
         "summary": "Marker brev som skal håndteres manuelt",
-        "operationId": "manuellHandtering",
+        "operationId": "markerManueltHandtert",
         "requestBody": {
           "content": {
             "application/json": {
@@ -94,6 +183,16 @@
         "responses": {
           "200": {
             "description": "OK"
+          },
+          "default": {
+            "description": "Noe gikk galt",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
           }
         }
       }
@@ -126,6 +225,41 @@
           "begrunnelse": {
             "type": "string",
             "maxLength": 1000
+          }
+        }
+      },
+      "ErrorMessage": {
+        "type": "object",
+        "properties": {
+          "timestamp": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "status": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "error": {
+            "type": "string"
+          },
+          "errorId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "path": {
+            "type": "string"
+          },
+          "originalPath": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          },
+          "errorCode": {
+            "type": "string"
+          },
+          "errorJson": {
+            "type": "string"
           }
         }
       }
