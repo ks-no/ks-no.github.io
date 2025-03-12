@@ -2134,6 +2134,68 @@
         }
       }
     },
+    "/send-brev/api/v1/kontoer/{kontoId}/organisasjonsnummer/{organisasjonsnummer}": {
+      "get": {
+        "tags": [
+          "Oppslag"
+        ],
+        "description": "Oppslag på organisasjon mot Brreg",
+        "summary": "Oppslag basert på organisasjonsnummer",
+        "operationId": "orgnummerOppslag",
+        "parameters": [
+          {
+            "name": "kontoId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "organisasjonsnummer",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "pattern": "^[0-9]{9}$",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Adresseinformajson knyttet til organisasjon hentet fra Brreg",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrganisasjonsnummerOppslag"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Ingen tilgang",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Systemfeil",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/send-brev/api/v1/maler/{malId}": {
       "get": {
         "tags": [
@@ -2852,7 +2914,7 @@
             "description": "Tittel på brevet som denne mottaker skal ha, vil overskrive tittel knyttet mot utsendelsen."
           },
           "tilknyttetFil": {
-            "$ref": "#/components/schemas/TilknyttetFil"
+            "$ref": "#/components/schemas/TilknyttetFilRespons"
           }
         },
         "description": "Mottaker som er lagt til utsendelse",
@@ -2873,31 +2935,7 @@
             "pattern": "^[0-9]{9}$"
           },
           "postadresse": {
-            "type": "object",
-            "properties": {
-              "navn": {
-                "type": "string"
-              },
-              "adresselinje1": {
-                "type": "string"
-              },
-              "adresselinje2": {
-                "type": "string"
-              },
-              "adresselinje3": {
-                "type": "string"
-              },
-              "postnummer": {
-                "type": "string"
-              },
-              "poststed": {
-                "type": "string"
-              },
-              "land": {
-                "type": "string"
-              }
-            },
-            "description": "Adresse for brevpost"
+            "$ref": "#/components/schemas/OppslagPostadresse"
           },
           "status": {
             "type": "string",
@@ -2912,6 +2950,28 @@
           }
         },
         "description": "Informasjon om mottaker hentet fra enhetsregisteret eller folkeregisteret"
+      },
+      "OrganisasjonsnummerOppslag": {
+        "type": "object",
+        "properties": {
+          "organisasjonsnummer": {
+            "type": "string",
+            "pattern": "^[0-9]{9}$"
+          },
+          "postadresse": {
+            "$ref": "#/components/schemas/OppslagPostadresse"
+          },
+          "status": {
+            "type": "string",
+            "description": "Status på oppslag",
+            "enum": [
+              "FUNNET",
+              "IKKE_FUNNET",
+              "UGYLDIG_IDENTIFIKATOR"
+            ]
+          }
+        },
+        "description": "Informasjon om organisasjon hentet fra enhetsregisteret"
       },
       "Utsendelser": {
         "required": [
@@ -3194,6 +3254,24 @@
           }
         }
       },
+      "TilknyttetFilRespons": {
+        "required": [
+          "filnavn"
+        ],
+        "type": "object",
+        "description": "Objekt for å holde tilknyttet Fil. Brukes i mottaker som returneres, da en ikkje kan garantere id til fil for opplasting av excel.",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Id til tilknyttet fil"
+          },
+          "filnavn": {
+            "type": "string",
+            "description": "Filnavnet"
+          }
+        }
+      },
       "TilknyttetFil": {
         "required": [
           "id",
@@ -3259,6 +3337,33 @@
           }
         },
         "description": "En adresse for fysisk post. Inkluderer land og opp til tre adresselinjer for å støtte C/O, postboks og adresser utenfor Norge"
+      },
+      "OppslagPostadresse": {
+        "type": "object",
+        "properties": {
+          "navn": {
+            "type": "string"
+          },
+          "adresselinje1": {
+            "type": "string"
+          },
+          "adresselinje2": {
+            "type": "string"
+          },
+          "adresselinje3": {
+            "type": "string"
+          },
+          "postnummer": {
+            "type": "string"
+          },
+          "poststed": {
+            "type": "string"
+          },
+          "land": {
+            "type": "string"
+          }
+        },
+        "description": "En postadresse som er hentet fra oppslag mot folkeregister eller Brreg."
       },
       "UtsendelseFremdrift": {
         "required": [
@@ -3505,9 +3610,14 @@
           "fodselsnummer": {
             "pattern": "^[0-9]{11}$",
             "type": "string"
+          },
+          "mottakerId": {
+            "type": "string",
+            "description": "Id til eventuell mottaker. Denne vil kun vere i bruk for endring av eksisterende mottaker",
+            "format": "uuid"
           }
         },
-        "description": "Request-objekt for å søke etter mottaker med organisasjonsnummer eller fødselsnummer. Må ha med enten organisasjonsnummer eller fødselsnummer."
+        "description": "Request-objekt for å søke etter mottaker med organisasjonsnummer eller fødselsnummer. Må ha med enten organisasjonsnummer eller fødselsnummer. Bør ha med mottakerId for eksisterende mottaker for å hindre at DUPLIKAT-sjekken slår inn"
       },
       "KontoTilgang": {
         "type": "object",
