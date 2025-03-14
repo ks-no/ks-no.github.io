@@ -1,0 +1,924 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "KS kunnskap - orgstruktur API",
+    "description": "# API for opprettelse og vedlikehold av organisasjonsstruktur i KS kunnskap\n\nFormålet med dette API-et er å la kommuner og andre organisasjoner speile hele eller deler av sin \norganisasjonsstruktur til KS kunnskap, med det formål å styre tilgang til å se rapporter, godkjenne deltagelse, \no.l. basert på ansattes plassering i organisasjonen.\n\n## Organisasjonsstruktur\n\nOrganisasjonstrukturen bygges opp av avdelinger som knyttes sammen ved at en underavdeling har \nen `foreldreId`som peker til en overordnet avdeling. Dersom en avdeling ikke har en `foreldreId`, vil det si at det \ner en avdeling på øverste niva for den aktuelle organisasjonen. I KS kunnskap (Valamis) vil avdelinger på øverste \nnivå plasseres under en node i organisasjonstreet som representerer den aktuelle kommunen eller organisasjonen. \nDet kan derfor være mer enn 1 avdeling på øverste nivå i organsisasjonsstrukturen vi mottar i API-et.\n\nAlle avdelinger må ha en **avdelingsId** som er unik innenfor denne organisasjonen. Formatet på denne id-en er opp til\norganisasjonen å bestemme.\n\n## Stillinger\n\nStillinger knytter en bruker til en gitt avdeling i organisasjonen, og kan også tilordne en rolle brukeren har i \navdelingen. For å kunne knytte en bruker til en stilling i organisasjonsstrukturen, må brukeren som er synkronisert \nvia Sentralisert Brukerstyring på Fiks Platformen, ha en **externalId** som er lik `brukerId` på en eller flere av\nstillingene som opprettes med dette API-et.\nSe [her](https://developers.fiks.ks.no/felles/sentralisert-brukerstyring/) for mer informasjon om \nSentralisert Brukerstyring.\n\n> ⚠️ **NOTE:** Gyldige verdier for *roller* vil kunne endres.\n\n## Feilhåndtering \n\nDersom motatt organisasjonsstruktur har alvorlige feil, som f.eks at det er en sirkulær relasjon mellom avdelinger,\nvil oppdateringen forkastes, og en feilmelding vil returneres med Http status `400`.\n\nDersom organisasjonsstrukturen har mindre feil, vil enkelte deler av oppdateringen kunne bli akseptert. Det vil \nda returneres en respons med status `202`, og en liste med feil. Feil i denne sammenhengen kan f.eks være at en \nstilling refererer til en avdeling som ikke eksisterer, eller at en avdeling refererer til en  ikke eksisterende \nforelderId.\n\n## Autentisering\n\nOrganisasjonen henter et OAuth 2.0 access token med scope **\"ks:fiks\"** fra Maskinporten, basert på \norganisasjonens virksomhetssertifikat. Dokumentasjon for dette finnes \n[her](https://docs.digdir.no/docs/Maskinporten/maskinporten_overordnet). Vi støtter kun \nJWT access tokens, dette må konfigureres hos ID-Porten. I tillegg til dette tokenet må man ha en header \nfor **IntegrasjonId** og for **IntegrasjonPassord**.\n\nKalle mot API-et trenger dermed følgende HTTP headere:\n\n- **Authorization**: OAuth-2.0 Jwt Access token som bekrefter organisasjonens identitet, signert av ID-Porten. \n  Scope skal være **ks:fiks**.\n- **IntegrasjonId**: Id for integrasjonen, generert i Fiks-konfigurasjon. Org.nr i Jwt-en i Authorization header \n  må være konfigurert som autorisert organisasjon for integrasjonen.\n- **IntegrasjonPassord**: Passord for integrasjonen (fra Fiks-konfigurasjon)\n\n## Autorisasjon\n\nFor å gjøre kall mot dette API-et må man ha satt opp en *integrasjon* på Fiks platformen. Denne integrasjonen må så \nfå tilatelse til å gjøre kall mot API-et ved å tilordne *privilegiet* `KSKUNNSKAP_ORGSTRUKTUR_UPDATE` på \ntjenesten `KSKUNNSKAP`.\n\nGenerell dokumentasjon for integrasjon mot Fiks Platformen \nfinnes [her](https://developers.fiks.ks.no/felles/integrasjoner/)\n",
+    "contact": {
+      "name": "Fiks brukerstøtte",
+      "url": "https://ksdigital.no/contact/",
+      "email": "fiks-utvikling@ks.no"
+    },
+    "version": "v1"
+  },
+  "externalDocs": {
+    "description": "Generelt om integrasjoner på Fiks Platformen.",
+    "url": "https://developers.fiks.ks.no/felles/integrasjoner/"
+  },
+  "servers": [
+    {
+      "url": "https://api.fiks.ks.no",
+      "description": "KS Fiks API host",
+      "variables": {}
+    },
+    {
+      "url": "https://api.fiks.test.ks.no",
+      "description": "KS Fiks TEST API host",
+      "variables": {}
+    }
+  ],
+  "tags": [
+    {
+      "name": "Avdelinger",
+      "description": "Synkronisering av avdelinger i organisasjonsstrukturen"
+    },
+    {
+      "name": "Stillinger",
+      "description": "Synkronisering av stillinger som knytter ansatte til bestemte avdelinger"
+    }
+  ],
+  "paths": {
+    "/kskunnskap/api/v1/ks/{fiksOrgId}/avdelinger/full-synk": {
+      "post": {
+        "tags": [
+          "Avdelinger"
+        ],
+        "operationId": "Full Synkronisering Avdelinger",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/fiksOrgIdParam"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FullSynkAvdelingerRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "202": {
+            "description": "Full synk akseptert",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SynkAvdelingerRespons"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          }
+        },
+        "summary": "Full synkronisering av avdelinger",
+        "description": "Gjør en full synkronisering av avdelinger. Erstatter alle eventuelle eksisterende avdelinger som er synkronisert tidligere.\n"
+      }
+    },
+    "/kskunnskap/api/v1/ks/{fiksOrgId}/avdelinger": {
+      "get": {
+        "tags": [
+          "Avdelinger"
+        ],
+        "operationId": "Hent Alle Avdelinger",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/fiksOrgIdParam"
+          }
+        ],
+        "responses": {
+          "202": {
+            "description": "Alle avdelinger for fiksOrgId",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AvdelingerRespons"
+                }
+              }
+            }
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          }
+        },
+        "summary": "Hent alle avdelinger",
+        "description": "Henter alle avdelinger i organisasjonen\n"
+      }
+    },
+    "/kskunnskap/api/v1/ks/{fiksOrgId}/avdelinger/legg-til-nye-avdelinger": {
+      "post": {
+        "tags": [
+          "Avdelinger"
+        ],
+        "operationId": "Legg til nye Avdelinger",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/fiksOrgIdParam"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LeggTilAvdelingerRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "202": {
+            "description": "Nye avdelinger akseptert",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SynkAvdelingerRespons"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          }
+        },
+        "summary": "Legg til nye avdelinger",
+        "description": "Legger til nye avdelinger\n"
+      }
+    },
+    "/kskunnskap/api/v1/ks/{fiksOrgId}/avdelinger/endre-avdelinger": {
+      "post": {
+        "tags": [
+          "Avdelinger"
+        ],
+        "operationId": "Endre eksisterende Avdelinger",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/fiksOrgIdParam"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EndreAvdelingerRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "202": {
+            "description": "Endringer akseptert",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SynkAvdelingerRespons"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          }
+        },
+        "summary": "Endre avdelinger",
+        "description": "Oppdaterer en eller flere avdelinger.\n"
+      }
+    },
+    "/kskunnskap/api/v1/ks/{fiksOrgId}/avdelinger/slett-avdelinger": {
+      "post": {
+        "tags": [
+          "Avdelinger"
+        ],
+        "operationId": "Slett Avdelinger",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/fiksOrgIdParam"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SlettAvdelingerRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "202": {
+            "description": "Sletting akseptert"
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          }
+        },
+        "summary": "Slett avdelinger",
+        "description": "Slett en eller flere avdelinger fra organisasjonen\n"
+      }
+    },
+    "/kskunnskap/api/v1/ks/{fiksOrgId}/avdelinger/feil": {
+      "get": {
+        "tags": [
+          "Avdelinger"
+        ],
+        "operationId": "Hent feil-status for synkroniserte Avdelinger",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/fiksOrgIdParam"
+          }
+        ],
+        "responses": {
+          "202": {
+            "description": "Feil-status for avdelinger",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AvdelingerSynkroniseringsFeilRespons"
+                }
+              }
+            }
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          }
+        },
+        "summary": "Hent liste med feil",
+        "description": "Henter liste med synkroniseringsfeil"
+      }
+    },
+    "/kskunnskap/api/v1/ks/{fiksOrgId}/stillinger/full-synk": {
+      "post": {
+        "tags": [
+          "Stillinger"
+        ],
+        "operationId": "Full Synkronisering Stillinger",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/fiksOrgIdParam"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FullSynkStillingerRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "202": {
+            "description": "Full synk akseptert",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SynkStillingerRespons"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          }
+        },
+        "summary": "Full synkronisering av stillinger",
+        "description": "Gjør en full synkronisering av stillinger. Erstatter alle eventuelle eksisterende stillinger som er synkronisert tidligere.\n"
+      }
+    },
+    "/kskunnskap/api/v1/ks/{fiksOrgId}/stillinger": {
+      "get": {
+        "tags": [
+          "Stillinger"
+        ],
+        "operationId": "Hent Alle Stillinger",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/fiksOrgIdParam"
+          }
+        ],
+        "responses": {
+          "202": {
+            "description": "Alle stillinger for fiksOrgId",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StillingerRespons"
+                }
+              }
+            }
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          }
+        },
+        "summary": "Hent alle stillinger",
+        "description": "Henter alle stillinger for organisasjonen"
+      }
+    },
+    "/kskunnskap/api/v1/ks/{fiksOrgId}/stillinger/legg-til-nye-stillinger": {
+      "post": {
+        "tags": [
+          "Stillinger"
+        ],
+        "operationId": "Legg til nye Stillinger",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/fiksOrgIdParam"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LeggTilStillingerRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "202": {
+            "description": "Full synk akseptert",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SynkStillingerRespons"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          }
+        },
+        "summary": "Legg til stillinger",
+        "description": "Legger til nye stillinger"
+      }
+    },
+    "/kskunnskap/api/v1/ks/{fiksOrgId}/stillinger/endre-stillinger": {
+      "post": {
+        "tags": [
+          "Stillinger"
+        ],
+        "operationId": "Endre eksisterende Stillinger",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/fiksOrgIdParam"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EndreStillingerRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "202": {
+            "description": "Full synk akseptert",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SynkStillingerRespons"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          }
+        },
+        "summary": "Endre stillinger",
+        "description": "Endrer en eller flere stillinger i organisasjonen.\nStillinger som skal endres identifiseres ved `avdelingsId` og `brukerId`\n"
+      }
+    },
+    "/kskunnskap/api/v1/ks/{fiksOrgId}/stillinger/slett-stillinger": {
+      "post": {
+        "tags": [
+          "Stillinger"
+        ],
+        "operationId": "Slett Stillinger",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/fiksOrgIdParam"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SlettStillingerRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "202": {
+            "description": "Sletting akseptert"
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          }
+        },
+        "summary": "Slett stillinger",
+        "description": "Sletter en eller flere stillinger fra organisasjonen"
+      }
+    },
+    "/kskunnskap/api/v1/ks/{fiksOrgId}/stillinger/feil": {
+      "get": {
+        "tags": [
+          "Stillinger"
+        ],
+        "operationId": "Hent feil-status for synkroniserte Stillinger",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/fiksOrgIdParam"
+          }
+        ],
+        "responses": {
+          "202": {
+            "description": "Feil-status for stillinger",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StillingerSynkroniseringsFeilRespons"
+                }
+              }
+            }
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          }
+        },
+        "summary": "Henter liste med feil",
+        "description": "Henter en liste med synkroniseringsfeil"
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "FullSynkAvdelingerRequest": {
+        "required": [
+          "avdelinger"
+        ],
+        "type": "object",
+        "properties": {
+          "avdelinger": {
+            "description": "Liste med alle avdelinger i organisasjonen",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Avdeling"
+            }
+          }
+        }
+      },
+      "LeggTilAvdelingerRequest": {
+        "required": [
+          "avdelinger"
+        ],
+        "type": "object",
+        "properties": {
+          "avdelinger": {
+            "description": "Liste med nye avdelinger som skal legges til",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Avdeling"
+            }
+          }
+        }
+      },
+      "EndreAvdelingerRequest": {
+        "required": [
+          "avdelinger"
+        ],
+        "type": "object",
+        "properties": {
+          "avdelinger": {
+            "description": "Liste med avdelinger som skal endres",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Avdeling"
+            }
+          }
+        }
+      },
+      "SlettAvdelingerRequest": {
+        "required": [
+          "avdelinger"
+        ],
+        "type": "object",
+        "properties": {
+          "avdelinger": {
+            "description": "Liste med id for avdelinger som skal slettes",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "SynkAvdelingerRespons": {
+        "required": [
+          "antallAkseptert",
+          "antallFeil"
+        ],
+        "properties": {
+          "antallAkseptert": {
+            "description": "Antall avdelinger fra requesten som ble akseptert",
+            "type": "integer",
+            "format": "int64"
+          },
+          "antallFeil": {
+            "description": "Antall avdelinger som ble avvist pga feil",
+            "type": "integer",
+            "format": "int64"
+          },
+          "feil": {
+            "type": "array",
+            "description": "Liste med feil ved mottak av avdelinger.\nDersom det er veldig mange feil vil ikke denne listen nødvendigvis inneholde alle\n",
+            "items": {
+              "$ref": "#/components/schemas/AvdelingFeil"
+            }
+          }
+        }
+      },
+      "AvdelingerRespons": {
+        "required": [
+          "avdelinger"
+        ],
+        "properties": {
+          "avdelinger": {
+            "type": "array",
+            "description": "Liste med avdelinger",
+            "items": {
+              "$ref": "#/components/schemas/Avdeling"
+            }
+          }
+        }
+      },
+      "AvdelingFeil": {
+        "description": "Beskrivelse av en feil ved mottak eller synkronisering av avdeling",
+        "required": [
+          "avdelingsId",
+          "feil"
+        ],
+        "properties": {
+          "avdelingsId": {
+            "description": "Id til avdeling som har feilet",
+            "type": "string"
+          },
+          "feil": {
+            "description": "Beskrivelse av feilen",
+            "type": "string"
+          }
+        }
+      },
+      "Avdeling": {
+        "type": "object",
+        "required": [
+          "avdelingsId",
+          "navn"
+        ],
+        "description": "En avdeling i organisasjonsstrukturen",
+        "properties": {
+          "avdelingsId": {
+            "description": "Unik id for denne avdelingen",
+            "type": "string"
+          },
+          "foreldreId": {
+            "description": "Id til en avdeling denne hører til under. Kan være tom om dette er en avdeling på øverste nivå",
+            "type": "string"
+          },
+          "navn": {
+            "description": "Avdelingens navn",
+            "type": "string"
+          }
+        }
+      },
+      "FullSynkStillingerRequest": {
+        "required": [
+          "stillinger"
+        ],
+        "type": "object",
+        "properties": {
+          "stillinger": {
+            "description": "Liste med alle stillinger i organisasjonen",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Stilling"
+            }
+          }
+        }
+      },
+      "LeggTilStillingerRequest": {
+        "required": [
+          "stillinger"
+        ],
+        "type": "object",
+        "properties": {
+          "stillinger": {
+            "description": "Liste med stillinger som skal legges til",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Stilling"
+            }
+          }
+        }
+      },
+      "EndreStillingerRequest": {
+        "required": [
+          "stillinger"
+        ],
+        "type": "object",
+        "properties": {
+          "stillinger": {
+            "description": "Liste med stillinger som skal endres",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Stilling"
+            }
+          }
+        }
+      },
+      "SlettStillingerRequest": {
+        "required": [
+          "stillinger"
+        ],
+        "type": "object",
+        "properties": {
+          "stillinger": {
+            "description": "Liste med stillinger som skal slettes",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/StillingId"
+            }
+          }
+        }
+      },
+      "SynkStillingerRespons": {
+        "required": [
+          "antallAkseptert",
+          "antallFeil"
+        ],
+        "properties": {
+          "antallAkseptert": {
+            "description": "Antall stillinger fra requesten som ble akseptert",
+            "type": "integer",
+            "format": "int64"
+          },
+          "antallFeil": {
+            "description": "Antall stillinger som ble avvist pga feil",
+            "type": "integer",
+            "format": "int64"
+          },
+          "feil": {
+            "type": "array",
+            "description": "Liste med feil ved mottak av stillinger.\nDersom det er veldig mange feil vil ikke denne listen nødvendigvis inneholde alle\n",
+            "items": {
+              "$ref": "#/components/schemas/StillingFeil"
+            }
+          }
+        }
+      },
+      "StillingerRespons": {
+        "required": [
+          "stillinger"
+        ],
+        "properties": {
+          "stillinger": {
+            "description": "Liste med stillinger",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Stilling"
+            }
+          }
+        }
+      },
+      "Stilling": {
+        "description": "En stilling i organisasjonen. Knytter en ansatt til en avdeling og tilordner eventuelle roller.",
+        "required": [
+          "avdelingsId",
+          "brukerId"
+        ],
+        "properties": {
+          "avdelingsId": {
+            "description": "Id til avdelingen",
+            "type": "string"
+          },
+          "brukerId": {
+            "description": "Id til brukeren",
+            "type": "string"
+          },
+          "tittel": {
+            "description": "Stillingstittel",
+            "type": "string"
+          },
+          "roller": {
+            "description": "Liste med eventuelle roller",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Rolle"
+            }
+          }
+        }
+      },
+      "Rolle": {
+        "type": "string",
+        "enum": [
+          "rapporter",
+          "leder"
+        ]
+      },
+      "StillingId": {
+        "description": "En stilling identifiseres unikt med en kombinasjon av `avdelingsId` og `brukerId`",
+        "required": [
+          "avdelingsId",
+          "brukerId"
+        ],
+        "properties": {
+          "avdelingsId": {
+            "type": "string"
+          },
+          "brukerId": {
+            "type": "string"
+          }
+        }
+      },
+      "StillingFeil": {
+        "description": "Beskrivelse av en feil ved mottak eller synkronisering av stilling",
+        "required": [
+          "avdelingsId",
+          "brukerId",
+          "feil"
+        ],
+        "properties": {
+          "avdelingsId": {
+            "description": "Id til avdelingen stillingen er knyttet til",
+            "type": "string"
+          },
+          "brukerId": {
+            "description": "Id til brukeren som innehar stillingen",
+            "type": "string"
+          },
+          "feil": {
+            "description": "Beskrivelse av feilen",
+            "type": "string"
+          }
+        }
+      },
+      "StillingerSynkroniseringsFeilRespons": {
+        "required": [
+          "feil"
+        ],
+        "properties": {
+          "feil": {
+            "description": "Liste med feil ved synkronisering av stillinger",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/StillingFeil"
+            }
+          }
+        }
+      },
+      "AvdelingerSynkroniseringsFeilRespons": {
+        "required": [
+          "feil"
+        ],
+        "properties": {
+          "feil": {
+            "description": "Liste med feil ved synkronisering av avdelinger",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AvdelingFeil"
+            }
+          }
+        }
+      },
+      "ErrorMessage": {
+        "type": "object",
+        "description": "Feilmelding",
+        "properties": {
+          "error": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "responses": {
+      "400": {
+        "description": "Ugyldige data",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorMessage"
+            }
+          }
+        }
+      },
+      "403": {
+        "description": "Mangler tilgang",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorMessage"
+            }
+          }
+        }
+      },
+      "404": {
+        "description": "Finner ikke oppgitt FiksOrgId",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorMessage"
+            }
+          }
+        }
+      }
+    },
+    "parameters": {
+      "fiksOrgIdParam": {
+        "name": "fiksOrgId",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "description": "fiksOrgId for organisasjonen"
+      }
+    }
+  }
+}
