@@ -165,10 +165,234 @@
           }
         }
       }
+    },
+    "/kompetent-synkronisering/konfigurasjon/api/v1/{fiksOrgId}/grupper": {
+      "get": {
+        "description": "Henter alle grupper i en organisasjon fra brukersynkronisering, uavhengig om de har tilgang eller ikke på KSL",
+        "operationId": "hentGrupper",
+        "tags": [
+          "grupper"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "fiksOrgId",
+            "description": "Organisasjonen sin fiksOrgId",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/gruppe"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/kompetent-synkronisering/konfigurasjon/api/v1/{fiksOrgId}/grupper/tilgang": {
+      "get": {
+        "description": "Henter alle grupper med tilgang, uavhengig av kildesystem",
+        "operationId": "hentGrupperMedTilgang",
+        "tags": [
+          "grupper"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "fiksOrgId",
+            "description": "Organisasjonen sin fiksOrgId",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/gruppeMedTilgangDefinisjon"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "description": "Legger til gruppe med tilgang",
+        "operationId": "LeggTilGruppeMedTilgang",
+        "tags": [
+          "grupper"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "fiksOrgId",
+            "description": "Organisasjonen sin fiksOrgId",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/nyGruppeMedTilgang"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/gruppeMedTilgangDefinisjon"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/kompetent-synkronisering/konfigurasjon/api/v1/{fiksOrgId}/grupper/tilgang/{gruppeId}": {
+      "delete": {
+        "description": "Sletter en grupper gitt id",
+        "operationId": "slettGruppeTilgang",
+        "tags": [
+          "grupper"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "fiksOrgId",
+            "description": "Organisasjonen sin fiksOrgId",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "in": "path",
+            "name": "gruppeId",
+            "description": "gruppeId-en til gruppe som skal fjernes tilgang på",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Gruppe med tilgang er slettet"
+          }
+        }
+      }
     }
   },
   "components": {
     "schemas": {
+      "gruppeMedTilgangDefinisjon": {
+        "type": "object",
+        "properties": {
+          "navn": {
+            "type": "string"
+          },
+          "gruppeId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "fiksOrgId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "kildeId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "medlemmer": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        },
+        "required": [
+          "gruppeId",
+          "fiksOrgId",
+          "kildeId"
+        ]
+      },
+      "nyGruppeMedTilgang": {
+        "type": "object",
+        "properties": {
+          "kildeId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "gruppeId": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "required": [
+          "kildeId",
+          "gruppeId"
+        ]
+      },
+      "gruppe": {
+        "type": "object",
+        "properties": {
+          "gruppeId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "navn": {
+            "type": "string"
+          },
+          "kildeId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "fiksOrgId": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "required": [
+          "gruppeId",
+          "kildeId",
+          "fiksOrgId",
+          "navn"
+        ]
+      },
       "KonfigurasjonResponse": {
         "type": "object",
         "properties": {
@@ -189,7 +413,6 @@
         },
         "required": [
           "alleBrukere",
-          "kilde",
           "fiksOrgId",
           "kilde"
         ]
