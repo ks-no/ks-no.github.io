@@ -86,7 +86,6 @@ Via [Fiks IO Katalog API (OpenAPI Specification)](https://editor.swagger.io/?url
 * [Fiks Plan]({{< ref "protokoll-plan.md" >}})
 * [Fiks Matrikkelføring]({{< ref "protokoll-matrikkelfoering.md" >}})
 * [Barnevern - fagsysteminnrapportering til Barnevernsregisteret (SSB)]({{< ref "protokoll-ssbbarnevern.md" >}})
-* [Fiks arkivlett byggesak]({{< ref "protokoll-arkivlett.md" >}})
 * [Fiks Link](({{< ref "protokoll-link.md" >}})
 * [Fiks Saksfaser]({{< ref "protokoll-saksfaser.md" >}})
 
