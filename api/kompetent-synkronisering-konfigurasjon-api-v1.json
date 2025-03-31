@@ -24,9 +24,142 @@
     {
       "name": "Kompetent",
       "description": "API for KS kompetent synkronisering konfigurasjon"
+    },
+    {
+      "name": "SSO",
+      "description": "API for konfigurering av KS SSO"
+    },
+    {
+      "name": "grupper",
+      "description": "API for grupper"
     }
   ],
   "paths": {
+    "/kompetent-synkronisering/konfigurasjon/api/v1/{fiksOrgId}/sso": {
+      "get": {
+        "tags": [
+          "SSO"
+        ],
+        "description": "Henter SSO konfigurasjon",
+        "operationId": "hentSSOConfig",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "fiksOrgId",
+            "description": "Organisasjonen sin fiksOrgId",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "SSO konfigurasjon hentet",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SsoConfig"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "SSO"
+        ],
+        "description": "Oppretter SSO konfigurasjon",
+        "operationId": "opprettSSOConfig",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "fiksOrgId",
+            "description": "Organisasjonen sin fiksOrgId",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SsoConfig"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "SSO konfigurasjon opprettet"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "SSO"
+        ],
+        "description": "Endrer SSO konfigurasjon",
+        "operationId": "endreSSOConfig",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "fiksOrgId",
+            "description": "Organisasjonen sin fiksOrgId",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SsoConfig"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "SSO konfigurasjon endret"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+            "SSO"
+        ],
+        "description": "Sletter",
+        "operationId": "slettSSOConfig",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "fiksOrgId",
+            "description": "Organisasjonen sin fiksOrgId",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "SSO konfigurasjon slettet"
+          }
+        }
+      }
+    },
     "/kompetent-synkronisering/konfigurasjon/api/v1/{fiksOrgId}": {
       "post": {
         "tags": [
@@ -494,6 +627,65 @@
           "formatId",
           "kildeId",
           "fiksOrgId"
+        ]
+      },
+      "SsoConfig": {
+        "type": "object",
+        "properties": {
+          "configType": {
+            "type": "string",
+            "enum": [
+              "OIDC", "SAML2metadata"
+            ],
+            "example": "OIDC"
+          },
+          "config": {
+            "type": "object",
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/OidcConfig"
+              },
+              {
+                "$ref": "#/components/schemas/Saml2Config"
+              }
+            ]
+          }
+        },
+        "required": [
+          "configType",
+          "config"
+        ]
+      },
+      "OidcConfig": {
+        "type": "object",
+        "properties": {
+          "clientId": {
+            "type": "string"
+          },
+          "clientSecret": {
+            "type": "string"
+          },
+          "discoveryUrl": {
+            "type": "string",
+            "format": "url"
+          }
+        },
+        "required": [
+          "clientId",
+          "clientSecret",
+          "discoveryUrl"
+        ]
+      },
+      "Saml2Config": {
+        "type": "object",
+        "properties": {
+          "metadataUrl": {
+            "type": "string",
+            "format": "url"
+          }
+        },
+        "required": [
+          "metadataUrl"
         ]
       }
     }
