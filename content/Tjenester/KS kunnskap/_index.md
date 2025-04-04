@@ -1,7 +1,11 @@
 ---
 title: Min kommune
 date: 2025-04-04
-aliases: [/tjenester/kskunnskap/_index_]
+aliases: aliases: [
+    "/fiks-platform/tjenester/minside",
+    "/fiks-plattform/tjenester/minside",
+    "/fiks-plattform/tjenester/minkommune"
+]
 ---
 ## Kort beskrivelse
 KS kunnskap er en plattform som tillater kommunene å lage, dele, arrangere og gjennomføre kurs. Plattformen er basert på Læringsplattformen Valamis.
