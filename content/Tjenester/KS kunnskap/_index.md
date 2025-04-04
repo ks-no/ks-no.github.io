@@ -10,7 +10,7 @@ KS kunnskap er en plattform som tillater kommunene å lage, dele, arrangere og g
 | Grensesnitt | Støtte |
 |------|------|
 | Web portal | Ja |
-| Maskin til maskin | Brukersynkronisering ved hjelp av SCIM2, samt API for synkronsiering av organisasjonsstruktur og roller. 
+| Maskin til maskin | Brukersynkronisering ved hjelp av SCIM2, samt API for synkronisering av organisasjonsstruktur og roller. 
 
 
 ## Beskrivelse
