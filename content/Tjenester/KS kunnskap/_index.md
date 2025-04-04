@@ -1,7 +1,7 @@
 ---
 title: KS læring
 date: 2025-04-04
-aliases: [/kskunnskap/_index_]
+aliases: [    "/fiks-platform/tjenester/kskunnskap/_index_]
 ---
 ## Kort beskrivelse
 KS kunnskap er en plattform som tillater kommunene å lage, dele, arrangere og gjennomføre kurs. Plattformen er basert på Læringsplattformen Valamis.
