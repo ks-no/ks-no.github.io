@@ -14,9 +14,5 @@ KS kunnskap er en plattform som tillater kommunene å lage, dele, arrangere og g
 
 
 ## Beskrivelse
-[KS læring](https://www.kslaring.no/)
 
-[Integrasjon mot HR API](integrasjon)
-
-[Single sign on](singlesignon)
 
