@@ -1,10 +1,8 @@
 ---
-title: Min kommune
+title: KS kunnskap
 date: 2025-04-04
 aliases: aliases: [
-    "/fiks-platform/tjenester/minside",
-    "/fiks-plattform/tjenester/minside",
-    "/fiks-plattform/tjenester/minkommune"
+    "/fiks-platform/tjenester/kskunnskap"
 ]
 ---
 ## Kort beskrivelse
