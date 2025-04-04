@@ -13,6 +13,13 @@ KS kunnskap er en plattform som tillater kommunene å lage, dele, arrangere og g
 | Maskin til maskin | Brukersynkronisering ved hjelp av SCIM2, samt API for synkronisering av organisasjonsstruktur og roller. 
 
 
-## Beskrivelse
+## Snarveier
+[Om KS kunnskap](https://ksdigital.no/tjenestene/ks-laering/ny-laeringsplattform/)
 
+[Kort om pålogging og synkronisering i KS kunnskap](pålogging og synkronisering)
 
+[Single sign on](SSO)
+
+[Brukersynkronisering](SSO)
+
+[SYnkronisering av organisasjonsstruktur og roller](SSO)
