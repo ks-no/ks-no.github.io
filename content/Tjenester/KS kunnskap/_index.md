@@ -1,8 +1,7 @@
 ---
 title: KS kunnskap
 date: 2025-04-04
-aliases: aliases: [
-    "/fiks-platform/tjenester/kskunnskap"
+aliases: aliases: [/tjenester/kskunnskap"
 ]
 ---
 ## Kort beskrivelse
