@@ -16,7 +16,7 @@ KS kunnskap er en plattform som tillater kommunene å lage, dele, arrangere og g
 ## Snarveier
 [Om KS kunnskap](https://ksdigital.no/tjenestene/ks-laering/ny-laeringsplattform/)
 
-[Kort om pålogging og synkronisering i KS kunnskap](pålogging og synkronisering)
+[Kort om pålogging og synkronisering i KS kunnskap](https://github.com/ks-no/ks-no.github.io/blob/source/content/Tjenester/kskunnskap/pålogging og synkronisering)
 
 [Single sign on](SSO)
 
