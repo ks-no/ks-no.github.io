@@ -22,4 +22,4 @@ Lenke til SSO-info kommer her
 
 Lenke til info om brukerynskronisering kommer her
 
-Lenke til synkronisering av organisasjonsstruktur og roller kommer her
+Lenke til synkronisering av organisasjonsstruktur og roller kommer her 
