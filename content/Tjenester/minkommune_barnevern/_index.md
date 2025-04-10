@@ -61,7 +61,7 @@ Innsynsforespørsel fungerer på følgende måte:
 
 ## Samtykke
 
-Hvis fagsystemet ønsker å hente inn samtykke fra en eller flere aktører kan man bruke tjenesten [Samtykke](../samtykke.md)
+Hvis fagsystemet ønsker å hente inn samtykke fra en eller flere aktører kan man bruke tjenesten [Samtykke](/fiks-plattform/tjenester/samtykke/)
 Barnevernjournalposten må også inneholde samtykkeId som ble generert fra den tjenesten.
 
 
