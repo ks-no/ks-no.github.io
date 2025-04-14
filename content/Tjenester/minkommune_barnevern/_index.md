@@ -40,6 +40,7 @@ Selve dokumentene blir tilgjengeliggjort via andre kanaler (f.eks Dokumentlager)
 En barnevernmappe representerer en barnevernsak. Hvis man ønsker å åpne opp for at innbygger skal kunne sende meldinger relatert til barnevernsaken må edialogSkjemaer-feltet fylles ut. Bruker man predefinert type POST, bruker man en standardisert edialog-mal opprettet av Min kommune - Barnevern.
 Edialog-meldingen vil bli sendt via SvarUt til organisasjonsnummeret definert i barnevernmappe-meldingen.
 Mottaker må ha konfigurert en Svarinn-klient som håndterer dokumenter på nivå 4 med forsendelsestype: ks.digibarnevern.dokumentmedvirkning eller forsendelsesType: Alle
+Hvis man bruker [SvarInn V2](/tjenester/svarut/api-versjoner/) får man tilgang på Noark-metadata knyttet til barnevernmappen.
 Altinn er fallback.
 
 ## Dokumentmedvirkning
@@ -47,6 +48,7 @@ Altinn er fallback.
 En barnevernjournalpost representerer en journalpost på saken. Hvis man ønsker å åpne opp for at innbygger skal kunne sende meldinger relatert til journalposten må edialogSkjemaer-feltet fylles ut. Bruker man predefinert type SVAR, bruker man en standardisert edialog-mal opprettet av Min kommune - Barnevern.
 Edialog-meldingen vil bli sendt via SvarUt til organisasjonsnummeret definert i barnevernmappe-meldingen som barnevernjournalposten er knyttet til.
 Mottaker må ha konfigurert en Svarinn-klient som håndterer dokumenter på nivå 4 med forsendelsestype: ks.digibarnevern.dokumentmedvirkning eller forsendelsesType: Alle
+Hvis man bruker [SvarInn V2](/tjenester/svarut/api-versjoner/) får man tilgang på Noark-metadata knyttet til barnevernjournalposten.
 Altinn er fallback.
 
 ## Innsynsforespørsel
@@ -56,7 +58,7 @@ I noen tilfeller får aktøren bare tilgang til tittelen på dokumentet. Da har 
 Innsynsforespørsel fungerer på følgende måte:
 
 1. En innbygger ber om innsyn på en eller flere av sine journalposter tilgjengeliggjort via Min kommune – Barnevern
-2. En melding blir sendt via Fiks protokoll og protokoll [https://github.com/ks-no/fiks-innsynsforespoersel-journalpost-specification]
+2. En melding blir sendt via Fiks protokoll og [protokoll](https://github.com/ks-no/fiks-innsynsforespoersel-journalpost-specification)
 3. Når innsynsforespørselen er ferdigbehandlet i fagsystemet, oppdateres innsynsforesporselStatus på journalposten basert på resultatet av saksbehandlingen. Og nytt dokument blir evt tilgjengeliggjort.
 
 ## Samtykke
