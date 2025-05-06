@@ -23,7 +23,7 @@ Tjenestene er tilgjengelige via:
 | Prod  | `https://svarut.ks.no/tjenester/`      |
 
 Endepunkter og modeller er definert i OpenAPI-spec:  
-[OpenAPI SvarInn V1](https://developers.fiks.ks.no/api/svarinn-api-v1.json) ([Åpne i swagger editor](https://editor.swagger.io/?url=https://developers.fiks.ks.no/api/svarinn-api-v1.json))
+[OpenAPI SvarInn V1](https://developers.fiks.ks.no/api/svarinn-api-v1.json) ([Åpne i swagger editor](https://editor-next.swagger.io/?url=https://developers.fiks.ks.no/api/svarinn-api-v1.json))
 
 ### Kryptering
 

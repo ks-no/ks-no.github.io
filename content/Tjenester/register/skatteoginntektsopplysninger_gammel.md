@@ -11,7 +11,7 @@ Fiks register tilbyr skatte- og inntektsopplysninger for kommunalt ansatte via e
 | Grensesnitt       | Støtte                                                                                                                      |
 | ----------------- | --------------------------------------------------------------------------------------------------------------------------- |
 | Web portal        | Ja                                                                                                                          |
-| Maskin til maskin | [Api spec v2](https://developers.fiks.ks.no/api/register-summert-skattegrunnlag-api-v2.json) |
+| Maskin til maskin | [Api spec v2](https://editor-next.swagger.io/?url=https://developers.fiks.ks.no/api/register-summert-skattegrunnlag-api-v2.json) |
 
 
 ## Beskrivelse av tjenesten
@@ -35,10 +35,10 @@ APIene er tilgjengelig via Fiks-plattformen som proxy-tjeneste eller via vårt o
 ### Oppslag via overbygg
 Vi har laget vårt eget overbygg som gir mulighet for å søke på flere personer. Vi søker om personene har stadie ___OPPGJØR___. Ved redusert foreldrebetaling SFO/barnehage, søkes det også etter ___UTKAST___ dersom de ikke har ___OPPGJØR___. Datamodellen er en sammenstilling av det som kommer fra skatteetaten sine APIer og har summert alle poster som hører sammen. For hver tjeneste finnes det en beregningstype som må sendes inn som en del av payloaden, dette erstatter behovet for å bruke rettighetspakke.
 
-URL for fiks-api (POST): ```<MILJØ_URL>/register/api/v2/ks/{rolleId}/summertskattegrunnlag``` [Payload, se swagger dokumentasjon](https://developers.fiks.ks.no/api/register-summert-skattegrunnlag-api-v2.json) 
+URL for fiks-api (POST): ```<MILJØ_URL>/register/api/v2/ks/{rolleId}/summertskattegrunnlag``` [Payload, se swagger dokumentasjon](https://editor-next.swagger.io/?url=https://developers.fiks.ks.no/api/register-summert-skattegrunnlag-api-v2.json) 
 
 #### API-dokumentasjon
-[Swagger dokumentasjon for overbygg finner du her.](https://developers.fiks.ks.no/api/register-summert-skattegrunnlag-api-v2.json) Bruk også dokumentasjon fra Skatteetaten.
+[Swagger dokumentasjon for overbygg finner du her.](https://editor-next.swagger.io/?url=https://developers.fiks.ks.no/api/register-summert-skattegrunnlag-api-v2.json) Bruk også dokumentasjon fra Skatteetaten.
 
 #### Manuelle poster
 
