@@ -42,7 +42,7 @@ SamtykkeSvarStatus kan være følgende verdier:
 - TRUKKET: Forteller at part har trukket samtykket.
 
 ### Ekstern-api
-#### [api-spec](https://editor.swagger.io/?url=https://developers.fiks.ks.no/api/samtykke-ekstern-api-v1.json)
+#### [api-spec](https://editor-next.swagger.io/?url=https://developers.fiks.ks.no/api/samtykke-ekstern-api-v1.json)
 #### POST /opprettSamtykke
 Et samtykke opprettes av saksbehandler i fagsystem via API. I denne requesten sendes informasjon om samtykket, tilhørende mappe, saksbehandler og involverte personer.
 Vær oppmerksom på flagget "harTilgangTilInnbyggerTjenester" som styrer om innbygger skal kunne se samtykket i web-portal eller ikke.

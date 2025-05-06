@@ -11,7 +11,7 @@ Fiks register tilbyr skatte- og inntektsopplysninger for kommunalt ansatte via e
 | Grensesnitt       | Støtte                                                                                                                      |
 | ----------------- | --------------------------------------------------------------------------------------------------------------------------- |
 | Web portal        | Ja                                                                                                                          |
-| Maskin til maskin | [Api spec](https://developers.fiks.ks.no/api/register-skatteoginntektsopplysninger-beregning-api-v1.json) |
+| Maskin til maskin | [Api spec](https://editor-next.swagger.io/?url=https://developers.fiks.ks.no/api/register-skatteoginntektsopplysninger-beregning-api-v1.json) |
 
 
 ## Beskrivelse av tjenesten
@@ -40,7 +40,7 @@ Datamodellen er en sammenstilling av det som kommer fra skatteetaten sine APIer 
 For hver tjeneste finnes det en beregningstype som må sendes inn som en del av payloaden, dette erstatter behovet for å bruke rettighetspakke.
 
 #### API-dokumentasjon
-[Swagger dokumentasjon for overbygg finner du her.](https://developers.fiks.ks.no/api/register-skatteoginntektsopplysninger-beregning-api-v1.json) Bruk også dokumentasjon fra Skatteetaten.
+[Swagger dokumentasjon for overbygg finner du her.](https://editor-next.swagger.io/?url=https://developers.fiks.ks.no/api/register-skatteoginntektsopplysninger-beregning-api-v1.json) Bruk også dokumentasjon fra Skatteetaten.
 
 #### Ekstraposter
 Det finnes også en del ulike poster som har andre kilder enn Skatteetaten.
@@ -52,7 +52,7 @@ Les mer om næringsinntekt for pårørende [her](https://ksdigital.no/tjenestene
 
 #### Endepunkter
 
-For payload for POST-spørringene, se [swagger dokumentasjon](https://developers.fiks.ks.no/api/register-skatteoginntektsopplysninger-beregning-api-v1.json).
+For payload for POST-spørringene, se [swagger dokumentasjon](https://editor-next.swagger.io/?url=https://developers.fiks.ks.no/api/register-skatteoginntektsopplysninger-beregning-api-v1.json).
 
 **Beregning for langtidsopphold (POST)**
 

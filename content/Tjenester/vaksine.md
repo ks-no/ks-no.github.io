@@ -12,7 +12,7 @@ KS har sammen med Folkehelseinstituttet (FHI) utviklet et API som gjør det muli
 | Grensesnitt | Støtte |
 |------|------|
 | Web portal | Nei |
-| Maskin til maskin | [Api-spec](https://editor.swagger.io/?url=https://developers.fiks.ks.no/api/vaksine-api-v1.json) |
+| Maskin til maskin | [Api-spec](https://editor-next.swagger.io/?url=https://developers.fiks.ks.no/api/vaksine-api-v1.json) |
 
 ## Beskrivelse av tjenesten
 Tjenesten vil tilby et api hvor kommunen kan spørre etter vaksineinformasjon på et fødselsnummer/dnummer. 
@@ -26,7 +26,7 @@ Vedkommende det gjøres oppslag for må også ha blitt gitt søke-privilegiet p�
 ### Sikkerhet
 Kommunikasjonen vil være kryptert med TLS. Autentisering med HelseID og Fiks integrasjon.
 
-### Endepunkt [(api-spec)](https://editor.swagger.io/?url=https://developers.fiks.ks.no/api/vaksine-api-v1.json)
+### Endepunkt [(api-spec)](https://editor-next.swagger.io/?url=https://developers.fiks.ks.no/api/vaksine-api-v1.json)
 
 For alle endepunktene hentes autentisert bruker fra access token i "Authorization"-headeren på requesten. Dette tokenet 
 må være utstedt av HelseID med aud-verdi ks:fiks, scope-verdier ks:fiks/sysvak, fhi:personoppslag/api, fhi:sysvaknett/fiks/api, fhi:sysvaknett/api, helseid://scopes/hpr/hpr_number, helseid://scopes/identity/pid og helseid://scopes/identity/security_level og nivå 4.

@@ -49,7 +49,7 @@ Informasjon om generell integrasjonsutvikling mot Fiks, som blant annet autentis
 
 
 #### Versjonering
-For å sikre at endringer i bekymringsmeldinger ikke påvirker kompatibiliteten for produsenter og mottakere, er det implementert versjonering. Fra og med versjon 2 av bekymringsmeldinger inkluderes et ekstra felt i kommune-apiet, stottetVersjon, som indikerer hvilken versjon mottakeren støtter. Mer om kommune-apiet finnes [her](https://editor.swagger.io/?url=https://developers.fiks.ks.no/api/bekymringsmelding-kommune-api-v2.json).
+For å sikre at endringer i bekymringsmeldinger ikke påvirker kompatibiliteten for produsenter og mottakere, er det implementert versjonering. Fra og med versjon 2 av bekymringsmeldinger inkluderes et ekstra felt i kommune-apiet, stottetVersjon, som indikerer hvilken versjon mottakeren støtter. Mer om kommune-apiet finnes [her](https://editor-next.swagger.io/?url=https://developers.fiks.ks.no/api/bekymringsmelding-kommune-api-v2.json).
 
 Systemet er designet med bakoverkompatibilitet i tankene, slik at støtten for en høyere versjon også innebærer støtte for tidligere versjoner. Dette betyr at hvis en mottaker støtter versjon 2, forventes det at de også støtter versjon 1.
 

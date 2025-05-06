@@ -11,7 +11,7 @@ KS har sammen med Folkehelseinstituttet (FHI) utviklet et API som gjør det muli
 | Grensesnitt | Støtte |
 |------|------|
 | Web portal | Nei |
-| Maskin til maskin | [Api-spec](https://editor.swagger.io/?url=https://developers.fiks.ks.no/api/klinikermelding-api-v1.json) |
+| Maskin til maskin | [Api-spec](https://editor-next.swagger.io/?url=https://developers.fiks.ks.no/api/klinikermelding-api-v1.json) |
 
 ### Brukeradministrasjon og tilgangsstyring
 Autentisering  skjer ved hjelp av en IntegrasjonPerson-mekanismen beskrevet [her](https://ks-no.github.io/fiks-plattform/integrasjoner/#integrasjon-person)
@@ -22,7 +22,7 @@ Kommunen må også gi tilgang til applikasjonen sin integrasjon samt alle sluttb
 ## Sikkerhet
 Kommunikasjonen vil være kryptert med TLS. Autentisering med HelseID og Fiks integrasjon.
 
-## Endepunkt [(api-spec)](https://editor.swagger.io/?url=https://developers.fiks.ks.no/api/klinikermelding-api-v1.json)
+## Endepunkt [(api-spec)](https://editor-next.swagger.io/?url=https://developers.fiks.ks.no/api/klinikermelding-api-v1.json)
 
 For alle endepunktene hentes autentisert bruker fra access token i "Authorization"-headeren på requesten. Dette tokenet 
 må være utstedt av HelseID med aud-verdi ks:fiks, scope-verdi fhi:msisklinikermeldingapi/api, helseid://scopes/hpr/hpr_number helseid://scopes/identity/security_level helseid://scopes/identity/pid og nivå 3.

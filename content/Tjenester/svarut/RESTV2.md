@@ -20,7 +20,7 @@ Generell informasjon om feilmeldinger på Fiks-plattformen finnes [her](https://
 ## Forsendelse
 
 ### Send
-Sending av forsendelser: [OpenAPI spec](https://editor.swagger.io/?url=https://developers.fiks.ks.no/api/forsendelse-send-api-v2.json)
+Sending av forsendelser: [OpenAPI spec](https://editor-next.swagger.io/?url=https://developers.fiks.ks.no/api/forsendelse-send-api-v2.json)
 
 **Ved innsending av forsendelser anbefales det en timeout på 16 minutter. Dette for å håndtere innsending av større filer.** 
 
@@ -84,28 +84,28 @@ Offentlige nøkler for kryptering:
 [PROD](https://svarut.ks.no/forsendelse/publickey/hent)  
 
 ### Lest
-Markering av forsendelser som lest eksternt: [OpenAPI spec](https://editor.swagger.io/?url=https://developers.fiks.ks.no/api/forsendelse-lest-api-v2.json)
+Markering av forsendelser som lest eksternt: [OpenAPI spec](https://editor-next.swagger.io/?url=https://developers.fiks.ks.no/api/forsendelse-lest-api-v2.json)
 
 ### Slett
-Sletting av forsendelser: [OpenAPI spec](https://editor.swagger.io/?url=https://developers.fiks.ks.no/api/forsendelse-slett-api-v2.json)
+Sletting av forsendelser: [OpenAPI spec](https://editor-next.swagger.io/?url=https://developers.fiks.ks.no/api/forsendelse-slett-api-v2.json)
 
 ### Status
-Henting av status for forsendelser: [OpenAPI spec](https://editor.swagger.io/?url=https://developers.fiks.ks.no/api/forsendelse-status-api-v2.json)
+Henting av status for forsendelser: [OpenAPI spec](https://editor-next.swagger.io/?url=https://developers.fiks.ks.no/api/forsendelse-status-api-v2.json)
 
 ### Hendelser
-Henting av hendelser tilknyttet en forsendelse: [OpenAPI spec](https://editor.swagger.io/?url=https://developers.fiks.ks.no/api/forsendelse-hendelser-api-v2.json)
+Henting av hendelser tilknyttet en forsendelse: [OpenAPI spec](https://editor-next.swagger.io/?url=https://developers.fiks.ks.no/api/forsendelse-hendelser-api-v2.json)
 
 ### Metadata
-Henting av metadata tilknyttet en forsendelse: [OpenAPI spec](https://editor.swagger.io/?url=https://developers.fiks.ks.no/api/forsendelse-metadata-api-v2.json)
+Henting av metadata tilknyttet en forsendelse: [OpenAPI spec](https://editor-next.swagger.io/?url=https://developers.fiks.ks.no/api/forsendelse-metadata-api-v2.json)
 
 ### Ekstern ref
-Henting av forsendelser tilknyttet en ekstern referanse: [OpenAPI spec](https://editor.swagger.io/?url=https://developers.fiks.ks.no/api/forsendelse-eksternref-api-v2.json)
+Henting av forsendelser tilknyttet en ekstern referanse: [OpenAPI spec](https://editor-next.swagger.io/?url=https://developers.fiks.ks.no/api/forsendelse-eksternref-api-v2.json)
 
 ### Typer
-Henting av forsendelsestyper: [OpenAPI spec](https://editor.swagger.io/?url=https://developers.fiks.ks.no/api/forsendelse-typer-api-v2.json)
+Henting av forsendelsestyper: [OpenAPI spec](https://editor-next.swagger.io/?url=https://developers.fiks.ks.no/api/forsendelse-typer-api-v2.json)
 
 ## Mottakersystem
-Henting av mottakersystem: [OpenAPI spec](https://editor.swagger.io/?url=https://developers.fiks.ks.no/api/mottakersystem-api-v2.json)
+Henting av mottakersystem: [OpenAPI spec](https://editor-next.swagger.io/?url=https://developers.fiks.ks.no/api/mottakersystem-api-v2.json)
 
 ## JVM-klient
 Vi har laget en klient som vi benytter internt, som også kan benyttes av andre i JVM-miljøer. Denne bruker genererte modeller fra OpenAPI spesifikasjonene.

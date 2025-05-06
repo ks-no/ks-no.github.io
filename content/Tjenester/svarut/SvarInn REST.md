@@ -26,7 +26,7 @@ Dersom forsendelsen ikke er kvittert ut etter to timer vil denne bli inkludert i
 | Prod  | `https://svarut.ks.no/api/`      |
 
 Endepunkter og modeller er definert i OpenAPI-spec:  
-[OpenAPI SvarInn V2](https://developers.fiks.ks.no/api/svarinn-api-v2.json) ([Åpne i swagger editor](https://editor.swagger.io/?url=https://developers.fiks.ks.no/api/svarinn-api-v2.json))
+[OpenAPI SvarInn V2](https://developers.fiks.ks.no/api/svarinn-api-v2.json) ([Åpne i swagger editor](https://editor-next.swagger.io/?url=https://developers.fiks.ks.no/api/svarinn-api-v2.json))
 
 ### Kryptering
 

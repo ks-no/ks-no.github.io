@@ -67,7 +67,7 @@ Når man har opprettet et system får man en integrasjon som gir tilgang til API
 Les mer om hvordan man setter opp en integrasjon via API her under [Felles -> Integrasjoner](https://developers.fiks.ks.no/felles/integrasjoner/).
 Det er spesielt 2 API man kan bruke til dette, ett for Fiks Protokoll og ett for Fiks IO Katalog.
 
-Via [Fiks Protokoll API (OpenAPI Specification)](https://editor.swagger.io/?url=https://developers.fiks.ks.no/api/fiks-protokoll-konfigurasjon-api-v1.json) kan man blant annet:
+Via [Fiks Protokoll API (OpenAPI Specification)](https://editor-next.swagger.io/?url=https://developers.fiks.ks.no/api/fiks-protokoll-konfigurasjon-api-v1.json) kan man blant annet:
 - Opprette konto på system
 - Vedlikeholde tilganger om å sende meldinger mellom systemer
 - Hente informasjon om protokoll og parter for konto
@@ -75,7 +75,7 @@ Via [Fiks Protokoll API (OpenAPI Specification)](https://editor.swagger.io/?url=
 
 Fiks IO Katalog API er en oppslagstjeneste som brukes for å hente offentlig nøkkel og hente informasjon om en konto.
 
-Via [Fiks IO Katalog API (OpenAPI Specification)](https://editor.swagger.io/?url=https://developers.fiks.ks.no/api/fiksio-katalog-api-v1.json) kan man blant annet: 
+Via [Fiks IO Katalog API (OpenAPI Specification)](https://editor-next.swagger.io/?url=https://developers.fiks.ks.no/api/fiksio-katalog-api-v1.json) kan man blant annet: 
 - Hente offentlig nøkkel for konto
 - Søke etter konto via lookup 
 - Hente konto informasjon, som f.eks. status med antall konsumenter på køen
@@ -118,7 +118,7 @@ Merk at det sammen med systemet opprettes en tilhørende integrasjon som skal br
 
 Et system kan settes opp til å konfigureres av integrasjon. Da vil den tilhørende integrasjonen få tilgang til å administrere systemet og vil kunne gjøre det samme som en administrator kan gjøre på Fiks Forvaltning (med visse unntak som sletting av system og resetting av passord)
 
-APIet for konfigurering med integrasjon er definert her: [Fiks Protokoll API](https://editor.swagger.io/?url=https://developers.fiks.ks.no/api/fiks-protokoll-konfigurasjon-api-v1.json)
+APIet for konfigurering med integrasjon er definert her: [Fiks Protokoll API](https://editor-next.swagger.io/?url=https://developers.fiks.ks.no/api/fiks-protokoll-konfigurasjon-api-v1.json)
 
 ### Fiks Protokoll Konto
 Konto opprettes i forvaltning eller via API.
@@ -129,7 +129,7 @@ Forvalting:
 API:
 `POST /fiks-protokoll/api/v1/konfigurasjon/{fiksOrgId}/systemer/{systemId}/kontoer`
 
-[OpenAPI Specification (Fiks Protokoll API)](https://editor.swagger.io/?url=https://developers.fiks.ks.no/api/fiks-protokoll-konfigurasjon-api-v1.json)
+[OpenAPI Specification (Fiks Protokoll API)](https://editor-next.swagger.io/?url=https://developers.fiks.ks.no/api/fiks-protokoll-konfigurasjon-api-v1.json)
 
 ### Tilganger
 
@@ -151,7 +151,7 @@ API:
 Tilsvarende for å fjerne tilgang
 `DELETE /fiks-protokoll/api/v1/konfigurasjon/{fiksOrgId}/systemer/{systemId}/kontoer/{kontoId}/tilganger/{eksternSystemId}`
 
-[OpenAPI Specification (Fiks Protokoll API)](https://editor.swagger.io/?url=https://developers.fiks.ks.no/api/fiks-protokoll-konfigurasjon-api-v1.json)
+[OpenAPI Specification (Fiks Protokoll API)](https://editor-next.swagger.io/?url=https://developers.fiks.ks.no/api/fiks-protokoll-konfigurasjon-api-v1.json)
 
 
 #### Be om tilgang til system
@@ -166,7 +166,7 @@ Tilsvarende for å fjerne forespørsel
 
 `DELETE {fiksOrgId}/systemer/{systemId}/forespurteTilganger/{eksternKonto}`
 
-[OpenAPI Specification (Fiks Protokoll API)](https://editor.swagger.io/?url=https://developers.fiks.ks.no/api/fiks-protokoll-konfigurasjon-api-v1.json)
+[OpenAPI Specification (Fiks Protokoll API)](https://editor-next.swagger.io/?url=https://developers.fiks.ks.no/api/fiks-protokoll-konfigurasjon-api-v1.json)
 
 
 Merk: Søk etter systemer er ikke implementert ennå, så det kan være vanskelig å finne systemer å be om tilgang til
@@ -179,7 +179,7 @@ API: `GET /fiks-protokoll/api/v1/konfigurasjon/{fiksOrgId}/systemer/{systemId}`
 
 I responsen vil `tilgangTilKontoer` ha en liste over kontoer (`EksternProtokollKontoResponseEksternProtokollKontoResponse`) systemet kan sende meldinger til.
 
-[OpenAPI Specification (FIks Protokoll API)](https://editor.swagger.io/?url=https://developers.fiks.ks.no/api/fiks-protokoll-konfigurasjon-api-v1.json)
+[OpenAPI Specification (FIks Protokoll API)](https://editor-next.swagger.io/?url=https://developers.fiks.ks.no/api/fiks-protokoll-konfigurasjon-api-v1.json)
 
 
 ### Sende og motta meldinger fra protokoll konto 
@@ -199,7 +199,7 @@ Status vil da gi informasjon som f.eks. **antall konsumenter** for kontoen.
 
 API: `GET /fiks-io/katalog/api/v1/kontoer/{kontoId}/status`
 
-[OpenAPI Specification (Fiks IO katalog API)](https://editor.swagger.io/?url=https://developers.fiks.ks.no/api/fiksio-katalog-api-v1.json)
+[OpenAPI Specification (Fiks IO katalog API)](https://editor-next.swagger.io/?url=https://developers.fiks.ks.no/api/fiksio-katalog-api-v1.json)
 
 
 #### Status i fiks forvaltning

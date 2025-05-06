@@ -26,8 +26,8 @@ Under kan man lese mer om hvordan tjenesten fungerer:
 | Grensesnitt | Støtte |
 |------|------|
 | Web portal | Ja |
-| Maskin til maskin | [API for Matrikkel](https://editor.swagger.io/?url=https://developers.fiks.ks.no/api/matrikkel-eier-oppslag-api-v1.json) |
-|         | [API for innsyn](https://editor.swagger.io/?url=https://developers.fiks.ks.no/api/innsyn-index-api-v2.json) |
+| Maskin til maskin | [API for Matrikkel](https://editor-next.swagger.io/?url=https://developers.fiks.ks.no/api/matrikkel-eier-oppslag-api-v1.json) |
+|         | [API for innsyn](https://editor-next.swagger.io/?url=https://developers.fiks.ks.no/api/innsyn-index-api-v2.json) |
 
 ## Beskrivelse
 
