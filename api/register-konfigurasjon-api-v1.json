@@ -452,6 +452,59 @@
           }
         }
       }
+    },
+    "/register/api/v1/konfigurasjon/tilganger/{fiksOrgId}/ingen-tilganger": {
+      "get": {
+        "tags": [
+          "tilganger"
+        ],
+        "description": "Henter liste over tilganger gitt til alle roller som er definert som JSON eller CSV",
+        "operationId": "rollerUtenTilgangerForFiksOrg",
+        "parameters": [
+          {
+            "name": "fiksOrgId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RolleOversiktUtenTilganger"
+                }
+              },
+              "text/csv": {
+                "example": "Rollenavn,ID,Navn,Administratorrettigheter",
+                "schema": {
+                  "$ref": "#/components/schemas/RolleOversiktUtenTilganger"
+                }
+              },
+              "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": {
+                "schema": {
+                  "$ref": "#/components/schemas/RolleOversiktUtenTilganger"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Ikke tilgang",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -783,6 +836,22 @@
           }
         }
       },
+      "RolleOversiktUtenTilganger": {
+        "type": "object",
+        "required": ["fiksOrgId","roller"],
+        "properties": {
+          "fiksOrgId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "roller": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RolleUtenTilgangListe"
+            }
+          }
+        }
+      },
       "RolleMedTilgangListe": {
         "type": "object",
         "required": ["rolle"],
@@ -792,6 +861,18 @@
           },
           "tilganger": {
             "$ref": "#/components/schemas/TilgangListe"
+          },
+          "administratorer": {
+            "$ref": "#/components/schemas/AdministrasjonListe"
+          }
+        }
+      },
+      "RolleUtenTilgangListe": {
+        "type": "object",
+        "required": ["rolle"],
+        "properties": {
+          "rolle": {
+            "$ref": "#/components/schemas/RolleMedNavn"
           },
           "administratorer": {
             "$ref": "#/components/schemas/AdministrasjonListe"
