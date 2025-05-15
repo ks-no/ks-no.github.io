@@ -53,7 +53,7 @@ En saksbehandler kan endre et samtykke. Svarfrist og utløpsdato er verdiene som
 Det er ingen validering på disse datoene mot hverandre eller bakover i tid verken ved opprettelse eller endring på vår side grunnet behov for opprettelse av historiske samtykker.
 
 #### PUT /invaliderSamtykke/{samtykkeId}
-En saksbehandler kan invalidere/avbryte et samtykke. Dette er en ugjenkallelig operasjon. Et samtykke som er invalidert vil vises for involverte parter via innbyggertjenerter som avbrutt.
+En saksbehandler kan invalidere/avbryte et samtykke. Dette er en ugjenkallelig operasjon. Et samtykke som er invalidert vil vises for involverte parter via innbyggertjenester som avbrutt.
 Et invalidert samtykke vil ikke kunne endres ytterligere etter invalidering verken av involverte parter eller av saksbehandler.
 
 #### GET /samtykkeHistorikk/{samtykkeId}
