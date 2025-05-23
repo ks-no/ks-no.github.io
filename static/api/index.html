@@ -29,8 +29,8 @@
 <header>
   <h1>Fiks API-dokumentasjon</h1>
   <label for="api-selector">Velg API:</label>
-  <select id="api-selector" onchange="loadSpec(this.value)">
-    <option value="">Laster inn ...</option>
+  <select id="api-selector">
+    <option value="">-- Velg et API --</option>
   </select>
 </header>
 
@@ -39,33 +39,55 @@
 <script src="https://cdn.jsdelivr.net/npm/redoc@next/bundles/redoc.standalone.js"></script>
 <script>
   function loadSpec(url) {
-    if (!url) return;
     Redoc.init(url, {}, document.getElementById('redoc-container'));
+    history.replaceState(null, '', `?spec=${encodeURIComponent(url)}`);
   }
 
-  async function fetchAndPopulateDropdown() {
-    const response = await fetch('./specs.csv');
-    const text = await response.text();
-    const lines = text.trim().split('\n').slice(1); // Skip header
+  function getQueryParam(name) {
+    const params = new URLSearchParams(window.location.search);
+    return params.get(name);
+  }
 
-    const selector = document.getElementById('api-selector');
-    selector.innerHTML = '';
+  fetch('./api-specs.csv')
+    .then(res => {
+      if (!res.ok) throw new Error(`Feil: ${res.status}`);
+      return res.text();
+    })
+    .then(csv => {
+      const lines = csv.trim().split('\n');
+      const selector = document.getElementById('api-selector');
+      const currentSpec = getQueryParam('spec');
+      let found = false;
 
-    lines.forEach(line => {
-      const [navn, url] = line.split(',');
-      const opt = document.createElement('option');
-      opt.value = url.trim();
-      opt.textContent = navn.trim();
-      selector.appendChild(opt);
-    });
+      lines.forEach((line, index) => {
+        const parts = line.split(',');
+        if (parts.length < 2) return;
 
-    // Automatisk last første API
-    if (selector.options.length > 0) {
-      loadSpec(selector.options[0].value);
+        const title = parts.slice(0, parts.length - 1).join(',').trim();
+        const url = parts[parts.length - 1].trim();
+
+        const option = document.createElement('option');
+        option.value = url;
+        option.textContent = title;
+        selector.appendChild(option);
+
+        if (url === currentSpec) {
+          option.selected = true;
+          found = true;
+        }
+      });
+
+      if (found && currentSpec) {
+        loadSpec(currentSpec);
+      }
+    })
+    .catch(err => console.error('Feil ved lasting av CSV:', err));
+
+  document.getElementById('api-selector').addEventListener('change', function () {
+    if (this.value) {
+      loadSpec(this.value);
     }
-  }
-
-  fetchAndPopulateDropdown();
+  });
 </script>
 
 </body>
