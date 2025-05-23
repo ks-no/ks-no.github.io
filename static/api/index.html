@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+  <meta charset="UTF-8" />
+  <title>Fiks API-dokumentasjon</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+    }
+    header {
+      background: #003366;
+      color: white;
+      padding: 1em;
+      text-align: center;
+    }
+    #api-selector {
+      margin: 1em;
+      padding: 0.5em;
+      font-size: 1em;
+    }
+    #redoc-container {
+      height: 90vh;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>Fiks API-dokumentasjon</h1>
+  <label for="api-selector">Velg API:</label>
+  <select id="api-selector" onchange="loadSpec(this.value)">
+    <option value="">Laster inn ...</option>
+  </select>
+</header>
+
+<div id="redoc-container"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/redoc@next/bundles/redoc.standalone.js"></script>
+<script>
+  function loadSpec(url) {
+    if (!url) return;
+    Redoc.init(url, {}, document.getElementById('redoc-container'));
+  }
+
+  async function fetchAndPopulateDropdown() {
+    const response = await fetch('./api-specs.csv');
+    const text = await response.text();
+    const lines = text.trim().split('\n').slice(1); // Skip header
+
+    const selector = document.getElementById('api-selector');
+    selector.innerHTML = '';
+
+    lines.forEach(line => {
+      const [navn, url] = line.split(',');
+      const opt = document.createElement('option');
+      opt.value = url.trim();
+      opt.textContent = navn.trim();
+      selector.appendChild(opt);
+    });
+
+    // Automatisk last første API
+    if (selector.options.length > 0) {
+      loadSpec(selector.options[0].value);
+    }
+  }
+
+  fetchAndPopulateDropdown();
+</script>
+
+</body>
+</html>
+
