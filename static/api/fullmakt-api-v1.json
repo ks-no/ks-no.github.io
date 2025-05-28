@@ -71,7 +71,7 @@
     "/fullmakt/api/v1/hasFullmakt" : {
       "get" : {
         "tags" : [ "Fullmakt" ],
-        "summary" : "Sjekk om autentisert person er autorisert til å handle på vegne av aktøren",
+        "summary" : "Sjekk om autentisert person er autorisert til å handle på vegne av aktøren for en vilkårlig ressurs. Hvis ressurs er satt, for en gitt ressurs",
         "operationId" : "hasFullmakt",
         "parameters" : [ {
           "name" : "aktor",
@@ -102,6 +102,36 @@
           }
         }
       }
+    },
+    "/fullmakt/api/v1/hasFullmaktForResources" : {
+      "post" : {
+        "tags" : [ "Fullmakt" ],
+        "summary" : "Sjekk om autentisert person er autorisert til å handle på vegne av aktøren per ressurs",
+        "operationId" : "hasFullmaktForResources",
+        "requestBody" : {
+          "description" : "Paremetere for å sjekke fullmakt for et utvalg ressurser",
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/HasFullmaktForResourceRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Om autentisert person er autorisert til å handle på vegne av aktøren eller ikke",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/HasFullmaktForResourceResponse"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components" : {
@@ -124,6 +154,45 @@
           }
         },
         "description" : "En fullmakt som gir en bruker rett til å handle på vegne av en annen"
+      },
+      "HasFullmaktForResourceResponse" : {
+        "required" : [ "hasFullmaktForResouce" ],
+        "type" : "object",
+        "properties" : {
+          "hasFullmaktForResouce" : {
+            "type" : "object",
+            "additionalProperties" : {
+              "type" : "boolean",
+              "description" : "Map over ressurser med tilhørende tilgangsflagg for aktør"
+            },
+            "description" : "Map over ressurser med tilhørende tilgangsflagg for aktør"
+          }
+        }
+      },
+      "HasFullmaktForResourceRequest" : {
+        "required" : [ "aktor", "resourceIds" ],
+        "type" : "object",
+        "properties" : {
+          "aktor" : {
+            "pattern" : "^[0-9]{11}$|^[0-9]{9}$",
+            "type" : "string",
+            "description" : "Aktør som skal sjekkes for tilgang"
+          },
+          "useCache" : {
+            "type" : "boolean",
+            "description" : "Bruk cache for å sjekke tilgang",
+            "default" : true
+          },
+          "resourceIds" : {
+            "minItems" : 1,
+            "type" : "array",
+            "description" : "Liste over ressurser som skal sjekkes for tilgang",
+            "items" : {
+              "type" : "string",
+              "description" : "Liste over ressurser som skal sjekkes for tilgang"
+            }
+          }
+        }
       }
     }
   }
