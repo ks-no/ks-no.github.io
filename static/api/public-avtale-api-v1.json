@@ -1,0 +1,161 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "KS FIKS: Avtale data",
+    "description": "Informasjon om avtaler",
+    "contact": {
+      "name": "Fiks brukerstøtte",
+      "url": "https://develoeprs.fiks.ks.no",
+      "email": "fiks-utvikling@ks.no"
+    },
+    "version": "v1"
+  },
+  "servers": [
+    {
+      "url": "https://api.fiks.ks.no",
+      "description": "KS Fiks API host"
+    },
+    {
+      "url": "https://api.test.fiks.ks.no",
+      "description": "KS Fiks TEST API host"
+    }
+  ],
+  "security": [],
+  "tags": [
+    {
+      "name": "publicAvtale",
+      "description": "API for å hente informasjon om avtaler"
+    }
+  ],
+  "paths": {
+    "/avtale/public/api/v1/avtaler": {
+      "get": {
+        "tags": [
+          "publicAvtale"
+        ],
+        "description": "Hent avtaler for organisasjoner",
+        "summary": "Hent avtaler for organisasjoner",
+        "operationId": "hentAvtaler",
+        "responses": {
+          "200": {
+            "description": "Organisasjoner med tjenester",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Organisasjon"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Ikke tilgang",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Organisasjon": {
+        "type": "object",
+        "properties": {
+          "fiksOrgId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "orgnr": {
+            "type": "string"
+          },
+          "kommunenummerr": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string"
+          },
+          "orgnavn": {
+            "type": "string"
+          },
+          "tjenester": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Tjeneste"
+            }
+          }
+        }
+      },
+      "Tjeneste": {
+        "type": "object",
+        "properties": {
+          "tjenestekode": {
+            "type": "string",
+            "$ref": "#/components/schemas/Tjenestekode"
+          },
+          "tjenestenavn": {
+            "type": "string",
+            "description": "Navn på tjenesten"
+          }
+        }
+      },
+      "Tjenestekode": {
+        "type": "string",
+        "pattern": "^[0-9A-Z_.]+$",
+        "description": "Kode som unikt identifiserer en tjeneste"
+      },
+      "ErrorMessage": {
+        "type": "object",
+        "description": "Feilmelding fra Fiks-plattformen",
+        "externalDocs": {
+          "description": "Beskrivelse av feilmeldinger",
+          "url": "https://ks-no.github.io/fiks-plattform/integrasjoner/#feilmeldinger"
+        },
+        "properties": {
+          "timestamp": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "status": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "error": {
+            "type": "string"
+          },
+          "errorId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "path": {
+            "type": "string"
+          },
+          "originalPath": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          },
+          "errorCode": {
+            "type": "string"
+          },
+          "errorJson": {
+            "type": "string"
+          }
+        },
+        "example": {
+          "message": "Mangler tilgang",
+          "errorId": "ee2ed64d-de8b-45f9-b9c6-3363d662d93b",
+          "status": 403
+        }
+      }
+    }
+  }
+}
