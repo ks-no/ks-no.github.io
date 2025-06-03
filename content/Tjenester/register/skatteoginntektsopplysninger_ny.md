@@ -116,7 +116,7 @@ Payload
       },
       {
          "identifikator":"27847099416",
-         "type":"PARTNER",
+         "type":"ANNET",
          "ekstraposter":[
             {
                "tekniskNavn":"kommune.tenktEtterlattePensjon",
@@ -149,7 +149,7 @@ Svar
       },
       {
          "identifikator":"27847099416",
-         "type":"PARTNER",
+         "type":"ANNET",
          "skjermet":false,
          "stadie":"OPPGJOER",
          "navn":{
@@ -625,7 +625,7 @@ Svar
             "beregningsgrunnlag":[
                {
                   "tekniskNavn":"mellomregningPaarorende",
-                  "visningstekst":"Forsørgerfradrag OPPRIKTIG DAMESYKKEL (PARTNER)",
+                  "visningstekst":"Forsørgerfradrag OPPRIKTIG DAMESYKKEL (ANNET)",
                   "beloep":0,
                   "operasjon":"ADDERE",
                   "beregningsposter":[
