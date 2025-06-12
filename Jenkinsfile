@@ -18,6 +18,22 @@ pipeline {
       }
     }
 
+    stage('generate CSV from Open API specs') {
+      when {
+        branch 'source'
+      }
+      steps {
+        sh './generate-specs-csv.sh'
+        script {
+          sh '''
+          git add static/api/specs.csv
+          git commit -m "Update specs.csv after generation"
+          git push origin source
+          '''
+        }
+      }
+    }
+
     stage('check version') {
       steps {
         script {
