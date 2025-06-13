@@ -23,7 +23,6 @@ pipeline {
         branch 'source'
       }
       steps {
-        sh './generate-specs-csv.sh'
         script {
           sh '''
 	  if git show-ref --verify --quiet refs/heads/source; then
@@ -31,6 +30,11 @@ pipeline {
           else
             git checkout -b source
           fi
+          '''
+        }
+	sh './generate-specs-csv.sh'
+        script {
+          sh '''
           git add static/api/specs.csv
           git commit -m "Update specs.csv after generation"
           git push -u origin source
