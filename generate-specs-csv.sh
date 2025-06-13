@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e
 
 API_DIR="static/api"
 OUTPUT_FILE="static/api/specs.csv"
