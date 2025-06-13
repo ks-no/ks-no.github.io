@@ -29,7 +29,7 @@ pipeline {
           git branch --list source || git checkout -b source
           git add static/api/specs.csv
           git commit -m "Update specs.csv after generation"
-          git push origin source
+	  git push -u origin source
           '''
         }
       }
