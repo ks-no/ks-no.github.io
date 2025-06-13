@@ -30,6 +30,7 @@ pipeline {
           else
             git checkout -b source
           fi
+	  git pull --rebase
           '''
         }
 	sh './generate-specs-csv.sh'
