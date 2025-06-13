@@ -37,7 +37,7 @@ pipeline {
         script {
           sh '''
           git add static/api/specs.csv
-          git commit -m "Update specs.csv after generation"
+          git commit -m "Update specs.csv after generation" || echo "ingen endringer"
           git push -u origin source
           '''
         }
