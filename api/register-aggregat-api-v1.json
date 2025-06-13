@@ -1,0 +1,155 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "Fiks register aggregat service",
+    "description": "Oppslag i kontakt- og reservasjonsregisteret (KRR) for Fiks register",
+    "contact": {
+      "name": "Fiks brukerstøtte",
+      "url": "https://www.ks.no/fagomrader/digitalisering/utviklingsprosjekter",
+      "email": "fiks-utvikling@ks.no"
+    },
+    "version": "v1"
+  },
+  "servers": [
+    {
+      "url": "https://api.fiks.ks.no",
+      "description": "KS Fiks API host",
+      "variables": {}
+    },
+    {
+      "url": "https://api.fiks.test.ks.no",
+      "description": "KS Fiks TEST API host",
+      "variables": {}
+    }
+  ],
+  "paths": {
+    "/register/api/v1/ks/{rolleId}/aggregat/person": {
+      "post": {
+        "tags": [
+          "aggregat"
+        ],
+        "description": "Henter info om person fra gitte register",
+        "operationId": "hentPerson",
+        "parameters": [
+          {
+            "name": "rolleId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PersonAggregatRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PersonAggregat"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Ikke tilgang",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Ingen treff",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "PersonAggregatRequest": {
+        "required": [
+          "register",
+          "fnr"
+        ],
+        "type": "object",
+        "properties": {
+          "fnr": {
+            "type": "string"
+          },
+          "folkeregisterParts": {
+            "type": "array",
+            "description": "Liste over parts som skal brukes for minimering av folkeregisteroppslag.",
+            "items": {
+              "type": "string"
+            }
+          },
+          "register": {
+            "type": "array",
+            "description": "Liste over hvilke registre for ekstrainformasjon som er påkrevd.",
+            "items": {
+              "$ref": "#/components/schemas/Register"
+            }
+          },
+          "optionalRegister": {
+            "type": "array",
+            "description": "Liste over hvilke registre for ekstrainformasjon som ikke er påkrevd.",
+            "items": {
+              "$ref": "#/components/schemas/Register"
+            }
+          }
+        }
+      },
+      "PersonerAggregat": {
+        "type": "object",
+        "properties": {
+          "personer": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PersonAggregat"
+            }
+          }
+        }
+      },
+      "PersonAggregat": {
+        "type": "object",
+        "properties": {
+          "folkeregister": {
+            "$ref": "https://developers.fiks.ks.no/api/folkeregister-person-soek-api-v1.json#/components/schemas/FolkeregisterpersonDefinisjon"
+          },
+          "krr": {
+            "$ref": "register-krr-api-v1.json#/components/schemas/KrrDefinisjon"
+          }
+        }
+      },
+      "Register": {
+        "type": "string",
+        "enum": [
+          "KRR",
+          "FOLKEREGISTER"
+        ]
+      }
+    }
+  }
+}
