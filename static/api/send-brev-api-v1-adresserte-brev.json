@@ -1,0 +1,636 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "KS Fiks Melding: Send brev - Ferdig adresserte brev",
+    "description": "Send brev adresserte brev API gir tilgang til å importere ferdig adresserte PDF-filer for utsendelse.",
+    "contact": {
+      "name": "Fiks-brukerstøtte",
+      "url": "https://ks-no.github.io/",
+      "email": "fiks-utvikling@ks.no"
+    },
+    "license": {
+      "name": "MIT",
+      "url": "https://opensource.org/licenses/MIT"
+    },
+    "version": "v1"
+  },
+  "servers": [
+    {
+      "url": "https://api.fiks.ks.no",
+      "description": "KS Fiks API host"
+    }
+  ],
+  "security": [
+    {
+      "bearerAuth": []
+    }
+  ],
+  "tags": [
+    {
+      "name": "AdresserteBrev",
+      "description": "API for Send brev - Ferdig adresserte brev"
+    }
+  ],
+  "paths": {
+    "/send-brev/api/v1/kontoer/{kontoId}/utsendelser/{utsendelsesId}/adresserte-brev/splitt-pdf": {
+      "post": {
+        "tags": [
+          "AdresserteBrev"
+        ],
+        "description": "Splitter opp PDF og henter ut individuelle mottakere fra original pdf",
+        "summary": "Henter ut mottakere og splitter opp original pdf",
+        "operationId": "splittPdf",
+        "parameters": [
+          {
+            "name": "utsendelsesId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "kontoId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SplittPdfKonfigurasjon"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Mottakere er hentet ut"
+          },
+          "403": {
+            "description": "Ingen tilgang",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Systemfeil",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/send-brev/api/v1/kontoer/{kontoId}/utsendelser/{utsendelsesId}/adresserte-brev/xls": {
+      "post": {
+        "tags": [
+          "AdresserteBrev"
+        ],
+        "description": "Laster opp Excel med mapping for å hente ut fødselsnummer eller organisasjonsnummer",
+        "summary": "Laster opp Excel med mapping",
+        "operationId": "lastOppExcel",
+        "parameters": [
+          {
+            "name": "utsendelsesId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "kontoId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Last opp original excelfil"
+          },
+          "403": {
+            "description": "Ingen tilgang",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Systemfeil",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/send-brev/api/v1/kontoer/{kontoId}/utsendelser/{utsendelsesId}/adresserte-brev/pdf": {
+      "post": {
+        "tags": [
+          "AdresserteBrev"
+        ],
+        "description": "Laster opp original PDF som inneholder alle ferdig-adresserte brev",
+        "summary": "Laster opp PDF",
+        "operationId": "lastOppPdf",
+        "parameters": [
+          {
+            "name": "utsendelsesId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "kontoId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "PDF med ferdig-adresserte brev er lastet opp"
+          },
+          "403": {
+            "description": "Ingen tilgang",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Systemfeil",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/send-brev/api/v1/kontoer/{kontoId}/utsendelser/{utsendelsesId}/adresserte-brev/mottakere": {
+      "get": {
+        "tags": [
+          "AdresserteBrev"
+        ],
+        "description": "Henter ut mottaker-data fra de første ferdig-adresserte brevene i PDF'en",
+        "summary": "Hente forhåndsvisning av de første mottakerene basert på spesifisert antall",
+        "operationId": "henteAntallMottakere",
+        "parameters": [
+          {
+            "name": "utsendelsesId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "kontoId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "antall",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SplittPdfKonfigurasjon"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "De første mottakerene i PDF'en",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Mottakere"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Ingen tilgang",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Systemfeil",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/send-brev/api/v1/kontoer/{kontoId}/utsendelser/{utsendelsesId}/adresserte-brev/bilde": {
+      "get": {
+        "tags": [
+          "AdresserteBrev"
+        ],
+        "description": "Genererer et bilde av sidenummer i opplastet PDF",
+        "summary": "Genererer bilde fra Pdf",
+        "operationId": "genererBilde",
+        "parameters": [
+          {
+            "name": "utsendelsesId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "sidenummer",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "kontoId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Generer pdf preview",
+            "content": {
+              "image/png": {
+                "schema": {
+                  "type": "string",
+                  "format": "byte"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Ingen tilgang",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Systemfeil",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    },
+    "schemas": {
+      "KoordinatBoks": {
+        "type": "object",
+        "required": [
+          "nedreVenstre",
+          "ovreHoyre"
+        ],
+        "properties": {
+          "nedreVenstre": {
+            "$ref": "#/components/schemas/Punkt"
+          },
+          "ovreHoyre": {
+            "$ref": "#/components/schemas/Punkt"
+          }
+        },
+        "description": "Koordinater for uthenting av informasjon fra PDF. Det må vere med et punkt for et hjørne nede til venstre og et oppe til høyre."
+      },
+      "Punkt": {
+        "type": "object",
+        "required": [
+          "X",
+          "Y"
+        ],
+        "properties": {
+          "X": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "Y": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "description": "Et koordinatpunkt"
+      },
+      "SplittPdfKonfigurasjon": {
+        "type": "object",
+        "required": [
+          "mottaker"
+        ],
+        "description": "Konfigurasjon for å kunne splitte Pdf som inneholder mange ferdig-adresserte brev",
+        "properties": {
+          "mottakerBoks": {
+            "$ref": "#/components/schemas/KoordinatBoks"
+          },
+          "unikIdBoks": {
+            "$ref": "#/components/schemas/KoordinatBoks"
+          },
+          "brevSeparatorBoks": {
+            "$ref": "#/components/schemas/KoordinatBoks"
+          },
+          "xlsMapping": {
+            "type": "object",
+            "description": "Om denne er satt, må det vere lastet opp en excel-fil som gjer det mulig å mappe unik id som finnes i hvert enkelt brev, med digitalid for mottaker (fødsels- eller organisasjonsnummer), som skal brukes under sending via SvarUt.",
+            "required": [
+              "idKolonne",
+              "digitalIdKolonne"
+            ],
+            "properties": {
+              "idKolonne": {
+                "type": "integer",
+                "description": "Kolonne i excel som inneholder unik Id som finnes i det enkelte brev. Eksempel på en slik Id er fakturareferanse eller ansattnummer. ",
+                "format": "int32"
+              },
+              "digitalIdKolonne": {
+                "type": "integer",
+                "description": "Kolonne i excel for organisasjonsnummer/fødselsnummer",
+                "format": "int32"
+              }
+            }
+          },
+          "antallSider": {
+            "type": "integer",
+            "description": "Antall sider per brev. Må ha med enten denne eller brevSeparator.",
+            "format": "int32"
+          }
+        }
+      },
+      "ErrorMessage": {
+        "type": "object",
+        "properties": {
+          "timestamp": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "status": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "error": {
+            "type": "string"
+          },
+          "errorId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "path": {
+            "type": "string"
+          },
+          "originalPath": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          },
+          "errorCode": {
+            "type": "string"
+          },
+          "errorJson": {
+            "type": "string"
+          }
+        }
+      },
+      "Postadresse": {
+        "required": [
+          "navn",
+          "postnummer",
+          "poststed"
+        ],
+        "type": "object",
+        "properties": {
+          "navn": {
+            "type": "string"
+          },
+          "adresselinje1": {
+            "type": "string"
+          },
+          "adresselinje2": {
+            "type": "string"
+          },
+          "adresselinje3": {
+            "type": "string"
+          },
+          "postnummer": {
+            "type": "string"
+          },
+          "poststed": {
+            "type": "string"
+          },
+          "land": {
+            "type": "string"
+          }
+        },
+        "description": "En adresse for fysisk post. Inkluderer land og opp til tre adresselinjer for å støtte C/O, postboks og adresser utenfor Norge"
+      },
+      "MottakerValideringsstatus": {
+        "type": "string",
+        "description": "Valideringsstatus på mottaker",
+        "enum": [
+          "GYLDIG",
+          "FEIL",
+          "ADVARSEL",
+          "PERSON_ER_DOED",
+          "DUPLIKAT_IDENTIFIKATOR",
+          "DUPLIKAT_MOTTAKER"
+        ]
+      },
+      "MottakerValideringsfeil": {
+        "type": "string",
+        "description": "Valideringsfeil på mottaker",
+        "enum": [
+          "UGYLDIG_IDENTIFIKATOR",
+          "DUPLIKAT_MOTTAKER",
+          "UKJENT_IDENTIFIKATOR",
+          "ADRESSELINJE1_MANGLER",
+          "ADRESSELINJE1_FOR_LANG",
+          "ADRESSELINJE2_FOR_LANG",
+          "ADRESSELINJE3_FOR_LANG",
+          "UKJENT_FILNAVN",
+          "FILNAVN_MANGLER",
+          "NAVN_MANGLER",
+          "NAVN_FOR_LANG",
+          "POSTSTED_MANGLER",
+          "UGYLDIG_POSTNUMMER"
+        ]
+      },
+      "MottakerValideringsadvarsler": {
+        "type": "string",
+        "description": "Valideringsadvarsler på mottaker",
+        "enum": [
+          "DUPLIKAT_IDENTIFIKATOR",
+          "ULIK_POSTSTED_FRA_POSTNUMMER_OPPSLAG",
+          "UKJENT_POSTNUMMER",
+          "UKJENT_LAND"
+        ]
+      },
+      "TilknyttetFilRespons": {
+        "required": [
+          "filnavn"
+        ],
+        "type": "object",
+        "description": "Objekt for å holde tilknyttet Fil. Brukes i mottaker som returneres, da en ikkje kan garantere id til fil for opplasting av excel.",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Id til tilknyttet fil"
+          },
+          "filnavn": {
+            "type": "string",
+            "description": "Filnavnet"
+          }
+        }
+      },
+      "Mottaker": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "fodselsnummer": {
+            "pattern": "^[0-9]{11}$",
+            "type": "string"
+          },
+          "organisasjonsnummer": {
+            "type": "string",
+            "pattern": "^[0-9]{9}$"
+          },
+          "postadresse": {
+            "$ref": "#/components/schemas/Postadresse"
+          },
+          "valideringsstatuser": {
+            "type": "array",
+            "description": "Liste over valideringsstatuser på mottaker",
+            "items": {
+              "$ref": "#/components/schemas/MottakerValideringsstatus"
+            }
+          },
+          "valideringsfeil": {
+            "type": "array",
+            "description": "Liste over valideringsfeil på mottaker",
+            "items": {
+              "$ref": "#/components/schemas/MottakerValideringsfeil"
+            }
+          },
+          "valideringsadvarsler": {
+            "type": "array",
+            "description": "Liste over valideringsadvarsler på mottaker",
+            "items": {
+              "$ref": "#/components/schemas/MottakerValideringsadvarsler"
+            }
+          },
+          "tittel": {
+            "type": "string",
+            "description": "Tittel på brevet som denne mottaker skal ha, vil overskrive tittel knyttet mot utsendelsen."
+          },
+          "tilknyttetFil": {
+            "$ref": "#/components/schemas/TilknyttetFilRespons"
+          }
+        },
+        "description": "Mottaker som er lagt til utsendelse",
+        "required": [
+          "id",
+          "postadresse"
+        ]
+      },
+      "Mottakere": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/Mottaker"
+        }
+      }
+    }
+  }
+}
