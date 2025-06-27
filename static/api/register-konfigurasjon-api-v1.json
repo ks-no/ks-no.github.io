@@ -400,6 +400,61 @@
         }
       }
     },
+    "/register/api/v1/konfigurasjon/roller/{rolleId}/adresse": {
+      "post": {
+        "operationId": "opprettAdresseStatistikk",
+        "tags": [
+          "statistikk"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "rolleId",
+            "description": "Id til rollen",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OpprettAdresseStatistikkApiDefinisjon"
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": "Adressestatistikk ble opprettet"
+          },
+          "400": {
+            "description": "Ugyldig rolle",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Mangler tilgang til å opprette statistikk for gitt rolle",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/register/api/v1/konfigurasjon/tilganger/{fiksOrgId}": {
       "get": {
         "tags": [
@@ -489,6 +544,59 @@
               "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": {
                 "schema": {
                   "$ref": "#/components/schemas/RolleOversiktUtenTilganger"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Ikke tilgang",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/register/api/v1/konfigurasjon/statistikk/{fiksOrgId}": {
+      "get": {
+        "tags": [
+          "statistikk"
+        ],
+        "description": "Henter liste over oppslagstatistikk per rolle som er definert som JSON eller CSV",
+        "operationId": "statistikkForFiksOrg",
+        "parameters": [
+          {
+            "name": "fiksOrgId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StatistikkOversikt"
+                }
+              },
+              "text/csv": {
+                "example": "RolleId,Handling,Antall oppslag\nae0207e6-eb70-495e-a88a-15c19960b64e,Fortrolig adresse,2",
+                "schema": {
+                  "$ref": "#/components/schemas/StatistikkOversikt"
+                }
+              },
+              "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": {
+                "schema": {
+                  "$ref": "#/components/schemas/StatistikkOversikt"
                 }
               }
             }
@@ -838,7 +946,10 @@
       },
       "RolleOversiktUtenTilganger": {
         "type": "object",
-        "required": ["fiksOrgId","roller"],
+        "required": [
+          "fiksOrgId",
+          "roller"
+        ],
         "properties": {
           "fiksOrgId": {
             "type": "string",
@@ -849,6 +960,48 @@
             "items": {
               "$ref": "#/components/schemas/RolleUtenTilgangListe"
             }
+          }
+        }
+      },
+      "StatistikkOversikt": {
+        "type": "object",
+        "required": ["elements"],
+        "properties": {
+          "elements": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/StatistikkRad"
+            }
+          }
+        }
+      },
+      "StatistikkRad": {
+        "type": "object",
+        "required": ["rolleRessursId", "rolleNavn", "tidspunkt", "hashetData","handling"],
+        "properties": {
+          "rolleRessursId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "rolleNavn": {
+            "type": "string"
+          },
+          "tidspunkt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "hashetData": {
+            "type": "string",
+            "description": "Hashet data som er brukt for å anonymisere personopplysninger i statistikken. Inneholder ikke sensitive personopplysninger.",
+            "format": "md5",
+            "pattern": "^[a-fA-F0-9]{32}$"
+          },
+          "handling": {
+            "type": "string",
+            "enum": [
+              "FORTROLIG",
+              "KLIENTADRESSE"
+            ]
           }
         }
       },
@@ -968,6 +1121,21 @@
             "type": "string"
           }
         }
+      },
+      "OpprettAdresseStatistikkApiDefinisjon": {
+        "type": "object",
+        "properties": {
+          "adressegradering": {
+            "type": "string"
+          },
+          "adresse": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "adresse",
+          "adressegradering"
+        ]
       }
     }
   }
