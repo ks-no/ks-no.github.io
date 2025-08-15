@@ -25,7 +25,7 @@ Tjenesten består av tre hovedkomponenter:
  * _Innsyn-søk_, søkemotoren som utgjør back-end for webappliasjonene. Støtter fritekstsøk og score-rangerte resultater. 
  * _Innsyn-indexer_, en indekseringstjeneste som integrasjoner kan benytte for å laste opp metadata om informasjonen kommunen sitter på: hendelser, fakturaer, saker, journalposter, forsendelser, osv.  
 
-Søk i innsyn gjøres via applikasjonene på min.kommune.no, eller direkte via et REST grensesnitt. Uansett baserer autentisering seg på innlogging via ID-Porten. En autentisert innbygger autoriseres for å lese en melding på en av fire måter:
+Søk i innsyn gjøres via applikasjonene på min.kommune.no, eller direkte via et REST grensesnitt. Uansett baserer autentisering seg på innlogging via ID-Porten. En innbygger autoriseres for å lese en melding på en av fire måter:
 
 * Meldingen er eksponert for innbyggerens fødselsnummer
 * Innbyggeren har rollene "post/arkiv" eller "kommunale tjenester" i Altinn for organisasjonsnummeret meldingen er eksponert for
