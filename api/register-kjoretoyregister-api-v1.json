@@ -1,0 +1,187 @@
+{
+  "openapi" : "3.0.1",
+  "info" : {
+    "title" : "Fiks Register Kjoretoyregister service",
+    "description" : "Oppslag i Kjoretoyregister",
+    "contact" : {
+      "name" : "Fiks brukerstøtte",
+      "url" : "https://www.ks.no/fagomrader/digitalisering/utviklingsprosjekter",
+      "email" : "fiks-utvikling@ks.no"
+    },
+    "version" : "v1"
+  },
+  "servers": [
+    {
+      "url": "https://api.fiks.ks.no",
+      "description": "KS Fiks API host",
+      "variables": {}
+    },
+    {
+      "url": "https://api.fiks.test.ks.no",
+      "description": "KS Fiks TEST API host",
+      "variables": {}
+    }
+  ],
+  "tags": [
+    {
+      "name": "RegisterKjoretoyregister",
+      "description": "API for å gjore oppslag i kjoretøysregisteret"
+    }
+  ],
+  "paths" : {
+    "/register/api/v1/ks/{rolleId}/kjoretoy/person" : {
+      "post" : {
+        "tags" : [ "RegisterKjoretoyregister" ],
+        "description" : "Henter kjoretoy for angitt person",
+        "operationId" : "hentKjoretoyPerson",
+        "parameters" : [ {
+          "name" : "rolleId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/KjoretoyPersonOppslag"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/KjoretoyResponse"
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Ikke tilgang",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components" : {
+    "schemas" : {
+      "KjoretoyPersonOppslag": {
+        "required": [ "fnr" ],
+        "properties": {
+          "fnr": {
+            "type": "string"
+          }
+        }
+      },
+      "KjoretoyResponse": {
+        "required": [ "kjoretoy", "fnr" ],
+        "properties": {
+          "fnr": {
+            "type": "string"
+          },
+          "kjoretoy": {
+            "type": "array",
+            "items": {
+              "$ref" : "#/components/schemas/Kjoretoy"
+            }
+          }
+        }
+      },
+      "Kjoretoy": {
+        "properties": {
+          "kjennemerke": {
+            "type": "string"
+          },
+          "forstegangsregistrering": {
+            "type": "string",
+            "format": "date"
+          },
+          "eierskap": {
+            "$ref" : "#/components/schemas/Eierskap"
+          },
+          "registrering": {
+            "$ref" : "#/components/schemas/Registrering"
+          },
+          "tekniskeData": {
+            "$ref" : "#/components/schemas/TekniskeData"
+          }
+        }
+      },
+      "Eierskap": {
+        "properties": {
+          "eier": {
+            "$ref" : "#/components/schemas/Eier"
+          }
+        }
+      },
+      "Eier": {
+        "properties": {
+          "person": {
+            "$ref" : "#/components/schemas/Person"
+          },
+          "fra": {
+            "type": "string",
+            "format": "date"
+          }
+        }
+      },
+      "Person": {
+        "properties": {
+          "fornavn": {
+            "type": "string"
+          },
+          "mellomnavn": {
+            "type": "string"
+          },
+          "etternavn": {
+            "type": "string"
+          }
+        }
+      },
+      "Registrering": {
+        "properties": {
+          "status": {
+            "type": "string"
+          }
+        }
+      },
+      "TekniskeData": {
+        "properties": {
+          "gruppe": {
+            "type": "string"
+          },
+          "gruppeKode": {
+            "type": "string"
+          },
+          "merke": {
+            "type": "string"
+          },
+          "modell": {
+            "type": "string"
+          },
+          "drivstoff": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    }
+  }
+}
