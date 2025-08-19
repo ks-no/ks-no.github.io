@@ -5,11 +5,11 @@ hidden: false
 aliases: [/fiks-platform/tjenester/kommunaletjenester, /fiks-plattform/tjenester/kommunaletjenester, /fiks-plattform/tjenester/minside/kommunaletjenester/, /fiks-plattform/tjenester/minkommune/kommunaletjenester]
 ---
 
-Mange kommuner som tar i bruk Fiks Minside har eksisterende innbyggerrettede tjenester, enten egenutviklet eller innkjøpt fra leverandør. "Kommunale tjenester" lar kommunen eksponere disse tjenestene for sine innbyggere på min.kommune.no, som illustrert i skjermbildet under:
+Mange kommuner som tar i bruk KS Min kommune har eksisterende innbyggerrettede tjenester, enten egenutviklet eller innkjøpt fra leverandør. "Kommunale tjenester" lar kommunen eksponere disse tjenestene for sine innbyggere på min.kommune.no, som illustrert i skjermbildet under:
 
 ![kommunale_tjenester](/images/kommunaletjenester.png "Kommunale tjenester")
 
-Når en innbygger logger seg på Minside vil Fiks-plattformen avgjøre hvilken kommune denne innbyggeren har et forhold til. I første omgang avgjøres dette av hvilke organisasjoner som har sendt innbyggeren post via SvarUt, senere vil Folkeregisteret også benyttes. På forsiden vil innbyggeren se tjenester fra sin primærkommune, men tjenester registrert av andre kommuner vil være tilgjengelig gjennom søk, både ved hovedsøket på min.kommune.no og via "se alle tjenester" lenken. 
+Når en innbygger logger seg på min.kommune.no vil Fiks-plattformen avgjøre hvilken kommune denne innbyggeren har et forhold til. I første omgang avgjøres dette av hvilke organisasjoner som har sendt innbyggeren post via SvarUt, senere vil Folkeregisteret også benyttes. På forsiden vil innbyggeren se tjenester fra sin primærkommune, men tjenester registrert av andre kommuner vil være tilgjengelig gjennom søk, både ved hovedsøket på min.kommune.no og via "se alle tjenester" lenken. 
 
 Kommunen kan legge inn disse tjenestene via Fiks-konfigurasjon. Hver tjeneste har:
 
