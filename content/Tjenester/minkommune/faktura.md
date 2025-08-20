@@ -19,7 +19,7 @@ Funksjonaliteten skal gjøre det mulig å dra ut fakturadetaljer og presentere d
 ### Distribusjonskanal 
 Funksjonaliteten skal vise hvilken distribusjonskanal faktura sendes på i Min kommune, slik at man kan ha færre henvendelser om å endre distribusjonsmetode og henvendelser fra innbyggere som melder at «har ikke fått faktura» 
 
-### Tilgjengeliggjøring av inkasso krav i Min kommune
+### Tilgjengeliggjøring av inkassokrav i Min kommune
 Funksjonaliteten tilgjengeliggjør faktura som har blitt sendt til ekstern inkasso byrå, og vil lenke til faktura hos det eksterne byrå-et.
 
 ## Sende kommentar på faktura - under vurdering 
