@@ -20,10 +20,7 @@ Funksjonaliteten skal gjøre det mulig å dra ut fakturadetaljer og presentere d
 Funksjonaliteten skal vise hvilken distribusjonskanal faktura sendes på i Min kommune, slik at man kan ha færre henvendelser om å endre distribusjonsmetode og henvendelser fra innbyggere som melder at «har ikke fått faktura» 
 
 ### Tilgjengeliggjøring av purring i Min kommune
-Funksjonaliteten skal gjøre purringen tilgjengelig på Min kommune samt knytte den til opprinnelig faktura. Den vil også tilby varsling på valgt kanal for de som har faktura som purres for slik å ha færre spørsmål om hvilke faktura det purres for.
-
-### Faktura for eier av eiendom 
-Funksjonaliteten skal kunne knytte faktura for eiendomsavgift til Gnr og Bnr fremfor et personnummer. Med dette vil faktura kunne vises i Min kommune til begge parter som har betalingsplikt på kommunale avgifter og eier bolig sammen. Det vil føre til færre henvendelser om å bytte fakturamottaker eller ikke-mottatt faktura. 
+Funksjonaliteten tilgjengeliggjør faktura som har blitt sendt til ekstern inkasso byrå, og vil lenke til faktura hos det eksterne byrå-et.
 
 ## Sende kommentar på faktura - under vurdering 
 Funksjonaliteten skal gi en mulighet for å sende en kommentar direkte på en faktura til riktig fagetat for innbyggere som har spørsmål til innholdet i fakturaen.
