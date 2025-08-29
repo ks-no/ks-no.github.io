@@ -1,0 +1,243 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Fiks folkeregister hendelser service",
+    "description": "Tjeneste for å hente hendelser fra folkeregister",
+    "contact": {
+      "name": "KS Fiks brukerstøtte",
+      "url": "https://www.ks.no/fagomrader/digitalisering/utviklingsprosjekter",
+      "email": "fiks-utvikling@ks.no"
+    },
+    "version": "v1"
+  },
+  "servers": [
+    {
+      "url": "https://api.fiks.ks.no",
+      "description": "KS Fiks API host",
+      "variables": {}
+    },
+    {
+      "url": "https://api.fiks.test.ks.no",
+      "description": "KS Fiks TEST API host",
+      "variables": {}
+    }
+  ],
+  "tags": [
+    {
+      "name": "hendelser",
+      "description": "API for å hente hendelser fra folkeregisteret"
+    }
+  ],
+  "paths": {
+    "/folkeregister/api/v1/hendelser/typer": {
+      "get": {
+        "operationId": "hentHendelsestyper",
+        "tags": [
+          "hendelser"
+        ],
+        "description": "Henter liste over gyldige hendelsestyper",
+        "responses": {
+          "200": {
+            "description": "Liste over gyldige hendelsestyper",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HendelsestyperResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/folkeregister/api/v1/hendelser/statistikk": {
+      "post": {
+        "operationId": "hentHendelsestatistikk",
+        "tags": [
+          "hendelser"
+        ],
+        "description": "Henter hendelsestatistikk basert på gitte kriterier",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/HendelserRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Hendelsestatistikk funnet",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HendelserResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/folkeregister/api/v1/hendelser/{fiksOrgId}/opprettRolle": {
+      "post": {
+        "tags": [
+          "hendelser"
+        ],
+        "operationId": "opprettRolle",
+        "description": "Oppretter rolle for å hente hendelser",
+        "parameters": [
+          {
+            "name": "fiksOrgId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Opprettet rolle for å hente hendelser"
+          }
+        }
+      }
+    },
+    "/folkeregister/api/v1/hendelser/{fiksOrgId}/slettRolle": {
+      "delete": {
+        "tags": [
+          "hendelser"
+        ],
+        "operationId": "slettRolle",
+        "description": "Sletter rolle for å hente hendelser",
+        "parameters": [
+          {
+            "name": "fiksOrgId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Slettet rolle for å hente hendelser"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "HendelsestyperResponse": {
+        "type": "object",
+        "required": [
+          "hendelsestyper"
+        ],
+        "properties": {
+          "hendelsestyper": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/HendelsestypeInfo"
+            },
+            "example": [
+              {
+                "hendelsestype": "FLYTTET_TIL_KOMMUNE",
+                "visningsnavn": "Flyttet til kommunen",
+                "beskrivelse": "Hendelse for personer som har flyttet til en kommune"
+              },
+              {
+                "hendelsestype": "FLYTTET_FRA_KOMMUNE",
+                "visningsnavn": "Flyttet fra kommunen",
+                "beskrivelse": "Hendelse for personer som har flyttet fra en kommune"
+              }
+            ]
+          }
+        }
+      },
+      "HendelsestypeInfo": {
+        "type": "object",
+        "required": [
+          "hendelsestype",
+          "visningsnavn",
+          "beskrivelse"
+        ],
+        "properties": {
+          "hendelsestype": {
+            "$ref": "#/components/schemas/Hendelsestype"
+          },
+          "visningsnavn": {
+            "type": "string",
+            "description": "Visningsnavn for hendelsestypen",
+            "example": "Flyttet til kommunen"
+          },
+          "beskrivelse": {
+            "type": "string",
+            "description": "Beskrivelse av hendelsestypen",
+            "example": "Hendelse for personer som har flyttet til en kommune"
+          }
+        }
+      },
+      "HendelserRequest": {
+        "type": "object",
+        "required": [
+          "rolleId",
+          "fraDato",
+          "hendelsestype",
+          "kommunenummer"
+        ],
+        "properties": {
+          "rolleId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "RolleId for rollen som skal brukes",
+            "example": "dfcaeab6-8263-4870-9e53-422600015c71"
+          },
+          "fraDato": {
+            "type": "string",
+            "format": "date",
+            "description": "Startdato for hendelser som skal hentes",
+            "example": "2023-01-01"
+          },
+          "hendelsestype": {
+            "$ref": "#/components/schemas/Hendelsestype"
+          },
+          "kommunenummer": {
+            "type": "string",
+            "pattern": "^\\d{4}$",
+            "description": "Kommunenummer (4 siffer)",
+            "example": "0301"
+          }
+        }
+      },
+      "HendelserResponse": {
+        "type": "object",
+        "required": [
+          "antall",
+          "parametere"
+        ],
+        "properties": {
+          "antall": {
+            "type": "integer",
+            "description": "Antall hendelser skjedd i gitt tidsrom",
+            "example": 256
+          },
+          "parametere": {
+            "$ref": "#/components/schemas/HendelserRequest"
+          }
+        }
+      },
+      "Hendelsestype": {
+        "type": "string",
+        "enum": ["FLYTTET_TIL_KOMMUNE", "FLYTTET_FRA_KOMMUNE"],
+        "description": "Unik kode for hendelsestypen",
+        "example": "FLYTTET_TIL_KOMMUNE"
+      }
+    }
+  }
+}
