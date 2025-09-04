@@ -14,6 +14,12 @@ Fiks Protokoll støtter meldinger definert under et sett med protokoller. Protok
 Fiks Protokoll validerer at det kun er gyldige meldingstyper som sendes for de ulike protokollene.
 Den kan også validere at det kun kan sendes meldinger mellom avsender- og mottakersystem som er forhåndsgodkjent av systemadministratorene.
 
+### Meldingsutveksling
+Fiks Protokoll er designet slik den er nå kun ment for meldingsutveksling som dekker "daglig overføring".
+
+Fiks Protokoll er ikke designet eller dimensjonert for migrering av store mengder data mellom systemer.
+Vi anbefaler å bruke andre måter å overføre store mengder data mellom systemer.
+Man må gjerne bruke en protokoll som format, men ikke Fiks Protokoll med Fiks IO som transportkanal.
 
 
 ## Status og plan for protokoller

@@ -20,7 +20,8 @@ For brukerhistorier fra arbeidet som ble gjort ved kartleggingen av protokollen,
 ## Begrensninger og regler for protokollen
 - Arkivdel skal være spesifisert i arkivet og håndteres av arkivet, men protokollen støtter ikke henting av arkivdel fra arkiv. 
  Meldingene har mulighet for å sette arkivdel men protokollen har altså ikke egen meldingstype for å hente arkivdeler.
-- Protokollen støtter ikke henting av koder som meldingstype. Vi tilbyr standard kodelister for koder i meldingene som kommer med i nuget/maven pakkene (_oversikt over kodelistene vi tilbyr kommer her snart_).  
+- Protokollen støtter ikke henting av koder som meldingstype. Vi tilbyr standard kodelister for koder i meldingene som kommer med i nuget/maven pakkene (_oversikt over kodelistene vi tilbyr kommer her snart_).
+- Fiks Protokoll med Fiks IO som meldingsutvekslings kanal er ikke designet for å kunne brukes ved migrering av store mengder data mellom systemer. Men man må gjerne bruke Fiks Arkiv som dataformat på en annen kanal.
 
 
 ## Meldinger
