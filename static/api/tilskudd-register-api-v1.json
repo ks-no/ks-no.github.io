@@ -10,11 +10,6 @@
     },
     "version": "v1"
   },
-  "security": [
-    {
-      "bearerAuth": []
-    }
-  ],
   "servers": [
     {
       "url": "https://api.fiks.ks.no",
@@ -24,6 +19,11 @@
       "url": "https://api.fiks.test.ks.no",
       "description": "KS Fiks TEST API host",
       "variables": {}
+    }
+  ],
+  "security": [
+    {
+      "bearerAuth": []
     }
   ],
   "tags": [
@@ -50,7 +50,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Tilskuddsliste"
+                  "$ref": "#/components/schemas/TilskuddSokResponse"
                 }
               }
             }
@@ -83,7 +83,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Tilskudd"
+                  "$ref": "#/components/schemas/TilskuddDetaljer"
                 }
               }
             }
@@ -112,7 +112,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/Tilskudd"
+                "$ref": "#/components/schemas/TilskuddDetaljer"
               }
             }
           },
@@ -180,67 +180,18 @@
           }
         }
       },
-      "Tilskuddsliste": {
+      "TilskuddBase": {
         "type": "object",
-        "required": [
-          "tilskudd"
-        ],
-        "properties": {
-          "tilskudd": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/Tilskudd"
-            }
-          }
-        }
-      },
-      "Tilskudd": {
-        "type": "object",
-        "required": [
-          "tilskuddsregisterId",
-          "tilskuddId",
-          "opprettet",
-          "endret",
-          "navn",
-          "etikett",
-          "beskrivelse",
-          "skjemaUrl",
-          "status",
-          "type",
-          "formaal",
-          "stoerrelseStoettemottaker",
-          "naering",
-          "regionsnivaa",
-          "region",
-          "varighet",
-          "nettadresse",
-          "stoetteordningstype",
-          "rolle",
-          "norskrettsligGrunnlag",
-          "aarligOekonomiskRamme"
-        ],
         "properties": {
           "tilskuddsregisterId": {
             "type": "string",
-            "format": "uuid"
+            "format": "uuid",
+            "readOnly": true
           },
           "tilskuddId": {
             "type": "string",
-            "pattern": "^[A-Za-z0-9-]+$"
-          },
-          "stoettetiltaksnummer": {
-            "type": "string",
-            "description": "Id for støtteordning i Støtteregisteret"
-          },
-          "opprettet": {
-            "type": "string",
-            "format": "date-time",
-            "example": "2025-08-27T15:45:30Z"
-          },
-          "endret": {
-            "type": "string",
-            "format": "date-time",
-            "example": "2025-08-27T15:45:30Z"
+            "pattern": "^[A-Za-z0-9-]+$",
+            "readOnly": true
           },
           "navn": {
             "type": "array",
@@ -253,13 +204,6 @@
             "items": {
               "type": "string"
             }
-          },
-          "beskrivelse": {
-            "type": "string"
-          },
-          "skjemaUrl": {
-            "type": "string",
-            "format": "uri"
           },
           "status": {
             "type": "string"
@@ -286,13 +230,7 @@
             }
           },
           "regionsnivaa": {
-            "type": "string",
-            "enum": [
-              "ALLE",
-              "ALLE_UTENOM_SVALBARD",
-              "SPESIFIKT_ANGITT"
-            ],
-            "example": "ALLE"
+            "$ref": "#/components/schemas/Regionsnivaa"
           },
           "region": {
             "type": "array",
@@ -303,40 +241,139 @@
           "varighet": {
             "$ref": "#/components/schemas/Varighet"
           },
-          "nettadresse": {
-            "type": "array",
-            "items": {
-              "type": "string",
-              "format": "uri"
-            }
-          },
           "stoetteordningstype": {
-            "type": "string",
-            "enum": [
-              "ORDINAER",
-              "AD_HOC"
-            ],
-            "example": "ORDINAER"
+            "$ref": "#/components/schemas/Stoetteordningstype"
+          }
+        }
+      },
+      "TilskuddDetaljer": {
+        "type": "object",
+        "readOnly": true,
+        "required": [
+          "tilskuddsregisterId",
+          "tilskuddId",
+          "opprettet",
+          "endret",
+          "navn",
+          "etikett",
+          "beskrivelse",
+          "skjemaUrl",
+          "status",
+          "type",
+          "formaal",
+          "stoerrelseStoettemottaker",
+          "naering",
+          "regionsnivaa",
+          "region",
+          "varighet",
+          "nettadresse",
+          "stoetteordningstype",
+          "rolle",
+          "norskrettsligGrunnlag",
+          "aarligOekonomiskRamme"
+        ],
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/TilskuddBase"
           },
-          "rolle": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/Rolle"
+          {
+            "type": "object",
+            "properties": {
+              "stoettetiltaksnummer": {
+                "type": "string",
+                "description": "Id for støtteordning i Støtteregisteret"
+              },
+              "opprettet": {
+                "type": "string",
+                "format": "date-time",
+                "example": "2025-08-27T15:45:30Z"
+              },
+              "endret": {
+                "type": "string",
+                "format": "date-time",
+                "example": "2025-08-27T15:45:30Z"
+              },
+              "beskrivelse": {
+                "type": "string"
+              },
+              "skjemaUrl": {
+                "type": "string",
+                "format": "uri"
+              },
+              "nettadresse": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "format": "uri"
+                }
+              },
+              "rolle": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/Rolle"
+                }
+              },
+              "norskrettsligGrunnlag": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/NorskrettsligGrunnlag"
+                }
+              },
+              "eoesrettsligGrunnlag": {
+                "$ref": "#/components/schemas/EoesrettsligGrunnlag"
+              },
+              "aarligOekonomiskRamme": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/AarligOekonomiskRamme"
+                }
+              }
             }
+          }
+        ]
+      },
+      "TilskuddElement": {
+        "type": "object",
+        "readOnly": true,
+        "required": [
+          "tilskuddsregisterId",
+          "tilskuddId",
+          "navn",
+          "etikett",
+          "status",
+          "type",
+          "formaal",
+          "naering",
+          "regionsnivaa",
+          "region",
+          "varighet",
+          "stoetteordningstype"
+        ],
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/TilskuddBase"
           },
-          "norskrettsligGrunnlag": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/NorskrettsligGrunnlag"
+          {
+            "type": "object",
+            "properties": {
+              "stottegiver": {
+                "$ref": "#/components/schemas/Rolleinnehaver"
+              }
             }
-          },
-          "eoesrettsligGrunnlag": {
-            "$ref": "#/components/schemas/EoesrettsligGrunnlag"
-          },
-          "aarligOekonomiskRamme": {
+          }
+        ]
+      },
+      "TilskuddSokResponse": {
+        "type": "object",
+        "readOnly": true,
+        "required": [
+          "tilskudd"
+        ],
+        "properties": {
+          "tilskudd": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/AarligOekonomiskRamme"
+              "$ref": "#/components/schemas/TilskuddElement"
             }
           }
         }
@@ -489,6 +526,23 @@
             "$ref": "#/components/schemas/Beloep"
           }
         }
+      },
+      "Regionsnivaa": {
+        "type": "string",
+        "enum": [
+          "ALLE",
+          "ALLE_UTENOM_SVALBARD",
+          "SPESIFIKT_ANGITT"
+        ],
+        "example": "ALLE"
+      },
+      "Stoetteordningstype": {
+        "type": "string",
+        "enum": [
+          "ORDINAER",
+          "AD_HOC"
+        ],
+        "example": "ORDINAER"
       }
     }
   }
