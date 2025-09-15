@@ -10,11 +10,6 @@
     },
     "version": "v1"
   },
-  "security": [
-    {
-      "bearerAuth": []
-    }
-  ],
   "servers": [
     {
       "url": "https://api.fiks.ks.no",
@@ -24,6 +19,11 @@
       "url": "https://api.fiks.test.ks.no",
       "description": "KS Fiks TEST API host",
       "variables": {}
+    }
+  ],
+  "security": [
+    {
+      "bearerAuth": []
     }
   ],
   "tags": [
@@ -37,20 +37,20 @@
     }
   ],
   "paths": {
-    "/tilskuddsregister/api/v1/oppslag/tilskudd": {
+    "/tilskuddsregister/api/v1/oppslag/ordning": {
       "get": {
         "tags": [
           "RegisterOppslag"
         ],
-        "operationId": "soekEtterTilskudd",
-        "summary": "Lister ut tilgjengelig tilskudd",
+        "operationId": "soekEtterTilskuddsordning",
+        "summary": "Lister ut tilgjengelig tilskuddsordninger",
         "responses": {
           "200": {
             "description": "OK",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/TilskuddSokResponse"
+                  "$ref": "#/components/schemas/SokEtterOrdningResponse"
                 }
               }
             }
@@ -58,13 +58,13 @@
         }
       }
     },
-    "/tilskuddsregister/api/v1/oppslag/tilskudd/{id}": {
+    "/tilskuddsregister/api/v1/oppslag/ordning/{id}": {
       "get": {
         "tags": [
           "RegisterOppslag"
         ],
-        "operationId": "hentTilskudd",
-        "summary": "Henter ut et tilskudd med id",
+        "operationId": "hentTilskuddsordning",
+        "summary": "Henter ut en tilskuddsordning med id",
         "parameters": [
           {
             "name": "id",
@@ -83,7 +83,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/TilskuddDetaljer"
+                  "$ref": "#/components/schemas/OrdningDetaljer"
                 }
               }
             }
@@ -101,18 +101,18 @@
         }
       }
     },
-    "/tilskuddsregister/api/v1/endring/tilskudd": {
+    "/tilskuddsregister/api/v1/endring/ordning": {
       "post": {
         "tags": [
           "RegisterEndring"
         ],
-        "operationId": "registrerTilskudd",
-        "summary": "Registrer et tilskudd i tilskuddsregisteret",
+        "operationId": "registrerTilskuddsordning",
+        "summary": "Registrer en tilskuddsordning i tilskuddsregisteret",
         "requestBody": {
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/TilskuddDetaljer"
+                "$ref": "#/components/schemas/RegistrerNyOrdningRequest"
               }
             }
           },
@@ -120,7 +120,14 @@
         },
         "responses": {
           "200": {
-            "description": "Tilskudd registrert"
+            "description": "Tilskudd registrert",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrdningId"
+                }
+              }
+            }
           },
           "default": {
             "description": "Noe gikk galt",
@@ -180,7 +187,7 @@
           }
         }
       },
-      "TilskuddBase": {
+      "OrdningId": {
         "type": "object",
         "properties": {
           "tilskuddsregisterId": {
@@ -191,8 +198,14 @@
           "tilskuddId": {
             "type": "string",
             "pattern": "^[A-Za-z0-9-]+$",
+            "example": "TO-100001",
             "readOnly": true
-          },
+          }
+        }
+      },
+      "OrdningBase": {
+        "type": "object",
+        "properties": {
           "navn": {
             "type": "array",
             "items": {
@@ -217,7 +230,7 @@
               "type": "string"
             }
           },
-          "stoerrelseStoettemottaker": {
+          "stoerrelseMottaker": {
             "type": "array",
             "items": {
               "type": "string"
@@ -241,12 +254,56 @@
           "varighet": {
             "$ref": "#/components/schemas/Varighet"
           },
-          "stoetteordningstype": {
-            "$ref": "#/components/schemas/Stoetteordningstype"
+          "ordningstype": {
+            "$ref": "#/components/schemas/Ordningstype"
+          },
+          "rolle": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Rolle"
+            }
           }
         }
       },
-      "TilskuddDetaljer": {
+      "OrdningUtvidet": {
+        "type": "object",
+        "properties": {
+          "stoettetiltaksnummer": {
+            "type": "string",
+            "description": "Id for støtteordning i Støtteregisteret"
+          },
+          "beskrivelse": {
+            "type": "string"
+          },
+          "skjemaUrl": {
+            "type": "string",
+            "format": "uri"
+          },
+          "nettadresse": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uri"
+            }
+          },
+          "norskrettsligGrunnlag": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/NorskrettsligGrunnlag"
+            }
+          },
+          "eoesrettsligGrunnlag": {
+            "$ref": "#/components/schemas/EoesrettsligGrunnlag"
+          },
+          "aarligOekonomiskRamme": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AarligOekonomiskRamme"
+            }
+          }
+        }
+      },
+      "OrdningDetaljer": {
         "type": "object",
         "readOnly": true,
         "required": [
@@ -257,32 +314,33 @@
           "navn",
           "etikett",
           "beskrivelse",
-          "skjemaUrl",
           "status",
           "type",
           "formaal",
-          "stoerrelseStoettemottaker",
+          "stoerrelseMottaker",
           "naering",
           "regionsnivaa",
           "region",
           "varighet",
           "nettadresse",
-          "stoetteordningstype",
+          "ordningstype",
           "rolle",
           "norskrettsligGrunnlag",
           "aarligOekonomiskRamme"
         ],
         "allOf": [
           {
-            "$ref": "#/components/schemas/TilskuddBase"
+            "$ref": "#/components/schemas/OrdningId"
+          },
+          {
+            "$ref": "#/components/schemas/OrdningBase"
+          },
+          {
+            "$ref": "#/components/schemas/OrdningUtvidet"
           },
           {
             "type": "object",
             "properties": {
-              "stoettetiltaksnummer": {
-                "type": "string",
-                "description": "Id for støtteordning i Støtteregisteret"
-              },
               "opprettet": {
                 "type": "string",
                 "format": "date-time",
@@ -292,47 +350,12 @@
                 "type": "string",
                 "format": "date-time",
                 "example": "2025-08-27T15:45:30Z"
-              },
-              "beskrivelse": {
-                "type": "string"
-              },
-              "skjemaUrl": {
-                "type": "string",
-                "format": "uri"
-              },
-              "nettadresse": {
-                "type": "array",
-                "items": {
-                  "type": "string",
-                  "format": "uri"
-                }
-              },
-              "rolle": {
-                "type": "array",
-                "items": {
-                  "$ref": "#/components/schemas/Rolle"
-                }
-              },
-              "norskrettsligGrunnlag": {
-                "type": "array",
-                "items": {
-                  "$ref": "#/components/schemas/NorskrettsligGrunnlag"
-                }
-              },
-              "eoesrettsligGrunnlag": {
-                "$ref": "#/components/schemas/EoesrettsligGrunnlag"
-              },
-              "aarligOekonomiskRamme": {
-                "type": "array",
-                "items": {
-                  "$ref": "#/components/schemas/AarligOekonomiskRamme"
-                }
               }
             }
           }
         ]
       },
-      "TilskuddElement": {
+      "OrdningElement": {
         "type": "object",
         "readOnly": true,
         "required": [
@@ -347,36 +370,60 @@
           "regionsnivaa",
           "region",
           "varighet",
-          "stoetteordningstype"
+          "ordningstype",
+          "rolle"
         ],
         "allOf": [
           {
-            "$ref": "#/components/schemas/TilskuddBase"
+            "$ref": "#/components/schemas/OrdningId"
           },
           {
-            "type": "object",
-            "properties": {
-              "stottegiver": {
-                "$ref": "#/components/schemas/Rolleinnehaver"
-              }
-            }
+            "$ref": "#/components/schemas/OrdningBase"
           }
         ]
       },
-      "TilskuddSokResponse": {
+      "SokEtterOrdningResponse": {
         "type": "object",
         "readOnly": true,
         "required": [
-          "tilskudd"
+          "ordning"
         ],
         "properties": {
-          "tilskudd": {
+          "ordning": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/TilskuddElement"
+              "$ref": "#/components/schemas/OrdningElement"
             }
           }
         }
+      },
+      "RegistrerNyOrdningRequest": {
+        "type": "object",
+        "writeOnly": true,
+        "required": [
+          "navn",
+          "etikett",
+          "status",
+          "type",
+          "formaal",
+          "naering",
+          "regionsnivaa",
+          "region",
+          "varighet",
+          "ordningstype",
+          "rolle",
+          "beskrivelse",
+          "norskrettsligGrunnlag",
+          "aarligOekonomiskRamme"
+        ],
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/OrdningBase"
+          },
+          {
+            "$ref": "#/components/schemas/OrdningUtvidet"
+          }
+        ]
       },
       "Navn": {
         "type": "object",
@@ -419,15 +466,15 @@
       "Rolleinnehaver": {
         "type": "object",
         "required": [
-          "organisasjonsnummer",
-          "navn"
+          "organisasjonsnummer"
         ],
         "properties": {
           "organisasjonsnummer": {
             "type": "string"
           },
           "navn": {
-            "type": "string"
+            "type": "string",
+            "readOnly": true
           }
         }
       },
@@ -503,10 +550,12 @@
         "properties": {
           "beloep": {
             "type": "number",
-            "format": "double"
+            "format": "double",
+            "example": 53000
           },
           "valuta": {
             "type": "string",
+            "example": "NOK",
             "description": "Valutakode i henhold til ISO 4217"
           }
         }
@@ -520,7 +569,8 @@
         "properties": {
           "aar": {
             "type": "integer",
-            "format": "int32"
+            "format": "int32",
+            "example": 2025
           },
           "beloep": {
             "$ref": "#/components/schemas/Beloep"
@@ -536,7 +586,7 @@
         ],
         "example": "ALLE"
       },
-      "Stoetteordningstype": {
+      "Ordningstype": {
         "type": "string",
         "enum": [
           "ORDINAER",
