@@ -1,0 +1,216 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "KS SvarUt: Status API - UNDER UTVIKLING, det vil fortsatt komme endringer",
+    "description": "API for henting av status for forsendelser - UNDER UTVIKLING, det vil fortsatt komme endringer",
+    "contact": {
+      "name": "Fiks-brukerstøtte",
+      "url": "https://ks-no.github.io/",
+      "email": "fiks-utvikling@ks.no"
+    },
+    "license": {
+      "name": "MIT",
+      "url": "https://opensource.org/licenses/MIT"
+    },
+    "version": "v3"
+  },
+  "servers": [
+    {
+      "url": "https://test.svarut.ks.no/api",
+      "description": "SvarUt testmiljø"
+    },
+    {
+      "url": "https://svarut.ks.no/api",
+      "description": "SvarUt produksjonsmiljø"
+    }
+  ],
+  "security": [
+    {
+      "bearerAuth": []
+    }
+  ],
+  "tags": [
+    {
+      "name": "Status",
+      "description": "API for henting av status for forsendelser"
+    }
+  ],
+  "paths": {
+    "/v3/kontoer/{kontoId}/forsendelser/status": {
+      "post": {
+        "tags": [
+          "Status"
+        ],
+        "summary": "Henter status for forsendelse",
+        "operationId": "hentStatuser",
+        "parameters": [
+          {
+            "name": "kontoId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "*/*": {
+              "schema": {
+                "$ref": "#/components/schemas/Forsendelser"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Status for forsendelser",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForsendelseStatuser"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Feil",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    },
+    "schemas": {
+      "Forsendelser": {
+        "required": [
+          "id"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "array",
+            "description": "Liste med id'er 'til forsendelser man ønsker å søke etter",
+            "items": {
+              "type": "string",
+              "description": "Liste med id'er til forsendelser man ønsker å søke etter",
+              "format": "uuid"
+            }
+          }
+        }
+      },
+      "ForsendelseStatus": {
+        "required": [
+          "id",
+          "sisteStatusEndring",
+          "status"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Id til forsendelse denne statusen gjelder",
+            "format": "uuid",
+            "example": "d6b23522-ddf3-462a-8140-16e59e1f476d"
+          },
+          "sisteStatusEndring": {
+            "type": "string",
+            "description": "Tidspunkt for når status vart sist endret",
+            "format": "date-time",
+            "example": "2023-01-01T11:33:55.008+01:00"
+          },
+          "status": {
+            "type": "string",
+            "description": "Gyldige statuser for en forsendelse",
+            "example": "LEST",
+            "enum": [
+              "MOTTATT",
+              "AKSEPTERT",
+              "AVVIST",
+              "VARSLET",
+              "LEST",
+              "SENDT_PRINT",
+              "PRINTET",
+              "MANUELT_HANDTERT",
+              "SENDT_DIGITALT",
+              "SENDT_SDP",
+              "LEVERT_SDP",
+              "KLAR_FOR_MOTTAK",
+              "IKKE_LEVERT",
+              "SLETTET",
+              "SENDT_NHN_MOTTAKER",
+              "LEVERT_NHN_MOTTAKER"
+            ]
+          }
+        },
+        "description": "Status for forsendelse"
+      },
+      "ForsendelseStatuser": {
+        "required": [
+          "statuser"
+        ],
+        "type": "object",
+        "properties": {
+          "statuser": {
+            "type": "array",
+            "description": "Liste over status for hver forsendelse",
+            "items": {
+              "$ref": "#/components/schemas/ForsendelseStatus"
+            }
+          }
+        }
+      },
+      "ErrorMessage": {
+        "type": "object",
+        "properties": {
+          "timestamp": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "status": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "error": {
+            "type": "string"
+          },
+          "errorId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "path": {
+            "type": "string"
+          },
+          "originalPath": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          },
+          "errorCode": {
+            "type": "string"
+          },
+          "errorJson": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}
