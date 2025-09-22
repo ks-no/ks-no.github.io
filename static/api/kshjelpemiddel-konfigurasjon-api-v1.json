@@ -38,13 +38,13 @@
     }
   ],
   "paths": {
-    "/fiks-kshjelpemiddel-konfig/api/v1/{fiksOrgUuid}/authenticate": {
-      "get": {
+    "/fiks-kshjelpemiddel-konfig/api/v1/{fiksOrgUuid}/setActivation": {
+      "post": {
         "tags": [
-          "Autentisering"
+          "Konfigurasjon"
         ],
-        "summary": "Autentiserer KS Hjelpemiddel konto",
-        "operationId": "authenticate",
+        "summary": "Aktiverer KS Hjelpemiddel konto",
+        "operationId": "setActivation",
         "parameters": [
           {
             "name": "fiksOrgUuid",
@@ -57,9 +57,26 @@
             "description": "UUID for Fiks organisasjon."
           }
         ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ActivateRequest"
+              }
+            }
+          }
+        },
         "responses": {
           "200": {
-            "description": "Autentisert KS Hjelpemiddel konto"
+            "description": "Status for KS Hjelpemiddel konto",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StatusResponse"
+                }
+              }
+            }
           },
           "401": {
             "description": "Ikke autentisert",
@@ -426,12 +443,38 @@
           }
         }
       },
+      "ActivateRequest": {
+        "type": "object",
+        "properties": {
+          "orgName": {
+            "type": "string",
+            "nullable": false
+          },
+          "kommuneNummer": {
+            "type": "integer",
+            "nullable": false
+          },
+          "orgNo": {
+            "type": "string",
+            "nullable": false
+          },
+          "isActive": {
+            "type": "boolean",
+            "nullable": false,
+            "description": "Settes til true for å aktivere, false for å deaktivere."
+          }
+        }
+      },
       "StatusResponse": {
         "type": "object",
         "properties": {
           "isReadyForUse": {
             "type": "boolean",
             "description": "True if KS Hjelpemiddel is ready for use, false if not."
+          },
+          "isActive": {
+            "type": "boolean",
+            "description": "True if KS Hjelpemiddel is activated, false if not."
           },
           "missingConfigurations": {
             "type": "array",
@@ -444,6 +487,7 @@
       "RequiredConfigurations": {
         "type": "string",
         "enum": [
+          "FiksOrgInfo",
           "SmsSenderName",
           "AdministratorPerson"
         ]
