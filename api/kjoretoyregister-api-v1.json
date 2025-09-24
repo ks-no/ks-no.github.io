@@ -76,6 +76,54 @@
           }
         }
       }
+    },
+    "/kjoretoyregister/api/v1/ks/{fiksOrgId}/organisasjon" : {
+      "post" : {
+        "tags" : [ "Kjoretoyregister" ],
+        "description" : "Henter kjoretoy for angitt organisasjon",
+        "operationId" : "hentKjoretoyOrganisasjon",
+        "parameters" : [ {
+          "name" : "fiksOrgId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/KjoretoyOrganisasjonOppslag"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/KjoretoyOrganisasjonResponse"
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Ikke tilgang",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components" : {
@@ -85,6 +133,29 @@
         "properties": {
           "fnr": {
             "type": "string"
+          }
+        }
+      },
+      "KjoretoyOrganisasjonOppslag": {
+        "required": [
+          "organisasjonsnummer"
+        ],
+        "properties": {
+          "organisasjonsnummer": {
+            "type": "string",
+            "pattern": "\\d{9}",
+            "description": "Organisasjonsnummer på eier"
+          },
+          "fra": {
+            "type": "integer",
+            "minimum": 0,
+            "default": 0,
+            "description": "Benyttes for paging av resultatet - angir første rad man ønsker returnert"
+          },
+          "antall": {
+            "type": "integer",
+            "default": 100,
+            "description": "Benyttes for paging av resultatet - angir antall rader man ønsker returnert"
           }
         }
       },
@@ -98,6 +169,20 @@
             "type": "array",
             "items": {
               "$ref" : "#/components/schemas/Kjoretoy"
+            }
+          }
+        }
+      },
+      "KjoretoyOrganisasjonResponse": {
+        "required": [ "kjoretoy", "organisasjonsnummer" ],
+        "properties": {
+          "organisasjonsnummer": {
+            "type": "string"
+          },
+          "kjoretoy": {
+            "type": "array",
+            "items": {
+              "$ref" : "#/components/schemas/KjoretoyOrganisasjon"
             }
           }
         }
@@ -122,6 +207,26 @@
           }
         }
       },
+      "KjoretoyOrganisasjon": {
+        "properties": {
+          "kjennemerke": {
+            "type": "string"
+          },
+          "forstegangsregistrering": {
+            "type": "string",
+            "format": "date"
+          },
+          "eierskap": {
+            "$ref" : "#/components/schemas/EierskapOrganisasjon"
+          },
+          "registrering": {
+            "$ref" : "#/components/schemas/Registrering"
+          },
+          "tekniskeData": {
+            "$ref" : "#/components/schemas/TekniskeData"
+          }
+        }
+      },
       "Eierskap": {
         "properties": {
           "eier": {
@@ -129,10 +234,28 @@
           }
         }
       },
+      "EierskapOrganisasjon": {
+        "properties": {
+          "eier": {
+            "$ref" : "#/components/schemas/EierOrganisasjon"
+          }
+        }
+      },
       "Eier": {
         "properties": {
           "person": {
             "$ref" : "#/components/schemas/Person"
+          },
+          "fra": {
+            "type": "string",
+            "format": "date"
+          }
+        }
+      },
+      "EierOrganisasjon": {
+        "properties": {
+          "organisasjon": {
+            "$ref" : "#/components/schemas/Organisasjon"
           },
           "fra": {
             "type": "string",
@@ -149,6 +272,16 @@
             "type": "string"
           },
           "etternavn": {
+            "type": "string"
+          }
+        }
+      },
+      "Organisasjon": {
+        "properties": {
+          "organisasjonsnummer": {
+            "type": "string"
+          },
+          "organisasjonsnavn": {
             "type": "string"
           }
         }
