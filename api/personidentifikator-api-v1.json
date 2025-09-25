@@ -1,0 +1,237 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "FIKS Personidentifikator Beriking API",
+    "version": "1.0.0",
+    "description": "API for beriking av brukere med personidentifikator (fødselsnummer eller D-nummer). Gjelder brukere innenfor angitt kilde. SCIM2-extension har prioritet og vil blokkere beriking via dette API-et.\n",
+    "license": {
+      "name": "MIT",
+      "url": "https://opensource.org/licenses/MIT"
+    }
+  },
+  "servers": [
+    {
+      "url": "https://api.fiks.ks.no",
+      "description": "KS Fiks API host"
+    },
+    {
+      "url": "https://api.fiks.test.ks.no",
+      "description": "KS Fiks TEST API host"
+    }
+  ],
+  "security": [
+    {
+      "bearerAuth": []
+    }
+  ],
+  "paths": {
+    "/identitet/synkronisering/beriking/api/v1/brukere/{kilde}/personidentifikator": {
+      "get": {
+        "tags": [
+          "personidentifikator"
+        ],
+        "summary": "Hent alle brukere med personidentifikator for en gitt kilde",
+        "operationId": "hentAlleBrukereMedPersonidentifikatorForKilde",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "kilde",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Navn på kilden"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Liste over brukere med personidentifikator",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/PersonidentifikatorObjekt"
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Manglende tilgang"
+          }
+        }
+      }
+    },
+    "/identitet/synkronisering/beriking/api/v1/brukere/{kilde}/{brukernavn}/personidentifikator": {
+      "get": {
+        "tags": [
+          "personidentifikator"
+        ],
+        "summary": "Hent personidentifikator for en bestemt bruker",
+        "operationId": "hentPersonidentifikatorForBrukerIKilde",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "kilde",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "brukernavn",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Brukerens personidentifikator",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PersonidentifikatorObjekt"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Manglende tilgang"
+          },
+          "404": {
+            "description": "Bruker ikke funnet"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "personidentifikator"
+        ],
+        "summary": "Lagre personidentifikator for en bestemt bruker",
+        "operationId": "lagrePersonidentifikatorForBrukerIKilde",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "kilde",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "brukernavn",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PersonidentifikatorPayload"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Personidentifikator lagret"
+          },
+          "400": {
+            "description": "Personidentifikator finnes allerede via SCIM2"
+          },
+          "403": {
+            "description": "Manglende tilgang"
+          },
+          "404": {
+            "description": "Bruker ikke funnet"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "personidentifikator"
+        ],
+        "summary": "Slett personidentifikator for en bestemt bruker",
+        "operationId": "slettPersonidentifikatorForBrukerIKilde",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "kilde",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "brukernavn",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Personidentifikator slettet"
+          },
+          "403": {
+            "description": "Manglende tilgang"
+          },
+          "404": {
+            "description": "Bruker ikke funnet"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    },
+    "schemas": {
+      "PersonidentifikatorPayload": {
+        "type": "object",
+        "required": [
+          "personidentifikator"
+        ],
+        "properties": {
+          "personidentifikator": {
+            "type": "string",
+            "pattern": "^[0-9]{11}$",
+            "description": "Fødselsnummer eller D-nummer (11 siffer)"
+          }
+        }
+      },
+      "PersonidentifikatorObjekt": {
+        "type": "object",
+        "properties": {
+          "uuid": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "brukernavn": {
+            "type": "string"
+          },
+          "personidentifikator": {
+            "type": "string",
+            "pattern": "^[0-9]{11}$"
+          }
+        }
+      }
+    }
+  }
+}
