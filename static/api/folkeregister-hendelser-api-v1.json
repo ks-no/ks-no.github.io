@@ -26,6 +26,10 @@
     {
       "name": "hendelser",
       "description": "API for å hente hendelser fra folkeregisteret"
+    },
+    {
+      "name": "hendelser-tidsserie",
+      "description": "API for å hente data om hendelser fra folkeregisteret som tidsserie"
     }
   ],
   "paths": {
@@ -161,6 +165,37 @@
           }
         }
       }
+    },
+    "/folkeregister/api/v1/hendelser/tidserie": {
+      "post": {
+        "operationId": "hentHendelserITidserie",
+        "tags": [
+          "hendelser-tidsserie"
+        ],
+        "description": "Hent hendelsesdata formattert i tidserie",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/HendelserTidserieRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Hendelsesdata funnet",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HendelserTidserieResponse"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -243,6 +278,38 @@
             "pattern": "^\\d{4}$",
             "description": "Kommunenummer (4 siffer)",
             "example": "0301"
+          }
+        }
+      },
+      "HendelserTidserieRequest": {
+        "type": "object",
+        "required": [
+          "rolleId",
+          "fraDato",
+          "hendelsestype",
+          "kommune"
+        ],
+        "properties": {
+          "rolleId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "RolleId for rollen som skal brukes",
+            "example": "dfcaeab6-8263-4870-9e53-422600015c71"
+          },
+          "fraDato": {
+            "type": "string",
+            "format": "date",
+            "description": "Startdato for hendelser som skal hentes",
+            "example": "2023-01-01"
+          },
+          "hendelsestype": {
+            "$ref": "#/components/schemas/Hendelsestype"
+          },
+          "kommuner": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Kommune"
+            }
           }
         }
       },
@@ -350,6 +417,69 @@
           }
         },
         "description": "Filtrer uttrekk basert på fødselsdato. Støttes kun for FLYTTET_TIL_KOMMUNE og FLYTTET_FRA_KOMMUNE."
+      },
+      "HendelserTidserieResponse": {
+        "type": "object",
+        "properties": {
+          "hendelsestype": {
+            "$ref": "#/components/schemas/Hendelsestype"
+          },
+          "kommuneTidseries": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Tidserie"
+            }
+          }
+        },
+        "required": [
+          "hendelsestype",
+          "kommuneTidseries"
+        ],
+        "description": "Tidsserier av hendelsesdata, per kommune"
+      },
+      "Tidserie": {
+        "type": "object",
+        "properties": {
+          "kommunenummer": {
+            "type": "string",
+            "pattern": "^\\d{4}$",
+            "description": "Kommunenummer (4 siffer)",
+            "example": "0301"
+          },
+          "series": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TidserieItem"
+            },
+            "description": "Samling som inneholder antall hendelser per tidsintervall for kommunen, i kronologisk rekkefølge"
+          }
+        },
+        "required": [
+          "kommunenummer",
+          "series"
+        ],
+        "description": "Tidsserie av hendelsesdata for en visst kommune"
+      },
+      "TidserieItem": {
+        "type": "object",
+        "properties": {
+          "tidsintervall": {
+            "type": "string",
+            "format": "date",
+            "description": "Timestamp av tidsintervallet. Dataen blir gruppert og visst i grafer ved den",
+            "example": "2025-01-01"
+          },
+          "antallHendelser": {
+            "type": "integer",
+            "description": "Antall hendelser",
+            "example": 123
+          }
+        },
+        "required": [
+          "tidsintervall",
+          "antallHendelser"
+        ],
+        "description": "Antall hendelser for tidsintervallet."
       }
     }
   }
