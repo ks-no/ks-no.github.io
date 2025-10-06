@@ -5,7 +5,7 @@ aliases: [/tjenester/kontaktregisteret]
 ---
 
 ## Kort beskrivelse
-[Kontaktregisteret](https://www.digdir.no/felleslosninger/kontaktregisteret/865), tidligere kontakt- og reservasjonsregisteret er et register som inneholder kontaktinformasjon for personer.
+[Kontaktregisteret](https://www.digdir.no/felleslosninger/kontaktregisteret/865), tidligere kontakt- og reservasjonsregisteret, er et register som inneholder kontaktinformasjon for personer.
 
 ### Hva må være på plass før man kan integrere
 
