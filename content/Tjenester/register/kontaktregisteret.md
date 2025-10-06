@@ -20,5 +20,5 @@ Alle steg for å sette opp [folkeregister](/tjenester/folkeregister) er nødvend
 
 Spec finner man [her.](https://editor-next.swagger.io/?url=https://developers.fiks.ks.no/api/register-krr-api-v1.json)
 
-## kontakt
-tekniske spørsmål og henvendelser kan rettes til fiks-utvikling@ks.no, øvrige henvendelser kan rettes til fiks@ks.no
+## Kontakt
+Tekniske spørsmål og henvendelser kan rettes til fiks-utvikling@ks.no, øvrige henvendelser kan rettes til fiks@ks.no
