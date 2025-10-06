@@ -1,5 +1,5 @@
 ---
-title: Kontaktregisteret 
+title: Kontaktregisteret
 date: 2025-10-06
 aliases: [/tjenester/kontaktregisteret]
 ---
