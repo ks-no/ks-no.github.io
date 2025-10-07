@@ -250,6 +250,69 @@
           }
         }
       }
+    },
+    "/konfigurasjon/api/v3/organisasjoner/{fiksOrg}/ressurser/{ressursId}/personer/sok": {
+      "post": {
+        "tags": [
+          "RessursTilgangV3"
+        ],
+        "summary": "Søk etter personer på en organisasjon og filtrerer fiks/eksterne brukere basert på om ekstern brukerstyring er aktivert for tjenesten. Inkluderer tilganger på ressurs",
+        "operationId": "sokPersonerMedTilgang",
+        "parameters": [
+          {
+            "name": "fiksOrg",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "ressursId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SokPersonRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Personer med tildelt tilgang på ressurs",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RessursTilganger"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Ugyldig input"
+          },
+          "401": {
+            "description": "Uautorisert"
+          },
+          "403": {
+            "description": "Utførende person må være administrator på ressurs"
+          },
+          "500": {
+            "description": "Feil ved søk i tilganger"
+          }
+        }
+      }
     }
   },
   "components": {
@@ -262,6 +325,10 @@
     },
     "schemas": {
       "RessursTilganger": {
+        "required": [
+          "ressursId",
+          "tilganger"
+        ],
         "type": "object",
         "description": "Personer med tilgang til ressurs",
         "properties": {
@@ -284,7 +351,8 @@
           "id",
           "fdato",
           "navn",
-          "isExternal"
+          "isExternal",
+          "tilganger"
         ],
         "type": "object",
         "properties": {
@@ -318,6 +386,32 @@
           }
         },
         "description": "En person med tilhørende kontaktinformasjon."
+      },
+      "SokPersonRequest": {
+        "type": "object",
+        "required": [
+          "fra",
+          "antall",
+          "sok"
+        ],
+        "properties": {
+          "fra": {
+            "type": "integer",
+            "format": "int32",
+            "default": 0,
+            "description": "Start index for pagination"
+          },
+          "antall": {
+            "type": "integer",
+            "format": "int32",
+            "default": 10,
+            "description": "Number of items to fetch"
+          },
+          "sok": {
+            "type": "string",
+            "description": "Search by name or valid fødselsnummer (fnr)"
+          }
+        }
       },
       "Tilgang": {
         "required": [
