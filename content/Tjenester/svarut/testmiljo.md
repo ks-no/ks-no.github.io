@@ -7,7 +7,7 @@ hidden: false
 For å lage integrasjoner mot SvarUt kan en teste mot vårt testmiljø. Testmiljøet har ingen garantier for oppetid, men vi prøver at det er tilgjengelig
 hele tiden. Testmiljøet inneholder de siste endringene også endringer som ikke er produksjonsatt.
 
-Testmiljøet er tilgjengelig på https://svarut.fiks.test.ks.no/
+Testmiljøet er tilgjengelig på https://test.svarut.ks.no/
 
 **Vi ønsker ikke sensitive data i testmiljøet.** Vi ønsker primært at det blir benyttet data fra Tenor.
 
@@ -33,25 +33,24 @@ e-Boks: https://demo2-www.e-boks.no/privat
 Valg av digital postkasse gjøres i Kontakt- og reservasjonsregisteret på https://minprofil.test.kontaktregisteret.no/
 
 For å sette opp en SvarUt-konto for Digital Post til innbygger må en bruke et organsisasjonsnummer som er satt opp riktig hos Digdir og Altinn. I testmiljøet kan man bruke KS sitt organisasjonsnummer, 971 032 146.
-Alternativt kan man legge inn egne organisasjonsnummer. En må gjennomføre samme prosess som når man skal sette opp et vanlig organisasjonsnummer for å sende til digital postkasse: 
+Alternativt kan man legge inn egne organisasjonsnummer. En må gjennomføre samme prosess som når man skal sette opp et ekte organisasjonsnummer for å sende til digital postkasse: 
 * Det må sendes en epost til servicedesk hos Digdir med beskjed om at en ønsker å få på plass en avtale for Digital post for dette organisasjonsnummeret.
 * Det må også delegeres rettigheter til KS slik at KS Digital kan sende på vegne av organisasjonsnummeret
-  * Logge inn i https://tt02.altinn.no med daglig leder for orgnummeret man skal delegere rettigheter til KS orgnummer med
-  * Trykke på ikon for organiasjonsnummer og finne Innstillinger.
-  * Finne ‘Tilgang til programmeringsgrensesnitt - API’ → Gi og fjerne tilganger
+  * Logge inn i https://tt02.altinn.no med daglig leder for organisasjonsnummeret man skal delegere rettigheter til KS sitt organisasjonsnummer med
+  * Trykke på ikon for organisasjonsnummer og finne Innstillinger.
+  * Finne ‘Tilgang til programmeringsgrensesnitt - API’ og deretter 'Gi og fjerne tilganger'
   * Deleger nytt API
-  * Søk etter ‘Deleger rettighet til å sende DPI-meldinger på vegne av virksomheten’
-  * Får då opp at det gjelder scope digitalpostinnbygger:send
-  * Trykk på pluss også Neste
-  * Søke så opp KS sitt orgnummer: 971032146
-  * Neste og Lagre.
+  * Søk etter ‘Deleger rettighet til å sende DPI-meldinger på vegne av virksomheten’. Da får man opp at dette gjelder scope digitalpostinnbygger:send
+  * Trykk så på pluss-tegnet og deretter 'Neste'
+  * Nå kan du søke opp KS sitt orgnummer: 971032146, når det er gjort kan du trykke 'Neste' og til slutt 'Lagre'
 
 ## SvarInn 
 For å teste SvarInn må en registrere et organisasjonsnummer i mottakersystemet. 
-* Fordi det kreves at den som legger inn et organisasjonsnummer på et mottakersystem, er daglig leder, så må man finne en person som har denne rollen, og deretter finne organisasjonen denne er daglig leder for. Se oppskrift over. 
+* Fordi det kreves at den som legger inn et organisasjonsnummer på et mottakersystem, har tilgang til organisasjonen i Altinn, så må man finne et fødselsnummer som har tilgang til en organisasjon, og deretter finne organisasjonen som person er knytta mot. Et eksempel på person med en slik tilgang, er daglig leder for en organisasjon, se oppkrift over for å finne slike fødselsnummer i Tenor. 
 * Logg så inn med en bruker som har administrator-rettigheter i SvarUt: https://svarut.fiks.test.ks.no. Om du ikke har dette, må du ta kontakt med vår brukerstøtte (se 'Tilgang til SvarUt test')
-* I fanen Mottakersystem (https://svarut.fiks.test.ks.no/mottaker#/) så kan en nå opprette eller endre mottakersystem. Opprett eller velg et mottakersystem, og gi deretter tilgang til fødselsnummer som har rollen daglig leder (i fanen Tilganger på et gitt mottakersystem). 
-* Logg inn i SvarUt igjen med fødselsnummer som er knyttet mot Testbruker som har rollen Daglig leder.
+* I fanen Mottakersystem (https://svarut.fiks.test.ks.no/mottaker#/) vil du finne mottakersystem som din administratorbruker har tilgang til. Om du ikke finner noen mottakersystem, må du be brukerstøtte om at de må gi brukeren tilgang til relevante mottakersystem.
+* For et gitt mottakersystem kan du nå også gi tilgang videre til andre, for eksempel fødselsnummer som har tilgang til organisasjonen i Altinn (i fanen Tilganger på et gitt mottakersystem). 
+* Logg inn i SvarUt igjen med fødselsnummer som er knyttet mot Testbruker som har tilgang til organisasjonen i Altinn
 * Nå er du klar for å legge inn organisasjonsnummer på mottakersystemet. 
 
 Følg samme oppskrift om man tidligere har registrert et ekte organisasjonsnummer på et SvarInn mottakersystem og nå har fått problemer med å sende til dette organisasjonsnummeret i våre test-miljø. 
