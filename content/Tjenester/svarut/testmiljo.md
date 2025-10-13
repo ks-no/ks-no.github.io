@@ -52,6 +52,7 @@ For å teste SvarInn må en registrere et organisasjonsnummer i mottakersystemet
 * For et gitt mottakersystem kan du nå også gi tilgang videre til andre, for eksempel fødselsnummer som har tilgang til organisasjonen i Altinn (i fanen Tilganger på et gitt mottakersystem). 
 * Logg inn i SvarUt igjen med fødselsnummer som er knyttet mot Testbruker som har tilgang til organisasjonen i Altinn
 * Nå er du klar for å legge inn organisasjonsnummer på mottakersystemet. 
+* NB! Får du opp "Andre mottakersystemer som er konfigurert med samme organisasjonsnummer" når du har klikket på 'Gi tilgang'? Og finner du organisasjonsnummeret i listen som kommer opp, knyttet mot et annet mottakersystem enn det du er inne på? Da bør du finne et nytt organisasjonsnummer og gjøre samme operasjon på nytt, det betyr at noen andre allerede har brukt dette organisasjonsnummeret. 
 
 Følg samme oppskrift om man tidligere har registrert et ekte organisasjonsnummer på et SvarInn mottakersystem og nå har fått problemer med å sende til dette organisasjonsnummeret i våre test-miljø. 
 Oppdater med nytt organisasjonsnummer på mottakersystem, og så er det klart for å sende forsendelser til dette organisasjonsnummeret i stedet for. 
