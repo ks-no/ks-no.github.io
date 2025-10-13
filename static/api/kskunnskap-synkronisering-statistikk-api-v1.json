@@ -26,6 +26,10 @@
     {
       "name": "Organisasjon",
       "description": "Operasjoner relatert til organisasjon (avdelinger/stillinger) i KS kunnskap"
+    },
+    {
+      "name": "Bruker",
+      "description": "Operasjoner relatert til bruker i KS kunnskap"
     }
   ],
   "paths": {
@@ -181,6 +185,159 @@
           "Organisasjon"
         ]
       }
+    },
+    "/kskunnskap-synkronisering/api/v1/statistikk/{fiksOrgId}/bruker": {
+      "get": {
+        "summary": "Hent statistikk for synkronisering av brukere",
+        "description": "Henter statistikk for synkronisering av brukere i KS kunnskap.",
+        "operationId": "hentBrukerStatistikk",
+        "parameters": [
+          {
+            "name": "fiksOrgId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/FiksOrgId"
+            },
+            "description": "Fiks organisasjons ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Statistikk for bruker synkronisering",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BrukerStatistikkResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Organisasjon ikke funnet"
+          },
+          "500": {
+            "description": "Intern serverfeil"
+          }
+        },
+        "tags": [
+          "Bruker"
+        ]
+      }
+    },
+    "/kskunnskap-synkronisering/api/v1/statistikk/{fiksOrgId}/bruker/feil": {
+      "get": {
+        "summary": "Hent synkroniseringsfeil for brukere",
+        "description": "Henter synkroniseringsfeil for synkronisering av brukere i KS kunnskap.",
+        "operationId": "hentBrukerSynkFeil",
+        "parameters": [
+          {
+            "name": "fiksOrgId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/FiksOrgId"
+            },
+            "description": "Fiks organisasjons ID"
+          },
+          {
+            "in": "query",
+            "name": "side",
+            "description": "paginering side",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "antall",
+            "description": "paginering antall",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Synkroniseringsfeil for bruker synkronisering",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BrukerSynkFeilResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Organisasjon ikke funnet"
+          },
+          "500": {
+            "description": "Intern serverfeil"
+          }
+        },
+        "tags": [
+          "Bruker"
+        ]
+      }
+    },
+    "/kskunnskap-synkronisering/api/v1/statistikk/{fiksOrgId}/bruker/slettes": {
+      "get": {
+        "summary": "Hent brukere som venter på sletting i KS kunnskap",
+        "description": "Henter brukere som venter på sletting i KS kunnskap.",
+        "operationId": "hentBrukereSomVenterPaaSletting",
+        "parameters": [
+          {
+            "name": "fiksOrgId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/FiksOrgId"
+            },
+            "description": "Fiks organisasjons ID"
+          },
+          {
+            "in": "query",
+            "name": "side",
+            "description": "paginering side",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "antall",
+            "description": "paginering antall",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Antall brukere som venter på sletting i KS kunnskap",
+            "content": {
+              "application/json": {
+                "schema": {
+                    "$ref": "#/components/schemas/BrukerVenterSlettingResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Organisasjon ikke funnet"
+          },
+          "500": {
+            "description": "Intern serverfeil"
+          }
+        },
+        "tags": [
+          "Bruker"
+        ]
+      }
     }
   },
   "components": {
@@ -201,8 +358,8 @@
             "description": "Antall avdelinger vi har lagert på fiks plattformen"
           },
           "antallAvdelingerSynkronisert": {
-              "type": "integer",
-              "description": "Antall avdelinger som er synkronisert til KS kunnskap"
+            "type": "integer",
+            "description": "Antall avdelinger som er synkronisert til KS kunnskap"
           },
           "antallAvdelingerMedFeil": {
             "type": "integer",
@@ -221,7 +378,13 @@
             "format": "date-time",
             "description": "Tidspunkt for siste synkronisering"
           }
-        }
+        },
+        "required": [
+          "fiksOrgId",
+          "orgStrukturAktiv",
+          "antallAvdelingerMottatt",
+          "antallStillingerMottatt"
+        ]
       },
       "AvdelingerSynkFeilResponse": {
         "type": "object",
@@ -269,7 +432,13 @@
             "type": "integer",
             "description": "Totalt antall avdelinger med synkroniseringsfeil"
           }
-        }
+        },
+        "required": [
+          "feil",
+          "side",
+          "antall",
+          "totalt"
+        ]
       },
       "StillingerSynkFeilResponse": {
         "type": "object",
@@ -321,12 +490,175 @@
             "type": "integer",
             "description": "Totalt antall stillinger med synkroniseringsfeil"
           }
-        }
+        },
+        "required": [
+          "feil",
+          "side",
+          "antall",
+          "totalt"
+        ]
       },
       "FiksOrgId": {
         "type": "string",
         "format": "uuid",
         "description": "Fiks organisasjons ID"
+      },
+      "BrukerStatistikkResponse": {
+        "type": "object",
+        "properties": {
+          "fiksOrgId": {
+            "type": "string",
+            "description": "Fiks organisasjons ID"
+          },
+          "totaltAntallBrukere": {
+            "type": "integer",
+            "description": "Totalt antall brukere synkroniseringen prøver å synkronisere"
+          },
+          "antallBrukereSynkronisert": {
+            "type": "integer",
+            "description": "Antall brukere som er synkronisert til KS kunnskap (valamis)"
+          },
+          "antallBrukereSomIkkeBlirOpprettetPgaFeil": {
+            "type": "integer",
+            "description": "Antall brukere som ikke blir opprettet pga synkroniseringsfeil"
+          },
+          "antallBrukereSomIkkeBlirOppdatertPgaFeil": {
+            "type": "integer",
+            "description": "Antall brukere som ikke blir oppdatert pga synkroniseringsfeil"
+          },
+          "antallVenterPaaSletting": {
+            "type": "integer",
+            "description": "Antall brukere som venter på sletting i KS kunnskap"
+          },
+          "sisteSynkronisering": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Tidspunkt for siste synkronisering"
+          }
+        },
+        "required": [
+          "fiksOrgId",
+          "totaltAntallBrukere",
+          "antallBrukereSynkronisert",
+          "antallBrukereSomIkkeBlirOpprettetPgaFeil",
+          "antallBrukereSomIkkeBlirOppdatertPgaFeil",
+          "antallVenterPaaSletting"
+        ]
+      },
+      "BrukerSynkFeilResponse": {
+        "type": "object",
+        "properties": {
+          "feil": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "brukerId": {
+                  "type": "string",
+                  "format": "uuid",
+                  "description": "Vår og KS kunnskap sin ID for brukeren"
+                },
+                "navn": {
+                  "type": "string"
+                },
+                "epost": {
+                  "type": "string"
+                },
+                "eksternId": {
+                  "type": "string",
+                  "description": "Ekstern ID for brukeren fra fiks plattformen, bare tilgjengelig hvis bruker er opprettet"
+                },
+                "feiletVed": {
+                  "type": "string",
+                  "enum": [
+                    "OPPRETT",
+                    "OPPDATER",
+                    "SLETT"
+                  ]
+                },
+                "feilTidspunkt": {
+                  "type": "string",
+                  "format": "date-time",
+                  "description": "Tidspunkt for når feilen oppstod"
+                },
+                "feilBeskrivelse": {
+                  "type": "string",
+                  "description": "Beskrivelse av den siste feilen som oppstod"
+                }
+              }
+            },
+            "description": "Liste over synkroniseringsfeil"
+          },
+          "side": {
+            "type": "integer",
+            "description": "Paginering side"
+          },
+          "antall": {
+            "type": "integer",
+            "description": "Antall feil per side"
+          },
+          "totalt": {
+            "type": "integer",
+            "description": "Totalt antall brukere med synkroniseringsfeil"
+          }
+        },
+        "required": [
+          "feil",
+          "side",
+          "antall",
+          "totalt"
+        ]
+      },
+      "BrukerVenterSlettingResponse": {
+        "type": "object",
+        "properties": {
+          "brukere": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "brukerId": {
+                  "type": "string",
+                  "format": "uuid",
+                  "description": "Vår og KS kunnskap sin ID for brukeren"
+                },
+                "navn": {
+                  "type": "string"
+                },
+                "epost": {
+                  "type": "string"
+                },
+                "eksternId": {
+                  "type": "string",
+                  "description": "Ekstern ID for brukeren fra fiks plattformen, bare tilgjengelig hvis bruker er opprettet"
+                },
+                "markertForSlettingTidspunkt": {
+                  "type": "string",
+                  "format": "date-time"
+                }
+              }
+            },
+            "description": "Liste over brukere som venter på sletting"
+          },
+          "side": {
+            "type": "integer",
+            "description": "Paginering side"
+          },
+          "antall": {
+            "type": "integer",
+            "description": "Antall brukere per side"
+          },
+          "totalt": {
+            "type": "integer",
+            "description": "Totalt antall brukere som venter på sletting"
+          }
+        },
+        "required": [
+          "brukere",
+          "side",
+          "antall",
+          "totalt"
+        ]
       }
     }
   }
