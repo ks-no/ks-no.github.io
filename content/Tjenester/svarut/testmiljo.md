@@ -16,7 +16,7 @@ Vi anbefaler at man bruker testbrukere fra Tenor: https://www.skatteetaten.no/sk
 
 ### Finne gyldig organisasjonsnummer med tilhørende daglig leder
 * Logge inn i Tenor. For å finne daglig leder, er det enklest å søke etter personer som har rollen 'Daglig leder' i seksjonen "Enhetsregisteret og Foretaksregisteret". Da får man opp data som viser organisasjoner som er knyttet mot personer med rollen Daglig leder. 
-* Alternativt kan man, når man forsøker å logge inn i vårt testmiljø (https://svarut.fiks.test.ks.no/), bruke TestID som påloggingsmetode, og her velge 'Hent tilfeldig daglig leder'. Dette vil gi fødselsnummer og organisasjonsnummer som kan brukes videre
+* Alternativt kan man, når man forsøker å logge inn i vårt testmiljø (https://test.svarut.ks.no/), bruke TestID som påloggingsmetode, og her velge 'Hent tilfeldig daglig leder'. Dette vil gi fødselsnummer og organisasjonsnummer som kan brukes videre
 
 ## Print
 I test kan en velge Strålfors som printleverandør, men det vil kun simuleres at disse sendes print. 
@@ -36,7 +36,7 @@ For å sette opp en SvarUt-konto for Digital Post til innbygger må en bruke et 
 Alternativt kan man legge inn egne organisasjonsnummer. En må gjennomføre samme prosess som når man skal sette opp et ekte organisasjonsnummer for å sende til digital postkasse: 
 * Det må sendes en epost til servicedesk hos Digdir med beskjed om at en ønsker å få på plass en avtale for Digital post for dette organisasjonsnummeret.
 * Det må også delegeres rettigheter til KS slik at KS Digital kan sende på vegne av organisasjonsnummeret
-  * Logge inn i https://tt02.altinn.no med daglig leder for organisasjonsnummeret man skal delegere rettigheter til KS sitt organisasjonsnummer med
+  * Logge inn i https://tt02.altinn.no med en bruker som har tilgang til organisasjonsnummeret (for eksempel en som har rolle Daglig leder) man skal delegere rettigheter til KS sitt organisasjonsnummer med
   * Trykke på ikon for organisasjonsnummer og finne Innstillinger.
   * Finne ‘Tilgang til programmeringsgrensesnitt - API’ og deretter 'Gi og fjerne tilganger'
   * Deleger nytt API
@@ -47,8 +47,8 @@ Alternativt kan man legge inn egne organisasjonsnummer. En må gjennomføre samm
 ## SvarInn 
 For å teste SvarInn må en registrere et organisasjonsnummer i mottakersystemet. 
 * Fordi det kreves at den som legger inn et organisasjonsnummer på et mottakersystem, har tilgang til organisasjonen i Altinn, så må man finne et fødselsnummer som har tilgang til en organisasjon, og deretter finne organisasjonen som person er knytta mot. Et eksempel på person med en slik tilgang, er daglig leder for en organisasjon, se oppkrift over for å finne slike fødselsnummer i Tenor. 
-* Logg så inn med en bruker som har administrator-rettigheter i SvarUt: https://svarut.fiks.test.ks.no. Om du ikke har dette, må du ta kontakt med vår brukerstøtte (se 'Tilgang til SvarUt test')
-* I fanen Mottakersystem (https://svarut.fiks.test.ks.no/mottaker#/) vil du finne mottakersystem som din administratorbruker har tilgang til. Om du ikke finner noen mottakersystem, må du be brukerstøtte om at de må gi brukeren tilgang til relevante mottakersystem.
+* Logg så inn med en bruker som har administrator-rettigheter i SvarUt: https://test.svarut.ks.no/. Om du ikke har dette, må du ta kontakt med vår brukerstøtte (se 'Tilgang til SvarUt test')
+* I fanen Mottakersystem (https://test.svarut.ks.no/mottaker#/) vil du finne mottakersystem som din administratorbruker har tilgang til. Om du ikke finner noen mottakersystem, må du be brukerstøtte om at de må gi brukeren tilgang til relevante mottakersystem.
 * For et gitt mottakersystem kan du nå også gi tilgang videre til andre, for eksempel fødselsnummer som har tilgang til organisasjonen i Altinn (i fanen Tilganger på et gitt mottakersystem). 
 * Logg inn i SvarUt igjen med fødselsnummer som er knyttet mot Testbruker som har tilgang til organisasjonen i Altinn
 * Nå er du klar for å legge inn organisasjonsnummer på mottakersystemet. 
