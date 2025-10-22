@@ -1,7 +1,7 @@
 {
   "openapi" : "3.0.1",
   "info" : {
-    "title" : "KS Fiks: Ledsagerbevis Soknad",
+    "title" : "KS Fiks: Ledsagerbevis Soknad Saksbehandling",
     "contact" : {
       "name" : "Fiks brukerstøtte",
       "url" : "https://developer.fiks.ks.no/",
@@ -10,15 +10,18 @@
     "version" : "v1"
   },
   "servers" : [ {
-    "url" : "https://api.fiks.ks.no",
+    "url" : "https://forvaltning.fiks.ks.no",
     "description" : "KS Fiks API host"
   }, {
-    "url" : "https://api.fiks.test.ks.no",
+    "url" : "https://forvaltning.fiks.test.ks.no",
     "description" : "KS Fiks TEST API host"
   } ],
   "tags" : [ {
     "name" : "LedsagerbevisSoknadMottak",
     "description" : "API for å motta ledsagerbevis-søknader fra Altinn Studio"
+  }, {
+    "name" : "LedsagerbevisSoknadSaksbehandling",
+    "description" : "API for å behandle ledsagerbevis søknader"
   } ],
   "paths" : {
     "/digitalt-ledsagerbevis-soknad/api/v1/soknad" : {
@@ -40,6 +43,110 @@
             "description" : "Søknad mottatt",
             "content" : {
               "application/json" : { }
+            }
+          },
+          "default" : {
+            "description" : "Noe gikk galt",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/digitalt-ledsagerbevis-soknad/api/v1/soknad/saksbehandling/organisasjoner/{fiksOrgId}/{soknadId}" : {
+      "get" : {
+        "tags" : [ "LedsagerbevisSoknadSaksbehandling" ],
+        "operationId" : "getSoknad",
+        "parameters" : [ {
+          "name" : "fiksOrgId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        }, {
+          "name" : "soknadId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Henter spesifik søknad",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/SoknadResponse"
+                }
+              }
+            }
+          },
+          "default" : {
+            "description" : "Noe gikk galt",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/digitalt-ledsagerbevis-soknad/api/v1/soknad/saksbehandling/organisasjoner/{fiksOrgId}" : {
+      "get" : {
+        "tags" : [ "LedsagerbevisSoknadSaksbehandling" ],
+        "operationId" : "getSoknader",
+        "parameters" : [ {
+          "name" : "fiksOrgId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        }, {
+          "name" : "status",
+          "in" : "query",
+          "schema" : {
+            "type" : "string",
+            "enum" : [ "MOTTATT", "GODKJENT", "AVSLATT" ]
+          }
+        }, {
+          "name" : "side",
+          "in" : "query",
+          "schema" : {
+            "type" : "integer",
+            "format" : "int32"
+          }
+        }, {
+          "name" : "sideAntall",
+          "in" : "query",
+          "schema" : {
+            "maximum" : 100,
+            "type" : "integer",
+            "format" : "int32"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Henter søknader",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/SoknadListResponse"
+                }
+              }
             }
           },
           "default" : {
@@ -155,7 +262,7 @@
             "description" : "Telefonnummer til person"
           }
         },
-        "description" : "Personer som skal ha administratorrett for ledsagerbeviset"
+        "description" : "Person som skal eie beviset"
       },
       "SubmitSoknadRequest" : {
         "required" : [ "administratorer", "altinnId", "behov", "bevisEier", "fiksOrgId", "onskerFysiskBevis", "sokerFor", "varighet" ],
@@ -214,6 +321,150 @@
           }
         },
         "description" : "Send inn søknad"
+      },
+      "Merknad" : {
+        "required" : [ "dato", "kommentar", "saksbehandlerNavn" ],
+        "type" : "object",
+        "properties" : {
+          "kommentar" : {
+            "type" : "string",
+            "description" : "Innhold i merknaden"
+          },
+          "dato" : {
+            "type" : "string",
+            "description" : "Dato merknaden ble opprettet",
+            "format" : "date-time"
+          },
+          "saksbehandlerNavn" : {
+            "type" : "string",
+            "description" : "Saksbehandler som skrev merknaden"
+          }
+        },
+        "description" : "Intern merknad fra saksbehandler"
+      },
+      "SoknadResponse" : {
+        "required" : [ "administratorer", "behov", "bevisEier", "datoMottatt", "fiksOrgId", "id", "merknader", "onskerFysiskBevis", "sokerFor", "status" ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string",
+            "description" : "Skjema ID",
+            "format" : "uuid"
+          },
+          "fiksOrgId" : {
+            "type" : "string",
+            "description" : "Fiksorg ID på kommunen til beviseier",
+            "format" : "uuid"
+          },
+          "datoMottatt" : {
+            "type" : "string",
+            "description" : "Dato søknaden ble mottatt",
+            "format" : "date-time"
+          },
+          "status" : {
+            "type" : "string",
+            "description" : "Behandlingsstatus",
+            "enum" : [ "MOTTATT", "GODKJENT", "AVSLATT" ]
+          },
+          "datoBehandlet" : {
+            "type" : "string",
+            "description" : "Dato søknaden ble godkjent eller avslått",
+            "format" : "date-time"
+          },
+          "merknader" : {
+            "type" : "array",
+            "description" : "Interne merknader fra saksbehandler",
+            "items" : {
+              "$ref" : "#/components/schemas/Merknad"
+            }
+          },
+          "sokerFor" : {
+            "type" : "string",
+            "description" : "Hvem innsender søker på vegne av",
+            "enum" : [ "MEG_SELV", "FORELDREANSVAR", "FULLMAKT", "BEBOER_PASIENT", "ANNEN" ]
+          },
+          "sokerForBegrunnelse" : {
+            "type" : "string",
+            "description" : "Begrunnelse dersom innsender ikke søker på vegne av seg selv"
+          },
+          "behov" : {
+            "type" : "string",
+            "description" : "Beskriver beviseier sitt behov for ledsagere"
+          },
+          "antallLedsagere" : {
+            "type" : "integer",
+            "description" : "Antall ledsagere",
+            "format" : "int32"
+          },
+          "onskerFysiskBevis" : {
+            "type" : "boolean",
+            "description" : "Er det behov for fysisk bevis?"
+          },
+          "onskerFysiskBevisBegrunnelse" : {
+            "type" : "string",
+            "description" : "Begrunnelse dersom det er behov for fysisk bevis"
+          },
+          "bevisEier" : {
+            "$ref" : "#/components/schemas/Person"
+          },
+          "administratorer" : {
+            "type" : "array",
+            "description" : "Personer som skal ha administratorrett for ledsagerbeviset",
+            "items" : {
+              "$ref" : "#/components/schemas/Person"
+            }
+          },
+          "innsender" : {
+            "$ref" : "#/components/schemas/Innsender"
+          }
+        }
+      },
+      "SoknadListResponse" : {
+        "required" : [ "soknader", "totaltAntall" ],
+        "type" : "object",
+        "properties" : {
+          "soknader" : {
+            "type" : "array",
+            "description" : "Soknader som matcher filteret; paginert",
+            "items" : {
+              "$ref" : "#/components/schemas/SoknadSummary"
+            }
+          },
+          "totaltAntall" : {
+            "type" : "integer",
+            "description" : "Totalt antall soknader som matcher filteret; paginering ikke inkludert",
+            "format" : "int32"
+          }
+        }
+      },
+      "SoknadSummary" : {
+        "required" : [ "bevisEier", "datoMottatt", "id", "status" ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string",
+            "description" : "Skjema ID",
+            "format" : "uuid"
+          },
+          "datoMottatt" : {
+            "type" : "string",
+            "description" : "Dato søknaden ble mottatt",
+            "format" : "date-time"
+          },
+          "status" : {
+            "type" : "string",
+            "description" : "Behandlingsstatus",
+            "enum" : [ "MOTTATT", "GODKJENT", "AVSLATT" ]
+          },
+          "merknad" : {
+            "type" : "string",
+            "description" : "Siste interne merknad fra saksbehandler"
+          },
+          "bevisEier" : {
+            "$ref" : "#/components/schemas/Person"
+          }
+        },
+        "description" : "Soknader som matcher filteret; paginert"
       }
     }
   }
