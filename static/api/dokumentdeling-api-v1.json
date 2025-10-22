@@ -164,6 +164,53 @@
         }
       }
     },
+    "/melding-dokumentdeling/api/v1/kontoer/{kontoId}/oppslag" : {
+      "post" : {
+        "tags" : [ "Dokumentdeling" ],
+        "description" : "Del dokument",
+        "operationId" : "oppslag",
+        "parameters" : [ {
+          "name" : "kontoId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/OppslagRequest"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Henter navn fra folkeregister eller enhetsregisteret basert på identifikator som blir sendt inn. Folkeregister blir bare brukt om folkeregisterrolle er aktivert for tjeneste Melding",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/OppslagResponse"
+                }
+              }
+            }
+          },
+          "default" : {
+            "description" : "Noe gikk galt",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/melding-dokumentdeling/api/v1/{fiksOrgId}/kontoer/{kontoId}/aktiverVarsling" : {
       "post" : {
         "tags" : [ "Dokumentdeling" ],
@@ -576,6 +623,32 @@
           }
         },
         "description" : "Konfig for varsling på sms"
+      },
+      "OppslagResponse" : {
+        "required" : [ "status" ],
+        "type" : "object",
+        "properties" : {
+          "navn" : {
+            "type" : "string",
+            "description" : "Navn knyttet mot fødselsnummer eller organisasjonsnummer"
+          },
+          "status" : {
+            "type" : "string",
+            "description" : "Informasjon hentet fra folkeregisteret eller enhetsregisteret",
+            "enum" : [ "FUNNET", "KAN_IKKE_BESTEMME_NAVN", "IKKE_FUNNET", "UGYLDIG_IDENTIFIKATOR" ]
+          }
+        }
+      },
+      "OppslagRequest" : {
+        "required" : [ "identifikator" ],
+        "type" : "object",
+        "properties" : {
+          "identifikator" : {
+            "pattern" : "^\\d{9}(\\d{2})?$",
+            "type" : "string",
+            "description" : "Fødselsnummer eller organisasjonsnummer man skal slå opp med"
+          }
+        }
       },
       "AktiverSmsVarslingRequest" : {
         "required" : [ "avsendernavn" ],
