@@ -188,7 +188,7 @@ URL-er for proxy-api for skatteoppgjør hendelser (GET):
 ```<MILJØ_URL>/skatteetaten/hendelser/api/v1/{ROLLE_ID}/hendelser/start?dato=<DATO>```
 ```<MILJØ_URL>/skatteetaten/hendelser/api/v1/{ROLLE_ID}/hendelser?fraSekvensnummer=<SEKVENSNUMMER>&antall=<ANTALL>```
 
-Query parameterene er optional.
+Query parameterne er valgfrie.
 
 ##### API-dokumentasjon
 Skatteetaten har lagt ut dokumentasjon her [Hendelser](https://skatteetaten.github.io/api-dokumentasjon/api/hendelser) og [Swagger](https://app.swaggerhub.com/apis/skatteetaten/skatteoppgjor-hendelser-api/1.3.1)
