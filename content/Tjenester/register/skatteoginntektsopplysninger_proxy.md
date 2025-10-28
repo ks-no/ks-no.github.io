@@ -182,6 +182,40 @@ Skatteetaten har lagt ut dokumentasjon her [Avregning](https://skatteetaten.gith
 }
 ```
 
+
+#### Skatteoppgjør hendelser
+URL-er for proxy-api for skatteoppgjør hendelser (GET):
+```<MILJØ_URL>/skatteetaten/hendelser/api/v1/{ROLLE_ID}/hendelser/start?dato=<DATO>```
+```<MILJØ_URL>/skatteetaten/hendelser/api/v1/{ROLLE_ID}/hendelser?fraSekvensnummer=<SEKVENSNUMMER>&antall=<ANTALL>```
+
+Query parameterne er valgfrie.
+
+##### API-dokumentasjon
+Skatteetaten har lagt ut dokumentasjon her [Hendelser](https://skatteetaten.github.io/api-dokumentasjon/api/hendelser) og [Swagger](https://app.swaggerhub.com/apis/skatteetaten/skatteoppgjor-hendelser-api/1.3.1)
+
+##### Eksempel på response for ```/hendelser/start```
+```json
+{
+  "sekvensnummer": 0
+}
+```
+
+##### Eksempel på response for ```/hendelser```
+```json
+{
+  "hendelser": [
+    {
+      "sekvensnummer": 0,
+      "identifikator": "string",
+      "gjelderPeriode": "string",
+      "registreringstidspunkt": "2025-10-27T13:33:59.829Z",
+      "hendelsetype": "string",
+      "ajourholdstidspunkt": "2025-10-27T13:33:59.829Z"
+    }
+  ]
+}
+```
+
 ### Oppslag via proxy (gammel)
 Det er mulig å bruke Skatteetatens delingstjeneste for skatte og inntektsopplysninger som en proxy-tjeneste i Fiks register og samtidig benytte seg av roller, rettighetsstyring og dataminimering som Fiks register tilbyr. Oppbygging av URL gjøres så likt som mulig Skatteetatens egen URL. Datamodellen forblir uendret.
 
