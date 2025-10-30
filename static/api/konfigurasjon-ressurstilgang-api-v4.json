@@ -1,0 +1,670 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "KS Fiks: PersonTilgang service V4",
+    "description": "Fiks Konfigurasjon",
+    "license": {
+      "name": "MIT",
+      "url": "https://opensource.org/licenses/MIT"
+    },
+    "contact": {
+      "name": "Fiks-brukerstøtte",
+      "url": "https://ks-no.github.io/",
+      "email": "fiks@ks.no"
+    },
+    "version": "v4"
+  },
+  "servers": [
+    {
+      "url": "https://api.fiks.ks.no",
+      "description": "KS Fiks API host"
+    }
+  ],
+  "security": [
+    {
+      "bearerAuth": []
+    }
+  ],
+  "tags": [
+    {
+      "name": "TilgangV4",
+      "description": "API for administrasjon av tilganger tilknyttet ressurs"
+    }
+  ],
+  "paths": {
+    "/konfigurasjon/api/v4/organisasjoner/{fiksOrg}/ressurser/{ressursId}/tilganger": {
+      "get": {
+        "tags": [
+          "TilgangV4"
+        ],
+        "summary": "Henter alle personer og grupper som har en tilgang på ressurs",
+        "operationId": "hentAlleMedTilgang",
+        "parameters": [
+          {
+            "name": "fiksOrg",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "ressursId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Personer og grupper med tildelt tilgang på ressurs",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TilgangerRespons"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Utførende person må være administrator på ressurs"
+          }
+        }
+      }
+    },
+    "/konfigurasjon/api/v4/organisasjoner/{fiksOrg}/ressurser/{ressursId}/personer/{personId}/tilganger": {
+      "get": {
+        "tags": [
+          "TilgangV4"
+        ],
+        "summary": "Hent persontilganger til ressurs",
+        "operationId": "hentPersonTilgangerTilRessurs",
+        "parameters": [
+          {
+            "name": "fiksOrg",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "ressursId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "personId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Person med tilganger på ressurs",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PersonTilgang"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Utførende person må være administrator på ressurs"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "TilgangV4"
+        ],
+        "summary": "Oppdatere person tilgang til ressurs",
+        "operationId": "oppdaterPersonTilgangerTilRessurs",
+        "parameters": [
+          {
+            "name": "fiksOrg",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "ressursId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "personId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "tilganger"
+                ],
+                "properties": {
+                  "tilganger": {
+                    "type": "array",
+                    "description": "tilganger som ressursen skal ha for personen",
+                    "items": {
+                      "$ref": "#/components/schemas/Tilgang"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Person med tilganger på ressurs",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PersonTilgang"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Utførende person må være administrator på ressurs"
+          }
+        }
+      }
+    },
+    "/konfigurasjon/api/v4/organisasjoner/{fiksOrg}/ressurser/{ressursId}/personer/sok": {
+      "post": {
+        "tags": [
+          "TilgangV4"
+        ],
+        "summary": "Søk etter personer på en organisasjon og filtrerer fiks/eksterne brukere basert på om ekstern brukerstyring er aktivert for tjenesten. Inkluderer tilganger på ressurs",
+        "operationId": "sokPersonerMedTilganger",
+        "parameters": [
+          {
+            "name": "fiksOrg",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "ressursId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SokRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Personer med tildelt tilgang på ressurs",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PersonerMedTilgangerResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Ugyldig input"
+          },
+          "401": {
+            "description": "Uautorisert"
+          },
+          "403": {
+            "description": "Utførende person må være administrator på ressurs"
+          },
+          "500": {
+            "description": "Feil ved søk i tilganger"
+          }
+        }
+      }
+    },
+    "/konfigurasjon/api/v4/organisasjoner/{fiksOrg}/ressurser/{ressursId}/grupper/sok": {
+      "post": {
+        "tags": [
+          "TilgangV4"
+        ],
+        "summary": "Søk etter grupper på en organisasjon og filtrerer fiks/eksterne grupper basert på om ekstern brukerstyring er aktivert for tjenesten. Inkluderer tilganger på ressurs",
+        "operationId": "sokGrupperMedTilganger",
+        "parameters": [
+          {
+            "name": "fiksOrg",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "ressursId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SokRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Grupper med tilganger på ressurs",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GrupperMedTilgangerResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Utførende person må være administrator på ressurs"
+          }
+        }
+      }
+    },
+    "/konfigurasjon/api/v4/organisasjoner/{fiksOrg}/ressurser/{ressursId}/grupper/{gruppeId}/tilganger": {
+      "get": {
+        "tags": [
+          "TilgangV4"
+        ],
+        "summary": "Hent gruppetilganger til ressurs",
+        "operationId": "hentGruppeTilgangerTilRessurs",
+        "parameters": [
+          {
+            "name": "fiksOrg",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "ressursId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "gruppeId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Gruppe med tilganger på ressurs",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GruppeTilgang"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Utførende person må være administrator på ressurs"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "TilgangV4"
+        ],
+        "summary": "Oppdatere gruppens tilgang(er) til ressurs",
+        "operationId": "oppdaterGruppeTilgangerTilRessurs",
+        "parameters": [
+          {
+            "name": "fiksOrg",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "ressursId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "gruppeId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "tilganger"
+                ],
+                "properties": {
+                  "tilganger": {
+                    "type": "array",
+                    "description": "tilganger som gruppen skal ha på ressurs",
+                    "items": {
+                      "$ref": "#/components/schemas/Tilgang"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Gruppe med tilganger på ressurs",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GruppeTilgang"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Utførende person må være administrator på ressurs"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    },
+    "schemas": {
+      "TilgangerRespons": {
+        "required": [
+          "grupperAktivert",
+          "personer",
+          "grupper",
+          "tilgjengeligeTilganger"
+        ],
+        "type": "object",
+        "description": "Personer med tilgang til ressurs",
+        "properties": {
+          "tilgjengeligeTilganger": {
+            "type": "array",
+            "description": "Liste over alle tilgjengelige tilganger på ressurs",
+            "items": {
+              "$ref": "#/components/schemas/Tilgang"
+            }
+          },
+          "grupperAktivert": {
+            "type": "boolean",
+            "description": "Indikerer om ressurs har grupper aktivert for tilgangsstyring",
+            "example": false
+          },
+          "personer": {
+            "type": "array",
+            "description": "Personer som er tildelt tilganger på ressurs",
+            "items": {
+              "$ref": "#/components/schemas/PersonTilgang"
+            }
+          },
+          "grupper": {
+            "type": "array",
+            "description": "Grupper som er tildelt tilganger på ressurs",
+            "items": {
+              "$ref": "#/components/schemas/GruppeTilgang"
+            }
+          }
+        }
+      },
+      "PersonerMedTilgangerResponse": {
+        "required": [
+          "ressursId",
+          "personer"
+        ],
+        "type": "object",
+        "description": "Personer med tilgang til ressurs",
+        "properties": {
+          "ressursId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Ressurs som tilganger er gitt på"
+          },
+          "personer": {
+            "type": "array",
+            "description": "Personer som er tildelt tilganger på ressurs",
+            "items": {
+              "$ref": "#/components/schemas/PersonTilgang"
+            }
+          }
+        }
+      },
+      "PersonTilgang": {
+        "required": [
+          "id",
+          "fdato",
+          "navn",
+          "isExternal",
+          "tilganger"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Personens unike Id",
+            "format": "uuid"
+          },
+          "fdato": {
+            "pattern": "^[0-9]{6}$",
+            "type": "string",
+            "description": "Fødselsdato til personen",
+            "example": "110379"
+          },
+          "isExternal": {
+            "type": "boolean",
+            "description": "Indikerer om personen er lastet inn fra ett eksternt brukerstyringssystem.",
+            "example": false
+          },
+          "navn": {
+            "type": "string",
+            "description": "Personens fulle navn",
+            "example": "Ole Olsen"
+          },
+          "tilganger": {
+            "type": "array",
+            "description": "Tilganger som person er tildelet på ressurs",
+            "items": {
+              "$ref": "#/components/schemas/Tilgang"
+            }
+          }
+        },
+        "description": "En person med tilhørende informasjon om tilganger."
+      },
+      "GrupperMedTilgangerResponse": {
+        "required": [
+          "ressursId",
+          "grupper"
+        ],
+        "type": "object",
+        "description": "Grupper med tilgang til ressurs",
+        "properties": {
+          "ressursId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Ressurs som tilganger er gitt på"
+          },
+          "grupper": {
+            "type": "array",
+            "description": "Grupper som er tildelt tilganger på ressurs",
+            "items": {
+              "$ref": "#/components/schemas/GruppeTilgang"
+            }
+          }
+        }
+      },
+      "GruppeTilgang": {
+        "required": [
+          "id",
+          "navn",
+          "isExternal",
+          "tilganger"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Gruppens unike Id",
+            "format": "uuid"
+          },
+          "isExternal": {
+            "type": "boolean",
+            "description": "Indikerer om gruppen er lastet inn fra ett eksternt brukerstyringssystem.",
+            "example": false
+          },
+          "navn": {
+            "type": "string",
+            "description": "Gruppens fulle navn",
+            "example": "Alle ansatte"
+          },
+          "tilganger": {
+            "type": "array",
+            "description": "Tilganger som gruppen er tildelt på ressurs",
+            "items": {
+              "$ref": "#/components/schemas/Tilgang"
+            }
+          }
+        },
+        "description": "En Gruppe med tilhørende informasjon om tilganger."
+      },
+      "SokRequest": {
+        "type": "object",
+        "required": [
+          "fra",
+          "antall",
+          "sok"
+        ],
+        "properties": {
+          "fra": {
+            "type": "integer",
+            "format": "int32",
+            "default": 0,
+            "description": "Start index for pagination"
+          },
+          "antall": {
+            "type": "integer",
+            "format": "int32",
+            "default": 10,
+            "description": "Number of items to fetch"
+          },
+          "sok": {
+            "type": "string",
+            "description": "Search by name or valid fødselsnummer (fnr)"
+          }
+        }
+      },
+      "Tilgang": {
+        "required": [
+          "navn",
+          "visningsnavn",
+          "harTilgang"
+        ],
+        "type": "object",
+        "properties": {
+          "navn": {
+            "pattern": "^[0-9A-Z_.]+$",
+            "type": "string",
+            "description": "Privilegie som skal tildeles person på ressurs",
+            "example": "FOLKEREGISTERET.KONSUMENT.OFFENTLIG"
+          },
+          "visningsnavn": {
+            "type": "string",
+            "description": "Visningsnavn for privilegiet",
+            "example": "Kan bruke rollen"
+          },
+          "harTilgang": {
+            "type": "boolean",
+            "description": "Indikerer om tilgangen er gitt eller fjernet",
+            "example": true
+          }
+        },
+        "description": "Tilgang/privilegie på ressurs"
+      }
+    }
+  }
+}
