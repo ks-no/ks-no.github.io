@@ -85,7 +85,7 @@
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/SoknadResponse"
+                  "$ref" : "#/components/schemas/BehandleSoknadResponse"
                 }
               }
             }
@@ -240,7 +240,7 @@
         "description" : "Metadata for AltInn session"
       },
       "Innsender" : {
-        "required" : [ "fnr", "navn" ],
+        "required" : [ "fnr", "navn", "telefonnummer" ],
         "type" : "object",
         "properties" : {
           "navn" : {
@@ -252,6 +252,11 @@
             "pattern" : "^[0-9]{11}$",
             "type" : "string",
             "description" : "Fødselsnummer"
+          },
+          "telefonnummer" : {
+            "pattern" : "^[+]?[0-9]+([- ][0-9]+)*$",
+            "type" : "string",
+            "description" : "Kontakt telefonnummer for innsender"
           }
         },
         "description" : "Person som sender inn søknad, hvis de ikke søker på vegne av seg selv"
@@ -282,7 +287,7 @@
         "description" : "Person som skal eie beviset"
       },
       "SubmitSoknadRequest" : {
-        "required" : [ "administratorer", "altinnInstanse", "behov", "bevisEier", "fiksOrgId", "onskerFysiskBevis", "sokerFor", "varighet", "vedlegg" ],
+        "required" : [ "administratorer", "altinnInstanse", "behov", "bevisEier", "fiksOrgId", "onskerFysiskBevis", "onsketVarighet", "sokerFor", "vedlegg" ],
         "type" : "object",
         "properties" : {
           "altinnInstanse" : {
@@ -307,10 +312,10 @@
             "type" : "string",
             "description" : "Beskriver beviseier sitt behov for ledsagere"
           },
-          "varighet" : {
+          "onsketVarighet" : {
             "type" : "string",
             "description" : "Er behovet tidsbegrenset eller varig?",
-            "enum" : [ "TIDSBEGRENSET", "VARIG" ]
+            "enum" : [ "TIDSBEGRENSET", "VARIG", "INGEN" ]
           },
           "onskerFysiskBevis" : {
             "type" : "boolean",
@@ -364,28 +369,8 @@
         },
         "description" : "Metadata for et vedlegg fra AltInn"
       },
-      "Merknad" : {
-        "required" : [ "dato", "kommentar", "saksbehandlerNavn" ],
-        "type" : "object",
-        "properties" : {
-          "kommentar" : {
-            "type" : "string",
-            "description" : "Innhold i merknaden"
-          },
-          "dato" : {
-            "type" : "string",
-            "description" : "Dato merknaden ble opprettet",
-            "format" : "date-time"
-          },
-          "saksbehandlerNavn" : {
-            "type" : "string",
-            "description" : "Saksbehandler som skrev merknaden"
-          }
-        },
-        "description" : "Intern merknad fra saksbehandler"
-      },
-      "SoknadResponse" : {
-        "required" : [ "administratorer", "behov", "bevisEier", "datoMottatt", "fiksOrgId", "id", "merknader", "onskerFysiskBevis", "sokerFor", "status" ],
+      "BehandleSoknadResponse" : {
+        "required" : [ "datoMottatt", "fiksOrgId", "id", "merknader", "soknad", "status" ],
         "type" : "object",
         "properties" : {
           "id" : {
@@ -408,11 +393,6 @@
             "description" : "Behandlingsstatus",
             "enum" : [ "MOTTATT", "GODKJENT", "AVSLATT" ]
           },
-          "datoBehandlet" : {
-            "type" : "string",
-            "description" : "Dato søknaden ble godkjent eller avslått",
-            "format" : "date-time"
-          },
           "merknader" : {
             "type" : "array",
             "description" : "Interne merknader fra saksbehandler",
@@ -420,6 +400,39 @@
               "$ref" : "#/components/schemas/Merknad"
             }
           },
+          "vedtak" : {
+            "$ref" : "#/components/schemas/Vedtak"
+          },
+          "soknad" : {
+            "$ref" : "#/components/schemas/Soknad"
+          }
+        },
+        "description" : "Behandling av soknader"
+      },
+      "Merknad" : {
+        "required" : [ "dato", "kommentar", "saksbehandlerNavn" ],
+        "type" : "object",
+        "properties" : {
+          "kommentar" : {
+            "type" : "string",
+            "description" : "Innhold i merknaden"
+          },
+          "dato" : {
+            "type" : "string",
+            "description" : "Dato merknaden ble opprettet",
+            "format" : "date-time"
+          },
+          "saksbehandlerNavn" : {
+            "type" : "string",
+            "description" : "Saksbehandler som skrev merknaden"
+          }
+        },
+        "description" : "Intern merknad fra saksbehandler"
+      },
+      "Soknad" : {
+        "required" : [ "administratorer", "behov", "bevisEier", "onskerFysiskBevis", "sokerFor" ],
+        "type" : "object",
+        "properties" : {
           "sokerFor" : {
             "type" : "string",
             "description" : "Hvem innsender søker på vegne av",
@@ -433,10 +446,10 @@
             "type" : "string",
             "description" : "Beskriver beviseier sitt behov for ledsagere"
           },
-          "antallLedsagere" : {
-            "type" : "integer",
-            "description" : "Antall ledsagere",
-            "format" : "int32"
+          "onsketVarighet" : {
+            "type" : "string",
+            "description" : "Er behovet tidsbegrenset eller varig?",
+            "enum" : [ "TIDSBEGRENSET", "VARIG", "INGEN" ]
           },
           "onskerFysiskBevis" : {
             "type" : "boolean",
@@ -458,28 +471,61 @@
           },
           "innsender" : {
             "$ref" : "#/components/schemas/Innsender"
+          },
+          "vedlegg" : {
+            "type" : "array",
+            "description" : "Vedleggs metadata",
+            "items" : {
+              "$ref" : "#/components/schemas/VedleggMetadata"
+            }
           }
-        }
+        },
+        "description" : "Kopi av orginale soknaden"
       },
-      "SoknadListResponse" : {
-        "required" : [ "soknader", "totaltAntall" ],
+      "Vedtak" : {
+        "required" : [ "begrunnelse", "saksbehandler", "varighet", "varighetAr" ],
         "type" : "object",
         "properties" : {
-          "soknader" : {
-            "type" : "array",
-            "description" : "Soknader som matcher filteret; paginert",
-            "items" : {
-              "$ref" : "#/components/schemas/SoknadSummary"
-            }
+          "datoBehandlet" : {
+            "type" : "string",
+            "description" : "Dato søknaden ble godkjent eller avslått",
+            "format" : "date-time"
           },
-          "totaltAntall" : {
+          "varighet" : {
+            "type" : "string",
+            "description" : "VarighetType av vedtaket",
+            "enum" : [ "TIDSBEGRENSET", "VARIG", "INGEN" ]
+          },
+          "varighetAr" : {
             "type" : "integer",
-            "description" : "Totalt antall soknader som matcher filteret; paginering ikke inkludert",
+            "description" : "Varighet i antall år",
             "format" : "int32"
+          },
+          "begrunnelse" : {
+            "type" : "string",
+            "description" : "Begrunnelse for vedtaket"
+          },
+          "antallLedsagere" : {
+            "type" : "integer",
+            "description" : "Antall ledsagere",
+            "format" : "int32"
+          },
+          "fysiskBevis" : {
+            "type" : "boolean",
+            "description" : "Innvilget fysisk bevis"
+          },
+          "punktSkrift" : {
+            "type" : "boolean",
+            "description" : "Har behov for punktskrift"
+          },
+          "saksbehandler" : {
+            "type" : "string",
+            "description" : "Saksbehandler"
           }
-        }
+        },
+        "description" : "Vedtaket"
       },
-      "SoknadSummary" : {
+      "BehandlingSoknadSummary" : {
         "required" : [ "bevisEier", "datoMottatt", "id", "status" ],
         "type" : "object",
         "properties" : {
@@ -506,7 +552,26 @@
             "$ref" : "#/components/schemas/Person"
           }
         },
-        "description" : "Soknader som matcher filteret; paginert"
+        "description" : "Soknads data for listevisning av soknader"
+      },
+      "SoknadListResponse" : {
+        "required" : [ "soknader", "totaltAntall" ],
+        "type" : "object",
+        "properties" : {
+          "soknader" : {
+            "type" : "array",
+            "description" : "Soknader som matcher filteret; paginert",
+            "items" : {
+              "$ref" : "#/components/schemas/BehandlingSoknadSummary"
+            }
+          },
+          "totaltAntall" : {
+            "type" : "integer",
+            "description" : "Totalt antall soknader som matcher filteret; paginering ikke inkludert",
+            "format" : "int32"
+          }
+        },
+        "description" : "Listevisning av soknader"
       }
     }
   }
