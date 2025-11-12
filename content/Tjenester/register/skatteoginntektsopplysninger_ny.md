@@ -56,11 +56,11 @@ For payload for POST-spørringene, se [swagger dokumentasjon](https://editor-nex
 
 **Beregning for langtidsopphold (POST)**
 
-```<MILJØ_URL>/register/api/v1/ks/{rolleId}/skatteoginntektsopplysninger/beregning```
+```<MILJØ_URL>/register/api/v1/ks/{rolleId}/skatteoginntektsopplysninger/beregning/langtidsopphold```
 
 **Beregning for langtidsopphold som PDF (POST)**
 
-```<MILJØ_URL>/register/api/v1/ks/{rolleId}/skatteoginntektsopplysninger/beregning/pdf```
+```<MILJØ_URL>/register/api/v1/ks/{rolleId}/skatteoginntektsopplysninger/beregning/langtidsopphold/pdf```
 
 **Beregning for praktisk bistand (POST)**
 
