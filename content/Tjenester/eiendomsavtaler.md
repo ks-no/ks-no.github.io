@@ -12,3 +12,6 @@ Fiks eiendomsavtaler tilbyr:
 
 ## Tilgjengelige grensesnitt
 Det vil komme API-dokumentasjon her på hvordan fagsystemer kan hente ned eiendomsavtaler. 
+
+## Kontakt
+Tekniske spørsmål og henvendelser kan rettes til fiks-utvikling@ks.no, øvrige henvendelser kan rettes til fiks@ks.no
