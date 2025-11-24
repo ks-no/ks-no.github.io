@@ -59,22 +59,6 @@ Steg-for-steg dokumentasjon finner du her: **[Kom i gang med SCIM-synkronisering
 
 ---
 
-## Støttede tjenester
-
-Flere tjenester på Fiks-plattformen bruker eksterne brukere for tilgangsstyring.  
-Per i dag støttes blant annet:
-
-- **Fiks Folkeregister**
-- **Fiks Konfigurasjon**
-- **KS Kunnskap** (har egen SCIM-konfigurasjon)
-
-Målet er at alle tjenester brukt av ansatte i kommunenorge skal støtte eksterne brukere innen **2026**.  
-Støtte for grupper vil komme fortløpende etter hvert som tjenestene moderniseres.
-
-Se mer: **[Tjenester med støtte for eksterne brukere](./tjenester-med-stotte/)**
-
----
-
 ## KS Kunnskap (tidligere KS Læring)
 
 De fleste organisasjoner ønsker som oftest å gi *alle ansatte* tilgang til **KS Kunnskap**.  
