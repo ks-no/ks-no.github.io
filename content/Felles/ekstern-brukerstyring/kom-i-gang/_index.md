@@ -28,7 +28,7 @@ Minimum av felter som må være med i synkroniseringen for at brukeren skal kunn
 | foedselsnummer | :extension:ks:personidentifikasjon:1.0 | Brukere uten fnr/dnr vil ikke være tilgjengelig for i Fiks forvaltning fordi IdPorten krever dette |
 | displayName    | :core:2.0:User                         | Brukes som navnefelt                                                                               |
 | name.formatted | :core:2.0:User                         | Brukes som navnefelt dersom displayName ikke eksisterer                                            |
-| externalId     | :core:2.0:User                         | Unik id som representerer bruker hos sett fra avgivende system                                     |
+| externalId     | :core:2.0:User                         | Unik id som representerer bruker sett fra avgivende system                                     |
 
 Det er påkrevd med enten displayName eller formatted for at brukeren skal kunne synkroniseres. Dersom
 fødselsnummer/d-nummer ikke sendes med kan vi ikke synkronisere brukeren til Fiks forvaltning. Det vil komme støtte for
@@ -58,7 +58,7 @@ sette opp og administrere synkronisering av brukere og grupper.
 | attribute        | urn:ietf:params:scim:schemas           | forklaring                                                             |
 |------------------|----------------------------------------|------------------------------------------------------------------------|
 | id               | :core:2.0:User                         | Generert av brukersynkronisering                                       |
-| externalId       | :core:2.0:User                         | Unik id som representerer bruker hos sett fra avgivende system         |
+| externalId       | :core:2.0:User                         | Unik id som representerer bruker sett fra avgivende system         |
 | userName         | :core:2.0:User                         | Brukernavn som brukes for å logge inn med Single Sign-on fra Microsoft | 
 | foedselsnummer   | :extension:ks:personidentifikasjon:1.0 | Brukere uten fnr/dnr kan bare logge inn med SSO via Microsoft          |
 | name.givenName   | :core:2.0:User                         | Fornavn (legg inn eventuelle mellomnavn her også)                      | 
