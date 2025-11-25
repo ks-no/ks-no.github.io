@@ -44,6 +44,8 @@ Dette gjør administrasjonen enklere og sikrer bedre kontroll.
 
 ![Flyt for ekstern brukerstyring](/images/ekstern-brukerstyring-flyt.gif)
 
+Administrator kan sette opp synkronisering fra IDM-systemet til Fiks-plattformen via SCIM 2.0. Alternativt må brukere opprettes manuelt som lokale brukere. Støtte for å legge fødselsnummer/d-nummer inn manuelt i etterkant av synkronisering kommer snart.
+
 ---
 
 ## Hvordan det settes opp
