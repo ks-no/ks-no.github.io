@@ -26,8 +26,8 @@
       "description": "API for Fiks eiendomsavtaler"
     },
     {
-      "name": "Endringer",
-      "description": "API for endringer av eiendomsavtaler"
+      "name": "Offentlig API",
+      "description": "API for eksterne til henting av eiendomsavtaler"
     }
   ],
   "paths": {
@@ -54,7 +54,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/EiendomsavtaleAPIModel"
+                "$ref": "#/components/schemas/EiendomsavtaleRequest"
               }
             }
           }
@@ -84,9 +84,9 @@
       },
       "get": {
         "tags": [
-          "Eiendomsavtaler"
+          "Offentlig API"
         ],
-        "description": "Hente eiendomsavtaler",
+        "description": "Hente alle eiendomsavtaler fra et sekvensnummer. Kan benyttes for å hente alle eiendomsavtaler ved å bruke sekvensnummer for paginering.",
         "operationId": "eiendomsavtaler",
         "parameters": [
           {
@@ -96,45 +96,6 @@
             "schema": {
               "type": "string",
               "format": "uuid"
-            }
-          },
-          {
-            "name": "kommunenummer",
-            "in": "query",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "gardsnummer",
-            "in": "query",
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          },
-          {
-            "name": "bruksnummer",
-            "in": "query",
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          },
-          {
-            "name": "festenummer",
-            "in": "query",
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          },
-          {
-            "name": "seksjonsnummer",
-            "in": "query",
-            "schema": {
-              "type": "integer",
-              "format": "int32"
             }
           },
           {
@@ -645,7 +606,7 @@
     "/eiendomsregister/api/v1/{fiksOrgId}/eiendomsavtaler/endringer": {
       "get": {
         "tags": [
-          "Endringer"
+          "Offentlig API"
         ],
         "description": "Hent eiendomsavtaler som har endringer siden angitt tidspunkt. Kan filtrere kun endringer i eiere.",
         "operationId": "endringerEiendomsavtaler",
@@ -742,6 +703,9 @@
           "avtaletype": {
             "type": "string"
           },
+          "avtalestatus": {
+            "type": "string"
+          },
           "delnummer": {
             "type": "integer",
             "format": "int32"
@@ -752,8 +716,74 @@
           "matrikkeldata": {
             "$ref": "#/components/schemas/MatrikkeldataAPIModel"
           },
+          "eiendomsadresse": {
+            "$ref": "#/components/schemas/EiendomsadresseAPIModel"
+          },
           "eierkontakt": {
             "$ref": "#/components/schemas/EierAPIModel"
+          },
+          "eiere": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/EierAPIModel"
+            }
+          },
+          "fakturamottaker": {
+            "$ref": "#/components/schemas/FakturamottakerAPIModel"
+          },
+          "antallTerminer": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "merknad": {
+            "type": "string"
+          },
+          "sistEndret": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Tidspunkt da eiendomsavtalen sist ble oppdatert"
+          }
+        },
+        "required": [
+          "avtaleId",
+          "avtaleAlternativId",
+          "avtaletype",
+          "delnummer",
+          "matrikkeldata"
+        ]
+      },
+      "EiendomsavtaleRequest": {
+        "type": "object",
+        "properties": {
+          "sekvensnummer": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "oppdragsgiver": {
+            "type": "string",
+            "description": "Hvem som som eier eiendomsavtalen"
+          },
+          "avtaletype": {
+            "type": "string"
+          },
+          "avtalestatus": {
+            "type": "string"
+          },
+          "delnummer": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "bruksnavn": {
+            "type": "string"
+          },
+          "matrikkeldata": {
+            "$ref": "#/components/schemas/MatrikkeldataRequest"
+          },
+          "eiendomsadresse": {
+            "$ref": "#/components/schemas/EiendomsadresseAPIModel"
+          },
+          "eierkontakt": {
+            "$ref": "#/components/schemas/EierkontaktRequest"
           },
           "eiere": {
             "type": "array",
@@ -816,12 +846,12 @@
           "erUtgatt": {
             "type": "boolean"
           },
+          "manueltOpprettet": {
+            "type": "boolean"
+          },
           "etableringsdato": {
             "type": "string",
             "format": "date"
-          },
-          "adresse": {
-            "$ref": "#/components/schemas/AdresseAPIModel"
           },
           "bygninger": {
             "type": "array",
@@ -838,7 +868,41 @@
           "seksjonsnummer"
         ]
       },
-      "AdresseAPIModel": {
+      "MatrikkeldataRequest": {
+        "type": "object",
+        "properties": {
+          "kommunenummer": {
+            "type": "string"
+          },
+          "gardsnummer": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "bruksnummer": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "festenummer": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "seksjonsnummer": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "bruksenhetsnummer": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "kommunenummer",
+          "gardsnummer",
+          "bruksnummer",
+          "festenummer",
+          "seksjonsnummer"
+        ]
+      },
+      "EiendomsadresseAPIModel": {
         "type": "object",
         "properties": {
           "adressekode": {
@@ -868,6 +932,41 @@
         "required": [
           "adressenavn",
           "husnummer"
+        ]
+      },
+      "PostadresseAPIModel": {
+        "type": "object",
+        "properties": {
+          "coAdressenavn": {
+            "type": "string"
+          },
+          "adressenavn": {
+            "type": "string"
+          },
+          "adresselinje1": {
+            "type": "string"
+          },
+          "adresselinje2": {
+            "type": "string"
+          },
+          "adresselinje3": {
+            "type": "string"
+          },
+          "postnummer": {
+            "type": "string"
+          },
+          "poststed": {
+            "type": "string"
+          },
+          "land": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "adressenavn",
+          "adresselinje1",
+          "postnummer",
+          "poststed"
         ]
       },
       "BygningAPIModel": {
@@ -903,8 +1002,8 @@
           "navn": {
             "type": "string"
           },
-          "adresse": {
-            "$ref": "#/components/schemas/AdresseAPIModel"
+          "postadresse": {
+            "$ref": "#/components/schemas/PostadresseAPIModel"
           },
           "eierstatus": {
             "type": "string"
@@ -916,11 +1015,7 @@
             "$ref": "#/components/schemas/AndelAPIModel"
           },
           "rolle": {
-            "type": "string",
-            "enum": [
-              "TINGLYST",
-              "IKKE_TINGLYST"
-            ]
+            "$ref": "#/components/schemas/RolleAPIModel"
           },
           "eierkategori": {
             "type": "string"
@@ -939,6 +1034,46 @@
           "eierId",
           "eiertype",
           "navn"
+        ]
+      },
+      "EierAPIRequest": {
+        "type": "object",
+        "properties": {
+          "eierId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "reellEier": {
+            "type": "boolean"
+          },
+          "andel": {
+            "$ref": "#/components/schemas/AndelAPIModel"
+          },
+          "rolle": {
+            "$ref": "#/components/schemas/RolleAPIModel"
+          },
+          "eierkategori": {
+            "type": "string"
+          },
+          "eierskiftedato": {
+            "type": "string",
+            "format": "date"
+          }
+        },
+        "required": [
+          "eierId"
+        ]
+      },
+      "EierkontaktRequest": {
+        "type": "object",
+        "properties": {
+          "eierId": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "required": [
+          "eierId"
         ]
       },
       "FakturamottakerAPIModel": {
@@ -960,14 +1095,11 @@
           "navn": {
             "type": "string"
           },
-          "rolle": {
-            "type": "string"
-          },
           "kundestatus": {
             "type": "string"
           },
-          "adresse": {
-            "$ref": "#/components/schemas/AdresseAPIModel"
+          "postadresse": {
+            "$ref": "#/components/schemas/PostadresseAPIModel"
           },
           "fakturamottakerkategori": {
             "type": "string"
@@ -988,6 +1120,14 @@
           "PERSON",
           "ORGANISASJON",
           "ANNET"
+        ]
+      },
+      "RolleAPIModel": {
+        "type": "string",
+        "enum": [
+          "TINGLYST",
+          "IKKE_TINGLYST",
+          "VERGE"
         ]
       },
       "EiendomsavtalePatch": {
@@ -1017,6 +1157,25 @@
       "EiendomsavtaleSoekRequest": {
         "type": "object",
         "properties": {
+          "kommunenummer": {
+            "type": "string"
+          },
+          "gardsnummer": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "bruksnummer": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "festenummer": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "seksjonsnummer": {
+            "type": "integer",
+            "format": "int32"
+          },
           "eierId": {
             "type": "string"
           },
