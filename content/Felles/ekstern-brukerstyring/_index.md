@@ -1,7 +1,7 @@
 ---
 title: Ekstern brukerstyring
 aliases: [
-  "felles/sentralisert-brukerstyring/",
+  "/felles/sentralisert-brukerstyring/",
   "/fiks-platform/brukerstyring/",
   "/fiks-platform/sentralisert_brukerstyring/",
   "/fiks-plattform/sentralisertbrukerstyring/",
