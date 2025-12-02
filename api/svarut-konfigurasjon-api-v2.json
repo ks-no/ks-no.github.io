@@ -49,6 +49,10 @@
     {
       "name": "Tilgang",
       "description": "API for bruk av konfigurasjon"
+    },
+    {
+      "name": "Nhn",
+      "description": "API for å gjøre kall mot Nhn sine integrasjoner"
     }
   ],
   "paths": {
@@ -1251,6 +1255,130 @@
         }
       }
     },
+    "/svarut-konfigurasjon/api/v2/nhn/adresseregister/enheter/{herId}": {
+      "get": {
+        "tags": [
+          "Nhn"
+        ],
+        "summary": "Gjør oppslag på herId i adresseregisteret og returnerer virksomhetsnavn og tjenestenavn",
+        "operationId": "adresseregisterOppslag",
+        "parameters": [
+          {
+            "name": "herId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "minimum": 1,
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returnerer ett objekt som inneholder virksomhetsnavn og tjenestenavn",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AdresseregisterOppslag"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Ugyldig data for herId",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Systemfeil",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/svarut-konfigurasjon/api/v2/organisasjoner/{fiksOrgId}/kontoer/{kontoId}/nhn": {
+      "put": {
+        "tags": [
+          "Konto"
+        ],
+        "summary": "Oppdaterer nhn konfigurasjon på konto",
+        "operationId": "oppdaterNhnKonfigurasjon",
+        "parameters": [
+          {
+            "name": "fiksOrgId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "kontoId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NhnKonfigurasjon"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Konto",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SvarUtKonto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Ugyldig data for herId",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Systemfeil",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/svarut-konfigurasjon/api/v2/organisasjoner/{fiksOrgId}/kontoer/{kontoId}/print": {
       "put": {
         "tags": [
@@ -2115,6 +2243,20 @@
         ],
         "type": "string"
       },
+      "NhnKonfigurasjon": {
+        "type": "object",
+        "required": [
+          "herId"
+        ],
+        "properties": {
+          "herId": {
+            "type": "integer",
+            "format": "int32",
+            "description": "HerId for NHN integrasjon",
+            "minimum": 1
+          }
+        }
+      },
       "DPIKonfigurasjon": {
         "required": [
           "avsendernavn",
@@ -2340,6 +2482,9 @@
           "gyldig": {
             "type": "boolean",
             "description": "Gyldig dersom konto har gyldig forsidekonfigurasjon og printkonfigurasjon"
+          },
+          "nhn": {
+            "$ref": "#/components/schemas/NhnKonfigurasjon"
           },
           "forside": {
             "$ref": "#/components/schemas/ForsideKonfigurasjonResponse"
@@ -2873,6 +3018,28 @@
           "MANUELL_PRINT",
           "STRALFORS"
         ]
+      },
+      "AdresseregisterOppslag": {
+        "required": [
+          "herId"
+        ],
+        "type": "object",
+        "properties": {
+          "herId": {
+            "type": "integer",
+            "format": "int32",
+            "description": "HerId for NHN integrasjon"
+          },
+          "tjenesteNavn": {
+            "type": "string",
+            "description": "Navnet på tjenesten knyttet til HER ID"
+          },
+          "organisasjonsNavn": {
+            "type": "string",
+            "description": "Organisasjonen knyttet til HER ID"
+          }
+        },
+        "description": "Resultat for oppslag på HerId mot NHN sitt adresseregister"
       }
     }
   }
