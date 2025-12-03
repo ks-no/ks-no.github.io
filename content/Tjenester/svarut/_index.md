@@ -22,7 +22,9 @@ SvarUt er en tjeneste som tilbyr et grensesnitt for aktørene i en digital dialo
 ![alternative text](http://www.plantuml.com/plantuml/proxy?src=https://raw.githubusercontent.com/wiki/ks-no/svarut-dokumentasjon/edialog/edialog.puml?2)
 
 ### Konfigurasjon av Svarut
-[Konfigurasjon av SvarUt](https://ksdigital.no/tjenestene/svarut-tjenesten/svarut-konfigurasjon/)
+Etter at det er signert avtale med KS om bruk av SvarUt oversendes en veiledning i konfigurasjon av tjenesten: [Konfigurasjon av SvarUt](https://ksdigital.no/tjenestene/svarut-tjenesten/svarut-konfigurasjon/)
+
+Informasjon på nettstedet https://ksdigital.no er beregnet på kommuner og andre virksomheter som har tegnet avtale om bruk av SvarUt.
 
 ### IPer
 
