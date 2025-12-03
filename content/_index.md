@@ -13,7 +13,7 @@ Det er utarbeidet et dokument som går igjennom fiks-plattformen. Dette kan [las
 
 #### Brukerdokumentasjon 
 
-Brukerdokumentasjon finner en [her](https://ksdif.no/)
+Brukerdokumentasjon finner en [her](https://ksdigital.no/)
 
 #### Feil
 Hvis du finner feil eller noe som ikke er beskrevet godt nok, setter vi pris på om du sender en e-post til [fiks-utvikling@ks.no](mailto:fiks-utvikling@ks.no) .
