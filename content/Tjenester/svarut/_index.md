@@ -22,7 +22,7 @@ SvarUt er en tjeneste som tilbyr et grensesnitt for aktørene i en digital dialo
 ![alternative text](http://www.plantuml.com/plantuml/proxy?src=https://raw.githubusercontent.com/wiki/ks-no/svarut-dokumentasjon/edialog/edialog.puml?2)
 
 ### Konfigurasjon av Svarut
-[Konfigurasjon av SvarUt](https://svarut.wordpress.com/hjelp/konfigurasjon-av-svarut/)
+[Konfigurasjon av SvarUt](https://ksdigital.no/tjenestene/svarut-tjenesten/svarut-konfigurasjon/)
 
 ### IPer
 
