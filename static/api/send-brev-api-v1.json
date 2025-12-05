@@ -1376,6 +1376,95 @@
         }
       }
     },
+    "/send-brev/api/v1/kontoer/{kontoId}/utsendelser/{utsendelsesId}/forsendelser": {
+      "get": {
+        "tags": [
+          "Forsendelser"
+        ],
+        "description": "Henter forsendelser for utsendelse",
+        "summary": "Henter forsendelser for utsendelse",
+        "operationId": "hentForsendelser",
+        "parameters": [
+          {
+            "name": "kontoId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "utsendelsesId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "sidenummer",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 0
+            }
+          },
+          {
+            "name": "antallPerSide",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 20
+            }
+          },
+          {
+            "name": "kunMedFeil",
+            "description": "Dersom denne settes til true vil kun forsendelser med feil returneres",
+            "in": "query",
+            "schema": {
+              "type": "boolean",
+              "default": false
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Treff på søk",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Forsendelser"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Ingen tilgang",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Systemfeil",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/send-brev/api/v1/kontoer/{kontoId}/utsendelser/{utsendelsesId}/mottakere/slett-bulk": {
       "post": {
         "tags": [
@@ -2537,6 +2626,38 @@
           "postadresse"
         ]
       },
+      "Forsendelse": {
+        "type": "object",
+        "properties": {
+          "forsendelsesId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "fodselsnummer": {
+            "pattern": "^[0-9]{11}$",
+            "type": "string"
+          },
+          "organisasjonsnummer": {
+            "type": "string",
+            "pattern": "^[0-9]{9}$"
+          },
+          "postadresse": {
+            "$ref": "#/components/schemas/Postadresse"
+          },
+          "status": {
+            "$ref": "#/components/schemas/ForsendelseStatus"
+          },
+          "feilmelding": {
+            "type": "string",
+            "description": "Feilmelding som kommer fra SvarUt"
+          }
+        },
+        "description": "Forsendelse som tilhører utsendelse",
+        "required": [
+          "postadresse",
+          "status"
+        ]
+      },
       "OppslagResponse": {
         "type": "object",
         "properties": {
@@ -3201,6 +3322,64 @@
         },
         "description": "Modell med søketreff for mottakere"
       },
+      "Forsendelser": {
+        "required": [
+          "sidenummer",
+          "antallPerSide",
+          "antallTreffSok",
+          "statistikkTotalt",
+          "treff"
+        ],
+        "type": "object",
+        "properties": {
+          "sidenummer": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Returnert sidenummer"
+          },
+          "antallPerSide": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Forespurt antall treff per side"
+          },
+          "antallTreffSok": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Totalt antall treff for søket"
+          },
+          "statistikkTotalt": {
+            "type": "object",
+            "required": [
+              "antall"
+            ],
+            "description": "Statistikk for alle forsendelser på utsendelse",
+            "properties": {
+              "antall": {
+                "type": "integer",
+                "format": "int32",
+                "description": "Det totale antallet forsendelser på utsendelsen"
+              },
+              "avvistSvarUt": {
+                "type": "integer",
+                "format": "int32",
+                "description": "Totalt antall forsendelser som har avvist av SvarUt"
+              },
+              "feiletMotSvarUt": {
+                "type": "integer",
+                "format": "int32",
+                "description": "Totalt antall forsendelser som er feilet mot SvarUt"
+              }
+            }
+          },
+          "treff": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Forsendelse"
+            }
+          }
+        },
+        "description": "Modell med søketreff for forsendelser"
+      },
       "OppslagRequest": {
         "type": "object",
         "properties": {
@@ -3356,6 +3535,16 @@
           "ULIK_POSTSTED_FRA_POSTNUMMER_OPPSLAG",
           "UKJENT_POSTNUMMER",
           "UKJENT_LAND"
+        ]
+      },
+      "ForsendelseStatus": {
+        "type": "string",
+        "description": "Status på forsendelse",
+        "enum": [
+          "OPPRETTET",
+          "SENDT",
+          "KLARTE_IKKE_SENDE",
+          "AVVIST_SVARUT"
         ]
       },
       "Punkt": {
