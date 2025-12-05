@@ -127,6 +127,111 @@
           "rolleoppslag"
         ]
       }
+    },
+    "/register/api/v1/oppslag/roller/{id}/med-org-info": {
+      "get": {
+        "operationId": "oppslagRolleMedOrganisasjonMedId",
+        "description": "Hente en gitt rolle. Rollen må være aktiv og brukeren må ha tilgang",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "description": "Unik ID til den rollen man vil hente",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Fant roller",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RolleMedOrganisasjon"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Finner ingen roller for gjeldende bruker",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "rolleoppslag"
+        ]
+      }
+    },
+    "/register/api/v1/oppslag/roller/med-org-info": {
+      "get": {
+        "operationId": "hentTilgjengeligeRollerMedOrganisasjon",
+        "description": "Henter alle aktive roller som brukeren har tilgang til å bruke",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "fiksOrgId",
+            "description": "Filtrer på hvilken organisasjon rollen tilhører",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "in": "query",
+            "name": "tjeneste",
+            "description": "Filtrer på tjenestekode",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Fant rolle",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RolleMedOrganisasjonListe"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Har ikke tilgang til rolle",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Rollen finnes ikke",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "rolleoppslag"
+        ]
+      }
     }
   },
   "components": {
@@ -177,6 +282,54 @@
           "navn",
           "tjenesteomraade",
           "registre"
+        ]
+      },
+      "RolleMedOrganisasjon": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "beskrivelse": {
+            "type": "string"
+          },
+          "ressursId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "fiksOrgId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "navn": {
+            "type": "string"
+          },
+          "tjenesteomraade": {
+            "$ref": "#/components/schemas/Tjenesteomraade"
+          },
+          "registre": {
+            "$ref": "#/components/schemas/Registre"
+          },
+          "tjenester": {
+            "type": "array",
+            "uniqueItems": true,
+            "items": {
+              "type": "string"
+            }
+          },
+          "organisasjon": {
+            "$ref": "#/components/schemas/Organisasjon"
+          }
+        },
+        "required": [
+          "id",
+          "ressursId",
+          "fiksOrgId",
+          "navn",
+          "tjenesteomraade",
+          "registre",
+          "organisasjon"
         ]
       },
       "Tjenesteomraade": {
@@ -335,6 +488,20 @@
           "roller"
         ]
       },
+      "RolleMedOrganisasjonListe": {
+        "properties": {
+          "roller": {
+            "type": "array",
+            "uniqueItems": true,
+            "items": {
+              "$ref": "#/components/schemas/RolleMedOrganisasjon"
+            }
+          }
+        },
+        "required": [
+          "roller"
+        ]
+      },
       "NavnFelt": {
         "type": "string",
         "pattern": "^[A-ZÆØÅa-zæøå0-9ÁáÀàÂâÉéÈèÊêÍíÌìÎîÓóÒòÔôÚúÙùÛûÝýÄäËëÏïÖöÜü,.!?\\-:;/\\\\'()&+*=%§]+[A-ZÆØÅa-zæøå0-9ÁáÀàÂâÉéÈèÊêÍíÌìÎîÓóÒòÔôÚúÙùÛûÝýÄäËëÏïÖöÜü ,.!?\\-:;/\\\\'()&+*=%§]*[A-ZÆØÅa-zæøå0-9ÁáÀàÂâÉéÈèÊêÍíÌìÎîÓóÒòÔôÚúÙùÛûÝýÄäËëÏïÖöÜü,.!?\\-:;/\\\\'()&+*=%§]+$",
@@ -344,6 +511,20 @@
       "BeskrivelseFelt": {
         "type": "string",
         "maxLength": 400
+      },
+      "Organisasjon": {
+        "type": "object",
+        "properties": {
+          "navn": {
+            "type": "string"
+          },
+          "kommunenr": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "navn"
+        ]
       }
     }
   }
