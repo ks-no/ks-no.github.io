@@ -4,7 +4,7 @@ date: 2025-11-12
 aliases: [/fiks-platform/tjenester/eiendomsavtaler/, /fiks-plattform/tjenester/eiendomsavtaler/]
 ---
 ## Kort beskrivelse
-Fiks eiendomsavtaler er en tjeneste for å tilrettelegge for fakturering av kommunale avgifter. En MVP (Minimum viable product) er planlagt lansert mars 2026. Første pilotkommune er Oslo kommune.
+Fiks eiendomsavtaler er en tjeneste for å tilrettelegge for fakturering av kommunale avgifter. En MVP (Minimum viable product) er planlagt lansert tidlig i 2026. Første pilotkommune er Oslo kommune.
 
 Fiks eiendomsavtaler tilbyr:
 * Et register over eiendomsavtaler som består av en lokal kopi med informasjon fra matrikkelen, og flere felter som vi omtaler som «kommunal del» som saksbehandler i kommunen kan legge til mer informasjon på. 
