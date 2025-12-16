@@ -4,9 +4,9 @@
     "title": "KS FIKS: Konsesjon service",
     "description": "Konsesjon service",
     "contact": {
-      "name": "Fiks brukerstøtte",
+      "name": "Fiks konsesjon",
       "url": "https://www.ks.no/fagomrader/digitalisering/utviklingsprosjekter",
-      "email": "fiks-utvikling@ks.no"
+      "email": "fiks-utvikling@ksdigital.no"
     },
     "version": "v1"
   },
@@ -23,24 +23,223 @@
   "tags": [
     {
       "name": "konsesjon",
-      "description": "API for konsesjonformål"
+      "description": "API for konsesjonsavklaring"
     }
   ],
   "paths": {
-    "/konsesjon/api/v1/konsesjon": {
+    "/konsesjon/v1/{konsesjonId}": {
       "get": {
         "tags": [
           "Konsesjon"
         ],
-        "description": "PingPong",
-        "operationId": "ping",
+        "description": "Hent konsesjon",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "konsesjonId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "operationId": "getKonsesjon",
+        "responses": {
+          "200": {
+            "description": "Hent konsesjon",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Konsesjon"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/konsesjon/v1/eiendom": {
+      "get": {
+        "tags": [
+          "soek"
+        ],
+        "description": "Søk eiendom",
+        "operationId": "soekEiendom",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "soek",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "New response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Eiendom"
+                  },
+                  "minItems": 1
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/konsesjon/v1/erverver": {
+      "get": {
+        "tags": [
+          "soek"
+        ],
+        "description": "Søk på erverver",
+        "operationId": "soekErverver",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "soek",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "søk erverver",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Erverver"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/konsesjon/v1/opprett": {
+      "post": {
+        "tags": [
+          "Konsesjon"
+        ],
+        "description": "Opprett konsesjon",
+        "operationId": "opprettKonsesjonsAvklaring",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/KonsesjonsAvklaringOpprettelse"
+              }
+            }
+          }
+        },
         "responses": {
           "200": {
             "description": "pong",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/PingPong"
+                  "$ref": "#/components/schemas/KonsesjonReferanse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/konsesjon/v1/avklaring/{avklaringsId}/sjekk": {
+      "get": {
+        "tags": [
+          "Konsesjon"
+        ],
+        "description": "Kjør konsesjonsavklaring",
+        "operationId": "getKonsesjonsAvklaring",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "avklaringsId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "pong",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/KonsesjonStatus"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/konsesjon/v1/avklaring/{avklaringsId}/status": {
+      "get": {
+        "tags": [
+          "Konsesjon"
+        ],
+        "description": "Hent konsesjonsavklaringsstatus",
+        "operationId": "getStatus",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "avklaringsId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "pong",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/KonsesjonStatus"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/konsesjon/v1/avklaring/{avklaringsId}/signer": {
+      "post": {
+        "tags": [
+          "Konsesjon"
+        ],
+        "description": "Signer endpoint",
+        "operationId": "signerKonsesjon",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "avklaringsId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "signering innsendt",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
                 }
               }
             }
@@ -51,10 +250,173 @@
   },
   "components": {
     "schemas": {
-      "PingPong": {
+      "Avklaring": {
         "type": "object",
         "properties": {
-          "message": {
+          "erverver": {
+            "type": "string"
+          },
+          "avklaringsId": {
+            "type": "string"
+          }
+        }
+      },
+      "Eiendom": {
+        "type": "object",
+        "properties": {
+          "matrikkelNr": {
+            "type": "string"
+          },
+          "adressenavn": {
+            "type": "string",
+            "description": "Navn på gate, veg, sti, plass eller område som er ført i matrikkelen (eksempel Sørumvegen)."
+          },
+          "adressetekst": {
+            "type": "string",
+            "description": "Del av offisiell adresse, men uten bruksenhetsnummer som ligger til bruksenheter/boliger (ligger her som egenskap til vegadressen) Eksempel: \"Storgata 2B\" eller \"123/4-2\" Der det i tillegg er adressetilleggsnavn: \"Haugen, Storgata 2B\" eller \"Midtgard, 123/4-2\""
+          },
+          "adressetilleggsnavn": {
+            "type": "string",
+            "description": "Nedarvet bruksnavn, navn på en institusjon eller bygning eller grend brukt som del av den offisielle adressen"
+          },
+          "adressekode": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Nummer som entydig identifiserer adresserbare gater, veger, stier, plasser og områder som er ført i matrikkelen innen kommunen"
+          },
+          "nummer": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Del av adressenummer (husnummer) som er et nummer og eventuelt en bokstav, f.eks 23B"
+          },
+          "bokstav": {
+            "type": "string",
+            "description": "Del av adressenummer (husnummer) som er et nummer og en eventuelt en bokstav, f.eks 23B. For å kun søke på adresser uten noen bokstav så inkluderer man \"bokstav=\" i søkestrengen uten å fylle inn noen verdi."
+          },
+          "kommunenummer": {
+            "type": "string",
+            "description": "Nummerering av kommunen i henhold til Statistisk sentralbyrå sin offisielle liste. Tekstverdi som må bestå av 4 tall. 0301 er for eksempel gyldig, mens 301 er ikke gyldig."
+          },
+          "kommunenavn": {
+            "type": "string",
+            "description": "Navn (norsk) på en kommune"
+          },
+          "gardsnummer": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Del av en matrikkeladresse der vegadresse ikke er innført, - eller vegadressens knytning til matrikkelenhet (grunneiendom eller feste, - gir her ikke knyting mot seksjon)"
+          },
+          "bruksnummer": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Del av en matrikkeladresse der vegadresse ikke er innført, - eller vegadressens knytning til matrikkelenhet (grunneiendom eller feste, - gir her ikke knyting mot seksjon)"
+          },
+          "festenummer": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Del av en matrikkeladresse der vegadresse ikke er innført, - eller vegadressens knytning til matrikkelenhet (grunneiendom eller feste, - gir her ikke knytning mot seksjon)"
+          },
+          "undernummer": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Fortløpende nummerering av matrikkeladresser med samme gårds-, bruks- og festenummer."
+          },
+          "bruksenhetsnummer": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "minItems": 1
+          },
+          "poststed": {
+            "type": "string",
+            "description": "Navn på poststed i henhold til Postens egne lister"
+          },
+          "postnummer": {
+            "type": "string",
+            "description": "Unik identifikasjon av et postnummerområde. Tekstverdi som må bestå av 4 tall. 0340 er for eksempel gyldig, mens 340 er ikke gyldig. Postnummer som identifiserer postboksanlegg er ikke med og vil ikke gi treff."
+          },
+          "adressetekstutenadressetilleggsnavn": {
+            "type": "string",
+            "description": "Del av offisiell adresse, men uten bruksenhetsnummer som ligger til bruksenheter/boliger og adressetilleggsnavn Eksempel: \"Storgata 2B\" eller \"123/4-2\""
+          },
+          "stedfestingverifisert": {
+            "type": "boolean",
+            "description": "Angivelse om stedfestingen (koordinatene) er kontrollert og funnet i orden (verifisert)"
+          },
+          "oppdateringsdato": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Dato for siste endring på objektdataene"
+          }
+        }
+      },
+      "Erverver": {
+        "type": "object",
+        "properties": {
+          "ssn": {
+            "type": "string"
+          }
+        }
+      },
+      "Konsesjon": {
+        "type": "object",
+        "properties": {
+          "oppretter": {
+            "type": "string"
+          },
+          "opprettet": {
+            "type": "string"
+          },
+          "eiendom": {
+            "type": "object"
+          },
+          "erververe": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Erverver"
+            },
+            "minItems": 1
+          }
+        }
+      },
+      "KonsesjonsAvklaringOpprettelse": {
+        "type": "object",
+        "properties": {
+          "eiendom": {
+            "type": "string"
+          },
+          "erververe": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "minItems": 1
+          }
+        }
+      },
+      "KonsesjonReferanse": {
+        "type": "object",
+        "properties": {
+          "oprettelseId": {
+            "type": "string"
+          },
+          "avklaringer": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Avklaring"
+            },
+            "minItems": 1
+          }
+        }
+      },
+      "KonsesjonStatus": {
+        "type": "object",
+        "properties": {
+          "avklaringsId": {
+            "type": "string"
+          },
+          "status": {
             "type": "string"
           }
         }
