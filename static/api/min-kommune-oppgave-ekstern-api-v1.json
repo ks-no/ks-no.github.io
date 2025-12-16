@@ -1,0 +1,231 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "KS Min Kommune: Oppgave API",
+    "description": "",
+    "contact": {
+      "name": "Fiks-brukerstøtte",
+      "url": "https://ks-no.github.io/",
+      "email": "fiks-utvikling@ks.no"
+    },
+    "license": {
+      "name": "MIT",
+      "url": "https://opensource.org/licenses/MIT"
+    },
+    "version": "v1"
+  },
+  "servers": [
+    {
+      "url": "https://api.fiks.ks.no",
+      "description": "KS Fiks API host"
+    }
+  ],
+  "security": [
+    {
+      "bearerAuth": []
+    }
+  ],
+  "tags": [
+    {
+      "name": "Min Kommune Oppgave Ekstern service",
+      "description": "API for håndtering av oppgaver for eksterne systemer"
+    }
+  ],
+  "paths": {
+    "/min-kommune/api/v1/api/{fiksOrgId}/oppgaver": {
+      "post": {
+        "tags": [
+          "OppgaveOpprett"
+        ],
+        "summary": "Opprett oppgave",
+        "operationId": "opprettOppgave",
+        "parameters": [
+          {
+            "name": "fiksOrgId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OppgaveOpprettRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Oppgave opprettet",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OppgaveOpprettResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Ukjent",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Ingen tilgang",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Systemfeil",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    },
+    "schemas": {
+      "ErrorMessage": {
+        "type": "object",
+        "properties": {
+          "timestamp": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "status": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "error": {
+            "type": "string"
+          },
+          "errorId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "path": {
+            "type": "string"
+          },
+          "originalPath": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          },
+          "errorCode": {
+            "type": "string"
+          },
+          "errorJson": {
+            "type": "string"
+          }
+        }
+      },
+      "OppgaveOpprettRequest": {
+        "required": [
+          "tittel",
+          "beskrivelse",
+          "handling",
+          "url",
+          "mottakere",
+          "utfortKriterie"
+        ],
+        "type": "object",
+        "properties": {
+          "tittel": {
+            "type": "string"
+          },
+          "beskrivelse": {
+            "type": "string"
+          },
+          "handling": {
+            "type": "string"
+          },
+          "url": {
+            "type": "string"
+          },
+          "sprak": {
+            "type": "string",
+            "enum": [
+              "nb",
+              "nn",
+              "en",
+              "se"
+            ]
+          },
+          "frist": {
+            "type": "integer",
+            "format": "int64",
+            "description": "Frist for oppgaven i millisekunder siden epoch"
+          },
+          "utfortKriterie": {
+            "type": "string",
+            "enum": [
+              "ANY",
+              "ALL"
+            ]
+          },
+          "mottakere": {
+            "$ref": "#/components/schemas/Mottakere"
+          }
+        }
+      },
+      "OppgaveOpprettResponse": {
+        "required": [
+          "oppgaveId"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      },
+      "Mottakere": {
+        "required": [
+          "personIdList"
+        ],
+        "type": "object",
+        "properties": {
+          "personIdList": {
+            "type": "array",
+            "description": "Fødselsnummer eller D-nummer til personen som mottar oppgaven",
+            "minItems": 1,
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    }
+  }
+}
