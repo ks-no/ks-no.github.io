@@ -1,0 +1,237 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "KS Min Kommune: Oppgave API",
+    "description": "",
+    "contact": {
+      "name": "Fiks-brukerstøtte",
+      "url": "https://ks-no.github.io/",
+      "email": "fiks-utvikling@ks.no"
+    },
+    "license": {
+      "name": "MIT",
+      "url": "https://opensource.org/licenses/MIT"
+    },
+    "version": "v1"
+  },
+  "servers": [
+    {
+      "url": "https://min.kommune.no",
+      "description": "KS Fiks Min Kommune intern api"
+    }
+  ],
+  "security": [
+    {
+      "bearerAuth": []
+    }
+  ],
+  "tags": [
+    {
+      "name": "Min Kommune Oppgave Innbygger service",
+      "description": "API for søk og andre operasjoner på oppgaver for innbyggere"
+    }
+  ],
+  "paths": {
+    "/min-kommune/api/v1/innbygger/oppgaver": {
+      "get": {
+        "tags": [
+          "OppgaveSok"
+        ],
+        "summary": "Hent oppgaver",
+        "operationId": "getOppgaver",
+        "parameters": [
+          {
+            "name": "sprak",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "nb",
+                "nn",
+                "en",
+                "se"
+              ]
+            }
+          },
+          {
+            "name": "side",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "sideStorrelse",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Oppgaver",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OppgaverListResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Ukjent",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Ingen tilgang",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Systemfeil",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    },
+    "schemas": {
+      "ErrorMessage": {
+        "type": "object",
+        "properties": {
+          "timestamp": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "status": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "error": {
+            "type": "string"
+          },
+          "errorId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "path": {
+            "type": "string"
+          },
+          "originalPath": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          },
+          "errorCode": {
+            "type": "string"
+          },
+          "errorJson": {
+            "type": "string"
+          }
+        }
+      },
+      "OppgaverListResponse": {
+        "required": [
+          "oppgaver",
+          "totaltAntall"
+        ],
+        "type": "object",
+        "properties": {
+          "oppgaver": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Oppgave"
+            }
+          },
+          "totaltAntall": {
+            "type": "integer",
+            "format": "int64"
+          }
+        }
+      },
+      "Oppgave": {
+        "required": [
+          "id",
+          "advarsler",
+          "status",
+          "tittel",
+          "beskrivelse",
+          "handling",
+          "url",
+          "kommunenr"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "advarsler": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "status": {
+            "$ref": "#/components/schemas/OppgaveStatus"
+          },
+          "tittel": {
+            "type": "string"
+          },
+          "beskrivelse": {
+            "type": "string"
+          },
+          "handling": {
+            "type": "string"
+          },
+          "url": {
+            "type": "string"
+          },
+          "kommunenr": {
+            "type": "string",
+            "example": "4601"
+          }
+        }
+      },
+      "OppgaveStatus": {
+        "type": "string",
+        "enum": [
+          "NY",
+          "FULLFORT"
+        ]
+      }
+    }
+  }
+}
