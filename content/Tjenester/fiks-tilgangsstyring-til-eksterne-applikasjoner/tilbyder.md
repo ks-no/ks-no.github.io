@@ -52,8 +52,8 @@ Detaljer om oppsett av Maskinporten er beskrevet i
 
 ### API-endepunkt
 
-**Produksjon:** `https://api.fiks.ks.no`
-**Test:** `https://api.fiks.test.ks.no`
+- **Produksjon:** `https://api.fiks.ks.no`
+- **Test:** `https://api.fiks.test.ks.no`
 
 ### Flyt ved brukerinnlogging
 ![Flyt ved brukerinnlogging](https://www.plantuml.com/plantuml/png/VL3DRjGm4BxxAKO-KsMNKdvoG6s5K5UmOgKYBfJ3i1aY4sTiUIQLKBJlnPqNmqwoe5pgWotFzpFVpBKe9XrwRs9-tT55P0LxxmVLxsdeA5KtBAXg0GLkfygQ-iunO8mJVXFZ6joZT8vZI4eyCVQ7DU6zwmJK-HQv5T5VoN5R_WzCdIWbfcBkNOVoCp2boUH3w1spCNCSk7XR6jVmCRHj_XQ8WnA4HqfJ9825YOCIgnDAcejtcE37dz-Da1SU-fwI8MwWQ8t9kcoSyzPmbpM0noE9W8QEsEmFS77kUakOA2t08biIrd3uTFyPgcM-2gEh7hVvYTMOhrrpEaEK7dYqyy9t3R7Q6kps-UMBgvUlNh_PREt9p9R_-uxsdpQJluws2tq_C1Nbvh98di6gUBKfnMydOz3hDFnYO22V9VYyg1g-E8465Grv8TZbBlmKtQuOjkpHNEThwFrV)
