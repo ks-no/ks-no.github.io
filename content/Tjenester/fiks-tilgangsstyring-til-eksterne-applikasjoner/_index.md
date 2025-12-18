@@ -3,9 +3,6 @@ title: Fiks tilgangsstyring til eksterne applikasjoner
 description: Tjeneste for å administrere tilgang til eksterne applikasjoner
 weight: 100
 ---
-
-# Fiks tilgangsstyring til eksterne applikasjoner
-
 Fiks tilgangsstyring til eksterne applikasjoner er en autorisasjonstjeneste som gjør det mulig for applikasjonstilbydere å verifisere om brukere i en organisasjon har tilgang til deres applikasjoner.
 
 ## Hva er tjenesten?
@@ -26,24 +23,6 @@ Tjenesten fungerer som en sentral autorisasjonsløsning der:
 
 ## Hvordan fungerer det?
 ![Hvordan fungerer det?](https://www.plantuml.com/plantuml/png/RP3BJYin38RtynHMLwtKYyvPTW4jue80gGia1AYRb75JCrCdSZoL-lPa4WPrACh2ilFxysylWXhHPbyNFaRw86zOOV1SDweRQIgKsPA3KHs02N2LAdtfJHKKXS5ul-RXpWLGgZV74cMKUfRUznjkgKeQQzY6e4SXjcs-PimeR5arLIPyEaP9b4Ut9-O-Q2KHGI79WYcZW8AAKITvS5if2dQAu0uekJ3Ef3dycyBA-u2gC4HEPbpEPmSiOOCxTnWLgGSc5_3T5YDloJQ2yNLRjB7dcM7h1Do9F-Hpr1q9v1jZHpgrcu_zu_V_5AwDhSccdYB_Hbnxu3ayEMjZ6fL0VIj5_3-TUc-wgV3wUm5ukooo3YOT-S6CpxQ1zuwQRSpXXK84baRDN-85Sjdiwoy0)
-```plantuml
-@startuml
-participant "Sluttbruker/Ansatt" as Bruker
-participant "Ekstern app\n(hos tilbyder)" as App
-participant "Fiks tilgangsstyring til\neksterne applikasjoner" as Kominn
-participant "Organisasjonsadministrator" as Admin
-
-note over Admin,Kominn: 1. Oppsett (engangsoppsett/ved behov)
-Admin -> Kominn: Konfigurerer tilgang til applikasjonen for organisasjonen
-Admin -> Kominn: Gir brukere tilgang
-
-note over Bruker,Kominn: 2. Daglig bruk
-Bruker -> App: Logger inn i applikasjonen
-App -> Kominn: Har bruker X tilgang til app Y?
-Kominn --> App: Ja, for organisasjon Z
-App -> Bruker: Viser data for organisasjon Z
-@enduml
-```
 
 ## API-dokumentasjon
 - [Tilgang API (HTML)](https://developers.fiks.ks.no/api/?spec=https://developers.fiks.ks.no/api/fiks-tilgang-api-v1.json), [OpenAPI (JSON)](https://developers.fiks.ks.no/api/fiks-tilgang-api-v1.json)
