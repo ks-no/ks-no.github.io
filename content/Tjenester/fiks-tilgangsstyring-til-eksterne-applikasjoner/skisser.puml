@@ -1,0 +1,54 @@
+@startuml
+participant "Sluttbruker/Ansatt" as Bruker
+participant "Ekstern app\n(hos tilbyder)" as App
+participant "Fiks tilgangsstyring til\neksterne applikasjoner" as Kominn
+participant "Organisasjonsadministrator" as Admin
+
+note over Admin,Kominn: 1. Oppsett (engangsoppsett/ved behov)
+Admin -> Kominn: Konfigurerer tilgang til applikasjonen for organisasjonen
+Admin -> Kominn: Gir brukere tilgang
+
+note over Bruker,Kominn: 2. Daglig bruk
+Bruker -> App: Logger inn i applikasjonen
+App -> Kominn: Har bruker X tilgang til app Y?
+Kominn --> App: Ja, for organisasjon Z
+App -> Bruker: Viser data for organisasjon Z
+@enduml
+
+@startuml
+left to right direction
+skinparam activity {
+  BackgroundColor<<Current>> LightSkyBlue
+}
+
+(*) --> "1. Registrer applikasjon\nfor tilgangsstyring"
+--> "2. Opprett en\nMaskinporten-integrasjon"
+--> "3. Implementer\ntilgangssjekk"
+--> "4. Test\nintegrasjonen"
+--> (*)
+@enduml
+
+@startuml
+participant "Sluttbruker/Ansatt" as Bruker
+participant "Din app" as App
+participant "Maskinporten" as MP
+participant "Fiks tilgangsstyring til\neksterne applikasjoner" as Kominn
+
+Bruker -> App: Logger inn
+note over App
+  Bruker autentisert
+  Har fødselsnummer
+end note
+
+App -> MP: Hent access token
+MP --> App: Bearer token
+
+App -> Kominn: POST /tilgang/api/v1/app/{appId}/tilganger\n{"brukerIdent": "12345678901"}
+Kominn --> App: {"tilganger": [{"kommune": "0301"}, {"kommune": "5001"}]}
+
+alt Har tilgang
+    App -> Bruker: Vis data
+else Ingen tilgang
+    App -> Bruker: "Ingen tilgang"
+end
+@enduml
