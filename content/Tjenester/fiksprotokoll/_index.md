@@ -83,7 +83,6 @@ Fiks IO Katalog API er en oppslagstjeneste som brukes for å hente offentlig nø
 
 Via [Fiks IO Katalog API (OpenAPI Specification)](https://editor-next.swagger.io/?url=https://developers.fiks.ks.no/api/fiksio-katalog-api-v1.json) kan man blant annet: 
 - Hente offentlig nøkkel for konto
-- Søke etter konto via lookup 
 - Hente konto informasjon, som f.eks. status med antall konsumenter på køen
 
 
@@ -198,7 +197,7 @@ Siden meldinger har en time-to-live kan man risikere at disse til slutt går ut 
 Det er selvfølgelig også i ens egen interesse å svare på meldinger så fort som mulig. 
 
 Hvordan man overvåker at man kan sende og motta meldinger er opp til en selv men vi anbefaler at man i det minste overvåker koblingsstatus til Fiks-IO for henting av meldinger. 
-Klienten for .NET har både en **IsOpen()** metode som viser om klienten selv ser at den har en aktiv kobling, og mulighet for å spørre Fiks IO API om status for en gitt konto via **Status()** eller **Lookup()** metodene.
+Klienten for .NET har både en **IsOpen()** metode som viser om klienten selv ser at den har en aktiv kobling, og mulighet for å spørre Fiks IO API om status for en gitt konto via **Status()** metoden.
 Status vil da gi informasjon som f.eks. **antall konsumenter** for kontoen.
 
 #### Get status for konto:
