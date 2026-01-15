@@ -3,6 +3,9 @@ title: SOAP V10
 date: 2018-05-11
 aliases: [/svarut/integrasjon/ForsendelseServiceV10, /tjenester/svarut/integrasjon/forsendelsesservicev10/]
 ---
+
+**NB! Vi planlegger å avvikle støtte for alle gjenværende SOAP-versjoner i løpet av 2026, les mer [her](https://ksdigital.no/2026/01/13/avvikling-av-soap-og-rest-v-1-api-for-svarut/).**
+
 ### Tilgang
 
 For å benytte web-tjenesten må en bruke HTTP Basic autentication med brukernavn(avsendernavn) og service-passord. Avsender opprettes av KS-SvarUt administrator/organisasjons administrator. Service-passordet genereres av avsender-ansvarlig via [konfigurasjon](https://svarut.ks.no/konfigurasjon/)-siden.

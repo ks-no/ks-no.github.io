@@ -4,6 +4,8 @@ date: 2017-01-01
 aliases: [/svarut/integrasjon/ForsendelseServiceV5, /tjenester/svarut/integrasjon/forsendelseservicev5/]
 ---
 
+**NB! Vi planlegger å avvikle støtte for alle gjenværende SOAP-versjoner i løpet av 2026, les mer [her](https://ksdigital.no/2026/01/13/avvikling-av-soap-og-rest-v-1-api-for-svarut/).**
+
 Her beskrives funksjonalitet for ForsendelseServiceV5
 
 ### [WSDL](https://svarut.ks.no/tjenester/forsendelseservice/ForsendelsesServiceV5?wsdl)

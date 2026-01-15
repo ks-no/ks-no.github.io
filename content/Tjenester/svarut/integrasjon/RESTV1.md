@@ -3,6 +3,9 @@ title: REST V1
 date: 2019-04-11
 aliases: ["/svarut/integrasjon/ForsendelseRestServiceV1", "/svarut/integrasjon/forsendelserestservicev1/", "/tjenester/svarut/integrasjon/forsendelserestservicev1/"]
 ---
+
+**NB! Vi planlegger å avvikle støtte for REST V1 i løpet av 2026, les mer [her](https://ksdigital.no/2026/01/13/avvikling-av-soap-og-rest-v-1-api-for-svarut/).**
+
 ### Tilgang
 
 For å benytte web-tjenesten må en bruke HTTP Basic autentication med brukernavn og service-passord. 
