@@ -1,0 +1,1325 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Leverandørregister Root API",
+    "description": "Root-API for systemadministrasjon av leverandører, produkter og kontaktpunkter.",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "/leverandoerregister/root/api/v1",
+      "description": "Root API for leverandørregisteret"
+    }
+  ],
+  "tags": [
+    { "name": "Leverandoer" },
+    { "name": "Produkt" },
+    { "name": "Kontaktpunkt" },
+    { "name": "Produktkategori" },
+    { "name": "KontaktpunktFormaal" }
+  ],
+  "paths": {
+    "/leverandoer": {
+      "get": {
+        "tags": ["Leverandoer"],
+        "summary": "Hente alle leverandører",
+        "operationId": "hentLeverandoerer",
+        "responses": {
+          "200": {
+            "description": "Liste over leverandører",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/LeverandoerResponse" }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["Leverandoer"],
+        "summary": "Opprette en ny leverandør",
+        "operationId": "opprettLeverandoer",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/LeverandoerRequest" }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Leverandør opprettet",
+            "headers": {
+              "Location": {
+                "schema": { "type": "string" }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/LeverandoerResponse" }
+              }
+            }
+          },
+          "400": {
+            "description": "Ugyldig input",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Manglende tilgang",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Organisasjonsnummeret finnes allerede",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+
+    "/leverandoer/{leverandoerId}": {
+      "get": {
+        "tags": ["Leverandoer"],
+        "summary": "Hente en leverandør",
+        "operationId": "hentLeverandoer",
+        "parameters": [
+          {
+            "name": "leverandoerId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string", "format": "uuid" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Leverandør funnet",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/LeverandoerResponse" }
+              }
+            }
+          },
+          "404": {
+            "description": "Leverandør ikke funnet",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      },
+
+      "delete": {
+        "tags": ["Leverandoer"],
+        "summary": "Deaktivere (soft delete) leverandør",
+        "operationId": "slettLeverandoer",
+        "parameters": [
+          {
+            "name": "leverandoerId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string", "format": "uuid" }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Leverandør deaktivert"
+          },
+          "403": {
+            "description": "Manglende tilgang",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Leverandør ikke funnet",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+
+    "/leverandoer/{leverandoerId}/produkter": {
+      "get": {
+        "tags": ["Produkt"],
+        "summary": "Hente alle produkter for en leverandør",
+        "operationId": "hentProdukterForLeverandoer",
+        "parameters": [
+          {
+            "name": "leverandoerId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string", "format": "uuid" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Liste over produkter",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/ProduktResponse" }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Leverandør ikke funnet",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["Produkt"],
+        "summary": "Opprette et nytt produkt for en leverandør",
+        "operationId": "opprettProdukt",
+        "parameters": [
+          {
+            "name": "leverandoerId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string", "format": "uuid" }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/ProduktRequest" }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Produkt opprettet",
+            "headers": {
+              "Location": {
+                "schema": { "type": "string" }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ProduktResponse" }
+              }
+            }
+          },
+          "400": {
+            "description": "Ugyldig input",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Manglende tilgang",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Leverandøren finnes ikke",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+
+    "/produkter/{produktId}": {
+      "get": {
+        "tags": ["Produkt"],
+        "summary": "Hente et produkt",
+        "operationId": "hentProdukt",
+        "parameters": [
+          {
+            "name": "produktId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string", "format": "uuid" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Produkt funnet",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ProduktResponse" }
+              }
+            }
+          },
+          "404": {
+            "description": "Produkt ikke funnet",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": ["Produkt"],
+        "summary": "Oppdatere produkt",
+        "operationId": "oppdaterProdukt",
+        "parameters": [
+          {
+            "name": "produktId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string", "format": "uuid" }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/ProduktUpdateRequest" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Produkt oppdatert",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ProduktResponse" }
+              }
+            }
+          },
+          "404": {
+            "description": "Produkt ikke funnet",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Produkt"],
+        "summary": "Slette et produkt (soft delete)",
+        "operationId": "slettProdukt",
+        "parameters": [
+          {
+            "name": "produktId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string", "format": "uuid" }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Produkt slettet"
+          },
+          "404": {
+            "description": "Produkt ikke funnet",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Kan ikke slette - produkt i bruk",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+
+    "/produkter/{produktId}/kontaktpunkter": {
+      "get": {
+        "tags": ["Kontaktpunkt"],
+        "summary": "Hente alle kontaktpunkter for et produkt",
+        "operationId": "hentKontaktpunkterForProdukt",
+        "parameters": [
+          {
+            "name": "produktId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string", "format": "uuid" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Liste over kontaktpunkter",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/KontaktpunktResponse" }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Produkt ikke funnet",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["Kontaktpunkt"],
+        "summary": "Legge til et ekstra kontaktpunkt for et produkt",
+        "operationId": "opprettKontaktpunkt",
+        "parameters": [
+          {
+            "name": "produktId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string", "format": "uuid" }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/KontaktpunktRequest" }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Kontaktpunkt opprettet",
+            "headers": {
+              "Location": {
+                "schema": { "type": "string" }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/KontaktpunktResponse" }
+              }
+            }
+          },
+          "400": {
+            "description": "Ugyldig input",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Manglende tilgang",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Produktet finnes ikke",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/kontaktpunkter/{kontaktpunktId}": {
+      "put": {
+        "tags": ["Kontaktpunkt"],
+        "summary": "Oppdatere kontaktpunkt",
+        "operationId": "oppdaterKontaktpunkt",
+        "parameters": [
+          {
+            "name": "kontaktpunktId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string", "format": "uuid" }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/KontaktpunktUpdateRequest" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Kontaktpunkt oppdatert",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/KontaktpunktResponse" }
+              }
+            }
+          },
+          "404": {
+            "description": "Kontaktpunkt ikke funnet",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Kontaktpunkt"],
+        "summary": "Slette kontaktpunkt (soft delete)",
+        "operationId": "slettKontaktpunkt",
+        "parameters": [
+          {
+            "name": "kontaktpunktId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string", "format": "uuid" }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Kontaktpunkt slettet"
+          },
+          "404": {
+            "description": "Kontaktpunkt ikke funnet",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+
+    "/produktkategorier": {
+      "get": {
+        "tags": ["Produktkategori"],
+        "summary": "Hente alle produktkategorier",
+        "operationId": "hentProduktkategorier",
+        "responses": {
+          "200": {
+            "description": "Liste over produktkategorier",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/ProduktKategoriResponse" }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["Produktkategori"],
+        "summary": "Opprette ny produktkategori",
+        "operationId": "opprettProduktkategori",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/ProduktKategoriRequest" }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Produktkategori opprettet",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ProduktKategoriResponse" }
+              }
+            }
+          },
+          "400": {
+            "description": "Ugyldig input",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Kategori med samme navn finnes allerede",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+
+    "/produktkategorier/{kategoriId}": {
+      "get": {
+        "tags": ["Produktkategori"],
+        "summary": "Hente produktkategori",
+        "operationId": "hentProduktkategori",
+        "parameters": [
+          {
+            "name": "kategoriId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string", "format": "uuid" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Produktkategori funnet",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ProduktKategoriResponse" }
+              }
+            }
+          },
+          "404": {
+            "description": "Produktkategori ikke funnet",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": ["Produktkategori"],
+        "summary": "Oppdatere produktkategori",
+        "operationId": "oppdaterProduktkategori",
+        "parameters": [
+          {
+            "name": "kategoriId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string", "format": "uuid" }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/ProduktKategoriUpdateRequest" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Produktkategori oppdatert",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ProduktKategoriResponse" }
+              }
+            }
+          },
+          "404": {
+            "description": "Produktkategori ikke funnet",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Produktkategori"],
+        "summary": "Slette produktkategori",
+        "operationId": "slettProduktkategori",
+        "parameters": [
+          {
+            "name": "kategoriId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string", "format": "uuid" }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Produktkategori slettet"
+          },
+          "404": {
+            "description": "Produktkategori ikke funnet",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Kan ikke slette - kategori er i bruk av produkter",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+
+    "/kontaktpunktformaal": {
+      "get": {
+        "tags": ["KontaktpunktFormaal"],
+        "summary": "Hente alle kontaktpunktformål",
+        "operationId": "hentAlleKontaktPunktFormaal",
+        "responses": {
+          "200": {
+            "description": "Liste over kontaktpunktformål",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/KontaktpunktFormaal" }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["KontaktpunktFormaal"],
+        "summary": "Opprette nytt kontaktpunktformål",
+        "operationId": "opprettKontaktpunktFormaal",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/KontaktpunktFormaalRequest" }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Kontaktpunktformål opprettet",
+            "headers": {
+              "Location": {
+                "schema": { "type": "string" }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/KontaktpunktFormaal" }
+              }
+            }
+          },
+          "400": {
+            "description": "Ugyldig input",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+
+    "/kontaktpunktformaal/{formaalId}": {
+      "get": {
+        "tags": ["KontaktpunktFormaal"],
+        "summary": "Hente ett kontaktpunktformål",
+        "operationId": "hentKontaktpunktFormaal",
+        "parameters": [
+          {
+            "name": "formaalId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string", "format": "uuid" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Kontaktpunktformål funnet",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/KontaktpunktFormaal" }
+              }
+            }
+          },
+          "404": {
+            "description": "Kontaktpunktformål ikke funnet",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": ["KontaktpunktFormaal"],
+        "summary": "Oppdatere kontaktpunktformål",
+        "operationId": "oppdaterKontaktpunktFormaal",
+        "parameters": [
+          {
+            "name": "formaalId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string", "format": "uuid" }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/KontaktpunktFormaalUpdateRequest" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Kontaktpunktformål oppdatert",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/KontaktpunktFormaal" }
+              }
+            }
+          },
+          "404": {
+            "description": "Kontaktpunktformål ikke funnet",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": ["KontaktpunktFormaal"],
+        "summary": "Slette kontaktpunktformål",
+        "operationId": "slettKontaktpunktFormaal",
+        "parameters": [
+          {
+            "name": "formaalId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string", "format": "uuid" }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Kontaktpunktformål slettet"
+          },
+          "404": {
+            "description": "Kontaktpunktformål ikke funnet",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Kan ikke slette - formål er i bruk av kontaktpunkter",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+
+  "components": {
+    "schemas": {
+      "KontaktpunktFormaal": {
+        "type": "object",
+        "required": ["id", "kode", "navn"],
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "kode": {
+            "type": "string",
+            "maxLength": 50
+          },
+          "navn": {
+            "type": "string",
+            "maxLength": 255
+          },
+          "beskrivelse": {
+            "type": "string",
+            "maxLength": 1000
+          }
+        }
+      },
+      "KontaktpunktFormaalRequest": {
+        "type": "object",
+        "required": ["kode", "navn"],
+        "properties": {
+          "kode": {
+            "type": "string",
+            "maxLength": 50
+          },
+          "navn": {
+            "type": "string",
+            "maxLength": 255
+          },
+          "beskrivelse": {
+            "type": "string",
+            "maxLength": 1000
+          }
+        }
+      },
+      "KontaktpunktFormaalUpdateRequest": {
+        "type": "object",
+        "required": ["kode", "navn"],
+        "properties": {
+          "kode": {
+            "type": "string",
+            "maxLength": 50
+          },
+          "navn": {
+            "type": "string",
+            "maxLength": 255
+          },
+          "beskrivelse": {
+            "type": "string",
+            "maxLength": 1000
+          }
+        }
+      },
+      "KontaktpunktRequest": {
+        "type": "object",
+        "required": ["type", "navn", "beskrivelse", "verdi", "formaalIds"],
+        "properties": {
+          "type": {
+            "$ref": "#/components/schemas/KontaktpunktType"
+          },
+          "navn": {
+            "type": "string",
+            "maxLength": 255
+          },
+          "beskrivelse": {
+            "type": "string",
+            "maxLength": 1000
+          },
+          "verdi": {
+            "type": "string",
+            "maxLength": 255
+          },
+          "formaalIds": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        }
+      },
+      "KontaktpunktResponse": {
+        "type": "object",
+        "required": [
+          "id",
+          "produktId",
+          "type",
+          "navn",
+          "beskrivelse",
+          "verdi",
+          "formaals"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "produktId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "type": {
+            "$ref": "#/components/schemas/KontaktpunktType"
+          },
+          "navn": {
+            "type": "string"
+          },
+          "beskrivelse": {
+            "type": "string"
+          },
+          "verdi": {
+            "type": "string",
+            "description": "Kontaktverdi. For type TELEFON: 8 sifre eller +47 etterfulgt av 8 sifre. For type EPOST: gyldig e-postadresse."
+          },
+          "formaals": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/KontaktpunktFormaal"
+            }
+          }
+        }
+      },
+      "KontaktpunktType": {
+        "type": "string",
+        "enum": ["TELEFON", "EPOST", "ANNET"]
+      },
+      "KontaktpunktUpdateRequest": {
+        "type": "object",
+        "required": ["type", "navn", "beskrivelse", "verdi", "formaalIds"],
+        "properties": {
+          "type": {
+            "$ref": "#/components/schemas/KontaktpunktType"
+          },
+          "navn": {
+            "type": "string",
+            "maxLength": 255
+          },
+          "beskrivelse": {
+            "type": "string",
+            "maxLength": 1000
+          },
+          "verdi": {
+            "type": "string",
+            "maxLength": 255
+          },
+          "formaalIds": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        }
+      },
+      "LeverandoerRequest": {
+        "type": "object",
+        "required": ["organisasjonsnummer"],
+        "properties": {
+          "organisasjonsnummer": {
+            "type": "string",
+            "pattern": "^\\d{9}$"
+          }
+        }
+      },
+      "LeverandoerResponse": {
+        "type": "object",
+        "required": ["id", "enhet"],
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "enhet": {
+            "$ref": "#/components/schemas/Enhet"
+          }
+        }
+      },
+      "Adresse" : {
+        "type" : "object",
+        "properties" : {
+          "adresse" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          },
+          "postnummer" : {
+            "type" : "string"
+          },
+          "poststed" : {
+            "type" : "string"
+          },
+          "land" : {
+            "type" : "string"
+          },
+          "kommunenummer" : {
+            "type" : "string"
+          },
+          "adresselinje1" : {
+            "type" : "string"
+          },
+          "adresselinje2" : {
+            "type" : "string"
+          },
+          "adresselinje3" : {
+            "type" : "string"
+          }
+        }
+      },
+      "Enhet" : {
+        "type" : "object",
+        "properties" : {
+          "organisasjonsnummer" : {
+            "type" : "string"
+          },
+          "navn" : {
+            "type" : "string"
+          },
+          "postadresse" : {
+            "$ref" : "#/components/schemas/Adresse"
+          },
+          "forretningsadresse" : {
+            "$ref" : "#/components/schemas/Adresse"
+          },
+          "overordnetEnhet" : {
+            "type" : "string"
+          },
+          "institusjonellSektorkode" : {
+            "$ref" : "#/components/schemas/InstitusjonellSektorkode"
+          },
+          "fiksOrgType" : {
+            "type" : "string"
+          }
+        }
+      },
+      "InstitusjonellSektorkode" : {
+        "type" : "object",
+        "properties" : {
+          "kode" : {
+            "type" : "string"
+          },
+          "beskrivelse" : {
+            "type" : "string"
+          }
+        }
+      },
+      "ProduktKategoriRequest": {
+        "type": "object",
+        "required": ["navn", "beskrivelse"],
+        "properties": {
+          "navn": {
+            "type": "string",
+            "maxLength": 255
+          },
+          "beskrivelse": {
+            "type": "string",
+            "maxLength": 1000
+          }
+        }
+      },
+      "ProduktKategoriResponse": {
+        "type": "object",
+        "required": ["id", "navn", "beskrivelse"],
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "navn": {
+            "type": "string",
+            "maxLength": 255
+          },
+          "beskrivelse": {
+            "type": "string",
+            "maxLength": 1000
+          }
+        }
+      },
+      "ProduktKategoriUpdateRequest": {
+        "type": "object",
+        "required": ["navn", "beskrivelse"],
+        "properties": {
+          "navn": {
+            "type": "string",
+            "maxLength": 255
+          },
+          "beskrivelse": {
+            "type": "string",
+            "maxLength": 1000
+          }
+        }
+      },
+      "ProduktRequest": {
+        "type": "object",
+        "required": ["navn", "beskrivelse", "produktKategoriId", "kontaktpunkter"],
+        "properties": {
+          "navn": {
+            "type": "string",
+            "maxLength": 255
+          },
+          "beskrivelse": {
+            "type": "string",
+            "maxLength": 4000
+          },
+          "webadresse": {
+            "type": "string",
+            "format": "uri"
+          },
+          "kildeKode": {
+            "type": "string",
+            "format": "uri"
+          },
+          "produktKategoriId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "kontaktpunkter": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "$ref": "#/components/schemas/KontaktpunktRequest"
+            }
+          }
+        }
+      },
+      "ProduktResponse": {
+        "type": "object",
+        "required": ["id", "leverandoerId", "navn", "beskrivelse", "produktKategori"],
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "leverandoerId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "navn": {
+            "type": "string"
+          },
+          "beskrivelse": {
+            "type": "string"
+          },
+          "webadresse": {
+            "type": "string",
+            "format": "uri"
+          },
+          "kildeKode": {
+            "type": "string",
+            "format": "uri"
+          },
+          "produktKategori": {
+            "$ref": "#/components/schemas/ProduktKategoriResponse"
+          },
+          "kontaktpunkter": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/KontaktpunktResponse"
+            }
+          }
+        }
+      },
+      "ProduktUpdateRequest": {
+        "type": "object",
+        "required": ["navn", "beskrivelse", "produktKategoriId"],
+        "properties": {
+          "navn": {
+            "type": "string",
+            "maxLength": 255
+          },
+          "beskrivelse": {
+            "type": "string",
+            "maxLength": 4000
+          },
+          "webadresse": {
+            "type": "string",
+            "format": "uri"
+          },
+          "kildeKode": {
+            "type": "string",
+            "format": "uri"
+          },
+          "produktKategoriId": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      }
+    }
+  }
+}
