@@ -497,6 +497,128 @@
         }
       }
     },
+    "/leverandoerregister/root/api/v1/produkter/{produktId}/tjenester": {
+      "get": {
+        "tags": ["Produkt"],
+        "summary": "Hente tjenester knyttet til et produkt",
+        "operationId": "hentProduktTjenester",
+        "parameters": [
+          {
+            "name": "produktId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string", "format": "uuid" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Liste over avtaletjenester knyttet til produktet",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ProduktTjenesterResponse" }
+              }
+            }
+          },
+          "404": {
+            "description": "Produkt ikke funnet",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["Produkt"],
+        "summary": "Knytte tjenester til et produkt",
+        "operationId": "knyttTjenesterTilProdukt",
+        "parameters": [
+          {
+            "name": "produktId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string", "format": "uuid" }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/ProduktTjenesterRequest" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Tjenester knyttet til produktet",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ProduktTjenesterResponse" }
+              }
+            }
+          },
+          "400": {
+            "description": "Ugyldig input",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Produkt ikke funnet",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/leverandoerregister/root/api/v1/produkter/{produktId}/tjenester/{avtaleTjenesteId}": {
+      "delete": {
+        "tags": ["Produkt"],
+        "summary": "Fjerne tjeneste fra produkt",
+        "operationId": "fjernTjenesteFraProdukt",
+        "parameters": [
+          {
+            "name": "produktId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string", "format": "uuid" }
+          },
+          {
+            "name": "avtaleTjenesteId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Tjeneste fjernet fra produkt"
+          },
+          "404": {
+            "description": "Produkt eller tjeneste ikke funnet",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/leverandoerregister/root/api/v1/kontaktpunkter/{kontaktpunktId}": {
       "put": {
         "tags": ["Kontaktpunkt"],
@@ -1254,6 +1376,13 @@
             "items": {
               "$ref": "#/components/schemas/KontaktpunktRequest"
             }
+          },
+          "tjenesteReferanser": {
+            "type": "array",
+            "description": "Valgfrie referanser til tjenester fra Avtale-API som knyttes til produktet",
+            "items": {
+              "type": "string"
+            }
           }
         }
       },
@@ -1291,6 +1420,12 @@
             "items": {
               "$ref": "#/components/schemas/KontaktpunktResponse"
             }
+          },
+          "tjenesteReferanser": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
           }
         }
       },
@@ -1317,6 +1452,36 @@
           "produktKategoriId": {
             "type": "string",
             "format": "uuid"
+          }
+        }
+      },
+      "ProduktTjenesterRequest": {
+        "type": "object",
+        "required": ["tjenesteReferanser"],
+        "properties": {
+          "tjenesteReferanser": {
+            "type": "array",
+            "minItems": 1,
+            "description": "Referanser til tjenester fra Avtale-API som skal knyttes til produktet",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "ProduktTjenesterResponse": {
+        "type": "object",
+        "required": ["produktId", "tjenesteReferanser"],
+        "properties": {
+          "produktId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "tjenesteReferanser": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
           }
         }
       }
