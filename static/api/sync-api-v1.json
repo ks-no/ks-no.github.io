@@ -1,0 +1,632 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Fiks Brukersynkronisering - Sync API",
+    "version": "1.5.0",
+    "description": "API for synkronisering av brukere og grupper fra fiks-brukersynkronisering.  Datamodellen er løst basert på `User` og `Group` entitetene fra SCIM 2.0 standarden med noen utvidelser.  Synkroniseringen baserer seg på et token som returneres ved første request. Dette tokenet skal ikke parses eller forstås av klienten, men tas med som et parameter på neste request. Det sørger for at neste request kun får brukere som er endret siden første request. Sammen med responsen kommer det et nytt token, som sendes med på neste, osv. Om klienten ønsker å initiere en ny full synkronisering fra starten, kan den sende en ny request uten sync token.  Samme prosedyre følges for synkronisering av grupper med et tilsvarende token.  Synk token for brukere kan ikke brukes for en gruppe request, og motsatt.  Merk at rekkefølgen brukerene returneres i baseres på når de sist ble endret.  Brukeren som ble sist endret vil bli returnert sist.  Rekkefølgen brukerene returneres i vil derfor ikke nødvendigvis reflektere rekkefølgen brukerene ble opprettet.",
+    "contact": {
+      "name": "Fiks-brukerstøtte",
+      "url": "https://developers.fiks.ks.no/",
+      "email": "fiks-utvikling@ksdigital.no"
+    },
+    "license": {
+      "name": "MIT",
+      "url": "https://opensource.org/licenses/MIT"
+    }
+  },
+  "servers": [
+    {
+      "url": "https://api.fiks.ks.no"
+    },
+    {
+      "url": "https://api.fiks.test.ks.no"
+    },
+    {
+      "url": "https://api.fiks.dev.ks.no"
+    }
+  ],
+  "security": [
+    {
+      "bearerAuth": []
+    }
+  ],
+  "paths": {
+    "/brukersynkronisering/sync/api/v1/{fiksOrgId}/{maalSystem}/brukere": {
+      "get": {
+        "tags": [
+          "Brukere"
+        ],
+        "summary": "Hent brukere",
+        "description": "Hent endringer for brukere. Bruker en `syncToken` for å kun hente  brukere som er opprettet, slettet, eller endret siden forrige request",
+        "operationId": "getUsers",
+        "parameters": [
+          {
+            "name": "fiksOrgId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "example": "a1b2c3d4-e5f6-7890-1234-56789abcdef0"
+            },
+            "description": "Id til organisasjonen brukeren tilhører"
+          },
+          {
+            "name": "maalSystem",
+            "in": "path",
+            "required": true,
+            "description": "Id til Målsystemet brukeren skal synkroniseres mot",
+            "schema": {
+              "type": "string",
+              "example": "FiksPlatform"
+            }
+          },
+          {
+            "name": "syncToken",
+            "in": "query",
+            "required": false,
+            "description": "Et token som angir hvor langt vi er kommet i synkroniseringen. En request uten sync token starter en full synkronisering fra første endring. Ved å angi et sync token som ble mottatt i forrige request, vil man kun få brukere som er endret siden den requesten ble utført.",
+            "schema": {
+              "type": "string",
+              "example": "eyJhbGciOiJIUzI1NiJ9.eyJraWQiOiJzb3VyY2VfQSIsInRzIjoxNjkw..."
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "description": "Maksimalt antall brukere å returnere.",
+            "schema": {
+              "type": "integer",
+              "default": 100,
+              "maximum": 1000,
+              "example": 100
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Vellykket respons som inneholder en batch med brukere.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserSyncResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Ugyldig forespørsel eller token-format."
+          },
+          "401": {
+            "description": "Ikke autorisert."
+          },
+          "410": {
+            "description": "**Gone / Token utløpt** `syncToken` er for gammelt eller endringer i kilden krever en ny full synkronisering. Klienten må forkaste tokenet og utføre en ny full synkronisering (kalle endepunktet uten `syncToken`)"
+          }
+        }
+      }
+    },
+    "/brukersynkronisering/sync/api/v1/{fiksOrgId}/{maalSystem}/grupper": {
+      "get": {
+        "tags": [
+          "Grupper"
+        ],
+        "summary": "Hent grupper",
+        "description": "Hent endringer for grupper. Bruker en `syncToken` for å kun hente  grupper som er opprettet eller endret siden forrige request.\n**Merk:** For å redusere datamengden returnerer dette endepunktet ikke listen over medlemmer eller gruppenavn.  For å hente detaljer må man gjøre et oppslag mot `/gruppe/{gruppeId}` for hver endret gruppe.",
+        "operationId": "getGroupChanges",
+        "parameters": [
+          {
+            "name": "fiksOrgId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "example": "a1b2c3d4-e5f6-7890-1234-56789abcdef0"
+            },
+            "description": "Id til organisasjonen gruppen tilhører"
+          },
+          {
+            "name": "maalSystem",
+            "in": "path",
+            "required": true,
+            "description": "Id til Målsystemet gruppen skal synkroniseres mot",
+            "schema": {
+              "type": "string",
+              "example": "FiksPlatform"
+            }
+          },
+          {
+            "name": "syncToken",
+            "in": "query",
+            "required": false,
+            "description": "Et token som angir hvor langt vi er kommet i synkroniseringen. En request uten sync token starter en full synkronisering fra første endring. Ved å angi et sync token som ble mottatt i forrige request, vil man kun få grupper som er endret siden den requesten ble utført.",
+            "schema": {
+              "type": "string",
+              "example": "eyJhbGciOiJIUzI1NiJ9.eyJraWQiOiJzb3VyY2VfQSIsInRzIjoxNjkw..."
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Vellykket respons som inneholder en batch med grupper.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GroupSyncResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Ugyldig forespørsel eller token-format."
+          },
+          "401": {
+            "description": "Ikke autorisert."
+          },
+          "410": {
+            "description": "**Gone / Token utløpt** `syncToken` er for gammelt eller endringer i kilden krever en ny full synkronisering. Klienten må forkaste tokenet og utføre en ny full synkronisering (kalle endepunktet uten `syncToken`)"
+          }
+        }
+      }
+    },
+    "/brukersynkronisering/sync/api/v1/{fiksOrgId}/{maalSystem}/bruker/{brukerId}": {
+      "get": {
+        "tags": [
+          "Brukere"
+        ],
+        "summary": "Hent en spesifikk bruker",
+        "description": "Henter detaljer for en enkelt bruker basert på brukerId.",
+        "operationId": "getUser",
+        "parameters": [
+          {
+            "name": "fiksOrgId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "example": "a1b2c3d4-e5f6-7890-1234-56789abcdef0"
+            },
+            "description": "Id til organisasjonen brukeren tilhører"
+          },
+          {
+            "name": "maalSystem",
+            "in": "path",
+            "required": true,
+            "description": "Id til Målsystemet brukeren skal synkroniseres mot",
+            "schema": {
+              "type": "string",
+              "example": "FiksPlatform"
+            }
+          },
+          {
+            "name": "brukerId",
+            "in": "path",
+            "required": true,
+            "description": "Unik identifikator for brukeren (id)",
+            "schema": {
+              "type": "string",
+              "example": "b91b4c74-4c8f-4c10-a167-20d2cbfc49dc"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Vellykket respons som inneholder brukerobjektet.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/User"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Ikke autorisert."
+          },
+          "404": {
+            "description": "Bruker ikke funnet."
+          }
+        }
+      }
+    },
+    "/brukersynkronisering/sync/api/v1/{fiksOrgId}/{maalSystem}/gruppe/{gruppeId}": {
+      "get": {
+        "tags": [
+          "Grupper"
+        ],
+        "summary": "Hent en spesifikk gruppe",
+        "description": "Henter detaljer for en enkelt gruppe basert på gruppe id.",
+        "operationId": "getGroup",
+        "parameters": [
+          {
+            "name": "fiksOrgId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "example": "a1b2c3d4-e5f6-7890-1234-56789abcdef0"
+            },
+            "description": "Id til organisasjonen gruppen tilhører"
+          },
+          {
+            "name": "maalSystem",
+            "in": "path",
+            "required": true,
+            "description": "Id til Målsystemet gruppen skal synkroniseres mot",
+            "schema": {
+              "type": "string",
+              "example": "FiksPlatform"
+            }
+          },
+          {
+            "name": "gruppeId",
+            "in": "path",
+            "required": true,
+            "description": "Unik identifikator for gruppen (id)",
+            "schema": {
+              "type": "string",
+              "example": "312d22c9-be5d-4177-8c6b-5460b9a8a176"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Vellykket respons som inneholder gruppeobjektet.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Group"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Ikke autorisert."
+          },
+          "404": {
+            "description": "Gruppe ikke funnet."
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer"
+      }
+    },
+    "schemas": {
+      "UserSyncResponse": {
+        "type": "object",
+        "required": [
+          "syncToken",
+          "hasMore",
+          "events"
+        ],
+        "properties": {
+          "syncToken": {
+            "type": "string",
+            "description": "Det **nye** tokenet som skal brukes ved **neste** forespørsel. Klienter må lagre dette tokenet og bruke det ved neste spørring.",
+            "example": "eyJhbGciOiJIUzI1NiJ9.eyJraWQiOiJzb3VyY2VfQSIsInRzIjoxNjkw..."
+          },
+          "hasMore": {
+            "type": "boolean",
+            "description": "- `true`: Det er flere endringer tilgjengelig umiddelbart. Endepunktet kan kalles igjen umiddelbart. - `false`: Du er oppdatert. Vent før endepunktet kalles igjen.",
+            "example": true
+          },
+          "events": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/UserChangeEvent"
+            }
+          }
+        }
+      },
+      "UserChangeEvent": {
+        "type": "object",
+        "required": [
+          "id",
+          "changeType",
+          "timestamp"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Den interne id-en til brukeren på Fiks Plattformen.",
+            "example": "2ceb6af3-0f0a-4fa9-b05c-28b6865451b3"
+          },
+          "changeType": {
+            "type": "string",
+            "enum": [
+              "sync",
+              "delete"
+            ],
+            "description": "Type endring.",
+            "example": "sync"
+          },
+          "timestamp": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Når endringen skjedde i kildesystemet.",
+            "example": "2023-10-01T12:00:00Z"
+          },
+          "resource": {
+            "$ref": "#/components/schemas/User",
+            "description": "Det fullstendige brukerobjektet. - For `sync`: Inneholder fullstendig brukerobjekt. - For `delete`: Dette feltet er `null`."
+          }
+        }
+      },
+      "GroupSyncResponse": {
+        "type": "object",
+        "required": [
+          "syncToken",
+          "events"
+        ],
+        "properties": {
+          "syncToken": {
+            "type": "string",
+            "description": "Det **nye** tokenet som skal brukes ved **neste** forespørsel. Klienter må lagre dette tokenet og bruke det ved neste request.",
+            "example": "eyJhbGciOiJIUzI1NiJ9.eyJraWQiOiJzb3VyY2VfQSIsInRzIjoxNjkw..."
+          },
+          "events": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/GroupChangeEvent"
+            }
+          }
+        }
+      },
+      "GroupChangeEvent": {
+        "type": "object",
+        "required": [
+          "id",
+          "changeType",
+          "timestamp"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Den interne id-en til gruppen på Fiks Plattformen.",
+            "example": "c82f8f1f-bc21-484b-be8e-c710daad82a2"
+          },
+          "changeType": {
+            "type": "string",
+            "enum": [
+              "sync",
+              "delete"
+            ],
+            "description": "Type endring.",
+            "example": "sync"
+          },
+          "timestamp": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Når endringen skjedde i kildesystemet.",
+            "example": "2023-10-01T12:05:00Z"
+          }
+        }
+      },
+      "User": {
+        "type": "object",
+        "description": "En representasjon av brukeren basert på Scim 2 (RFC 7643).",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unik identifikator for brukeren i Fiks Brukersynkronisering",
+            "example": "5ab5380a-7cb3-4462-a8c9-6feef8627d56"
+          },
+          "userName": {
+            "type": "string",
+            "description": "Unik identifikator for brukeren, kan f.eks være udp fra Entra.",
+            "example": "olano@kommune.no"
+          },
+          "name": {
+            "type": "object",
+            "properties": {
+              "formatted": {
+                "type": "string",
+                "example": "Ola Nordmann"
+              },
+              "familyName": {
+                "type": "string",
+                "example": "Nordmann"
+              },
+              "givenName": {
+                "type": "string",
+                "example": "Ola"
+              },
+              "middleName": {
+                "type": "string",
+                "example": "Johan"
+              }
+            }
+          },
+          "displayName": {
+            "type": "string",
+            "example": "Ola Nordmann"
+          },
+          "title": {
+            "type": "string",
+            "example": "Seniorkonsulent"
+          },
+          "locale": {
+            "type": "string",
+            "example": "nb-NO"
+          },
+          "userType": {
+            "type": "string",
+            "example": "Employee"
+          },
+          "active": {
+            "type": "boolean",
+            "example": true
+          },
+          "emails": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "value": {
+                  "type": "string",
+                  "format": "email",
+                  "example": "ola.nordmann@kommune.no"
+                },
+                "type": {
+                  "type": "string",
+                  "example": "work"
+                },
+                "primary": {
+                  "type": "boolean",
+                  "example": true
+                }
+              }
+            }
+          },
+          "phoneNumbers": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "value": {
+                  "type": "string",
+                  "example": "+4790000000"
+                },
+                "type": {
+                  "type": "string",
+                  "example": "mobile"
+                }
+              }
+            }
+          },
+          "addresses": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "formatted": {
+                  "type": "string",
+                  "example": "Storgata 1, 0123 Oslo"
+                },
+                "streetAddress": {
+                  "type": "string",
+                  "example": "Storgata 1"
+                },
+                "locality": {
+                  "type": "string",
+                  "example": "Oslo"
+                },
+                "region": {
+                  "type": "string",
+                  "example": "Oslo"
+                },
+                "postalCode": {
+                  "type": "string",
+                  "example": "0123"
+                },
+                "country": {
+                  "type": "string",
+                  "example": "NO"
+                }
+              }
+            }
+          },
+          "enterprise": {
+            "type": "object",
+            "description": "Felt for Enterprise-utvidelse (Fra Scim Enterprise extension).",
+            "properties": {
+              "employeeNumber": {
+                "type": "string",
+                "example": "1001"
+              },
+              "department": {
+                "type": "string",
+                "example": "IT-avdelingen"
+              },
+              "division": {
+                "type": "string",
+                "example": "Teknologi"
+              },
+              "organization": {
+                "type": "string",
+                "example": "Fjell Kommune"
+              },
+              "manager": {
+                "type": "object",
+                "properties": {
+                  "value": {
+                    "type": "string",
+                    "description": "'id'-en til lederen (i Fiks Brukersynkronisering)",
+                    "example": "b47ef653-c62a-48cc-be5d-9d81f85cc746"
+                  },
+                  "displayName": {
+                    "type": "string",
+                    "example": "Kari Sjef"
+                  }
+                }
+              }
+            }
+          },
+          "fiks": {
+            "type": "object",
+            "description": "Tilpasset utvidelse for felt spesifikke for Fiks Plattformen.",
+            "required": [
+              "identityNumber"
+            ],
+            "properties": {
+              "identityNumber": {
+                "type": "string",
+                "description": "Fødselsnummer eller D-nummer.",
+                "example": "01019012345"
+              }
+            }
+          }
+        }
+      },
+      "Group": {
+        "type": "object",
+        "description": "En forenklet representasjon av gruppen basert på RFC 7643.",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unik identifikator for gruppen.",
+            "example": "608e1f77bcf86cd799439022"
+          },
+          "displayName": {
+            "type": "string",
+            "description": "Et menneskelesbart navn for gruppen.",
+            "example": "Lærere ved Fjell skole"
+          },
+          "members": {
+            "type": "array",
+            "description": "En liste over medlemmer i gruppen.",
+            "items": {
+              "type": "object",
+              "properties": {
+                "value": {
+                  "type": "string",
+                  "description": "Identifikator for medlemmet av denne gruppen.",
+                  "example": "e45259ee-c11e-44bc-b6e1-dffae7b4e348"
+                },
+                "type": {
+                  "type": "string",
+                  "description": "Indikerer om medlemet er en `User` eller en annen gruppe (`Group`)",
+                  "enum": [
+                    "User",
+                    "Group"
+                  ],
+                  "example": "User"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
