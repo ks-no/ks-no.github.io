@@ -1,0 +1,188 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "KS Min Kommune: Oppgave API",
+    "description": "Min Kommune Oppgave Konfigurasjon service",
+    "contact": {
+      "name": "Fiks-brukerstøtte",
+      "url": "https://developers.fiks.ks.no/",
+      "email": "fiks-utvikling@ks.no"
+    },
+    "license": {
+      "name": "MIT",
+      "url": "https://opensource.org/licenses/MIT"
+    },
+    "version": "v1"
+  },
+  "servers": [
+    {
+      "url": "https://forvaltning.fiks.ks.no",
+      "description": "KS Fiks API host"
+    },
+    {
+      "url": "https://forvaltning.fiks.test.ks.no",
+      "description": "KS Fiks API test host"
+    }
+  ],
+  "security": [
+    {
+      "bearerAuth": []
+    }
+  ],
+  "tags": [
+    {
+      "name": "min-kommune-oppgave-konfigurasjon",
+      "description": "API for å konfigurere min-kommune-oppgave-løsningen"
+    }
+  ],
+  "paths": {
+    "/min-kommune/api/v1/konfigurasjon/{fiksOrgId}/opprettTilgang": {
+      "post": {
+        "tags": [
+          "OppgaveKonfigurasjon"
+        ],
+        "summary": "Opprett integrasjon med tilgang til Min Kommune Oppgave API",
+        "description": "Dette endepunktet benyttes av en administrator for å opprette konfigurasjon-privilegiet for oppgave til en organisasjon mot oppgave-api.\nDet returneres en integrasjonsId som brukes for å autentisere mot API-et med tilhørende passord.",
+        "operationId": "opprettTilgang",
+        "parameters": [
+          {
+            "name": "fiksOrgId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OpprettTilgangRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Oppretter integrasjon med riktig tilgang",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IntegrasjonTilgang"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Ukjent",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Ingen tilgang",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Systemfeil",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    },
+    "schemas": {
+      "IntegrasjonTilgang": {
+        "required": [
+          "integrasjonId",
+          "integrasjonPassord"
+        ],
+        "type": "object",
+        "properties": {
+          "integrasjonId": {
+            "type": "string",
+            "description": "Id til integrasjon",
+            "format": "uuid"
+          },
+          "integrasjonPassord": {
+            "type": "string",
+            "description": "Passord til integrasjon"
+          }
+        }
+      },
+      "ErrorMessage": {
+        "type": "object",
+        "properties": {
+          "timestamp": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "status": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "error": {
+            "type": "string"
+          },
+          "errorId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "path": {
+            "type": "string"
+          },
+          "originalPath": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          },
+          "errorCode": {
+            "type": "string"
+          },
+          "errorJson": {
+            "type": "string"
+          }
+        }
+      },
+      "OpprettTilgangRequest": {
+        "type": "object",
+        "properties": {
+          "orgnr": {
+            "type": "string"
+          },
+          "forelderRessurs": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      }
+    }
+  }
+}
