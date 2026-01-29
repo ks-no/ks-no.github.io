@@ -22,66 +22,7 @@ Generell informasjon om feilmeldinger på Fiks-plattformen finnes [her](https://
 ### Send
 Sending av forsendelser: [OpenAPI spec](https://editor-next.swagger.io/?url=https://developers.fiks.ks.no/api/forsendelse-send-api-v2.json)
 
-**Ved innsending av forsendelser anbefales det en timeout på 16 minutter. Dette for å håndtere innsending av større filer.** 
-
-Innsending utføres ved bruk av en multipart HTTP request. Dette er ikke beskrevet i speccen. Første part må inneholde forsendelsens metadata, og ha navn "forsendelse".
-Påfølgende parts skal inneholde dokumentene som skal sendes med forsendelsen. Disse må være i samme rekkefølge og ha samme navn som dokumentene definert i metadata.
-
-Eksempel på en hvordan en slik request med to filer kan se ut:
-```
-POST /api/v2/kontoer/<konto-id>/forsendelser/ HTTP/1.1
-Host: svarut.ks.no
-Authorization: Bearer <Maskinporten-token>
-IntegrasjonId: <integrasjon-id>
-IntegrasjonPassord: <integrasjon-passord>
-Content-Type: multipart/form-data; boundary=JettyHttpClientBoundarytt8xws4wfh61785q2obyg
-
---JettyHttpClientBoundarytt8xws4wfh61785q2obyg
-Content-Disposition: form-data; name="forsendelse"
-Content-Type: application/json;charset=UTF-8
-
-{
-  "mottaker": {
-    "digitalId": "38850903357",
-    "navn": "fce655ae-8a8f-43ec-be63-78f7321f47fc",
-    "adresselinje1": "60b079d3-08a9-43fe-9ed8-b2ea6b5ddffb",
-    "poststed": "d6d164ad-c302-4464-bf6f-0e4d39c56181",
-    "postnummer": "0612",
-  },
-  "eksponertFor": [],
-  "avgivendeSystem": "3e0842fb-170f-49f2-9a39-345fee600e52",
-  "tittel": "5d624f2b-5eea-49ba-8d2d-dc6fa36e0d97",
-  "konteringskode": "0caae250-6c3d-4e37-a",
-  "utskriftskonfigurasjon": {
-    "utskriftMedFarger": false,
-    "tosidig": true
-  },
-  "dokumenter": [
-    {
-      "filnavn": "small.pdf",
-      "mimeType": "application/pdf",
-    },
-    {
-      "filnavn": "another.pdf",
-      "mimeType": "application/pdf"
-    }
-  ]
-}
-
---JettyHttpClientBoundarytt8xws4wfh61785q2obyg
-Content-Disposition: form-data; name="name1"; filename="small.pdf"
-Content-Type: application/octet-stream
-... file data ...
-
---JettyHttpClientBoundarytt8xws4wfh61785q2obyg
-Content-Disposition: form-data; name="name2"; filename="another.pdf"
-Content-Type: application/octet-stream
-... file data ...
-```
-
-Offentlige nøkler for kryptering:  
-[TEST](https://test.svarut.ks.no/forsendelse/publickey/hent)  
-[PROD](https://svarut.ks.no/forsendelse/publickey/hent)  
+For mer detaljer om sending av dokumenter, se [her](/tjenester/svarut/send-dokumenter).
 
 ### Lest
 Markering av forsendelser som lest eksternt: [OpenAPI spec](https://editor-next.swagger.io/?url=https://developers.fiks.ks.no/api/forsendelse-lest-api-v2.json)
