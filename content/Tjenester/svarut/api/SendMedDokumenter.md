@@ -1,5 +1,5 @@
 ---
-title: Send med dokumenter
+title: 'Sending av dokumenter'
 date: 2026-02-01
 hidden: false
 aliases: [/tjenester/svarut/send-dokumenter]

@@ -1,7 +1,5 @@
 ---
-title: 'API: SvarInn REST'
-date: 2024-09-12
-aliases: [/svarut/integrasjon/mottaksservice-rest, /tjenester/svarut/integrasjon/mottaksservice-rest/]
+title: 'SvarInn REST'
 ---
 
 Her beskrives funksjonalitet for bruk av SvarInn V2. Dokumentasjon for tidligere versjoner finnes i [versjonsoversikten](/tjenester/svarut/api-versjoner/).
