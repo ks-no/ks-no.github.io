@@ -1,8 +1,8 @@
 ---
-title: Min kommune - faktura
-date: 2022-06-28
+title: Min kommune - oppgave
+date: 2026-02-05
 hidden: false
-aliases: ["/fiks-plattform/tjenester/minside/faktura/", "/fiks-plattform/tjenester/minkommune/faktura"]
+aliases: ["/fiks-plattform/tjenester/minside/oppgave/", "/fiks-plattform/tjenester/minkommune/oppgave"]
 ---
 
 ## Kort beskrivelse
