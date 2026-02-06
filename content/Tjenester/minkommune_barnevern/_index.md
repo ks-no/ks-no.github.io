@@ -18,10 +18,10 @@ For detaljer se [Innsyn](/fiks-plattform/tjenester/innsyn/)
 
 Meldingsversjonen som skal brukes mot Fiks Innsyn:
 
-| Meldingstype            | Versjon                 |                                                                                                                |
-|-------------------------|-------------------------|----------------------------------------------------------------------------------------------------------------|
-| Barnevernmappe V1       | BARNEVERNMAPPE_V1       | [Spec](https://github.com/ks-no/fiks-innsyn-json-schema/blob/main/schema/domain/barnevern/mappe.v1.json)       |
-| Barnevernjournalpost V1 | BARNEVERNJOURNALPOST_V1 | [Spec](https://github.com/ks-no/fiks-innsyn-json-schema/blob/main/schema/domain/barnevern/journalpost.v1.json) |
+| Meldingstype            | Versjon                  |                                                                                                                |
+|-------------------------|--------------------------|----------------------------------------------------------------------------------------------------------------|
+| Barnevernmappe V1       | BARNEVERN_MAPPE_V1       | [Spec](https://github.com/ks-no/fiks-innsyn-json-schema/blob/main/schema/domain/barnevern/mappe.v1.json)       |
+| Barnevernjournalpost V1 | BARNEVERN_JOURNALPOST_V1 | [Spec](https://github.com/ks-no/fiks-innsyn-json-schema/blob/main/schema/domain/barnevern/journalpost.v1.json) |
 
 
 ## Aktører
