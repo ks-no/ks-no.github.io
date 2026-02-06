@@ -22,6 +22,8 @@ Under kan man lese mer om hvordan tjenesten fungerer:
 
 [Min kommune - matrikkel](matrikkel)
 
+[Min kommune - oppgave](oppgave)
+
 ## Tilgjengelige grensesnitt
 | Grensesnitt | Støtte |
 |------|------|
