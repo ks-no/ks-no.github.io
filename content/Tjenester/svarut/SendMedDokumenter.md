@@ -1,8 +1,8 @@
 ---
-title: 'Sending av dokumenter'
+title: 'API: Sending av dokumenter'
 date: 2026-02-01
 hidden: false
-aliases: [/tjenester/svarut/send-dokumenter]
+aliases: [/tjenester/svarut/send-dokumenter, /tjenester/svarut/api/sendmeddokumenter, /svarut/api/sendmeddokumenter]
 ---
 
 ## Send med dokumenter

@@ -1,5 +1,6 @@
 ---
-title: 'SvarUt - Versjonsoversikt'
+title: 'API: Versjonsoversikt'
+aliases: [/tjenester/svarut/api/api-versjoner, /svarut/api/api-versjoner]
 ---
 
 ## REST API-er

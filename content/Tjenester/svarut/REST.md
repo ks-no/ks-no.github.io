@@ -1,5 +1,6 @@
 ---
-title: 'SvarUt REST'
+title: 'API: SvarUt REST'
+aliases: [/tjenester/svarut/api/rest, /svarut/api/rest]
 ---
 
 ## Tilgang

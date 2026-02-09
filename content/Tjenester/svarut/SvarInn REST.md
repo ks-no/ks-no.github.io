@@ -1,5 +1,6 @@
 ---
-title: 'SvarInn REST'
+title: 'API: SvarInn REST'
+aliases: [/tjenester/svarut/api/svarinn-rest, /svarut/api/svarinn-rest]
 ---
 
 Her beskrives funksjonalitet for bruk av SvarInn V2. Dokumentasjon for tidligere versjoner finnes i [versjonsoversikten](/tjenester/svarut/api/api-versjoner/).
