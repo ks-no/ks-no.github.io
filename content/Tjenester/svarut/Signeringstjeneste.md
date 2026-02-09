@@ -5,7 +5,7 @@ hidden: false
 aliases: [/tjenester/svarut/api-versjoner/Signeringstjeneste]
 ---
 ## Aktivering
-Avtale om bruk av signeringstjenesten må gjøres med Digdir og forutsetter at dere allerede har avtale om SDP. Når avtalene er inngått må dere aktivere tjenesten inne på [konfigurasjon](https://svarut.ks.no/konfigurasjon/#/) under SDP-fanen.
+Avtale om bruk av signeringstjenesten må gjøres med Digdir og forutsetter at dere allerede har avtale om [DPI (Digital Post til Innbygger)](https://docs.digdir.no/docs/digitalpostkasse/). Når avtalene er inngått må dere aktivere bruken av signeringstjenesten inne på [konfigurasjon](https://forvalting.fiks.ks.no/fiks-konfigurasjon). Dette må gjøres på hver enkelt SvarUt-konto som skal benytte seg av signeringstjenesten.
 
 <a name="api"></a>
 ### API
@@ -31,14 +31,14 @@ Brukergrensesnittet er oppdatert slik at man kan markere et dokument og angi utl
 #### Fra fagsystem via Svarut til innbygger
 ![alternative text](http://www.plantuml.com/plantuml/proxy?src=https://raw.githubusercontent.com/ks-no/svarut-dokumentasjon/master/signering/puml/fagsystem.puml?2)
 
-Innføringen av signeringsoppdrag gir ingen endringer i oppførsel utover validering. Varslig vil gå ut til Altinn eller SDP dersom innbygger ikke har reservert seg. Dersom innbygger ikke har åpnet Altinn innen lesefristen vil brev gå ut i posten.
+Innføringen av signeringsoppdrag gir ingen endringer i oppførsel utover validering. Varslig vil gå ut til Altinn eller DPI dersom innbygger ikke har reservert seg. Dersom innbygger ikke har åpnet Altinn innen lesefristen vil brev gå ut i posten.
 
 Innbygger kan signere elektronisk frem til gyldigheten på signeringsoppdraget utløper, selv om brevet er sendt i posten.
   
 ### Fra innbygger via Digipost og Svarut til fagsystem
 ![alternative text](http://www.plantuml.com/plantuml/proxy?src=https://raw.githubusercontent.com/ks-no/svarut-dokumentasjon/master/signering/puml/innbygger.puml?2)
 
-Innbygger logger på Altinn/SDP og trykker på signeringslenken som er oppgitt i meldingen. Dette er en lenke til Svarut. Svarut vil validere og sjekke at det er et gyldig signeringsoppdrag. 
+Innbygger logger på Altinn/DPI og trykker på signeringslenken som er oppgitt i meldingen. Dette er en lenke til Svarut. Svarut vil validere og sjekke at det er et gyldig signeringsoppdrag. 
 
 Innbygger får opp dokumentet og kan velge mellom å signere eller avvise. Dersom innbygger signerer opprettes det en ny forsendelse til det organisasjonsnummeret som er oppgitt i forsendelsen. 
 
