@@ -35,7 +35,7 @@ UtførtKriterie forteller om hvilket kriterie som gjelder for at oppgaven som he
 #### [api-spec](https://editor.swagger.io/?url=https://developers.fiks.ks.no/api/min-kommune-oppgave-ekstern-api-v1.json)
 #### POST /oppgaver
 En oppgave opprettes via API. I denne requesten sendes innhold i oppgaven, som tittel, beskrivelse, handling, url, eventuell frist, utført-kriterie, samt komplett liste over mottakere og informasjon om varsling.
-Det kan også sendes med metadata i metadata-feltet.
+Det kan også sendes med metadata, som ikke brukes av KS Min kommune, men som kan brukes til å f.eks. lagre eksterne ID-er som oppgaven er knyttet til.
 
 #### PUT /oppgaver/{oppgaveId}/status
 I første iterasjon er dette endepunktet brukt for å oppdatere status fra "NY" til "FULLFORT" for en mottaker av oppgaven.
