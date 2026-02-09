@@ -6,7 +6,7 @@ aliases: ["/fiks-plattform/tjenester/minside/oppgave/", "/fiks-plattform/tjenest
 ---
 
 ## Kort beskrivelse
-Min Kommune Oppgave er en løsning laget for Norges innbyggere for å kunne håndtere ulike typer offentlige oppgaver. Løsningen består av et web-grensesnitt i Min Kommune brukt av innbyggere 
+Min Kommune Oppgaver er en løsning laget for målrettet tildeling av oppgaver til enkeltinnbyggere, via KS Min kommune. Løsningen består av et web-grensesnitt i Min Kommune brukt av innbyggere 
 til å vise og håndtere oppgavene, ett api for eksterne fag-system til bruk for å opprette og endre oppgaver, samt en konfigurasjons-side i vår forvaltnings-løsning under min kommune.
 
 ## Tilgjengelige grensesnitt
