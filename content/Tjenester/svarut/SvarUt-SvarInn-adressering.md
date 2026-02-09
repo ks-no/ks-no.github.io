@@ -4,7 +4,7 @@ date: 2017-01-01
 hidden: false
 ---
 
-Tidligere hadde vi kun orgnr-adressering på forsendelser. Nå har SvarUt fått støtte for ForsendelseType. ForsendelseType skal beskrive hvilken type forsendelse dette er. Det er KS som styrer hvilken typer en kan benytte til adressering, hvis det er ønskelig med ny type sendes ønske om dette til svarut@ks.no.
+Tidligere hadde vi kun orgnr-adressering på forsendelser. Nå har SvarUt fått støtte for ForsendelseType. ForsendelseType skal beskrive hvilken type forsendelse dette er. Det er KS som styrer hvilken typer en kan benytte til adressering, hvis det er ønskelig med ny type sendes ønske om dette til fiks@ksdigital.no.
 ***
 
 

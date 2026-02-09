@@ -58,4 +58,4 @@ Følg samme oppskrift om man tidligere har registrert et ekte organisasjonsnumme
 Oppdater med nytt organisasjonsnummer på mottakersystem, og så er det klart for å sende forsendelser til dette organisasjonsnummeret i stedet for. 
 
 ## Tilgang til SvarUt test
-For å få tilgang til testmiljøet kan man sende en mail til fiks@ks.no.
+For å få tilgang til testmiljøet kan man sende en mail til fiks@ksdigital.no.
