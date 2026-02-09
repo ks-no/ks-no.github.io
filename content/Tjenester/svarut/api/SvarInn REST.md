@@ -2,7 +2,7 @@
 title: 'SvarInn REST'
 ---
 
-Her beskrives funksjonalitet for bruk av SvarInn V2. Dokumentasjon for tidligere versjoner finnes i [versjonsoversikten](/tjenester/svarut/api-versjoner/).
+Her beskrives funksjonalitet for bruk av SvarInn V2. Dokumentasjon for tidligere versjoner finnes i [versjonsoversikten](/tjenester/svarut/api/api-versjoner/).
 
 ## Tilgang
 
