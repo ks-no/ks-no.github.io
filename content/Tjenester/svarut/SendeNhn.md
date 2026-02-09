@@ -19,7 +19,7 @@ Når man har fått en herId fra NHN, og KS Digital har fått tilgang til å send
 Før SvarUt-konto har fått en gyldig herId, så vil alle forsøk på å sende via NHN-endepunktet til Rest v3 bli avvist.
 
 ## Hvordan sende til Norsk Helsenett
-Vi har lagt til rette for å kunne sende en forsendelse til Norsk Helsenett i Send Rest V3, se [Send Rest V3](/tjenester/svarut/api/rest/) for mer informasjon.
+Vi har lagt til rette for å kunne sende en forsendelse til Norsk Helsenett i Send Rest V3, se [Send Rest V3](/tjenester/svarut/api/rest/#send) for mer informasjon.
 
 Det er to valg når man sender en forsendelse: 
 * Sende til innbyggers fastlege. Da må man legge ved fødselsnummer til innbygger i metadata for forsendelsen. SvarUt vil hente ut herId til fastlegen via NHN sitt fastlegeregister. 

@@ -5,7 +5,7 @@ hidden: false
 aliases: [/tjenester/svarut/api-versjoner/Signeringstjeneste]
 ---
 ## Aktivering
-Avtale om bruk av signeringstjenesten må gjøres med Digdir og forutsetter at dere allerede har avtale om [DPI (Digital Post til Innbygger)](https://docs.digdir.no/docs/digitalpostkasse/). Når avtalene er inngått må dere aktivere bruken av signeringstjenesten inne på [konfigurasjon](https://forvalting.fiks.ks.no/fiks-konfigurasjon). Dette må gjøres på hver enkelt SvarUt-konto som skal benytte seg av signeringstjenesten.
+Avtale om bruk av signeringstjenesten må gjøres med Digdir og forutsetter at dere allerede har avtale om [DPI (Digital Post til Innbygger)](https://docs.digdir.no/docs/digitalpostkasse/). Når avtalene er inngått må dere aktivere bruken av signeringstjenesten inne på [konfigurasjon](https://forvaltning.fiks.ks.no/fiks-konfigurasjon). Dette må gjøres på hver enkelt SvarUt-konto som skal benytte seg av signeringstjenesten.
 
 <a name="api"></a>
 ### API
