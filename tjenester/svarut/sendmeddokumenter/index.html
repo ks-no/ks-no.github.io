@@ -9,7 +9,7 @@
 
     <link rel="icon" href="/images/favicon.png" type="image/png">
 
-    <title>eDialog :: KS Fiks</title>
+    <title>API: Sending av dokumenter :: KS Fiks</title>
 
     
     <link href="/css/nucleus.css?1770644844" rel="stylesheet">
@@ -37,7 +37,7 @@
     </style>
     
   </head>
-  <body class="" data-url="/tjenester/fiksmelding/edialog/">
+  <body class="" data-url="/tjenester/svarut/sendmeddokumenter/">
     <nav id="sidebar" class="">
 
 
@@ -529,7 +529,7 @@
   
     
     <li data-nav-id="/tjenester/fiksmelding/" title="Fiks melding" class="dd-item
-        parent
+        
         
         
         ">
@@ -555,7 +555,7 @@
  
   
     
-      <li data-nav-id="/tjenester/fiksmelding/edialog/" title="eDialog" class="dd-item active">
+      <li data-nav-id="/tjenester/fiksmelding/edialog/" title="eDialog" class="dd-item ">
         <a href="/tjenester/fiksmelding/edialog/">
         eDialog
         
@@ -1375,7 +1375,7 @@
   
     
     <li data-nav-id="/tjenester/svarut/" title="SvarUt" class="dd-item
-        
+        parent
         
         
         ">
@@ -1403,7 +1403,7 @@
  
   
     
-      <li data-nav-id="/tjenester/svarut/sendmeddokumenter/" title="API: Sending av dokumenter" class="dd-item ">
+      <li data-nav-id="/tjenester/svarut/sendmeddokumenter/" title="API: Sending av dokumenter" class="dd-item active">
         <a href="/tjenester/svarut/sendmeddokumenter/">
         API: Sending av dokumenter
         
@@ -1691,7 +1691,7 @@
                   
                   
                   <div id="top-github-link">
-                    <a class="github-link" title='' href="https://github.com/ks-no/ks-no.github.io/edit/source/content/Tjenester/fiksmelding/edialog.md" target="blank">
+                    <a class="github-link" title='' href="https://github.com/ks-no/ks-no.github.io/edit/source/content/Tjenester/svarut/SendMedDokumenter.md" target="blank">
                       <i class="fas fa-code-branch"></i>
                       <span id="top-github-link-text"></span>
                     </a>
@@ -1726,7 +1726,7 @@
             
           
           
-            <a href='/'>KS Fiks dokumentasjon</a> > <a href='/tjenester/'>Tjenester</a> > <a href='/tjenester/fiksmelding/'>Fiks melding</a> > eDialog
+            <a href='/'>KS Fiks dokumentasjon</a> > <a href='/tjenester/'>Tjenester</a> > <a href='/tjenester/svarut/'>SvarUt</a> > API: Sending av dokumenter
           
         
           
@@ -1743,12 +1743,7 @@
     <div class="wrapper">
 <nav id="TableOfContents">
   <ol>
-    <li><a href="#beskrivelse">Beskrivelse</a>
-      <ol>
-        <li><a href="#edialog-med-predefinert-mottaker">eDialog med predefinert mottaker</a></li>
-        <li><a href="#svare-på-forsendelse-ved-bruk-av-edialog">Svare på forsendelse ved bruk av eDialog</a></li>
-      </ol>
-    </li>
+    <li><a href="#send-med-dokumenter">Send med dokumenter</a></li>
   </ol>
 </nav>
     </div>
@@ -1766,24 +1761,90 @@
           
             <h1>
               
-              eDialog
+              API: Sending av dokumenter
             </h1>
           
 
         
 
 
-<p>Sikker innsending av brev fra innbyggere til organisasjoner via SvarUt. For å bruke eDialog bør man allerede ha tatt i bruk <a href="/tjenester/svarut">SvarUt</a> og <a href="/tjenester/svarut/svarinn-mottakservice">SvarInn</a>.
-Dersom SvarInn ikke er konfigurert opp for organisasjonsnummeret som mottar meldingene vil disse bli sendt til Altinn.</p>
-<h2 id="beskrivelse">Beskrivelse</h2>
-<p>Konfigurasjon av eDialog-mottakere skjer via <a href="https://forvaltning.fiks.ks.no">https://forvaltning.fiks.ks.no</a> under «Fiks melding»-tjenesten og «eDialog».
-Hver mottaker vil ha en SvarUt-konto tilknyttet seg som vil faktureres for alle meldinger som sendes inn.</p>
-<h3 id="edialog-med-predefinert-mottaker">eDialog med predefinert mottaker</h3>
-<p>Man kan lenke direkte til eDialog ved å bruke <a href="https://min.kommune.no/s/%7Borganisasjonsnummer%7D">https://min.kommune.no/s/{organisasjonsnummer}</a>.
-Man kan også bruke mottakerens fire bokstavers id i stedet for organisasjonsnummeret.
-Denne id&rsquo;en kan finnes i konfigurasjonen for hver enkelt mottaker på <a href="https://forvaltning.fiks.ks.no/fiks-konfigurasjon/tjenester/melding/edialog/mottakere">https://forvaltning.fiks.ks.no/fiks-konfigurasjon/tjenester/melding/edialog/mottakere</a>.</p>
-<h3 id="svare-på-forsendelse-ved-bruk-av-edialog">Svare på forsendelse ved bruk av eDialog</h3>
-<p><a href="/tjenester/svarut/edialog">Beskrevet i SvarUt-dokumentasjon</a></p>
+<h2 id="send-med-dokumenter">Send med dokumenter</h2>
+<p>Innsending utføres ved bruk av en multipart HTTP request. Første part må inneholde forsendelsens metadata, og ha navn &ldquo;forsendelse&rdquo;.
+Påfølgende parts skal inneholde dokumentene som skal sendes med forsendelsen.
+Dokumentene har følgende krav:</p>
+<ul>
+<li>Filene må være i samme rekkefølge som dokumentene definert i metadata</li>
+<li>&lsquo;filename&rsquo; benyttes som filnavn, og må samsvare navnet i metadata</li>
+<li>&rsquo;name&rsquo; ignoreres</li>
+</ul>
+<p><strong>Ved innsending av forsendelser anbefales det en timeout på 16 minutter. Dette for å håndtere innsending av større filer.</strong></p>
+<p>Følgende begrensinger gjelder for innsending av dokumenter:</p>
+<ul>
+<li>Dersom forsendelsen skal kunne gå til print:
+<ul>
+<li>PDF&rsquo;ene som legges ved ma ha en totalt filstørrelse under 350MB, ellers avviser SvarUt forsendelsen. Dette er en begrensing knyttet mot printleverandør. Når SvarUt sender dokumentene som skal printes til printleverandør, så vil SvarUt legge de sammen til å bli en stor PDF.</li>
+<li>PDF&rsquo;ene kan ikke vere passordbeskyttet. Dette er en typisk feil vi ser skjer med forsendelser som blir avvist.</li>
+</ul>
+</li>
+<li>Dersom forsendelsen skal til NHN
+<ul>
+<li>Dersom forsendelsen skal til NHN kan det kun sendes 1 PDF som ikke kan overstige 18MB.</li>
+</ul>
+</li>
+<li>Dersom man markerer forsendelse som kunDigital (til privatpersoner eller virksomheter) kan man sende større dokumentpakker enn 350MB. Her ligger det inne en tidsbegrensing hos oss, så all data må overføres innen 16 minutter.</li>
+</ul>
+<p>Eksempel på en hvordan en slik request med to filer kan se ut dersom en sender inn en forsendelse via Rest v2 med 2 dokumenter:</p>
+<pre tabindex="0"><code>POST /api/v3/kontoer/&lt;konto-id&gt;/forsendelser/ HTTP/1.1
+Host: svarut.ks.no
+Authorization: Bearer &lt;Maskinporten-token&gt;
+IntegrasjonId: &lt;integrasjon-id&gt;
+IntegrasjonPassord: &lt;integrasjon-passord&gt;
+Content-Type: multipart/form-data; boundary=JettyHttpClientBoundarytt8xws4wfh61785q2obyg
+
+--JettyHttpClientBoundarytt8xws4wfh61785q2obyg
+Content-Disposition: form-data; name=&#34;forsendelse&#34;
+Content-Type: application/json;charset=UTF-8
+
+{
+  &#34;mottaker&#34;: {
+    &#34;digitalId&#34;: &#34;38850903357&#34;,
+    &#34;navn&#34;: &#34;fce655ae-8a8f-43ec-be63-78f7321f47fc&#34;,
+    &#34;adresselinje1&#34;: &#34;60b079d3-08a9-43fe-9ed8-b2ea6b5ddffb&#34;,
+    &#34;poststed&#34;: &#34;d6d164ad-c302-4464-bf6f-0e4d39c56181&#34;,
+    &#34;postnummer&#34;: &#34;0612&#34;,
+  },
+  &#34;eksponertFor&#34;: [],
+  &#34;avgivendeSystem&#34;: &#34;3e0842fb-170f-49f2-9a39-345fee600e52&#34;,
+  &#34;tittel&#34;: &#34;5d624f2b-5eea-49ba-8d2d-dc6fa36e0d97&#34;,
+  &#34;konteringskode&#34;: &#34;0caae250-6c3d-4e37-a&#34;,
+  &#34;utskriftskonfigurasjon&#34;: {
+    &#34;utskriftMedFarger&#34;: false,
+    &#34;tosidig&#34;: true
+  },
+  &#34;dokumenter&#34;: [
+    {
+      &#34;filnavn&#34;: &#34;small.pdf&#34;,
+      &#34;mimeType&#34;: &#34;application/pdf&#34;,
+    },
+    {
+      &#34;filnavn&#34;: &#34;another.pdf&#34;,
+      &#34;mimeType&#34;: &#34;application/pdf&#34;
+    }
+  ]
+}
+
+--JettyHttpClientBoundarytt8xws4wfh61785q2obyg
+Content-Disposition: form-data; name=&#34;name1&#34;; filename=&#34;small.pdf&#34;
+Content-Type: application/octet-stream
+... file data ...
+
+--JettyHttpClientBoundarytt8xws4wfh61785q2obyg
+Content-Disposition: form-data; name=&#34;name2&#34;; filename=&#34;another.pdf&#34;
+Content-Type: application/octet-stream
+... file data ...
+</code></pre><p>Offentlige nøkler for kryptering:<br>
+<a href="https://test.svarut.ks.no/forsendelse/publickey/hent">TEST</a><br>
+<a href="https://svarut.ks.no/forsendelse/publickey/hent">PROD</a></p>
 
 
 <footer class="footline">
@@ -2048,7 +2109,6 @@ Denne id&rsquo;en kan finnes i konfigurasjonen for hver enkelt mottaker på <a h
             
                 
                     
-                    
                 
                 
 
@@ -2061,7 +2121,6 @@ Denne id&rsquo;en kan finnes i konfigurasjonen for hver enkelt mottaker på <a h
             
             
                 
-                    
                     
                 
                 
@@ -2078,9 +2137,6 @@ Denne id&rsquo;en kan finnes i konfigurasjonen for hver enkelt mottaker på <a h
             
             
                 
-                    
-                        
-                        
                     
                 
                 
@@ -2559,6 +2615,7 @@ Denne id&rsquo;en kan finnes i konfigurasjonen for hver enkelt mottaker på <a h
             
                 
                     
+                    
                 
                 
 
@@ -2573,6 +2630,7 @@ Denne id&rsquo;en kan finnes i konfigurasjonen for hver enkelt mottaker på <a h
             
             
                 
+                    
                     
                 
                 
@@ -2589,6 +2647,9 @@ Denne id&rsquo;en kan finnes i konfigurasjonen for hver enkelt mottaker på <a h
             
             
                 
+                    
+                        
+                        
                     
                 
                 
@@ -2918,10 +2979,10 @@ Denne id&rsquo;en kan finnes i konfigurasjonen for hver enkelt mottaker på <a h
 	 
 	 
 		
-			<a class="nav nav-prev" href="/tjenester/fiksmelding/" title="Fiks melding"> <i class="fa fa-chevron-left"></i></a>
+			<a class="nav nav-prev" href="/tjenester/svarut/" title="SvarUt"> <i class="fa fa-chevron-left"></i></a>
 		
 		
-			<a class="nav nav-next" href="/tjenester/fiksmelding/del_dokument/" title="Fiks del dokument" style="margin-right: 0px;"><i class="fa fa-chevron-right"></i></a>
+			<a class="nav nav-next" href="/tjenester/svarut/sendenhn/" title="Sende til aktør i Norsk Helsenett" style="margin-right: 0px;"><i class="fa fa-chevron-right"></i></a>
 		
 	
     </div>
