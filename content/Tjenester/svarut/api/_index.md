@@ -1,6 +1,7 @@
 ---
-title: SvarUt API
+title: API
 aliases: [/svarut/api]
+hidden: false
 ---
 
-{{% children style="h5" showhidden= "false" %}}
+{{% children style="h5" %}}
