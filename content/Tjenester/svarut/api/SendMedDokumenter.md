@@ -10,6 +10,8 @@ aliases: [/tjenester/svarut/send-dokumenter]
 Innsending utføres ved bruk av en multipart HTTP request. Dette er ikke beskrevet i speccen. Første part må inneholde forsendelsens metadata, og ha navn "forsendelse".
 Påfølgende parts skal inneholde dokumentene som skal sendes med forsendelsen. Disse må være i samme rekkefølge og ha samme navn som dokumentene definert i metadata.
 
+**Ved innsending av forsendelser anbefales det en timeout på 16 minutter. Dette for å håndtere innsending av større filer.**
+
 Følgende begrensinger gjelder for innsending av dokumenter:
 * Dersom forsendelsen skal kunne gå til print: 
   * PDF'ene som legges ved ma ha en totalt filstørrelse under 350MB, ellers avviser SvarUt forsendelsen. Dette er en begrensing knyttet mot printleverandør. Når SvarUt sender dokumentene som skal printes til printleverandør, så vil SvarUt legge de sammen til å bli en stor PDF. 

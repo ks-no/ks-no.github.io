@@ -16,7 +16,7 @@ Generell informasjon om feilmeldinger på Fiks-plattformen finnes [her](https://
 Sending av forsendelser: [OpenAPI spec](https://editor-next.swagger.io/?url=https://developers.fiks.ks.no/api/forsendelse-send-api-v3.json)  
 For mer detaljer om sending av dokumenter, se [her](/tjenester/svarut/send-dokumenter).  
 
-Endepunktet for sending er i denne versjonen delt opp basert på hvilken type mottaker forsendelsen skal sendes til. 
+Endepunktet for sending i versjon 3 er delt opp basert på hvilken type mottaker forsendelsen skal sendes til. 
 Dette har vi gjort for å gjøre det enklere å vite hvilke valg som er tilgjengelige for de forskjellige typene.
 Det nye APIet har følgende endepunkter:
 * Send til privatperson - krever et gyldig fødsels- eller d-nummer. Dette brukes i oppslag mot kontaktregisteret for å finne ut om mottaker kan motta digital post og eventuell hvilken digital kanal SvarUt skal sende til (Digital Post til innbygger eller Altinn).
