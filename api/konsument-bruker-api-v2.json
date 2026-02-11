@@ -1,0 +1,238 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "Fiks API for å hente apper en bruker har tilgang til",
+    "description": "API for å hente apper en bruker har tilgang til",
+    "contact": {
+      "name": "KS Digital brukerstøtte",
+      "url": "https://ksdigital.no/tjenestene/",
+      "email": "fiks-utvikling@ks.no"
+    },
+    "version": "v2",
+    "license": {
+      "name": "MIT",
+      "url": "https://opensource.org/licenses/MIT"
+    }
+  },
+  "servers": [
+    {
+      "url": "https://api.fiks.ks.no",
+      "description": "KS Fiks PROD API host",
+      "variables": {}
+    },
+    {
+      "url": "https://api.fiks.test.ks.no",
+      "description": "KS Fiks TEST API host",
+      "variables": {}
+    },
+    {
+      "url": "https://api.fiks.dev.ks.no",
+      "description": "KS Fiks DEV API host",
+      "variables": {}
+    }
+  ],
+  "security": [
+    {
+      "bearerAuth": []
+    }
+  ],
+  "tags": [
+    {
+      "name": "brukerkonsument",
+      "description": "Endepunkt for å hente apper en bruker har tilgang til"
+    }
+  ],
+  "paths": {
+    "/kominn/api/v2/konsument/{fiksOrgId}/mine": {
+      "get": {
+        "tags": [
+          "brukerkonsument"
+        ],
+        "description": "Hent apper en bruker har tilgang til",
+        "summary": "Hent apper en bruker har tilgang til",
+        "operationId": "hentMineApper",
+        "parameters": [
+          {
+            "name": "fiksOrgId",
+            "in": "path",
+            "description": "Fiks organisasjon ID",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/OrganisasjonKonsumentTilganger"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/manglerAutentisering"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    },
+    "responses": {
+      "manglerAutentisering": {
+        "description": "Mangler autentisering",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorMessage"
+            }
+          }
+        }
+      }
+    },
+    "schemas": {
+      "Uri": {
+        "type": "string",
+        "format": "uri",
+        "description": "URI",
+        "example": "https://example.org/minapp?kommunenummer=9999"
+      },
+      "UnikId": {
+        "type": "string",
+        "format": "uuid",
+        "description": "Unik id (UUID)",
+        "example": "f7480539-92b2-460d-8e7f-2bc8a37c6746"
+      },
+      "Logo": {
+        "type": "string",
+        "format": "base64",
+        "description": "Base64 kodet logofil",
+        "example": "data:image/jpeg;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAIAQMAAAD+wSzIAAAABlBMVEX///+/v7+jQ3Y5AAAADklEQVQI12P4AIX8EAgALgAD/aNpbtEAAAAASUVORK5CYII"
+      },
+      "OrganisasjonKonsumentTilganger": {
+        "type": "object",
+        "properties": {
+          "organisasjon": {
+            "$ref": "#/components/schemas/Organisasjon"
+          },
+          "konsumentApper": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/KonsumentApp"
+            }
+          }
+        },
+        "required": [
+          "organisasjon",
+          "konsumentApper"
+        ]
+      },
+      "KonsumentApp": {
+        "type": "object",
+        "readOnly": true,
+        "properties": {
+          "appId": {
+            "$ref": "#/components/schemas/UnikId"
+          },
+          "navn": {
+            "type": "string",
+            "description": "Navn på app",
+            "example": "Min app"
+          },
+          "beskrivelse": {
+            "type": "string",
+            "description": "Beskrivelse av app",
+            "example": "Dette er en app"
+          },
+          "logo": {
+            "$ref": "#/components/schemas/Logo"
+          },
+          "uri": {
+            "$ref": "#/components/schemas/Uri"
+          }
+        },
+        "required": [
+          "appId",
+          "navn",
+          "beskrivelse"
+        ]
+      },
+      "Organisasjon": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "$ref": "#/components/schemas/UnikId"
+          },
+          "navn": {
+            "type": "string",
+            "description": "Navn på organisasjon",
+            "example": "Storevik Kommune"
+          }
+        },
+        "required": [
+          "id",
+          "navn"
+        ]
+      },
+      "ErrorMessage": {
+        "type": "object",
+        "description": "Feilmelding fra Fiks-plattformen",
+        "externalDocs": {
+          "description": "Beskrivelse av feilmeldinger",
+          "url": "https://ks-no.github.io/fiks-plattform/integrasjoner/#feilmeldinger"
+        },
+        "properties": {
+          "timestamp": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "status": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "error": {
+            "type": "string"
+          },
+          "errorId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "path": {
+            "type": "string"
+          },
+          "originalPath": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          },
+          "errorCode": {
+            "type": "string"
+          },
+          "errorJson": {
+            "type": "string"
+          }
+        },
+        "example": {
+          "message": "Mangler tilgang",
+          "errorId": "ee2ed64d-de8b-45f9-b9c6-3363d662d93b",
+          "status": 403
+        }
+      }
+    }
+  }
+}
