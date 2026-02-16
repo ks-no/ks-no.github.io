@@ -239,7 +239,8 @@
             "name": "avklaringsId",
             "required": true,
             "schema": {
-              "type": "string"
+              "type": "string",
+              "format": "uuid"
             }
           }
         ],
@@ -263,14 +264,15 @@
           "Konsesjon"
         ],
         "description": "Hent konsesjonsavklaringsstatus",
-        "operationId": "getStatus",
+        "operationId": "getAvklaringStatus",
         "parameters": [
           {
             "in": "path",
             "name": "avklaringsId",
             "required": true,
             "schema": {
-              "type": "string"
+              "type": "string",
+              "format": "uuid"
             }
           }
         ],
@@ -301,7 +303,8 @@
             "name": "avklaringsId",
             "required": true,
             "schema": {
-              "type": "string"
+              "type": "string",
+              "format": "uuid"
             }
           }
         ],
@@ -391,6 +394,70 @@
           }
         }
       }
+    },
+    "/konsesjon/api/v1/egenerklaering/{avklaringsId}/skjemadata": {
+      "get": {
+        "tags": [
+          "Egenerklaering"
+        ],
+        "description": "Henter data fra LDIR for en startet prosess",
+        "operationId": "getEgenerklaeringSkjemadata",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "avklaringsId",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Innhentet skjemadata",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EiendomsDataMedId"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/konsesjon/api/v1/egenerklaering/{avklaringsId}/presjekk": {
+      "post": {
+        "tags": [
+          "Egenerklaering"
+        ],
+        "description": "Kjør presjekk for egenerklaering",
+        "operationId": "presjekkEgenerklaering",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "avklaringsId",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Presjekk fullført",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/KonsesjonStatus"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -402,7 +469,8 @@
             "type": "string"
           },
           "avklaringsId": {
-            "type": "string"
+            "type": "string",
+            "format": "uuid"
           }
         }
       },
@@ -480,6 +548,11 @@
           "postnummer": {
             "type": "string",
             "description": "Unik identifikasjon av et postnummerområde. Tekstverdi som må bestå av 4 tall. 0340 er for eksempel gyldig, mens 340 er ikke gyldig. Postnummer som identifiserer postboksanlegg er ikke med og vil ikke gi treff."
+          },
+          "seksjonsnummer": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Seksjonsnummer tildeles når en eiendom seksjoneres, slik at hver eierseksjon får et eget seksjonsnummer i tillegg til eiendommens gårds- og bruksnummer."
           },
           "representasjonspunkt": {
             "type": "object",
@@ -581,7 +654,8 @@
         "type": "object",
         "properties": {
           "avklaringsId": {
-            "type": "string"
+            "type": "string",
+            "format": "uuid"
           },
           "status": {
             "type": "string"
@@ -624,6 +698,45 @@
             ]
           }
         }
+      },
+      "EiendomsDataMedId": {
+        "type": "object",
+        "properties": {
+          "eiendomsId": {
+            "$ref": "#/components/schemas/Eiendom"
+          },
+          "eiendomsData": {
+            "$ref": "#/components/schemas/EiendomsData"
+          }
+        }
+      },
+      "EiendomsData": {
+        "type": "object",
+        "properties": {
+          "bygningerPaaEiendommen": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "arealPaaEiendommen": {
+            "type": "number",
+            "format": "double"
+          },
+          "arealFullOgOveflatedyrketJord": {
+            "type": "number",
+            "format": "double"
+          },
+          "arealProduktivSkogPaaEiendommen": {
+            "type": "number",
+            "format": "double"
+          }
+        },
+        "required": [
+          "arealFullOgOveflatedyrketJord",
+          "arealPaaEiendommen",
+          "arealProduktivSkogPaaEiendommen"
+        ]
       }
     }
   }
