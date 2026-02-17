@@ -158,6 +158,25 @@
         }
       }
     },
+    "/eiendomsavtaler/api/v1/eiendomsavtaler/bulk": {
+      "post": {
+        "description": "Opprett eiendomsavtaler i bulk.",
+        "operationId": "bulkOpprettEiendomsavtaler",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EiendomsavtaleBulkRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+
+        }
+      }
+    },
     "/eiendomsavtaler/api/v1/{fiksOrgId}/eiendomsavtaler/{avtaleId}": {
       "get": {
         "tags": [
@@ -905,7 +924,8 @@
             "$ref": "#/components/schemas/EiendomsadresseAPIModel"
           },
           "eierkontaktId": {
-            "type": "string"
+            "type": "string",
+            "format": "uuid"
           },
           "eiere": {
             "type": "array",
@@ -943,6 +963,12 @@
           "matrikkeldata"
         ]
       },
+      "EiendomsavtaleBulkRequest": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/MatrikkeldataAPIModel"
+        }
+      },
       "MatrikkeldataAPIModel": {
         "type": "object",
         "properties": {
@@ -965,11 +991,12 @@
             "type": "integer",
             "format": "int32"
           },
-          "bruksenhetsnumre": {
+          "bruksenhetsnummere": {
             "type": "array",
             "items": {
               "type": "string"
-            }
+            },
+            "description": "todo: se på denne igjen når bruksenheter blir hentet fra matrikkelen"
           },
           "erSeksjonert": {
             "type": "boolean"
@@ -988,6 +1015,18 @@
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/BygningAPIModel"
+            }
+          },
+          "eiendomsadresser": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/EiendomsadresseAPIModel"
+            }
+          },
+          "eierforhold":  {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/EierForholdAPIModel"
             }
           }
         },
@@ -1021,8 +1060,36 @@
             "type": "integer",
             "format": "int32"
           },
-          "bruksenhetsnummer": {
-            "type": "string"
+          "bruksenhetsnummere": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "erSeksjonert": {
+            "type": "boolean"
+          },
+          "erUtgatt": {
+            "type": "boolean"
+          },
+          "manueltOpprettet": {
+            "type": "boolean"
+          },
+          "etableringsdato": {
+            "type": "string",
+            "format": "date"
+          },
+          "adresser": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/EiendomsadresseAPIModel"
+            }
+          },
+          "eierforhold": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/EierForholdAPIModel"
+            }
           }
         },
         "required": [
@@ -1033,37 +1100,81 @@
           "seksjonsnummer"
         ]
       },
+      "EierForholdAPIModel": {
+        "type": "object",
+        "properties": {
+          "kunde": {
+            "type": "object",
+            "properties": {
+              "offentligId": {
+                "type": "string",
+                "description": "Fødselsnummer, organisasjonsnummer eller annen ID for kunden"
+              }
+            }
+          },
+          "andel": {
+            "$ref": "#/components/schemas/AndelAPIModel"
+          },
+          "eierforholdType": {
+            "type": "string",
+            "enum": [
+              "KONTAKTINSTANS",
+              "PERSON_IKKE_TINGLYST",
+              "MATRIKKELENHET_IKKE_TINGLYST",
+              "PERSON_TINGLYST",
+              "MATRIKKELENHET_TINGLYST",
+              "SKATT_REGISTRERT"
+            ],
+            "description": "Type eierforhold registrert i matrikkelen."
+          },
+          "oppdateringsdato": {
+            "type": "string",
+            "format": "date"
+          }
+        }
+
+      },
       "EiendomsadresseAPIModel": {
         "type": "object",
         "properties": {
-          "adressekode": {
-            "type": "integer",
-            "format": "int64"
+          "adressetype": {
+            "type": "string",
+            "enum": [
+              "MATRIKKELADRESSE",
+              "VEGADRESSE"
+            ]
+          },
+          "kortnavn": {
+            "type": "string"
+          },
+          "adressetilleggsnavn": {
+            "type": "string"
+          },
+          "nummer": {
+            "type": "integer"
+          },
+          "bokstav": {
+            "type": "string"
           },
           "adressenavn": {
             "type": "string"
           },
-          "husnummer": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "husbokstav": {
+          "kortAdressenavn": {
             "type": "string"
           },
-          "postnummer": {
+          "stedsnummer": {
             "type": "string"
           },
-          "poststed": {
-            "type": "string"
-          },
-          "land": {
+          "kommunenummer": {
             "type": "string"
           }
         },
         "required": [
+          "adressetype",
           "adressenavn",
-          "husnummer"
-        ]
+          "kommunenummer"
+        ],
+        "description": "Adresser tilknyttet eiendomsavtalen, feltene avhenger av AdresseModell fra eiendomsregister.modeller, og er en kombinasjon av felter fra Adresse, Veg og Kommune"
       },
       "PostadresseAPIModel": {
         "type": "object",
