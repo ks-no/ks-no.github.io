@@ -18,16 +18,15 @@ Dokumentene har følgende krav:
 
 Følgende begrensinger gjelder for innsending av dokumenter:
 * Dersom forsendelsen skal kunne gå til print: 
-  * PDF'ene som legges ved ma ha en totalt filstørrelse under 350MB, ellers avviser SvarUt forsendelsen. Dette er en begrensing knyttet mot printleverandør. Når SvarUt sender dokumentene som skal printes til printleverandør, så vil SvarUt legge de sammen til å bli en stor PDF. 
-  * PDF'ene kan ikke vere passordbeskyttet. Dette er en typisk feil vi ser skjer med forsendelser som blir avvist.
-* Dersom forsendelsen skal til NHN
-  * Dersom forsendelsen skal til NHN kan det kun sendes 1 PDF som ikke kan overstige 18MB.
+  * PDF'ene som legges ved må ha en total filstørrelse under 350MB, ellers blir forsendelsen avvist. Når SvarUt sender dokumentene som skal printes til printleverandør, vil de bli slått sammen til å bli én stor PDF. 
+  * PDF'ene kan ikke være passordbeskyttet. Dette er en typisk feil vi ser skjer med forsendelser som blir avvist.
+* Dersom forsendelsen skal til NHN kan det kun sendes én PDF, og denne kan ikke overstige 18 MB.
 * Dersom man markerer forsendelse som kunDigital (til privatpersoner eller virksomheter) kan man sende større dokumentpakker enn 350MB. Her ligger det inne en tidsbegrensing hos oss, så all data må overføres innen 16 minutter.
 
 
-Eksempel på en hvordan en slik request med to filer kan se ut dersom en sender inn en forsendelse via Rest v2 med 2 dokumenter:
+Eksempel på en hvordan en request med to vedlagte dokumenter kan se ut dersom man sender inn en forsendelse via REST V2:
 ```
-POST /api/v3/kontoer/<konto-id>/forsendelser/ HTTP/1.1
+POST /api/v2/kontoer/<konto-id>/forsendelser/ HTTP/1.1
 Host: svarut.ks.no
 Authorization: Bearer <Maskinporten-token>
 IntegrasjonId: <integrasjon-id>
