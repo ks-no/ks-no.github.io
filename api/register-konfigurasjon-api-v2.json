@@ -1,0 +1,1338 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Fiks register konfigurasjon service",
+    "description": "Konfigurasjonstjeneste for Fiks register",
+    "contact": {
+      "name": "KS Fiks brukerstøtte",
+      "url": "https://www.ks.no/fagomrader/digitalisering/utviklingsprosjekter",
+      "email": "fiks-utvikling@ks.no"
+    },
+    "version": "v2"
+  },
+  "servers": [
+    {
+      "url": "https://api.fiks.ks.no",
+      "description": "KS Fiks API host",
+      "variables": {}
+    },
+    {
+      "url": "https://api.fiks.test.ks.no",
+      "description": "KS Fiks TEST API host",
+      "variables": {}
+    }
+  ],
+  "security": [
+    {
+      "fiksBearerToken": []
+    }
+  ],
+  "tags": [
+    {
+      "name": "konfigurasjon",
+      "description": "Endepunkter for konfigurering av roller og tilganger"
+    }
+  ],
+  "paths": {
+    "/register/api/v2/konfigurasjon/{fiksOrgId}/roller/med-tilganger": {
+      "get": {
+        "operationId": "hentAlleRollerForFiksOrgMedTilganger",
+        "description": "Henter alle roller for en organisasjon, inkludert dens tilganger",
+        "tags": [
+          "konfigurasjon"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "fiksOrgId",
+            "description": "",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Roller for organisasjonen med tilganger",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RolleMedTilgangerListe"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Ikke autorisert",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/register/api/v2/konfigurasjon/{fiksOrgId}/roller": {
+      "get": {
+        "operationId": "hentAlleRollerForFiksOrg",
+        "description": "Henter alle roller for en organisasjon",
+        "tags": [
+          "konfigurasjon"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "fiksOrgId",
+            "description": "",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Roller for organisasjonen",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RolleListe"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Ikke autorisert",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "operationId": "opprettRolle",
+        "description": "Oppretter en ny rolle for en organisasjon",
+        "tags": [
+          "konfigurasjon"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "fiksOrgId",
+            "description": "Id til organisasjonen som skal eie rollen",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OpprettRolleDefinisjon"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Rollen ble opprettet",
+            "links": {
+              "self": {
+                "operationRef": "hentRolle",
+                "parameters": {
+                  "fiksOrgId": "$request.path.fiksOrgId",
+                  "id": "$request.path.id"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Rolle"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Ugyldig rolle",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Ikke autorisert",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Mangler tilgang til å opprette rolle for gitt organisasjon",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/register/api/v2/konfigurasjon/roller/gyldigeverdier": {
+      "get": {
+        "operationId": "hentGyldigeVerdier",
+        "description": "Hent gyldige verdier for oppsett av rolle",
+        "tags": [
+          "konfigurasjon"
+        ],
+        "responses": {
+          "200": {
+            "description": "Hentet gyldige verdier",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GyldigeVerdier"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Ikke autorisert",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/register/api/v2/konfigurasjon/{fiksOrgId}/roller/{id}": {
+      "get": {
+        "operationId": "hentRolle",
+        "description": "Henter rolle basert på fiksOrgId og rolleId",
+        "tags": [
+          "konfigurasjon"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "fiksOrgId",
+            "description": "Id til organisasjonen som eier rollen",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "in": "path",
+            "name": "id",
+            "description": "Unik ID til den rollen man vil hente",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Hentet rolle",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Rolle"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Ikke autorisert",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Mangler tilgang til rolle",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Rollen finnes ikke",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "operationId": "slettRolle",
+        "description": "Sletter en rolle",
+        "tags": [
+          "konfigurasjon"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "fiksOrgId",
+            "description": "Id til organisasjonen som skal eie rollen",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "in": "path",
+            "name": "id",
+            "description": "Unik ID til den rollen man vil hente",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Sletting utført"
+          },
+          "401": {
+            "description": "Ikke autorisert",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Har ikke tilgang til å slette rolle",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Kan ikke slette rolle som ikke finnes",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "operationId": "oppdaterRolle",
+        "description": "Oppdaterer en rolle",
+        "tags": [
+          "konfigurasjon"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "fiksOrgId",
+            "description": "Id til organisasjonen som skal eie rollen",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "in": "path",
+            "name": "id",
+            "description": "Unik ID til den rollen man vil hente",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RolleEndring"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Endret rolle",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Rolle"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Ikke autorisert",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Mangler tilgang til rolle",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Rollen finnes ikke",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/register/api/v2/konfigurasjon/{fiksOrgId}/roller/{id}/med-tilganger": {
+      "get": {
+        "operationId": "hentRolleMedTilganger",
+        "description": "Henter rolle med tilgangene sine, basert på fiksOrgId og rolleId",
+        "tags": [
+          "konfigurasjon"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "fiksOrgId",
+            "description": "Id til organisasjonen som eier rollen",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "in": "path",
+            "name": "id",
+            "description": "Unik ID til den rollen man vil hente",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Hentet rolle med tilganger",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RolleMedTilganger"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Ikke autorisert",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Mangler tilgang til rolle",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Rollen finnes ikke",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/register/api/v2/konfigurasjon/roller/har-tilgang": {
+      "get": {
+        "operationId": "harTilgangTilRollerOppslag",
+        "description": "Sjekker om bruker har tilgang til roller",
+        "tags": [
+          "konfigurasjon"
+        ],
+        "responses": {
+          "204": {
+            "description": "Har tilgang"
+          },
+          "401": {
+            "description": "Ikke autorisert",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Ikke tilgang",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/register/api/v2/konfigurasjon/roller": {
+      "post": {
+        "operationId": "hentAktiveRollerForTjeneste",
+        "description": "Henter aktive roller for en tjeneste",
+        "tags": [
+          "konfigurasjon"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FinnAktivRollerForTjenesteRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Roller som bruker har tilgang til",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RolleListe"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Ikke autorisert",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Mangler tilgang til å lese roller på tvers av orgs",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/register/api/v2/konfigurasjon/{fiksOrgId}/register-tilganger": {
+      "get": {
+        "tags": [
+          "register-tilganger"
+        ],
+        "summary": "Ikke implementert",
+        "description": "Hente liste over hvilke registre som finnes og om organisasjonen har tilgang til dem",
+        "parameters": [
+          {
+            "name": "fiksOrgId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RegisterTilgangResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Ikke tilgang",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "register-tilganger"
+        ],
+        "summary": "Ikke implementert",
+        "description": "Aktiver tilgang til register for organisasjon. Avventer implementasjon av denne til vi vet litt mer om hvordan dette henger sammen.",
+        "parameters": [
+          {
+            "name": "fiksOrgId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AktiverRegisterTilgangRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RegisterTilgangResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Ikke tilgang",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "fiksBearerToken": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    },
+    "schemas": {
+      "OpprettRolleDefinisjon": {
+        "type": "object",
+        "required": [
+          "navn",
+          "beskrivelse",
+          "tjenesteomraade",
+          "opplysninger"
+        ],
+        "properties": {
+          "navn": {
+            "$ref": "#/components/schemas/NavnFelt"
+          },
+          "beskrivelse": {
+            "$ref": "#/components/schemas/BeskrivelseFelt"
+          },
+          "tjenesteomraade": {
+            "$ref": "#/components/schemas/TjenesteomraadeKode"
+          },
+          "opplysninger": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Opplysning"
+            }
+          },
+          "tjenester": {
+            "type": "array",
+            "uniqueItems": true,
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "RolleTilganger": {
+        "type": "object",
+        "required": [
+          "antallPersoner",
+          "antallIntegrasjoner",
+          "antallEksterneGrupper",
+          "antallEksterneBrukere"
+        ],
+        "properties": {
+          "antallPersoner": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "antallIntegrasjoner": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "antallEksterneGrupper": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "antallEksterneBrukere": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "Rolle": {
+        "type": "object",
+        "required": [
+          "id",
+          "navn",
+          "beskrivelse",
+          "tjenesteomraade",
+          "registre",
+          "kanBrukesPaaSokeside",
+          "aktiv",
+          "fiksOrgId"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "aktiv": {
+            "type": "boolean"
+          },
+          "ressursId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "fiksOrgId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "navn": {
+            "$ref": "#/components/schemas/NavnFelt"
+          },
+          "beskrivelse": {
+            "$ref": "#/components/schemas/BeskrivelseFelt"
+          },
+          "registre": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Register"
+            }
+          },
+          "kanBrukesPaaSokeside": {
+            "type": "boolean"
+          },
+          "tjenesteomraade": {
+            "$ref": "#/components/schemas/Tjenesteomraade"
+          },
+          "tjenester": {
+            "type": "array",
+            "uniqueItems": true,
+            "items": {
+              "type": "string"
+            }
+          },
+          "endret": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "opprettet": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "readOnly": true
+      },
+      "RolleMedTilganger": {
+        "type": "object",
+        "required": [
+          "id",
+          "navn",
+          "beskrivelse",
+          "tjenesteomraade",
+          "registre",
+          "kanBrukesPaaSokeside",
+          "aktiv",
+          "fiksOrgId",
+          "tilganger"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "aktiv": {
+            "type": "boolean"
+          },
+          "ressursId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "fiksOrgId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "navn": {
+            "$ref": "#/components/schemas/NavnFelt"
+          },
+          "beskrivelse": {
+            "$ref": "#/components/schemas/BeskrivelseFelt"
+          },
+          "registre": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Register"
+            }
+          },
+          "tilganger": {
+            "$ref": "#/components/schemas/RolleTilganger"
+          },
+          "kanBrukesPaaSokeside": {
+            "type": "boolean"
+          },
+          "tjenesteomraade": {
+            "$ref": "#/components/schemas/Tjenesteomraade"
+          },
+          "tjenester": {
+            "type": "array",
+            "uniqueItems": true,
+            "items": {
+              "type": "string"
+            }
+          },
+          "endret": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "opprettet": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "readOnly": true
+      },
+      "RolleMedTilgangerListe": {
+        "type": "object",
+        "description": "En liste med roller med tilganger som resultat av et oppslag",
+        "required": [
+          "roller"
+        ],
+        "properties": {
+          "roller": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RolleMedTilganger"
+            }
+          }
+        }
+      },
+      "RolleListe": {
+        "type": "object",
+        "description": "En liste med roller som resultat av et oppslag",
+        "required": [
+          "roller"
+        ],
+        "properties": {
+          "roller": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Rolle"
+            }
+          }
+        }
+      },
+      "FinnAktivRollerForTjenesteRequest": {
+        "type": "object",
+        "required": [
+          "tjeneste"
+        ],
+        "properties": {
+          "tjeneste": {
+            "$ref": "#/components/schemas/KodeFelt"
+          },
+          "fiksOrgId": {
+            "type": "string",
+            "description": "Brukes for å begrense treff per fiksOrgId",
+            "format": "uuid"
+          }
+        }
+      },
+      "Tjenesteomraade": {
+        "type": "object",
+        "required": [
+          "kode",
+          "navn",
+          "kanHenteTaushetsbelagtInformasjon"
+        ],
+        "properties": {
+          "kode": {
+            "$ref": "#/components/schemas/TjenesteomraadeKode"
+          },
+          "navn": {
+            "type": "string"
+          },
+          "kanHenteTaushetsbelagtInformasjon": {
+            "type": "boolean"
+          }
+        }
+      },
+      "TjenesteomraadeKode": {
+        "type": "string",
+        "enum": [
+          "BARNEVERN",
+          "HELSE",
+          "GRAVFERDSMYNDIGHET",
+          "OMSORG",
+          "OPPVEKST",
+          "BARNEHAGE",
+          "SKATTEOPPKREVER",
+          "SOSIAL",
+          "TEKNISK",
+          "STOTTE",
+          "INNBYGGERTJENESTER",
+          "NAERINGSLIV",
+          "VALG",
+          "INNFORDRING_INNKREVING",
+          "INNVANDRING_OG_INTEGRERING",
+          "SAMFUNNSSIKKERHET",
+          "DEMOKRATI_AAPENHET",
+          "TRAFIKK_TRANSPORT",
+          "HELSE_PRAKTISK_BISTAND",
+          "HELSE_LANGTIDSOPPHOLD_INSTITUSJON",
+          "FORELDREBETALING_SFO_BARNEHAGE"
+        ]
+      },
+      "Bruksomraade": {
+        "type": "string",
+        "enum": [
+          "INNBYGGERLISTE",
+          "SOEK",
+          "HENDELSER"
+        ]
+      },
+      "BruksomraadeDefinisjon": {
+        "type": "object",
+        "properties": {
+          "navn": {
+            "type": "string"
+          },
+          "beskrivelse": {
+            "type": "string"
+          },
+          "kode": {
+            "$ref": "#/components/schemas/Bruksomraade"
+          }
+        },
+        "required": [
+          "navn",
+          "beskrivelse",
+          "kode"
+        ]
+      },
+      "RolleEndring": {
+        "type": "object",
+        "properties": {
+          "nyttNavn": {
+            "$ref": "#/components/schemas/NavnFelt"
+          },
+          "nyBeskrivelse": {
+            "$ref": "#/components/schemas/BeskrivelseFelt"
+          },
+          "opplysninger": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/KodeFelt"
+            }
+          },
+          "bruksomraader": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Bruksomraade"
+            }
+          },
+          "kanBrukesPaSokeside": {
+            "$ref": "#/components/schemas/KanBrukesPaaSokesideDefinisjon"
+          }
+        }
+      },
+      "KanBrukesPaaSokesideDefinisjon": {
+        "type": "object",
+        "required": [
+          "kanBrukesPaaSokeside"
+        ],
+        "properties": {
+          "kanBrukesPaaSokeside": {
+            "type": "boolean"
+          }
+        }
+      },
+      "NavnFelt": {
+        "type": "string",
+        "description": "Navn på rolle",
+        "pattern": "^[A-ZÆØÅa-zæøå0-9ÁáÀàÂâÉéÈèÊêÍíÌìÎîÓóÒòÔôÚúÙùÛûÝýÄäËëÏïÖöÜü,.!?\\-:;/\\\\'()&+*=%§]+[A-ZÆØÅa-zæøå0-9ÁáÀàÂâÉéÈèÊêÍíÌìÎîÓóÒòÔôÚúÙùÛûÝýÄäËëÏïÖöÜü ,.!?\\-:;/\\\\'()&+*=%§]*[A-ZÆØÅa-zæøå0-9ÁáÀàÂâÉéÈèÊêÍíÌìÎîÓóÒòÔôÚúÙùÛûÝýÄäËëÏïÖöÜü,.!?\\-:;/\\\\'()&+*=%§]+$",
+        "minLength": 2,
+        "maxLength": 400
+      },
+      "BeskrivelseFelt": {
+        "type": "string",
+        "description": "Beskrivelse av rolle",
+        "maxLength": 400
+      },
+      "KodeFelt": {
+        "type": "string",
+        "minLength": 2,
+        "pattern": "^[A-Z\\.]+$"
+      },
+      "TjenesteomraadeGyldigVerdi": {
+        "type": "object",
+        "required": [
+          "kode",
+          "navn",
+          "kanHenteTaushetsbelagtInformasjon",
+          "gyldig",
+          "lovhjemler",
+          "regler"
+        ],
+        "properties": {
+          "kode": {
+            "$ref": "#/components/schemas/TjenesteomraadeKode"
+          },
+          "navn": {
+            "type": "string"
+          },
+          "kanHenteTaushetsbelagtInformasjon": {
+            "type": "boolean"
+          },
+          "gyldig": {
+            "type": "boolean"
+          },
+          "lovhjemler": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FolkeregisterLovhjemmel"
+            }
+          },
+          "regler": {
+            "type": "object",
+            "required": [
+              "registre"
+            ],
+            "properties": {
+              "registre": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/RegisterRegel"
+                }
+              }
+            }
+          }
+        }
+      },
+      "FolkeregisterLovhjemmel": {
+        "type": "object",
+        "required": [
+          "beskrivelse",
+          "lovdataLenker"
+        ],
+        "properties": {
+          "beskrivelse": {
+            "type": "string"
+          },
+          "lovdataLenker": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "GyldigeVerdier": {
+        "type": "object",
+        "description": "Gyldige verdier for opprettelse og oppdatering av roller",
+        "required": [
+          "tjenesteomraader",
+          "bruksomraader",
+          "register"
+        ],
+        "properties": {
+          "tjenesteomraader": {
+            "type": "array",
+            "description": "Ulike tjenesteområder som rolle kan knyttes til",
+            "items": {
+              "$ref": "#/components/schemas/TjenesteomraadeGyldigVerdi"
+            }
+          },
+          "bruksomraader": {
+            "type": "array",
+            "description": "Ulike bruksområder som rolle kan ha tilgang til",
+            "items": {
+              "$ref": "#/components/schemas/BruksomraadeDefinisjon"
+            }
+          },
+          "register": {
+            "type": "array",
+            "description": "Ulike registre som rolle kan ha tilgang til",
+            "items": {
+              "$ref": "#/components/schemas/Register"
+            }
+          }
+        }
+      },
+      "Opplysning": {
+        "type": "object",
+        "description": "En opplysning tilhørende et register",
+        "required": [
+          "navn",
+          "kode"
+        ],
+        "properties": {
+          "navn": {
+            "type": "string",
+            "description": "Navn på opplysningen"
+          },
+          "kode": {
+            "type": "string",
+            "description": "Kode for opplysningen"
+          }
+        }
+      },
+      "Register": {
+        "type": "object",
+        "description": "Register og hvilke opplysninger som er tilgjengelig i registeret",
+        "required": [
+          "navn",
+          "tilgjengelig",
+          "opplysninger"
+        ],
+        "properties": {
+          "navn": {
+            "type": "string",
+            "example": "Folkeregisteret"
+          },
+          "tilgjengelig": {
+            "type": "boolean",
+            "example": true
+          },
+          "opplysninger": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Opplysning"
+            }
+          }
+        }
+      },
+      "OpplysningRegel": {
+        "type": "object",
+        "description": "En opplysning tilhørende et register",
+        "required": [
+          "kode",
+          "kanBrukes"
+        ],
+        "properties": {
+          "kode": {
+            "type": "string",
+            "description": "Kode for opplysningen"
+          },
+          "kanBrukes": {
+            "type": "boolean",
+            "description": "Om opplysningen kan brukes med tjenesteområdet",
+            "example": true
+          }
+        }
+      },
+      "RegisterRegel": {
+        "type": "object",
+        "description": "Regler for et register",
+        "required": [
+          "register",
+          "kanBrukes",
+          "opplysninger"
+        ],
+        "properties": {
+          "register": {
+            "type": "string",
+            "example": "Folkeregisteret"
+          },
+          "kanBrukes": {
+            "type": "boolean",
+            "example": true
+          },
+          "opplysninger": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/OpplysningRegel"
+            }
+          }
+        }
+      },
+      "RegisterTilgangResponse": {
+        "type": "object",
+        "properties": {
+          "registre": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RegisterTilgangDefinisjon"
+            }
+          }
+        },
+        "required": [
+          "registre"
+        ]
+      },
+      "AktiverRegisterTilgangRequest": {
+        "type": "object",
+        "properties": {
+          "kode": {
+            "$ref": "#/components/schemas/Registerkode"
+          }
+        },
+        "required": [
+          "kode"
+        ]
+      },
+      "RegisterTilgangDefinisjon": {
+        "type": "object",
+        "properties": {
+          "kode": {
+            "$ref": "#/components/schemas/Registerkode"
+          },
+          "navn": {
+            "type": "string"
+          },
+          "aktivert": {
+            "type": "boolean"
+          },
+          "ekstrakostnad": {
+            "description": "Er det en ekstra kostnad forbundet med å ta registeret i bruk?",
+            "type": "boolean"
+          },
+          "vedlegg": {
+            "$ref": "#/components/schemas/LenkeDefinisjon"
+          }
+        },
+        "required": [
+          "kode",
+          "navn",
+          "aktivert",
+          "ekstrakostnad"
+        ]
+      },
+      "Registerkode": {
+        "type": "string",
+        "enum": [
+          "FOLKEREGISTER",
+          "KONTAKTREGISTER",
+          "SKATT_OG_INNTEKT",
+          "KJORETOYREGISTER"
+        ]
+      },
+      "LenkeDefinisjon": {
+        "type": "object",
+        "description": "Visningsnavn og URL for lenke",
+        "properties": {
+          "visningsnavn": {
+            "type": "string"
+          },
+          "url": {
+            "type": "string",
+            "format": "uri"
+          }
+        },
+        "required": [
+          "visningsnavn",
+          "url"
+        ]
+      }
+    }
+  }
+}
