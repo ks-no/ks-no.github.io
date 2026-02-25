@@ -507,6 +507,68 @@
         }
       }
     },
+    "/eiendomsavtaler/api/v1/{fiksOrgId}/kunder/bulk": {
+      "put": {
+        "tags": [
+          "Kunde"
+        ],
+        "description": "Opprett eller oppdater flere kunder i bulk (upsert). Eksisterende kunder oppdateres basert på offentligId, nye kunder opprettes. OffentligId må være unikt for hver kunde i systemet.",
+        "operationId": "bulkUpsertKunder",
+        "parameters": [
+          {
+            "name": "fiksOrgId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/KundeBulkUpsertRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Resultat av bulk upsert operasjonen",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/KundeBulkUpsertResultAPIModel"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Ugyldig forespørsel",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Ikke tilgang",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/eiendomsavtaler/api/v1/{fiksOrgId}/eiendomsavtaler/{avtaleId}/eiere": {
       "post": {
         "tags": [
@@ -1298,6 +1360,40 @@
           "postadresse"
         ]
       },
+      "KundeBulkRequest": {
+        "type": "object",
+        "properties": {
+          "offentligId": {
+            "type": "string",
+            "description": "Fødselsnummer, organisasjonsnummer eller annen ID."
+          },
+          "kundetype": {
+            "$ref": "#/components/schemas/KundeTypeAPIModel"
+          },
+          "navn": {
+            "type": "string"
+          },
+          "postadresse": {
+            "$ref": "#/components/schemas/PostadresseAPIModel"
+          },
+          "forretningsadresse": {
+            "$ref": "#/components/schemas/PostadresseAPIModel"
+          },
+          "gyldigFra": {
+            "type": "string",
+            "format": "date"
+          },
+          "gyldigTil": {
+            "type": "string",
+            "format": "date"
+          }
+        },
+        "required": [
+          "offentligId",
+          "kundetype",
+          "navn"
+        ]
+      },
       "KundeAPIModel": {
         "type": "object",
         "properties": {
@@ -1364,6 +1460,60 @@
             "type": "string"
           }
         }
+      },
+      "KundeBulkUpsertRequest": {
+        "type": "object",
+        "description": "Forespørsel for bulk upsert av kunder. Eksisterende kunder oppdateres basert på offentligId, nye kunder opprettes.",
+        "properties": {
+          "kunder": {
+            "type": "array",
+            "description": "Liste over kunder som skal opprettes eller oppdateres.",
+            "minItems": 1,
+            "maxItems": 100,
+            "items": {
+              "$ref": "#/components/schemas/KundeBulkRequest"
+            }
+          }
+        },
+        "required": [
+          "kunder"
+        ]
+      },
+      "KundeBulkUpsertResultAPIModel": {
+        "type": "object",
+        "description": "Resultat av en bulk upsert operasjon på kunder.",
+        "properties": {
+          "opprettet": {
+            "type": "array",
+            "description": "Kunder som ble opprettet.",
+            "items": {
+              "$ref": "#/components/schemas/KundeAPIModel"
+            }
+          },
+          "oppdatert": {
+            "type": "array",
+            "description": "Kunder som ble oppdatert.",
+            "items": {
+              "$ref": "#/components/schemas/KundeAPIModel"
+            }
+          },
+          "antallOpprettet": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Antall kunder som ble opprettet."
+          },
+          "antallOppdatert": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Antall kunder som ble oppdatert."
+          }
+        },
+        "required": [
+          "opprettet",
+          "oppdatert",
+          "antallOpprettet",
+          "antallOppdatert"
+        ]
       },
       "EierRequest": {
         "type": "object",
