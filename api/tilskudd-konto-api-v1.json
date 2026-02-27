@@ -1,0 +1,382 @@
+{
+  "openapi": "3.1.1",
+  "info": {
+    "title": "KS Fiks: Tilskuddskonto v1",
+    "description": "Service for persisting og lese hendelser (konto-meldinger) i KurrentDB",
+    "contact": {
+      "name": "Fiks-brukerstøtte",
+      "url": "https://ks-no.github.io/",
+      "email": "fiks-utvikling@ks.no"
+    },
+    "version": "v1"
+  },
+  "servers": [
+    {
+      "url": "https://api.fiks.ks.no",
+      "description": "KS Fiks API host"
+    },
+    {
+      "url": "https://api.fiks.test.ks.no",
+      "description": "KS Fiks TEST API host"
+    }
+  ],
+  "security": [
+    {
+      "bearerAuth": []
+    }
+  ],
+  "tags": [
+    {
+      "name": "Melding",
+      "description": "Bruker samme Melding-format som tilskudd-soknad-api-v1"
+    }
+  ],
+  "paths": {
+    "/tilskudd-konto/api/v1/event": {
+      "post": {
+        "tags": [
+          "Melding"
+        ],
+        "operationId": "opprettEvent",
+        "summary": "Registrer en ny hendelse (Melding) i KurrentDB",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NyEventRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Hendelsen er opprettet",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Event"
+                }
+              }
+            }
+          },
+          "403": {
+            "$ref": "#/components/responses/403Unauthorized"
+          },
+          "default": {
+            "$ref": "#/components/responses/DefaultError"
+          }
+        }
+      }
+    },
+    "/tilskudd-konto/api/v1/event/{soknadregisterId}": {
+      "get": {
+        "tags": [
+          "Melding"
+        ],
+        "operationId": "hentAlleEvents",
+        "summary": "Hent alle hendelser for en gitt soknadregisterId (paged)",
+        "parameters": [
+          {
+            "name": "soknadregisterId",
+            "in": "path",
+            "description": "SoknadsregisterId for søknaden",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "sidenummer",
+            "in": "query",
+            "description": "Side nummer (1-based)",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 1
+            }
+          },
+          {
+            "name": "hendelserPerSide",
+            "in": "query",
+            "description": "Antall hendelser per side",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 100
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK - Liste med hendelser (paged)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HentAlleEventsResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "$ref": "#/components/responses/403Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/404NotFound"
+          },
+          "default": {
+            "$ref": "#/components/responses/DefaultError"
+          }
+        }
+      }
+    },
+    "/tilskudd-konto/api/v1/event/{soknadregisterId}/latest": {
+      "get": {
+        "tags": [
+          "Melding"
+        ],
+        "operationId": "hentSisteEvent",
+        "summary": "Hent siste hendelse for en gitt soknadregisterId",
+        "parameters": [
+          {
+            "name": "soknadregisterId",
+            "in": "path",
+            "description": "SoknadsregisterId for søknaden",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Event"
+                }
+              }
+            }
+          },
+          "403": {
+            "$ref": "#/components/responses/403Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/404NotFound"
+          },
+          "default": {
+            "$ref": "#/components/responses/DefaultError"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    },
+    "schemas": {
+      "NyEventRequest": {
+        "type": "object",
+        "required": [
+          "soknadId",
+          "tittel",
+          "meldingstype",
+          "avsender",
+          "innhold"
+        ],
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/MeldingBase"
+          }
+        ]
+      },
+      "Event": {
+        "type": "object",
+        "readOnly": true,
+        "required": [
+          "id",
+          "soknadId",
+          "tittel",
+          "meldingstype",
+          "avsender",
+          "innhold",
+          "mottatt"
+        ],
+        "allOf": [
+          {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "format": "uuid"
+              }
+            }
+          },
+          {
+            "$ref": "#/components/schemas/MeldingBase"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "mottatt": {
+                "type": "string",
+                "format": "date-time",
+                "example": "2026-02-02T12:00:00Z"
+              }
+            }
+          }
+        ]
+      },
+      "MeldingBase": {
+        "type": "object",
+        "properties": {
+          "soknadId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Id for søknad som meldingen gjelder"
+          },
+          "tittel": {
+            "type": "string"
+          },
+          "meldingstype": {
+            "$ref": "#/components/schemas/Meldingstype"
+          },
+          "avsender": {
+            "type": "string"
+          },
+          "innhold": {
+            "type": "string"
+          }
+        }
+      },
+      "Meldingstype": {
+        "type": "string",
+        "enum": [
+          "HENDELSE",
+          "OPPGAVE",
+          "DIALOG"
+        ]
+      },
+      "HentAlleEventsResponse": {
+        "type": "object",
+        "properties": {
+          "events": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Event"
+            },
+            "maxItems": 1000
+          },
+          "sidenummer": {
+            "type": "integer"
+          },
+          "hendelserPerSide": {
+            "type": "integer"
+          },
+          "totaltAntallSider": {
+            "type": "integer"
+          },
+          "totaltAntallHendelser": {
+            "type": "integer",
+            "format": "int64"
+          }
+        }
+      },
+      "ErrorMessage": {
+        "type": "object",
+        "description": "Feilmelding fra Fiks-plattformen",
+        "externalDocs": {
+          "description": "Beskrivelse av feilmeldinger",
+          "url": "https://ks-no.github.io/fiks-plattform/integrasjoner/#feilmeldinger"
+        },
+        "properties": {
+          "timestamp": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "status": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "error": {
+            "type": "string"
+          },
+          "errorId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "path": {
+            "type": "string"
+          },
+          "originalPath": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          },
+          "errorCode": {
+            "type": "string"
+          },
+          "errorJson": {
+            "type": "string"
+          }
+        },
+        "example": {
+          "message": "Mangler tilgang",
+          "errorId": "ee2ed64d-de8b-45f9-b9c6-3363d662d93b",
+          "status": 403
+        }
+      }
+    },
+    "responses": {
+      "400BadRequest": {
+        "description": "Ugyldig forespørsel",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorMessage"
+            }
+          }
+        }
+      },
+      "403Unauthorized": {
+        "description": "Ikke tilgang",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorMessage"
+            }
+          }
+        }
+      },
+      "404NotFound": {
+        "description": "Ikke funnet",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorMessage"
+            }
+          }
+        }
+      },
+      "DefaultError": {
+        "description": "Noe gikk galt",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorMessage"
+            }
+          }
+        }
+      }
+    }
+  }
+}
