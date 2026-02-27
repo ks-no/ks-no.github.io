@@ -1,0 +1,1080 @@
+{
+  "openapi": "3.1.1",
+  "info": {
+    "title": "KS Fiks: Tilskuddssoknad v1",
+    "description": "Service for Tilskuddssøknad",
+    "contact": {
+      "name": "Fiks-brukerstøtte",
+      "url": "https://ks-no.github.io/",
+      "email": "fiks-utvikling@ks.no"
+    },
+    "version": "v1"
+  },
+  "servers": [
+    {
+      "url": "https://api.fiks.ks.no",
+      "description": "KS Fiks API host"
+    },
+    {
+      "url": "https://api.fiks.test.ks.no",
+      "description": "KS Fiks TEST API host"
+    }
+  ],
+  "security": [
+    {
+      "bearerAuth": []
+    }
+  ],
+  "tags": [
+    {
+      "name": "Tilskuddssoknad",
+      "description": "Endepunkter for å lese/skrive søknader i fiks-tilskuddsoknad"
+    },
+    {
+      "name": "Melding",
+      "description": "Endepunkter for å opprette og lese meldinger knyttet til en søknad"
+    },
+    {
+      "name": "Fil",
+      "description": "Endepunkter for å hente filer knyttet til en søknad"
+    }
+  ],
+  "paths": {
+    "/tilskuddssoknad/api/v1": {
+      "get": {
+        "tags": [
+          "Tilskuddssoknad"
+        ],
+        "operationId": "hentSoknaderForPerson",
+        "summary": "Henter søknader for en person. Krever authetisering med IdPorten",
+        "responses": {
+          "200": {
+            "description": "Liste med søknader",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "maxItems": 100,
+                  "items": {
+                    "$ref": "#/components/schemas/SoknadDetaljer"
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "$ref": "#/components/responses/403Unauthorized"
+          },
+          "default": {
+            "$ref": "#/components/responses/DefaultError"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Tilskuddssoknad"
+        ],
+        "operationId": "opprettSoknad",
+        "summary": "Opprett en søknad i soknadsregisteret",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OpprettSoknadRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Søknaden er opprettet",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SoknadDetaljer"
+                }
+              }
+            }
+          },
+          "403": {
+            "$ref": "#/components/responses/403Unauthorized"
+          },
+          "default": {
+            "$ref": "#/components/responses/DefaultError"
+          }
+        }
+      }
+    },
+    "/tilskuddssoknad/api/v1/{id}": {
+      "get": {
+        "tags": [
+          "Tilskuddssoknad"
+        ],
+        "operationId": "hentSoknad",
+        "summary": "Henter søknad angitt av id",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "SoknadsregisterId for søknaden",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SoknadDetaljer"
+                }
+              }
+            }
+          },
+          "403": {
+            "$ref": "#/components/responses/403Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/404NotFound"
+          },
+          "default": {
+            "$ref": "#/components/responses/DefaultError"
+          }
+        }
+      }
+    },
+    "/tilskuddssoknad/api/v1/{id}/rolle": {
+      "post": {
+        "tags": [
+          "Tilskuddssoknad"
+        ],
+        "operationId": "leggTilRolle",
+        "summary": "Legger til en rolle i en søknad",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "SoknadsregisterId for søknaden",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RolleRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Rolle er oppdatert",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SoknadDetaljer"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/400BadRequest"
+          },
+          "403": {
+            "$ref": "#/components/responses/403Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/404NotFound"
+          },
+          "default": {
+            "$ref": "#/components/responses/DefaultError"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Tilskuddssoknad"
+        ],
+        "operationId": "oppdaterRolle",
+        "summary": "Oppdaterer en rolle i en søknad",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "SoknadsregisterId for søknaden",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RolleRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Status oppdatert",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SoknadDetaljer"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/400BadRequest"
+          },
+          "403": {
+            "$ref": "#/components/responses/403Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/404NotFound"
+          },
+          "default": {
+            "$ref": "#/components/responses/DefaultError"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Tilskuddssoknad"
+        ],
+        "operationId": "fjernRolle",
+        "summary": "Fjerner en rolle i en søknad",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "SoknadsregisterId for søknaden",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RolleRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Status oppdatert",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SoknadDetaljer"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/400BadRequest"
+          },
+          "403": {
+            "$ref": "#/components/responses/403Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/404NotFound"
+          },
+          "default": {
+            "$ref": "#/components/responses/DefaultError"
+          }
+        }
+      }
+    },
+    "/tilskuddssoknad/api/v1/{id}/status": {
+      "patch": {
+        "tags": [
+          "Tilskuddssoknad"
+        ],
+        "operationId": "oppdaterStatus",
+        "summary": "Oppdaterer status til en søknad",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "SoknadsregisterId for søknaden",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OppdaterStatusRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Status oppdatert",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SoknadDetaljer"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/400BadRequest"
+          },
+          "403": {
+            "$ref": "#/components/responses/403Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/404NotFound"
+          },
+          "default": {
+            "$ref": "#/components/responses/DefaultError"
+          }
+        }
+      }
+    },
+    "/tilskuddssoknad/api/v1/melding": {
+      "post": {
+        "tags": [
+          "Melding"
+        ],
+        "operationId": "nyMelding",
+        "summary": "Registrerer ny melding knyttet til en søknad",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NyMeldingRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Melding"
+                }
+              }
+            }
+          },
+          "403": {
+            "$ref": "#/components/responses/403Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/404NotFound"
+          },
+          "default": {
+            "$ref": "#/components/responses/DefaultError"
+          }
+        }
+      }
+    },
+    "/tilskuddssoknad/api/v1/melding/{soknadregisterId}": {
+      "get": {
+        "tags": [
+          "Melding"
+        ],
+        "operationId": "hentMeldinger",
+        "summary": "Henter meldinger knyttet til en søknad",
+        "parameters": [
+          {
+            "name": "soknadregisterId",
+            "in": "path",
+            "description": "SoknadsregisterId for søknaden",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Meldingslogg"
+                }
+              }
+            }
+          },
+          "403": {
+            "$ref": "#/components/responses/403Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/404NotFound"
+          },
+          "default": {
+            "$ref": "#/components/responses/DefaultError"
+          }
+        }
+      }
+    },
+    "/tilskuddssoknad/api/v1/fil": {
+      "post": {
+        "tags": [
+          "Fil"
+        ],
+        "operationId": "nyFil",
+        "summary": "Registrerer ny fil knyttet til en søknad",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NyFilRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Fil"
+                }
+              }
+            }
+          },
+          "403": {
+            "$ref": "#/components/responses/403Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/404NotFound"
+          },
+          "default": {
+            "$ref": "#/components/responses/DefaultError"
+          }
+        }
+      }
+    },
+    "/tilskuddssoknad/api/v1/fil/{soknadregisterId}": {
+      "get": {
+        "tags": [
+          "Fil"
+        ],
+        "operationId": "hentFiler",
+        "summary": "Henter filer knyttet til en søknad",
+        "parameters": [
+          {
+            "name": "soknadregisterId",
+            "in": "path",
+            "description": "SoknadsregisterId for søknaden",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Filliste"
+                }
+              }
+            }
+          },
+          "403": {
+            "$ref": "#/components/responses/403Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/404NotFound"
+          },
+          "default": {
+            "$ref": "#/components/responses/DefaultError"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    },
+    "schemas": {
+      "ErrorMessage": {
+        "type": "object",
+        "properties": {
+          "timestamp": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "status": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "error": {
+            "type": "string"
+          },
+          "errorId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "path": {
+            "type": "string"
+          },
+          "originalPath": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          },
+          "errorCode": {
+            "type": "string"
+          },
+          "errorJson": {
+            "type": "string"
+          }
+        }
+      },
+      "SoknadId": {
+        "type": "object",
+        "properties": {
+          "soknadsregisterId": {
+            "type": "string",
+            "format": "uuid",
+            "readOnly": true
+          },
+          "soknadId": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9-]+$",
+            "example": "TS-1000000001",
+            "readOnly": true
+          }
+        }
+      },
+      "SoknadBase": {
+        "type": "object",
+        "properties": {
+          "ordningsId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "primær id til ordningen"
+          },
+          "paaVegneAvForetak": {
+            "$ref": "#/components/schemas/Foretak",
+            "description": "Foretaket som man søker på vegne av"
+          },
+          "soker": {
+            "$ref": "#/components/schemas/Person",
+            "description": "Informasjon om søker"
+          }
+        }
+      },
+      "SoknadDetaljer": {
+        "type": "object",
+        "required": [
+          "soknadsregisterId",
+          "soknadId",
+          "ordningsId",
+          "paaVegneAvForetak",
+          "soker",
+          "deltagere",
+          "status",
+          "opprettet",
+          "endret"
+        ],
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/SoknadId"
+          },
+          {
+            "$ref": "#/components/schemas/SoknadBase"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "orgRepresentant": {
+                "$ref": "#/components/schemas/Person",
+                "description": "Informasjon om organisasjonsrepresentant"
+              },
+              "deltagere": {
+                "type": "array",
+                "maxItems": 10,
+                "description": "Informasjon om andre deltagere",
+                "items": {
+                  "$ref": "#/components/schemas/Person"
+                }
+              },
+              "status": {
+                "$ref": "#/components/schemas/SoknadsStatus",
+                "description": "Status for søknaden"
+              },
+              "opprettet": {
+                "type": "string",
+                "format": "date-time",
+                "example": "2025-08-27T15:45:30Z",
+                "description": "Tidspunkt for når søknaden ble innsendt"
+              },
+              "endret": {
+                "type": "string",
+                "format": "date-time",
+                "example": "2025-08-27T15:45:30Z",
+                "description": "Tidspunkt for når søknaden sist ble endret"
+              },
+              "innsendt": {
+                "type": "string",
+                "format": "date-time",
+                "example": "2025-08-27T15:45:30Z",
+                "description": "Tidspunkt for når søknaden ble innsendt"
+              }
+            }
+          }
+        ]
+      },
+      "OpprettSoknadRequest": {
+        "type": "object",
+        "required": [
+          "ordningsId",
+          "soker",
+          "paaVegneAvForetak"
+        ],
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/SoknadBase"
+          }
+        ]
+      },
+      "RolleRequest": {
+        "type": "object",
+        "required": [
+          "rolle",
+          "person"
+        ],
+        "properties": {
+          "rolle": {
+            "$ref": "#/components/schemas/RolleType",
+            "description": "Rolletypen som skal endres "
+          },
+          "person": {
+            "$ref": "#/components/schemas/Person",
+            "description": "Informasjon om personen som innehar rollen"
+          }
+        }
+      },
+      "OppdaterStatusRequest": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "$ref": "#/components/schemas/SoknadsStatus",
+            "description": "Ny status for søknaden"
+          },
+          "timestamp": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Tidspunkt for statusendringen (ISO 8601 format). Hvis ikke oppgitt, brukes servertid",
+            "example": "2025-12-10T10:30:00Z"
+          }
+        },
+        "required": [
+          "status"
+        ]
+      },
+      "Person": {
+        "type": "object",
+        "required": [
+          "fnr",
+          "navn"
+        ],
+        "properties": {
+          "fnr": {
+            "type": "string",
+            "description": "Personens fødsels- og personnummer"
+          },
+          "navn": {
+            "type": "string",
+            "description": "Personens fulle navn"
+          },
+          "epost": {
+            "type": "string",
+            "format": "email",
+            "description": "Epost"
+          }
+        }
+      },
+      "Foretak": {
+        "type": "object",
+        "required": [
+          "orgNr"
+        ],
+        "properties": {
+          "orgNr": {
+            "type": "string",
+            "description": "Foretakets nummer i brreg (organisasjonsnummer)"
+          },
+          "navn": {
+            "type": "string",
+            "readOnly": true,
+            "description": "Navn på foretak"
+          }
+        }
+      },
+      "RolleType": {
+        "type": "string",
+        "enum": [
+          "ORGANISASJONSREPRESENTANT",
+          "DELTAGER"
+        ]
+      },
+      "SoknadsStatus": {
+        "type": "string",
+        "enum": [
+          "KLADD",
+          "INNSENDT",
+          "UNDER_BEHANDLING",
+          "FERDIG_BEHANDLET",
+          "SLETTET"
+        ]
+      },
+      "MeldingBase": {
+        "type": "object",
+        "properties": {
+          "soknadregisterId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Id for søknad som meldingen gjelder"
+          },
+          "tittel": {
+            "type": "string",
+            "description": "Tittel på meldingen"
+          },
+          "meldingstype": {
+            "$ref": "#/components/schemas/Meldingstype",
+            "description": "Meldingstype"
+          },
+          "avsender": {
+            "type": "string",
+            "description": "System eller person som har sendt meldingen"
+          },
+          "innhold": {
+            "type": "string",
+            "description": "Meldingen innhold"
+          }
+        }
+      },
+      "NyMeldingRequest": {
+        "type": "object",
+        "required": [
+          "soknadregisterId",
+          "tittel",
+          "meldingstype",
+          "avsender",
+          "innhold"
+        ],
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/MeldingBase"
+          }
+        ]
+      },
+      "Melding": {
+        "type": "object",
+        "readOnly": true,
+        "required": [
+          "id",
+          "soknadregisterId",
+          "tittel",
+          "meldingstype",
+          "avsender",
+          "innhold",
+          "mottatt"
+        ],
+        "allOf": [
+          {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "format": "uuid"
+              }
+            }
+          },
+          {
+            "$ref": "#/components/schemas/MeldingBase"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "mottatt": {
+                "type": "string",
+                "format": "date-time",
+                "example": "2025-08-27T15:45:30Z"
+              }
+            }
+          }
+        ]
+      },
+      "Meldingslogg": {
+        "properties": {
+          "meldinger": {
+            "type": "array",
+            "maxItems": 1000,
+            "items": {
+              "$ref": "#/components/schemas/Melding"
+            }
+          }
+        },
+        "required": [
+          "meldinger"
+        ]
+      },
+      "Meldingstype": {
+        "type": "string",
+        "enum": [
+          "HENDELSE",
+          "OPPGAVE",
+          "DIALOG"
+        ]
+      },
+      "FilBase": {
+        "type": "object",
+        "properties": {
+          "soknadregisterId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Id for søknad som filen er tilknyttet"
+          },
+          "tittel": {
+            "type": "string",
+            "description": "Tittel på filen"
+          },
+          "type": {
+            "$ref": "#/components/schemas/Filtype",
+            "description": "Filtype"
+          },
+          "status": {
+            "type": "string",
+            "description": "Filens status (Hva enn nå det betyr??)"
+          },
+          "filnavn": {
+            "type": "string",
+            "description": "Navn på filen"
+          },
+          "referanse": {
+            "type": "string",
+            "description": "Referanse til filen i dokumentlager"
+          }
+        }
+      },
+      "NyFilRequest": {
+        "type": "object",
+        "required": [
+          "soknadregisterId",
+          "tittel",
+          "type",
+          "status",
+          "filnavn",
+          "referanse"
+        ],
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/FilBase"
+          }
+        ]
+      },
+      "Fil": {
+        "type": "object",
+        "readOnly": true,
+        "required": [
+          "id",
+          "soknadregisterId",
+          "tittel",
+          "type",
+          "status",
+          "filnavn",
+          "referanse",
+          "opprettet",
+          "endret"
+        ],
+        "allOf": [
+          {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "format": "uuid"
+              }
+            }
+          },
+          {
+            "$ref": "#/components/schemas/FilBase"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "opprettet": {
+                "type": "string",
+                "format": "date-time",
+                "example": "2025-08-27T15:45:30Z"
+              }
+            }
+          },
+          {
+            "type": "object",
+            "properties": {
+              "endret": {
+                "type": "string",
+                "format": "date-time",
+                "example": "2025-08-27T15:45:30Z"
+              }
+            }
+          }
+        ]
+      },
+      "Filliste": {
+        "properties": {
+          "filer": {
+            "type": "array",
+            "maxItems": 20,
+            "items": {
+              "$ref": "#/components/schemas/Fil"
+            }
+          }
+        },
+        "required": [
+          "filer"
+        ]
+      },
+      "Filtype": {
+        "type": "string",
+        "enum": [
+          "BUDSJETT",
+          "SLUTTRAPPORT"
+        ]
+      },
+      "schemas-ErrorMessage": {
+        "type": "object",
+        "description": "Feilmelding fra Fiks-plattformen",
+        "externalDocs": {
+          "description": "Beskrivelse av feilmeldinger",
+          "url": "https://ks-no.github.io/fiks-plattform/integrasjoner/#feilmeldinger"
+        },
+        "properties": {
+          "timestamp": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "status": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "error": {
+            "type": "string"
+          },
+          "errorId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "path": {
+            "type": "string"
+          },
+          "originalPath": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          },
+          "errorCode": {
+            "type": "string"
+          },
+          "errorJson": {
+            "type": "string"
+          }
+        },
+        "example": {
+          "message": "Mangler tilgang",
+          "errorId": "ee2ed64d-de8b-45f9-b9c6-3363d662d93b",
+          "status": 403
+        }
+      }
+    },
+    "responses": {
+      "400BadRequest": {
+        "description": "Ugyldig forespørsel",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/schemas-ErrorMessage"
+            }
+          }
+        }
+      },
+      "403Unauthorized": {
+        "description": "Ikke tilgang",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/schemas-ErrorMessage"
+            }
+          }
+        }
+      },
+      "404NotFound": {
+        "description": "Ikke funnet",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/schemas-ErrorMessage"
+            }
+          }
+        }
+      },
+      "DefaultError": {
+        "description": "Noe gikk galt",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/schemas-ErrorMessage"
+            }
+          }
+        }
+      }
+    }
+  }
+}
