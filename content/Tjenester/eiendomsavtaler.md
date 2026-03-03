@@ -17,4 +17,4 @@ Det vil komme API-dokumentasjon her på hvordan fagsystemer kan hente ned eiendo
 Vi har laget et grovt førsteutkast av en API-spec. Denne ligger [her](https://editor-next.swagger.io/?url=https://developers.fiks.ks.no/api/eiendomsavtaler-api-v1.json). Her vil det komme endringer som brekker kontrakten. Kontrakten låses ikke før vi er i produksjon.
 
 ## Kontakt
-Tekniske spørsmål og henvendelser kan rettes til fiks-utvikling@ks.no, øvrige henvendelser kan rettes til fiks@ks.no
+Tekniske spørsmål og henvendelser kan rettes til fiks-utvikling@ksdigital.no, øvrige henvendelser kan rettes til fiks@ksdigital.no
