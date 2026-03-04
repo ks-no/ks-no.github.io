@@ -40,8 +40,8 @@ Det kan også sendes med metadata, som ikke brukes av KS Min kommune, men som ka
 #### PUT /oppgaver/{oppgaveId}/status
 I første iterasjon er dette endepunktet brukt for å oppdatere status fra "NY" til "FULLFORT" for en mottaker av oppgaven.
 
-#### GET /oppgaver/{oppgaveId} (IKKE IMPLEMENTERT FERDIG)
-En oppgave kan hentes via dette endepunktet. Dette returnerer all informasjon om oppgaven, inkludert liste over mottakere og deres individuelle status.
+#### GET /oppgaver/{oppgaveId}
+En oppgave kan hentes via dette endepunktet. Dette returnerer informasjon om oppgaven, inkludert liste over mottakere og deres individuelle status.
 
 ## Diverse
 - linker
