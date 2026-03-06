@@ -1,0 +1,410 @@
+openapi: 3.0.3
+info:
+  title: Nav's hjelpemiddel-api
+  description: Et REST-api for utveksling av data mellom kommune og stat (Nav) på hjelpemiddelområdet.
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+  version: 3.0.0
+servers:
+  - url: https://api.fiks.ks.no
+    description: KS Fiks API host
+    variables: {}
+  - url: https://api.fiks.test.ks.no
+    description: KS Fiks TEST API host
+    variables: {}
+paths:
+  /nav-hjelpemiddel/api/{paaVegneAvFiksOrg}/kommune/{kommunenummer}/rest/v3/grunndata/produkter:
+    post:
+      summary: getHjelpemiddelGrunndata
+      operationId: getHjelpemiddelGrunndata
+      tags:
+        - Grunndata
+      description: Hent grunndata for de ulike hjelpemidlene
+      security:
+        - BearerAuth: []
+      parameters:
+        - in: path
+          name: paaVegneAvFiksOrg
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - in: path
+          name: kommunenummer
+          required: true
+          schema:
+            type: string
+            minLength: 4
+            maxLength: 4
+            pattern: ^\d{4}$
+        - in: query
+          name: since
+          schema:
+            type: string
+            format: yyyy-MM-ddThh:mm:ss
+          required: false
+          description: Hent alle hjelpemidler som har endret seg siden tidsstempelet og til nå. (unix timestamp i sekunder siden epoch)
+          example: '2021-01-01T00:00:00'
+        - in: query
+          name: before
+          schema:
+            type: string
+            format: yyyy-MM-ddThh:mm:ss
+          required: false
+          description: Hent alle hjelpemidler som har endret seg før tidsstempelet. (unix timestamp i sekunder før epoch)
+          example: '2025-08-01T00:00:00'
+        - in: query
+          name: limit
+          schema:
+            type: integer
+          required: false
+          description: Limit for antall resultater som skal hentes.
+        - in: header
+          name: X-Correlation-ID
+          schema:
+            type: string
+          required: false
+          description: Unik id som kan brukes til å korrelere logger på tvers av systemer
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                      format: uuid
+                    identifier:
+                      type: string
+                      format: uuid
+                    hmsArtNr:
+                      type: string
+                    articleName:
+                      type: string
+                    title:
+                      type: string
+                    status:
+                      type: string
+                    isoCategory:
+                      type: string
+                    isoCategoryTitle:
+                      type: string
+                    isoCategoryText:
+                      type: string
+                    isoCategoryTextShort:
+                      type: string
+                    seriesId:
+                      type: string
+                      format: uuid
+                    supplierRef:
+                      type: string
+                    hasAgreement:
+                      type: boolean
+                    isDelete:
+                      type: boolean
+                    created:
+                      type: string
+                      format: date-time
+                    updated:
+                      type: string
+                      format: date-time
+                    expired:
+                      type: string
+                      format: date-time
+                    attributes:
+                      type: object
+                      properties:
+                        text:
+                          type: string
+                    supplier:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                        identifier:
+                          type: string
+                        name:
+                          type: string
+                    agreements:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          id:
+                            type: string
+                            format: uuid
+                          identifier:
+                            type: string
+                            format: uuid
+                          label:
+                            type: string
+                          title:
+                            type: string
+                          postId:
+                            type: string
+                            format: uuid
+                          postIdentifier:
+                            type: string
+                            format: uuid
+                          postNr:
+                            type: integer
+                          postTitle:
+                            type: string
+                          rank:
+                            type: integer
+                          expired:
+                            type: string
+                            format: date-time
+                    media:
+                      type: array
+                      items:
+                        type: object
+                    data:
+                      type: array
+                      items:
+                        type: object
+        '400':
+          description: Bad Request
+  /nav-hjelpemiddel/api/{paaVegneAvFiksOrg}/kommune/{kommunenummer}/rest/v3/kvitteringer:
+    get:
+      summary: getHjelpemiddelKvitteringer
+      operationId: getHjelpemiddelKvitteringer
+      tags:
+        - Kvitteringer
+      description: Hent kvitteringer fra de siste 7 dagene
+      security:
+        - BearerAuth: []
+      parameters:
+        - in: path
+          name: paaVegneAvFiksOrg
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - in: path
+          name: kommunenummer
+          required: true
+          schema:
+            type: string
+            minLength: 4
+            maxLength: 4
+            pattern: ^\d{4}$
+        - in: query
+          name: nyereEnn
+          schema:
+            type: string
+          required: false
+          description: Hent alle kvitteringer fra de siste 7 dagene som er nyere enn kvitteringen med oppgitt behovsmeldingId (uuid)
+        - in: query
+          name: nyereEnnTidsstempel
+          schema:
+            type: integer
+            format: int64
+          required: false
+          description: Hent alle kvitteringer fra de siste 7 dagene som er nyere enn oppgitt tidsstempel (unix timestamp i sekunder siden epoch)
+          example: '1765552895'
+        - in: header
+          name: X-Correlation-ID
+          schema:
+            type: string
+          required: false
+          description: Unik id som kan brukes til å korrelere logger på tvers av systemer
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    behovsmeldingId:
+                      type: string
+                      format: uuid
+                    fnrBruker:
+                      type: string
+                    fnrInnsender:
+                      type: string
+                    navnBruker:
+                      type: string
+                    behovsmeldingGjelder:
+                      type: string
+                    opprettet:
+                      type: string
+                      format: date-time
+                    behovsmelding:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                        type:
+                          type: string
+                        prioritet:
+                          type: string
+                        hjmBrukersFnr:
+                          type: string
+                        innsendingsdato:
+                          type: string
+                          format: date
+                        innsendingstidspunkt:
+                          type: string
+                          format: date-time
+                        skjemaversjon:
+                          type: integer
+                        vedlegg:
+                          type: array
+                          items:
+                            type: object
+                        bruker:
+                          type: object
+                        brukersituasjon:
+                          type: object
+                        hjelpemidler:
+                          type: object
+                        levering:
+                          type: object
+  /nav-hjelpemiddel/api/{paaVegneAvFiksOrg}/kommune/{kommunenummer}/rest/v3/kvitteringer/{behovsmeldingId}/pdf:
+    get:
+      summary: getHjelpemiddelKvitteringPdf
+      operationId: getHjelpemiddelKvitteringPdf
+      tags:
+        - Kvitteringer
+      description: Hent enkelt kvittering fra de siste 7 dagene i PDF-form med dens behovsmeldingId
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: behovsmeldingId
+          in: path
+          schema:
+            type: string
+          required: true
+          description: Hent enkelt kvittering fra de siste 7 dagene som har denne behovsmeldingId'en
+        - in: path
+          name: paaVegneAvFiksOrg
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - in: path
+          name: kommunenummer
+          required: true
+          schema:
+            type: string
+            minLength: 4
+            maxLength: 4
+            pattern: ^\d{4}$
+        - in: header
+          name: X-Correlation-ID
+          schema:
+            type: string
+          required: false
+          description: Unik id som kan brukes til å korrelere logger på tvers av systemer
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/pdf:
+              schema:
+                type: string
+                format: binary
+  /nav-hjelpemiddel/api/{paaVegneAvFiksOrg}/kommune/{kommunenummer}/rest/v3/logistikk:
+    get:
+      operationId: getHjelpemiddelLogistikk
+      summary: getHjelpemiddelLogistikk
+      tags:
+        - Logistikk
+      description: Hent ordrelinjer for en gitt kommune
+      security:
+        - BearerAuth: []
+      parameters:
+        - in: path
+          name: paaVegneAvFiksOrg
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - in: path
+          name: kommunenummer
+          required: true
+          schema:
+            type: string
+            minLength: 4
+            maxLength: 4
+            pattern: ^\d{4}$
+        - in: query
+          name: nyereEnnTidsstempel
+          schema:
+            type: integer
+            format: int64
+          required: false
+          description: Hent alle ordrelinjer fra tidsstempelet og til nå. Maks 14 dager tilbake i tid (unix timestamp i sekunder siden epoch)
+          example: '1765552895'
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                    fnrBruker:
+                      type: string
+                    sendtTilAdresse:
+                      type: string
+                    skipningsdato:
+                      type: string
+                      format: local-date
+                    ordrenr:
+                      type: integer
+                    ordrelinje:
+                      type: integer
+                    delordrelinje:
+                      type: integer
+                    artikkelnr:
+                      type: string
+                    hjelpemiddeltype:
+                      type: string
+                    artikkelbeskrivelse:
+                      type: string
+                    skipningsinstrukser:
+                      type: string
+                      nullable: true
+                    produktgruppeNr:
+                      type: string
+                    produktgruppe:
+                      type: string
+                    antall:
+                      type: number
+                      format: double
+                    enhet:
+                      type: string
+                    brukerNummer:
+                      type: string
+                      nullable: true
+                    soknadId:
+                      type: string
+                      format: uuid
+                      nullable: true
+                    serieNummer:
+                      type: array
+                      items:
+                        type: string
+                      nullable: true
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      description: Krever Fiks integrasjons innlogging med maskinporten token med scope ks:fiks
