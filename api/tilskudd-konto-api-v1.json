@@ -1,8 +1,8 @@
 {
-  "openapi": "3.1.1",
+  "openapi": "3.0.3",
   "info": {
-    "title": "KS Fiks: Tilskuddskonto v1",
-    "description": "Service for persisting og lese hendelser (konto-meldinger) i KurrentDB",
+    "title": "KS Fiks: Tilskuddskonto",
+    "description": "Service for Tilskuddsskonto",
     "contact": {
       "name": "Fiks-brukerstøtte",
       "url": "https://ks-no.github.io/",
@@ -22,46 +22,59 @@
   ],
   "security": [
     {
-      "bearerAuth": []
+      "bearerAuth": [
+        "read"
+      ]
     }
   ],
   "tags": [
     {
-      "name": "Melding",
-      "description": "Bruker samme Melding-format som tilskudd-soknad-api-v1"
+      "name": "Hendelse",
+      "description": "Endepunkt for å håndtere konto hendelser fra saksbehandling system "
+    },
+    {
+      "name": "BusinessQuery",
+      "description": "Endepunkter for å hente data fra MongoDB tilpasset visualisering paa UX nett sider"
+    },
+    {
+      "name": "Query",
+      "description": "Endepunkter for å lese Projections fra MongoDB"
     }
   ],
   "paths": {
-    "/tilskudd-konto/api/v1/event": {
+    "/tilskudd-konto/api/v1/hendelse": {
       "post": {
         "tags": [
-          "Melding"
+          "Hendelse"
         ],
-        "operationId": "opprettEvent",
-        "summary": "Registrer en ny hendelse (Melding) i KurrentDB",
+        "operationId": "mottaHendelse",
+        "summary": "Mottar en hendelse og genererer domenehendelser",
+        "description": "Idempotens håndteres automatisk ved at `Hendelse.id` (UUID) brukes som idempotensnøkkel.   Hvis en hendelse med samme `id` mottas flere ganger, returneres HTTP 409 Conflict.\n",
         "requestBody": {
+          "required": true,
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/NyEventRequest"
+                "$ref": "#/components/schemas/Hendelse"
               }
             }
-          },
-          "required": true
+          }
         },
         "responses": {
-          "200": {
-            "description": "Hendelsen er opprettet",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Event"
-                }
-              }
-            }
+          "202": {
+            "description": "Hendelse akseptert"
+          },
+          "400": {
+            "$ref": "#/components/responses/400BadRequest"
           },
           "403": {
             "$ref": "#/components/responses/403Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/404NotFound"
+          },
+          "409": {
+            "$ref": "#/components/responses/409Duplicate"
           },
           "default": {
             "$ref": "#/components/responses/DefaultError"
@@ -69,55 +82,36 @@
         }
       }
     },
-    "/tilskudd-konto/api/v1/event/{soknadregisterId}": {
+    "/tilskudd-konto/api/v1/ordninger/{ordningId}/saldo": {
       "get": {
         "tags": [
-          "Melding"
+          "BusinessQuery"
         ],
-        "operationId": "hentAlleEvents",
-        "summary": "Hent alle hendelser for en gitt soknadregisterId (paged)",
+        "operationId": "hentOrdningSaldo",
+        "summary": "Returnerer business-vennlig saldo for ordning",
         "parameters": [
           {
-            "name": "soknadregisterId",
             "in": "path",
-            "description": "SoknadsregisterId for søknaden",
+            "name": "ordningId",
             "required": true,
             "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          },
-          {
-            "name": "sidenummer",
-            "in": "query",
-            "description": "Side nummer (1-based)",
-            "required": false,
-            "schema": {
-              "type": "integer",
-              "default": 1
-            }
-          },
-          {
-            "name": "hendelserPerSide",
-            "in": "query",
-            "description": "Antall hendelser per side",
-            "required": false,
-            "schema": {
-              "type": "integer",
-              "default": 100
+              "type": "string"
             }
           }
         ],
         "responses": {
           "200": {
-            "description": "OK - Liste med hendelser (paged)",
+            "description": "OK",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/HentAlleEventsResponse"
+                  "$ref": "#/components/schemas/OrdningSaldo"
                 }
               }
             }
+          },
+          "400": {
+            "$ref": "#/components/responses/400BadRequest"
           },
           "403": {
             "$ref": "#/components/responses/403Unauthorized"
@@ -131,22 +125,20 @@
         }
       }
     },
-    "/tilskudd-konto/api/v1/event/{soknadregisterId}/latest": {
+    "/tilskudd-konto/api/v1/soknader/{soknadId}/oversikt": {
       "get": {
         "tags": [
-          "Melding"
+          "BusinessQuery"
         ],
-        "operationId": "hentSisteEvent",
-        "summary": "Hent siste hendelse for en gitt soknadregisterId",
+        "operationId": "hentSoknadOversikt",
+        "summary": "Returnerer business-vennlig søknadsoversikt",
         "parameters": [
           {
-            "name": "soknadregisterId",
             "in": "path",
-            "description": "SoknadsregisterId for søknaden",
+            "name": "soknadId",
             "required": true,
             "schema": {
-              "type": "string",
-              "format": "uuid"
+              "type": "string"
             }
           }
         ],
@@ -156,10 +148,294 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Event"
+                  "$ref": "#/components/schemas/SoknadOversikt"
                 }
               }
             }
+          },
+          "400": {
+            "$ref": "#/components/responses/400BadRequest"
+          },
+          "403": {
+            "$ref": "#/components/responses/403Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/404NotFound"
+          },
+          "default": {
+            "$ref": "#/components/responses/DefaultError"
+          }
+        }
+      }
+    },
+    "/tilskudd-konto/api/v1/utbetalinger/{ordningId}/perioder": {
+      "get": {
+        "tags": [
+          "BusinessQuery"
+        ],
+        "operationId": "hentUtbetalingerPeriodeBusiness",
+        "summary": "Returnerer periodiserte utbetalinger for en tilskuddsordning (business-format)",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "ordningId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Liste av periodiserte utbetalinger i business-format",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/UtbetalingPeriodeBusiness"
+                  },
+                  "maxItems": 1000
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/400BadRequest"
+          },
+          "403": {
+            "$ref": "#/components/responses/403Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/404NotFound"
+          },
+          "default": {
+            "$ref": "#/components/responses/DefaultError"
+          }
+        }
+      }
+    },
+    "/tilskudd-konto/api/v1/utbetalinger/{ordningId}/perioder/filter": {
+      "get": {
+        "tags": [
+          "BusinessQuery"
+        ],
+        "operationId": "hentUtbetalingerPeriodeBusinessMedFilter",
+        "summary": "Returnerer periodiserte utbetalinger for en tilskuddsordning, filtrert på dato og paginert (business-format)",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "ordningId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Domenenøkkel for ordningen"
+          },
+          {
+            "in": "query",
+            "name": "from",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "date"
+            },
+            "description": "Startdato (inkluderende) for utbetalingsdato"
+          },
+          {
+            "in": "query",
+            "name": "to",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "date"
+            },
+            "description": "Sluttdato (inkluderende) for utbetalingsdato"
+          },
+          {
+            "in": "query",
+            "name": "page",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0
+            },
+            "description": "Sideindeks (0-basert)"
+          },
+          {
+            "in": "query",
+            "name": "size",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 20
+            },
+            "description": "Antall elementer per side"
+          },
+          {
+            "in": "query",
+            "name": "sort",
+            "required": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "maxItems": 10
+            },
+            "style": "form",
+            "explode": true,
+            "description": "Sorteringsfelt (f.eks. `utbetaltDato,desc`)"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Paginert liste av utbetalinger i business-format",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PageUtbetalingPeriodeBusiness"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/400BadRequest"
+          },
+          "403": {
+            "$ref": "#/components/responses/403Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/404NotFound"
+          },
+          "default": {
+            "$ref": "#/components/responses/DefaultError"
+          }
+        }
+      }
+    },
+    "/tilskudd-konto/api/v1/query/ordninger/{ordningId}/oversikt": {
+      "get": {
+        "tags": [
+          "Query"
+        ],
+        "operationId": "hentOrdningOversiktDocument",
+        "summary": "Returnerer teknisk OrdningOversiktDocument (MongoDB read model)",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "ordningId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrdningOversiktDocument"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/400BadRequest"
+          },
+          "403": {
+            "$ref": "#/components/responses/403Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/404NotFound"
+          },
+          "default": {
+            "$ref": "#/components/responses/DefaultError"
+          }
+        }
+      }
+    },
+    "/tilskudd-konto/api/v1/query/soknader/{soknadId}/oversikt": {
+      "get": {
+        "tags": [
+          "Query"
+        ],
+        "operationId": "hentSoknadOversiktDocument",
+        "summary": "Returnerer teknisk SoknadOversiktDocument (MongoDB read model)",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "soknadId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SoknadOversiktDocument"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/400BadRequest"
+          },
+          "403": {
+            "$ref": "#/components/responses/403Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/404NotFound"
+          },
+          "default": {
+            "$ref": "#/components/responses/DefaultError"
+          }
+        }
+      }
+    },
+    "/tilskudd-konto/api/v1/query/utbetalinger/{ordningId}": {
+      "get": {
+        "tags": [
+          "Query"
+        ],
+        "operationId": "hentUtbetalingPeriodeDocument",
+        "summary": "Returnerer periodiserte utbetalinger (Mongo read model)",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "ordningId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Liste av utbetalinger",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/UtbetalingPeriodeDocument"
+                  },
+                  "maxItems": 1000
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/400BadRequest"
           },
           "403": {
             "$ref": "#/components/responses/403Unauthorized"
@@ -179,118 +455,525 @@
       "bearerAuth": {
         "type": "http",
         "scheme": "bearer",
-        "bearerFormat": "JWT"
+        "bearerFormat": "JWT",
+        "description": "Authentication using Bearer JWT token"
       }
     },
     "schemas": {
-      "NyEventRequest": {
+      "ErrorMessage": {
         "type": "object",
-        "required": [
-          "soknadId",
-          "tittel",
-          "meldingstype",
-          "avsender",
-          "innhold"
-        ],
-        "allOf": [
-          {
-            "$ref": "#/components/schemas/MeldingBase"
+        "properties": {
+          "timestamp": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "status": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "error": {
+            "type": "string"
+          },
+          "errorId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "path": {
+            "type": "string"
+          },
+          "originalPath": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          },
+          "errorCode": {
+            "type": "string"
+          },
+          "errorJson": {
+            "type": "string"
           }
-        ]
+        }
       },
-      "Event": {
+      "Hendelse": {
         "type": "object",
-        "readOnly": true,
         "required": [
           "id",
-          "soknadId",
-          "tittel",
-          "meldingstype",
-          "avsender",
-          "innhold",
-          "mottatt"
+          "type",
+          "tidsstempel",
+          "periode",
+          "belop",
+          "hovedbok",
+          "enheter"
         ],
-        "allOf": [
-          {
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "BANK_MOTTAK",
+              "FORDELING_TIL_UNDERKONTO",
+              "FORDELING_TIL_ORDNING",
+              "INNVILGET_TIL_SOKNAD",
+              "UTBETALING",
+              "KORRIGERING"
+            ]
+          },
+          "tidsstempel": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "korrelasjonsId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "kildesystem": {
+            "type": "string"
+          },
+          "periode": {
+            "type": "string",
+            "pattern": "^\\d{4}-(0[1-9]|1[0-2])$",
+            "example": "2023-01"
+          },
+          "valuta": {
+            "type": "string",
+            "default": "NOK"
+          },
+          "belop": {
+            "type": "number",
+            "format": "double"
+          },
+          "hovedbok": {
             "type": "object",
             "properties": {
-              "id": {
-                "type": "string",
-                "format": "uuid"
+              "linjer": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/HovedbokLinje"
+                },
+                "maxItems": 500
               }
             }
           },
-          {
-            "$ref": "#/components/schemas/MeldingBase"
+          "enheter": {
+            "$ref": "#/components/schemas/Enheter"
           },
-          {
-            "type": "object",
-            "properties": {
-              "mottatt": {
-                "type": "string",
-                "format": "date-time",
-                "example": "2026-02-02T12:00:00Z"
-              }
-            }
+          "detaljer": {
+            "$ref": "#/components/schemas/Detaljer"
+          },
+          "signatur": {
+            "type": "string"
           }
-        ]
+        }
       },
-      "MeldingBase": {
+      "HovedbokLinje": {
+        "type": "object",
+        "properties": {
+          "kontonummer": {
+            "type": "string"
+          },
+          "side": {
+            "type": "string",
+            "description": "D eller K"
+          },
+          "belop": {
+            "type": "number",
+            "format": "double"
+          }
+        }
+      },
+      "Enheter": {
+        "type": "object",
+        "properties": {
+          "hovedkontoId": {
+            "type": "string"
+          },
+          "underkontoId": {
+            "type": "string"
+          },
+          "ordningId": {
+            "type": "string"
+          },
+          "soknadId": {
+            "type": "string"
+          },
+          "sokerId": {
+            "type": "string"
+          }
+        }
+      },
+      "Detaljer": {
+        "type": "object",
+        "properties": {
+          "transje": {
+            "type": "integer"
+          },
+          "fordelingsdetaljer": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Fordelingspost"
+            },
+            "maxItems": 500
+          },
+          "utbetaling": {
+            "$ref": "#/components/schemas/UtbetalingDetaljer"
+          },
+          "korreksjonAv": {
+            "type": "string"
+          },
+          "arsak": {
+            "type": "string"
+          }
+        }
+      },
+      "Fordelingspost": {
+        "type": "object",
+        "properties": {
+          "ordningId": {
+            "type": "string"
+          },
+          "belop": {
+            "type": "number",
+            "format": "double"
+          }
+        }
+      },
+      "UtbetalingDetaljer": {
+        "type": "object",
+        "properties": {
+          "belop": {
+            "type": "number",
+            "format": "double"
+          },
+          "planlagtDato": {
+            "type": "string",
+            "format": "date"
+          },
+          "periodeFra": {
+            "type": "string",
+            "format": "date"
+          },
+          "periodeTil": {
+            "type": "string",
+            "format": "date"
+          }
+        }
+      },
+      "OrdningSaldo": {
+        "type": "object",
+        "properties": {
+          "ordningId": {
+            "type": "string"
+          },
+          "totalTildelt": {
+            "type": "number",
+            "format": "double"
+          },
+          "innvilgetSum": {
+            "type": "number",
+            "format": "double"
+          },
+          "utbetaltSum": {
+            "type": "number",
+            "format": "double"
+          },
+          "tilgjengelig": {
+            "type": "number",
+            "format": "double"
+          },
+          "valuta": {
+            "type": "string",
+            "default": "NOK"
+          }
+        }
+      },
+      "SoknadOversikt": {
         "type": "object",
         "properties": {
           "soknadId": {
+            "type": "string"
+          },
+          "ordningId": {
+            "type": "string"
+          },
+          "sokerId": {
+            "type": "string"
+          },
+          "innvilgetSum": {
+            "type": "number",
+            "format": "double"
+          },
+          "utbetaltSum": {
+            "type": "number",
+            "format": "double"
+          },
+          "gjenstaaende": {
+            "type": "number",
+            "format": "double"
+          },
+          "valuta": {
             "type": "string",
-            "format": "uuid",
-            "description": "Id for søknad som meldingen gjelder"
+            "default": "NOK"
           },
-          "tittel": {
-            "type": "string"
-          },
-          "meldingstype": {
-            "$ref": "#/components/schemas/Meldingstype"
-          },
-          "avsender": {
-            "type": "string"
-          },
-          "innhold": {
-            "type": "string"
+          "hendelser": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string"
+                },
+                "tid": {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                "belop": {
+                  "type": "number",
+                  "format": "double"
+                }
+              }
+            },
+            "maxItems": 1000
           }
         }
       },
-      "Meldingstype": {
-        "type": "string",
-        "enum": [
-          "HENDELSE",
-          "OPPGAVE",
-          "DIALOG"
-        ]
-      },
-      "HentAlleEventsResponse": {
+      "UtbetalingPeriodeBusiness": {
         "type": "object",
         "properties": {
-          "events": {
+          "ordningId": {
+            "type": "string"
+          },
+          "soknadId": {
+            "type": "string"
+          },
+          "belop": {
+            "type": "number",
+            "format": "double"
+          },
+          "valuta": {
+            "type": "string",
+            "default": "NOK"
+          },
+          "utbetaltDato": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "periodeFra": {
+            "type": "string",
+            "format": "date"
+          },
+          "periodeTil": {
+            "type": "string",
+            "format": "date"
+          }
+        }
+      },
+      "PageUtbetalingPeriodeBusiness": {
+        "type": "object",
+        "description": "Spring Page-respons for UtbetalingPeriodeBusiness",
+        "properties": {
+          "content": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/Event"
+              "$ref": "#/components/schemas/UtbetalingPeriodeBusiness"
             },
             "maxItems": 1000
           },
-          "sidenummer": {
-            "type": "integer"
-          },
-          "hendelserPerSide": {
-            "type": "integer"
-          },
-          "totaltAntallSider": {
-            "type": "integer"
-          },
-          "totaltAntallHendelser": {
+          "totaleElementer": {
             "type": "integer",
             "format": "int64"
+          },
+          "totaleSider": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "size": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "number": {
+            "type": "integer",
+            "format": "int64",
+            "description": "Gjeldende sideindeks (0-basert)"
+          },
+          "sort": {
+            "$ref": "#/components/schemas/Sort"
+          },
+          "first": {
+            "type": "boolean"
+          },
+          "last": {
+            "type": "boolean"
+          },
+          "numberOfElements": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "empty": {
+            "type": "boolean"
           }
         }
       },
-      "ErrorMessage": {
+      "Sort": {
+        "type": "object",
+        "properties": {
+          "sorted": {
+            "type": "boolean"
+          },
+          "unsorted": {
+            "type": "boolean"
+          },
+          "empty": {
+            "type": "boolean"
+          }
+        }
+      },
+      "OrdningOversiktDocument": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "ordningId": {
+            "type": "string"
+          },
+          "totalTildelt": {
+            "type": "number",
+            "format": "double"
+          },
+          "innvilgetSum": {
+            "type": "number",
+            "format": "double"
+          },
+          "utbetaltSum": {
+            "type": "number",
+            "format": "double"
+          },
+          "tilgjengelig": {
+            "type": "number",
+            "format": "double"
+          },
+          "valuta": {
+            "type": "string",
+            "default": "NOK"
+          },
+          "sistePeriode": {
+            "type": "string",
+            "pattern": "^\\d{4}-(0[1-9]|1[0-2])$",
+            "example": "2023-01"
+          }
+        }
+      },
+      "SoknadOversiktDocument": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "ordningId": {
+            "type": "string"
+          },
+          "soknadId": {
+            "type": "string"
+          },
+          "sokerId": {
+            "type": "string"
+          },
+          "innvilgetSum": {
+            "type": "number",
+            "format": "double"
+          },
+          "utbetaltSum": {
+            "type": "number",
+            "format": "double"
+          },
+          "gjenstaaende": {
+            "type": "number",
+            "format": "double"
+          },
+          "valuta": {
+            "type": "string",
+            "default": "NOK"
+          },
+          "hendelser": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SoknadHistorikkEntry"
+            },
+            "maxItems": 1000
+          },
+          "sistePeriode": {
+            "type": "string",
+            "pattern": "^\\d{4}-(0[1-9]|1[0-2])$",
+            "example": "2023-01"
+          }
+        }
+      },
+      "SoknadHistorikkEntry": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "tid": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "belop": {
+            "type": "number",
+            "format": "double"
+          },
+          "valuta": {
+            "type": "string",
+            "default": "NOK"
+          }
+        }
+      },
+      "UtbetalingPeriodeDocument": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "ordningId": {
+            "type": "string"
+          },
+          "soknadId": {
+            "type": "string"
+          },
+          "belop": {
+            "type": "number",
+            "format": "double"
+          },
+          "valuta": {
+            "type": "string",
+            "default": "NOK"
+          },
+          "periodeFra": {
+            "type": "string",
+            "format": "date"
+          },
+          "periodeTil": {
+            "type": "string",
+            "format": "date"
+          },
+          "utbetaltDato": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "opprettetTid": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "schemas-ErrorMessage": {
         "type": "object",
         "description": "Feilmelding fra Fiks-plattformen",
         "externalDocs": {
@@ -342,7 +1025,7 @@
         "content": {
           "application/json": {
             "schema": {
-              "$ref": "#/components/schemas/ErrorMessage"
+              "$ref": "#/components/schemas/schemas-ErrorMessage"
             }
           }
         }
@@ -352,7 +1035,7 @@
         "content": {
           "application/json": {
             "schema": {
-              "$ref": "#/components/schemas/ErrorMessage"
+              "$ref": "#/components/schemas/schemas-ErrorMessage"
             }
           }
         }
@@ -362,7 +1045,17 @@
         "content": {
           "application/json": {
             "schema": {
-              "$ref": "#/components/schemas/ErrorMessage"
+              "$ref": "#/components/schemas/schemas-ErrorMessage"
+            }
+          }
+        }
+      },
+      "409Duplicate": {
+        "description": "Allerede mottatt (Idempotens via `id`)",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/schemas-ErrorMessage"
             }
           }
         }
@@ -372,7 +1065,7 @@
         "content": {
           "application/json": {
             "schema": {
-              "$ref": "#/components/schemas/ErrorMessage"
+              "$ref": "#/components/schemas/schemas-ErrorMessage"
             }
           }
         }
