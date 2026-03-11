@@ -111,7 +111,7 @@
     "/konsesjon/api/v1/eiendom": {
       "get": {
         "tags": [
-          "soek"
+          "Soek"
         ],
         "description": "Søk eiendom",
         "operationId": "soekEiendom",
@@ -196,7 +196,7 @@
     "/konsesjon/api/v1/eiendom/{knr}/{gnr}/{bnr}/{fnr}/{snr}/": {
       "get": {
         "tags": [
-          "soek"
+          "Soek"
         ],
         "description": "Hent eiendom",
         "operationId": "hentEiendom",
@@ -309,7 +309,7 @@
     "/konsesjon/api/v1/erverver/soek": {
       "post": {
         "tags": [
-          "soek"
+          "Soek"
         ],
         "description": "Søk på erverver",
         "operationId": "soekErverver",
@@ -1044,6 +1044,333 @@
           }
         }
       }
+    },
+    "/konsesjon/api/v1/soeknad/start": {
+      "post": {
+        "tags": [
+          "Soeknad"
+        ],
+        "description": "Starter prosessen for å fylle ut og sende inn en konsesjonssøknad",
+        "operationId": "startSoeknad",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/StartSoeknad"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Kallet har startet en søknadsprosess og returnerer en referanse til den opprettede søknaden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/KonsesjonStatus"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Feil input",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Ikke tilgang – bearer token ikke sent",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Ikke tilgang",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Ingen treff - Fant ingen konsesjonsavklaring som matchet søknadsdataene i forespørselen",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "410": {
+            "description": "Finnes ikke lenger",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/konsesjon/api/v1/soeknad/{soeknadsId}/skjemadata": {
+      "get": {
+        "tags": [
+          "Soeknad"
+        ],
+        "description": "Henter data fra LDIR for en påbegynt søknad",
+        "operationId": "getSkjemadata",
+        "parameters": [
+          {
+            "name": "soeknadsId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Data hentet",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SoeknadInnhentetData"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Ikke tilgang – bearer token ikke sent",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Ikke tilgang",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Ingen treff - Fant ingen konsesjonsavklaring som matchet søknadsdataene i forespørselen",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Konflikt – Når data innhenting ikke er ferdig og status er fremdeles INNHENTER_DATA",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "410": {
+            "description": "Finnes ikke lenger",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/konsesjon/api/v1/soeknad/{soeknadsId}/skjema": {
+      "post": {
+        "tags": [
+          "Soeknad"
+        ],
+        "description": "Sender inn endelig søknad til LDIR",
+        "operationId": "sendSoeknad",
+        "parameters": [
+          {
+            "name": "soeknadsId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SoeknadSkjemaData"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Søknad sendt",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InnsendtSoeknadResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Ikke tilgang – bearer token ikke sent",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Ikke tilgang",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Ingen treff - Fant ingen konsesjonsavklaring som matchet søknadsdataene i forespørselen",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Konflikt – Når data innhenting ikke er ferdig og status er fremdeles INNHENTER_DATA",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "410": {
+            "description": "Finnes ikke lenger",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/konsesjon/api/v1/soeknad/{soeknadsId}/status": {
+      "get": {
+        "tags": [
+          "Soeknad"
+        ],
+        "description": "Henter status for en påbegynt søknad",
+        "operationId": "getSoeknadStatus",
+        "parameters": [
+          {
+            "name": "soeknadsId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Status hentet",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StatusPaaPaabegyntSkjema"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Ikke tilgang – bearer token ikke sent",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Ikke tilgang",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Ingen treff - Fant ingen konsesjonsavklaring som matchet søknadsdataene i forespørselen",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "410": {
+            "description": "Finnes ikke lenger",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -1309,7 +1636,7 @@
         "type": "object",
         "properties": {
           "eiendomsId": {
-            "$ref": "#/components/schemas/Eiendom"
+            "$ref": "#/components/schemas/EiendomsId"
           },
           "eiendomsData": {
             "$ref": "#/components/schemas/EiendomsData"
@@ -1374,6 +1701,45 @@
           "fodselsnummer"
         ]
       },
+      "EiendomsId": {
+        "type": "object",
+        "required": [
+          "kommuneNummer",
+          "gaardsNummer",
+          "bruksNummer"
+        ],
+        "properties": {
+          "kommuneNummer": {
+            "type": "string",
+            "minLength": 4,
+            "maxLength": 4
+          },
+          "gaardsNummer": {
+            "type": "integer",
+            "format": "int32",
+            "minimum": 1,
+            "maximum": 999999
+          },
+          "bruksNummer": {
+            "type": "integer",
+            "format": "int32",
+            "minimum": 1,
+            "maximum": 999999
+          },
+          "festeNummer": {
+            "type": "integer",
+            "format": "int32",
+            "minimum": 0,
+            "maximum": 999999
+          },
+          "seksjonsNummer": {
+            "type": "integer",
+            "format": "int32",
+            "minimum": 0,
+            "maximum": 999999
+          }
+        }
+      },
       "Eierandel": {
         "type": "object",
         "properties": {
@@ -1386,6 +1752,334 @@
             "type": "integer",
             "format": "int32",
             "minimum": 1
+          }
+        }
+      },
+      "StartSoeknad": {
+        "type": "object",
+        "required": [
+          "soekerInformasjon",
+          "overdragerInformasjon",
+          "eiendomsInformasjon"
+        ],
+        "properties": {
+          "soekerInformasjon": {
+            "$ref": "#/components/schemas/ErververId"
+          },
+          "overdragerInformasjon": {
+            "$ref": "#/components/schemas/ErververId"
+          },
+          "eiendomsInformasjon": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/EiendomsId"
+            },
+            "minItems": 1
+          }
+        }
+      },
+      "SoeknadInnhentetData": {
+        "type": "object",
+        "properties": {
+          "soekerFulltNavn": {
+            "type": "string"
+          },
+          "soekerAdresse": {
+            "type": "string"
+          },
+          "soekerFoedselsnummer": {
+            "type": "string"
+          },
+          "soekerOrgnummer": {
+            "type": "string"
+          },
+          "soekerEpost": {
+            "type": "string"
+          },
+          "overdragerNavn": {
+            "type": "string"
+          },
+          "overdragerAdresse": {
+            "type": "string"
+          },
+          "overdragerFoedselsnummer": {
+            "type": "string"
+          },
+          "overdragerOrgnummer": {
+            "type": "string"
+          },
+          "innhentedeEiendommer": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/InnhentetEiendom"
+            }
+          }
+        }
+      },
+      "InnhentetEiendom": {
+        "type": "object",
+        "properties": {
+          "bygningsType": {
+            "type": "string"
+          },
+          "grunnflateKvadratmeter": {
+            "type": "number",
+            "format": "double"
+          }
+        }
+      },
+      "StatusPaaPaabegyntSkjema": {
+        "type": "object",
+        "properties": {
+          "konsesjonsavklaringId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "paabegyntSkjemaStatus": {
+            "type": "string"
+          }
+        }
+      },
+      "SoeknadSkjemaData": {
+        "type": "object",
+        "description": "Innsendt søknad data",
+        "properties": {
+          "soekerFulltNavn": {
+            "type": "string"
+          },
+          "soekerAdresse": {
+            "type": "string"
+          },
+          "soekerFoedselsnummer": {
+            "type": "string"
+          },
+          "soekerOrgnummer": {
+            "type": "string"
+          },
+          "soekerEpost": {
+            "type": "string"
+          },
+          "overdragerNavn": {
+            "type": "string"
+          },
+          "overdragerAdresse": {
+            "type": "string"
+          },
+          "overdragerFoedselsnummer": {
+            "type": "string"
+          },
+          "overdragerOrgnummer": {
+            "type": "string"
+          },
+          "betegnelseEiendomEllerRettighet": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "kjoepeEllerLeieSum": {
+            "type": "number",
+            "format": "double"
+          },
+          "kaarFemAarligVerdi": {
+            "type": "string"
+          },
+          "kjoepeSumLoesoere": {
+            "type": "number",
+            "format": "double"
+          },
+          "kommune": {
+            "type": "string"
+          },
+          "fylke": {
+            "type": "string"
+          },
+          "arealKvadratmeter": {
+            "type": "number",
+            "format": "double"
+          },
+          "arealFordeling": {
+            "type": "string"
+          },
+          "skogbruksPlan": {
+            "$ref": "#/components/schemas/SkogbruksPlan"
+          },
+          "eksisterendeBebyggelse": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/EksisterendeBebyggelse"
+            }
+          },
+          "annenBebyggelse": {
+            "type": "string"
+          },
+          "rettigheter": {
+            "type": "string"
+          },
+          "eierEllerLeierIKommune": {
+            "$ref": "#/components/schemas/JaNeiForklaring"
+          },
+          "eierEllerLeierAndreKommuner": {
+            "$ref": "#/components/schemas/JaNeiForklaring"
+          },
+          "eiendomsBrukBeskrivelse": {
+            "type": "string"
+          },
+          "erverversPlanForBruk": {
+            "type": "string"
+          },
+          "jordSkogsbrukseiendommer": {
+            "$ref": "#/components/schemas/JordSkogsbrukseiendommer"
+          }
+        }
+      },
+      "SkogbruksPlan": {
+        "type": "object",
+        "properties": {
+          "hogstklasse1": {
+            "$ref": "#/components/schemas/Hogstklasse"
+          },
+          "hogstklasse2": {
+            "$ref": "#/components/schemas/Hogstklasse"
+          },
+          "hogstklasse3": {
+            "$ref": "#/components/schemas/Hogstklasse"
+          },
+          "hogstklasse4": {
+            "$ref": "#/components/schemas/Hogstklasse"
+          },
+          "hogstklasse5": {
+            "$ref": "#/components/schemas/Hogstklasse"
+          }
+        }
+      },
+      "Hogstklasse": {
+        "description": "Hogstklasse, enten presis eller gruppevis",
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/HogstklassePresis"
+          },
+          {
+            "$ref": "#/components/schemas/HogstklasseGruppevis"
+          }
+        ]
+      },
+      "HogstklasseGruppevis": {
+        "type": "object",
+        "description": "Gruppevis angivelse av hogstklasse",
+        "properties": {
+          "nivaa": {
+            "type": "string",
+            "enum": [
+              "LAV",
+              "MIDDELS",
+              "HOEY"
+            ]
+          }
+        }
+      },
+      "HogstklassePresis": {
+        "type": "object",
+        "description": "Presis angivelse av hogstklasse",
+        "properties": {
+          "gran": {
+            "type": "integer",
+            "format": "int32",
+            "maximum": 26,
+            "minimum": 6
+          },
+          "furu": {
+            "type": "integer",
+            "format": "int32",
+            "maximum": 26,
+            "minimum": 6
+          },
+          "bjoerk": {
+            "type": "integer",
+            "format": "int32",
+            "maximum": 26,
+            "minimum": 6
+          }
+        }
+      },
+      "EksisterendeBebyggelse": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "grunnflateKvadratmeter": {
+            "type": "number",
+            "format": "double"
+          },
+          "byggeaar": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "antallEtasjer": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "tilstand": {
+            "type": "string",
+            "enum": [
+              "GOD",
+              "MIDDELS",
+              "DAARLIG"
+            ]
+          }
+        }
+      },
+      "JaNeiForklaring": {
+        "type": "object",
+        "properties": {
+          "valg": {
+            "type": "boolean"
+          },
+          "forklaring": {
+            "type": "string"
+          }
+        }
+      },
+      "JordSkogsbrukseiendommer": {
+        "type": "object",
+        "properties": {
+          "gaardsnummer": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "bruksnummer": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "soekernsKvalifikasjoner": {
+            "type": "string"
+          },
+          "forpliktelseTilBosetning": {
+            "type": "string",
+            "enum": [
+              "JA",
+              "NEI",
+              "IKKE_BOSETTE"
+            ]
+          },
+          "annenFastEiendomIKommunen": {
+            "$ref": "#/components/schemas/JaNeiForklaring"
+          },
+          "flereSoekere": {
+            "type": "string"
+          }
+        }
+      },
+      "InnsendtSoeknadResponse": {
+        "type": "object",
+        "properties": {
+          "konsesjonsavklaringId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "innsendtSoeknadResponseType": {
+            "type": "string"
           }
         }
       }
