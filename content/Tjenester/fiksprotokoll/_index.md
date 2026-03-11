@@ -47,7 +47,8 @@ Det pågår arbeid med kartlegging av adopsjonsgrad og implementeringsprogresjon
 
 Det er noen steg som må gjøres før det er mulig å bruke Fiks Protokoll. Tjenesten må tas i bruk, det må opprettes minst et system, og systemet må ha minst en konto og den kontoen må få tilgang til et system som har en konto den kan sende meldinger til.
 
-Noe av dette må gjøres gjennom grensesnittet i Fiks Konfigurasjon ([forvaltning.fiks.ks.no](https://forvaltning.fiks.ks.no) i produksjon og [forvaltning.fiks.test.ks.no](https://forvaltning.fiks.test.ks.no) i testmiljøet), mens noe kan gjøres via API. I denne brukerveiledningen viser vi steg for steg hvordan dette gjøres gjennom webgrensesnittet.
+Noe av dette må gjøres gjennom grensesnittet i Fiks Konfigurasjon ([forvaltning.fiks.ks.no](https://forvaltning.fiks.ks.no) i produksjon og [forvaltning.fiks.test.ks.no](https://forvaltning.fiks.test.ks.no) i testmiljøet), mens noe kan med foredel gjøres via API. 
+I denne brukerveiledningen viser vi steg for steg hvordan dette gjøres gjennom webgrensesnittet.
 
 Vi har også laget en huskeliste for hva man må ha klart og hvilke personer med gitt rettighet i Fiks forvaltning som må være med på å sette dette opp.
 
@@ -62,14 +63,14 @@ I tillegg er det to veiledninger for hvordan du kan generere nytt passord til sy
 * [Ny offentlig nøkkel]({{< ref "veiledning_7_laste_opp_ny_offentlig_nokkel.md" >}})
 
 #### API
-Man kan opprette, vedlikeholde og få informasjon om kontoer via API etter et system er opprettet. 
+Man kan opprette, vedlikeholde og få informasjon om kontoer via API etter et system er opprettet, hvis systemet blir konfigurert med API-tilgang. 
 Når man har opprettet et system får man en integrasjon som gir tilgang til API'ene. 
 Les mer om hvordan man setter opp en integrasjon via API her under [Felles -> Integrasjoner](https://developers.fiks.ks.no/felles/integrasjoner/).
 Det er spesielt 2 API man kan bruke til dette, ett for Fiks Protokoll og ett for Fiks IO Katalog.
 
 Via [Fiks Protokoll API (OpenAPI Specification)](https://editor-next.swagger.io/?url=https://developers.fiks.ks.no/api/fiks-protokoll-konfigurasjon-api-v1.json) kan man blant annet:
-- Opprette konto på system
-- Vedlikeholde tilganger om å sende meldinger mellom systemer
+- Opprette konto korrekt på system på vegne av systemeier. Med korrekt protokoll, part, nøkler og kontaktpunkter.
+- Vedlikeholde tilganger som gjelder det å sende meldinger mellom systemer
 - Hente informasjon om protokoll og parter for konto
 - Oppdatere konto med nøkler, parter osv.
 
