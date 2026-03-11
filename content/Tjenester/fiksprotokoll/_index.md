@@ -81,6 +81,10 @@ Via [Fiks IO Katalog API (OpenAPI Specification)](https://editor-next.swagger.io
 - Søke etter konto via lookup 
 - Hente konto informasjon, som f.eks. status med antall konsumenter på køen
 
+**Teste API**
+
+Man kan teste API'ene i Swagger editor ved å bruke den integrasjonsid og tilhørende passord man har fått ved opprettelse av system, samt et gyldig Maskinporten token.
+Maskinporten token kan enkelt fås tak i ved å bruke eksempel applikasjonen som følger med Fiks IO klient for .NET og Java.
 
 ### Protokoller under Fiks protokoll
 * [Fiks Arkiv]({{< ref "protokoll-arkiv.md" >}})
