@@ -47,7 +47,7 @@ Det pågår arbeid med kartlegging av adopsjonsgrad og implementeringsprogresjon
 
 Det er noen steg som må gjøres før det er mulig å bruke Fiks Protokoll. Tjenesten må tas i bruk, det må opprettes minst et system, og systemet må ha minst en konto og den kontoen må få tilgang til et system som har en konto den kan sende meldinger til.
 
-Noe av dette må gjøres gjennom grensesnittet i Fiks Konfigurasjon ([forvaltning.fiks.ks.no](https://forvaltning.fiks.ks.no) i produksjon og [forvaltning.fiks.test.ks.no](https://forvaltning.fiks.test.ks.no) i testmiljøet), mens noe kan med foredel gjøres via API. 
+Noe av dette må gjøres gjennom grensesnittet i Fiks Konfigurasjon ([forvaltning.fiks.ks.no](https://forvaltning.fiks.ks.no) i produksjon og [forvaltning.fiks.test.ks.no](https://forvaltning.fiks.test.ks.no) i testmiljøet), mens noe kan med fordel gjøres via API. 
 I denne brukerveiledningen viser vi steg for steg hvordan dette gjøres gjennom webgrensesnittet.
 
 Vi har også laget en huskeliste for hva man må ha klart og hvilke personer med gitt rettighet i Fiks forvaltning som må være med på å sette dette opp.
