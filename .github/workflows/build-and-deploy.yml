@@ -1,0 +1,75 @@
+name: Build and Deploy
+
+on:
+  push:
+    branches:
+      - source
+  pull_request:
+    branches:
+      - source
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Set up Github app
+        id: setup-github-app
+        uses: ks-no/github-actions-public/setup-github-app@main
+        with:
+            ks_github_app_id: ${{ vars.KS_RUNNER_APP_ID }}
+            ks_github_app_private_key: ${{ secrets.KS_RUNNER_PRIVATE_KEY }}
+
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          submodules: true
+          fetch-depth: 0
+          token: ${{ steps.setup-github-app.outputs.app_token }}
+
+      - name: Setup Hugo
+        uses: peaceiris/actions-hugo@v3
+        with:
+          hugo-version: 'latest'
+
+      - name: Check Hugo version
+        run: hugo version
+
+      - name: Install jq
+        run: sudo apt-get install -y jq
+
+      - name: Generate CSV from Open API specs
+        if: github.ref == 'refs/heads/source' && github.event_name == 'push'
+        run: ./generate-specs-csv.sh
+
+      - name: Commit generated CSV
+        if: github.ref == 'refs/heads/source' && github.event_name == 'push'
+        run: |
+          git add static/api/specs.csv
+          git commit -m "Update specs.csv after generation" || echo "ingen endringer"
+          git push origin source
+
+      - name: Build
+        run: hugo --cleanDestinationDir
+
+      - name: Deploy to master
+        if: github.ref == 'refs/heads/source' && github.event_name == 'push'
+        env:
+          GITHUB_TOKEN: ${{ steps.setup-github-app.outputs.app_token }}
+        run: |
+          cd public
+          git init
+          git remote add origin https://x-access-token:${{ steps.setup-github-app.outputs.app_token }}@github.com/${{ github.repository }}.git
+          git fetch origin master
+          git checkout master
+          git pull origin master
+          rm -rf *
+          cd ..
+          hugo --cleanDestinationDir
+          cd public
+          git add -A
+          git commit -m "rebuilding site $(date)" || echo "No changes to deploy"
+          git push origin master
