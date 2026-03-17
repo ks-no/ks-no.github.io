@@ -19,9 +19,38 @@
   } ],
   "tags" : [ {
     "name" : "barnevern/konfigurasjon",
-    "description" : "Api for konfigurasjon av Min kommune - Barnevern"
+    "description" : "API for konfigurasjon via integrasjon"
   } ],
   "paths" : {
+    "/barnevern/konfigurasjon/api/v1/avdeling/barnevernkontor" : {
+      "get" : {
+        "tags" : [ "BarnevernAvdeling" ],
+        "summary" : "Henter barnevernkontor for kommune som støtter bydeler",
+        "operationId" : "hentBarnevernKontorMedIntegrasjon",
+        "responses" : {
+          "200" : {
+            "description" : "BarnevernKontor",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Bydelskontor"
+                }
+              }
+            }
+          },
+          "default" : {
+            "description" : "Feilmelding",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/barnevern/konfigurasjon/api/v1/{fiksOrgId}/bydelskontor/{kontorId}" : {
       "put" : {
         "tags" : [ "BarnevernKonfigurasjon" ],
@@ -1772,6 +1801,162 @@
   },
   "components" : {
     "schemas" : {
+      "AdministratorModel" : {
+        "required" : [ "fdato", "id", "navn" ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string",
+            "description" : "Peker på konfigurasjon-id til brukeren.",
+            "format" : "uuid"
+          },
+          "fdato" : {
+            "type" : "string",
+            "description" : "Fødselsdato til administrator. Brukes for å anonymisere fødselsnummer."
+          },
+          "navn" : {
+            "type" : "string",
+            "description" : "Navn til administrator."
+          }
+        }
+      },
+      "Bydelskontor" : {
+        "required" : [ "kontor" ],
+        "type" : "object",
+        "properties" : {
+          "kontor" : {
+            "type" : "array",
+            "description" : "Liste over avdelinger i kommunen",
+            "items" : {
+              "$ref" : "#/components/schemas/KontorBydelModel"
+            }
+          }
+        },
+        "description" : "Brukes som response på kall for å hente barnevernkontor til kommuner som støtter bydeler etter at oppsett er utført."
+      },
+      "KontaktpersonModel" : {
+        "required" : [ "admin", "epost", "kontaktpersonId", "navn" ],
+        "type" : "object",
+        "properties" : {
+          "kontaktpersonId" : {
+            "type" : "string",
+            "description" : "Id til kontaktperson.",
+            "format" : "uuid"
+          },
+          "personId" : {
+            "type" : "string",
+            "description" : "PersonId til kontaktperson. Peker på konfigurasjon-id til brukeren.",
+            "format" : "uuid"
+          },
+          "navn" : {
+            "type" : "string",
+            "description" : "Navn til kontaktperson. Trenger ikke peke på en person."
+          },
+          "epost" : {
+            "type" : "string",
+            "description" : "Epost til kontaktperson."
+          },
+          "admin" : {
+            "type" : "boolean",
+            "description" : "Angir om person også er administrator."
+          }
+        }
+      },
+      "KontorBydelModel" : {
+        "required" : [ "admin", "administratorer", "adresselinje1", "aktiv", "avdelingId", "kontaktpersoner", "navn", "orgnr", "postnummer", "poststed" ],
+        "type" : "object",
+        "properties" : {
+          "avdelingId" : {
+            "type" : "string",
+            "description" : "Id på avdelingen."
+          },
+          "orgnr" : {
+            "type" : "string",
+            "description" : "Orgnr på avdelingen."
+          },
+          "navn" : {
+            "type" : "string",
+            "description" : "Navn på avdelingen."
+          },
+          "adresselinje1" : {
+            "type" : "string",
+            "description" : "Adresselinje1 til avdelingen."
+          },
+          "adresselinje2" : {
+            "type" : "string",
+            "description" : "Adresselinje2 til avdelingen."
+          },
+          "adresselinje3" : {
+            "type" : "string",
+            "description" : "Adresselinje3 til avdelingen."
+          },
+          "postnummer" : {
+            "type" : "string",
+            "description" : "Postnummer til avdelingen."
+          },
+          "poststed" : {
+            "type" : "string",
+            "description" : "Poststed til avdelingen."
+          },
+          "aktiv" : {
+            "type" : "boolean",
+            "description" : "Angir om avdelingen er aktiv."
+          },
+          "kontaktpersoner" : {
+            "type" : "array",
+            "description" : "Liste over kontaktpersoner til denne avdelingen.",
+            "items" : {
+              "$ref" : "#/components/schemas/KontaktpersonModel"
+            }
+          },
+          "administratorer" : {
+            "type" : "array",
+            "description" : "Liste over administratorer til denne avdelingen.",
+            "items" : {
+              "$ref" : "#/components/schemas/AdministratorModel"
+            }
+          },
+          "admin" : {
+            "type" : "boolean",
+            "description" : "Angir om aktør har admin-rettigheter på tjenesten."
+          }
+        }
+      },
+      "ErrorMessage" : {
+        "type" : "object",
+        "properties" : {
+          "timestamp" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "status" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "error" : {
+            "type" : "string"
+          },
+          "errorId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "path" : {
+            "type" : "string"
+          },
+          "originalPath" : {
+            "type" : "string"
+          },
+          "message" : {
+            "type" : "string"
+          },
+          "errorCode" : {
+            "type" : "string"
+          },
+          "errorJson" : {
+            "type" : "string"
+          }
+        }
+      },
       "AvdelingModel" : {
         "required" : [ "adresselinje1", "aktiv", "avdelingId", "navn", "orgnr", "postnummer", "poststed" ],
         "type" : "object",
@@ -1814,41 +1999,6 @@
           }
         },
         "description" : "Liste med avdelinger som er registrert."
-      },
-      "ErrorMessage" : {
-        "type" : "object",
-        "properties" : {
-          "timestamp" : {
-            "type" : "integer",
-            "format" : "int64"
-          },
-          "status" : {
-            "type" : "integer",
-            "format" : "int32"
-          },
-          "error" : {
-            "type" : "string"
-          },
-          "errorId" : {
-            "type" : "string",
-            "format" : "uuid"
-          },
-          "path" : {
-            "type" : "string"
-          },
-          "originalPath" : {
-            "type" : "string"
-          },
-          "message" : {
-            "type" : "string"
-          },
-          "errorCode" : {
-            "type" : "string"
-          },
-          "errorJson" : {
-            "type" : "string"
-          }
-        }
       },
       "EndreBydelRequest" : {
         "required" : [ "adresselinje1", "navn", "nyttOrgnr", "postnummer", "poststed" ],
@@ -1899,34 +2049,6 @@
           }
         },
         "description" : "Integrasjon som brukes for å jobbe mot samtykke-api'et"
-      },
-      "KontaktpersonModel" : {
-        "required" : [ "admin", "epost", "kontaktpersonId", "navn" ],
-        "type" : "object",
-        "properties" : {
-          "kontaktpersonId" : {
-            "type" : "string",
-            "description" : "Id til kontaktperson.",
-            "format" : "uuid"
-          },
-          "personId" : {
-            "type" : "string",
-            "description" : "PersonId til kontaktperson. Peker på konfigurasjon-id til brukeren.",
-            "format" : "uuid"
-          },
-          "navn" : {
-            "type" : "string",
-            "description" : "Navn til kontaktperson. Trenger ikke peke på en person."
-          },
-          "epost" : {
-            "type" : "string",
-            "description" : "Epost til kontaktperson."
-          },
-          "admin" : {
-            "type" : "boolean",
-            "description" : "Angir om person også er administrator."
-          }
-        }
       },
       "KontaktPerson" : {
         "required" : [ "epost", "navn" ],
@@ -2078,99 +2200,6 @@
             "items" : {
               "$ref" : "#/components/schemas/AvdelingInfo"
             }
-          }
-        }
-      },
-      "AdministratorModel" : {
-        "required" : [ "fdato", "id", "navn" ],
-        "type" : "object",
-        "properties" : {
-          "id" : {
-            "type" : "string",
-            "description" : "Peker på konfigurasjon-id til brukeren.",
-            "format" : "uuid"
-          },
-          "fdato" : {
-            "type" : "string",
-            "description" : "Fødselsdato til administrator. Brukes for å anonymisere fødselsnummer."
-          },
-          "navn" : {
-            "type" : "string",
-            "description" : "Navn til administrator."
-          }
-        }
-      },
-      "Bydelskontor" : {
-        "required" : [ "kontor" ],
-        "type" : "object",
-        "properties" : {
-          "kontor" : {
-            "type" : "array",
-            "description" : "Liste over avdelinger i kommunen",
-            "items" : {
-              "$ref" : "#/components/schemas/KontorBydelModel"
-            }
-          }
-        },
-        "description" : "Brukes som response på kall for å hente barnevernkontor til kommuner som støtter bydeler etter at oppsett er utført."
-      },
-      "KontorBydelModel" : {
-        "required" : [ "admin", "administratorer", "adresselinje1", "aktiv", "avdelingId", "kontaktpersoner", "navn", "orgnr", "postnummer", "poststed" ],
-        "type" : "object",
-        "properties" : {
-          "avdelingId" : {
-            "type" : "string",
-            "description" : "Id på avdelingen."
-          },
-          "orgnr" : {
-            "type" : "string",
-            "description" : "Orgnr på avdelingen."
-          },
-          "navn" : {
-            "type" : "string",
-            "description" : "Navn på avdelingen."
-          },
-          "adresselinje1" : {
-            "type" : "string",
-            "description" : "Adresselinje1 til avdelingen."
-          },
-          "adresselinje2" : {
-            "type" : "string",
-            "description" : "Adresselinje2 til avdelingen."
-          },
-          "adresselinje3" : {
-            "type" : "string",
-            "description" : "Adresselinje3 til avdelingen."
-          },
-          "postnummer" : {
-            "type" : "string",
-            "description" : "Postnummer til avdelingen."
-          },
-          "poststed" : {
-            "type" : "string",
-            "description" : "Poststed til avdelingen."
-          },
-          "aktiv" : {
-            "type" : "boolean",
-            "description" : "Angir om avdelingen er aktiv."
-          },
-          "kontaktpersoner" : {
-            "type" : "array",
-            "description" : "Liste over kontaktpersoner til denne avdelingen.",
-            "items" : {
-              "$ref" : "#/components/schemas/KontaktpersonModel"
-            }
-          },
-          "administratorer" : {
-            "type" : "array",
-            "description" : "Liste over administratorer til denne avdelingen.",
-            "items" : {
-              "$ref" : "#/components/schemas/AdministratorModel"
-            }
-          },
-          "admin" : {
-            "type" : "boolean",
-            "description" : "Angir om aktør har admin-rettigheter på tjenesten."
           }
         }
       },
