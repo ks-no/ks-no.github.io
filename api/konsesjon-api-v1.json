@@ -27,7 +27,7 @@
     }
   ],
   "paths": {
-    "/konsesjon/api/v1/avklaring/{konsesjonId}": {
+    "/konsesjon/api/v1/avklaring/{avklaringsId}": {
       "get": {
         "tags": [
           "KonsesjonAvklaring"
@@ -36,10 +36,10 @@
         "parameters": [
           {
             "in": "path",
-            "name": "konsesjonId",
+            "name": "avklaringsId",
             "required": true,
             "schema": {
-              "type": "string"
+              "$ref": "#/components/schemas/AvklaringsId"
             }
           }
         ],
@@ -476,88 +476,6 @@
         }
       }
     },
-    "/konsesjon/api/v1/avklaring/{avklaringsId}/sjekk": {
-      "get": {
-        "tags": [
-          "KonsesjonAvklaring"
-        ],
-        "description": "Kjør konsesjonsavklaring",
-        "operationId": "getKonsesjonsAvklaring",
-        "parameters": [
-          {
-            "in": "path",
-            "name": "avklaringsId",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Konsesjonsavklaring sjekket",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/KonsesjonStatus"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Feil input",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Ikke tilgang – bearer token ikke sent",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
-                }
-              }
-            }
-          },
-          "403": {
-            "description": "Ikke tilgang",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Ingen treff - Fant ikke konsesjonsavklaring som matchet den gitte id-en",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
-                }
-              }
-            }
-          },
-          "410": {
-            "description": "Finnes ikke lenger",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
     "/konsesjon/api/v1/avklaring/{avklaringsId}/status": {
       "get": {
         "tags": [
@@ -571,8 +489,7 @@
             "name": "avklaringsId",
             "required": true,
             "schema": {
-              "type": "string",
-              "format": "uuid"
+              "$ref": "#/components/schemas/AvklaringsId"
             }
           }
         ],
@@ -1588,8 +1505,24 @@
             "type": "string"
           },
           "avklaringsId": {
-            "type": "string",
-            "format": "uuid"
+            "$ref": "#/components/schemas/AvklaringsId"
+          }
+        }
+      },
+      "AvklaringsId": {
+        "type": "string",
+        "format": "uuid"
+      },
+      "Broek": {
+        "type": "object",
+        "properties": {
+          "teller": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "nevner": {
+            "type": "integer",
+            "minimum": 1
           }
         }
       },
@@ -1703,111 +1636,6 @@
       },
       "Erverver": {
         "type": "object",
-        "oneOf": [
-          {
-            "$ref": "#/components/schemas/Person"
-          },
-          {
-            "$ref": "#/components/schemas/Organisasjon"
-          }
-        ],
-        "discriminator": {
-          "propertyName": "erververType",
-          "mapping": {
-            "person": "Person",
-            "organisasjon": "Organisasjon"
-          }
-        }
-      },
-      "Konsesjon": {
-        "type": "object",
-        "properties": {
-          "oppretter": {
-            "type": "string"
-          },
-          "opprettet": {
-            "type": "string"
-          },
-          "eiendom": {
-            "type": "object"
-          },
-          "erververe": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/Erverver"
-            },
-            "minItems": 1
-          }
-        }
-      },
-      "KonsesjonsAvklaringOpprettelse": {
-        "type": "object",
-        "required": [
-          "erververe",
-          "eiendom"
-        ],
-        "properties": {
-          "eiendom": {
-            "type": "string"
-          },
-          "erververe": {
-            "type": "array",
-            "items": {
-              "type": "string",
-              "minLength": 9,
-              "maxLength": 11,
-              "pattern": "^\\d{9,11}$"
-            },
-            "minItems": 1
-          }
-        }
-      },
-      "KonsesjonReferanse": {
-        "type": "object",
-        "properties": {
-          "oprettelseId": {
-            "type": "string"
-          },
-          "avklaringer": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/Avklaring"
-            },
-            "minItems": 1
-          }
-        }
-      },
-      "KonsesjonStatus": {
-        "type": "object",
-        "properties": {
-          "avklaringsId": {
-            "type": "string",
-            "format": "uuid"
-          },
-          "status": {
-            "type": "string"
-          }
-        }
-      },
-      "Organisasjon": {
-        "type": "object",
-        "properties": {
-          "orgNr": {
-            "type": "string"
-          },
-          "navn": {
-            "type": "string"
-          },
-          "erververType": {
-            "type": "string",
-            "enum": [
-              "organisasjon"
-            ]
-          }
-        }
-      },
-      "Person": {
-        "type": "object",
         "properties": {
           "fnr": {
             "type": "string"
@@ -1830,13 +1658,82 @@
           "poststed": {
             "type": "string"
           },
-          "erververType": {
+          "andel": {
+            "$ref": "#/components/schemas/Broek"
+          }
+        }
+      },
+      "Konsesjon": {
+        "type": "object",
+        "properties": {
+          "avklaringsId": {
+            "$ref": "#/components/schemas/AvklaringsId"
+          },
+          "oppretter": {
+            "type": "string"
+          },
+          "opprettet": {
+            "type": "string"
+          },
+          "eiendom": {
+            "type": "object"
+          },
+          "erververe": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Erverver"
+            },
+            "minItems": 1
+          }
+        }
+      },
+      "KonsesjonsAvklaringOpprettelse": {
+        "type": "object",
+        "required": [
+          "matrikkelnummer"
+        ],
+        "properties": {
+          "matrikkelnummer": {
+            "$ref": "#/components/schemas/MatrikkelNummer"
+          }
+        }
+      },
+      "KonsesjonReferanse": {
+        "type": "object",
+        "required": [
+          "avklaringsId"
+        ],
+        "properties": {
+          "avklaringsId": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      },
+      "KonsesjonStatus": {
+        "type": "object",
+        "properties": {
+          "avklaringsId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "status": {
             "type": "string",
             "enum": [
-              "person"
+              "OPPRETTET",
+              "PRESJEKK",
+              "HOVEDSJEKK",
+              "MANUELL_BEHANDLING",
+              "TIL_GODKJENNING",
+              "UKJENT"
             ]
           }
         }
+      },
+      "MatrikkelNummer": {
+        "type": "string",
+        "pattern": "^\\d{4}(/|-)\\d{1,6}\\/\\d{1,6}\\/\\d{1,6}\\/\\d{1,6}$",
+        "default": "1234/1/2/3/4"
       },
       "EiendomsDataMedId": {
         "type": "object",
@@ -1855,7 +1752,8 @@
           "bygningerPaaEiendommen": {
             "type": "array",
             "items": {
-              "type": "string"
+              "type": "integer",
+              "format": "int64"
             }
           },
           "arealPaaEiendommen": {
