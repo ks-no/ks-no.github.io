@@ -12,7 +12,7 @@ Mer informasjon om Fiks folkeregister finner man [her](https://www.ks.no/fagomra
 | Grensesnitt | Støtte |
 |------|------|
 | Web portal | Ja |
-| Maskin til maskin | [Api spec](https://app.swaggerhub.com/organizations/Skatteetaten_FREG) |
+| Maskin til maskin | [Api spec](https://app.swaggerhub.com/apis/skatteetaten/Folkeregisteret_Offentlig_med_hjemmel/1.6.2) |
 
 ## Beskrivelse av tjenesten
 For å ta i bruk Fiks folkeregister må man inngå bruksavtaler både med skatteetaten og KS. [Klikk her for mer informasjon.](https://portal.fiks.ks.no/fiks/fiks-folkeregister/)
@@ -66,7 +66,7 @@ I dokumentasjonen til API-et til FREG står det `Dersom part ikke oppgis vil ret
 Vi tilbyr et API som speiler FREG og et API som er tilpasset 0-16-uttrekk.
 
 ### FREG-API
-Våre API er en speiling av FREG og vi tilbyr derfor ikke egne OpenAPI/Swagger-dokumentasjon. [Klikk her for FREG sin Swagger-dokumentasjon.](https://app.swaggerhub.com/organizations/Skatteetaten_FREG)
+Våre API er en speiling av FREG og vi tilbyr derfor ikke egne OpenAPI/Swagger-dokumentasjon. [Klikk her for FREG sin Swagger-dokumentasjon.](https://app.swaggerhub.com/apis/skatteetaten/Folkeregisteret_Offentlig_med_hjemmel/1.6.2)
 
 Les mer om hvordan tjenestene virker hos Skatteetaten:
 * [Hendelsesliste](https://skatteetaten.github.io/folkeregisteret-api-dokumentasjon/hendelsesliste/)
