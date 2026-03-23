@@ -2,7 +2,7 @@
   "openapi": "3.1.0",
   "info": {
     "title": "Fiks Brukersynkronisering - Sync API",
-    "version": "1.5.0",
+    "version": "1.6.0",
     "description": "API for synkronisering av brukere og grupper fra fiks-brukersynkronisering.  Datamodellen er løst basert på `User` og `Group` entitetene fra SCIM 2.0 standarden med noen utvidelser.  Synkroniseringen baserer seg på et token som returneres ved første request. Dette tokenet skal ikke parses eller forstås av klienten, men tas med som et parameter på neste request. Det sørger for at neste request kun får brukere som er endret siden første request. Sammen med responsen kommer det et nytt token, som sendes med på neste, osv. Om klienten ønsker å initiere en ny full synkronisering fra starten, kan den sende en ny request uten sync token.  Samme prosedyre følges for synkronisering av grupper med et tilsvarende token.  Synk token for brukere kan ikke brukes for en gruppe request, og motsatt.  Merk at rekkefølgen brukerene returneres i baseres på når de sist ble endret.  Brukeren som ble sist endret vil bli returnert sist.  Rekkefølgen brukerene returneres i vil derfor ikke nødvendigvis reflektere rekkefølgen brukerene ble opprettet.",
     "contact": {
       "name": "Fiks-brukerstøtte",
@@ -113,7 +113,7 @@
           "Grupper"
         ],
         "summary": "Hent grupper",
-        "description": "Hent endringer for grupper. Bruker en `syncToken` for å kun hente  grupper som er opprettet eller endret siden forrige request.\n**Merk:** For å redusere datamengden returnerer dette endepunktet ikke listen over medlemmer eller gruppenavn.  For å hente detaljer må man gjøre et oppslag mot `/gruppe/{gruppeId}` for hver endret gruppe.",
+        "description": "Hent endringer for grupper. Bruker en `syncToken` for å kun hente  grupper som er opprettet, slettet eller endret siden forrige request.\n**Merk:** For store grupper kan `members` listen være utelatt i sync-eventet for å redusere datamengden.  Feltet `requiresSeparateFetch` i eventet vil da være `true`, og klienten må hente detaljer via `/gruppe/{gruppeId}`.",
         "operationId": "getGroupChanges",
         "parameters": [
           {
@@ -145,6 +145,30 @@
             "schema": {
               "type": "string",
               "example": "eyJhbGciOiJIUzI1NiJ9.eyJraWQiOiJzb3VyY2VfQSIsInRzIjoxNjkw..."
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "description": "Maksimalt antall grupper å returnere.",
+            "schema": {
+              "type": "integer",
+              "default": 100,
+              "maximum": 1000,
+              "example": 100
+            }
+          },
+          {
+            "name": "maxGroupSize",
+            "in": "query",
+            "required": false,
+            "description": "Største størrelse på grupper som blir returnert, grupper større enn dette må hentes separat",
+            "schema": {
+              "type": "integer",
+              "default": 100,
+              "maximum": 1000,
+              "example": 100
             }
           }
         ],
@@ -238,7 +262,7 @@
           "Grupper"
         ],
         "summary": "Hent en spesifikk gruppe",
-        "description": "Henter detaljer for en enkelt gruppe basert på gruppe id.",
+        "description": "Henter detaljer for en enkelt gruppe basert på gruppe id. Inkluder id for alle medlemmer.",
         "operationId": "getGroup",
         "parameters": [
           {
@@ -317,7 +341,7 @@
           },
           "hasMore": {
             "type": "boolean",
-            "description": "- `true`: Det er flere endringer tilgjengelig umiddelbart. Endepunktet kan kalles igjen umiddelbart. - `false`: Du er oppdatert. Vent før endepunktet kalles igjen.",
+            "description": "Når dette feltet er `true`, er det flere endringer tilgjengelig. Endepunktet kan kalles igjen umiddelbart. Når det er `false` er alle tilgjengelige endringer returnert. Vent før endepunktet kalles igjen.",
             "example": true
           },
           "events": {
@@ -335,6 +359,7 @@
           "changeType",
           "timestamp"
         ],
+        "description": "Det fullstendige brukerobjektet. Når `changeType` er `sync` vil `resource` inneholde det fullstendige brukerobjektet. - For `delete` Vil `resource` feltet være `null`.",
         "properties": {
           "id": {
             "type": "string",
@@ -357,8 +382,7 @@
             "example": "2023-10-01T12:00:00Z"
           },
           "resource": {
-            "$ref": "#/components/schemas/User",
-            "description": "Det fullstendige brukerobjektet. - For `sync`: Inneholder fullstendig brukerobjekt. - For `delete`: Dette feltet er `null`."
+            "$ref": "#/components/schemas/User"
           }
         }
       },
@@ -366,6 +390,7 @@
         "type": "object",
         "required": [
           "syncToken",
+          "hasMore",
           "events"
         ],
         "properties": {
@@ -373,6 +398,11 @@
             "type": "string",
             "description": "Det **nye** tokenet som skal brukes ved **neste** forespørsel. Klienter må lagre dette tokenet og bruke det ved neste request.",
             "example": "eyJhbGciOiJIUzI1NiJ9.eyJraWQiOiJzb3VyY2VfQSIsInRzIjoxNjkw..."
+          },
+          "hasMore": {
+            "type": "boolean",
+            "description": "Når dette feltet er `true`, er det flere endringer tilgjengelig. Endepunktet kan kalles igjen umiddelbart. Når det er `false` er alle tilgjengelige endringer returnert. Vent før endepunktet kalles igjen.",
+            "example": true
           },
           "events": {
             "type": "array",
@@ -387,8 +417,10 @@
         "required": [
           "id",
           "changeType",
-          "timestamp"
+          "timestamp",
+          "requiresSeparateFetch"
         ],
+        "description": "Representasjon av gruppen. Når `changeType` er `sync` vil `resource` inneholde gruppeobjektet. Merk at for store grupper kan `resource` være uteleatt (se `requiresSeparateFetch`). For `delete` vil `resource` feltet også være `null`.",
         "properties": {
           "id": {
             "type": "string",
@@ -409,11 +441,24 @@
             "format": "date-time",
             "description": "Når endringen skjedde i kildesystemet.",
             "example": "2023-10-01T12:05:00Z"
+          },
+          "resource": {
+            "$ref": "#/components/schemas/Group"
+          },
+          "requiresSeparateFetch": {
+            "type": "boolean",
+            "description": "Angir om gruppen er så stor at den ikke kunne inkluderes i sin helhet i sync-eventet. Hvis denne er `true`, må klienten hente den fulle representasjonen av gruppen via det spesifikke gruppe-endepunktet.",
+            "example": false
           }
         }
       },
       "User": {
         "type": "object",
+        "required": [
+          "id",
+          "name",
+          "userName"
+        ],
         "description": "En representasjon av brukeren basert på Scim 2 (RFC 7643).",
         "properties": {
           "id": {
@@ -590,6 +635,9 @@
       },
       "Group": {
         "type": "object",
+        "required": [
+          "id"
+        ],
         "description": "En forenklet representasjon av gruppen basert på RFC 7643.",
         "properties": {
           "id": {
