@@ -1,0 +1,282 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Leverandørregister Søk API",
+    "description": "Søk-API for systemadministrasjon av leverandører, produkter og kontaktpunkter.",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "/leverandoerregister/soek/api/v1",
+      "description": "Søk API for leverandørregisteret"
+    }
+  ],
+  "tags": [
+    {
+      "name": "ProduktSoek"
+    }
+  ],
+  "paths": {
+    "/leverandoerregister/soek/api/v1/produkter": {
+      "get": {
+        "tags": [
+          "ProduktSoek"
+        ],
+        "parameters": [
+          {
+            "name": "tjenestekode",
+            "in": "query",
+            "description": "Tjenestekode for å søke etter produkter knyttet til denne tjenestekoden",
+            "required": true,
+            "example": "PROTOKOLL",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "summary": "Søk på produkter basert på søkeparametere",
+        "operationId": "soekProdukter",
+        "responses": {
+          "200": {
+            "description": "Liste over produkter",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ProduktResponse"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "KontaktpunktFormaal": {
+        "type": "object",
+        "required": [
+          "id",
+          "kode",
+          "navn"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "kode": {
+            "type": "string",
+            "maxLength": 50
+          },
+          "navn": {
+            "type": "string",
+            "maxLength": 255
+          },
+          "beskrivelse": {
+            "type": "string",
+            "maxLength": 1000
+          }
+        }
+      },
+      "KontaktpunktResponse": {
+        "type": "object",
+        "required": [
+          "id",
+          "produktId",
+          "type",
+          "navn",
+          "beskrivelse",
+          "verdi",
+          "formaals"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "produktId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "type": {
+            "$ref": "#/components/schemas/KontaktpunktType"
+          },
+          "navn": {
+            "type": "string"
+          },
+          "beskrivelse": {
+            "type": "string"
+          },
+          "verdi": {
+            "type": "string",
+            "description": "Kontaktverdi. For type TELEFON: 8 sifre eller +47 etterfulgt av 8 sifre. For type EPOST: gyldig e-postadresse."
+          },
+          "formaals": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/KontaktpunktFormaal"
+            }
+          }
+        }
+      },
+      "KontaktpunktType": {
+        "type": "string",
+        "enum": [
+          "TELEFON",
+          "EPOST",
+          "ANNET"
+        ]
+      },
+      "Adresse": {
+        "type": "object",
+        "properties": {
+          "adresse": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "postnummer": {
+            "type": "string"
+          },
+          "poststed": {
+            "type": "string"
+          },
+          "land": {
+            "type": "string"
+          },
+          "kommunenummer": {
+            "type": "string"
+          },
+          "adresselinje1": {
+            "type": "string"
+          },
+          "adresselinje2": {
+            "type": "string"
+          },
+          "adresselinje3": {
+            "type": "string"
+          }
+        }
+      },
+      "LeverandoerResponse": {
+        "type": "object",
+        "required": [
+          "id"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "organisasjonsnummer": {
+            "type": "string"
+          },
+          "navn": {
+            "type": "string"
+          },
+          "postadresse": {
+            "$ref": "#/components/schemas/Adresse"
+          },
+          "forretningsadresse": {
+            "$ref": "#/components/schemas/Adresse"
+          },
+          "overordnetEnhet": {
+            "type": "string"
+          },
+          "institusjonellSektorkode": {
+            "$ref": "#/components/schemas/InstitusjonellSektorkode"
+          },
+          "fiksOrgType": {
+            "type": "string"
+          }
+        }
+      },
+      "InstitusjonellSektorkode": {
+        "type": "object",
+        "properties": {
+          "kode": {
+            "type": "string"
+          },
+          "beskrivelse": {
+            "type": "string"
+          }
+        }
+      },
+      "ProduktKategoriResponse": {
+        "type": "object",
+        "required": [
+          "id",
+          "navn",
+          "beskrivelse"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "navn": {
+            "type": "string",
+            "maxLength": 255
+          },
+          "beskrivelse": {
+            "type": "string",
+            "maxLength": 1000
+          }
+        }
+      },
+      "ProduktResponse": {
+        "type": "object",
+        "required": [
+          "id",
+          "leverandoer",
+          "navn",
+          "beskrivelse",
+          "produktKategori"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "leverandoer": {
+            "$ref": "#/components/schemas/LeverandoerResponse"
+          },
+          "navn": {
+            "type": "string"
+          },
+          "beskrivelse": {
+            "type": "string"
+          },
+          "webadresse": {
+            "type": "string",
+            "format": "uri"
+          },
+          "kildeKode": {
+            "type": "string",
+            "format": "uri"
+          },
+          "produktKategori": {
+            "$ref": "#/components/schemas/ProduktKategoriResponse"
+          },
+          "kontaktpunkter": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/KontaktpunktResponse"
+            }
+          },
+          "tjenesteReferanser": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    }
+  }
+}
