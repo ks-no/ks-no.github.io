@@ -345,7 +345,7 @@
           "ordningId": {
             "type": "string",
             "pattern": "^[A-Za-z0-9-]+$",
-            "example": "TO-100001",
+            "example": "46-ORDFORBIOM-2026-ZX",
             "readOnly": true
           }
         }
@@ -363,28 +363,15 @@
         "type": "object",
         "properties": {
           "tittel": {
-            "type": "array",
-            "maxItems": 6,
-            "items": {
-              "$ref": "#/components/schemas/Tekst"
-            }
+            "type": "string",
+            "maxLength": 100
           },
           "kortBeskrivelse": {
-            "type": "array",
-            "maxItems": 6,
-            "items": {
-              "$ref": "#/components/schemas/Tekst"
-            }
+            "type": "string",
+            "maxLength": 1000
           },
           "status": {
             "$ref": "#/components/schemas/OrdningStatus"
-          },
-          "stoerrelseMottaker": {
-            "type": "array",
-            "maxItems": 5,
-            "items": {
-              "type": "string"
-            }
           },
           "naering": {
             "type": "array",
@@ -406,11 +393,11 @@
           "soknadsfrist": {
             "$ref": "#/components/schemas/Soknadsfrist"
           },
-          "rolle": {
+          "forvalter": {
             "type": "array",
             "maxItems": 5,
             "items": {
-              "$ref": "#/components/schemas/Rolle"
+              "$ref": "#/components/schemas/Forvalter"
             }
           }
         }
@@ -424,51 +411,32 @@
           },
           "skjemaUrl": {
             "type": "string",
-            "format": "uri"
+            "format": "uri",
+            "description": "Lenke til skjema i skjemaløsning"
           },
           "kontaktperson": {
             "$ref": "#/components/schemas/Kontaktperson"
           },
-          "maalOgMaalgruppe": {
-            "type": "array",
-            "maxItems": 6,
-            "items": {
-              "$ref": "#/components/schemas/Tekst"
-            }
+          "publisering": {
+            "$ref": "#/components/schemas/Publisering"
           },
-          "hvemKanMotta": {
-            "type": "array",
-            "maxItems": 6,
-            "items": {
-              "$ref": "#/components/schemas/Tekst"
-            }
+          "soknadsramme": {
+            "type": "string",
+            "maxLength": 300
           },
-          "bruksomraade": {
-            "type": "array",
-            "maxItems": 6,
-            "items": {
-              "$ref": "#/components/schemas/Tekst"
-            }
+          "behandlingstidDager": {
+            "type": "integer",
+            "description": "Antatt behandlingstid etter søknadsfrist"
           },
-          "andreTildeingskriterier": {
-            "type": "array",
-            "maxItems": 6,
-            "items": {
-              "$ref": "#/components/schemas/Tekst"
-            }
+          "rapporteringsfristDager": {
+            "type": "integer",
+            "description": "Rapporteringsfrist etter tilsagn"
           },
-          "rapporteringskrav": {
+          "avsnitt": {
             "type": "array",
-            "maxItems": 6,
+            "maxItems": 15,
             "items": {
-              "$ref": "#/components/schemas/Tekst"
-            }
-          },
-          "infoOmSokeprosessen": {
-            "type": "array",
-            "maxItems": 6,
-            "items": {
-              "$ref": "#/components/schemas/Tekst"
+              "$ref": "#/components/schemas/Avsnitt"
             }
           }
         }
@@ -484,13 +452,17 @@
           "tittel",
           "kortBeskrivelse",
           "status",
-          "stoerrelseMottaker",
           "naering",
           "regionsnivaa",
           "region",
           "soknadsfrist",
-          "rolle",
-          "kontaktperson"
+          "soknadsramme",
+          "behandlingstidDager",
+          "rapporteringsfristDager",
+          "forvalter",
+          "kontaktperson",
+          "publisering",
+          "avsnitt"
         ],
         "allOf": [
           {
@@ -501,9 +473,6 @@
           },
           {
             "$ref": "#/components/schemas/OrdningUtvidet"
-          },
-          {
-            "$ref": "#/components/schemas/Publisering"
           },
           {
             "type": "object",
@@ -535,7 +504,7 @@
           "regionsnivaa",
           "region",
           "soknadsfrist",
-          "rolle"
+          "forvalter"
         ],
         "allOf": [
           {
@@ -585,8 +554,13 @@
           "regionsnivaa",
           "region",
           "soknadsfrist",
-          "rolle",
-          "kontaktperson"
+          "behandlingstidDager",
+          "rapporteringsfristDager",
+          "soknadsramme",
+          "forvalter",
+          "kontaktperson",
+          "publisering",
+          "avsnitt"
         ],
         "allOf": [
           {
@@ -594,32 +568,19 @@
           },
           {
             "$ref": "#/components/schemas/OrdningUtvidet"
-          },
-          {
-            "$ref": "#/components/schemas/Publisering"
           }
         ]
       },
-      "Tekst": {
+      "Avsnitt": {
         "type": "object",
-        "required": [
-          "tekst",
-          "spraak"
-        ],
         "properties": {
-          "tekst": {
+          "tittel": {
             "type": "string",
-            "maxLength": 3000
+            "maxLength": 80
           },
-          "spraak": {
+          "innhold": {
             "type": "string",
-            "enum": [
-              "NN",
-              "NB",
-              "SE",
-              "EN"
-            ],
-            "example": "NB"
+            "maxLength": 10000
           }
         }
       },
@@ -638,54 +599,49 @@
             "type": "string",
             "format": "date",
             "example": "2025-01-01"
+          },
+          "dagerMedVarselForFrist": {
+            "type": "integer",
+            "default": 7,
+            "description": "Felt for å sette hvor mange dager før søknadsfristen man skal markere at søknadsfristen nærmer seg."
           }
         }
       },
       "Publisering": {
         "type": "object",
         "required": [
-          "publiseringsdato"
+          "tilDatoTid"
         ],
         "properties": {
-          "publiseringsdato": {
+          "fraDatoTid": {
             "type": "string",
             "format": "date-time",
             "example": "2025-08-27T15:45:30Z"
           },
-          "avpubliseringsdato": {
+          "tilDatoTid": {
             "type": "string",
             "format": "date-time",
             "example": "2025-08-27T18:45:30Z"
           }
         }
       },
-      "Rolleinnehaver": {
+      "Forvalter": {
         "type": "object",
         "required": [
-          "organisasjonsnummer"
+          "organisasjonsnummer",
+          "kode"
         ],
         "properties": {
           "organisasjonsnummer": {
             "type": "string"
           },
+          "kode": {
+            "type": "string",
+            "readOnly": true
+          },
           "navn": {
             "type": "string",
             "readOnly": true
-          }
-        }
-      },
-      "Rolle": {
-        "type": "object",
-        "required": [
-          "type",
-          "rolleinnehaver"
-        ],
-        "properties": {
-          "type": {
-            "type": "string"
-          },
-          "rolleinnehaver": {
-            "$ref": "#/components/schemas/Rolleinnehaver"
           }
         }
       },
