@@ -26,6 +26,171 @@
     }
   ],
   "paths": {
+    "/brukersynkronisering/maalsystem/api/v1/organisasjon/{fiksOrg}/oversikt": {
+      "get": {
+        "tags": [
+          "synkronisering"
+        ],
+        "summary": "Hent oversikt over synkroniseringer for en organisasjon",
+        "description": "Returnerer en oversikt over eksisterende synkroniseringer og målssystemer som er tilgjengelige for nye koblinger for den gitte organisasjonen. Kildedata hentes fra Entra ID (grupper/enterprise applications).",
+        "operationId": "hentSynkroniseringOversikt",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "fiksOrg",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "FiksOrgId for organisasjonen"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Oversikt over synkroniseringer",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SynkroniseringOversiktResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Ugyldig input"
+          },
+          "401": {
+            "description": "Uautorisert"
+          },
+          "403": {
+            "description": "Manglende tilgang"
+          },
+          "404": {
+            "description": "Organisasjon ikke funnet"
+          },
+          "500": {
+            "description": "Serverfeil"
+          }
+        }
+      }
+    },
+    "/brukersynkronisering/maalsystem/api/v1/organisasjon/{fiksOrg}/synkroniseringer": {
+      "post": {
+        "tags": [
+          "synkronisering"
+        ],
+        "summary": "Opprett en ny synkronisering",
+        "description": "Oppretter en ny synkronisering mellom en kilde og et målssystem.",
+        "operationId": "opprettSynkronisering",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "fiksOrg",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "FiksOrgId for organisasjonen"
+          }
+        ],
+        "requestBody": {
+          "description": "Synkroniseringsinformasjon",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OpprettSynkroniseringRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Synkronisering opprettet",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpprettSynkroniseringResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Ugyldig input"
+          },
+          "401": {
+            "description": "Uautorisert"
+          },
+          "403": {
+            "description": "Manglende tilgang"
+          },
+          "404": {
+            "description": "Kilde eller målssystem ikke funnet"
+          },
+          "500": {
+            "description": "Serverfeil"
+          }
+        }
+      }
+    },
+    "/brukersynkronisering/maalsystem/api/v1/organisasjon/{fiksOrg}/synkroniseringer/{id}": {
+      "get": {
+        "tags": [
+          "synkronisering"
+        ],
+        "summary": "Hent detaljer for en synkronisering",
+        "description": "Returnerer detaljert informasjon om en spesifikk synkronisering.",
+        "operationId": "hentSynkronisering",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "fiksOrg",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "FiksOrgId for organisasjonen"
+          },
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "Synkroniseringens identifikator"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Synkroniseringsdetaljer",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SynkroniseringDetaljerResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Uautorisert"
+          },
+          "403": {
+            "description": "Manglende tilgang"
+          },
+          "404": {
+            "description": "Synkronisering ikke funnet"
+          },
+          "500": {
+            "description": "Serverfeil"
+          }
+        }
+      }
+    },
     "/brukersynkronisering/maalsystem/api/v1/maalsystemer": {
       "get": {
         "tags": [
@@ -493,7 +658,8 @@
             "example": true
           }
         },
-        "description": "Objekt som reprensenterer endringer for et målssystem"
+        "minProperties": 1,
+        "description": "Objekt som reprensenterer endringer for et målssystem. Minst ett felt må oppgis."
       },
       "MaalsystemKildeResponse": {
         "type": "object",
@@ -529,6 +695,330 @@
           "$ref": "#/components/schemas/MaalsystemKildeResponse"
         },
         "description": "Liste over kilder tilknyttet et målssystem"
+      },
+      "SynkroniseringOversiktResponse": {
+        "type": "object",
+        "properties": {
+          "opprettet": {
+            "type": "array",
+            "description": "Aktive synkroniseringer mellom Entra ID-grupper og målssystemer",
+            "items": {
+              "$ref": "#/components/schemas/OpprettetSynkronisering"
+            }
+          },
+          "tilgjengelige": {
+            "type": "array",
+            "description": "Målssystemer som ikke har synkronisering opprettet for denne organisasjonen",
+            "items": {
+              "$ref": "#/components/schemas/TilgjengeligMaalsystem"
+            }
+          }
+        },
+        "required": [
+          "opprettet",
+          "tilgjengelige"
+        ],
+        "description": "Oversikt over synkroniseringer for en organisasjon"
+      },
+      "OpprettetSynkronisering": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Synkroniseringens unike identifikator",
+            "example": "a1b2c3d4-e5f6-7890-abcd-ef1234567890"
+          },
+          "kildeId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Kildens unike identifikator (Entra ID gruppe/enterprise application)",
+            "example": "123e4567-e89b-12d3-a456-426614174000"
+          },
+          "kildeNavn": {
+            "type": "string",
+            "description": "Navn på kilden (f.eks. Entra ID-gruppe)",
+            "example": "Entra Forvaltere"
+          },
+          "malsystemId": {
+            "type": "string",
+            "description": "Målsystemets identifikator",
+            "example": "fiksplattform"
+          },
+          "malsystemNavn": {
+            "type": "string",
+            "description": "Navn på målsystemet",
+            "example": "Fiks Plattformen"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "aktiv",
+              "inaktiv",
+              "ugyldig-kilde",
+              "feil"
+            ],
+            "description": "Status for synkroniseringen",
+            "example": "aktiv"
+          },
+          "utloper": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Tidspunkt for når synkroniseringen utløper",
+            "example": "2025-09-09T12:00:00Z"
+          },
+          "antallBrukere": {
+            "type": "integer",
+            "description": "Antall brukere som synkroniseres",
+            "example": 42
+          },
+          "sistSynkronisertBrukere": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Tidspunkt for siste brukersynkronisering",
+            "example": "2024-01-01T12:00:00Z"
+          },
+          "antallGrupper": {
+            "type": "integer",
+            "description": "Antall grupper som synkroniseres",
+            "example": 5
+          },
+          "sistSynkronisertGrupper": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Tidspunkt for siste gruppesynkronisering",
+            "example": "2024-01-01T11:30:00Z"
+          }
+        },
+        "required": [
+          "id",
+          "kildeId",
+          "kildeNavn",
+          "malsystemId",
+          "malsystemNavn",
+          "status",
+          "antallBrukere",
+          "sistSynkronisertBrukere",
+          "antallGrupper",
+          "sistSynkronisertGrupper"
+        ],
+        "description": "Representerer en aktiv synkronisering mellom en kilde (Entra ID) og et målssystem"
+      },
+      "TilgjengeligMaalsystem": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Målsystemets identifikator",
+            "example": "ks-hjelpemiddel"
+          },
+          "malsystemNavn": {
+            "type": "string",
+            "description": "Navn på målsystemet",
+            "example": "KS Hjelpemiddel"
+          },
+          "aktiv": {
+            "type": "boolean",
+            "description": "Indikerer om målssystemet er aktivt",
+            "example": true
+          }
+        },
+        "required": [
+          "id",
+          "malsystemNavn",
+          "aktiv"
+        ],
+        "description": "Målssystem som er tilgjengelig for ny synkronisering"
+      },
+      "OpprettSynkroniseringRequest": {
+        "type": "object",
+        "properties": {
+          "malsystemId": {
+            "type": "string",
+            "description": "Målsystemets identifikator",
+            "example": "fiksplattform"
+          },
+          "kildeId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "ID til eksisterende kilde. Må oppgis hvis 'nyKilde' ikke er oppgitt.",
+            "example": "123e4567-e89b-12d3-a456-426614174000",
+            "nullable": true
+          },
+          "nyKilde": {
+            "type": "object",
+            "description": "Informasjon for å opprette en ny kilde. Må oppgis hvis 'kildeId' ikke er oppgitt.",
+            "nullable": true,
+            "properties": {
+              "navn": {
+                "type": "string",
+                "description": "Navn på kilden",
+                "example": "Entra Forvaltere",
+                "minLength": 1,
+                "maxLength": 100
+              },
+              "externalApplicationId": {
+                "type": "string",
+                "description": "Entra ID ekstern applikasjons-ID",
+                "example": "98765432-dcba-4321-fedc-ba9876543210",
+                "maxLength": 100
+              }
+            },
+            "required": [
+              "navn",
+              "externalApplicationId"
+            ]
+          }
+        },
+        "required": [
+          "malsystemId"
+        ],
+        "description": "Request for å opprette en ny synkronisering. Enten 'kildeId' (eksisterende kilde) eller 'nyKilde' (ny kilde) må oppgis, men ikke begge."
+      },
+      "NyKilde": {
+        "type": "object",
+        "properties": {
+          "navn": {
+            "type": "string",
+            "description": "Navn på kilden",
+            "example": "Entra Forvaltere",
+            "minLength": 1,
+            "maxLength": 100
+          },
+          "externalApplicationId": {
+            "type": "string",
+            "description": "Entra ID ekstern applikasjons-ID",
+            "example": "98765432-dcba-4321-fedc-ba9876543210",
+            "maxLength": 100
+          }
+        },
+        "required": [
+          "navn",
+          "externalApplicationId"
+        ],
+        "description": "Informasjon for å opprette en ny kilde"
+      },
+      "OpprettSynkroniseringResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Synkroniseringens unike identifikator",
+            "example": "a1b2c3d4-e5f6-7890-abcd-ef1234567890"
+          },
+          "kildeNavn": {
+            "type": "string",
+            "description": "Navn på kilden",
+            "example": "Entra Forvaltere"
+          },
+          "malsystemNavn": {
+            "type": "string",
+            "description": "Navn på målsystemet",
+            "example": "Fiks Plattformen"
+          },
+          "tenantUrl": {
+            "type": "string",
+            "format": "uri",
+            "description": "SCIM Tenant URL som skal brukes i Entra ID provisjonering",
+            "example": "https://api.fiks.ks.no/brukersynkronisering/scim/v2/a1b2c3d4-e5f6-7890-abcd-ef1234567890"
+          },
+          "secretToken": {
+            "type": "string",
+            "description": "Secret Token for autentisering. Vises kun én gang ved opprettelse av synkronisering.",
+            "example": "fiks_st_1234567890abcdef1234567890abcdef1234567890abcdef"
+          }
+        },
+        "required": [
+          "id",
+          "kildeNavn",
+          "malsystemNavn",
+          "tenantUrl",
+          "secretToken"
+        ],
+        "description": "Response ved opprettelse av synkronisering med nødvendig informasjon for Entra ID-oppsett"
+      },
+      "SynkroniseringDetaljerResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Synkroniseringens unike identifikator",
+            "example": "a1b2c3d4-e5f6-7890-abcd-ef1234567890"
+          },
+          "kildeId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Kildens unike identifikator",
+            "example": "123e4567-e89b-12d3-a456-426614174000"
+          },
+          "kildeNavn": {
+            "type": "string",
+            "description": "Navn på kilden",
+            "example": "Entra Forvaltere"
+          },
+          "malsystemId": {
+            "type": "string",
+            "description": "Målsystemets identifikator",
+            "example": "fiksplattform"
+          },
+          "malsystemNavn": {
+            "type": "string",
+            "description": "Navn på målsystemet",
+            "example": "Fiks Plattformen"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "aktiv",
+              "inaktiv",
+              "ugyldig-kilde",
+              "feil"
+            ],
+            "description": "Status for synkroniseringen",
+            "example": "aktiv"
+          },
+          "sistSynkronisert": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Tidspunkt for siste synkronisering",
+            "example": "2024-01-01T12:00:00Z"
+          },
+          "utloper": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Tidspunkt for når synkroniseringen utløper",
+            "example": "2025-09-09T12:00:00Z"
+          },
+          "antallBrukere": {
+            "type": "integer",
+            "description": "Antall brukere som er synkronisert",
+            "example": 2432
+          },
+          "antallGrupper": {
+            "type": "integer",
+            "description": "Antall grupper som er synkronisert",
+            "example": 10
+          },
+          "opprettet": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Tidspunkt for når synkroniseringen ble opprettet",
+            "example": "2024-01-01T08:00:00Z"
+          }
+        },
+        "required": [
+          "id",
+          "kildeId",
+          "kildeNavn",
+          "malsystemId",
+          "malsystemNavn",
+          "status",
+          "sistSynkronisert",
+          "opprettet"
+        ],
+        "description": "Detaljert informasjon om en eksisterende synkronisering"
       }
     }
   }
