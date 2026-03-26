@@ -1,0 +1,195 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "KS Fiks: Brukerprofil service V1",
+    "description": "Fiks Konfigurasjon - API for brukerens egen profil og innstillinger i kontekst av en organisasjon",
+    "contact": {
+      "name": "Fiks-brukerstøtte",
+      "url": "https://ks-no.github.io/",
+      "email": "fiks@ks.no"
+    },
+    "license": {
+      "name": "MIT",
+      "url": "https://opensource.org/licenses/MIT"
+    },
+    "version": "v1"
+  },
+  "servers": [
+    {
+      "url": "https://api.fiks.ks.no",
+      "description": "KS Fiks API host"
+    }
+  ],
+  "security": [
+    {
+      "bearerAuth": []
+    }
+  ],
+  "tags": [
+    {
+      "name": "BrukerprofilV1",
+      "description": "API for brukerens egen profil i kontekst av en organisasjon"
+    }
+  ],
+  "paths": {
+    "/konfigurasjon/api/v1/organisasjoner/{fiksOrgId}/meg": {
+      "get": {
+        "tags": [
+          "BrukerprofilV1"
+        ],
+        "summary": "Henter innlogget brukers profil i kontekst av organisasjonen",
+        "description": "Returnerer informasjon om den innloggede brukeren, deriblant navn, i kontekst av den angitte organisasjonen",
+        "operationId": "hentMeg",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/fiksOrgId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Innlogget brukers profil",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Meg"
+                }
+              }
+            }
+          },
+          "403": {
+            "$ref": "#/components/responses/ManglerTilgang"
+          },
+          "404": {
+            "$ref": "#/components/responses/IkkeEksisterendeRessurs"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    },
+    "schemas": {
+      "Meg": {
+        "required": [
+          "id",
+          "fdato",
+          "navn"
+        ],
+        "type": "object",
+        "readOnly": true,
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Brukerens unike identifikator på Fiks-plattformen",
+            "example": "5bb48aaa-61e8-4448-8866-1e1085aabb1b"
+          },
+          "fdato": {
+            "pattern": "^[0-9]{6}$",
+            "type": "string",
+            "description": "Brukerens fødselsdato",
+            "example": "119071"
+          },
+          "navn": {
+            "type": "string",
+            "description": "Brukerens fulle navn i kontekst av organisasjonen",
+            "example": "HANE PEN"
+          }
+        },
+        "description": "Innlogget brukers profil i kontekst av en organisasjon"
+      },
+      "ErrorMessage": {
+        "type": "object",
+        "description": "Feilmelding fra Fiks-plattformen",
+        "externalDocs": {
+          "description": "Beskrivelse av feilmeldinger",
+          "url": "https://ks-no.github.io/fiks-plattform/integrasjoner/#feilmeldinger"
+        },
+        "properties": {
+          "timestamp": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "status": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "error": {
+            "type": "string"
+          },
+          "errorId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "path": {
+            "type": "string"
+          },
+          "originalPath": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          },
+          "errorCode": {
+            "type": "string"
+          },
+          "errorJson": {
+            "type": "string"
+          }
+        },
+        "example": {
+          "message": "Mangler tilgang",
+          "errorId": "ee2ed64d-de8b-45f9-b9c6-3363d662d93b",
+          "status": 403
+        }
+      }
+    },
+    "parameters": {
+      "fiksOrgId": {
+        "name": "fiksOrgId",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "format": "uuid"
+        }
+      }
+    },
+    "responses": {
+      "ManglerTilgang": {
+        "description": "Ikke autorisert",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorMessage"
+            },
+            "example": {
+              "message": "Ikke autorisert",
+              "status": 403
+            }
+          }
+        }
+      },
+      "IkkeEksisterendeRessurs": {
+        "description": "Ressurs eksisterer ikke",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorMessage"
+            },
+            "example": {
+              "message": "Ressurs eksisterer ikke",
+              "status": 404
+            }
+          }
+        }
+      }
+    }
+  }
+}
