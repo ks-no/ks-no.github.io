@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Viewer</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            overflow: hidden;
+            width: 100vw;
+            height: 100vh;
+            background: #1a1a1a;
+        }
+
+        #viewport {
+            width: 100%;
+            height: 100%;
+            cursor: grab;
+            position: relative;
+            overflow: hidden;
+            user-select: none;
+        }
+
+        #viewport.grabbing {
+            cursor: grabbing;
+        }
+
+        #image {
+            position: absolute;
+            transform-origin: 0 0;
+            transition: none;
+            image-rendering: high-quality;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+<div id="viewport">
+    <img id="image" src="diagrams/viewksdigital.svg" alt="Zoomable Image">
+</div>
+
+<script>
+    const viewport = document.getElementById('viewport');
+    const image = document.getElementById('image');
+
+    let scale = 1;
+    let translateX = 0;
+    let translateY = 0;
+    let isDragging = false;
+    let startX = 0;
+    let startY = 0;
+
+    // Initialize image position on load
+    image.onload = function() {
+        fitImageToViewport();
+    };
+
+    // Also handle if image is already cached
+    if (image.complete) {
+        fitImageToViewport();
+    }
+
+    // Fit image to viewport while maintaining aspect ratio
+    function fitImageToViewport() {
+        const viewportWidth = viewport.clientWidth;
+        const viewportHeight = viewport.clientHeight;
+        const imageAspect = image.naturalWidth / image.naturalHeight;
+        const viewportAspect = viewportWidth / viewportHeight;
+
+        if (imageAspect > viewportAspect) {
+            // Image is wider than viewport - fit to width
+            scale = viewportWidth / image.naturalWidth;
+        } else {
+            // Image is taller than viewport - fit to height
+            scale = viewportHeight / image.naturalHeight;
+        }
+
+        const scaledWidth = image.naturalWidth * scale;
+        const scaledHeight = image.naturalHeight * scale;
+
+        // Center the image
+        translateX = (viewportWidth - scaledWidth) / 2;
+        translateY = (viewportHeight - scaledHeight) / 2;
+
+        updateTransform();
+    }
+
+    // Constrain translation to keep image visible
+    function constrainTranslation() {
+        const viewportWidth = viewport.clientWidth;
+        const viewportHeight = viewport.clientHeight;
+        const imageWidth = image.naturalWidth * scale;
+        const imageHeight = image.naturalHeight * scale;
+
+        // If image is smaller than viewport, center it
+        if (imageWidth <= viewportWidth) {
+            translateX = (viewportWidth - imageWidth) / 2;
+        } else {
+            // If image is larger, constrain panning
+            const minX = viewportWidth - imageWidth;
+            const maxX = 0;
+            translateX = Math.min(maxX, Math.max(minX, translateX));
+        }
+
+        if (imageHeight <= viewportHeight) {
+            translateY = (viewportHeight - imageHeight) / 2;
+        } else {
+            const minY = viewportHeight - imageHeight;
+            const maxY = 0;
+            translateY = Math.min(maxY, Math.max(minY, translateY));
+        }
+    }
+
+    // Update image transform
+    function updateTransform() {
+        constrainTranslation();
+        image.style.transform = `translate(${translateX}px, ${translateY}px) scale(${scale})`;
+    }
+
+    // Mouse wheel zoom
+    viewport.addEventListener('wheel', (e) => {
+        e.preventDefault();
+
+        const rect = viewport.getBoundingClientRect();
+        const mouseX = e.clientX - rect.left;
+        const mouseY = e.clientY - rect.top;
+
+        // Calculate mouse position relative to image before zoom
+        const imageX = (mouseX - translateX) / scale;
+        const imageY = (mouseY - translateY) / scale;
+
+        // Zoom factor
+        const zoomFactor = e.deltaY > 0 ? 0.9 : 1.1;
+        const newScale = scale * zoomFactor;
+
+        // Limit zoom range
+        if (newScale < 0.1 || newScale > 10) return;
+
+        scale = newScale;
+
+        // Adjust translation to keep mouse position fixed
+        translateX = mouseX - imageX * scale;
+        translateY = mouseY - imageY * scale;
+
+        updateTransform();
+    });
+
+    // Mouse drag to pan - start drag
+    viewport.addEventListener('mousedown', (e) => {
+        e.preventDefault();
+        isDragging = true;
+        startX = e.clientX - translateX;
+        startY = e.clientY - translateY;
+        viewport.classList.add('grabbing');
+    });
+
+    // Mouse drag to pan - continue drag (on document to catch events outside viewport)
+    document.addEventListener('mousemove', (e) => {
+        if (!isDragging) return;
+
+        translateX = e.clientX - startX;
+        translateY = e.clientY - startY;
+        updateTransform();
+    });
+
+    // Mouse drag to pan - end drag (on document to catch release anywhere)
+    document.addEventListener('mouseup', () => {
+        if (isDragging) {
+            isDragging = false;
+            viewport.classList.remove('grabbing');
+        }
+    });
+
+    // Handle window resize
+    window.addEventListener('resize', () => {
+        fitImageToViewport();
+    });
+</script>
+</body>
+</html>
