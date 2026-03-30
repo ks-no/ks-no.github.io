@@ -280,12 +280,12 @@ Ved feil ved opplasting får man 400 Bad Request når multipart-requesten ikke e
 For å sende inn søknad og ettersendelse med mellomlagring av vedlegg er det laget et nytt api: 
 [(api-spec)](https://editor-next.swagger.io/?url=https://developers.fiks.ks.no/api/digisos-mellomlagring-api-v1.json)
 
-Her bruker man en multipart request på samme måte som ved innsending av søknad, men det skal kun legges ved en enkelt fil. Om det er flere vedlegg må de lastes opp en om gangen. Hver request må da bruke den samme ```{navEkseternRefId}```. Vedleggene kan deretter lastes ned eller slettes fra mellomlageret ved bruk av dette api'et.
+Her bruker man en multipart request på samme måte som ved innsending av søknad, men det skal kun legges ved en enkelt fil. Om det er flere vedlegg må de lastes opp en om gangen. Hver request må da bruke den samme ```{navEksternRefId}```. Vedleggene kan deretter lastes ned eller slettes fra mellomlageret ved bruk av dette api'et.
 
-Når det er klart for å sende inn søknad eller ettersendelse brukes et nytt api endepunkt på søknad spi'et med følgende URL: ```/digisos/api/v2/soknader/{kommunenummer}/{navEkseternRefId}```
+Når det er klart for å sende inn søknad eller ettersendelse brukes et nytt api endepunkt på søknad api'et med følgende URL for innsending av søknader: ```/digisos/api/v2/soknader/{kommunenummer}/{navEksternRefId}``` og følgende URL for innsending av ettersendelser: ```/digisos/api/v2/soknader/{kommunenummer}/{soknadId}/{navEksternRefId}```
 
-Dette fungerer på samme måte som det gamle api'et for søknad, men uten vedlegg. Vedleggene vil nå hentes fra mellomlager, knyttet til ```{navEkseternRefId}``` som
-oppgis her, og som ble benyttet til mellomlagring. Når innsending er ferdig, vil alle filene knyttet til denne ```{navEkseternRefId}``` slettes fra mellomlagring.
+Dette fungerer på samme måte som det gamle api'et for søknad, men uten vedlegg. Vedleggene vil nå hentes fra mellomlager, knyttet til ```{navEksternRefId}``` som
+oppgis her, og som ble benyttet til mellomlagring. Når innsending er ferdig, vil alle filene knyttet til denne ```{navEksternRefId}``` slettes fra mellomlagring.
 
 Automatisk sletting av mellomlagrede filer for søknader som ikke er sendt inn vil komme i en senere releas.
 
