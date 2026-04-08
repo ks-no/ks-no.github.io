@@ -17,7 +17,7 @@ På samme måte har KS-Digitale fellestjenester også påbegynt en vurdering av 
 Den enkelte digitale fellestjeneste avtalefestes ved et eget tjenestevedlegg til den grunnleggende avtalen om tilknytning og bruk av Fiks-plattformen.
 
 ## Styringsystem for personvern og informasjonssikkerhet
-KS-Digitale fellestjenester har etablert og jobber etter et eget styringssystem for personvern og informasjonssikkerhet. Styringssystemet bygger på anerkjente standarder som ISO27001, ISO27701 og NSMs grunnprinsipper for IKT-sikkerhet. For spesifikke spørsmål om sikkerhet og personvern på plattformen, ta kontakt med [brukerstøtte](mailto:fiks@ks.no) eller [sikkerhetsavdelingen](mailto:fiks-sikkerhet@ks.no) vår.
+KS-Digitale fellestjenester har etablert og jobber etter et eget styringssystem for personvern og informasjonssikkerhet. Styringssystemet bygger på anerkjente standarder som ISO27001, ISO27701 og NSMs grunnprinsipper for IKT-sikkerhet. For spesifikke spørsmål om sikkerhet og personvern på plattformen, ta kontakt med [brukerstøtte](mailto:fiks@ksdigital.no) eller [sikkerhetsavdelingen](mailto:fiks-sikkerhet@ksdigital.no) vår.
 
 ## Overordnet om teknologiske sikringstiltak
 Digdirs fellestjenester ID-porten og maskinporten benyttes til autentisering, og benyttes som identitetsbærer i hele Fiks-plattformen. ID- og maskinporten-tokens benyttes også som grunnlag for plattformens gjennom-gående autorisasjonslag, som benyttes på tvers av alle tjenester.  Gjennom faste prinsipper og komponenter oppnår plattformen er veletablert og godt testet funksjonalitet for autentisering og autorisasjon.

@@ -7,7 +7,7 @@ aliases: ["/fiks-platform/difiidportenklient", "/fiks-plattform/difiidportenklie
 For å ta i bruk maskinporten må man gjøre følgende:
 - Avtale med Digdir om bruk av maskinporten
 - Virksomhetssertifikater for test- og produksjonsmiljøet
-- Sendt e-post til fiks-utvikling@ks.no hvor dere informerer om at det er inngått en avtale med Digdir om bruk av maskinporten og hvilket organisasjonsnummer det gjelder
+- Sendt e-post til fiks@ksdigital.no hvor dere informerer om at det er inngått en avtale med Digdir om bruk av maskinporten og hvilket organisasjonsnummer det gjelder
 - Opprett maskinporten-klient hos Digdir
 
 Les videre for beskrivelser om hvordan man kan få dette på plass. 
@@ -21,7 +21,7 @@ Man må ha virksomhetsertifikat fra Commfides eller Buypass. Test sertifikat for
 Husk å registrere virksomhetssertifikat med samme organisasjonsnummer som man vil bruke hos maskinporten og eventuelt tjenster hos KS som f.eks. [Fiks-Protokoll](https://developers.fiks.ks.no/fiks-plattform/tjenester/fiksprotokoll/) og [Fiks-IO](https://developers.fiks.ks.no/fiks-plattform/tjenester/fiksprotokoll/fiksio/).
 
 ### Opprette maskinporten-klient
-- Husk å sende e-post til fiks-utvikling@ks.no med organisasjonsnummeret, slik at vi blant annet får gitt tilgang til "ks:fiks"-scopet.
+- Husk å sende e-post til fiks@ksdigital.no med organisasjonsnummeret, slik at vi blant annet får gitt tilgang til "ks:fiks"-scopet.
 Det er mulig å fullføre opprettelsen av maskinport-klient uten at dette er på plass, men det må etterregistreres for å få klienten til å virke på Fiks-plattformen.
 - Gå til https://sjolvbetjening.samarbeid.digdir.no/
 - Logg inn
@@ -32,7 +32,7 @@ Det er mulig å fullføre opprettelsen av maskinport-klient uten at dette er på
 - Sett Integrasjon for: for egen virksomhet -> integrasjonstype = maskinporten,  -> velg scopes,  Der skal du se ks:fiks i lista.
 - client_name: til et navn som passer
 - Digdir-tjeneste: Maskinporten (for personinnlogging må du kontakte idporten@difi.no)
-- legg til scopes: ks:fiks ( Vises ikke dette har vi ikke fått korrekt org.nr fra dere, send det til fiks-utvikling@ks.no)
+- legg til scopes: ks:fiks ( Vises ikke dette har vi ikke fått korrekt org.nr fra dere, send det til fiks@ksdigital.no)
 - grant_types: urn:ietf:params:oauth:grant-type:jwt-bearer må være valgt
 - token_endpoint_auth_method: private_key_jwt 
 ![Idporten](../../Tjenester/images/difi-selvbetjening3.png "")

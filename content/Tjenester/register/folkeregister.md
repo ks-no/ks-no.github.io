@@ -26,14 +26,14 @@ Dere må:
 * Ha inngått avtaler med Skatteetaten og KS, samt delegert tilgang til KS, [klikk her for mer informasjon](https://portal.fiks.ks.no/fiks/fiks-folkeregister/).
 * Ha virksomhetssertifikat for de miljøene dere skal være koblet opp i
 * Ha avtale med Digdir om bruk av maskinporten
-* Kontakt (fiks-utvikling@ks.no) oss og be om å få tilgang til scopet ks:fiks. Husk å oppgi organisasjonsnummeret det gjelder. (Samme nummer som virksomhetssertifikatet er utstedt til.)
+* Kontakt (fiks@ksdigital.no) oss og be om å få tilgang til scopet ks:fiks. Husk å oppgi organisasjonsnummeret det gjelder. (Samme nummer som virksomhetssertifikatet er utstedt til.)
 * Opprett maskinportenklient som konfigureres opp med ks:fiks-scopet
 
 #### Leverandører
 Dere må:
 * Ha virksomhetssertifikat for de miljøene dere skal være koblet opp i
 * Ha avtale med Digdir om bruk av maskinporten
-* Kontakt (fiks-utvikling@ks.no) oss og be om å få tilgang til scopet ks:fiks, samt tilgang til Fiks-plattformen (testmiljø). Husk å oppgi organisasjonsnummeret det gjelder. (Samme nummer som virksomhetssertifikatet er utstedt til.)
+* Kontakt (fiks@ksdigital.no) oss og be om å få tilgang til scopet ks:fiks, samt tilgang til Fiks-plattformen (testmiljø). Husk å oppgi organisasjonsnummeret det gjelder. (Samme nummer som virksomhetssertifikatet er utstedt til.)
 * Opprett maskinportenklient som konfigureres opp med ks:fiks-scopet
 
 #### Felles
@@ -153,4 +153,4 @@ Historiske data
 
 
 ## Kontakt
-Tekniske spørsmål og henvendelser kan rettes til fiks-utvikling@ks.no, øvrige henvendelser kan rettes til fiks@ks.no
+Tekniske spørsmål og henvendelser kan rettes til fiks@ksdigital.no, øvrige henvendelser kan rettes til fiks@ksdigital.no

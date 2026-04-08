@@ -62,8 +62,8 @@ Viser skjema du har påbegynt eller sendt inn til kommunen.
 Viser fakturaer som er sendt til deg eller du har tilgang til.
 
 ### Nasjonale tjenester
-Oversikt over viktige nasjonale tjenester. Ta kontakt med fiks@ks.no hvis du har forslag til ytterligere tjenester som bør finnes her.
+Oversikt over viktige nasjonale tjenester. Ta kontakt med fiks@ksdigital.no hvis du har forslag til ytterligere tjenester som bør finnes her.
 
 ### Skatt og avgift
-Lenker til viktige tjenester innen skatt og avgift. Ta kontakt med fiks@ks.no hvis du har forslag til ytterligere tjenester som bør finnes her.
+Lenker til viktige tjenester innen skatt og avgift. Ta kontakt med fiks@ksdigital.no hvis du har forslag til ytterligere tjenester som bør finnes her.
 
