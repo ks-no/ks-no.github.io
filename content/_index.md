@@ -16,10 +16,10 @@ Det er utarbeidet et dokument som går igjennom fiks-plattformen. Dette kan [las
 Brukerdokumentasjon finner en [her](https://ksdigital.no/)
 
 #### Feil
-Hvis du finner feil eller noe som ikke er beskrevet godt nok, setter vi pris på om du sender en e-post til [fiks-utvikling@ks.no](mailto:fiks-utvikling@ks.no) .
+Hvis du finner feil eller noe som ikke er beskrevet godt nok, setter vi pris på om du sender en e-post til [fiks@ksdigital.no](mailto:fiks@ksdigital.no) .
 
 #### Abonner på dokumentasjonsendringer
 For å abonnere på endringer i dokumentasjonen kan du benytte vår <a rel="alternate" type="application/rss+xml" href="index.xml">RSS-feed</a>.
 
 #### Slack
-Vi anbefaler også alle integrasjonsutviklere å benytte vår Slack-kanal for spørsmål og kommentarer vedrørende Fiks-plattformen, send en e-post til [fiks-utvikling@ks.no](mailto:fiks-utvikling@ks.no) for invitasjon.
+Vi anbefaler også alle integrasjonsutviklere å benytte vår Slack-kanal for spørsmål og kommentarer vedrørende Fiks-plattformen, send en e-post til [fiks@ksdigital.no](mailto:fiks@ksdigital.no) for invitasjon.

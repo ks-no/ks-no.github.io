@@ -8,7 +8,7 @@ Det første som må gjøres for bruke Fiks Protokoll, er å skrive under på avt
 
 ## Steg 1: Logg inn
 Logg først inn på [forvaltning.fiks.ks.no](https://forvaltning.fiks.ks.no) ([forvaltning.fiks.test.ks.no](https://forvaltning.fiks.test.ks.no) for testmiljø).
-I produksjon må dette gjøres av en person som har administrasjonstilgang til organisasjonen i Fiks. I test gjøres det med en testbruker som har tilgang til organisasjonen i test. Ta kontakt med brukerstøtte [fiks@ks.no](mailto:fiks@ks.no) om du trenger hjelp med å opprette testbruker og testorganisasjon.
+I produksjon må dette gjøres av en person som har administrasjonstilgang til organisasjonen i Fiks. I test gjøres det med en testbruker som har tilgang til organisasjonen i test. Ta kontakt med brukerstøtte [fiks@ksdigital.no](mailto:fiks@ksdigital.no) om du trenger hjelp med å opprette testbruker og testorganisasjon.
 Brukerautentisering gjøres via ID-Porten. I test brukes typisk MINID, BANKID eller TESTID.
 ![fiks protokoll](/images/protokoll-brukerveiledning/1_log_inn_idporten.png "Logg inn")
 

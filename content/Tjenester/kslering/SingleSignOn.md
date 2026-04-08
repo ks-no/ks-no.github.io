@@ -6,7 +6,7 @@ hidden: true
 ---
 ## Single sign On (SSO)
 1. Bestilling
-   Kommune / IKT samarbeidet sender bestilling med meta-datalenke til fiks@ks.no 
+   Kommune / IKT samarbeidet sender bestilling med meta-datalenke til fiks@ksdigital.no 
 2. Grunnoppsett
    Sertifikater
    Manuelt importere rot-sertifikatet til KS som ligger nederst under "Legal Person – G3" på https://www.commfides.com/en/cps/. Rot-sertifikatet skal installeres i mappen Trusted Root Certificates Authorities, Microsoft AD FS kan komme til å foreslå Intermediate Certification Authorities.

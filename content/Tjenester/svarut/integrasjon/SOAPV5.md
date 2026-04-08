@@ -130,7 +130,7 @@ Hovedtjeneste som sender inn forsendelse til ekspedering av KS-SvarUt. Følgende
 
 <td class="bold">Avgivende system</td>
 
-<td colspan="2">Identifikator som identifiserer systemet som gjør web-service kallet, vil blant annet kunne benyttes for statistikk og feilsøking. Bruk følgende for sak/arkivsystemene: Doculive, Ephorte, ESA, 360 og Websak. For andre fagsystemer avtales dette med KS KommIT på [svarut@ks.no](mailto:svarut@ks.no). Obligatorisk felt.</td>
+<td colspan="2">Identifikator som identifiserer systemet som gjør web-service kallet, vil blant annet kunne benyttes for statistikk og feilsøking. Bruk følgende for sak/arkivsystemene: Doculive, Ephorte, ESA, 360 og Websak. For andre fagsystemer avtales dette med KS KommIT på [fiks@ksdigital.no](mailto:fiks@ksdigital.no). Obligatorisk felt.</td>
 
 </tr>
 <tr>

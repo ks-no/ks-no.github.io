@@ -125,7 +125,7 @@ Som nevnt over har Fiks IO i utgangspunktet ingen formening om hva innholdet i e
 
 Digisos bruker som nevnt over meldingsprotokollen "no.nav.digisos.fagsystem.v1", som er beskrevet i mer detalj under [Fiks Digisos](https://ks-no.github.io/fiks-plattform/tjenester/digisos/#fiks-io-meldingsprotokoll).
 
-Ta kontakt med fiks@ks.no om du ønsker å etablere eller gjøre endringer i en protokoll.
+Ta kontakt med fiks@ksdigital.no om du ønsker å etablere eller gjøre endringer i en protokoll.
 
 ### Levetid på melding og TTL (Time To Live)
 Når man sender en melding via Fiks IO klienten kan man velge å sette en levetid (TTL) selv på meldingen, men med minimum 1 sekund. 
