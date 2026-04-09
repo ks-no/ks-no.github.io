@@ -8,6 +8,10 @@
       "url": "https://www.ks.no/fagomrader/digitalisering/utviklingsprosjekter",
       "email": "fiks-utvikling@ks.no"
     },
+    "license": {
+      "name": "MIT",
+      "url": "https://opensource.org/licenses/MIT"
+    },
     "version": "v1"
   },
   "servers": [
@@ -18,6 +22,11 @@
     {
       "url": "https://api.test.fiks.ks.no",
       "description": "KS Fiks TEST API host"
+    }
+  ],
+  "security": [
+    {
+      "bearerAuth": []
     }
   ],
   "tags": [
@@ -32,6 +41,7 @@
         "tags": [
           "demo"
         ],
+        "summary": "Hent service informasjon for integrasjoner",
         "description": "Standard service informasjon som kun skal være tilgjengelig for integrasjoner",
         "operationId": "integrasjon",
         "responses": {
@@ -50,7 +60,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                  "$ref": "#/components/schemas/ErrorMessage"
                 }
               }
             }
@@ -63,6 +73,7 @@
         "tags": [
           "demo"
         ],
+        "summary": "Hent service informasjon for integrasjon som representerer en person",
         "description": "Standard service informasjon som kun skal være tilgjengelig for integrasjon som representerer en person",
         "operationId": "integrasjonPerson",
         "responses": {
@@ -81,7 +92,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                  "$ref": "#/components/schemas/ErrorMessage"
                 }
               }
             }
@@ -94,6 +105,7 @@
         "tags": [
           "demo"
         ],
+        "summary": "Hent service informasjon for personer",
         "description": "Standard service informasjon som kun skal være tilgjengelig for personer",
         "operationId": "person",
         "responses": {
@@ -112,7 +124,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                  "$ref": "#/components/schemas/ErrorMessage"
                 }
               }
             }
@@ -125,6 +137,7 @@
         "tags": [
           "demo"
         ],
+        "summary": "Hent standard service informasjon",
         "description": "Standard service informasjon som skal være tilgjengelig for ALLE med gyldig token",
         "operationId": "standard",
         "responses": {
@@ -137,12 +150,29 @@
                 }
               }
             }
+          },
+          "401": {
+            "description": "Ikke autorisert",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
           }
         }
       }
     }
   },
   "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    },
     "schemas": {
       "ServiceInformation": {
         "type": "object",
@@ -164,7 +194,56 @@
             ]
           }
         },
-        "required": ["apiName", "apiVersion", "authorizationDescription"]
+        "required": [
+          "apiName",
+          "apiVersion",
+          "authorizationDescription"
+        ]
+      },
+      "ErrorMessage": {
+        "type": "object",
+        "description": "Feilmelding fra Fiks-plattformen",
+        "externalDocs": {
+          "description": "Beskrivelse av feilmeldinger",
+          "url": "https://ks-no.github.io/fiks-plattform/integrasjoner/#feilmeldinger"
+        },
+        "properties": {
+          "timestamp": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "status": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "error": {
+            "type": "string"
+          },
+          "errorId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "path": {
+            "type": "string"
+          },
+          "originalPath": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          },
+          "errorCode": {
+            "type": "string"
+          },
+          "errorJson": {
+            "type": "string"
+          }
+        },
+        "example": {
+          "message": "Mangler tilgang",
+          "errorId": "ee2ed64d-de8b-45f9-b9c6-3363d662d93b",
+          "status": 403
+        }
       }
     }
   }
