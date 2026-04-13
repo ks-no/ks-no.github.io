@@ -1,0 +1,384 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "KS FIKS: Konsesjon konfigurasjon API",
+    "description": "API for konfigurasjon av Konsesjon-tjenesten, herunder valg av Fiks Arkiv-konto for arkivering.",
+    "contact": {
+      "name": "Fiks konsesjon",
+      "url": "https://www.ks.no/fagomrader/digitalisering/utviklingsprosjekter",
+      "email": "fiks-utvikling@ksdigital.no"
+    },
+    "version": "v1"
+  },
+  "servers": [
+    {
+      "url": "https://api.fiks.ks.no",
+      "description": "KS Fiks API host"
+    },
+    {
+      "url": "https://api.test.fiks.ks.no",
+      "description": "KS Fiks TEST API host"
+    }
+  ],
+  "tags": [
+    {
+      "name": "ArkivKonfigurasjon",
+      "description": "Konfigurasjon av Fiks Arkiv-integrasjon for Konsesjon"
+    }
+  ],
+  "paths": {
+    "/konsesjon/api/v1/konfigurasjon/{fiksOrgId}/arkiv/kontoer": {
+      "get": {
+        "tags": ["ArkivKonfigurasjon"],
+        "summary": "Hent tilgjengelige Fiks Arkiv-kontoer",
+        "description": "Henter alle Fiks Arkiv-kontoer for kommunen som er av relevante part-typer for arkivsiden. Kontoer med klient-parter ekskluderes.",
+        "operationId": "hentArkivKontoer",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "fiksOrgId",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/FiksOrgId"
+            },
+            "description": "Fiks organisasjons-ID for kommunen"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Liste over tilgjengelige Fiks Arkiv-kontoer",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ArkivKontoSammendrag"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Feil input",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Ikke tilgang – bearer token ikke sendt",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Ikke tilgang",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/konsesjon/api/v1/konfigurasjon/{fiksOrgId}/arkiv/kontoer/{kontoId}/valider": {
+      "post": {
+        "tags": ["ArkivKonfigurasjon"],
+        "summary": "Valider valgt Fiks Arkiv-konto",
+        "description": "Sjekker at den oppgitte Fiks Arkiv-kontoen er gyldig og tilgjengelig for bruk. Returnerer 200 OK hvis kontoen er gyldig.",
+        "operationId": "validerArkivKonto",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "fiksOrgId",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/FiksOrgId"
+            },
+            "description": "Fiks organisasjons-ID for kommunen"
+          },
+          {
+            "in": "path",
+            "name": "kontoId",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/ArkivKontoId"
+            },
+            "description": "ID for Fiks Arkiv-kontoen som skal valideres"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Kontoen er gyldig og kan benyttes"
+          },
+          "400": {
+            "description": "Feil input",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Ikke tilgang – bearer token ikke sendt",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Ikke tilgang",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Fant ikke Fiks Arkiv-kontoen",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/konsesjon/api/v1/konfigurasjon/{fiksOrgId}/arkiv/konto": {
+      "get": {
+        "tags": ["ArkivKonfigurasjon"],
+        "summary": "Hent valgt Fiks Arkiv-konto med status",
+        "description": "Returnerer den konfigurerte Fiks Arkiv-kontoen for konsesjon, inkludert status som antall meldinger på kø og antall aktive konsumenter.",
+        "operationId": "hentKonfigurertArkivKonto",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "fiksOrgId",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/FiksOrgId"
+            },
+            "description": "Fiks organisasjons-ID for kommunen"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Konfigurert Fiks Arkiv-konto med status",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ArkivKontoMedStatus"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Ikke tilgang – bearer token ikke sendt",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Ikke tilgang",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Ingen Fiks Arkiv-konto er konfigurert ennå",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": ["ArkivKonfigurasjon"],
+        "summary": "Sett Fiks Arkiv-konto for konsesjon",
+        "description": "Erstatter konfigurasjonen for hvilken Fiks Arkiv-konto konsesjon skal arkivere til.",
+        "operationId": "settArkivKonto",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "fiksOrgId",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/FiksOrgId"
+            },
+            "description": "Fiks organisasjons-ID for kommunen"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SettArkivKontoRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Konfigurasjonen er oppdatert",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ArkivKontoMedStatus"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Feil input",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Ikke tilgang – bearer token ikke sendt",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Ikke tilgang",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Fant ikke den oppgitte Fiks Arkiv-kontoen",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "FiksOrgId": {
+        "type": "string",
+        "format": "uuid",
+        "description": "Fiks organisasjons-ID (UUID)"
+      },
+      "ArkivKontoId": {
+        "type": "string",
+        "format": "uuid",
+        "description": "Unik ID for en Fiks Arkiv-konto (UUID)"
+      },
+      "ArkivKontoSammendrag": {
+        "type": "object",
+        "description": "Sammendrag av en Fiks Arkiv-konto, til bruk ved valg av konto",
+        "required": ["kontoId", "navn"],
+        "properties": {
+          "kontoId": {
+            "$ref": "#/components/schemas/ArkivKontoId"
+          },
+          "navn": {
+            "type": "string",
+            "description": "Visningsnavn for kontoen"
+          },
+          "beskrivelse": {
+            "type": "string",
+            "description": "Valgfri beskrivelse av kontoen"
+          },
+          "fiksOrgId": {
+            "$ref": "#/components/schemas/FiksOrgId"
+          }
+        }
+      },
+      "ArkivKontoMedStatus": {
+        "type": "object",
+        "description": "Konfigurert Fiks Arkiv-konto med køstatus og konsumenter",
+        "required": ["kontoId", "navn"],
+        "properties": {
+          "kontoId": {
+            "$ref": "#/components/schemas/ArkivKontoId"
+          },
+          "navn": {
+            "type": "string",
+            "description": "Visningsnavn for kontoen"
+          },
+          "beskrivelse": {
+            "type": "string",
+            "description": "Valgfri beskrivelse av kontoen"
+          },
+          "fiksOrgId": {
+            "$ref": "#/components/schemas/FiksOrgId"
+          },
+          "antallMeldingerPaaKoe": {
+            "type": "integer",
+            "format": "int64",
+            "description": "Antall meldinger som venter i køen for denne kontoen"
+          },
+          "antallKonsumenter": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Antall aktive konsumenter som lytter på køen"
+          }
+        }
+      },
+      "SettArkivKontoRequest": {
+        "type": "object",
+        "description": "Forespørsel om å sette ny Fiks Arkiv-konto for konsesjon",
+        "required": ["kontoId"],
+        "properties": {
+          "kontoId": {
+            "$ref": "#/components/schemas/ArkivKontoId"
+          }
+        }
+      }
+    }
+  }
+}
