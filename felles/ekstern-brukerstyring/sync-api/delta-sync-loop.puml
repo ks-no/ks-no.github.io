@@ -1,0 +1,26 @@
+@startuml
+/'!include skin.puml'/
+
+title Delta-synkronisering med syncToken
+
+participant "Målsystem" as target
+participant "Sync API" as sync
+
+== Første synkronisering (Full sync) ==
+target -> sync : GET /brukere (uten syncToken)
+sync --> target : { "events": [...], "syncToken": "token_1", "hasMore": true }
+
+== Påfølgende synkroniseringer (Delta) ==
+group Fortsett så lenge hasMore = true
+    target -> sync : GET /brukere?syncToken=token_1
+    sync --> target : { "events": [...], "syncToken": "token_2", "hasMore": false }
+end
+
+note over target : Klienten lagrer "token_2" lokalt\nog venter til neste polling-intervall
+
+... Etter en pause ...
+
+target -> sync : GET /brukere?syncToken=token_2
+sync --> target : { "events": [nye endringer], "syncToken": "token_3", "hasMore": false }
+
+@enduml

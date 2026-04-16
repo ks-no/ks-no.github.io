@@ -9,7 +9,7 @@
 
     <link rel="icon" href="/images/favicon.png" type="image/png">
 
-    <title>SvarUt :: KS Fiks</title>
+    <title>Brukersynkronisering Sync API :: KS Fiks</title>
 
     
     <link href="/css/nucleus.css?1776327527" rel="stylesheet">
@@ -37,7 +37,7 @@
     </style>
     
   </head>
-  <body class="" data-url="/tjenester/svarut/">
+  <body class="" data-url="/felles/ekstern-brukerstyring/sync-api/">
     <nav id="sidebar" class="">
 
 
@@ -81,7 +81,7 @@
   
     
     <li data-nav-id="/felles/" title="Felles" class="dd-item
-        
+        parent
         
         
         ">
@@ -110,7 +110,7 @@
   
     
     <li data-nav-id="/felles/ekstern-brukerstyring/" title="Ekstern brukerstyring" class="dd-item
-        
+        parent
         
         
         ">
@@ -166,7 +166,7 @@
     
     <li data-nav-id="/felles/ekstern-brukerstyring/sync-api/" title="Brukersynkronisering Sync API" class="dd-item
         
-        
+        active
         
         ">
       <a href="/felles/ekstern-brukerstyring/sync-api/">
@@ -343,7 +343,7 @@
   
     
     <li data-nav-id="/tjenester/" title="Tjenester" class="dd-item
-        parent
+        
         
         
         ">
@@ -1444,7 +1444,7 @@
     
     <li data-nav-id="/tjenester/svarut/" title="SvarUt" class="dd-item
         
-        active
+        
         
         ">
       <a href="/tjenester/svarut/">
@@ -1759,7 +1759,7 @@
                   
                   
                   <div id="top-github-link">
-                    <a class="github-link" title='' href="https://github.com/ks-no/ks-no.github.io/edit/source/content/Tjenester/svarut/_index.md" target="blank">
+                    <a class="github-link" title='' href="https://github.com/ks-no/ks-no.github.io/edit/source/content/Felles/ekstern-brukerstyring/sync-api/_index.md" target="blank">
                       <i class="fas fa-code-branch"></i>
                       <span id="top-github-link-text"></span>
                     </a>
@@ -1790,7 +1790,13 @@
             
           
           
-            <a href='/'>KS Fiks dokumentasjon</a> > <a href='/tjenester/'>Tjenester</a> > SvarUt
+            
+            
+          
+          
+            <a href='/'>KS Fiks dokumentasjon</a> > <a href='/felles/'>Felles</a> > <a href='/felles/ekstern-brukerstyring/'>Ekstern brukerstyring</a> > Brukersynkronisering Sync API
+          
+        
           
         
           
@@ -1805,15 +1811,42 @@
     <div class="wrapper">
 <nav id="TableOfContents">
   <ol>
-    <li><a href="#kort-beskrivelse">Kort beskrivelse</a></li>
-    <li><a href="#tilgjengelige-grensesnitt">Tilgjengelige grensesnitt</a></li>
-    <li><a href="#beskrivelse-av-tjenesten">Beskrivelse av tjenesten</a>
+    <li><a href="#1-arkitektur">1. Arkitektur</a>
       <ol>
-        <li><a href="#teknisk-oversikt-skisse">Teknisk oversikt skisse</a></li>
-        <li><a href="#konfigurasjon-av-svarut">Konfigurasjon av Svarut</a></li>
-        <li><a href="#iper">IPer</a></li>
+        <li><a href="#delta-synkronisering-med-synctoken">Delta-synkronisering med syncToken</a></li>
       </ol>
     </li>
+    <li><a href="#2-tilgang-og-autentisering">2. Tilgang og Autentisering</a>
+      <ol>
+        <li><a href="#base-url">Base URL</a></li>
+        <li><a href="#autentisering">Autentisering</a></li>
+      </ol>
+    </li>
+    <li><a href="#3-endepunkter">3. Endepunkter</a>
+      <ol>
+        <li><a href="#batch-synkronisering-delta">Batch-synkronisering (Delta)</a>
+          <ol>
+            <li><a href="#synkronisering-av-brukere">Synkronisering av brukere</a></li>
+            <li><a href="#synkronisering-av-grupper">Synkronisering av grupper</a></li>
+          </ol>
+        </li>
+        <li><a href="#enkeltoppslag-full-tilstand">Enkeltoppslag (Full tilstand)</a></li>
+      </ol>
+    </li>
+    <li><a href="#4-forståelse-av-respons-data">4. Forståelse av respons-data</a>
+      <ol>
+        <li><a href="#hendelsestyper-events">Hendelsestyper (Events)</a></li>
+        <li><a href="#spesialhåndtering-av-store-grupper">Spesialhåndtering av store grupper</a></li>
+        <li><a href="#beriking-med-personidentifikator-fnrd-nummer">Beriking med Personidentifikator (FNR/D-nummer)</a></li>
+      </ol>
+    </li>
+    <li><a href="#5-robusthet-og-edge-cases">5. Robusthet og Edge Cases</a>
+      <ol>
+        <li><a href="#paging-og-ufullstendige-sider">Paging og ufullstendige sider</a></li>
+        <li><a href="#feilhåndtering-og-statuskoder">Feilhåndtering og Statuskoder</a></li>
+      </ol>
+    </li>
+    <li><a href="#veien-videre">Veien videre</a></li>
   </ol>
 </nav>
     </div>
@@ -1831,7 +1864,7 @@
           
             <h1>
               
-              SvarUt
+              Brukersynkronisering Sync API
             </h1>
           
 
@@ -1839,56 +1872,124 @@
 
 
 
-	<h2 id="kort-beskrivelse">Kort beskrivelse</h2>
-<p>KS FIKS meldingformidler er en sentralisert løsning som formidler dokumenter mellom avsender og mottaker via ulike kanaler.
-Kommuner og andre kan benytte KS FIKS plattform. SvarUt benyttes for utgående post, mens SvarInn benyttes for innkommet post.</p>
-<p>Edialog er grensesnittet som tilbys innbygger for å fylle ut et skjema som skal returneres til kommunen.</p>
-<h2 id="tilgjengelige-grensesnitt">Tilgjengelige grensesnitt</h2>
-<table>
-<thead>
-<tr>
-<th>Grensesnitt</th>
-<th>Støtte</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Web portal</td>
-<td>Ja</td>
-</tr>
-<tr>
-<td>Maskin til maskin</td>
-<td><a href="api-versjoner">Apier</a></td>
-</tr>
-</tbody>
-</table>
-<h2 id="beskrivelse-av-tjenesten">Beskrivelse av tjenesten</h2>
-<p>SvarUt er en tjeneste som tilbyr et grensesnitt for aktørene i en digital dialog mellom kommune og innbygger.</p>
-<h3 id="teknisk-oversikt-skisse">Teknisk oversikt skisse</h3>
-<p><img src="http://www.plantuml.com/plantuml/proxy?src=https://raw.githubusercontent.com/wiki/ks-no/svarut-dokumentasjon/edialog/edialog.puml?2" alt="alternative text"></p>
-<h3 id="konfigurasjon-av-svarut">Konfigurasjon av Svarut</h3>
-<p>Etter at det er signert avtale med KS om bruk av SvarUt oversendes en veiledning i konfigurasjon av tjenesten: <a href="https://ksdigital.no/tjenestene/svarut-tjenesten/svarut-konfigurasjon/">Konfigurasjon av SvarUt</a></p>
-<p>Informasjon på nettstedet <a href="https://ksdigital.no">https://ksdigital.no</a> er beregnet på kommuner og andre virksomheter som har tegnet avtale om bruk av SvarUt.</p>
-<h3 id="iper">IPer</h3>
-<p>Hvis dere må åpne i brannvegg ligger svarut bak disse ipene:</p>
-<table>
-<thead>
-<tr>
-<th>SvarUT-Test</th>
-<th>SvarUT-PROD</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>137.221.25.65</td>
-<td>137.221.25.66</td>
-</tr>
-<tr>
-<td>137.221.28.65</td>
-<td>137.221.28.66</td>
-</tr>
-</tbody>
-</table>
+	<p><strong>Brukersynkronisering Sync API</strong> (Sync API) er et API som lar eksterne målsystemer holde seg kontinuerlig oppdatert på bruker- og gruppedata fra Fiks-plattformen.</p>
+<p>Sync API er optimalisert for å hente kun endringer (delta) siden forrige synkronisering. Dette reduserer datamengden og sikrer at målsystemet alltid er synkront med kilden.</p>
+<hr>
+<h2 id="1-arkitektur">1. Arkitektur</h2>
+<p>Diagrammet under viser hvordan data flyter fra organisasjonens Identity Provider (IdP) til målsystemet via Fiks-plattformen.</p>
+<p><img src="/diagram/sync-api-arkitektur.svg" alt="Sync API Arkitektur"></p>
+<ol>
+<li><strong>Provisjonering</strong>: IdP (f.eks. Microsoft Entra ID) sender data til Fiks SCIM API.</li>
+<li><strong>Lagring</strong>: Fiks lagrer dataene i sin database, merket med kildeinformasjon.</li>
+<li><strong>Synkronisering</strong>: Målsystemet poller Sync API for å hente nye endringer.</li>
+</ol>
+<h3 id="delta-synkronisering-med-synctoken">Delta-synkronisering med syncToken</h3>
+<p>Sync API bruker en cursor (<code>syncToken</code>) som klienten må ta vare på mellom hvert kall. Dette tokenet inneholder informasjon om hvor langt klienten har kommet i synkroniseringen, men ikke på et format som klienten skal parse. Det eneste klienten skal gjøre er å ta vare på tokenet, og sende det med på neste request. Dette sørger for at klienten kun får de endringene som har skjedd siden forrige synkronisering.</p>
+<p><img src="/diagram/sync-api-delta-sync-loop.svg" alt="Sync API Delta Loop"></p>
+<p><strong>Hvordan det fungerer:</strong></p>
+<ol>
+<li><strong>Første kall</strong>: Klienten kaller endepunktet uten <code>syncToken</code>. Dette initierer en full synkronisering fra starten.</li>
+<li><strong>Respons</strong>: Serveren returnerer en liste med hendelser (<code>events</code>), et nytt <code>syncToken</code> og et <code>hasMore</code>-flagg.</li>
+<li><strong>Neste kall</strong>: Klienten lagrer det nye tokenet og sender det med som en query-parameter i neste request.</li>
+<li><strong>Loop</strong>: Hvis <code>hasMore</code> er <code>true</code>, bør klienten kalle endepunktet på nytt umiddelbart for å hente neste batch.</li>
+</ol>
+<hr>
+<h2 id="2-tilgang-og-autentisering">2. Tilgang og Autentisering</h2>
+<p>For å bruke API-et må målsystemet være registrert og autorisert i Fiks Forvaltning.</p>
+<h3 id="base-url">Base URL</h3>
+<p>Sync API er tilgjengelig på følgende adresser:</p>
+<ul>
+<li><strong>Produksjon</strong>: <code>https://api.fiks.ks.no/brukersynkronisering/sync/api/v1/</code></li>
+<li><strong>Test</strong>: <code>https://api.fiks.test.ks.no/brukersynkronisering/sync/api/v1/</code></li>
+</ul>
+<h3 id="autentisering">Autentisering</h3>
+<p>Synkronisering mot Sync API autentiseres med <strong>Fiks-Porten</strong>.</p>
+<p><em>(Mer informasjon om teknisk oppsett av integrasjon og sikkerhet i Fiks-Porten kommer).</em></p>
+<hr>
+<h2 id="3-endepunkter">3. Endepunkter</h2>
+<p>API-et tilbyr batch-endepunkter for brukere og grupper, samt mulighet for å hente den fulle tilstanden til en enkelt ressurs. Alle endepunkter bruker følgende sti-parametere:</p>
+<ul>
+<li><code>fiksOrgId</code>: Kommunens eller organisasjonens unike ID (UUID) på Fiks-plattformen</li>
+<li><code>maalSystem</code>: En unik id som identifiserer målsystemet (felles for alle eventuelle instanser av målsystemet)</li>
+</ul>
+
+<div class="notices warning" ><p>Endepunktene for brukere og grupper er <strong>ikke</strong> synkronisert med hverandre. Dette betyr at en gruppe kan referere til et medlem som ennå ikke er mottatt via <code>/brukere</code>. Klienter må implementere robust logikk for å håndtere slike midlertidige avvik.</p>
+</div>
+
+<h3 id="batch-synkronisering-delta">Batch-synkronisering (Delta)</h3>
+<p>Disse endepunktene brukes for å hente endringer over tid ved bruk av <code>syncToken</code>.</p>
+<h4 id="synkronisering-av-brukere">Synkronisering av brukere</h4>
+<p><code>GET /brukersynkronisering/sync/api/v1/{fiksOrgId}/{maalSystem}/brukere</code></p>
+<p><strong>Viktige Query-parametre:</strong> <code>syncToken</code>, <code>limit</code> (default 100).</p>
+<p><strong>Eksempel på respons:</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span><span style="color:#111">{</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;events&#34;</span><span style="color:#111">:</span> <span style="color:#111">[</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#111">{</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&#34;id&#34;</span><span style="color:#111">:</span> <span style="color:#d88200">&#34;2ceb6af3-0f0a-4fa9-b05c-28b6865451b3&#34;</span><span style="color:#111">,</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&#34;changeType&#34;</span><span style="color:#111">:</span> <span style="color:#d88200">&#34;sync&#34;</span><span style="color:#111">,</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&#34;timestamp&#34;</span><span style="color:#111">:</span> <span style="color:#d88200">&#34;2023-10-01T12:00:00Z&#34;</span><span style="color:#111">,</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&#34;resource&#34;</span><span style="color:#111">:</span> <span style="color:#111">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&#34;id&#34;</span><span style="color:#111">:</span> <span style="color:#d88200">&#34;2ceb6af3-0f0a-4fa9-b05c-28b6865451b3&#34;</span><span style="color:#111">,</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&#34;userName&#34;</span><span style="color:#111">:</span> <span style="color:#d88200">&#34;ola.nordmann@kommune.no&#34;</span><span style="color:#111">,</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&#34;displayName&#34;</span><span style="color:#111">:</span> <span style="color:#d88200">&#34;Ola Nordmann&#34;</span><span style="color:#111">,</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&#34;active&#34;</span><span style="color:#111">:</span> <span style="color:#00a8c8">true</span><span style="color:#111">,</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&#34;fiks&#34;</span><span style="color:#111">:</span> <span style="color:#111">{</span> <span style="color:#f92672">&#34;identityNumber&#34;</span><span style="color:#111">:</span> <span style="color:#d88200">&#34;12345678901&#34;</span> <span style="color:#111">}</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#111">}</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#111">}</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#111">],</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;syncToken&#34;</span><span style="color:#111">:</span> <span style="color:#d88200">&#34;eyJhbGciOiJIUzI1NiJ9...&#34;</span><span style="color:#111">,</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;hasMore&#34;</span><span style="color:#111">:</span> <span style="color:#00a8c8">false</span>
+</span></span><span style="display:flex;"><span><span style="color:#111">}</span>
+</span></span></code></pre></div><h4 id="synkronisering-av-grupper">Synkronisering av grupper</h4>
+<p><code>GET /brukersynkronisering/sync/api/v1/{fiksOrgId}/{maalSystem}/grupper</code></p>
+<p><strong>Viktige Query-parametre:</strong> <code>syncToken</code>, <code>limit</code>, <code>maxGroupSize</code> (default 100).</p>
+<h3 id="enkeltoppslag-full-tilstand">Enkeltoppslag (Full tilstand)</h3>
+<p>Bruk disse endepunktene for å hente den nyeste og fullstendige tilstanden for en spesifikk ressurs.</p>
+<ul>
+<li><strong>Hent enkeltbruker</strong>: <code>GET /.../bruker/{brukerId}</code></li>
+<li><strong>Hent enkeltgruppe</strong>: <code>GET /.../gruppe/{gruppeId}</code> (Returnerer fullstendig gruppe inkludert alle medlemmer).</li>
+</ul>
+<hr>
+<h2 id="4-forståelse-av-respons-data">4. Forståelse av respons-data</h2>
+<h3 id="hendelsestyper-events">Hendelsestyper (Events)</h3>
+<p>Sync API opererer med to hovedtyper endringer:</p>
+<ol>
+<li><strong><code>sync</code></strong>: Brukeren eller gruppen er opprettet eller endret. Feltet <code>resource</code> inneholder den oppdaterte tilstanden.</li>
+<li><strong><code>delete</code></strong>: Brukeren eller gruppen er slettet fra kildesystemet. Feltet <code>resource</code> vil da være <code>null</code>.</li>
+</ol>
+<h3 id="spesialhåndtering-av-store-grupper">Spesialhåndtering av store grupper</h3>
+<p>Hvis en gruppe har svært mange medlemmer (overstiger <code>maxGroupSize</code>), vil den ikke inkluderes i sin helhet i batch-responsen for å unngå for store payloads.</p>
+<p><img src="/diagram/sync-api-large-group-sync.svg" alt="Sync API Large Group"></p>
+<ul>
+<li>Feltet <code>requiresSeparateFetch</code> vil da være <code>true</code> og <code>resource</code> vil være <code>null</code>.</li>
+<li>Klienten må da gjøre et manuelt oppslag mot enkeltgruppe-endepunktet for å hente medlemmene.</li>
+</ul>
+<h3 id="beriking-med-personidentifikator-fnrd-nummer">Beriking med Personidentifikator (FNR/D-nummer)</h3>
+<p>Sync API støtter automatisk beriking av brukere med fødselsnummer (under feltet <code>fiks.identityNumber</code>).
+<strong>Merk:</strong> Hvis en brukers fødselsnummer blir lagt til eller oppdatert i etterkant, vil dette <strong>trigge en ny <code>sync</code>-hendelse</strong> i API-et, selv om ingen andre SCIM-data har endret seg.</p>
+<hr>
+<h2 id="5-robusthet-og-edge-cases">5. Robusthet og Edge Cases</h2>
+<h3 id="paging-og-ufullstendige-sider">Paging og ufullstendige sider</h3>
+<p>Når man integrerer mot Sync API-et, er det viktig å følge disse mønstrene:</p>
+<ol>
+<li><strong>Ufullstendige sider</strong>: Selv om du ber om <code>limit=100</code>, kan du motta færre hendelser selv om <code>hasMore</code> er <code>true</code>.</li>
+<li><strong>Tomme sider med hasMore=true</strong>: I visse tilfeller kan en respons inneholde 0 hendelser selv om det er flere data i kø.
+<strong>Klienten må alltid se på <code>hasMore</code>-flagget for å avgjøre om den skal fortsette å polle, uavhengig av antall hendelser i responsen.</strong></li>
+</ol>
+<h3 id="feilhåndtering-og-statuskoder">Feilhåndtering og Statuskoder</h3>
+<ul>
+<li><strong><code>200 OK</code></strong>: Alt OK.</li>
+<li><strong><code>400 Bad Request</code></strong>: Ugyldig forespørsel (f.eks. feil format på token).</li>
+<li><strong><code>401 Unauthorized</code></strong>: Manglende eller ugyldig autentisering.</li>
+<li><strong><code>404 Not Found</code></strong>: Ressurs ikke funnet, eller målsystemet er ikke konfigurert.</li>
+<li><strong><code>410 Gone</code></strong>: <strong>Viktig!</strong> Ditt <code>syncToken</code> er utdatert (f.eks. ved kildebytte). Klienten må kaste tokenet og starte en ny full synkronisering (kall uten token).</li>
+</ul>
+<hr>
+<h2 id="veien-videre">Veien videre</h2>
+<ul>
+<li><strong>Kommende funksjonalitet</strong>: Vi jobber med å definere en utvidet respons for status <code>410</code> som angir hvorfor synkroniseringen må startes på nytt, f.eks dersom kilden som var koblet til målsystemet er byttet.</li>
+<li><strong>Teknisk referanse</strong>: Fullstendig OpenAPI-spesifikasjon finnes i <a href="/api/index.html?spec=https://developers.fiks.ks.no/api/sync-api-v1.json">Fiks API-dokumentasjon</a>.</li>
+</ul>
 
 
 
@@ -1929,6 +2030,8 @@ Kommuner og andre kan benytte KS FIKS plattform. SvarUt benyttes for utgående p
             
                 
                     
+                        
+                        
                     
                 
                 
@@ -1944,9 +2047,6 @@ Kommuner og andre kan benytte KS FIKS plattform. SvarUt benyttes for utgående p
             
             
                 
-                    
-                        
-                        
                     
                 
                 
@@ -2693,7 +2793,6 @@ Kommuner og andre kan benytte KS FIKS plattform. SvarUt benyttes for utgående p
             
             
                 
-                    
                     
                 
                 
@@ -2709,9 +2808,6 @@ Kommuner og andre kan benytte KS FIKS plattform. SvarUt benyttes for utgående p
             
             
                 
-                    
-                        
-                        
                     
                 
                 
@@ -2905,6 +3001,7 @@ Kommuner og andre kan benytte KS FIKS plattform. SvarUt benyttes for utgående p
             
                 
                     
+                    
                 
                 
 
@@ -2919,6 +3016,9 @@ Kommuner og andre kan benytte KS FIKS plattform. SvarUt benyttes for utgående p
             
             
                 
+                    
+                        
+                        
                     
                 
                 
@@ -2984,6 +3084,7 @@ Kommuner og andre kan benytte KS FIKS plattform. SvarUt benyttes for utgående p
             
                 
                     
+                    
                 
                 
 
@@ -2998,6 +3099,9 @@ Kommuner og andre kan benytte KS FIKS plattform. SvarUt benyttes for utgående p
             
             
                 
+                    
+                        
+                        
                     
                 
                 
@@ -3046,6 +3150,7 @@ Kommuner og andre kan benytte KS FIKS plattform. SvarUt benyttes for utgående p
             
             
                 
+                    
                     
                 
                 
@@ -3073,10 +3178,10 @@ Kommuner og andre kan benytte KS FIKS plattform. SvarUt benyttes for utgående p
 	 
 	 
 		
-			<a class="nav nav-prev" href="/tjenester/dokumentlager/" title="Fiks dokumentlager"> <i class="fa fa-chevron-left"></i></a>
+			<a class="nav nav-prev" href="/felles/ekstern-brukerstyring/brukere-og-grupper/" title="Brukere og grupper"> <i class="fa fa-chevron-left"></i></a>
 		
 		
-			<a class="nav nav-next" href="/tjenester/svarut/sendmeddokumenter/" title="API: Sending av dokumenter" style="margin-right: 0px;"><i class="fa fa-chevron-right"></i></a>
+			<a class="nav nav-next" href="/felles/ekstern-brukerstyring/kom-i-gang/" title="Sette opp Fiks forvaltning" style="margin-right: 0px;"><i class="fa fa-chevron-right"></i></a>
 		
 	
     </div>

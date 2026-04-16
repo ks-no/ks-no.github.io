@@ -1,0 +1,21 @@
+@startuml
+/'!include skin.puml'/
+
+title Overordnet arkitektur for Sync API
+
+participant "Identity Provider\n(Azure AD / Okta)" as idp
+participant "Fiks SCIM API" as scim
+database "Fiks Database" as mongo
+participant "Brukersynkronisering\nSync API" as sync
+participant "Målsystem\n(Ekstern applikasjon)" as target
+
+== Provisjonering (Inngående) ==
+idp -> scim : Bruker/gruppe-endringer
+scim -> mongo : Lagre identitetsdata
+
+== Synkronisering (Utgående) ==
+target -> sync : Hent endringer (Delta-sync)
+sync -> mongo : Finn endringer siden forrige gang
+sync --> target : Batch med events + syncToken
+
+@enduml
