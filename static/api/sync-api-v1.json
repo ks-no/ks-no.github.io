@@ -101,8 +101,35 @@
           "401": {
             "description": "Ikke autorisert."
           },
+          "404": {
+            "description": "Ingen aktiv kilde er koblet til målsystemet.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
           "410": {
-            "description": "**Gone / Token utløpt** `syncToken` er for gammelt eller endringer i kilden krever en ny full synkronisering. Klienten må forkaste tokenet og utføre en ny full synkronisering (kalle endepunktet uten `syncToken`)"
+            "description": "Synkroniseringen må startes på nytt (full resync). Se `errorCode` for detaljer.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Intern serverfeil.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
           }
         }
       }
@@ -189,8 +216,35 @@
           "401": {
             "description": "Ikke autorisert."
           },
+          "404": {
+            "description": "Ingen aktiv kilde er koblet til målsystemet.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
           "410": {
-            "description": "**Gone / Token utløpt** `syncToken` er for gammelt eller endringer i kilden krever en ny full synkronisering. Klienten må forkaste tokenet og utføre en ny full synkronisering (kalle endepunktet uten `syncToken`)"
+            "description": "Synkroniseringen må startes på nytt (full resync). Se `errorCode` for detaljer.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Intern serverfeil.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
           }
         }
       }
@@ -672,6 +726,61 @@
                 }
               }
             }
+          }
+        }
+      },
+      "ErrorMessage": {
+        "type": "object",
+        "description": "Feilmelding fra Fiks-plattformen",
+        "properties": {
+          "timestamp": {
+            "type": "integer",
+            "format": "int64",
+            "description": "Tidspunktet feilen oppstod i millisekunder siden epoch.",
+            "example": 1637218198035
+          },
+          "status": {
+            "type": "integer",
+            "description": "HTTP-statuskode.",
+            "example": 410
+          },
+          "error": {
+            "type": "string",
+            "description": "Beskrivelse av HTTP-statuskoden.",
+            "example": "Gone"
+          },
+          "errorId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Intern id som brukes til å finne informasjon relatert til feilen under feilsøking.",
+            "example": "3389ad1b-afa4-42e1-b6f8-76f63e560ad5"
+          },
+          "path": {
+            "type": "string",
+            "description": "Path requesten ble gjort mot.",
+            "example": "/brukersynkronisering/sync/api/v1/..."
+          },
+          "originalPath": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string",
+            "description": "Menneskelig lesbar beskrivelse av feilen som oppstod."
+          },
+          "errorCode": {
+            "type": "string",
+            "description": "Tjenestespesifikk feilkode for maskinell tolkning.",
+            "enum": [
+              "SOURCE_NOT_CONFIGURED",
+              "SOURCE_CHANGED",
+              "TOKEN_EXPIRED",
+              "FULL_RESYNC_REQUESTED",
+              "INVALID_TOKEN_FORMAT"
+            ]
+          },
+          "errorJson": {
+            "type": "string",
+            "description": "Detaljer knyttet til errorCode i JSON-format."
           }
         }
       }
