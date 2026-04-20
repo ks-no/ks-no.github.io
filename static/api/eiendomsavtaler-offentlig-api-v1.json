@@ -1,0 +1,785 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "KS FIKS: Eiendomsavtaler service",
+    "description": "Eiendomsavtaler service offentlig API",
+    "contact": {
+      "name": "Fiks brukerstøtte",
+      "url": "https://ksdigital.no/om-oss/kontakt-oss",
+      "email": "fiks@ksdigital.no"
+    },
+    "version": "v1"
+  },
+  "servers": [
+    {
+      "url": "https://api.fiks.ks.no",
+      "description": "KS Fiks API host"
+    },
+    {
+      "url": "https://api.test.fiks.ks.no",
+      "description": "KS Fiks TEST API host"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Eiendomsavtale offentlig",
+      "description": "API for eksterne til henting av eiendomsavtaler"
+    }
+  ],
+  "paths": {
+    "/eiendomsavtaler/api/v1/{fiksOrgId}/eiendomsavtaler": {
+      "get": {
+        "tags": [
+          "Eiendomsavtale offentlig"
+        ],
+        "description": "**Ikke implementert ennå.** Hente alle eiendomsavtaler fra et sekvensnummer. Kan benyttes for å hente alle eiendomsavtaler ved å bruke sekvensnummer for paginering.",
+        "operationId": "hentEiendomsavtaler",
+        "parameters": [
+          {
+            "name": "fiksOrgId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "kommunenummer",
+            "in": "query",
+            "required": true,
+            "description": "Kommunenummer for eiendomsavtalene som skal returneres.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "fraSekvensnummer",
+            "in": "query",
+            "description": "Fra og med oppgitt sekvensnummer",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "antall",
+            "in": "query",
+            "description": "Antall eiendomsavtaler som skal returneres. Maks 1000 kan hentes om gangen.",
+            "schema": {
+              "type": "integer",
+              "format": "int64",
+              "default": 100
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returnerer eiendomsavtaler",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/EiendomsavtaleAPIModel"
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Ikke tilgang",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/eiendomsavtaler/api/v1/{fiksOrgId}/eiendomsavtaler/endringer": {
+      "get": {
+        "tags": [
+          "Eiendomsavtale offentlig"
+        ],
+        "description": "**Ikke implementert ennå.** Hent eiendomsavtaler som har endringer siden angitt tidspunkt. Kan filtrere kun endringer i eiere.",
+        "operationId": "hentOppdaterteEiendomsavtaler",
+        "parameters": [
+          {
+            "name": "fiksOrgId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "kommunenummer",
+            "in": "query",
+            "required": true,
+            "description": "Kommunenummer for eiendomsavtalene som skal returneres.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "fraTid",
+            "in": "query",
+            "required": true,
+            "description": "ISO 8601-tidspunkt. Returnerer avtaler med endringer etter dette tidspunktet.",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "endretEiere",
+            "in": "query",
+            "required": false,
+            "description": "Hvis satt til true, returnerer kun avtaler hvor en eier har endret seg",
+            "schema": {
+              "type": "boolean",
+              "default": false
+            }
+          },
+          {
+            "name": "antall",
+            "in": "query",
+            "description": "Maks antall eiendomsavtaler som skal returneres. Maks 1000 kan hentes om gangen.",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 100
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returnerer eiendomsavtaler med endringer",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/EiendomsavtaleAPIModel"
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Ikke tilgang",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/eiendomsavtaler/api/v1/{fiksOrgId}/eiendomsavtaler/{avtaleId}": {
+      "get": {
+        "tags": [
+          "Eiendomsavtale offentlig"
+        ],
+        "description": "Hente eiendomsavtale",
+        "operationId": "hentEiendomsavtale",
+        "parameters": [
+          {
+            "name": "fiksOrgId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "avtaleId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returnerer eiendomsavtale",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EiendomsavtaleAPIModel"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Ikke tilgang",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Fant ikke eiendomsavtale",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/eiendomsavtaler/api/v1/{fiksOrgId}/eiendomsavtaler/soek": {
+      "post": {
+        "tags": [
+          "Eiendomsavtale offentlig"
+        ],
+        "description": "Søk etter eiendomsavtaler",
+        "operationId": "eiendomsavtaleSoek",
+        "parameters": [
+          {
+            "name": "fiksOrgId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EiendomsavtaleSoekRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Eiendomsavtaler som matcher søkekriteriene",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/EiendomsavtaleAPIModel"
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Ikke tilgang",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "EiendomsavtaleAPIModel": {
+        "type": "object",
+        "properties": {
+          "avtaleId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "avtaleAlternativId": {
+            "type": "string",
+            "description": "Alternativ ID for eiendomsavtalen som baserer seg på kommunenummer, gardsnummer, bruksnummer, festenummer, seksjonsnummer og delnummer. Anbefales å bruke avtaleId i stedet."
+          },
+          "sekvensnummer": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "oppdragsgiver": {
+            "type": "string",
+            "description": "Hvem som som eier eiendomsavtalen"
+          },
+          "avtaletype": {
+            "$ref": "#/components/schemas/EiendomsavtaleTypeAPIModel"
+          },
+          "avtalestatus": {
+            "$ref": "#/components/schemas/EiendomsavtaleStatusAPIModel"
+          },
+          "delnummer": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "bruksnavn": {
+            "type": "string"
+          },
+          "matrikkeldata": {
+            "$ref": "#/components/schemas/MatrikkeldataAPIModel"
+          },
+          "eiendomsadresse": {
+            "$ref": "#/components/schemas/EiendomsadresseAPIModel"
+          },
+          "eierkontakt": {
+            "$ref": "#/components/schemas/KundeAPIModel"
+          },
+          "eiere": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/EierAPIModel"
+            }
+          },
+          "fakturamottaker": {
+            "$ref": "#/components/schemas/FakturamottakerAPIModel"
+          },
+          "antallTerminer": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "merknader": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "gyldigFra": {
+            "type": "string",
+            "format": "date"
+          },
+          "gyldigTil": {
+            "type": "string",
+            "format": "date"
+          },
+          "sistEndret": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Tidspunkt da eiendomsavtalen sist ble oppdatert"
+          }
+        },
+        "required": [
+          "avtaleId",
+          "avtaleAlternativId",
+          "avtaletype",
+          "avtalestatus",
+          "delnummer",
+          "matrikkeldata"
+        ]
+      },
+      "MatrikkeldataAPIModel": {
+        "type": "object",
+        "properties": {
+          "kommunenummer": {
+            "type": "string"
+          },
+          "gardsnummer": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "bruksnummer": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "festenummer": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "seksjonsnummer": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "erSeksjonert": {
+            "type": "boolean"
+          },
+          "erUtgatt": {
+            "type": "boolean"
+          },
+          "manueltOpprettet": {
+            "type": "boolean"
+          },
+          "etableringsdato": {
+            "type": "string",
+            "format": "date"
+          },
+          "eiendomsadresser": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/EiendomsadresseAPIModel"
+            }
+          },
+          "eierforhold": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/EierForholdAPIModel"
+            }
+          }
+        },
+        "required": [
+          "kommunenummer",
+          "gardsnummer",
+          "bruksnummer",
+          "festenummer",
+          "seksjonsnummer",
+          "erSeksjonert",
+          "erUtgatt"
+        ]
+      },
+      "EierForholdAPIModel": {
+        "type": "object",
+        "properties": {
+          "kunde": {
+            "type": "object",
+            "properties": {
+              "offentligId": {
+                "type": "string",
+                "description": "Fødselsnummer, organisasjonsnummer eller annen ID for kunden"
+              }
+            },
+            "required": [
+              "offentligId"
+            ]
+          },
+          "andel": {
+            "$ref": "#/components/schemas/AndelAPIModel"
+          },
+          "eierforholdType": {
+            "type": "string",
+            "enum": [
+              "KONTAKTINSTANS",
+              "PERSON_IKKE_TINGLYST",
+              "MATRIKKELENHET_IKKE_TINGLYST",
+              "PERSON_TINGLYST",
+              "MATRIKKELENHET_TINGLYST",
+              "SKATT_REGISTRERT",
+              "INDIREKTE_EIERFORHOLD"
+            ],
+            "description": "Type eierforhold registrert i matrikkelen."
+          },
+          "fraDato": {
+            "type": "string",
+            "format": "date"
+          },
+          "tilDato": {
+            "type": "string",
+            "format": "date"
+          },
+          "oppdateringsdato": {
+            "type": "string",
+            "format": "date"
+          }
+        },
+        "required": [
+          "kunde",
+          "eierforholdType"
+        ]
+      },
+      "EiendomsadresseAPIModel": {
+        "type": "object",
+        "properties": {
+          "adressetype": {
+            "type": "string",
+            "enum": [
+              "MATRIKKELADRESSE",
+              "VEGADRESSE",
+              "UKJENT"
+            ]
+          },
+          "kortnavn": {
+            "type": "string"
+          },
+          "adressetilleggsnavn": {
+            "type": "string"
+          },
+          "nummer": {
+            "type": "integer"
+          },
+          "bokstav": {
+            "type": "string"
+          },
+          "adressenavn": {
+            "type": "string"
+          },
+          "kortAdressenavn": {
+            "type": "string"
+          },
+          "stedsnummer": {
+            "type": "string"
+          },
+          "kommunenummer": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "adressetype",
+          "adressenavn",
+          "kommunenummer"
+        ],
+        "description": "Adresser tilknyttet eiendomsavtalen, feltene avhenger av AdresseModell fra eiendomsregister.modeller, og er en kombinasjon av felter fra Adresse, Veg og Kommune"
+      },
+      "PostadresseAPIModel": {
+        "type": "object",
+        "properties": {
+          "adresselinje1": {
+            "type": "string"
+          },
+          "adresselinje2": {
+            "type": "string"
+          },
+          "adresselinje3": {
+            "type": "string"
+          },
+          "postnummer": {
+            "type": "string"
+          },
+          "poststed": {
+            "type": "string"
+          }
+        }
+      },
+      "EierAPIModel": {
+        "type": "object",
+        "properties": {
+          "kunde": {
+            "$ref": "#/components/schemas/KundeAPIModel"
+          },
+          "eierstatus": {
+            "$ref": "#/components/schemas/EierStatusAPIModel"
+          },
+          "reellEier": {
+            "type": "boolean"
+          },
+          "andel": {
+            "$ref": "#/components/schemas/AndelAPIModel"
+          },
+          "rolle": {
+            "$ref": "#/components/schemas/EierRolleAPIModel"
+          },
+          "eierkategori": {
+            "$ref": "#/components/schemas/EierKategoriAPIModel"
+          },
+          "tinglystDato": {
+            "type": "string",
+            "format": "date"
+          },
+          "sistEndret": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "gyldigFra": {
+            "type": "string",
+            "format": "date"
+          },
+          "gyldigTil": {
+            "type": "string",
+            "format": "date"
+          }
+        },
+        "required": [
+          "kunde",
+          "eierstatus",
+          "rolle",
+          "eierkategori",
+          "sistEndret"
+        ]
+      },
+      "KundeAPIModel": {
+        "type": "object",
+        "properties": {
+          "kundeId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "offentligId": {
+            "type": "string",
+            "description": "Fødselsnummer, organisasjonsnummer eller annen ID."
+          },
+          "kundetype": {
+            "$ref": "#/components/schemas/KundeTypeAPIModel"
+          },
+          "navn": {
+            "type": "string"
+          },
+          "fornavn": {
+            "type": "string"
+          },
+          "etternavn": {
+            "type": "string"
+          },
+          "postadresse": {
+            "$ref": "#/components/schemas/PostadresseAPIModel"
+          },
+          "gyldigFra": {
+            "type": "string",
+            "format": "date"
+          },
+          "gyldigTil": {
+            "type": "string",
+            "format": "date"
+          },
+          "sistEndret": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Tidspunkt da eiendomsavtalen sist ble oppdatert"
+          }
+        },
+        "required": [
+          "kundeId",
+          "offentligId",
+          "kundetype",
+          "navn",
+          "postadresse",
+          "sistEndret"
+        ]
+      },
+      "FakturamottakerAPIModel": {
+        "type": "object",
+        "properties": {
+          "fakturamottakerId": {
+            "type": "string"
+          },
+          "kunde": {
+            "$ref": "#/components/schemas/KundeAPIModel"
+          },
+          "coNavn": {
+            "type": "string"
+          },
+          "ressursnummer": {
+            "type": "string"
+          },
+          "sistEndret": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "fakturamottakerId",
+          "sistEndret"
+        ]
+      },
+      "EiendomsavtaleTypeAPIModel": {
+        "type": "string",
+        "enum": [
+          "PRIVAT",
+          "KOMMUNAL",
+          "ANNEN"
+        ]
+      },
+      "EiendomsavtaleStatusAPIModel": {
+        "type": "string",
+        "enum": [
+          "AKTIV",
+          "HISTORISK",
+          "NY"
+        ]
+      },
+      "EierStatusAPIModel": {
+        "type": "string",
+        "enum": [
+          "BOSATT",
+          "UTFLYTTET",
+          "DOED",
+          "UKJENT"
+        ]
+      },
+      "EierKategoriAPIModel": {
+        "type": "string",
+        "enum": [
+          "SELVEIER",
+          "ANDELSEIER",
+          "AKSJEEIER",
+          "BESKYTTET",
+          "UKJENT"
+        ]
+      },
+      "KundeTypeAPIModel": {
+        "type": "string",
+        "enum": [
+          "PERSON",
+          "ORGANISASJON",
+          "ANNEN"
+        ]
+      },
+      "EierRolleAPIModel": {
+        "type": "string",
+        "enum": [
+          "TINGLYST",
+          "IKKE_TINGLYST",
+          "VERGE",
+          "INDIREKTE",
+          "ANNEN"
+        ]
+      },
+      "EiendomsavtaleSoekRequest": {
+        "type": "object",
+        "properties": {
+          "kommunenummer": {
+            "type": "string"
+          },
+          "gardsnummer": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "bruksnummer": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "festenummer": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "seksjonsnummer": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "delnummer": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "eierkontaktId": {
+            "type": "string"
+          },
+          "fakturamottakerId": {
+            "type": "string"
+          }
+        }
+      },
+      "AndelAPIModel": {
+        "type": "object",
+        "properties": {
+          "teller": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "nevner": {
+            "type": "integer",
+            "format": "int64"
+          }
+        },
+        "required": [
+          "teller",
+          "nevner"
+        ]
+      }
+    }
+  }
+}
