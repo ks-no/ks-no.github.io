@@ -36,18 +36,42 @@
             transform-origin: 0 0;
             transition: none;
             image-rendering: high-quality;
-            pointer-events: none;
+            pointer-events: auto;
+        }
+
+        #error {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #ff6b6b;
+            font-family: Arial, sans-serif;
+            font-size: 16px;
+            text-align: center;
+            padding: 20px;
         }
     </style>
 </head>
 <body>
 <div id="viewport">
-    <img id="image" src="diagram/ksdigital-view.svg" alt="Zoomable Image">
+    <img id="image" alt="Zoomable Image">
+    <div id="error" style="display: none;"></div>
 </div>
 
 <script>
     const viewport = document.getElementById('viewport');
     const image = document.getElementById('image');
+    const errorDiv = document.getElementById('error');
+
+    // Get URL parameter
+    function getUrlParameter(name) {
+        const urlParams = new URLSearchParams(window.location.search);
+        return urlParams.get(name);
+    }
+
+    // Get the URL from the 'url' parameter, fallback to default
+    const imageUrl = getUrlParameter('url') || 'diagram/ksdigital-view.svg';
+    image.src = imageUrl;
 
     let scale = 1;
     let translateX = 0;
@@ -56,13 +80,22 @@
     let startX = 0;
     let startY = 0;
 
+    // Handle image load error
+    image.onerror = function() {
+        errorDiv.textContent = `Failed to load image: ${imageUrl}\n\nMake sure the URL is correct and accessible.`;
+        errorDiv.style.display = 'block';
+        image.style.display = 'none';
+    };
+
     // Initialize image position on load
     image.onload = function() {
+        errorDiv.style.display = 'none';
+        image.style.display = 'block';
         fitImageToViewport();
     };
 
     // Also handle if image is already cached
-    if (image.complete) {
+    if (image.complete && image.naturalHeight !== 0) {
         fitImageToViewport();
     }
 
