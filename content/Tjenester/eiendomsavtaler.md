@@ -14,7 +14,9 @@ Fiks eiendomsavtaler tilbyr:
 Det vil komme API-dokumentasjon her på hvordan fagsystemer kan hente ned eiendomsavtaler. 
 
 ### API
-Vi har laget et grovt førsteutkast av en API-spec. Denne ligger [her](https://editor-next.swagger.io/?url=https://developers.fiks.ks.no/api/eiendomsavtaler-api-v1.json). Her vil det komme endringer som brekker kontrakten. Kontrakten låses ikke før vi er i produksjon.
+Vi har laget et grovt førsteutkast av en API-spec. Denne ligger [her](https://editor-next.swagger.io/?url=https://developers.fiks.ks.no/api/eiendomsavtaler-offentlig-api-v1.json). Her vil det komme endringer som brekker kontrakten. Kontrakten låses ikke før vi er i produksjon.
+
+Per 21.04.26 er det kun endepunktene GET /eiendomsavtaler/api/v1/{fiksOrgId}/eiendomsavtaler/{avtaleId} og POST /eiendomsavtaler/api/v1/{fiksOrgId}/eiendomsavtaler/soek som er implementert. 
 
 ## Kontakt
 Tekniske spørsmål og henvendelser kan rettes til fiks-utvikling@ksdigital.no, øvrige henvendelser kan rettes til fiks@ksdigital.no
