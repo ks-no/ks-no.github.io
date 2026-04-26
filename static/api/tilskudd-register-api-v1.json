@@ -37,13 +37,13 @@
     }
   ],
   "paths": {
-    "/tilskuddsregister/api/v1/oppslag/ordning": {
+    "/tilskuddsregister/api/v1/oppslag/utlysing": {
       "get": {
         "tags": [
           "RegisterOppslag"
         ],
-        "operationId": "soekEtterTilskuddsordning",
-        "summary": "Lister ut tilgjengelig tilskuddsordninger",
+        "operationId": "soekEtterUtlysing",
+        "summary": "Lister ut utlysinger for tilskuddsordninger",
         "parameters": [
           {
             "name": "sidenummer",
@@ -55,7 +55,7 @@
             }
           },
           {
-            "name": "ordningerPrSide",
+            "name": "utlysingerPrSide",
             "in": "query",
             "required": false,
             "schema": {
@@ -78,7 +78,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/SokEtterOrdningResponse"
+                  "$ref": "#/components/schemas/SokEtterUtlysingResponse"
                 }
               }
             }
@@ -96,18 +96,18 @@
         }
       }
     },
-    "/tilskuddsregister/api/v1/oppslag/ordning/{id}": {
+    "/tilskuddsregister/api/v1/oppslag/utlysing/{id}": {
       "get": {
         "tags": [
           "RegisterOppslag"
         ],
-        "operationId": "hentTilskuddsordning",
-        "summary": "Henter ut en tilskuddsordning med id",
+        "operationId": "hentUtlysing",
+        "summary": "Henter ut en utlysing med id",
         "parameters": [
           {
             "name": "id",
             "in": "path",
-            "description": "TilskuddsId",
+            "description": "TilskuddsregisterId",
             "required": true,
             "schema": {
               "type": "string",
@@ -121,7 +121,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/OrdningDetaljer"
+                  "$ref": "#/components/schemas/UtlysingDetaljer"
                 }
               }
             }
@@ -139,18 +139,18 @@
         }
       }
     },
-    "/tilskuddsregister/api/v1/endring/ordning": {
+    "/tilskuddsregister/api/v1/endring/utlysing": {
       "post": {
         "tags": [
           "RegisterEndring"
         ],
-        "operationId": "registrerTilskuddsordning",
-        "summary": "Registrer en tilskuddsordning i tilskuddsregisteret",
+        "operationId": "registrerUtlysing",
+        "summary": "Registrer en utlysing i tilskuddsregisteret",
         "requestBody": {
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/RegistrerOrdningRequest"
+                "$ref": "#/components/schemas/RegistrerUtlysingRequest"
               }
             }
           },
@@ -158,11 +158,11 @@
         },
         "responses": {
           "200": {
-            "description": "Tilskuddsordningen er registrert",
+            "description": "Utlysingen er registrert",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/OrdningId"
+                  "$ref": "#/components/schemas/IdOgKode"
                 }
               }
             }
@@ -190,18 +190,18 @@
         }
       }
     },
-    "/tilskuddsregister/api/v1/endring/ordning/{id}": {
+    "/tilskuddsregister/api/v1/endring/utlysing/{id}": {
       "put": {
         "tags": [
           "RegisterEndring"
         ],
-        "operationId": "overskrivTilskuddsordning",
-        "summary": "Overskriver alle data for en eksisterende tilskuddsordning i tilskuddsregisteret",
+        "operationId": "overskrivUtlysing",
+        "summary": "Overskriver alle data for en eksisterende utlysing i tilskuddsregisteret",
         "parameters": [
           {
             "name": "id",
             "in": "path",
-            "description": "TilskuddsId",
+            "description": "TilskuddsregisterId",
             "required": true,
             "schema": {
               "type": "string",
@@ -213,7 +213,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/RegistrerOrdningRequest"
+                "$ref": "#/components/schemas/RegistrerUtlysingRequest"
               }
             }
           },
@@ -225,7 +225,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/OrdningId"
+                  "$ref": "#/components/schemas/IdOgKode"
                 }
               }
             }
@@ -266,13 +266,13 @@
         "tags": [
           "RegisterEndring"
         ],
-        "operationId": "slettTilskuddsordning",
-        "summary": "Sletter en tilskuddsordning. (Soft delete: Setter status til slettet, men informasjon om ordningen vil fortsatt ligge i databasen)",
+        "operationId": "slettUtlysing",
+        "summary": "Sletter en utlysing. (Soft delete: Setter status til slettet, men informasjon om utlysingen vil fortsatt ligge i databasen)",
         "parameters": [
           {
             "name": "id",
             "in": "path",
-            "description": "TilskuddsId",
+            "description": "TilskuddsregisterId",
             "required": true,
             "schema": {
               "type": "string",
@@ -282,11 +282,11 @@
         ],
         "responses": {
           "200": {
-            "description": "Tilskuddsordningen er slettet",
+            "description": "Utlysingen er slettet",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/OrdningId"
+                  "$ref": "#/components/schemas/IdOgKode"
                 }
               }
             }
@@ -334,23 +334,29 @@
       }
     },
     "schemas": {
-      "OrdningId": {
+      "IdOgKode": {
         "type": "object",
         "properties": {
           "tilskuddsordningId": {
             "type": "string",
             "format": "uuid",
-            "readOnly": true
+            "description": "Id for tilskuddsordning. Kobler sammen utlysinger."
           },
-          "ordningId": {
+          "tilskuddsregisterId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Id for utlysing."
+          },
+          "tilskuddsregisterKode": {
             "type": "string",
             "pattern": "^[A-Za-z0-9-]+$",
             "example": "46-ORDFORBIOM-2026-ZX",
-            "readOnly": true
+            "readOnly": true,
+            "description": "Generert kode som kan brukes som referanse for utlysing i dialog mellom søker og forvalter"
           }
         }
       },
-      "OrdningStatus": {
+      "StatusPaaUtlysing": {
         "type": "string",
         "enum": [
           "KLADD",
@@ -359,7 +365,7 @@
         ],
         "example": "REGISTRERT"
       },
-      "OrdningBase": {
+      "UtlysingBase": {
         "type": "object",
         "properties": {
           "tittel": {
@@ -371,7 +377,7 @@
             "maxLength": 1000
           },
           "status": {
-            "$ref": "#/components/schemas/OrdningStatus"
+            "$ref": "#/components/schemas/StatusPaaUtlysing"
           },
           "naering": {
             "type": "array",
@@ -398,7 +404,7 @@
           }
         }
       },
-      "OrdningUtvidet": {
+      "UtlysingUtvidet": {
         "type": "object",
         "properties": {
           "stoettetiltaksnummer": {
@@ -441,12 +447,13 @@
           }
         }
       },
-      "OrdningDetaljer": {
+      "UtlysingDetaljer": {
         "type": "object",
         "readOnly": true,
         "required": [
+          "tilskuddsregisterId",
+          "tilskuddsregisterKode",
           "tilskuddsordningId",
-          "ordningId",
           "opprettet",
           "endret",
           "tittel",
@@ -466,13 +473,13 @@
         ],
         "allOf": [
           {
-            "$ref": "#/components/schemas/OrdningId"
+            "$ref": "#/components/schemas/IdOgKode"
           },
           {
-            "$ref": "#/components/schemas/OrdningBase"
+            "$ref": "#/components/schemas/UtlysingBase"
           },
           {
-            "$ref": "#/components/schemas/OrdningUtvidet"
+            "$ref": "#/components/schemas/UtlysingUtvidet"
           },
           {
             "type": "object",
@@ -491,12 +498,13 @@
           }
         ]
       },
-      "OrdningElement": {
+      "UtlysingElement": {
         "type": "object",
         "readOnly": true,
         "required": [
+          "tilskuddsregisterId",
+          "tilskuddsregisterKode",
           "tilskuddsordningId",
-          "ordningId",
           "tittel",
           "kortBeskrivelse",
           "status",
@@ -508,42 +516,42 @@
         ],
         "allOf": [
           {
-            "$ref": "#/components/schemas/OrdningId"
+            "$ref": "#/components/schemas/IdOgKode"
           },
           {
-            "$ref": "#/components/schemas/OrdningBase"
+            "$ref": "#/components/schemas/UtlysingBase"
           }
         ]
       },
-      "SokEtterOrdningResponse": {
+      "SokEtterUtlysingResponse": {
         "type": "object",
         "readOnly": true,
         "required": [
-          "ordninger"
+          "utlysinger"
         ],
         "properties": {
-          "ordninger": {
+          "utlysinger": {
             "type": "array",
             "maxItems": 1000,
             "items": {
-              "$ref": "#/components/schemas/OrdningElement"
+              "$ref": "#/components/schemas/UtlysingElement"
             }
           },
           "sidenummer": {
             "type": "integer"
           },
-          "ordningerPrSide": {
+          "utlysingerPrSide": {
             "type": "integer"
           },
           "totaltAntallSider": {
             "type": "integer"
           },
-          "totaltAntallOrdninger": {
+          "totaltAntallUtlysinger": {
             "type": "integer"
           }
         }
       },
-      "RegistrerOrdningRequest": {
+      "RegistrerUtlysingRequest": {
         "type": "object",
         "writeOnly": true,
         "required": [
@@ -564,10 +572,13 @@
         ],
         "allOf": [
           {
-            "$ref": "#/components/schemas/OrdningBase"
+            "$ref": "#/components/schemas/IdOgKode"
           },
           {
-            "$ref": "#/components/schemas/OrdningUtvidet"
+            "$ref": "#/components/schemas/UtlysingBase"
+          },
+          {
+            "$ref": "#/components/schemas/UtlysingUtvidet"
           }
         ]
       },
@@ -612,7 +623,7 @@
           },
           "erLopende": {
             "type": "boolean",
-            "description": "Felt som beskriver om dette er en løpende ordning hvor søknader behandles fortløpende"
+            "description": "Felt som beskriver om dette er en løpende utlysing hvor søknader behandles fortløpende"
           }
         }
       },
