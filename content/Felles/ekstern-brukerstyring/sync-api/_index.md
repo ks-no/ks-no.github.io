@@ -132,14 +132,32 @@ Når man integrerer mot Sync API-et, er det viktig å følge disse mønstrene:
 **Klienten må alltid se på `hasMore`-flagget for å avgjøre om den skal fortsette å polle, uavhengig av antall hendelser i responsen.**
 
 ### Feilhåndtering og Statuskoder
+
+Sync API returnerer en standardisert feilmodell ved feil. Ved maskinell tolkning er feltet `errorCode` det viktigste.
+
 *   **`200 OK`**: Alt OK.
-*   **`400 Bad Request`**: Ugyldig forespørsel (f.eks. feil format på token).
+*   **`400 Bad Request`**:
+    *   Hvis `errorCode` er **`INVALID_TOKEN_FORMAT`**, er `syncToken` ugyldig (feil format eller korrupt). Sjekk at du sender uendret token fra forrige respons.
 *   **`401 Unauthorized`**: Manglende eller ugyldig autentisering.
-*   **`404 Not Found`**: Ressurs ikke funnet, eller målsystemet er ikke konfigurert.
-*   **`410 Gone`**: **Viktig!** Ditt `syncToken` er utdatert (f.eks. ved kildebytte). Klienten må kaste tokenet og starte en ny full synkronisering (kall uten token).
+*   **`404 Not Found`**:
+    *   Hvis `errorCode` er **`SOURCE_NOT_CONFIGURED`**, betyr det at målsystemet er autorisert, men at ingen kilde er koblet til ennå.
+    *   **Klientens håndtering**: Klienten bør innta **ventemodus**. Behold eksisterende data i en "Pending"-tilstand og unngå sletting inntil en ny kilde er på plass.
+*   **`410 Gone`**: Dette betyr at synkroniseringen må startes på nytt (kall uten `syncToken`). Årsaken avgjør hvilken strategi klienten bør bruke:
+    *   Hvis `errorCode` er **`SOURCE_CHANGED`**, er kildesystemet byttet ut eller slettet. **Advarsel**: Brukere og grupper vil få nye unike ID-er. Se strategier under.
+    *   Hvis `errorCode` er **`TOKEN_EXPIRED`**, er tokenet for gammelt til å garantere fullstendighet. ID-er er uendret.
+    *   Hvis `errorCode` er **`FULL_RESYNC_REQUESTED`**, har Fiks-plattformen trigget en tvungen gjenoppretting. ID-er er uendret.
+
+#### Strategier ved full resynkronisering (410 Gone)
+
+Når du tvinges til å starte på nytt, avhenger strategien din av om ID-ene er bevart:
+
+1.  **Ved SOURCE_CHANGED (Nye ID-er)**:
+    *   **Enkel (Nuke and Pave)**: Slett alle lokale data for denne organisasjonen og populer på nytt. Passer hvis historikk ikke er viktig.
+    *   **Avansert (Orphan and Merge)**: Marker eksisterende data som "foreldreløse", hent nye data, og forsøk å matche mot de gamle basert på naturlige nøkler (fødselsnummer, brukernavn eller e-post) for å flytte over historikk.
+2.  **Ved TOKEN_EXPIRED eller FULL_RESYNC_REQUESTED (Samme ID-er)**:
+    *   **Enkel (Upsert)**: Kjør en ny full synkronisering og overskriv (upsert) eksisterende poster. Siden ID-ene er de samme, vil dette fungere sømløst uten duplikater.
 
 ---
 
 ## Veien videre
-*   **Kommende funksjonalitet**: Vi jobber med å definere en utvidet respons for status `410` som angir hvorfor synkroniseringen må startes på nytt, f.eks dersom kilden som var koblet til målsystemet er byttet.
 *   **Teknisk referanse**: Fullstendig OpenAPI-spesifikasjon finnes i [Fiks API-dokumentasjon](/api/index.html?spec=https://developers.fiks.ks.no/api/sync-api-v1.json).
