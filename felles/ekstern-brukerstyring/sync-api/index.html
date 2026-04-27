@@ -12,22 +12,22 @@
     <title>Brukersynkronisering Sync API :: KS Fiks</title>
 
     
-    <link href="/css/nucleus.css?1777280219" rel="stylesheet">
-    <link href="/css/fontawesome-all.min.css?1777280219" rel="stylesheet">
-    <link href="/css/hybrid.css?1777280219" rel="stylesheet">
-    <link href="/css/featherlight.min.css?1777280219" rel="stylesheet">
-    <link href="/css/perfect-scrollbar.min.css?1777280219" rel="stylesheet">
-    <link href="/css/auto-complete.css?1777280219" rel="stylesheet">
-    <link href="/css/atom-one-dark-reasonable.css?1777280219" rel="stylesheet">
-    <link href="/css/theme.css?1777280219" rel="stylesheet">
-    <link href="/css/tabs.css?1777280219" rel="stylesheet">
-    <link href="/css/hugo-theme.css?1777280219" rel="stylesheet">
+    <link href="/css/nucleus.css?1777283410" rel="stylesheet">
+    <link href="/css/fontawesome-all.min.css?1777283410" rel="stylesheet">
+    <link href="/css/hybrid.css?1777283410" rel="stylesheet">
+    <link href="/css/featherlight.min.css?1777283410" rel="stylesheet">
+    <link href="/css/perfect-scrollbar.min.css?1777283410" rel="stylesheet">
+    <link href="/css/auto-complete.css?1777283410" rel="stylesheet">
+    <link href="/css/atom-one-dark-reasonable.css?1777283410" rel="stylesheet">
+    <link href="/css/theme.css?1777283410" rel="stylesheet">
+    <link href="/css/tabs.css?1777283410" rel="stylesheet">
+    <link href="/css/hugo-theme.css?1777283410" rel="stylesheet">
     
-    <link href="/css/theme-ks.css?1777280219" rel="stylesheet">
+    <link href="/css/theme-ks.css?1777283410" rel="stylesheet">
     
     
 
-    <script src="/js/jquery-3.3.1.min.js?1777280219"></script>
+    <script src="/js/jquery-3.3.1.min.js?1777283410"></script>
 
     <style>
       :root #header + #content > #left > #rlblock_left{
@@ -54,14 +54,14 @@
     <span data-search-clear=""><i class="fas fa-times"></i></span>
 </div>
 
-<script type="text/javascript" src="/js/lunr.min.js?1777280219"></script>
-<script type="text/javascript" src="/js/auto-complete.js?1777280219"></script>
+<script type="text/javascript" src="/js/lunr.min.js?1777283410"></script>
+<script type="text/javascript" src="/js/auto-complete.js?1777283410"></script>
 <script type="text/javascript">
     
         var baseurl = "\/";
     
 </script>
-<script type="text/javascript" src="/js/search.js?1777280219"></script>
+<script type="text/javascript" src="/js/search.js?1777283410"></script>
 
     
   </div>
@@ -1843,7 +1843,11 @@
     <li><a href="#5-robusthet-og-edge-cases">5. Robusthet og Edge Cases</a>
       <ol>
         <li><a href="#paging-og-ufullstendige-sider">Paging og ufullstendige sider</a></li>
-        <li><a href="#feilhåndtering-og-statuskoder">Feilhåndtering og Statuskoder</a></li>
+        <li><a href="#feilhåndtering-og-statuskoder">Feilhåndtering og Statuskoder</a>
+          <ol>
+            <li><a href="#strategier-ved-full-resynkronisering-410-gone">Strategier ved full resynkronisering (410 Gone)</a></li>
+          </ol>
+        </li>
       </ol>
     </li>
     <li><a href="#veien-videre">Veien videre</a></li>
@@ -1977,17 +1981,47 @@
 <strong>Klienten må alltid se på <code>hasMore</code>-flagget for å avgjøre om den skal fortsette å polle, uavhengig av antall hendelser i responsen.</strong></li>
 </ol>
 <h3 id="feilhåndtering-og-statuskoder">Feilhåndtering og Statuskoder</h3>
+<p>Sync API returnerer en standardisert feilmodell ved feil. Ved maskinell tolkning er feltet <code>errorCode</code> det viktigste.</p>
 <ul>
 <li><strong><code>200 OK</code></strong>: Alt OK.</li>
-<li><strong><code>400 Bad Request</code></strong>: Ugyldig forespørsel (f.eks. feil format på token).</li>
-<li><strong><code>401 Unauthorized</code></strong>: Manglende eller ugyldig autentisering.</li>
-<li><strong><code>404 Not Found</code></strong>: Ressurs ikke funnet, eller målsystemet er ikke konfigurert.</li>
-<li><strong><code>410 Gone</code></strong>: <strong>Viktig!</strong> Ditt <code>syncToken</code> er utdatert (f.eks. ved kildebytte). Klienten må kaste tokenet og starte en ny full synkronisering (kall uten token).</li>
+<li><strong><code>400 Bad Request</code></strong>:
+<ul>
+<li>Hvis <code>errorCode</code> er <strong><code>INVALID_TOKEN_FORMAT</code></strong>, er <code>syncToken</code> ugyldig (feil format eller korrupt). Sjekk at du sender uendret token fra forrige respons.</li>
 </ul>
+</li>
+<li><strong><code>401 Unauthorized</code></strong>: Manglende eller ugyldig autentisering.</li>
+<li><strong><code>404 Not Found</code></strong>:
+<ul>
+<li>Hvis <code>errorCode</code> er <strong><code>SOURCE_NOT_CONFIGURED</code></strong>, betyr det at målsystemet er autorisert, men at ingen kilde er koblet til ennå.</li>
+<li><strong>Klientens håndtering</strong>: Klienten bør innta <strong>ventemodus</strong>. Behold eksisterende data i en &ldquo;Pending&rdquo;-tilstand og unngå sletting inntil en ny kilde er på plass.</li>
+</ul>
+</li>
+<li><strong><code>410 Gone</code></strong>: Dette betyr at synkroniseringen må startes på nytt (kall uten <code>syncToken</code>). Årsaken avgjør hvilken strategi klienten bør bruke:
+<ul>
+<li>Hvis <code>errorCode</code> er <strong><code>SOURCE_CHANGED</code></strong>, er kildesystemet byttet ut eller slettet. <strong>Advarsel</strong>: Brukere og grupper vil få nye unike ID-er. Se strategier under.</li>
+<li>Hvis <code>errorCode</code> er <strong><code>TOKEN_EXPIRED</code></strong>, er tokenet for gammelt til å garantere fullstendighet. ID-er er uendret.</li>
+<li>Hvis <code>errorCode</code> er <strong><code>FULL_RESYNC_REQUESTED</code></strong>, har Fiks-plattformen trigget en tvungen gjenoppretting. ID-er er uendret.</li>
+</ul>
+</li>
+</ul>
+<h4 id="strategier-ved-full-resynkronisering-410-gone">Strategier ved full resynkronisering (410 Gone)</h4>
+<p>Når du tvinges til å starte på nytt, avhenger strategien din av om ID-ene er bevart:</p>
+<ol>
+<li><strong>Ved SOURCE_CHANGED (Nye ID-er)</strong>:
+<ul>
+<li><strong>Enkel (Nuke and Pave)</strong>: Slett alle lokale data for denne organisasjonen og populer på nytt. Passer hvis historikk ikke er viktig.</li>
+<li><strong>Avansert (Orphan and Merge)</strong>: Marker eksisterende data som &ldquo;foreldreløse&rdquo;, hent nye data, og forsøk å matche mot de gamle basert på naturlige nøkler (fødselsnummer, brukernavn eller e-post) for å flytte over historikk.</li>
+</ul>
+</li>
+<li><strong>Ved TOKEN_EXPIRED eller FULL_RESYNC_REQUESTED (Samme ID-er)</strong>:
+<ul>
+<li><strong>Enkel (Upsert)</strong>: Kjør en ny full synkronisering og overskriv (upsert) eksisterende poster. Siden ID-ene er de samme, vil dette fungere sømløst uten duplikater.</li>
+</ul>
+</li>
+</ol>
 <hr>
 <h2 id="veien-videre">Veien videre</h2>
 <ul>
-<li><strong>Kommende funksjonalitet</strong>: Vi jobber med å definere en utvidet respons for status <code>410</code> som angir hvorfor synkroniseringen må startes på nytt, f.eks dersom kilden som var koblet til målsystemet er byttet.</li>
 <li><strong>Teknisk referanse</strong>: Fullstendig OpenAPI-spesifikasjon finnes i <a href="/api/index.html?spec=https://developers.fiks.ks.no/api/sync-api-v1.json">Fiks API-dokumentasjon</a>.</li>
 </ul>
 
@@ -3191,19 +3225,19 @@
     <div style="left: -1000px; overflow: scroll; position: absolute; top: -1000px; border: none; box-sizing: content-box; height: 200px; margin: 0px; padding: 0px; width: 200px;">
       <div style="border: none; box-sizing: content-box; height: 200px; margin: 0px; padding: 0px; width: 200px;"></div>
     </div>
-    <script src="/js/clipboard.min.js?1777280219"></script>
-    <script src="/js/perfect-scrollbar.min.js?1777280219"></script>
-    <script src="/js/perfect-scrollbar.jquery.min.js?1777280219"></script>
-    <script src="/js/jquery.sticky.js?1777280219"></script>
-    <script src="/js/featherlight.min.js?1777280219"></script>
-    <script src="/js/highlight.pack.js?1777280219"></script>
+    <script src="/js/clipboard.min.js?1777283410"></script>
+    <script src="/js/perfect-scrollbar.min.js?1777283410"></script>
+    <script src="/js/perfect-scrollbar.jquery.min.js?1777283410"></script>
+    <script src="/js/jquery.sticky.js?1777283410"></script>
+    <script src="/js/featherlight.min.js?1777283410"></script>
+    <script src="/js/highlight.pack.js?1777283410"></script>
     <script>hljs.initHighlightingOnLoad();</script>
-    <script src="/js/modernizr.custom-3.6.0.js?1777280219"></script>
-    <script src="/js/learn.js?1777280219"></script>
-    <script src="/js/hugo-learn.js?1777280219"></script>
+    <script src="/js/modernizr.custom-3.6.0.js?1777283410"></script>
+    <script src="/js/learn.js?1777283410"></script>
+    <script src="/js/hugo-learn.js?1777283410"></script>
     
         
-            <script src="/mermaid/mermaid.js?1777280219"></script>
+            <script src="/mermaid/mermaid.js?1777283410"></script>
         
         <script>
             mermaid.initialize({ startOnLoad: true });
