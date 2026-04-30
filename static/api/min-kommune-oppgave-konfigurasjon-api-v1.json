@@ -36,7 +36,7 @@
     }
   ],
   "paths": {
-    "/min-kommune/api/v1/konfigurasjon/{fiksOrgId}/opprettIntegrasjonMedTilgang": {
+    "/min-kommune/api/v1/konfigurasjon/oppgaver/{fiksOrgId}/opprettIntegrasjonMedTilgang": {
       "post": {
         "tags": [
           "OppgaveKonfigurasjon"
@@ -56,6 +56,7 @@
           }
         ],
         "requestBody": {
+          "required": true,
           "content": {
             "application/json": {
               "schema": {
@@ -108,24 +109,15 @@
         }
       }
     },
-    "/min-kommune/api/v1/konfigurasjon/{fiksOrgId}/giPrivilegie/{integrasjonId}": {
-      "post": {
+    "/min-kommune/api/v1/konfigurasjon/oppgaver/{fiksOrgId}/integrasjoner": {
+      "get": {
         "tags": [
           "OppgaveKonfigurasjon"
         ],
-        "summary": "Opprett integrasjon med tilgang til Min Kommune Oppgave API",
-        "description": "Dette endepunktet benyttes av en administrator for å opprette konfigurasjon-privilegiet for oppgave til en organisasjon mot oppgave-api.\nDet returneres en integrasjonsId som brukes for å autentisere mot API-et med tilhørende passord.",
-        "operationId": "giIntegrasjonPrivilegie",
+        "summary": "Hent alle integrasjoner tilknyttet tjenesten for en organisasjon",
+        "description": "Returnerer alle integrasjoner som er tilknyttet Min Kommune Oppgave-tjenesten for en gitt organisasjon, inkludert full privilegiestatus for hvert integrasjon.",
+        "operationId": "hentIntegrasjonerMedPrivilegier",
         "parameters": [
-          {
-            "name": "integrasjonId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          },
           {
             "name": "fiksOrgId",
             "in": "path",
@@ -136,21 +128,22 @@
             }
           }
         ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/GiPrivilegieRequest"
+        "responses": {
+          "200": {
+            "description": "Liste over integrasjoner med privilegiestatus",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/IntegrasjonMedPrivilegier"
+                  }
+                }
               }
             }
-          }
-        },
-        "responses": {
-          "201": {
-            "description": "Knyttet privilegie til integrasjon"
           },
           "400": {
-            "description": "Ukjent",
+            "description": "Ugyldig forespørsel",
             "content": {
               "application/json": {
                 "schema": {
@@ -182,7 +175,82 @@
         }
       }
     },
-    "/min-kommune/api/v1/konfigurasjon/{fiksOrgId}/initialiserTjeneste": {
+    "/min-kommune/api/v1/konfigurasjon/oppgaver/{fiksOrgId}/integrasjoner/{integrasjonId}/privilegier": {
+      "put": {
+        "tags": [
+          "OppgaveKonfigurasjon"
+        ],
+        "summary": "Oppdater privilegier for en integrasjon",
+        "description": "Setter det komplette settet av privilegier for en integrasjon. Privilegier som finnes fra før men ikke er inkludert som aktive, vil bli fjernet. Privilegier som ikke finnes fra før og er satt til aktive, vil bli lagt til.",
+        "operationId": "oppdaterPrivilegier",
+        "parameters": [
+          {
+            "name": "fiksOrgId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "integrasjonId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OppdaterPrivilegierRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Privilegier oppdatert"
+          },
+          "400": {
+            "description": "Ugyldig forespørsel",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Ingen tilgang",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Systemfeil",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/min-kommune/api/v1/konfigurasjon/oppgaver/{fiksOrgId}/initialiserTjeneste": {
       "post": {
         "tags": [
           "OppgaveKonfigurasjon"
@@ -266,13 +334,6 @@
           }
         }
       },
-      "PrivilegieType": {
-        "type": "string",
-        "enum": [
-          "OPPGAVE_KONFIGURASJON",
-          "OPPGAVE_SOK"
-        ]
-      },
       "ErrorMessage": {
         "type": "object",
         "properties": {
@@ -309,6 +370,12 @@
         }
       },
       "OpprettTilgangRequest": {
+        "required": [
+          "orgnr",
+          "forelderRessurs",
+          "navn",
+          "beskrivelse"
+        ],
         "type": "object",
         "properties": {
           "orgnr": {
@@ -317,14 +384,72 @@
           "forelderRessurs": {
             "type": "string",
             "format": "uuid"
+          },
+          "navn": {
+            "type": "string",
+            "description": "Navn på integrasjonen som skal opprettes"
+          },
+          "beskrivelse": {
+            "type": "string",
+            "description": "Beskrivelse av integrasjonen som skal opprettes"
+          },
+          "privilegier": {
+            "$ref": "#/components/schemas/PrivilegierStatus"
           }
         }
       },
-      "GiPrivilegieRequest": {
+      "PrivilegierStatus": {
         "type": "object",
+        "description": "Status for Min Kommune Oppgave-privilegier. Null-verdi betyr at privilegiet ikke skal endres (for oppdatering) eller ikke skal tildeles (for opprettelse).",
         "properties": {
-          "privilegieType": {
-            "$ref": "#/components/schemas/PrivilegieType"
+          "OPPGAVE_SKRIV": {
+            "type": "boolean"
+          },
+          "OPPGAVE_LES": {
+            "type": "boolean"
+          },
+          "OPPGAVE_SLETT": {
+            "type": "boolean"
+          }
+        }
+      },
+      "IntegrasjonMedPrivilegier": {
+        "required": [
+          "integrasjonId",
+          "navn",
+          "beskrivelse",
+          "privilegier"
+        ],
+        "type": "object",
+        "description": "Integrasjon tilknyttet tjenesten med full privilegiestatus for oppgave.",
+        "properties": {
+          "integrasjonId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Unik id for integrasjonen"
+          },
+          "navn": {
+            "type": "string",
+            "description": "Navn på integrasjonen"
+          },
+          "beskrivelse": {
+            "type": "string",
+            "description": "Beskrivelse av integrasjonen"
+          },
+          "privilegier": {
+            "$ref": "#/components/schemas/PrivilegierStatus"
+          }
+        }
+      },
+      "OppdaterPrivilegierRequest": {
+        "required": [
+          "privilegier"
+        ],
+        "type": "object",
+        "description": "Komplett kart over privilegier for en integrasjon. Alle privilegier må oppgis. Dette erstatter eksisterende privilegier fullt ut.",
+        "properties": {
+          "privilegier": {
+            "$ref": "#/components/schemas/PrivilegierStatus"
           }
         }
       }
