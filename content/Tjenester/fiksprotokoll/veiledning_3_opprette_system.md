@@ -30,7 +30,9 @@ For å kunne sende og motta meldinger gjennom Fiks Protokoll kreves en integrasj
 
 NB: Det vil ikke være mulig å bruke Fiks Protokoll i test uten et virksomhetssertifikat. Det er mulig å endre organisasjonsnummer for integrasjonen senere dersom du velger feil i dette steget. [Se hvordan opprette klient hos maskinporten her](/fiks-platform/difiidportenklient)
 
-Dersom du ønsker å konfigurere systemet gjennom API kan du velge dette her. Da vil det være mulig å endre på systemet og opprette kontoer uten å bruke webgrensesnittet.
+Dersom du ønsker at systemet og medfølgende protokoller skal kunne konfigureres og vedlikeholdes gjennom API kan du velge dette her. 
+Da vil det for eksempel være mulig å opprette kontoer, laste opp nøkler og sette korrekt protokoll, uten å bruke webgrensesnittet. Dette gjøres da typisk i stedet forenklet fra fagsystemet som skal bruke kontoen.
+
 
 Trykk "Neste" for å komme videre
 ![fiks protokoll](/images/protokoll-brukerveiledning/2_wizard_2_utfylt.png "Wizard integrasjon")
