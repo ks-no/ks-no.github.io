@@ -59,8 +59,13 @@ Kun det som er *spesifikt* for tjenesten:
 7. **Bruk Hugo-shortcodes for interne lenker**: `{{</* ref "fil.md" */>}}` slik at lenker overlever flytting av sider.
 8. **Datoer og aliaser i front matter** – sett `date` til siste større oppdatering og inkluder gamle URL-er som `aliases:` slik at eksisterende lenker fortsatt fungerer.
 9. **Versjonering** – ved breaking changes skal v1 og v2 dokumenteres separat (se mønster i `bekymringsmelding/`).
+10. **Tagline øverst** – én setning som oppsummerer tjenesten og kan stå alene i menyer og lenkepreviews. Hjelper skanning kraftig.
+11. **Vær eksplisitt om hva tjenesten *ikke* er for** – en kort "Når passer ikke denne tjenesten?"-blokk forhindrer feilbruk og overflødig support. Stripe og AWS bruker dette mønsteret konsekvent.
+12. **Hold endringslogg for tjenester i aktiv utvikling** – integratorer trenger å vite hva som har endret seg, særlig ikke-brytende endringer som ikke utløser ny major-versjon.
+13. **Hver side skal ha en synlig "Få hjelp"-boks** – e-post og Slack-kanal. Bedre én sentral support-kanal enn ingen lenke i det hele tatt.
 
 ## Fjern det du ikke trenger
 
 Malen dekker mange typer tjenester. Slett seksjoner som ikke gjelder din tjeneste – det er bedre med kort, korrekt dokumentasjon enn lange seksjoner med plassholdertekst.
+
 

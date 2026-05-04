@@ -36,15 +36,35 @@ aliases: ["/fiks-plattform/tjenester/[tjenestenavn]/"]
 ## Kort beskrivelse
 
 <!--
-  PÅKREVD. 2–4 setninger som forklarer hva tjenesten gjør og hvem den er for.
+  PÅKREVD. Følg dette mønsteret:
+    1. Én tagline-linje øverst som oppsummerer tjenesten i én setning.
+       Skal kunne stå alene i en lenkepreview eller meny.
+    2. 2–4 setninger som forklarer hva tjenesten gjør og hvem den er for.
+    3. Bullet-liste med 3–5 kjernefunksjoner.
   En integrator skal kunne avgjøre relevans på under et minutt.
 -->
 
-Fiks [Tjenestenavn] er en tjeneste som [...]. Tjenesten tilbyr:
+**[Én tagline-linje. F.eks. "Sikker maskin-til-maskin meldingsutveksling mellom kommunale fagsystemer."]**
+
+Fiks [Tjenestenavn] er en tjeneste som [...]. [Beskriv målgruppe og typisk bruksscenario.]
+
+Tjenesten tilbyr:
 
 - [Kjernefunksjon 1]
 - [Kjernefunksjon 2]
 - [Kjernefunksjon 3]
+
+### Når passer ikke denne tjenesten?
+
+<!--
+  VALGFRITT, men ANBEFALT. Hjelp integratoren å unngå feilbruk ved å være
+  eksplisitt om hva tjenesten IKKE er ment for. Slett hvis ikke relevant.
+
+  Eksempler:
+  - "Fiks IO er ikke designet for migrering av store datamengder."
+  - "Fiks Bekymringsmelding er ikke en generell skjemamotor – kun bekymringsmeldinger til barnevern."
+  - "Bruk SvarUt for utgående post med printfallback i stedet."
+-->
 
 <!--
   VALGFRITT: "Tilgjengelige grensesnitt"-tabell.
@@ -55,16 +75,9 @@ Fiks [Tjenestenavn] er en tjeneste som [...]. Tjenesten tilbyr:
 
       API-spesifikasjon: [Swagger / OpenAPI](https://editor-next.swagger.io/?url=https://developers.fiks.ks.no/api/[api-fil].json)
 
-  Eksempel for portal-tjeneste:
+  Grensesnitt:
 
-      | Grensesnitt              | Detaljer |
-      |--------------------------|----------|
-      | Web portal (innbygger)   | https://[tjenestenavn].kommune.no (prod) / https://[tjenestenavn].test.ks.no (test) |
-      | Maskin til maskin (REST) | [Api-spec](https://editor-next.swagger.io/?url=https://developers.fiks.ks.no/api/[api-fil].json) |
-
-  Eksempel for meldings-tjeneste:
-
-      | Grensesnitt        | Detaljer |
+      | Type        | Detaljer |
       |--------------------|----------|
       | Fiks IO            | Protokoll `no.ks.fiks.[tjenestenavn].v1` |
       | Maskin til maskin  | [Api-spec](https://editor-next.swagger.io/?url=https://developers.fiks.ks.no/api/[api-fil].json) |
@@ -74,12 +87,10 @@ API-spesifikasjon: [Swagger / OpenAPI](https://editor-next.swagger.io/?url=https
 
 ## Kom i gang
 
-For generelle steg (Fiks-organisasjon, Maskinporten, virksomhetssertifikat, opprettelse av integrasjon) – se [Hvordan komme i gang med utviklingen]({{< ref "integrasjoner.md" >}}#hvordan-komme-i-gang-med-utviklingen).
-
 Tjenestespesifikke forutsetninger:
 
 1. Tjenesten må aktiveres via [Fiks Konfigurasjon](https://forvaltning.fiks.ks.no/fiks-konfigurasjon/tjenester).
-2. Integrasjonen må gis tilgang til tjenesten med privilegiet `[privilegium]`.
+2. Integrasjonen må gis tilgang til tjenesten via [Fiks Konfigurasjon](https://forvaltning.fiks.ks.no/fiks-konfigurasjon/tjenester).
 3. <!-- Andre tjenestespesifikke krav, f.eks.:
        - signert avtale om bruk
        - opplasting av offentlig nøkkel (PEM) for ende-til-ende-kryptering
@@ -102,16 +113,6 @@ Tjenestespesifikke forutsetninger:
 | `[Begrep1]` | [...] |
 | `[Begrep2]` | [...] |
 
-### Roller
-
-<!--
-  VALGFRITT. Bruk denne hvis tjenesten involverer flere typer aktører
-  (innbygger, saksbehandler, fagsystem, avsender/produsent, mottaker/konsument).
-  Slett for tjenester med kun én aktørtype.
--->
-
-- **[Rolle 1]** – [...]
-- **[Rolle 2]** – [...]
 
 ### Overordnet flyt
 
@@ -134,38 +135,6 @@ Tjenestespesifikke forutsetninger:
     - Krypteringskrav for vedlegg, multipart-rekkefølge
     - Korrelasjons-id-konvensjoner
 -->
-
----
-
-## Integrasjonsutvikling
-
-Autentisering, headere, miljøer, cURL-eksempel, feilformat og versjoneringspolicy er felles for alle Fiks-tjenester og dokumentert i [Integrasjoner]({{< ref "integrasjoner.md" >}}). Spesielt relevant:
-
-- [Autentisering (Integrasjon)]({{< ref "integrasjoner.md" >}}#integrasjon)
-- [Eksempel: autentisert kall]({{< ref "integrasjoner.md" >}}#eksempel-autentisert-kall)
-- [Miljøer]({{< ref "integrasjoner.md" >}}#miljøer)
-- [Feilmeldinger]({{< ref "integrasjoner.md" >}}#feilmeldinger)
-- [Versjonering]({{< ref "integrasjoner.md" >}}#versjonering)
-
-<!--
-  For portal-tjenester med både innbygger- og fagsysteminnlogging, bytt ut
-  lista over med en aktørtabell:
-
-      | Aktør     | Mekanisme                                        | Detaljer |
-      |-----------|--------------------------------------------------|----------|
-      | Innbygger | ID-porten (OIDC)                                 | [Sikkerhet]({{< ref "sikkerhet.md" >}}#privatpersoner) |
-      | Fagsystem | Integrasjon (Maskinporten + IntegrasjonId/Passord) | [Integrasjon]({{< ref "integrasjoner.md" >}}#integrasjon) |
--->
-
-### Tjenestens base-sti
-
-Under [API-base for miljøet]({{< ref "integrasjoner.md" >}}#miljøer) eksponeres tjenesten på:
-
-```
-/[tjenestenavn]/api/v1/
-```
-
-<!-- Hvis tjenesten har et dev-miljø eller andre miljøspesifikke avvik, dokumenter her. -->
 
 ### Testdata
 
@@ -227,13 +196,46 @@ Endepunkter, request/response-skjemaer, feltbeskrivelser og statuskoder vedlikeh
 
 <!--
   VALGFRITT. Slett seksjonen hvis tjenesten følger den generelle policy'en i
-  Felles/integrasjoner.md#versjonering. List ellers tjenestespesifikke
-  unntak, f.eks.:
-    - parallelle major-versjoner under aktiv vedlikehold (se bekymringsmelding/)
-    - meldingsprotokoll-versjonering for Fiks IO-tjenester
+  Felles/integrasjoner.md#versjonering uten unntak.
+
+  Bruk tabellen nedenfor til å gi integratorer en rask oversikt over hvilke
+  versjoner som finnes, hva som er gjeldende, og hva som ev. er deprecated.
+  Detaljert endringshistorikk hører hjemme i ## Endringslogg.
 -->
 
-Gjeldende versjon: `v1`.
+| Versjon | Status | Utfasingsdato | Hva er nytt |
+|---------|--------|---------------|-------------|
+| [v1](https://editor-next.swagger.io/?url=https://developers.fiks.ks.no/api/[api-fil]-v1.json) | ✅ Gjeldende | – | Første versjon |
+
+<!--
+  Eksempel med alle statusverdier (slett/tilpass til din tjeneste):
+
+  | Versjon | Status               | Utfasingsdato | Hva er nytt |
+  |---------|----------------------|---------------|-------------|
+  | [v0](https://editor-next.swagger.io/?url=https://developers.fiks.ks.no/api/[api-fil]-v0.json) | ❌ Avviklet        | 2024-01-01 | Første versjon – ikke lenger støttet |
+  | [v1](https://editor-next.swagger.io/?url=https://developers.fiks.ks.no/api/[api-fil]-v1.json) | ⚠️ Deprecated      | 2026-12-31 | La til støtte for ettersendelse |
+  | [v2](https://editor-next.swagger.io/?url=https://developers.fiks.ks.no/api/[api-fil]-v2.json) | ✅ Gjeldende       | –          | Nytt felt `andreSynspunkter`; kryptering påkrevd for alle vedlegg |
+  | [v3](https://editor-next.swagger.io/?url=https://developers.fiks.ks.no/api/[api-fil]-v3.json) | 🚧 Under utvikling | –          | Støtte for bulk-innsending (ikke klar for produksjon) |
+
+  Statusverdier:
+    ✅ Gjeldende        – anbefalt for alle nye integrasjoner
+    ⚠️ Deprecated       – støttes fortsatt, men planlegges faset ut; migrer til gjeldende versjon
+    ❌ Avviklet         – støttes ikke lenger; kall vil feile
+    🚧 Under utvikling  – tilgjengelig i testmiljø, ikke klar for produksjon
+-->
+
+---
+
+## Klientbibliotek
+
+<!--
+  VALGFRITT. Slett seksjonen hvis KS ikke tilbyr et offisielt
+  klientbibliotek for denne tjenesten. Det er kun et fåtall tjenester som
+  har dette – se Felles/klientbiblioteker.md for full oversikt.
+-->
+
+KS tilbyr et offisielt Java-bibliotek: [fiks-[tjenestenavn]-klient](https://github.com/ks-no/fiks-[tjenestenavn]-klient).
+Se også [samlet oversikt over klientbiblioteker]({{< ref "klientbiblioteker.md" >}}).
 
 ---
 
@@ -249,18 +251,6 @@ Gjeldende versjon: `v1`.
 
 ---
 
-## Undertjenester
-
-<!--
-  KUN for tjenestegrupper / paraplysider. Slett for selvstendige tjenester.
-  {{% children %}} lister automatisk undersider basert på Hugos
-  innholdsstruktur. Alternativt list manuelt.
--->
-
-{{% children %}}
-
----
-
 ## Relaterte tjenester
 
 <!-- Lenk til andre Fiks-tjenester som er relevante for integratoren. -->
@@ -269,11 +259,5 @@ Gjeldende versjon: `v1`.
 - [Fiks Dokumentlager]({{< ref "dokumentlager.md" >}}) – kryptert dokumentlagring
 - [SvarUt/SvarInn]({{< ref "svarut/_index.md" >}}) – alternativ leveringskanal
 
-<!--
-  Tjenester med offisielt KS-klientbibliotek kan i tillegg legge til:
-
-      ## Offisielt klientbibliotek
-      KS tilbyr en Java-klient: [fiks-[tjenestenavn]-klient](https://github.com/ks-no/fiks-[tjenestenavn]-klient).
-      Se også [samlet oversikt]({{< ref "klientbiblioteker.md" >}}).
--->
+---
 
