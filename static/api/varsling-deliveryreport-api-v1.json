@@ -23,7 +23,7 @@
   ],
   "tags": [
     {
-      "name": "varslingDeliveryReport",
+      "name": "DeliveryReport",
       "description": "API for å håndtere funksjonalitet for leveringsrapporter "
     }
   ],
@@ -31,7 +31,7 @@
     "/varsling/deliveryreport/make": {
       "post": {
         "tags": [
-          "varslingDeliveryReport"
+          "DeliveryReport"
         ],
         "summary": "Mottar delivery report fra Make",
         "operationId": "receiveDeliveryReportMake",
@@ -55,6 +55,51 @@
                 }
               }
             }
+          },
+          "default": {
+            "description": "Noe gikk galt",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/varsling/api/strex/deliveryreports": {
+      "post": {
+        "tags": [
+          "DeliveryReport"
+        ],
+        "summary": "Mottar delivery report fra Strex",
+        "operationId": "receiveDeliveryReportStrex",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DeliveryReportStrex"
+              }
+            }
+          },
+          "required": true
+        },
+        "parameters": [
+          {
+            "name": "token",
+            "in": "query",
+            "required": false,
+            "description": "Token for SMS delivery report",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Report mottatt OK"
           },
           "default": {
             "description": "Noe gikk galt",
@@ -137,6 +182,110 @@
             "type": "integer",
             "format": "int32"
           }
+        }
+      },
+      "DeliveryReportStrex": {
+        "description": "Delivery report fra Strex",
+        "externalDocs": {
+          "description": "Original spec",
+          "url": "https://shared.target365.io/api/swagger.json"
+        },
+        "type": "object",
+        "required": [
+          "transactionId",
+          "statusCode"
+        ],
+        "properties": {
+          "transactionId": {
+            "description": "Transaction id associated with the message.",
+            "type": "string"
+          },
+          "correlationId": {
+            "description": "Correlation id associated with the message.",
+            "type": "string"
+          },
+          "sessionId": {
+            "description": "Session id associated with message.",
+            "type": "string"
+          },
+          "price": {
+            "format": "double",
+            "description": "Price, with support for two decimals. Null if no price was set.",
+            "type": "number",
+            "nullable": true
+          },
+          "sender": {
+            "description": "Sender associated with the message.",
+            "type": "string"
+          },
+          "recipient": {
+            "description": "Recipient associated with the message.",
+            "type": "string"
+          },
+          "sendTime": {
+            "format": "date-time",
+            "description": "Send time, in UTC. If omitted the send time is set to ASAP.",
+            "type": "string"
+          },
+          "operatorId": {
+            "description": "Operator id associated with the message. Can be 'no.telenor', 'no.telia', 'no.ice' etc.",
+            "type": "string"
+          },
+          "statusCode": {
+            "description": "Overall status code. Can be 'Queued', 'Sent', 'Failed', 'Ok' or 'Reversed'.",
+            "type": "string"
+          },
+          "detailedStatusCode": {
+            "description": "Detailed status code.",
+            "type": "string"
+          },
+          "delivered": {
+            "description": "Whether message was delivered. Null if status is unknown.",
+            "type": "boolean",
+            "nullable": true
+          },
+          "billed": {
+            "description": "Whether billing was performed. Null if no price was set.",
+            "type": "boolean",
+            "nullable": true
+          },
+          "smscTransactionId": {
+            "description": "SMSC transaction id.",
+            "type": "string"
+          },
+          "smscMessageParts": {
+            "description": "SMSC message parts.",
+            "type": "integer"
+          },
+          "received": {
+            "format": "date-time",
+            "description": "Timestamp for when the message was received at the handset (resolution to whole minute, not second).",
+            "type": "string",
+            "nullable": true
+          },
+          "properties": {
+            "description": "Associated custom properties.",
+            "type": "object",
+            "additionalProperties": {
+              "type": "object"
+            }
+          }
+        },
+        "example": {
+          "transactionId": "8eb5e79d-0b3d-4e50-a4dd-7a939af4c4c3",
+          "correlationId": "12345",
+          "sessionId": null,
+          "price": null,
+          "sender": "Target365",
+          "recipient": "+4798079008",
+          "operatorId": "no.telenor",
+          "statusCode": "Ok",
+          "detailedStatusCode": "Delivered",
+          "delivered": true,
+          "billed": null,
+          "smscTransactionId": "1861587297",
+          "smscMessageParts": 3,
+          "received": "2018-04-12T13:27Z"
         }
       }
     }
