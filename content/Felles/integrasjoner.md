@@ -96,7 +96,7 @@ KS tilbyr klienter som henter access token fra Maskinporten basert på et virkso
 | Java  | [fiks-maskinporten](https://github.com/ks-no/fiks-maskinporten) |
 | .NET  | [fiks-maskinporten-client-dotnet](https://github.com/ks-no/fiks-maskinporten-client-dotnet) |
 
-En komplett oversikt over offisielle KS-klientbiblioteker for de ulike Fiks-tjenestene finnes på siden [Klientbiblioteker]({{< ref "klientbiblioteker.md" >}}).
+En komplett oversikt over offisielle KS-klientbiblioteker for de ulike Fiks-tjenestene finnes på siden [Klientbiblioteker]({{< ref "Felles/klientbiblioteker.md" >}}).
 
 ## Miljøer {#miljoer}
 
@@ -107,7 +107,7 @@ Fiks-plattformen har to offentlige miljøer. Hver tjeneste eksponeres som en sti
 | Test  | `https://api.fiks.test.ks.no/` | `https://forvaltning.fiks.test.ks.no` |
 | Prod  | `https://api.fiks.ks.no/`      | `https://forvaltning.fiks.ks.no` |
 
-Se [testmiljø]({{< ref "testmiljo.md" >}}) for hvordan man får tilgang til testmiljøet og hvilke testdata som finnes.
+Se [testmiljø]({{< ref "Felles/testmiljo.md" >}}) for hvordan man får tilgang til testmiljøet og hvilke testdata som finnes.
 
 ## Versjonering av API-er {#versjonering}
 

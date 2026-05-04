@@ -53,7 +53,7 @@ pipeline {
     }
     stage('build') {
       steps {
-        sh 'hugo --cleanDestinationDir '
+        sh 'hugo --cleanDestinationDir'
       }
     }
     stage('deploy') {
