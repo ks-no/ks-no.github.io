@@ -71,6 +71,22 @@ http POST https://api.fiks.test.ks.no/innsyn-sok/api/v1/sok \
 "Authorization: Bearer <gyldig innbygger access token jwt fra id-porten>"
 {{< / highlight >}}
 
+## Eksempel: autentisert kall {#eksempel-autentisert-kall}
+
+Et minimalt cURL-eksempel som viser headerne som må settes på alle integrasjonsbaserte kall mot Fiks-plattformen. Dette eksempelet brukes som referanse fra dokumentasjonen til de enkelte tjenestene – tjenestespesifikke endepunkter, parametre og request-bodyer er beskrevet i hver tjenestes API-spec.
+
+```bash
+curl https://api.fiks.test.ks.no/<tjeneste>/api/v1/<endepunkt> \
+  -H "Authorization: Bearer <access token fra Maskinporten, scope: ks:fiks>" \
+  -H "IntegrasjonId: <integrasjons-id>" \
+  -H "IntegrasjonPassord: <integrasjonspassord>"
+```
+
+For POST/PUT-kall med JSON-body legges i tillegg `-H "Content-Type: application/json"` og `-d '{...}'` til. For multipart-opplasting brukes `-F "<navn>=<verdi>"` per part. Konkrete eksempler finnes i klientbibliotekene:
+
+- Java: [fiks-maskinporten](https://github.com/ks-no/fiks-maskinporten)
+- .NET: [fiks-maskinporten-client-dotnet](https://github.com/ks-no/fiks-maskinporten-client-dotnet)
+
 ## Autorisering
 I tillegg må integrasjonen autoriseres for tilgang til en spesifikk tjeneste. Hvis for eksempel et fagsystem skal kunne laste opp meldinger til Fiks Innsyn må en administrator i kommunen benytte Fiks-Konfigurasjon for å legge til denne tilgangen hos den relvante kommunen.
 
