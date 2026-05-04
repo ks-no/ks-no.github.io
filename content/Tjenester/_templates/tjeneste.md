@@ -143,6 +143,7 @@ Tjenestespesifikke forutsetninger:
 
 ---
 
+
 ## Meldingsprotokoll
 
 <!--

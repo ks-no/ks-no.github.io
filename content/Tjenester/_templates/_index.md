@@ -22,7 +22,7 @@ For å unngå at samme informasjon vedlikeholdes flere steder, har vi en klar an
 | Autentiseringsheadere (`Authorization`, `IntegrasjonId`, `IntegrasjonPassord`) | [`Felles/integrasjoner.md`]({{< ref "integrasjoner.md" >}}) | `#integrasjon` |
 | cURL-eksempel | [`Felles/integrasjoner.md`]({{< ref "integrasjoner.md" >}}) | `#eksempel-autentisert-kall` |
 | Maskinporten-klienter (Java/.NET) | [`Felles/integrasjoner.md`]({{< ref "integrasjoner.md" >}}) | `#maskinporten-klienter` |
-| Miljøer (test/prod base-URL) | [`Felles/integrasjoner.md`]({{< ref "integrasjoner.md" >}}) | `#miljøer` |
+| Miljøer (test/prod base-URL) | [`Felles/integrasjoner.md`]({{< ref "integrasjoner.md" >}}) | `#miljoer` |
 | Feilmeldingsformat (`timestamp/status/errorId/...`) | [`Felles/integrasjoner.md`]({{< ref "integrasjoner.md" >}}) | `#feilmeldinger` |
 | API-versjoneringspolicy | [`Felles/integrasjoner.md`]({{< ref "integrasjoner.md" >}}) | `#versjonering` |
 | Autorisering / privilegier | [`Felles/integrasjoner.md`]({{< ref "integrasjoner.md" >}}) | `#autorisering` |

@@ -98,7 +98,7 @@ KS tilbyr klienter som henter access token fra Maskinporten basert på et virkso
 
 En komplett oversikt over offisielle KS-klientbiblioteker for de ulike Fiks-tjenestene finnes på siden [Klientbiblioteker]({{< ref "klientbiblioteker.md" >}}).
 
-## Miljøer {#miljøer}
+## Miljøer {#miljoer}
 
 Fiks-plattformen har to offentlige miljøer. Hver tjeneste eksponeres som en sti under disse base-URL-ene – f.eks. `https://api.fiks.test.ks.no/dokumentlager/api/v1/...`.
 
@@ -119,12 +119,12 @@ Fiks-plattformens API-er er versjonert med en major-versjon i URL-stien (`/api/v
 
 Eventuelle tjenestespesifikke avvik fra dette dokumenteres på den enkelte tjenestes side.
 
-## Autorisering
+## Autorisering {#autorisering}
 I tillegg må integrasjonen autoriseres for tilgang til en spesifikk tjeneste. Hvis for eksempel et fagsystem skal kunne laste opp meldinger til Fiks Innsyn må en administrator i kommunen benytte Fiks-Konfigurasjon for å legge til denne tilgangen hos den relvante kommunen.
 
 Dette gjelder også for integrasjoner som leveres som en del av Fiks-plattformen. Skal SvarUt kunne indeksere forsendelse i Fiks Innsyn må også her kommunen eksplisitt autorisere dette.
 
-## Feilmeldinger
+## Feilmeldinger {#feilmeldinger}
 
 De fleste REST API-ene returnerer feilmeldinger på følgende format:
 ```json
