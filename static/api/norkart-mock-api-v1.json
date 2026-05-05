@@ -1,0 +1,535 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "KS FIKS: Komtek mock service",
+    "description": "Mock API for eiendomsskatt data",
+    "contact": {
+      "name": "Fiks brukerstøtte",
+      "url": "https://www.ks.no/fagomrader/digitalisering/utviklingsprosjekter",
+      "email": "fiks-utvikling@ks.no"
+    },
+    "license": {
+      "name": "MIT",
+      "url": "https://opensource.org/licenses/MIT"
+    },
+    "version": "v1"
+  },
+  "servers": [
+    {
+      "url": "https://api.fiks.ks.no",
+      "description": "KS Fiks API host"
+    },
+    {
+      "url": "https://api.test.fiks.ks.no",
+      "description": "KS Fiks TEST API host"
+    }
+  ],
+  "security": [
+    {
+      "apitoken": []
+    }
+  ],
+  "tags": [
+    {
+      "name": "komtek",
+      "description": "Mock API for eiendomsskatt"
+    }
+  ],
+  "paths": {
+    "/api/Komtek/hentEiendomsskattHovedtall": {
+      "get": {
+        "tags": [
+          "komtek"
+        ],
+        "description": "Henter hovedtall for eiendomsskatt for gitt matrikkelnummer",
+        "operationId": "hentEiendomsskattHovedtall",
+        "summary": "Henter hovedtall for eiendomsskatt for gitt matrikkelnummer",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "matrikkelNr",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [
+          {
+            "apitoken": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Eiendomsskatt hovedtall",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EiendomsskattHovedtall"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Komtek/hentEiendomsskattDetaljer/{kundeId}/{avtaleNr}": {
+      "get": {
+        "tags": [
+          "komtek"
+        ],
+        "description": "Henter detaljer om eiendomsskatt for gitt kunde, avtale og matrikkelnummer",
+        "operationId": "hentEiendomsskattDetaljer",
+        "summary": "Henter detaljer om eiendomsskatt for gitt kunde, avtale og matrikkelnummer",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "kundeId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "avtaleNr",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "matrikkelNr",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [
+          {
+            "apitoken": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Eiendomsskatt detaljer",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EskattDetailInfoDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Ingen tilgang",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Ikke autorisert",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Systemfeil",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "apitoken": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "apitoken"
+      }
+    },
+    "schemas": {
+      "ErrorMessage": {
+        "type": "object",
+        "properties": {
+          "timestamp": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "status": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "error": {
+            "type": "string"
+          },
+          "errorId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "path": {
+            "type": "string"
+          },
+          "originalPath": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          },
+          "errorCode": {
+            "type": "string"
+          },
+          "errorJson": {
+            "type": "string"
+          }
+        }
+      },
+      "EiendomsskattHovedtall": {
+        "type": "object",
+        "properties": {
+          "eskattMainInfo": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/EskattHovedtall"
+            }
+          }
+        }
+      },
+      "EskattHovedtall": {
+        "type": "object",
+        "properties": {
+          "takst": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "takstDisplay": {
+            "type": "string",
+            "nullable": true
+          },
+          "skatt": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "skattDisplay": {
+            "type": "string",
+            "nullable": true
+          },
+          "typeSkatteEiendom": {
+            "type": "string",
+            "nullable": true
+          },
+          "avtLnr": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "kundeId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "kundeIdDisplay": {
+            "type": "string",
+            "nullable": true
+          },
+          "matrikkelNr": {
+            "type": "string",
+            "nullable": true
+          },
+          "matrikkelNrValgtEiendom": {
+            "type": "string",
+            "nullable": true
+          },
+          "takstBekreftet": {
+            "type": "boolean"
+          }
+        }
+      },
+      "EskattDetailInfoDto": {
+        "type": "object",
+        "properties": {
+          "kundeId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "avtLnr": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "takstBekreftet": {
+            "type": "boolean"
+          },
+          "antallBoenheter": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "fritak": {
+            "type": "string",
+            "nullable": true
+          },
+          "sjablongtakst": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "indreFaktor": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "ytreFaktor": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "sonefaktor": {
+            "type": "number",
+            "format": "float",
+            "nullable": true
+          },
+          "takst": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "forslagTakst": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "skatteNivaa": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "bunnfradrag": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "skattegrunnlag": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "promillesats": {
+            "type": "number",
+            "format": "float",
+            "nullable": true
+          },
+          "beregnetSkatt": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "kommune": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "brukGabTomt": {
+            "type": "boolean"
+          },
+          "brukGabBygg": {
+            "type": "boolean"
+          },
+          "gabTomtSum": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "gabByggSum": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "protTomtSum": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "protByggSum": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "protAnnetSum": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "typeSkatteEiendom": {
+            "type": "string",
+            "nullable": true
+          },
+          "typeSkatteEiendomOppdragsNr": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "typeSkatteEiendomKommune": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "typeSkatteEiendomVare": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "infoTxt": {
+            "type": "string",
+            "nullable": true
+          },
+          "eskattDetaljerDisplay": {
+            "$ref": "#/components/schemas/EskattDetaljerDisplay"
+          }
+        }
+      },
+      "EskattDetaljerDisplay": {
+        "type": "object",
+        "properties": {
+          "avtLnr": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "takstBekreftet": {
+            "type": "boolean"
+          },
+          "antallBoenheter": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "fritak": {
+            "type": "string",
+            "nullable": true
+          },
+          "sjablongtakstDisplay": {
+            "type": "string",
+            "nullable": true
+          },
+          "erFormuesgrunnlag": {
+            "type": "boolean"
+          },
+          "takstRedusertDisplay": {
+            "type": "string",
+            "nullable": true
+          },
+          "pysefaktorDisplay": {
+            "type": "string",
+            "nullable": true,
+            "deprecated": true
+          },
+          "formuesgrunnlagDisplay": {
+            "type": "string",
+            "nullable": true,
+            "deprecated": true
+          },
+          "forslagtakstDisplay": {
+            "type": "string",
+            "nullable": true
+          },
+          "indreFaktorDisplay": {
+            "type": "string",
+            "nullable": true
+          },
+          "ytreFaktorDisplay": {
+            "type": "string",
+            "nullable": true
+          },
+          "sonefaktorDisplay": {
+            "type": "string",
+            "nullable": true
+          },
+          "takstDisplay": {
+            "type": "string",
+            "nullable": true
+          },
+          "visSkattenivaa": {
+            "type": "boolean"
+          },
+          "skatteNivaaDisplay": {
+            "type": "string",
+            "nullable": true
+          },
+          "bunnfradragDisplay": {
+            "type": "string",
+            "nullable": true
+          },
+          "skattegrunnlagDisplay": {
+            "type": "string",
+            "nullable": true
+          },
+          "promillesatsDisplay": {
+            "type": "string",
+            "nullable": true
+          },
+          "beregnetSkattDisplay": {
+            "type": "string",
+            "nullable": true
+          },
+          "kommune": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "brukGabTomt": {
+            "type": "boolean"
+          },
+          "brukGabBygg": {
+            "type": "boolean"
+          },
+          "gabTomtSumDisplay": {
+            "type": "string",
+            "nullable": true
+          },
+          "gabByggSumDisplay": {
+            "type": "string",
+            "nullable": true
+          },
+          "protTomtSumDisplay": {
+            "type": "string",
+            "nullable": true
+          },
+          "protByggSumDisplay": {
+            "type": "string",
+            "nullable": true
+          },
+          "protAnnetSumDisplay": {
+            "type": "string",
+            "nullable": true
+          },
+          "typeSkatteEiendom": {
+            "type": "string",
+            "nullable": true
+          },
+          "typeSkatteEiendomOppdragsNr": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "typeSkatteEiendomKommune": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "typeSkatteEiendomVare": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      }
+    }
+  }
+}
