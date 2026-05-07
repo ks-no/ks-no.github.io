@@ -1,0 +1,554 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "KS FIKS: Konsesjon service",
+    "description": "Konsesjon service",
+    "contact": {
+      "name": "Fiks konsesjon",
+      "url": "https://www.ks.no/fagomrader/digitalisering/utviklingsprosjekter",
+      "email": "fiks-utvikling@ksdigital.no"
+    },
+    "version": "v1"
+  },
+  "servers": [
+    {
+      "url": "https://api.fiks.ks.no",
+      "description": "KS Fiks API host"
+    },
+    {
+      "url": "https://api.test.fiks.ks.no",
+      "description": "KS Fiks TEST API host"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Eiendomssalg - Konsesjonsavklaring",
+      "description": "API for konsesjonsavklaring ved eiendomssalg"
+    }
+  ],
+  "paths": {
+    "/api/v1/eiendomssalg/egenerklaering/paakrevd": {
+      "get": {
+        "tags": [
+          "Eiendomssalg - Konsesjonsavklaring"
+        ],
+        "summary": "Returns if an egenerklæring is required for the property and if there is boplikt",
+        "operationId": "getEgenerklaeringPaakrevdAndBoplikt",
+        "parameters": [
+          {
+            "name": "knr",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "gnr",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "bnr",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "fnr",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 0
+            }
+          },
+          {
+            "name": "snr",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 0
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EgenerklaeringPaakrevdOgBopliktResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/egenerklaering/start": {
+      "post": {
+        "tags": [
+          "Eiendomssalg - Konsesjonsavklaring"
+        ],
+        "summary": "Starts the process by gathering register information and updating status",
+        "operationId": "createKonsesjonsavklaring",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EiendomsId"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "The call was successful and a started egenerklæring has been created. Returns the ID of the started egenerklæring",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/KonsesjonsavklaringId"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request - matrikkel ID is in an invalid format",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - bearer token not sent",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden - token is invalid or missing required scope",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error - something else went wrong",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/eiendomssalg/egenerklaering/{konsesjonsavklaringId}/presjekk": {
+      "post": {
+        "tags": [
+          "Eiendomssalg - Konsesjonsavklaring"
+        ],
+        "summary": "Does the precheck and returns the result",
+        "operationId": "getResultPrecheck",
+        "parameters": [
+          {
+            "name": "konsesjonsavklaringId",
+            "in": "path",
+            "description": "UUID of the konsesjonsavklaring",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Precheck completed. The response also includes the result of the precheck.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PresjekkResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request - EiendomsData is in an invalid format",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found - Did not find a konsesjonsavklaring matching the given ID",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict - When data collection is not finished yet and status is still INNHENTER_DATA",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - bearer token not sent",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden - token is invalid or missing required scope",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/egenerklaering/{konsesjonsavklaringId}/hovedsjekk": {
+      "post": {
+        "tags": [
+          "Eiendomssalg - Konsesjonsavklaring"
+        ],
+        "summary": "Starts the main konsesjonsavklaringssjekk and returns the result",
+        "operationId": "startHovedsjekk",
+        "parameters": [
+          {
+            "name": "konsesjonsavklaringId",
+            "in": "path",
+            "description": "UUID of the konsesjonsavklaring",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "description": "Erverver and ownership share being submitted",
+                "items": {
+                  "$ref": "#/components/schemas/ErververMedEierandel"
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Main check completed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/HovedsjekkResponse"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request - input is in wrong format (e.g., missing fødselsnummer or ownership share > 100%)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found - Did not find a konsesjonsavklaring matching the given ID",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict - Precheck not passed yet",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - bearer token not sent",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden - token is invalid or missing required scope",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "BopliktResponse": {
+        "type": "object",
+        "properties": {
+          "harBoplikt": {
+            "type": "string",
+            "enum": [
+              "JA",
+              "NEI",
+              "MULIGENS"
+            ]
+          },
+          "bopliktForklaringResponse": {
+            "type": "string",
+            "enum": [
+              "NEDSATT_KONSESJONSGRENSE_DEKKER_IKKE_HELE_EIENDOMMEN",
+              "HVIS_IKKE_ARVER_FRA_SLEKTSKAP",
+              "HVIS_EIENDOM_UNDER_OPPFOERING_OG_I_OMRAADE_REGULERT_TIL_BOLIGFORMAAL",
+              "HVIS_UBEBYGD_EIENDOM_I_OMRAADE_REGULERT_TIL_BOLIGFORMAAL",
+              "BRUKT_SOM_HELAARSBOLIG"
+            ]
+          }
+        }
+      },
+      "EgenerklaeringPaakrevdOgBopliktResponse": {
+        "type": "object",
+        "properties": {
+          "egenerklaeringPaakrevd": {
+            "type": "boolean"
+          },
+          "boplikt": {
+            "$ref": "#/components/schemas/BopliktResponse"
+          }
+        }
+      },
+      "PresjekkResponse": {
+        "type": "object",
+        "properties": {
+          "konsesjonsavklaringId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "presjekkResponseType": {
+            "type": "string",
+            "enum": [
+              "KREVES_IKKE",
+              "DEL_AV_STORRE_LANDBRUKSEIENDOM",
+              "KREVER_EGENERKLARING"
+            ]
+          }
+        }
+      },
+      "HovedsjekkResponse": {
+        "type": "object",
+        "properties": {
+          "konsesjonsavklaringId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "erverver": {
+            "$ref": "#/components/schemas/ErververId"
+          },
+          "innsendtSkjemaStatus": {
+            "type": "string",
+            "enum": [
+              "MANUELL_BEHANDLING_LDIR_360_GROENT",
+              "MANUELL_BEHANDLING_BEBYGD_LDIR_356_ROEDT",
+              "MANUELL_BEHANDLING_UBEBYGD_LDIR_356_ROEDT",
+              "TRENGER_SOEKNAD",
+              "AVVENTER_RELASJONSSJEKK_MED_ODEL",
+              "AVVENTER_RELASJONSSJEKK_UTEN_ODEL",
+              "AVVENTER_BOPLIKTS_UNNTAK_LDIR_356_ROEDT",
+              "AVVENTER_BOPLIKTS_UNNTAK_LDIR_356_ROEDT_UTEN_SLEKTSKAP",
+              "TRENGER_BOPLIKT_AVKLARING",
+              "TRENGER_KONSESJONSFORHOLD_AVKLARING",
+              "GODKJENT"
+            ]
+          }
+        }
+      },
+      "ErververId": {
+        "type": "object",
+        "properties": {
+          "fodselsnummer": {
+            "type": "string",
+            "example": "06109912345",
+            "maxLength": 11,
+            "minLength": 11
+          },
+          "organisasjonsnummer": {
+            "type": "string",
+            "example": "123456789",
+            "maxLength": 9,
+            "minLength": 9
+          }
+        },
+        "required": [
+          "fodselsnummer"
+        ]
+      },
+      "ErververMedEierandel": {
+        "type": "object",
+        "properties": {
+          "erverver": {
+            "$ref": "#/components/schemas/Erverver"
+          },
+          "eierandel": {
+            "$ref": "#/components/schemas/Eierandel"
+          }
+        }
+      },
+      "Erverver": {
+        "type": "object",
+        "properties": {
+          "erververId": {
+            "$ref": "#/components/schemas/ErververId"
+          },
+          "navn": {
+            "type": "string"
+          },
+          "adresse": {
+            "type": "string"
+          },
+          "postnr": {
+            "type": "string"
+          },
+          "poststed": {
+            "type": "string"
+          },
+          "epost": {
+            "type": "string"
+          },
+          "telefonnummer": {
+            "type": "string"
+          }
+        }
+      },
+      "Eierandel": {
+        "type": "object",
+        "properties": {
+          "teller": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "nevner": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "KonsesjonsavklaringId": {
+        "type": "object",
+        "properties": {
+          "konsesjonsavklaringId": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      },
+      "EiendomsId": {
+        "type": "object",
+        "properties": {
+          "kommuneNummer": {
+            "type": "string",
+            "example": "0301",
+            "maxLength": 4,
+            "minLength": 4
+          },
+          "gaardsNummer": {
+            "type": "integer",
+            "format": "int32",
+            "minimum": 1
+          },
+          "bruksNummer": {
+            "type": "integer",
+            "format": "int32",
+            "minimum": 1
+          },
+          "festeNummer": {
+            "type": "integer",
+            "format": "int32",
+            "minimum": 0
+          },
+          "seksjonsNummer": {
+            "type": "integer",
+            "format": "int32",
+            "minimum": 0
+          }
+        },
+        "required": [
+          "bruksNummer",
+          "festeNummer",
+          "gaardsNummer",
+          "kommuneNummer",
+          "seksjonsNummer"
+        ]
+      }
+    }
+  }
+}
