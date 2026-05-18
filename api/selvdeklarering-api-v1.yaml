@@ -1,0 +1,580 @@
+openapi: 3.0.1
+info:
+  title: 'KS Fiks: Selvdeklarering'
+  description: API for leverandørselvdeklarering, innlevering og innsyn
+  contact:
+    name: Fiks-brukerstøtte
+    url: https://ks-no.github.io/
+    email: fiks-utvikling@ksdigital.no
+  version: v1
+servers:
+  - url: https://api.fiks.test.ks.no
+    description: KS Fiks API host
+security:
+  - bearerAuth: []
+tags:
+  - name: Selvdeklarering
+    description: Administrasjon av selvdeklareringer
+  - name: Innlevering
+    description: Innlevering og statusendring av selvdeklareringer
+  - name: Innsyn
+    description: Innsynsforespørsler for innleverte selvdeklareringer
+paths:
+  /selvdeklarering/api/v1/selvdeklareringer:
+    get:
+      summary: Hent alle selvdeklareringer
+      operationId: hentAlleSelvdeklareringer
+      tags:
+        - Selvdeklarering
+      responses:
+        '200':
+          description: Liste over selvdeklareringer
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SelvdeklareringOversikt'
+      security:
+        - bearerAuth: []
+    post:
+      summary: Opprett ny selvdeklarering
+      operationId: opprettSelvdeklarering
+      tags:
+        - Selvdeklarering
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Selvdeklarering'
+      responses:
+        '201':
+          description: Opprettet
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Selvdeklarering'
+      security:
+        - bearerAuth: []
+  /selvdeklarering/api/v1/selvdeklareringer/{id}:
+    get:
+      summary: Hent selvdeklarering
+      operationId: hentSelvdeklarering
+      tags:
+        - Selvdeklarering
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Selvdeklarering
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Selvdeklarering'
+      security:
+        - bearerAuth: []
+    put:
+      summary: Oppdater selvdeklarering
+      operationId: oppdaterSelvdeklarering
+      tags:
+        - Selvdeklarering
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Selvdeklarering'
+      responses:
+        '200':
+          description: Oppdatert
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Selvdeklarering'
+      security:
+        - bearerAuth: []
+  /selvdeklarering/api/v1/innleveringer:
+    post:
+      summary: Opprett ny innlevering (UTKAST)
+      operationId: opprettInnlevering
+      tags:
+        - Innlevering
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OpprettInnlevering'
+      responses:
+        '201':
+          description: Opprettet
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InnlevertSelvdeklarering'
+      security:
+        - bearerAuth: []
+  /selvdeklarering/api/v1/innleveringer/{id}:
+    get:
+      summary: Hent innlevering med svar
+      operationId: hentInnlevering
+      tags:
+        - Innlevering
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Innlevering
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InnlevertSelvdeklarering'
+      security:
+        - bearerAuth: []
+    put:
+      summary: Oppdater svar (kun UTKAST)
+      operationId: oppdaterInnlevering
+      tags:
+        - Innlevering
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InnlevertSelvdeklarering'
+      responses:
+        '200':
+          description: Oppdatert
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InnlevertSelvdeklarering'
+      security:
+        - bearerAuth: []
+  /selvdeklarering/api/v1/innleveringer/{id}/lever-inn:
+    put:
+      summary: Lever inn selvdeklarering (UTKAST → INNLEVERT)
+      operationId: leverInn
+      tags:
+        - Innlevering
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Innlevert
+      security:
+        - bearerAuth: []
+  /selvdeklarering/api/v1/innleveringer/{id}/trekk-tilbake:
+    put:
+      summary: Trekk tilbake innlevering (INNLEVERT → TRUKKET_TILBAKE)
+      operationId: trekkTilbake
+      tags:
+        - Innlevering
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Trukket tilbake
+      security:
+        - bearerAuth: []
+  /selvdeklarering/api/v1/innleveringer/{id}/gjor-ugyldig:
+    put:
+      summary: Gjør innlevering ugyldig (INNLEVERT → UGYLDIG)
+      operationId: gjorUgyldig
+      tags:
+        - Innlevering
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Ugyldiggjort
+      security:
+        - bearerAuth: []
+  /selvdeklarering/api/v1/selvdeklareringer/{selvdeklareringId}/innleveringer:
+    get:
+      summary: Hent innleveringer for en selvdeklarering
+      operationId: hentInnleveringerForSelvdeklarering
+      tags:
+        - Innlevering
+      parameters:
+        - name: selvdeklareringId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Innleveringer
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/InnlevertOversikt'
+      security:
+        - bearerAuth: []
+  /selvdeklarering/api/v1/innleveringer/leverandor/{leverandorId}:
+    get:
+      summary: Hent innleveringer for en leverandør
+      operationId: hentInnleveringerForLeverandor
+      tags:
+        - Innlevering
+      parameters:
+        - name: leverandorId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Innleveringer
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/InnlevertOversikt'
+      security:
+        - bearerAuth: []
+  /selvdeklarering/api/v1/innsyn/{innlevertSelvdeklareringId}:
+    get:
+      summary: Hent innsynsforespørsler for en innlevering
+      operationId: hentInnsynsforsporsler
+      tags:
+        - Innsyn
+      parameters:
+        - name: innlevertSelvdeklareringId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Innsynsforespørsler
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Innsynsforesporsel'
+      security:
+        - bearerAuth: []
+    post:
+      summary: Opprett innsynsforespørsel (kun for INNLEVERT)
+      operationId: opprettInnsyn
+      tags:
+        - Innsyn
+      parameters:
+        - name: innlevertSelvdeklareringId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OpprettInnsynsforesporsel'
+      responses:
+        '201':
+          description: Opprettet
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Innsynsforesporsel'
+      security:
+        - bearerAuth: []
+  /selvdeklarering/api/v1/innsyn/{id}/godta:
+    put:
+      summary: Godta innsynsforespørsel
+      operationId: godtaInnsyn
+      tags:
+        - Innsyn
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Godtatt
+      security:
+        - bearerAuth: []
+  /selvdeklarering/api/v1/innsyn/{id}/avslaa:
+    put:
+      summary: Avslå innsynsforespørsel
+      operationId: avslaaInnsyn
+      tags:
+        - Innsyn
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Avslått
+      security:
+        - bearerAuth: []
+components:
+  schemas:
+    Selvdeklarering:
+      type: object
+      required:
+        - tittel
+        - pakkeIder
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        tittel:
+          type: string
+          maxLength: 500
+        beskrivelse:
+          type: string
+          maxLength: 2000
+        pakkeIder:
+          type: array
+          items:
+            type: string
+            format: uuid
+          description: IDer til pakker fra spørsmålsbanken
+        status:
+          $ref: '#/components/schemas/SelvdeklareringStatus'
+        opprettet:
+          type: string
+          format: date-time
+          readOnly: true
+        oppdatert:
+          type: string
+          format: date-time
+          readOnly: true
+    SelvdeklareringOversikt:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        tittel:
+          type: string
+        beskrivelse:
+          type: string
+        antallPakker:
+          type: integer
+        status:
+          $ref: '#/components/schemas/SelvdeklareringStatus'
+        opprettet:
+          type: string
+          format: date-time
+        oppdatert:
+          type: string
+          format: date-time
+    SelvdeklareringStatus:
+      type: string
+      enum:
+        - AKTIV
+        - DEAKTIVERT
+    InnlevertSelvdeklarering:
+      type: object
+      required:
+        - selvdeklareringId
+        - versjon
+        - produktId
+        - leverandorId
+        - svar
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        selvdeklareringId:
+          type: string
+          format: uuid
+        versjon:
+          type: integer
+          format: int64
+        produktId:
+          type: string
+          format: uuid
+        leverandorId:
+          type: string
+          format: uuid
+        svar:
+          type: array
+          items:
+            $ref: '#/components/schemas/SporsmalSvar'
+        status:
+          $ref: '#/components/schemas/InnleveringStatus'
+        innlevert:
+          type: string
+          format: date-time
+          readOnly: true
+        opprettet:
+          type: string
+          format: date-time
+          readOnly: true
+        oppdatert:
+          type: string
+          format: date-time
+          readOnly: true
+    OpprettInnlevering:
+      type: object
+      required:
+        - selvdeklareringId
+        - versjon
+        - produktId
+        - leverandorId
+        - svar
+      properties:
+        selvdeklareringId:
+          type: string
+          format: uuid
+        versjon:
+          type: integer
+          format: int64
+        produktId:
+          type: string
+          format: uuid
+        leverandorId:
+          type: string
+          format: uuid
+        svar:
+          type: array
+          items:
+            $ref: '#/components/schemas/SporsmalSvar'
+    InnlevertOversikt:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        selvdeklareringId:
+          type: string
+          format: uuid
+        versjon:
+          type: integer
+          format: int64
+        produktId:
+          type: string
+          format: uuid
+        leverandorId:
+          type: string
+          format: uuid
+        status:
+          $ref: '#/components/schemas/InnleveringStatus'
+        innlevert:
+          type: string
+          format: date-time
+        opprettet:
+          type: string
+          format: date-time
+    SporsmalSvar:
+      type: object
+      required:
+        - sporsmalId
+        - valgtSvaralternativId
+      properties:
+        sporsmalId:
+          type: string
+          description: ID til spørsmålet fra spørreskjemaet
+        valgtSvaralternativId:
+          type: string
+          description: ID til valgt svaralternativ (radioknapp)
+        kommentar:
+          type: string
+          description: Valgfri kommentar fra leverandør
+    InnleveringStatus:
+      type: string
+      enum:
+        - UTKAST
+        - INNLEVERT
+        - TRUKKET_TILBAKE
+        - UGYLDIG
+    Innsynsforesporsel:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        innlevertSelvdeklareringId:
+          type: string
+          format: uuid
+        forespurtAv:
+          type: string
+          description: Hvem som ber om innsyn
+        godtatt:
+          type: boolean
+          description: Null = ubehandlet, true = godtatt, false = avslått
+        behandlet:
+          type: string
+          format: date-time
+          readOnly: true
+        opprettet:
+          type: string
+          format: date-time
+          readOnly: true
+    OpprettInnsynsforesporsel:
+      type: object
+      required:
+        - forespurtAv
+      properties:
+        forespurtAv:
+          type: string
+          description: Hvem som ber om innsyn, f.eks. e-post eller org.nr
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: Ansattporten JWT-token
