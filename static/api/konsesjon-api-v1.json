@@ -641,7 +641,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/EiendomsDataMedId"
+                  "$ref": "#/components/schemas/SkjemadataResponse"
                 }
               }
             }
@@ -1225,8 +1225,8 @@
         "tags": [
           "Eiendom"
         ],
-        "description": "Returnerer om en eiendom har boplikt eller ikke",
-        "operationId": "getBoplikt",
+        "description": "Returnerer om en egenerklæring er påkrevd for eiendommen og om det er boplikt",
+        "operationId": "getEgenerklaeringPaakrevdAndBoplikt",
         "parameters": [
           {
             "in": "path",
@@ -1275,110 +1275,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/BopliktResponse"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Feil input",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Ikke tilgang – bearer token ikke sent",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
-                }
-              }
-            }
-          },
-          "403": {
-            "description": "Ikke tilgang",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Ingen treff",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/konsesjon/api/v1/eiendom/egenerklaering/{knr}/{gnr}/{bnr}/{fnr}/{snr}/": {
-      "get": {
-        "tags": [
-          "Eiendom"
-        ],
-        "description": "Returnerer om en eiendom trenger en egenerklæring eller ikke",
-        "operationId": "getEgenerklaering",
-        "parameters": [
-          {
-            "in": "path",
-            "name": "knr",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "in": "path",
-            "name": "gnr",
-            "required": true,
-            "schema": {
-              "type": "integer"
-            }
-          },
-          {
-            "in": "path",
-            "name": "bnr",
-            "required": true,
-            "schema": {
-              "type": "integer"
-            }
-          },
-          {
-            "in": "path",
-            "name": "fnr",
-            "required": true,
-            "schema": {
-              "type": "integer"
-            }
-          },
-          {
-            "in": "path",
-            "name": "snr",
-            "required": true,
-            "schema": {
-              "type": "integer"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "boolean"
+                  "$ref": "#/components/schemas/EgenerklaeringPaakrevdOgBopliktResponse"
                 }
               }
             }
@@ -2069,35 +1966,137 @@
           }
         }
       },
-      "EiendomsData": {
+      "AdresseDto": {
         "type": "object",
         "properties": {
-          "bygningerPaaEiendommen": {
+          "adressenavn": {
+            "type": "string"
+          },
+          "husnummer": {
+            "type": "string"
+          },
+          "postnummer": {
+            "type": "string"
+          }
+        }
+      },
+      "ArealInfo": {
+        "type": "object",
+        "properties": {
+          "arealPaaEiendommenKvm": {
+            "type": "number",
+            "format": "double"
+          },
+          "arealFullOgOveflatedyrketJordKvm": {
+            "type": "number",
+            "format": "double"
+          },
+          "arealProduktivSkogPaaEiendommenKvm": {
+            "type": "number",
+            "format": "double"
+          }
+        }
+      },
+      "KobletEiendomData": {
+        "type": "object",
+        "properties": {
+          "eiendomsId": {
+            "$ref": "#/components/schemas/EiendomsId"
+          },
+          "koblingsType": {
+            "type": "string",
+            "enum": [
+              "REALKOBLET",
+              "DEL_AV_STORRE_LANDBRUKSEIENDOM",
+              "MANUELT_INNSENDT"
+            ]
+          },
+          "bebygd": {
+            "type": "boolean"
+          },
+          "arealInfo": {
+            "$ref": "#/components/schemas/ArealInfo"
+          },
+          "adresser": {
             "type": "array",
-            "minItems": 1,
+            "items": {
+              "$ref": "#/components/schemas/AdresseDto"
+            }
+          },
+          "bygningIder": {
+            "type": "array",
             "items": {
               "type": "integer",
               "format": "int64"
             }
           },
-          "arealPaaEiendommen": {
-            "type": "number",
-            "format": "double"
-          },
-          "arealFullOgOveflatedyrketJord": {
-            "type": "number",
-            "format": "double"
-          },
-          "arealProduktivSkogPaaEiendommen": {
-            "type": "number",
-            "format": "double"
+          "eierandel": {
+            "$ref": "#/components/schemas/Eierandel"
           }
         },
         "required": [
-          "arealFullOgOveflatedyrketJord",
-          "arealPaaEiendommen",
-          "arealProduktivSkogPaaEiendommen"
+          "arealInfo",
+          "eiendomsId"
         ]
+      },
+      "EiendomsData": {
+        "type": "object",
+        "properties": {
+          "eiendomsId": {
+            "$ref": "#/components/schemas/EiendomsId"
+          },
+          "bebygd": {
+            "type": "boolean"
+          },
+          "arealInfo": {
+            "$ref": "#/components/schemas/ArealInfo"
+          },
+          "adresser": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AdresseDto"
+            }
+          },
+          "bygningIder": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          "kobledeEiendommer": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/KobletEiendomData"
+            }
+          }
+        },
+        "required": [
+          "arealInfo"
+        ]
+      },
+      "SkjemadataResponse": {
+        "type": "object",
+        "properties": {
+          "eiendomsData": {
+            "$ref": "#/components/schemas/EiendomsData"
+          },
+          "totalArealKvm": {
+            "type": "number",
+            "format": "double"
+          },
+          "totalArealDyrketJordKvm": {
+            "type": "number",
+            "format": "double"
+          },
+          "totalArealProduktivSkogKvm": {
+            "type": "number",
+            "format": "double"
+          },
+          "totalBebygd": {
+            "type": "boolean"
+          }
+        }
       },
       "ErververMedEierandel": {
         "type": "object",
@@ -2106,13 +2105,16 @@
           "erverver": {
             "$ref": "#/components/schemas/Erverver"
           },
-          "eierandel": {
-            "$ref": "#/components/schemas/Eierandel"
+          "eiendommer": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/EiendomMedEierandel"
+            }
           }
         },
         "required": [
           "erverver",
-          "eierandel"
+          "eiendommer"
         ]
       },
       "ErververId": {
@@ -2176,6 +2178,20 @@
             "maximum": 999999
           }
         }
+      },
+      "EiendomMedEierandel": {
+        "type": "object",
+        "properties": {
+          "eiendomsId": {
+            "$ref": "#/components/schemas/EiendomsId"
+          },
+          "eierandel": {
+            "$ref": "#/components/schemas/Eierandel"
+          }
+        },
+        "required": [
+          "eiendomsId"
+        ]
       },
       "Eierandel": {
         "type": "object",
@@ -2610,6 +2626,17 @@
             "items": {
               "$ref": "#/components/schemas/EiendomsId"
             }
+          }
+        }
+      },
+      "EgenerklaeringPaakrevdOgBopliktResponse": {
+        "type": "object",
+        "properties": {
+          "egenerklaeringPaakrevd": {
+            "type": "boolean"
+          },
+          "boplikt": {
+            "$ref": "#/components/schemas/BopliktResponse"
           }
         }
       }
