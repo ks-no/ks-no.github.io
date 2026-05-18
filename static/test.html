@@ -1,219 +1,38 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="no">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Image Viewer</title>
+    <meta http-equiv="refresh" content="3;url=index.html">
+    <title>301 Moved</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
         body {
-            overflow: hidden;
-            width: 100vw;
-            height: 100vh;
-            background: #1a1a1a;
-        }
-
-        #viewport {
-            width: 100%;
-            height: 100%;
-            cursor: grab;
-            position: relative;
-            overflow: hidden;
-            user-select: none;
-        }
-
-        #viewport.grabbing {
-            cursor: grabbing;
-        }
-
-        #image {
-            position: absolute;
-            transform-origin: 0 0;
-            transition: none;
-            image-rendering: high-quality;
-            pointer-events: auto;
-        }
-
-        #error {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            color: #ff6b6b;
-            font-family: Arial, sans-serif;
-            font-size: 16px;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
             text-align: center;
-            padding: 20px;
         }
+        .message {
+            background: rgba(255,255,255,0.15);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.3);
+            border-radius: 12px;
+            padding: 2.5rem 3rem;
+        }
+        h1 { font-size: 1.8rem; margin-bottom: 0.5rem; }
+        p { font-size: 1rem; opacity: 0.9; }
+        a { color: white; font-weight: 600; }
     </style>
 </head>
 <body>
-<div id="viewport">
-    <img id="image" alt="Zoomable Image">
-    <div id="error" style="display: none;"></div>
+<div class="message">
+    <h1>Siden er flyttet</h1>
+    <p>Du blir videresendt om et øyeblikk…</p>
 </div>
-
-<script>
-    const viewport = document.getElementById('viewport');
-    const image = document.getElementById('image');
-    const errorDiv = document.getElementById('error');
-
-    // Get URL parameter
-    function getUrlParameter(name) {
-        const urlParams = new URLSearchParams(window.location.search);
-        return urlParams.get(name);
-    }
-
-    // Get the URL from the 'url' parameter, fallback to default
-    const imageUrl = getUrlParameter('url') || 'diagram/ksdigital-view.svg';
-    image.src = imageUrl;
-
-    let scale = 1;
-    let translateX = 0;
-    let translateY = 0;
-    let isDragging = false;
-    let startX = 0;
-    let startY = 0;
-
-    // Handle image load error
-    image.onerror = function() {
-        errorDiv.textContent = `Failed to load image: ${imageUrl}\n\nMake sure the URL is correct and accessible.`;
-        errorDiv.style.display = 'block';
-        image.style.display = 'none';
-    };
-
-    // Initialize image position on load
-    image.onload = function() {
-        errorDiv.style.display = 'none';
-        image.style.display = 'block';
-        fitImageToViewport();
-    };
-
-    // Also handle if image is already cached
-    if (image.complete && image.naturalHeight !== 0) {
-        fitImageToViewport();
-    }
-
-    // Fit image to viewport while maintaining aspect ratio
-    function fitImageToViewport() {
-        const viewportWidth = viewport.clientWidth;
-        const viewportHeight = viewport.clientHeight;
-        const imageAspect = image.naturalWidth / image.naturalHeight;
-        const viewportAspect = viewportWidth / viewportHeight;
-
-        if (imageAspect > viewportAspect) {
-            // Image is wider than viewport - fit to width
-            scale = viewportWidth / image.naturalWidth;
-        } else {
-            // Image is taller than viewport - fit to height
-            scale = viewportHeight / image.naturalHeight;
-        }
-
-        const scaledWidth = image.naturalWidth * scale;
-        const scaledHeight = image.naturalHeight * scale;
-
-        // Center the image
-        translateX = (viewportWidth - scaledWidth) / 2;
-        translateY = (viewportHeight - scaledHeight) / 2;
-
-        updateTransform();
-    }
-
-    // Constrain translation to keep image visible
-    function constrainTranslation() {
-        const viewportWidth = viewport.clientWidth;
-        const viewportHeight = viewport.clientHeight;
-        const imageWidth = image.naturalWidth * scale;
-        const imageHeight = image.naturalHeight * scale;
-
-        // If image is smaller than viewport, center it
-        if (imageWidth <= viewportWidth) {
-            translateX = (viewportWidth - imageWidth) / 2;
-        } else {
-            // If image is larger, constrain panning
-            const minX = viewportWidth - imageWidth;
-            const maxX = 0;
-            translateX = Math.min(maxX, Math.max(minX, translateX));
-        }
-
-        if (imageHeight <= viewportHeight) {
-            translateY = (viewportHeight - imageHeight) / 2;
-        } else {
-            const minY = viewportHeight - imageHeight;
-            const maxY = 0;
-            translateY = Math.min(maxY, Math.max(minY, translateY));
-        }
-    }
-
-    // Update image transform
-    function updateTransform() {
-        constrainTranslation();
-        image.style.transform = `translate(${translateX}px, ${translateY}px) scale(${scale})`;
-    }
-
-    // Mouse wheel zoom
-    viewport.addEventListener('wheel', (e) => {
-        e.preventDefault();
-
-        const rect = viewport.getBoundingClientRect();
-        const mouseX = e.clientX - rect.left;
-        const mouseY = e.clientY - rect.top;
-
-        // Calculate mouse position relative to image before zoom
-        const imageX = (mouseX - translateX) / scale;
-        const imageY = (mouseY - translateY) / scale;
-
-        // Zoom factor
-        const zoomFactor = e.deltaY > 0 ? 0.9 : 1.1;
-        const newScale = scale * zoomFactor;
-
-        // Limit zoom range
-        if (newScale < 0.1 || newScale > 10) return;
-
-        scale = newScale;
-
-        // Adjust translation to keep mouse position fixed
-        translateX = mouseX - imageX * scale;
-        translateY = mouseY - imageY * scale;
-
-        updateTransform();
-    });
-
-    // Mouse drag to pan - start drag
-    viewport.addEventListener('mousedown', (e) => {
-        e.preventDefault();
-        isDragging = true;
-        startX = e.clientX - translateX;
-        startY = e.clientY - translateY;
-        viewport.classList.add('grabbing');
-    });
-
-    // Mouse drag to pan - continue drag (on document to catch events outside viewport)
-    document.addEventListener('mousemove', (e) => {
-        if (!isDragging) return;
-
-        translateX = e.clientX - startX;
-        translateY = e.clientY - startY;
-        updateTransform();
-    });
-
-    // Mouse drag to pan - end drag (on document to catch release anywhere)
-    document.addEventListener('mouseup', () => {
-        if (isDragging) {
-            isDragging = false;
-            viewport.classList.remove('grabbing');
-        }
-    });
-
-    // Handle window resize
-    window.addEventListener('resize', () => {
-        fitImageToViewport();
-    });
-</script>
 </body>
 </html>
+
