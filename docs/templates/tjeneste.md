@@ -264,8 +264,5 @@ Se også [samlet oversikt over klientbiblioteker]({{< ref "klientbiblioteker.md"
 
 ## Få hjelp
 
-{{< partial "get-help.html" (dict
-  "email" "fiks@ksdigital.no"
-  "support_page" (relref "support.md")
-) >}}
+{{< get-help email="fiks@ksdigital.no" support_page="/felles/support/" >}}
 

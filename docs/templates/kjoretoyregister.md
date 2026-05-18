@@ -105,7 +105,6 @@ Fiks-spesifikke avvik fra SVVs spec:
 
 ## Få hjelp
 
-- Tekniske spørsmål og feilmeldinger: `fiks-utvikling@ksdigital.no`
-- Feil returnert med `svvguid` i JSON: kontakt `api-kjoretoy@vegvesen.no` direkte
-- Generelle henvendelser: `fiks@ksdigital.no`
+{{< get-help email="fiks-utvikling@ksdigital.no" support_page="../../felles/support/" >}}
 
+*Feil returnert med `svvguid` i JSON: kontakt `api-kjoretoy@vegvesen.no` direkte.*

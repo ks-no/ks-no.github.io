@@ -34,38 +34,22 @@ For å unngå at samme informasjon vedlikeholdes flere steder, har vi en klar an
 | Fiks IO-mekanikk: ASiC-E, ende-til-ende-kryptering, TTL, standardmeldinger | [`fiksio.md`]({{< ref "fiksio.md" >}}) | – |
 | Fiks Protokoll-oppsett: system, konto, tilganger | [`fiksprotokoll/_index.md`]({{< ref "fiksprotokoll/_index.md" >}}) | – |
 
-### Hva hører hjemme på en tjenesteside?
+## Hva hører hjemme på en tjenesteside (og beste praksis)?
 
-Kun det som er *spesifikt* for tjenesten:
+Kun det som er *spesifikt* for tjenesten skal ligge på tjenestesiden. Fellesinformasjon (se tabellen over) skal det bare lenkes til. 
 
-- Hva tjenesten gjør og hvem den er for
-- Domeneobjekter, statuser og begreper unike for tjenesten
-- Funksjonell flyt og roller
-- Forretningsregler som ikke kan uttrykkes i OpenAPI (rekkefølge, statusoverganger, idempotens, kryss-felt-validering)
-- Tjenestespesifikke begrensninger (filstørrelser, batch-grenser, rate limits)
-- Tjenestens base-sti under fellesmiljøene
-- Tjenestespesifikke testdata
-- Lenker til API-spec, JSON-skjemaer og Swagger
-- Tjenestespesifikke `errorCode`-verdier (kun de som ikke står i OpenAPI)
-- Lenke til offisielt klientbibliotek, hvis vi har det
-
-## Beste praksis
-
-1. **Fellesinformasjon vedlikeholdes ett sted.** Bruk tabellen over – lenk til ankrene i `Felles/`-sidene fremfor å gjenta innholdet.
-2. **Ikke dupliser API-spec'en.** Endepunkter, request-/response-skjemaer, feltbeskrivelser og statuskoder skal vedlikeholdes i OpenAPI – lenk til Swagger.
-3. **Start med "Kort beskrivelse"** – maks 4 setninger som forklarer *hva* tjenesten gjør og *hvem* den er for. En integrator skal kunne avgjøre relevans på under et minutt.
-4. **Lenk til API-spec tidlig** – sett Swagger-lenken nær toppen av siden. Bruk en `Web portal / Maskin til maskin`-tabell *kun* hvis hver rad bærer unik informasjon (f.eks. innbygger-URL eller meldingsprotokoll-navn). Ellers er en enkel lenke til API-spec mer ærlig enn en tabell der "Maskin til maskin: Ja" er tautologi.
-6. **Eksempler skal være kjørbare og minimale** – generelt cURL-eksempel ligger i [`integrasjoner.md`]({{< ref "integrasjoner.md" >}}#eksempel-autentisert-kall). Tjenestesiden skal kun ha eksempler som viser noe *tjenestespesifikt* (f.eks. multipart-opplasting, signering, kryptering).
-7. **Bruk Hugo-shortcodes for interne lenker**: `{{</* ref "fil.md" */>}}` slik at lenker overlever flytting av sider.
-8. **Datoer og aliaser i front matter** – sett `date` til siste større oppdatering og inkluder gamle URL-er som `aliases:` slik at eksisterende lenker fortsatt fungerer. Oppdatert `date` gjør også at abonnenter på RSS-feeden får varsel om endringen.
-9. **Versjonering** – ikke-brytende endringer (nye felter, nye endepunkter) og enkle breaking changes (f.eks. et felt som skifter type) trenger ikke egen versjonsseksjon – beskriv dem i endringsloggen. Separat v1/v2-dokumentasjon er kun nødvendig når hele tjenestens oppførsel eller grensesnitt endres fundamentalt (se mønster i `bekymringsmelding/`).
-10. **Tagline øverst** – start siden med én setning som svarer på «hva er dette?» uten kontekst. Setningen skal fungere alene i navigasjonsmenyen, i søkeresultater og når lenken deles i Slack. Eksempel: *«Dokumentlager er en tjeneste for sikker lagring og uthenting av dokumenter på vegne av innbyggere og kommuner.»*
-11. **Vær eksplisitt om hva tjenesten *ikke* er for** – en kort "Når passer ikke denne tjenesten?"-blokk forhindrer feilbruk og overflødig support. Stripe og AWS bruker dette mønsteret konsekvent.
-12. **Hold endringslogg for tjenester i aktiv utvikling** – integratorer trenger å vite hva som har endret seg, særlig ikke-brytende endringer som ikke utløser ny major-versjon.
-13. **Hver side skal ha en synlig "Få hjelp"-boks** – e-post og Slack-kanal. Bruk partialen `get-help.html` som er inkludert i malen, og lenk til [`Felles/support.md`]({{< ref "support.md" >}}) for oversikt over alle kanaler. Bedre én sentral support-kanal enn ingen lenke i det hele tatt.
+- **Tagline og kort beskrivelse øverst:** Start siden med én setning (tagline) som svarer på «hva er dette?» uten kontekst. Fortsett med maks 4 setninger som forklarer *hva* tjenesten gjør og *hvem* den er for. En integrator skal kunne avgjøre relevans på under et minutt.
+- **Vær eksplisitt om hva tjenesten *ikke* er for:** En kort "Når passer ikke denne tjenesten?"-blokk forhindrer feilbruk og overflødig support.
+- **Datoer og aliaser i front matter:** Sett `date` til siste større oppdatering og inkluder gamle URL-er som `aliases:` slik at eksisterende lenker og RSS-feeds oppdateres.
+- **Lenk til API-spec tidlig:** Sett Swagger-lenken nær toppen av siden. Ikke dupliser API-spec! Endepunkter, request-/response-skjemaer, feltbeskrivelser og statuskoder skal vedlikeholdes i OpenAPI.
+- **Tjenestespesifikke begreper og regler:** Domeneobjekter, statuser, funksjonell flyt, roller og forretningsregler som ikke kan uttrykkes i OpenAPI (rekkefølge, statusoverganger, idempotens, kryss-felt-validering).
+- **Tjenestespesifikke verdier:** Base-sti under fellesmiljøene, testdata, begrensninger (filstørrelser, batch-grenser, rate limits) og `errorCode`-verdier (som ikke står i OpenAPI).
+- **Eksempler skal være kjørbare og minimale:** Generelle cURL-eksempler ligger i integrasjonsveilederen. Tjenestesiden skal kun ha eksempler som viser noe *tjenestespesifikt* (f.eks. multipart-opplasting, signering).
+- **Lenke til offisielt klientbibliotek:** Inkluderes hvis tjenesten har det.
+- **Bruk Hugo-shortcodes for interne lenker:** Bruk formatet `{{</* ref "fil.md" */>}}` slik at lenker overlever flytting av sider.
+- **Versjonering og endringslogg:** Hold en endringslogg for tjenester i aktiv utvikling. Beskriv ikke-brytende og enkle brytende endringer der. Separat v1/v2-dokumentasjon kreves kun når hele tjenestens oppførsel eller grensesnitt endres fundamentalt.
+- **Få hjelp-boks:** Hver side skal ha en synlig boks med kontaktinformasjon (support e-post/Slack). Bruk partialen `get-help.html`.
 
 ## Fjern det du ikke trenger
 
 Malen dekker mange typer tjenester. Slett seksjoner som ikke gjelder din tjeneste – det er bedre med kort, korrekt dokumentasjon enn lange seksjoner med plassholdertekst.
-
-
