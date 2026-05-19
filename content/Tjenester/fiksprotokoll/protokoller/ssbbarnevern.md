@@ -1,7 +1,9 @@
 ---
-title: Protokoll - Barnevern - fagsysteminnrapportering til Barnevernsregisteret
+title: Barnevern - fagsysteminnrapportering til Barnevernsregisteret
 date: 2023-03-22
-aliases: []
+weight: 40
+aliases:
+  - /tjenester/fiksprotokoll/protokoll-ssbbarnevern/
 ---
 
 Barnevern - fagsysteminnrapportering til Barnevernsregisteret er en asynkron protokoll over Fiks IO.

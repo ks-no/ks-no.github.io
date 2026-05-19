@@ -1,7 +1,10 @@
 ---
-title: Protokoll - Fiks plan
+title: Fiks Plan
 date: 2022-06-16
-aliases: [/fiks-plattform/tjenester/fiksprotokoll/plan]
+weight: 20
+aliases:
+  - /tjenester/fiksprotokoll/protokoll-plan/
+  - /fiks-plattform/tjenester/fiksprotokoll/plan/
 ---
 
 > Tjenesten er under utvikling/testing/pilotering

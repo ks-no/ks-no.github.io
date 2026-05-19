@@ -1,7 +1,10 @@
 ---
-title: Protokoll - Fiks matrikkelføring
+title: Fiks Matrikkelføring
 date: 2021-08-18
-aliases: [/fiks-plattform/tjenester/fiksprotokoll/matrikkelfoering]
+weight: 30
+aliases:
+  - /tjenester/fiksprotokoll/protokoll-matrikkelfoering/
+  - /fiks-plattform/tjenester/fiksprotokoll/matrikkelfoering/
 ---
 
 ## Kort beskrivelse

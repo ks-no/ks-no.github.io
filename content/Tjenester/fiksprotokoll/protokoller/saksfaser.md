@@ -1,7 +1,9 @@
 ---
-title: Protokoll - Fiks Saksfaser
+title: Fiks Saksfaser
 date: 2024-12-16
-aliases: []
+weight: 60
+aliases:
+  - /tjenester/fiksprotokoll/protokoll-saksfaser/
 ---
 
 # Fiks Saksfaser - protokoll for henting av saksfaser

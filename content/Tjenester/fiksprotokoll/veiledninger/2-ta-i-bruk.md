@@ -1,7 +1,12 @@
 ---
 title: Veiledning 2 - Ta i bruk tjenesten
 date: 2022-09-23
-alias: [/fiks-plattform/tjenester/fiksprotokoll/brukerveiledning/ta_ibruk_protokoll, /tjenester/fiksprotokoll/ta_ibruk_protokoll, /tjenester/fiksprotokoll/brukerveiledning/ta_ibruk_protokoll]
+weight: 2
+aliases:
+  - /tjenester/fiksprotokoll/veiledning_2_ta_ibruk_protokoll/
+  - /fiks-plattform/tjenester/fiksprotokoll/brukerveiledning/ta_ibruk_protokoll/
+  - /tjenester/fiksprotokoll/ta_ibruk_protokoll/
+  - /tjenester/fiksprotokoll/brukerveiledning/ta_ibruk_protokoll/
 ---
 
 Det første som må gjøres for bruke Fiks Protokoll, er å skrive under på avtale om bruk og ta i bruk tjenesten.
