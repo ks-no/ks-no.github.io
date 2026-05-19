@@ -57,6 +57,32 @@ paths:
                 $ref: '#/components/schemas/Selvdeklarering'
       security:
         - bearerAuth: []
+  /selvdeklarering/api/v1/selvdeklareringer/paginert:
+    get:
+      summary: Hent alle selvdeklareringer paginert
+      operationId: hentAlleSelvdeklareringerPaginert
+      tags:
+        - Selvdeklarering
+      parameters:
+        - name: side
+          in: query
+          schema:
+            type: integer
+            default: 0
+        - name: antallPerSide
+          in: query
+          schema:
+            type: integer
+            default: 20
+      responses:
+        '200':
+          description: Paginert liste over selvdeklareringer
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SideSelvdeklareringOversikt'
+      security:
+        - bearerAuth: []
   /selvdeklarering/api/v1/selvdeklareringer/{id}:
     get:
       summary: Hent selvdeklarering
@@ -194,6 +220,30 @@ paths:
           description: Innlevert
       security:
         - bearerAuth: []
+  /selvdeklarering/api/v1/innleveringer/{id}/score:
+    get:
+      summary: Evaluer poeng for innlevert selvdeklarering
+      operationId: evaluerPoeng
+      tags:
+        - Innlevering
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Poengevaluering per pakke
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PoengResultat'
+      security:
+        - bearerAuth: []
   /selvdeklarering/api/v1/innleveringer/{id}/trekk-tilbake:
     put:
       summary: Trekk tilbake innlevering (INNLEVERT → TRUKKET_TILBAKE)
@@ -254,6 +304,38 @@ paths:
                   $ref: '#/components/schemas/InnlevertOversikt'
       security:
         - bearerAuth: []
+  /selvdeklarering/api/v1/selvdeklareringer/{selvdeklareringId}/innleveringer/paginert:
+    get:
+      summary: Hent innleveringer for en selvdeklarering paginert
+      operationId: hentInnleveringerForSelvdeklareringPaginert
+      tags:
+        - Innlevering
+      parameters:
+        - name: selvdeklareringId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: side
+          in: query
+          schema:
+            type: integer
+            default: 0
+        - name: antallPerSide
+          in: query
+          schema:
+            type: integer
+            default: 20
+      responses:
+        '200':
+          description: Paginert liste over innleveringer
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SideInnlevertOversikt'
+      security:
+        - bearerAuth: []
   /selvdeklarering/api/v1/innleveringer/leverandor/{leverandorId}:
     get:
       summary: Hent innleveringer for en leverandør
@@ -276,6 +358,38 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/InnlevertOversikt'
+      security:
+        - bearerAuth: []
+  /selvdeklarering/api/v1/innleveringer/leverandor/{leverandorId}/paginert:
+    get:
+      summary: Hent innleveringer for en leverandør paginert
+      operationId: hentInnleveringerForLeverandorPaginert
+      tags:
+        - Innlevering
+      parameters:
+        - name: leverandorId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: side
+          in: query
+          schema:
+            type: integer
+            default: 0
+        - name: antallPerSide
+          in: query
+          schema:
+            type: integer
+            default: 20
+      responses:
+        '200':
+          description: Paginert liste over innleveringer
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SideInnlevertOversikt'
       security:
         - bearerAuth: []
   /selvdeklarering/api/v1/innsyn/{innlevertSelvdeklareringId}:
@@ -572,6 +686,47 @@ components:
         forespurtAv:
           type: string
           description: Hvem som ber om innsyn, f.eks. e-post eller org.nr
+    PoengResultat:
+      type: object
+      properties:
+        pakkeId:
+          type: string
+          format: uuid
+        totalPoeng:
+          type: integer
+        minimumPoeng:
+          type: integer
+          nullable: true
+        bestatt:
+          type: boolean
+    SideSelvdeklareringOversikt:
+      type: object
+      properties:
+        innhold:
+          type: array
+          items:
+            $ref: '#/components/schemas/SelvdeklareringOversikt'
+        side:
+          type: integer
+        antallPerSide:
+          type: integer
+        totaltAntall:
+          type: integer
+          format: int64
+    SideInnlevertOversikt:
+      type: object
+      properties:
+        innhold:
+          type: array
+          items:
+            $ref: '#/components/schemas/InnlevertOversikt'
+        side:
+          type: integer
+        antallPerSide:
+          type: integer
+        totaltAntall:
+          type: integer
+          format: int64
   securitySchemes:
     bearerAuth:
       type: http
