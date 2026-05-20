@@ -1,7 +1,7 @@
 ---
-title: Skatte- og inntektsopplysninger (Ny)
-date: 2024-08-13
-aliases: [/fiks-plattform/tjenester/fiksregister/skatteoginntektsopplysninger_ny/, /fiks-plattform/tjenester/fiksregister/skatteoginntekstopplysninger_ny]
+title: Skatte- og inntektsopplysninger
+date: 2026-05-20
+aliases: [/fiks-plattform/tjenester/fiksregister/skatteoginntektsopplysninger/, /fiks-plattform/tjenester/fiksregister/skatteoginntekstopplysninger]
 ---
 
 ### Kort beskrivelse
