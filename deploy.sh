@@ -2,7 +2,7 @@
 set -e
 echo -e "\033[0;32mDeploying updates to GitHub...\033[0m"
 rm -rf public
-git clone --depth 1 https://github.com/ks-no/ks-no.github.io.git public
+git clone --depth 1 --branch master https://github.com/ks-no/ks-no.github.io.git public
 
 cd public
 git checkout -b master origin/master
