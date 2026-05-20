@@ -9,7 +9,7 @@ rm -rf *
 cd ..
 
 # Build the project.
-hugo --cleanDestinationDir 
+./hugo.sh --cleanDestinationDir
 
 # Go To Public 
 cd public
