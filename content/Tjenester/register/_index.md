@@ -21,5 +21,4 @@ Fiks register en en samling av register tjenester. Fiks register inneholder:
 | 14.08.2024 | Andre versjon av skatte- og inntektsopplysninger                |
 | 06.09.2024 | Oppdatert skatte- og inntektsopplysninger med feilkoder         |
 | 06.11.2024 | Utvidet dokumentasjon av skatte- og inntektsopplysninger        |
-
-
+| 20.05.2026 | Fjernet gammel dokumentasjon for skatte- og inntektsopplysninger        |
