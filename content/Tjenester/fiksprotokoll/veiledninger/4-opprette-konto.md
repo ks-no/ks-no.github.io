@@ -1,7 +1,11 @@
 ---
 title: Veiledning 4 - Opprette konto
 date: 2022-09-23
-alias: [/fiks-plattform/tjenester/fiksprotokoll/brukerveiledning/opprette_konto, /tjenester/fiksprotokoll/opprette_konto]
+weight: 4
+aliases:
+  - /tjenester/fiksprotokoll/veiledning_4_opprette_konto/
+  - /fiks-plattform/tjenester/fiksprotokoll/brukerveiledning/opprette_konto/
+  - /tjenester/fiksprotokoll/opprette_konto/
 ---
 
 ## Steg 1: Velg system

@@ -1,7 +1,12 @@
 ---
 title: Veiledning 3 - Opprette system
 date: 2022-09-23
-alias: [/fiks-plattform/tjenester/fiksprotokoll/brukerveiledning/opprette_system, /tjenester/fiksprotokoll/opprette_system, /tjenester/fiksprotokoll/brukerveiledning/opprette_system/]
+weight: 3
+aliases:
+  - /tjenester/fiksprotokoll/veiledning_3_opprette_system/
+  - /fiks-plattform/tjenester/fiksprotokoll/brukerveiledning/opprette_system/
+  - /tjenester/fiksprotokoll/opprette_system/
+  - /tjenester/fiksprotokoll/brukerveiledning/opprette_system/
 ---
 
 For å bruke Fiks Protokoll må du opprette et system. Hvert system i kommunen som skal bruke Fiks Protokoll, må opprette et protokollsystem. F.eks fagsystem eller arkiv.

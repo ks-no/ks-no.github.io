@@ -1,7 +1,10 @@
 ---
-title: Protokoll - Fiks arkiv
+title: Fiks Arkiv
 date: 2021-07-29
-alias: ["/fiks-plattform/tjenester/fiksprotokoll/arkiv"]
+weight: 10
+aliases:
+  - /tjenester/fiksprotokoll/protokoll-arkiv/
+  - /fiks-plattform/tjenester/fiksprotokoll/arkiv/
 ---
 
 > Tjenesten er under utvikling/testing/pilotering

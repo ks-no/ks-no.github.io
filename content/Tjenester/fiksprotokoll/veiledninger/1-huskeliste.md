@@ -1,7 +1,10 @@
 ---
 title: Veiledning 1 - Huskeliste før man starter å sette opp protokoll
 date: 2022-09-23
-alias: [/fiks-plattform/tjenester/fiksprotokoll/brukerveiledning/huskeliste]
+weight: 1
+aliases:
+  - /tjenester/fiksprotokoll/veiledning_1_huskeliste_for_opprette_protokoll/
+  - /fiks-plattform/tjenester/fiksprotokoll/brukerveiledning/huskeliste/
 ---
 
 ## Hvorfor
@@ -31,7 +34,7 @@ Leverandør(ene) skal ha satt opp integrasjon med Maskinporten på forhånd.
 Her kan man velge å enten bruke leverandøren sitt organisasjonsnummer med leverandørens virksomhetssertifikat, eller kunden (kommunen) sitt organisasjonsnummer med kundens virksomhetssertifikat. 
 Det samme organsiasjonsnummeret som man velger å bruke **må** brukes i oppsett av *"system"* i FIKS forvaltning. Se mer om dette i punkt 3.
 
- [Se veiledning Maskinporten her]({{% ref "../../Felles/difiIdportenKlient.md" %}})
+ [Se veiledning Maskinporten her]({{< ref "/Felles/difiIdportenKlient.md" >}})
 
 ### 2. Avtale om å bruke Fiks Protokoll
 Person fra kundeorganisasjon oppretter avtale om bruk av Fiks protokoll hvis ikke dette er gjort tidligere.
