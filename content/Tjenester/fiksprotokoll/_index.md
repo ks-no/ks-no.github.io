@@ -57,15 +57,15 @@ Noe av dette må gjøres gjennom grensesnittet i Fiks Konfigurasjon ([forvaltnin
 
 Vi har også laget en huskeliste for hva man må ha klart og hvilke personer med gitt rettighet i Fiks forvaltning som må være med på å sette dette opp.
 
-* [Huskeliste før man starter på oppsett]({{< ref "veiledning_1_huskeliste_for_opprette_protokoll.md" >}})
-* [Ta i bruk Fiks Protokoll]({{< ref "veiledning_2_ta_ibruk_protokoll.md" >}})
-* [Opprette system]({{< ref "veiledning_3_opprette_system.md" >}})
-* [Opprette konto]({{< ref "veiledning_4_opprette_konto.md" >}})
-* [Gi tilgang til system]({{< ref "veiledning_5_gi_tilgang_til_system.md" >}})
+* [Huskeliste før man starter på oppsett]({{% ref "veiledning_1_huskeliste_for_opprette_protokoll.md" %}})
+* [Ta i bruk Fiks Protokoll]({{% ref "veiledning_2_ta_ibruk_protokoll.md" %}})
+* [Opprette system]({{% ref "veiledning_3_opprette_system.md" %}})
+* [Opprette konto]({{% ref "veiledning_4_opprette_konto.md" %}})
+* [Gi tilgang til system]({{% ref "veiledning_5_gi_tilgang_til_system.md" %}})
 
 I tillegg er det to veiledninger for hvordan du kan generere nytt passord til systemet, og hvordan du laster opp ny offentlig nøkkel til en konto.
-* [Generer nytt passord]({{< ref "veiledning_6_nytt_passord.md" >}})
-* [Ny offentlig nøkkel]({{< ref "veiledning_7_laste_opp_ny_offentlig_nokkel.md" >}})
+* [Generer nytt passord]({{% ref "veiledning_6_nytt_passord.md" %}})
+* [Ny offentlig nøkkel]({{% ref "veiledning_7_laste_opp_ny_offentlig_nokkel.md" %}})
 
 #### API
 Man kan opprette, vedlikeholde og få informasjon om kontoer via API etter et system er opprettet. 
@@ -87,15 +87,15 @@ Via [Fiks IO Katalog API (OpenAPI Specification)](https://editor-next.swagger.io
 
 
 ### Protokoller under Fiks protokoll
-* [Fiks Arkiv]({{< ref "protokoll-arkiv.md" >}})
-* [Fiks Plan]({{< ref "protokoll-plan.md" >}})
-* [Fiks Matrikkelføring]({{< ref "protokoll-matrikkelfoering.md" >}})
-* [Barnevern - fagsysteminnrapportering til Barnevernsregisteret (SSB)]({{< ref "protokoll-ssbbarnevern.md" >}})
-* [Fiks Link](({{< ref "protokoll-link.md" >}})
-* [Fiks Saksfaser]({{< ref "protokoll-saksfaser.md" >}})
+* [Fiks Arkiv]({{% ref "protokoll-arkiv.md" %}})
+* [Fiks Plan]({{% ref "protokoll-plan.md" %}})
+* [Fiks Matrikkelføring]({{% ref "protokoll-matrikkelfoering.md" %}})
+* [Barnevern - fagsysteminnrapportering til Barnevernsregisteret (SSB)]({{% ref "protokoll-ssbbarnevern.md" %}})
+* [Fiks Link](({{% ref "protokoll-link.md" %}})
+* [Fiks Saksfaser]({{% ref "protokoll-saksfaser.md" %}})
 
 ### Tjenester under Fiks protokoll
-* [Fiks IO]({{< ref "fiksio.md" >}})
+* [Fiks IO]({{% ref "fiksio.md" %}})
 
 
 ### Termer

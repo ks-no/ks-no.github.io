@@ -68,7 +68,7 @@ Innbygger har tilgang til alle sine opplastede dokumenter, der et begrenset utva
 
 ### Integrasjonsutvikling Fagsystem
 
-Det anbefales å lese gjennom dokumentasjonen for generell [integrasjonsutvikling mot Fiks]({{< ref "integrasjoner.md" >}}), der siste avsnitt, "Hvordan komme i gang med utvikling", er svært nyttig. På denne siden beskrives blant annet oppsett av IDPorten og autentisering mot Fiks, der fagsystemet bruker Integrasjon som autentiseringsmetode. Fiks tilbyr både en [Java-klient](https://github.com/ks-no/fiks-maskinporten) og en [.net-klient](https://github.com/ks-no/fiks-maskinporten-client-dotnet) som kan brukes for å generere access token fra Maskinporten (IDPorten).
+Det anbefales å lese gjennom dokumentasjonen for generell [integrasjonsutvikling mot Fiks]({{% ref "integrasjoner.md" %}}), der siste avsnitt, "Hvordan komme i gang med utvikling", er svært nyttig. På denne siden beskrives blant annet oppsett av IDPorten og autentisering mot Fiks, der fagsystemet bruker Integrasjon som autentiseringsmetode. Fiks tilbyr både en [Java-klient](https://github.com/ks-no/fiks-maskinporten) og en [.net-klient](https://github.com/ks-no/fiks-maskinporten-client-dotnet) som kan brukes for å generere access token fra Maskinporten (IDPorten).
 Avsnittet [Konfigurasjon](https://ks-no.github.io/felles/integrasjoner/#konfigurasjon) beskriver hvordan en integrasjon opprettes og tilknyttes en tjeneste (Digisos). Integrasjons-id-en og passordet generert her må dermed brukes sammen med access token fra Maskinporten for å få tilgang til Digisos-API-et.
 
 #### Mottak av søknader
@@ -93,7 +93,7 @@ For ettersendelse, ```no.nav.digisos.ettersendelse.v1```, som definert i [json-s
 For ny søknad, ```no.nav.digisos.soknad.mottatt.v1```, med tom body.\
 For ettersendelse, ```no.nav.digisos.ettersendelse.mottatt.v1```, med tom body.
 
-For mer informasjon om Fiks IO, se [dokumentasjon for Fiks IO]({{< ref "fiksio.md" >}}).
+For mer informasjon om Fiks IO, se [dokumentasjon for Fiks IO]({{% ref "fiksio.md" %}}).
 
 ##### SvarInn/SvarUt
 
@@ -218,7 +218,7 @@ Ved feil ved opplasting får man 400 Bad Request når multipart-requesten ikke e
 
 ### Integrasjonsutvikling (for NAV)
 
-For generell integrasjonsutvikling mot Fiks, se [Integrasjonsutvikling]({{< ref "integrasjoner.md" >}})
+For generell integrasjonsutvikling mot Fiks, se [Integrasjonsutvikling]({{% ref "integrasjoner.md" %}})
 
 #### Innsending av søknad
 

@@ -36,7 +36,7 @@ Søket er i hovedsak basert på fri-tekst, og vil også da kompenserer for stave
 
 Søkeresultatet scores og sorteres basert på relevans: nye meldinger scores høyere enn gamle, uleste dokumenter høyere enn de du har lest, ubetalte faktura høyere enn de du har betalt, og så videre. Det er også mulig å få resultatet sortert på dato.  
 
-Søkemotoren inneholder utelukkende metadata, ikke selve dokumentet. Om meldingen skal peke til et dokument, bilde eller annen fil gjøres dette i form av en lenke: denne kan for eksempel peke til en fil i [Fiks Dokumentlager]({{< ref "dokumentlager.md" >}}), en sak i et kommunalt filarkiv, eller en annen tjeneste. Så lenge disse støtter innlogging gjennom ID-Porten vil nedlastingen oppleves sømløst av innbygger.
+Søkemotoren inneholder utelukkende metadata, ikke selve dokumentet. Om meldingen skal peke til et dokument, bilde eller annen fil gjøres dette i form av en lenke: denne kan for eksempel peke til en fil i [Fiks Dokumentlager]({{% ref "dokumentlager.md" %}}), en sak i et kommunalt filarkiv, eller en annen tjeneste. Så lenge disse støtter innlogging gjennom ID-Porten vil nedlastingen oppleves sømløst av innbygger.
 
 ## Uvikling av integrasjoner som leverer data til Innsyn: 
 Noen grunnleggende prinsipper for forvalting av meldinger i innsyn:
@@ -72,7 +72,7 @@ Indekseringstjenesten lar integrasjoner opprette meldinger, eller fjerne / endre
 
 Når man lager en integrasjon mot indekseringstjenesten er det viktig å være bevisst på at Innsyn bør betraktes som en cache: man bør ikke forvente at meldingene man laster opp vil ligge der til evig tid: en forvalter med admin-privilegier på innsyn-tjenesten kan for eksempel når som helst slette meldinger. Hvis man ønsker en robust løsning er det derfor viktig at man støtter _replay_: muligheten til å re-indexere alle meldinger til Innsyn. 
 
-De vanlige [autentiseringsreglene]({{< ref "sikkerhet.md" >}}) for Fiks-plattformen gjelder for denne tjenesten, men i tilegg må integrasjonen har rett til å indeksere på vegne av  _fiks organisasjonen_ som er satt som eier den aktuelle meldingen.
+De vanlige [autentiseringsreglene]({{% ref "sikkerhet.md" %}}) for Fiks-plattformen gjelder for denne tjenesten, men i tilegg må integrasjonen har rett til å indeksere på vegne av  _fiks organisasjonen_ som er satt som eier den aktuelle meldingen.
 
 Endepunktet støtter batch av opptil 5000 elementer, og integrasjonsutviklere anbefales å benytte denne funksjonaliteten, da det skaper vesentlig mindre trykk på systemet. Merk at indeksering ikke er en atomisk transaksjon: deler av elementene i en batch kan bli indeksert selv om andre feiler.
 
@@ -173,7 +173,7 @@ Innsyn tilbyr følgende søke-api'er for eksterne integrasjoner:
 
 I tillegg til søke-apier er det mulig å benytte [Innsyn Oppslag api](https://editor-next.swagger.io/?url=https://developers.fiks.ks.no/api/openapi-oppslag-v1.json) for å hente meldinger. Gjennom dette api'et kan man hente en enkeltmelding (basert på melding-id), alle meldinger som har samme korrelasjon-id, eller alle meldinger som er barn av en spesifisert forelder-melding. 
 
-Integrasjonen som skal utføre søk eller oppslag må benytte [integrasjon-person]({{< ref "integrasjoner.md" >}}) autentisering, dvs at de må fremvise den innloggede innbyggers ID-Porten token i kombinasjon med integrasjonId og Integrasjonpassord. I tillegg må integrasjonen ha "innsyn søk" privilegiet på den aktuelle Fiks-organisasjonen (tildelse via Innsyn konfigurasjon på forvaltning.fiks.ks.no). Søkeresultatet vil være begrenset til meldinger autorisert for den innloggede personen og eid av den aktuelle Fiks-organisasjonen.
+Integrasjonen som skal utføre søk eller oppslag må benytte [integrasjon-person]({{% ref "integrasjoner.md" %}}) autentisering, dvs at de må fremvise den innloggede innbyggers ID-Porten token i kombinasjon med integrasjonId og Integrasjonpassord. I tillegg må integrasjonen ha "innsyn søk" privilegiet på den aktuelle Fiks-organisasjonen (tildelse via Innsyn konfigurasjon på forvaltning.fiks.ks.no). Søkeresultatet vil være begrenset til meldinger autorisert for den innloggede personen og eid av den aktuelle Fiks-organisasjonen.
 
 ### Versjonering av melding-metadata
 Meldinger i Innsyn er versjonert, for eksempel som "ForsendelseV1" eller "ForsendelseV2", og nye versjoner av en melding blir lagt til uten forvarsel.

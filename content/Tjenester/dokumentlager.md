@@ -52,7 +52,7 @@ Alle operasjoner i dokumentlageret utføres på en konto, som er en ressurs som 
 Fiks-organisasjon. Hvordan disse organiseres er opp til hver organisasjon. Man kan ha én konto for alt, eller dele det 
 opp over mange, slik at man for eksempel kan gi forskjellige tilganger for hver konto.
 
-De vanlige [autentiseringsreglene]({{< ref "sikkerhet.md" >}}) for Fiks-plattformen gjelder for denne tjenesten, men i 
+De vanlige [autentiseringsreglene]({{% ref "sikkerhet.md" %}}) for Fiks-plattformen gjelder for denne tjenesten, men i 
 tillegg må integrasjonen ha rett til å laste opp dokumenter på en dokumentlager konto. Disse tilgangene tildeles som vanlig 
 gjennom konfigurasjonsgrensesnittet, men må gis på kontonivå. Dersom man har flere kontoer, men ønsker å gi en integrasjon 
 tilgang til flere av disse må tilgang gis på hver enkelt konto.

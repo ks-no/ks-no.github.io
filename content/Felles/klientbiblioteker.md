@@ -6,9 +6,9 @@ aliases: ["/fiks-plattform/klientbiblioteker", "/klientbiblioteker"]
 
 KS publiserer offisielle klientbiblioteker for noen få tjenester og felleskomponenter på Fiks-plattformen. Denne siden er en samlet oversikt over disse bibliotekene.
 
-Ikke alle tjenester har, eller skal ha, et eget klientbibliotek. For tjenester uten offisiell klient bruker man API-spec'en direkte sammen med den generelle integrasjonsmodellen beskrevet i [Integrasjoner]({{< ref "integrasjoner.md" >}}).
+Ikke alle tjenester har, eller skal ha, et eget klientbibliotek. For tjenester uten offisiell klient bruker man API-spec'en direkte sammen med den generelle integrasjonsmodellen beskrevet i [Integrasjoner]({{% ref "integrasjoner.md" %}}).
 
-Pakkene distribueres via Maven Central (Java) og nuget.org (.NET). Se [risikovurdering for distribuerte pakker]({{< ref "klientpakker.md" >}}) for hvordan KS sikrer integriteten i disse.
+Pakkene distribueres via Maven Central (Java) og nuget.org (.NET). Se [risikovurdering for distribuerte pakker]({{% ref "klientpakker.md" %}}) for hvordan KS sikrer integriteten i disse.
 
 ## Felles / autentisering
 
@@ -34,7 +34,7 @@ Lenk kun til denne siden fra en tjenesteside dersom tjenesten faktisk har et rel
 
 ## Andre språk
 
-For andre språk må man kalle REST API-ene direkte. Se [generell integrasjonsdokumentasjon]({{< ref "integrasjoner.md" >}}) for autentiseringsmodellen, og hver tjenestes API-spec for endepunktene.
+For andre språk må man kalle REST API-ene direkte. Se [generell integrasjonsdokumentasjon]({{% ref "integrasjoner.md" %}}) for autentiseringsmodellen, og hver tjenestes API-spec for endepunktene.
 
 Trondheim kommune har for eksempel laget en Go-klient spesifikt for Bekymringsmelding: [fiks-bekymringsmelding-konsument](https://github.com/tktip/fiks-bekymringsmelding-konsument). Vi tar gjerne imot tips om community-klienter for andre språk – send en e-post til `fiks@ksdigital.no`.
 

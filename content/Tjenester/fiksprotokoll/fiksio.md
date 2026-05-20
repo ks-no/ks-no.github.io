@@ -26,7 +26,7 @@ Fiks IO tilbyr:
 * _Sikker kommunikasjon med ende-til-ende kryptering_: Fiks IO tilbyr ende-til-ende kryptering av meldinger. Merk at dette ikke gjelder alle bruks-scenarioer, se "Sikkerhet" for detaljer.
 * _Sikker identifisering av avsender_: Bruk av standard for kryptografisk signatur [(ASiC-E)](https://github.com/difi/asic) for meldinger gjør at man kan være sikker på identiteten til avsender.
 * _Levetid på meldinger_: En melding har en default levetid på 7 dager med mindre avsender setter det selv. Minste TTL (se mer om dette lenger nede) man kan sette er 1 sekund.
-* _Sending av store filer_: Fiks IO integrerer mot [Fiks Dokumentlager]({{< ref "dokumentlager.md" >}}) for å støtte sending av store filer, helt opp til dokumentlagers grense på fem gigabyte. 
+* _Sending av store filer_: Fiks IO integrerer mot [Fiks Dokumentlager]({{% ref "dokumentlager.md" %}}) for å støtte sending av store filer, helt opp til dokumentlagers grense på fem gigabyte. 
 
 Merk at Fiks IO har ikke leveringsgaranti. Det betyr ikke at meldingene kan bli borte i Fiks IO køene, men vi kan ikke garantere 100% at meldingen går vellykket fra avsender til mottaker da noe f.eks. kan gå galt i håndtering av meldingene.
 For eksempel kan en melding bli markert som lest (ack) av en mottaker før den har blitt håndtert helt ferdig og dermed kan ikke meldingen hentes på nytt.
