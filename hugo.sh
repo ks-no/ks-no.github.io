@@ -5,7 +5,7 @@
 #   ./hugo.sh               - build site
 #   ./hugo.sh <any args>    - passed directly to hugo
 
-HUGO_VERSION="0.141.0"
+HUGO_VERSION="0.146.0"
 IMAGE="hugomods/hugo:exts-${HUGO_VERSION}"
 
 # Use -it only if running in a terminal
@@ -17,7 +17,7 @@ fi
 # When serving, bind to 0.0.0.0 so it's accessible from the host
 EXTRA_ARGS=""
 if [[ "${1:-}" == "serve" || "${1:-}" == "server" ]]; then
-  EXTRA_ARGS="--bind 0.0.0.0"
+  EXTRA_ARGS="--bind 0.0.0.0 --baseURL http://localhost:1313"
 fi
 
 docker run --rm $TTY_FLAG \
