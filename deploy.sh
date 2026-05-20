@@ -5,8 +5,6 @@ rm -rf public
 git clone --depth 1 --branch master https://github.com/ks-no/ks-no.github.io.git public
 
 cd public
-git checkout -b master origin/master
-git pull
 rm -rf *
 cd ..
 
