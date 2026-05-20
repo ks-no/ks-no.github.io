@@ -171,7 +171,7 @@ Anbefalt `time-to-live`: **24 timer** (med mindre tjenesten har andre krav). Gen
 
 ## API-referanse
 
-Endepunkter, request/response-skjemaer, feltbeskrivelser og statuskoder vedlikeholdes i Swagger – ikke dupliser dette her:
+<!-- Endepunkter, request/response-skjemaer, feltbeskrivelser og statuskoder vedlikeholdes i Swagger – ikke dupliser dette her: -->
 
 [Api-spec for Fiks [Tjenestenavn]](https://editor-next.swagger.io/?url=https://developers.fiks.ks.no/api/[api-fil].json)
 
@@ -262,7 +262,6 @@ Se også [samlet oversikt over klientbiblioteker]({{< ref "klientbiblioteker.md"
 
 ---
 
-## Få hjelp
 
 {{< get-help email="fiks@ksdigital.no" support_page="/felles/support/" >}}
 

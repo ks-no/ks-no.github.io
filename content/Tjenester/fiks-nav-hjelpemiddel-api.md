@@ -1,39 +1,67 @@
 ---
-title: Fiks nav hjelpemiddel API
+title: Fiks Nav hjelpemiddel API
 date: 2026-03-09
-alias: [/fiks-plattform/tjenester/fiks-nav-hjelpemiddel-api/]
+aliases: ["/fiks-plattform/tjenester/fiks-nav-hjelpemiddel-api/"]
 ---
 
 ## Kort beskrivelse
-Fiks Nav hjelpemiddel gir tilgang til api hos nav via Fiks plattformen. Tjenesten benyttes mot kommunens løsning for lager, logistikk og samhandling på hjelpemiddelområdet.
 
-## Tilgjengelige grensesnitt
-| Grensesnitt | Støtte |
-|------|------|
-| Web portal | Nei |
-| Maskin til maskin | [Api-spec](https://editor.swagger.io/?url=https://developers.fiks.ks.no/api/nav-hjelpemiddel-v3.yaml) |
+**Integrasjon mot NAVs hjelpemiddel-API for kommunale lager- og logistikkløsninger.**
 
-## Produktbeskrivelse
-Om Fiks Nav hjelpemiddel
-Integrasjon (API) for å dele data fra NAV til kommunen sitt fagsystem. Dele status på utleveringer tilbake til NAV)
+Fiks Nav hjelpemiddel gir kommuner tilgang til NAVs API via Fiks-plattformen. Tjenesten benyttes mot kommunens løsning for lager, logistikk og samhandling på hjelpemiddelområdet.
 
-For å ta i bruk dette apiet må mottakerløsning innfri de juridiske kravene nedfelt i avtale med Nav.
+Tjenesten tilbyr:
 
-Med dette APIet vil kommunen få tilgang til følgende i kommunens lager og logistikkløsning på hjelpemiddelområdet:
+- Oversikt over digitale søknader sendt fra kommunen
+- Automatisk opprettelse av mottaksordre ved leveringer fra NAV
+- Kobling mellom brukernummer og fødselsnummer
+- Innsyn i andre bestilleres søknader ved tjenstlig behov
+- Oversikt over hastesaker med begrunnelse
 
-Søknader
-* Leveringer fra Nav
-* Se oversikt over alle digitale søknader som er sendt fra kommunen
-* Be om innsyn i en annen bestillers søknad ved tjenstlig behov
-* Se hastesak og begrunnelse
-* Leveringer fra Nav
-* Kommunen vil få en oversikt over kommende leveringer fra NAV
-* Kommunen vil automatisk få opprettet mottaksordre, slik at informasjon om bruker og hva de skal ha utlevert av hjelpemidler er knytt sammen
-* Brukernummer og fødselsnummer er knyttet sammen, slik at man slipper å manuelt å søke opp brukere
+API-spesifikasjon: [Swagger / OpenAPI](https://editor-next.swagger.io/?url=https://developers.fiks.ks.no/api/nav-hjelpemiddel-v3.yaml)
 
-## Integrasjon [(api-spec)](https://editor.swagger.io/?url=https://developers.fiks.ks.no/api/innreise-api-v1.json)
-Autentisering skjer ved hjelp av en Integrasjon-mekanismen beskrevet [her](https://ks-no.github.io/fiks-plattform/integrasjoner/#integrasjon)
+## Kom i gang
 
-## Testdata
+Tjenestespesifikke forutsetninger:
+
+1. Tjenesten må aktiveres via [Fiks Konfigurasjon](https://forvaltning.fiks.ks.no/fiks-konfigurasjon/tjenester).
+2. Integrasjonen må gis tilgang til tjenesten via [Fiks Konfigurasjon](https://forvaltning.fiks.ks.no/fiks-konfigurasjon/tjenester).
+3. Mottakerløsningen må innfri de juridiske kravene nedfelt i avtale med NAV.
+4. Autentisering skjer ved hjelp av Integrasjon-mekanismen beskrevet under [generelle integrasjoner]({{< ref "felles/integrasjoner.md#integrasjon" >}}).
+
+## Beskrivelse av tjenesten
+
+### Overordnet flyt
+
+1. Kommunen sender digitale søknader via fagsystemet.
+2. NAV behandler søknaden og klargjør levering.
+3. Kommunen mottar oversikt over kommende leveringer og får automatisk opprettet mottaksordre med bruker- og hjelpemiddelinformasjon.
+
+### Søknader
+
+- Se oversikt over alle digitale søknader som er sendt fra kommunen
+- Be om innsyn i en annen bestillers søknad ved tjenstlig behov
+- Se hastesak og begrunnelse
+
+### Leveringer fra NAV
+
+- Kommunen får oversikt over kommende leveringer fra NAV
+- Kommunen får automatisk opprettet mottaksordre, slik at informasjon om bruker og hva de skal ha utlevert av hjelpemidler er knyttet sammen
+- Brukernummer og fødselsnummer er knyttet sammen, slik at man slipper å søke opp brukere manuelt
+
+### Testdata
+
 I test er det lite data.
-Logistikk endepunktet krever et kjent kommunenr blant: 5616, 1505, 1506, 1579, 3207, 4601, 0301
+Logistikk-endepunktet krever et kjent kommunenr blant: 5616, 1505, 1506, 1579, 3207, 4601, 0301
+
+---
+
+## API-referanse
+
+
+[Api-spec for Fiks Nav hjelpemiddel](https://editor-next.swagger.io/?url=https://developers.fiks.ks.no/api/nav-hjelpemiddel-v3.yaml)
+
+---
+
+
+{{< get-help email="fiks@ksdigital.no" support_page="/felles/support/" >}}
