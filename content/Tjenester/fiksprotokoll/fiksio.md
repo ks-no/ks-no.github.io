@@ -60,7 +60,7 @@ Det er viktig at det gjøres med samme organisasjonsnummer som man har i virksom
 Stort sett vil man bruke [Fiks Protokoll](https://ks-no.github.io/fiks-plattform/tjenester/fiksprotokoll) da man skal kommunisere over Fiks IO med en av protokollene.
 Se guiden for oppsett av [Fiks Protokoll](https://ks-no.github.io/fiks-plattform/tjenester/fiksprotokoll) for hvordan dette gjøres.
 
-#### Fiks IO 
+#### Fiks IO klientbiblioteker
 Vi anbefaler å bruke enten java eller .NET klienten som KS tilbyr hvis man er på java eller .NET. 
 Se github prosjektet for [java](https://github.com/ks-no/fiks-io-klient-java) eller [.NET](https://github.com/ks-no/fiks-io-client-dotnet) for hvordan man bruker klienten. 
 

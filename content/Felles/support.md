@@ -4,7 +4,6 @@ date: 2026-05-06
 weight: 8
 ---
 
-# Få hjelp og support
 
 For alle spørsmål om Fiks-tjenestene kan du kontakte oss gjennom følgende kanaler:
 
