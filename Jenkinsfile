@@ -14,7 +14,7 @@ pipeline {
     stage('checkout') {
       steps {
         checkout scm
-	      sh 'git submodule update --init'
+	      sh 'git submodule update --init --depth 1 themes/hugo-theme-relearn'
       }
     }
 
