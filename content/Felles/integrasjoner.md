@@ -71,12 +71,60 @@ http POST https://api.fiks.test.ks.no/innsyn-sok/api/v1/sok \
 "Authorization: Bearer <gyldig innbygger access token jwt fra id-porten>"
 {{< / highlight >}}
 
-## Autorisering
+## Eksempel: autentisert kall {#eksempel-autentisert-kall}
+
+Et minimalt cURL-eksempel som viser headerne som må settes på alle integrasjonsbaserte kall mot Fiks-plattformen. Dette eksempelet brukes som referanse fra dokumentasjonen til de enkelte tjenestene – tjenestespesifikke endepunkter, parametre og request-bodyer er beskrevet i hver tjenestes API-spec.
+
+```bash
+curl https://api.fiks.test.ks.no/<tjeneste>/api/v1/<endepunkt> \
+  -H "Authorization: Bearer <access token fra Maskinporten, scope: ks:fiks>" \
+  -H "IntegrasjonId: <integrasjons-id>" \
+  -H "IntegrasjonPassord: <integrasjonspassord>"
+```
+
+For POST/PUT-kall med JSON-body legges i tillegg `-H "Content-Type: application/json"` og `-d '{...}'` til. For multipart-opplasting brukes `-F "<navn>=<verdi>"` per part. Konkrete eksempler finnes i klientbibliotekene:
+
+- Java: [fiks-maskinporten](https://github.com/ks-no/fiks-maskinporten)
+- .NET: [fiks-maskinporten-client-dotnet](https://github.com/ks-no/fiks-maskinporten-client-dotnet)
+
+## Maskinporten-klienter {#maskinporten-klienter}
+
+KS tilbyr klienter som henter access token fra Maskinporten basert på et virksomhetssertifikat. Disse anbefales for alle integrasjoner mot Fiks-plattformen:
+
+| Språk | Bibliotek |
+|-------|-----------|
+| Java  | [fiks-maskinporten](https://github.com/ks-no/fiks-maskinporten) |
+| .NET  | [fiks-maskinporten-client-dotnet](https://github.com/ks-no/fiks-maskinporten-client-dotnet) |
+
+En komplett oversikt over offisielle KS-klientbiblioteker for de ulike Fiks-tjenestene finnes på siden [Klientbiblioteker]({{< ref "Felles/klientbiblioteker.md" >}}).
+
+## Miljøer {#miljoer}
+
+Fiks-plattformen har to offentlige miljøer. Hver tjeneste eksponeres som en sti under disse base-URL-ene – f.eks. `https://api.fiks.test.ks.no/dokumentlager/api/v1/...`.
+
+| Miljø | API-base | Forvaltning |
+|-------|----------|-------------|
+| Test  | `https://api.fiks.test.ks.no/` | `https://forvaltning.fiks.test.ks.no` |
+| Prod  | `https://api.fiks.ks.no/`      | `https://forvaltning.fiks.ks.no` |
+
+Se [testmiljø]({{< ref "Felles/testmiljo.md" >}}) for hvordan man får tilgang til testmiljøet og hvilke testdata som finnes.
+
+## Versjonering av API-er {#versjonering}
+
+Fiks-plattformens API-er er versjonert med en major-versjon i URL-stien (`/api/v1/`, `/api/v2/`).
+
+- Innen samme major-versjon (`v1`) skal API-et være **bakoverkompatibelt**. Nye felter og nye endepunkter kan komme uten varsel.
+- Brytende endringer (fjerning/endring av eksisterende felter, endrede statuskoder med endret semantikk, osv.) gir alltid en ny major-versjon.
+- Klienter bør ignorere ukjente felter de mottar slik at server kan utvides uten at klienten må oppdateres.
+
+Eventuelle tjenestespesifikke avvik fra dette dokumenteres på den enkelte tjenestes side.
+
+## Autorisering {#autorisering}
 I tillegg må integrasjonen autoriseres for tilgang til en spesifikk tjeneste. Hvis for eksempel et fagsystem skal kunne laste opp meldinger til Fiks Innsyn må en administrator i kommunen benytte Fiks-Konfigurasjon for å legge til denne tilgangen hos den relvante kommunen.
 
 Dette gjelder også for integrasjoner som leveres som en del av Fiks-plattformen. Skal SvarUt kunne indeksere forsendelse i Fiks Innsyn må også her kommunen eksplisitt autorisere dette.
 
-## Feilmeldinger
+## Feilmeldinger {#feilmeldinger}
 
 De fleste REST API-ene returnerer feilmeldinger på følgende format:
 ```json
