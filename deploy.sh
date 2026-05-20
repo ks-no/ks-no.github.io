@@ -5,7 +5,7 @@ rm -rf public
 git clone --depth 1 https://github.com/ks-no/ks-no.github.io.git public
 
 cd public
-git checkout master
+git checkout -b master origin/master
 git pull
 rm -rf *
 cd ..
