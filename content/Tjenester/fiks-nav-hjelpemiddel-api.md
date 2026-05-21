@@ -27,7 +27,7 @@ Tjenestespesifikke forutsetninger:
 1. Tjenesten må aktiveres via [Fiks Konfigurasjon](https://forvaltning.fiks.ks.no/fiks-konfigurasjon/tjenester).
 2. Integrasjonen må gis tilgang til tjenesten via [Fiks Konfigurasjon](https://forvaltning.fiks.ks.no/fiks-konfigurasjon/tjenester).
 3. Mottakerløsningen må innfri de juridiske kravene nedfelt i avtale med NAV.
-4. Autentisering skjer ved hjelp av Integrasjon-mekanismen beskrevet under [generelle integrasjoner]({{< ref "felles/integrasjoner.md#integrasjon" >}}).
+4. Autentisering skjer ved hjelp av Integrasjon-mekanismen beskrevet under [generelle integrasjoner]({{% ref "felles/integrasjoner.md#integrasjon" %}}).
 
 ## Beskrivelse av tjenesten
 

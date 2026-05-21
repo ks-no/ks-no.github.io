@@ -33,7 +33,7 @@ Tjenestespesifikke forutsetninger:
 1. Tjenesten må aktiveres via [Fiks Konfigurasjon](https://forvaltning.fiks.ks.no/fiks-konfigurasjon/tjenester) gjennom en veiviser.
 2. Kommunen må konfigurere mottakskanal i fagsystemet (Fiks IO eller SvarUt).
 3. Integrasjonen må gis tilgang til Digisos-tjenesten inne i Fiks Konfigurasjon.
-4. Oppsett av Maskinporten-klient for autentisering (se [felles dokumentasjon]({{< ref "integrasjoner.md" >}})).
+4. Oppsett av Maskinporten-klient for autentisering (se [felles dokumentasjon]({{% ref "integrasjoner.md" %}})).
 
 ## Beskrivelse av tjenesten
 
@@ -178,9 +178,9 @@ KS tilbyr referanseimplementasjoner og klienter:
 
 ## Relaterte tjenester
 
-- [Fiks IO]({{< ref "fiksio.md" >}}) – sikker meldingsutveksling
-- [Fiks Dokumentlager]({{< ref "dokumentlager.md" >}}) – lagring av vedlegg
-- [SvarUt / SvarInn]({{< ref "svarut/_index.md" >}}) – alternativ leveringskanal
+- [Fiks IO]({{% ref "fiksio.md" %}}) – sikker meldingsutveksling
+- [Fiks Dokumentlager]({{% ref "dokumentlager.md" %}}) – lagring av vedlegg
+- [SvarUt / SvarInn]({{% ref "svarut/_index.md" %}}) – alternativ leveringskanal
 
 ---
 
