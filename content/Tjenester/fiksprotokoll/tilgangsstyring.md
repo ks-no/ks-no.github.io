@@ -10,6 +10,8 @@ Tilganger til Fiks Protokoll-systemer styres per konto. En konto kan gi et annet
 
 Når et system opprettes vil det kun være synlig for kontoer under egen organisasjon. Skal systemet være synlig for kontoer i andre organisasjoner, må *Tilgjengelig for andre organisasjoner* slås på (per nå kun mulig via API).
 
+Tilgangsstyring kan gjøres både i Fiks Forvaltning og via API. Skal du gjøre det via API, finner du autentisering og generell arbeidsflyt under [Konfigurere systemet via API]({{% ref "konfigurasjon-api.md" %}}) — denne siden viser de tilgangsspesifikke kallene.
+
 ## Gi tilgang til system
 
 **Forvaltning:** Velg konto under system. Velg *Søk etter systemer*. Når ønsket system er funnet, velg *Gi tilgang*.

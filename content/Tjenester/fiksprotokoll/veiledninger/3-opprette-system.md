@@ -41,13 +41,13 @@ Trykk **Neste**.
 
 ## Steg 4: Sett opp integrasjon
 
-For å sende og motta meldinger gjennom Fiks Protokoll kreves en integrasjon. Integrasjonen autentiseres via Maskinporten, der et virksomhetssertifikat identifiserer eieren. Virksomhetssertifikatet hører til et organisasjonsnummer som må fylles ut her. I produksjon varierer det om dette er kommunens eller leverandørens virksomhetssertifikat — se [Før du starter]({{< ref "1-huskeliste.md" >}}).
+For å sende og motta meldinger gjennom Fiks Protokoll kreves en integrasjon. Integrasjonen autentiseres via Maskinporten, der et virksomhetssertifikat identifiserer eieren. Virksomhetssertifikatet hører til et organisasjonsnummer som må fylles ut her. I produksjon varierer det om dette er kommunens eller leverandørens virksomhetssertifikat — se [Før du starter]({{% ref "1-huskeliste.md" %}}).
 
 {{% notice style="warning" title="Riktig organisasjonsnummer" %}}
-Du kan ikke bruke Fiks Protokoll i test uten et virksomhetssertifikat. Organisasjonsnummeret du oppgir her **må** være det samme som i virksomhetssertifikatet og i Maskinporten-klienten. Det er mulig å endre organisasjonsnummeret senere hvis du velger feil. Se [veiledning for Maskinporten]({{< ref "/Felles/difiIdportenKlient.md" >}}).
+Du kan ikke bruke Fiks Protokoll i test uten et virksomhetssertifikat. Organisasjonsnummeret du oppgir her **må** være det samme som i virksomhetssertifikatet og i Maskinporten-klienten. Det er mulig å endre organisasjonsnummeret senere hvis du velger feil. Se [veiledning for Maskinporten]({{% ref "/Felles/difiIdportenKlient.md" %}}).
 {{% /notice %}}
 
-Vil du konfigurere systemet via API, kan du velge det her. Da kan du endre systemet og opprette kontoer uten å bruke webgrensesnittet.
+API-konfigurasjon er aktivert som standard, slik at leverandøren kan opprette kontoer og fullføre oppsettet via API i stedet for webgrensesnittet. Vi anbefaler denne fremgangsmåten — se [Konfigurere systemet via API]({{% ref "/Tjenester/fiksprotokoll/konfigurasjon-api.md" %}}).
 
 Trykk **Neste**.
 
@@ -65,7 +65,7 @@ Systemet er opprettet. På denne siden vises nøkkelinformasjon du må ta vare p
 
 - **systemId** — identifiserer systemet. Brukes blant annet når en konto i et annet system skal gi tilgang til dette systemet, og hvis systemet skal konfigureres via API.
 - **integrasjonId** — brukes til maskin-til-maskin-pålogging og kreves for tilgang til API. Skal inn i konfigurasjonen av Fiks IO-klienten.
-- **integrasjonspassord** — brukes sammen med `integrasjonId` og skal også inn i Fiks IO-klienten. Passordet kan **ikke** hentes igjen senere, men du kan [generere et nytt]({{< ref "6-nytt-passord.md" >}}).
+- **integrasjonspassord** — brukes sammen med `integrasjonId` og skal også inn i Fiks IO-klienten. Passordet kan **ikke** hentes igjen senere, men du kan [generere et nytt]({{% ref "6-nytt-passord.md" %}}).
 - **systemNavn** — navnet på systemet.
 
 Trykk **Gå til system**.
@@ -86,12 +86,12 @@ Systemet er foreløpig kun tilgjengelig for andre systemer i din egen organisasj
 
 Når systemet er opprettet, kan du konfigurere det ved å trykke på **Konfigurasjon** i fanelinjen. Her kan du endre leverandørkontaktpunkt, organisasjonsnummer på virksomhetssertifikatet, passord for integrasjonen, og aktivere eller deaktivere konfigurasjon via API. Du kan også slette systemet her.
 
-Ble ikke API aktivert da systemet ble opprettet, kan du gjøre det her. Forsøk på konfigurasjon via API uten at dette er aktivert, gir en `NotAuthorizedException` med meldingen `har ikke privilegiet FIKS.KONFIGURER på ressurs` — se [Feilsøking]({{< ref "/Tjenester/fiksprotokoll/feilsoking.md" >}}).
+API-konfigurasjon er normalt på som standard, og kan slås av eller på her. Forsøk på konfigurasjon via API uten at dette er aktivert, gir en `NotAuthorizedException` med meldingen `har ikke privilegiet FIKS.KONFIGURER på ressurs` — se [Feilsøking]({{% ref "/Tjenester/fiksprotokoll/feilsoking.md" %}}). Hvordan leverandøren bruker API-et er beskrevet under [Konfigurere systemet via API]({{% ref "/Tjenester/fiksprotokoll/konfigurasjon-api.md" %}}).
 
 ![Konfigurasjon](/images/protokoll-brukerveiledning/8_konfigurasjon.png "Konfigurasjon")
 
 ## Neste steg
 
-[Opprett konto]({{< ref "4-opprette-konto.md" >}}).
+[Opprett konto]({{% ref "4-opprette-konto.md" %}}).
 
 {{< get-help email="fiks@ksdigital.no" support_page="/felles/support/" >}}

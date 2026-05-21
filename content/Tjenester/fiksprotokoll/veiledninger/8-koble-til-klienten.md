@@ -14,15 +14,15 @@ Klienten konfigureres med verdier fra de tidligere stegene:
 
 | Verdi | Hva det er | Hvor du finner det |
 |-------|------------|--------------------|
-| `integrasjonId` | Identifiserer integrasjonen ved maskin-til-maskin-pålogging | [Opprett system]({{< ref "3-opprette-system.md" >}}), steg 6 |
-| `integrasjonspassord` | Passord som hører til integrasjonen | [Opprett system]({{< ref "3-opprette-system.md" >}}), steg 6 — eller [generer nytt]({{< ref "6-nytt-passord.md" >}}) |
-| `kontoId` | Konto-id-en meldinger sendes og mottas med | [Opprett konto]({{< ref "4-opprette-konto.md" >}}), steg 9 |
-| Privat nøkkel | Den private delen av nøkkelparet; dekrypterer innkommende meldinger | Generert av deg; den offentlige delen ble lastet opp i [Opprett konto]({{< ref "4-opprette-konto.md" >}}), steg 7 |
-| Virksomhetssertifikat | Brukes til Maskinporten-autentisering | Fra [Før du starter]({{< ref "1-huskeliste.md" >}}) |
+| `integrasjonId` | Identifiserer integrasjonen ved maskin-til-maskin-pålogging | [Opprett system]({{% ref "3-opprette-system.md" %}}), steg 6 |
+| `integrasjonspassord` | Passord som hører til integrasjonen | [Opprett system]({{% ref "3-opprette-system.md" %}}), steg 6 — eller [generer nytt]({{% ref "6-nytt-passord.md" %}}) |
+| `kontoId` | Konto-id-en meldinger sendes og mottas med | [Opprett konto]({{% ref "4-opprette-konto.md" %}}), steg 9 |
+| Privat nøkkel | Den private delen av nøkkelparet; dekrypterer innkommende meldinger | Generert av deg; den offentlige delen ble lastet opp i [Opprett konto]({{% ref "4-opprette-konto.md" %}}), steg 7 |
+| Virksomhetssertifikat | Brukes til Maskinporten-autentisering | Fra [Før du starter]({{% ref "1-huskeliste.md" %}}) |
 | ASiC-E-signeringsnøkkel | Signerer meldingspakkene | Virksomhetssertifikatet eller et eget nøkkelpar |
 
 {{% notice style="warning" title="Nøkkelformat" %}}
-Den private nøkkelen må være i **PKCS#8**-format. Java-klienten har et verktøy for å konvertere fra PKCS#1. Se [Feilsøking]({{< ref "/Tjenester/fiksprotokoll/feilsoking.md" >}}) hvis kryptering eller dekryptering feiler.
+Den private nøkkelen må være i **PKCS#8**-format. Java-klienten har et verktøy for å konvertere fra PKCS#1. Se [Feilsøking]({{% ref "/Tjenester/fiksprotokoll/feilsoking.md" %}}) hvis kryptering eller dekryptering feiler.
 {{% /notice %}}
 
 ## Velg klient
@@ -32,7 +32,7 @@ Den private nøkkelen må være i **PKCS#8**-format. Java-klienten har et verkt�
 | Motta **og** sende meldinger | [`KS.Fiks.IO.Client`](https://github.com/ks-no/fiks-io-client-dotnet) (NuGet) | [`fiks-io-klient-java`](https://github.com/ks-no/fiks-io-klient-java) (Maven `no.ks.fiks`) |
 | **Kun** sende meldinger (ingen kø-kobling) | [`KS.Fiks.IO.Send.Client`](https://github.com/ks-no/fiks-io-send-client-dotnet) | [`fiks-io-send-klient`](https://github.com/ks-no/fiks-io-send-klient) |
 
-Send-klienten er enklere og trenger ingen AMQP-kobling, men kan ikke motta meldinger. Skal systemet ditt svare på eller lytte etter meldinger, bruk den fulle klienten. Se [Klientbiblioteker]({{< ref "/Felles/klientbiblioteker.md" >}}) for en samlet oversikt.
+Send-klienten er enklere og trenger ingen AMQP-kobling, men kan ikke motta meldinger. Skal systemet ditt svare på eller lytte etter meldinger, bruk den fulle klienten. Se [Klientbiblioteker]({{% ref "/Felles/klientbiblioteker.md" %}}) for en samlet oversikt.
 
 ## Konfigurer klienten
 
@@ -50,17 +50,21 @@ var config = FiksIOConfigurationBuilder
 var klient = await FiksIOClient.CreateAsync(config);
 ```
 
-Bruk testkonfigurasjon (`BuildTestConfiguration` / tilsvarende) mot testmiljøet. Se [miljøer]({{< ref "/Felles/integrasjoner.md" >}}#miljoer).
+Bruk testkonfigurasjon (`BuildTestConfiguration` / tilsvarende) mot testmiljøet. Se [miljøer]({{% ref "/Felles/integrasjoner.md" %}}#miljoer).
 
 ## Send og motta meldinger
 
 - **Sende:** bygg en meldingsforespørsel med avsenderkonto, mottakerkonto og meldingstype, og send den med eventuell payload (fil, strøm eller tekst).
-- **Motta:** abonnér på kontoens kø med en callback. Når en melding kommer inn, håndterer du den og bekrefter den med **Ack** (`AckAsync`). Se [Fiks IO]({{< ref "/Tjenester/fiksprotokoll/fiksio.md" >}}) for detaljer om meldingsutveksling, headere, kvitteringer og Ack/Nack.
+- **Motta:** abonnér på kontoens kø med en callback. Når en melding kommer inn, håndterer du den og bekrefter den med `ack()`.
+
+{{% notice style="warning" title="Les dette før du tar klienten i bruk" %}}
+Klienten må holde en langtlevende tilkobling og lytte kontinuerlig på køen, og **hver** mottatt melding må bekreftes med `ack()` — også ved feil. Gjør du ikke dette, havner meldinger i dead-letter-køen og går tapt. Se [Beste praksis for meldingshåndtering]({{% ref "/Tjenester/fiksprotokoll/meldingshandtering.md" %}}).
+{{% /notice %}}
 
 Fullstendige kodeeksempler ligger i README-en til hvert klient-repo.
 
 ## Verifiser at koblingen virker
 
-Når klienten kjører og lytter på kontoens kø, forsvinner «konto uten kobling»-advarselen i Fiks Forvaltning. Du kan også sjekke koblingsstatus og antall meldinger på køen — se [Overvåking]({{< ref "/Tjenester/fiksprotokoll/overvaaking.md" >}}). Får du ikke kontakt, se [Feilsøking]({{< ref "/Tjenester/fiksprotokoll/feilsoking.md" >}}).
+Når klienten kjører og lytter på kontoens kø, forsvinner «konto uten kobling»-advarselen i Fiks Forvaltning. Du kan også sjekke koblingsstatus og antall meldinger på køen — se [Overvåking]({{% ref "/Tjenester/fiksprotokoll/overvaaking.md" %}}). Får du ikke kontakt, se [Feilsøking]({{% ref "/Tjenester/fiksprotokoll/feilsoking.md" %}}).
 
 {{< get-help email="fiks@ksdigital.no" support_page="/felles/support/" >}}

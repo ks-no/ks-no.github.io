@@ -10,7 +10,7 @@ aliases:
 
 **Slik oppretter du en protokollkonto med protokoll, part og offentlig nøkkel.**
 
-En protokollkonto er en part i en protokoll. Et protokollsystem kan ha flere kontoer. Du må ha [opprettet et system]({{< ref "3-opprette-system.md" >}}) før du kan opprette en konto.
+En protokollkonto er en part i en protokoll. Et protokollsystem kan ha flere kontoer. Du må ha [opprettet et system]({{% ref "3-opprette-system.md" %}}) før du kan opprette en konto.
 
 ## Steg 1: Velg system
 
@@ -70,18 +70,18 @@ Når nøkkelen er lastet opp, trykker du på **Opprett konto**.
 
 Kontoen er opprettet. **Konto-id** er identifikatoren Fiks IO bruker for å sende og motta meldinger med kontoen.
 
-For å begynne å sende meldinger må systemet ditt få tilgang til en konto i et annet system — se [Gi og få tilgang]({{< ref "5-gi-tilgang.md" >}}).
+For å begynne å sende meldinger må systemet ditt få tilgang til en konto i et annet system — se [Gi og få tilgang]({{% ref "5-gi-tilgang.md" %}}).
 
 ![Konto opprettet](/images/protokoll-brukerveiledning/3_opprettet_ferdig.png "Konto opprettet")
 
 {{% notice style="note" title="«Konto uten kobling»-advarsel" %}}
-Etter at kontoen er opprettet ser du en advarsel om at det finnes kontoer uten kobling. Dette betyr at den nye kontoen ennå ikke har et fagsystem (en klient) som lytter på meldinger — helt naturlig rett etter opprettelse. Advarselen forsvinner når klienten er [koblet til]({{< ref "8-koble-til-klienten.md" >}}). Den dukker opp igjen hvis klienten mister koblingen. Se [Feilsøking]({{< ref "/Tjenester/fiksprotokoll/feilsoking.md" >}}).
+Etter at kontoen er opprettet ser du en advarsel om at det finnes kontoer uten kobling. Dette betyr at den nye kontoen ennå ikke har et fagsystem (en klient) som lytter på meldinger — helt naturlig rett etter opprettelse. Advarselen forsvinner når klienten er [koblet til]({{% ref "8-koble-til-klienten.md" %}}). Den dukker opp igjen hvis klienten mister koblingen. Se [Feilsøking]({{% ref "/Tjenester/fiksprotokoll/feilsoking.md" %}}).
 {{% /notice %}}
 
 ![Konto opprettet – advarsel](/images/protokoll-brukerveiledning/3_opprettet_ferdig_advarsel.png "Konto opprettet - advarsel")
 
 ## Neste steg
 
-[Gi og få tilgang]({{< ref "5-gi-tilgang.md" >}}).
+[Gi og få tilgang]({{% ref "5-gi-tilgang.md" %}}).
 
 {{< get-help email="fiks@ksdigital.no" support_page="/felles/support/" >}}

@@ -11,7 +11,7 @@ aliases:
 
 Oppsettet av Fiks Protokoll involverer flere personer, roller, sertifikater og nøkler. Får du alt på plass i forkant, kan du følge veiledningene 2–6 uten å stoppe opp underveis.
 
-## Personer og roller
+### Personer og roller
 
 Oppsettet krever som regel både en person fra kundeorganisasjonen (kommunen) og en eller flere fra leverandøren.
 
@@ -29,23 +29,23 @@ Hvis leverandøren setter opp resten via API, holder det at kundepersonen oppret
 
 Det bør være én kontaktperson per leverandør som kan skaffe sertifikater, nøkler og avklaringer underveis. Se punktene nedenfor for hva leverandøren må stille med.
 
-## Teknisk sjekkliste
+### Teknisk sjekkliste
 
 Ha følgende klart før du begynner:
 
 - [ ] **Virksomhetssertifikat** fra Buypass eller Commfides — ett for test og ett for produksjon.
-- [ ] **Maskinporten-klient** satt opp på forhånd. Se [veiledning for Maskinporten]({{< ref "/Felles/difiIdportenKlient.md" >}}).
-- [ ] **Avklart organisasjonsnummer.** Samme organisasjonsnummer **må** brukes i virksomhetssertifikatet, i Maskinporten-klienten og i protokollsystemet. Dette kan være enten leverandørens eller kommunens organisasjonsnummer — avklar hvilket før du starter.
-- [ ] **Valgt protokoll og part.** Avklar hvilken protokoll (f.eks. `no.ks.fiks.arkiv.v1`) og hvilken part i protokollen systemet ditt skal være. Se [Protokoller]({{< ref "/Tjenester/fiksprotokoll/protokoller" >}}).
-- [ ] **Offentlig/privat nøkkelpar** generert. Den offentlige nøkkelen må være et X.509-sertifikat i `.pem`-format, og lastes opp når du oppretter kontoen. Den private nøkkelen legges senere inn i Fiks IO-klienten. Dette nøkkelparet er **ikke** det samme som virksomhetssertifikatet.
+- [ ] **Maskinporten-klient** satt opp på forhånd. Se [veiledning for Maskinporten]({{% ref "/Felles/difiIdportenKlient.md" %}}).
+- [ ] **Avklart organisasjonsnummer.** Samme organisasjonsnummer **må** brukes i virksomhetssertifikatet, i Maskinporten-klienten og i protokollsystemet. Vi anbefaler at leverandøren bruker sitt **eget** virksomhetssertifikat og organisasjonsnummer — ikke kommunens. Avklar dette før du starter.
+- [ ] **Valgt protokoll og part.** Avklar hvilken protokoll (f.eks. `no.ks.fiks.arkiv.v1`) og hvilken part i protokollen systemet ditt skal være. Se [Protokoller]({{% ref "/Tjenester/fiksprotokoll/protokoller" %}}).
+- [ ] **Offentlig/privat nøkkelpar** generert. **Kun den offentlige nøkkelen** lastes opp (når du oppretter kontoen) — den må være et X.509-sertifikat i `.pem`-format. Den **private nøkkelen skal beholdes av leverandøren og aldri lastes opp noe sted**; den legges kun inn i klientkonfigurasjonen og brukes til å dekryptere innkommende meldinger. Dette nøkkelparet er **ikke** det samme som virksomhetssertifikatet.
 - [ ] **Sikker delingsmetode avklart.** Når protokollsystemet er opprettet får du `integrasjonId` og `integrasjonspassord` som må deles med leverandøren på en sikker måte. Avklar hvordan på forhånd — vær oppmerksom på at mange e-postsystemer blokkerer nøkkelfiler.
 
-## Det skal to til
+### Det skal to til
 
-Fiks Protokoll er en topartskommunikasjon. For å faktisk utveksle meldinger må det finnes et **motpart-system** med en konto i samme protokoll — for eksempel et arkiv hvis du setter opp et fagsystem. Du kan gjøre steg 2–4 alene, men [Gi og få tilgang]({{< ref "5-gi-tilgang.md" >}}) forutsetter at motparten finnes.
+Fiks Protokoll er en topartskommunikasjon. For å faktisk utveksle meldinger må det finnes et **motpart-system** med en konto i samme protokoll — for eksempel et arkiv hvis du setter opp et fagsystem. Du kan gjøre steg 2–4 alene, men [Gi og få tilgang]({{% ref "5-gi-tilgang.md" %}}) forutsetter at motparten finnes.
 
-## Neste steg
+### Neste steg
 
-Når sjekklisten er i orden: [Ta i bruk tjenesten]({{< ref "2-ta-i-bruk.md" >}}).
+Når sjekklisten er i orden: [Ta i bruk tjenesten]({{% ref "2-ta-i-bruk.md" %}}).
 
 {{< get-help email="fiks@ksdigital.no" support_page="/felles/support/" >}}

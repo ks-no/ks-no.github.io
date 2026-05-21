@@ -12,8 +12,8 @@ aliases:
 
 Integrasjonspassordet kan ikke hentes fram igjen etter at systemet er opprettet. Har du mistet det, må du generere et nytt.
 
-{{% notice style="warning" title="Eksisterende pålogging slutter å virke" %}}
-Når du genererer et nytt passord, blir det gamle ugyldig. Fiks IO-klienter som bruker det gamle passordet vil slutte å fungere til de er oppdatert med det nye.
+{{% notice style="warning" title="Husk å oppdatere klientkonfigurasjonen" %}}
+Når du genererer et nytt passord, blir det gamle ugyldig. En klient som allerede er tilkoblet, fortsetter å fungere så lenge tilkoblingen står — men neste gang klienten kobler til på nytt (ved omstart eller etter et tilkoblingsbrudd), vil den feile dersom den fortsatt bruker det gamle passordet. Leverandøren må derfor oppdatere klientkonfigurasjonen med det nye passordet og starte instansen på nytt.
 {{% /notice %}}
 
 ## Steg 1: Velg system
@@ -42,7 +42,7 @@ En dialog spør om du er sikker, fordi det gamle passordet blir ugyldig. Trykk p
 
 ## Steg 5: Nytt passord generert
 
-Det nye passordet er tilgjengelig under **Integrasjonspålogging**. Det skal brukes sammen med `integrasjonId` og legges inn i konfigurasjonen til Fiks IO-klienten — se [Koble til klienten]({{< ref "8-koble-til-klienten.md" >}}).
+Det nye passordet er tilgjengelig under **Integrasjonspålogging**. Det skal brukes sammen med `integrasjonId` og legges inn i konfigurasjonen til Fiks IO-klienten — se [Koble til klienten]({{% ref "8-koble-til-klienten.md" %}}).
 
 ![Nytt passord generert](/images/protokoll-brukerveiledning/passord_nytt_passord_generert.png "Passord generert")
 

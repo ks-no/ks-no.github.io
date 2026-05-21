@@ -10,7 +10,7 @@ Fiks IO er en kanal for sikker maskin-til-maskin integrasjon. Denne kanalen kan 
 
 Fiks IO bruker [RabbitMQ](https://www.rabbitmq.com/) som kø-system og forenkler meldingsutvekslingen via køene i RabbitMQ. Les gjerne mer om RabbitMQ og kø-systemer.
 
-Meldingstyper defineres i [Fiks Protokoll]({{< ref "_index.md" >}}).
+Meldingstyper defineres i [Fiks Protokoll]({{% ref "_index.md" %}}).
 
 ## Tilgjengelige grensesnitt
 | Grensesnitt | Støtte |
@@ -27,7 +27,7 @@ Fiks IO tilbyr:
 * _Sikker kommunikasjon med ende-til-ende kryptering_: Fiks IO tilbyr ende-til-ende kryptering av meldinger. Merk at dette ikke gjelder alle bruks-scenarioer, se "Sikkerhet" for detaljer.
 * _Sikker identifisering av avsender_: Bruk av standard for kryptografisk signatur [(ASiC-E)](https://github.com/difi/asic) for meldinger gjør at man kan være sikker på identiteten til avsender.
 * _Levetid på meldinger_: En melding har en default levetid på 7 dager med mindre avsender setter det selv. Minste TTL (se mer om dette lenger nede) man kan sette er 1 sekund.
-* _Sending av store filer_: Fiks IO integrerer mot [Fiks Dokumentlager]({{< ref "/Tjenester/dokumentlager.md" >}}) for å støtte sending av store filer, helt opp til dokumentlagers grense på fem gigabyte.
+* _Sending av store filer_: Fiks IO integrerer mot [Fiks Dokumentlager]({{% ref "/Tjenester/dokumentlager.md" %}}) for å støtte sending av store filer, helt opp til dokumentlagers grense på fem gigabyte.
 
 Merk at Fiks IO har ikke leveringsgaranti. Det betyr ikke at meldingene kan bli borte i Fiks IO køene, men vi kan ikke garantere 100% at meldingen går vellykket fra avsender til mottaker da noe f.eks. kan gå galt i håndtering av meldingene.
 For eksempel kan en melding bli markert som lest (ack) av en mottaker før den har blitt håndtert helt ferdig og dermed kan ikke meldingen hentes på nytt.
@@ -37,7 +37,7 @@ Derfor må mottaker- og avsendersystem lages slik at de håndterer at en melding
 
 Fiks IO brukes nesten alltid sammen med Fiks Protokoll: en protokollkonto opprettes oppå en Fiks IO-konto, og du får da det du trenger for å sette opp en Fiks IO-klient. En Fiks Protokoll-konto kan ikke kommunisere med en Fiks IO-konto som ikke er opprettet via Fiks Protokoll.
 
-Følg [veiledningene for Fiks Protokoll]({{< ref "veiledninger" >}}) for oppsett steg for steg — fra forutsetninger og virksomhetssertifikat til ferdig tilkoblet klient.
+Følg [veiledningene for Fiks Protokoll]({{% ref "veiledninger" %}}) for oppsett steg for steg — fra forutsetninger og virksomhetssertifikat til ferdig tilkoblet klient.
 
 ### Forhold til SvarUt og SvarInn
 Fiks IO er en selvstendig kanal, og er ikke bygget for å være en erstatning for SvarUt/SvarInn, som begge vil bli videreført i sin nåværende form. Bruksområdene til tjenestene kan overlappe, og dette gjør at det noen ganger kan være tvil om SvarUt/SvarInn eller Fiks IO er riktig verktøy for et problem.
@@ -97,7 +97,7 @@ Merk at bruk av dette api'et i stede for manuell innhenting av sertifikater kan 
 ### Protokollkatalogen
 Som nevnt over har Fiks IO i utgangspunktet ingen formening om hva innholdet i en melding er, men det er i mange integrasjon-scenarioer nyttig å ha et felles repository med kontrakter for hvordan meldinger skal bygges opp. Protokollkatalogen tilbyr en slik oversikt, og man kan her referere til spesifikasjoner for meldingstypene som inngår i protokollen, og hvordan disse skal benyttes. 
 
-Digisos bruker som nevnt over meldingsprotokollen "no.nav.digisos.fagsystem.v1", som er beskrevet i mer detalj under [Fiks Digisos]({{< ref "/Tjenester/digisos.md" >}}#fiks-io-meldingsprotokoll).
+Digisos bruker som nevnt over meldingsprotokollen "no.nav.digisos.fagsystem.v1", som er beskrevet i mer detalj under [Fiks Digisos]({{% ref "/Tjenester/digisos.md" %}}#fiks-io-meldingsprotokoll).
 
 Ta kontakt med fiks@ksdigital.no om du ønsker å etablere eller gjøre endringer i en protokoll.
 
@@ -277,20 +277,8 @@ Fiks IO API putter svarmeldingen på køen til **System A**.
 
 Merk at det er egentlig bare ett Fiks IO API som begge systemene bruker, men det er tegnet inn som 2 forskjellige bokser for å tydeligere vise flyten.
 
-##### Håndtering av mottatt melding
+#### Håndtering av mottatt melding
 
-##### Bekreft (Ack)
-Når man har mottatt en melding og vellykket håndtert den så skal man sørge for å bekrefte meldingen som mottatt ([Ack](https://www.rabbitmq.com/docs/confirms)).
-Dette tar bort meldingen fra køen.
-
-##### Avvis (Nack)
-Meldinger støtter dette men vi anbefaler det ikke da det betyr at man totalt avviser meldingen.
-Meldinger som avvises vil **ikke** føre til feilmelding tilbake til avsender fra Fiks IO.
-Hvis man bruker dette må man være sikker på at avsender håndterer manglende respons på avsendt melding.
-
-##### Avvis og send tilbake på køen (NackWithRequeue)
-Meldinger støtter dette men vi anbefaler stort sett ikke å bruke dette da det betyr at meldingen bare kommer på nytt fra Fiks IO og dette teller som forsøk på å hente meldingen. 
-Dette betyr at man fort "bruker opp" antall forsøk på å lese meldingen og den havner i DLQ (dead-letter-queue) og deretter blir til en feilmelding tilbake til avsender.
-Det vil være tilfeller hvor man allikevel ønsker å gjøre dette, f.eks. hvis man får en uventet feil og ikke har noen annen måte å gi tilbakemelding til avsender at mottak feilet. 
+Hver mottatt melding må bekreftes med `ack()`, og feil må håndteres ved å sende protokollens feilmelding tilbake. Hvordan en klient skal håndtere innkommende meldinger — `ack()`, `nack`, `NackWithRequeue`, retry og idempotens — er beskrevet samlet under [Beste praksis for meldingshåndtering]({{% ref "meldingshandtering.md" %}}).
 
 

@@ -11,7 +11,7 @@ aliases:
 
 **Slik signerer du avtalen og aktiverer Fiks Protokoll for organisasjonen din.**
 
-Det første du må gjøre for å bruke Fiks Protokoll er å signere avtalen om bruk og ta tjenesten i bruk. Dette gjøres i Fiks Forvaltning. Sjekk først at du har det du trenger klart — se [Før du starter]({{< ref "1-huskeliste.md" >}}).
+Det første du må gjøre for å bruke Fiks Protokoll er å signere avtalen om bruk og ta tjenesten i bruk. Dette gjøres i Fiks Forvaltning. Sjekk først at du har det du trenger klart — se [Før du starter]({{% ref "1-huskeliste.md" %}}).
 
 {{% notice style="note" title="Hvem kan gjøre dette?" %}}
 I produksjon må dette gjøres av en person med administrasjonstilgang til organisasjonen i Fiks, og signeringen må gjøres av noen som har rett til å signere avtale på vegne av kommunen. I test bruker du en testbruker som har tilgang til testorganisasjonen. Trenger du hjelp med å opprette testbruker og testorganisasjon, kontakt [fiks@ksdigital.no](mailto:fiks@ksdigital.no).
@@ -67,6 +67,6 @@ Du kommer nå til en tom liste over systemer. Da har du tatt Fiks Protokoll i br
 
 ## Neste steg
 
-[Opprett system]({{< ref "3-opprette-system.md" >}}).
+[Opprett system]({{% ref "3-opprette-system.md" %}}).
 
 {{< get-help email="fiks@ksdigital.no" support_page="/felles/support/" >}}

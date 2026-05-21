@@ -10,7 +10,16 @@ Det anbefales at man overvåker at man har en fungerende mottakende komponent so
 
 Hvordan man overvåker at man kan sende og motta meldinger er opp til en selv, men vi anbefaler at man i det minste overvåker koblingsstatus til Fiks IO for henting av meldinger.
 
-Klienten for .NET har både en `IsOpen()`-metode som viser om klienten selv ser at den har en aktiv kobling, og mulighet for å spørre Fiks IO API om status for en gitt konto via `Status()`. Status vil bl.a. gi informasjon som **antall konsumenter** for kontoen.
+## Overvåk koblingen i klienten
+
+Hvordan du oppdager at klienten har mistet koblingen, avhenger av hvilken klient du bruker:
+
+- **.NET-klienten** har en `IsOpenAsync()`-metode som viser om klienten selv ser at den har en aktiv kobling. Den kan kalles jevnlig som en helsesjekk.
+- **Java-klienten** har ingen tilsvarende `isOpen()`-metode. I stedet registrerer du en `onClose`-callback når du abonnerer — bruk overloaden `newSubscription(onMelding, onClose)`. `onClose` kalles med en `ShutdownSignalException` når abonnementet eller koblingen avsluttes, og det er her du fanger opp at koblingen er nede.
+
+Kortvarige nettverksbrudd gjenopprettes automatisk av RabbitMQ-biblioteket som klientene bygger på (auto-recovery) — du trenger ikke skrive egen reconnect-logikk. Det viktige er at selve klient-prosessen kjører kontinuerlig.
+
+I tillegg kan begge klientene spørre Fiks IO Katalog-API-et om status for en konto (se under), som bl.a. gir **antall konsumenter** på kontoen.
 
 ## Status for konto via API
 
