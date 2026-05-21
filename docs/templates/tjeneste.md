@@ -30,7 +30,7 @@ aliases: ["/fiks-plattform/tjenester/[tjenestenavn]/"]
     - Fiks IO-mekanikk (ASiC-E, TTL, standardmeldinger)  → fiksio.md
     - Fiks Protokoll-oppsett (system, konto, tilganger)  → fiksprotokoll/_index.md
 
-  Se [Hvor hører innholdet hjemme]({{< ref "_templates/_index.md" >}}) for full ansvarsdeling.
+  Se [Hvor hører innholdet hjemme]({{% ref "_templates/_index.md" %}}) for full ansvarsdeling.
 -->
 
 ## Kort beskrivelse
@@ -143,7 +143,6 @@ Tjenestespesifikke forutsetninger:
 
 ---
 
-
 ## Meldingsprotokoll
 
 <!--
@@ -163,9 +162,9 @@ Fullstendig skjemadefinisjon med eksempler: [github.com/ks-no/fiks-io-[tjenesten
 | `no.ks.fiks.[tjenestenavn].mottatt.v1` | Fra mottaker | Tom | Kvittering på mottatt melding |
 | `no.ks.fiks.[tjenestenavn].feilet.v1`  | Fra mottaker | `feilmelding.json` | Feil ved håndtering hos mottaker |
 
-I tillegg gjelder [standardmeldinger fra Fiks IO]({{< ref "fiksio.md" >}}#feilmeldinger-fra-fiks-io) (`tidsavbrudd`, `serverfeil`).
+I tillegg gjelder [standardmeldinger fra Fiks IO]({{% ref "fiksio.md" %}}#feilmeldinger-fra-fiks-io) (`tidsavbrudd`, `serverfeil`).
 
-Anbefalt `time-to-live`: **24 timer** (med mindre tjenesten har andre krav). Generell mekanikk: [Levetid og TTL]({{< ref "fiksio.md" >}}#levetid-på-melding-og-ttl).
+Anbefalt `time-to-live`: **24 timer** (med mindre tjenesten har andre krav). Generell mekanikk: [Levetid og TTL]({{% ref "fiksio.md" %}}#levetid-på-melding-og-ttl).
 
 ---
 
@@ -180,6 +179,19 @@ Anbefalt `time-to-live`: **24 timer** (med mindre tjenesten har andre krav). Gen
   f.eks. multipart-rekkefølge, krypteringskrav for vedlegg, navnekonvensjoner
   for filer, tjenestespesifikke errorCode-verdier, tilstandsmaskiner.
 -->
+
+### Miljøer og endepunkter
+
+<!--
+  ANBEFALT. List opp base-URL per miljø slik at integratorer ikke trenger å
+  gjette. Bruk relative stier (`/tjeneste/api/v1/...`) i resten av seksjonen
+  og overlate konkatenering til denne base-URL-en. Slett om tjenesten kun
+  brukes via et klientbibliotek.
+-->
+
+**Base-URL per miljø:**
+- **Test:** `https://api.fiks.test.ks.no/[tjeneste]/api/v1`
+- **Produksjon:** `https://api.fiks.ks.no/[tjeneste]/api/v1`
 
 ---
 
@@ -236,7 +248,7 @@ Anbefalt `time-to-live`: **24 timer** (med mindre tjenesten har andre krav). Gen
 -->
 
 KS tilbyr et offisielt Java-bibliotek: [fiks-[tjenestenavn]-klient](https://github.com/ks-no/fiks-[tjenestenavn]-klient).
-Se også [samlet oversikt over klientbiblioteker]({{< ref "klientbiblioteker.md" >}}).
+Se også [samlet oversikt over klientbiblioteker]({{% ref "klientbiblioteker.md" %}}).
 
 ---
 
@@ -247,8 +259,8 @@ Se også [samlet oversikt over klientbiblioteker]({{< ref "klientbiblioteker.md"
   Slett seksjonen for selvstendige tjenester.
 -->
 
-- [Tjeneste A]({{< ref "[tjeneste-a].md" >}})
-- [Tjeneste B]({{< ref "[tjeneste-b].md" >}})
+- [Tjeneste A]({{% ref "[tjeneste-a].md" %}})
+- [Tjeneste B]({{% ref "[tjeneste-b].md" %}})
 
 ---
 
@@ -256,12 +268,12 @@ Se også [samlet oversikt over klientbiblioteker]({{< ref "klientbiblioteker.md"
 
 <!-- Lenk til andre Fiks-tjenester som er relevante for integratoren. -->
 
-- [Fiks IO]({{< ref "fiksio.md" >}}) – sikker maskin-til-maskin meldingskanal
-- [Fiks Dokumentlager]({{< ref "dokumentlager.md" >}}) – kryptert dokumentlagring
-- [SvarUt/SvarInn]({{< ref "svarut/_index.md" >}}) – alternativ leveringskanal
+- [Fiks IO]({{% ref "fiksio.md" %}}) – sikker maskin-til-maskin meldingskanal
+- [Fiks Dokumentlager]({{% ref "dokumentlager.md" %}}) – kryptert dokumentlagring
+- [SvarUt/SvarInn]({{% ref "svarut/_index.md" %}}) – alternativ leveringskanal
 
 ---
 
+## Få hjelp
 
 {{< get-help email="fiks@ksdigital.no" support_page="/felles/support/" >}}
-
