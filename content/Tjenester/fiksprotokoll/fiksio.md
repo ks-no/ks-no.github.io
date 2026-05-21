@@ -10,7 +10,7 @@ Fiks IO er en kanal for sikker maskin-til-maskin integrasjon. Denne kanalen kan 
 
 Fiks IO bruker [RabbitMQ](https://www.rabbitmq.com/) som kø-system og forenkler meldingsutvekslingen via køene i RabbitMQ. Les gjerne mer om RabbitMQ og kø-systemer.
 
-Meldingstyper defineres i [Fiks Protokoll](fiksprotokoll)
+Meldingstyper defineres i [Fiks Protokoll]({{< ref "_index.md" >}}).
 
 ## Tilgjengelige grensesnitt
 | Grensesnitt | Støtte |
@@ -22,49 +22,22 @@ Meldingstyper defineres i [Fiks Protokoll](fiksprotokoll)
 
 Fiks IO tilbyr:
 
-* _Rask leveranse_: ved hjelp av kø-basert arkitektur ([AMQP)](https://en.wikipedia.org/wiki/Advanced_Message_Queuing_Protocol)  kan Fiks IO levere meldinger raskt, stort sett på under ett sekund plus eventuelt overføring av data. Dette oppnås ved at meldinger nå sendes til det mottakende fagystemet i det øyeblikket de ankommer (push), i stede for at fagsystemet må hente meldingen (pull).
+* _Rask leveranse_: ved hjelp av kø-basert arkitektur ([AMQP)](https://en.wikipedia.org/wiki/Advanced_Message_Queuing_Protocol)  kan Fiks IO levere meldinger raskt, stort sett på under ett sekund plus eventuelt overføring av data. Dette oppnås ved at meldinger nå sendes til det mottakende fagsystemet i det øyeblikket de ankommer (push), i stedet for at fagsystemet må hente meldingen (pull).
 * _Svar på melding_: Fiks IO lar en mottaker svare på en spesifikk melding, f.eks. for å svare på en spørring eller å bekrefte at en forespurt handling er utført.
 * _Sikker kommunikasjon med ende-til-ende kryptering_: Fiks IO tilbyr ende-til-ende kryptering av meldinger. Merk at dette ikke gjelder alle bruks-scenarioer, se "Sikkerhet" for detaljer.
 * _Sikker identifisering av avsender_: Bruk av standard for kryptografisk signatur [(ASiC-E)](https://github.com/difi/asic) for meldinger gjør at man kan være sikker på identiteten til avsender.
 * _Levetid på meldinger_: En melding har en default levetid på 7 dager med mindre avsender setter det selv. Minste TTL (se mer om dette lenger nede) man kan sette er 1 sekund.
-* _Sending av store filer_: Fiks IO integrerer mot [Fiks Dokumentlager]({{% ref "dokumentlager.md" %}}) for å støtte sending av store filer, helt opp til dokumentlagers grense på fem gigabyte. 
+* _Sending av store filer_: Fiks IO integrerer mot [Fiks Dokumentlager]({{< ref "/Tjenester/dokumentlager.md" >}}) for å støtte sending av store filer, helt opp til dokumentlagers grense på fem gigabyte.
 
 Merk at Fiks IO har ikke leveringsgaranti. Det betyr ikke at meldingene kan bli borte i Fiks IO køene, men vi kan ikke garantere 100% at meldingen går vellykket fra avsender til mottaker da noe f.eks. kan gå galt i håndtering av meldingene.
 For eksempel kan en melding bli markert som lest (ack) av en mottaker før den har blitt håndtert helt ferdig og dermed kan ikke meldingen hentes på nytt.
 Derfor må mottaker- og avsendersystem lages slik at de håndterer at en melding kan forsvinne underveis.
 
-#### Hvordan tar man i bruk Fiks IO?
-Når man oppretter en [Fiks Protokoll](fiksprotokoll) konto vil det blir opprettet en Fiks IO konto, samt at man kan administrere meldingstyper som skal benyttes. Vi anbefaler å bruke Fiks Protokoll oppsettet for å få opprettet Fiks IO konto da en Fiks Protokoll konto vil ikke kunne kommunisere med en Fiks IO konto som ikke er opprettet via Fiks Protokoll. 
-Fiks Protokoll konto er en utvidelse av Fiks IO konto, og dermed får man det man trenger for å f.eks. sette opp en Fiks IO klient.
+## Komme i gang
 
-Fiks IO baserer seg på at organisasjoner benytter Fiks Konfigurasjon for å opprette en eller flere _kontoer_. Andre organisasjoner kan så sende meldinger til disse kontoene, som mottaker kan lese ved å koble seg til io.fiks.ks.no. 
+Fiks IO brukes nesten alltid sammen med Fiks Protokoll: en protokollkonto opprettes oppå en Fiks IO-konto, og du får da det du trenger for å sette opp en Fiks IO-klient. En Fiks Protokoll-konto kan ikke kommunisere med en Fiks IO-konto som ikke er opprettet via Fiks Protokoll.
 
-For å gjøre det lettere å finne en konto, og vite hvilke meldingstyper systemet som benytter kontoen kan håndtere kan man konfigurere _adresser_. Adresser består av en eller flere organisasjonsnummer, meldingsprotokoller og sikkerhetsnivåer. Avsendere kan så slå opp i Fiks IOs katalogtjeneste for å finne f.eks. hvilken konto som skal motta digisos meldinger med sikkerhetsnivå fire for Bergen kommune. 
-
-Funksjonalitet for å sende og lese meldinger vil typisk bli tilbudt av fagsystemleverandører eller offentlig virksomheter, som når Fiks Digisos formidler sosialsøknader fra Nav til kommunens sosialsystem, men kommuner og andre organisasjoner må fortsatt ha et forhold til hvilke kontoer de har, hvilke meldingstyper disse håndterer, og ikke minst hvem som har tilgang til å lese inkommende meldinger.
-
-![em fiks-io konto](/images/fiksiokonto.png)
-
-I eksempelet over ser man en konto opprettet for å formidle Digisos meldinger til en kommunes fagsystem for behandlig av sosialsøknader. Det er opprettet en adresse på kontoen, "Digisos", man har konfigurert støtte for meldingsprotokollen "no.nav.digisos.fagsystem.v1", og sagt at dette systemet kan håndtere meldinger for både sikkerhetsnivå tre og fire. 
-
-### Hva trenger du for å komme i gang?
-
-#### Virksomhetssertifikat
-Man må ha et virksomhetssertifikat fra Commfides eller Buypass for å identifisere seg med maskinporten, et for test og et for produksjon. Se avsnitt om [sikkerhet](#sikkerhet) lenger nede.
-Det er viktig at virksomhetssertifikatet er registrert med samme organisasjonsnummer som man registrerer hos maskinporten og hos KS gjennom Fiks protokoller/Fiks IO oppsettet.
-
-#### Maskinporten 
-Fiks IO bruker maskinporten til autentisering. Da må man ha laget en klient hos maskinporten. Se [her](https://developers.fiks.ks.no/fiks-plattform/difiidportenklient/) for hvordan det gjøres. 
-Det er viktig at det gjøres med samme organisasjonsnummer som man har i virksomhetssertifikatet og i Fiks protokoller/Fiks IO oppsettet hos KS.
-
-#### Fiks protokoll eller Fiks IO oppsett
-Stort sett vil man bruke [Fiks Protokoll](https://ks-no.github.io/fiks-plattform/tjenester/fiksprotokoll) da man skal kommunisere over Fiks IO med en av protokollene.
-Se guiden for oppsett av [Fiks Protokoll](https://ks-no.github.io/fiks-plattform/tjenester/fiksprotokoll) for hvordan dette gjøres.
-
-#### Fiks IO klientbiblioteker
-Vi anbefaler å bruke enten java eller .NET klienten som KS tilbyr hvis man er på java eller .NET. 
-Se github prosjektet for [java](https://github.com/ks-no/fiks-io-klient-java) eller [.NET](https://github.com/ks-no/fiks-io-client-dotnet) for hvordan man bruker klienten. 
-
+Følg [veiledningene for Fiks Protokoll]({{< ref "veiledninger" >}}) for oppsett steg for steg — fra forutsetninger og virksomhetssertifikat til ferdig tilkoblet klient.
 
 ### Forhold til SvarUt og SvarInn
 Fiks IO er en selvstendig kanal, og er ikke bygget for å være en erstatning for SvarUt/SvarInn, som begge vil bli videreført i sin nåværende form. Bruksområdene til tjenestene kan overlappe, og dette gjør at det noen ganger kan være tvil om SvarUt/SvarInn eller Fiks IO er riktig verktøy for et problem.
@@ -75,7 +48,7 @@ Hovedsakelig bør man benytte svarut/svarinn for "post": meldinger hvor payload 
 Benytt Fiks IO, denne leverer utelukkende til spesifisert mottakerkonto og benytter ingen alternative kanaler, som for eksempel printet post.
 
 #### Skal meldingen sikres gjennom ende-til-ende kryptering? 
-Benytt Fiks IO, SvarUt/SvarInn meldinger kan bare krypteres med Fiks-plattformens nøkkel, ikke mottakers. Se "Sikkerhet" for deltajer om hvordan man oppnår trygg ende-til-ende kryptering gjennom Fiks IO
+Benytt Fiks IO, SvarUt/SvarInn meldinger kan bare krypteres med Fiks-plattformens nøkkel, ikke mottakers. Se "Sikkerhet" for detaljer om hvordan man oppnår trygg ende-til-ende kryptering gjennom Fiks IO
 
 #### Trenger man rask levering? 
 Benytt Fiks IO for å få leveranse på sekunder, ved bruk av SvarUt/SvarInn kan levering ta lang tid, siden SvarUt prøver flere kanaler etter tur og defaulter til print ved leveranseproblemer.
@@ -98,11 +71,11 @@ Fiks IO tar i utgangspunktet ikke stilling til hva payloaden i meldingen består
 * _Fiks IO .net klient_: [.net core](https://github.com/ks-no/fiks-io-client-dotnet) implementasjon av samme funksjonalitet som klienten over.
 
 ### Sikkerhet
-Autentisering av klienter mot REST service for sending av meldinger og AMQP service for leveranse av meldinger skjer gjennom virksomhetssertifikat-basert maskinporten autentisering. 
+Autentisering av klienter mot REST service for sending av meldinger og AMQP service for leveranse av meldinger skjer gjennom virksomhetssertifikat-basert Maskinporten-autentisering.
 
 I utgangspunktet legger ikke Fiks IO føringer på hvordan (eller om) en melding sendt over plattformen sikres, men alle klienter som utvikles av KS, og alle protokoller som Fiks spesifiserer, vil benytte signerte og krypterte meldinger gjennom [ASIC-E](https://github.com/difi/asic) containere. Denne standarden benyttes også av DIFI i forbindelse med integrasjonspunktet. 
 I klientene er signering påkrevd, og kan settes opp med sertifikatet som blir benyttet for autentisering mot maskinporten eller et annet sertifikat/nøkkelpar. 
-Kryptering er også påkrevi og skjer med den private delen av sertifikatet som mottaker har publisert i Fiks IO Kontokatalog.
+Kryptering er også påkrevd og skjer med den private delen av sertifikatet som mottaker har publisert i Fiks IO Kontokatalog.
 
 Merk at man for å oppnå reell ende-til-ende kryptering, i betydningen at KS ikke har noen mulighet til å lese den overførte meldingen, bør innhente mottakers sertifikater gjennom egne kanaler og selv verifisere disse. Fiks IO tilbyr automatisk oppslag i katalogen som en tjeneste for å lette dette arbeidet, men man bør være klar over at det å benytte denne gir noe svekket sikkerhet.  
 
@@ -115,7 +88,7 @@ For å sende en melding i Fiks IO må man kjenne konto-id'en til mottakeren, men
 * _Protokoll_: Spesifiserer hvilken protokoll adressen gjelder for. En protokoll vil som regel omfatte flere meldingstyper.
 * _Sikkerhetsnivå_: Spesifiserer hvilket sikkerhetsnivå meldingen skal ha. Typisk benyttes nivå 3 for ikke sensitive og nivå 4 for sensitive meldinger.
 
-Adresser opprettes og forvaltes gjennom Fiks Konfigrasjon. Katalogen gir også mulighet for å laste opp en offentlig nøkkel i form av et X509 sertifikat. Dette sertifikatet blir benyttet for å kryptere meldinger sendt til kontoen, slik at de kan dekrypteres med den private delen av nøkkelen ved mottak.
+Adresser opprettes og forvaltes gjennom Fiks Forvaltning. Katalogen gir også mulighet for å laste opp en offentlig nøkkel i form av et X.509-sertifikat. Dette sertifikatet blir benyttet for å kryptere meldinger sendt til kontoen, slik at de kan dekrypteres med den private delen av nøkkelen ved mottak.
 
 Fiks Organisasjoner kan gjøre oppslag i registrerte adresser gjennom [katalog-api'et](https://editor-next.swagger.io/?url=https://developers.fiks.ks.no/api/fiksio-katalog-api-v1.json). 
 
@@ -124,11 +97,11 @@ Merk at bruk av dette api'et i stede for manuell innhenting av sertifikater kan 
 ### Protokollkatalogen
 Som nevnt over har Fiks IO i utgangspunktet ingen formening om hva innholdet i en melding er, men det er i mange integrasjon-scenarioer nyttig å ha et felles repository med kontrakter for hvordan meldinger skal bygges opp. Protokollkatalogen tilbyr en slik oversikt, og man kan her referere til spesifikasjoner for meldingstypene som inngår i protokollen, og hvordan disse skal benyttes. 
 
-Digisos bruker som nevnt over meldingsprotokollen "no.nav.digisos.fagsystem.v1", som er beskrevet i mer detalj under [Fiks Digisos](https://ks-no.github.io/fiks-plattform/tjenester/digisos/#fiks-io-meldingsprotokoll).
+Digisos bruker som nevnt over meldingsprotokollen "no.nav.digisos.fagsystem.v1", som er beskrevet i mer detalj under [Fiks Digisos]({{< ref "/Tjenester/digisos.md" >}}#fiks-io-meldingsprotokoll).
 
 Ta kontakt med fiks@ksdigital.no om du ønsker å etablere eller gjøre endringer i en protokoll.
 
-### Levetid på melding og TTL (Time To Live)
+### Levetid på melding og TTL
 Når man sender en melding via Fiks IO klienten kan man velge å sette en levetid (TTL) selv på meldingen, men med minimum 1 sekund. 
 Hvis man ikke setter levetid selv blir TTL satt til 7 dager i Fiks IO tjenesten. 
 
@@ -315,7 +288,7 @@ Meldinger støtter dette men vi anbefaler det ikke da det betyr at man totalt av
 Meldinger som avvises vil **ikke** føre til feilmelding tilbake til avsender fra Fiks IO.
 Hvis man bruker dette må man være sikker på at avsender håndterer manglende respons på avsendt melding.
 
-##### Avvis og send tilbake på køen (NackWithReque)
+##### Avvis og send tilbake på køen (NackWithRequeue)
 Meldinger støtter dette men vi anbefaler stort sett ikke å bruke dette da det betyr at meldingen bare kommer på nytt fra Fiks IO og dette teller som forsøk på å hente meldingen. 
 Dette betyr at man fort "bruker opp" antall forsøk på å lese meldingen og den havner i DLQ (dead-letter-queue) og deretter blir til en feilmelding tilbake til avsender.
 Det vil være tilfeller hvor man allikevel ønsker å gjøre dette, f.eks. hvis man får en uventet feil og ikke har noen annen måte å gi tilbakemelding til avsender at mottak feilet. 

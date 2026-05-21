@@ -1,6 +1,6 @@
 ---
-title: Veiledning 4 - Opprette konto
-date: 2022-09-23
+title: Opprett konto
+date: 2026-05-20
 weight: 4
 aliases:
   - /tjenester/fiksprotokoll/veiledning_4_opprette_konto/
@@ -8,56 +8,80 @@ aliases:
   - /tjenester/fiksprotokoll/opprette_konto/
 ---
 
-## Steg 1: Velg system
-Velg systemet du skal opprette konto på
-![fiks protokoll](/images/protokoll-brukerveiledning/3_velg_system.png "Velg system")
+**Slik oppretter du en protokollkonto med protokoll, part og offentlig nøkkel.**
 
-## Steg 2: Velg kontoer
-Velg fanen kontoer
-![fiks protokoll](/images/protokoll-brukerveiledning/3_velg_kontoer.png "Velg kontoer")
+En protokollkonto er en part i en protokoll. Et protokollsystem kan ha flere kontoer. Du må ha [opprettet et system]({{< ref "3-opprette-system.md" >}}) før du kan opprette en konto.
+
+## Steg 1: Velg system
+
+Velg systemet du skal opprette kontoen på.
+
+![Velg system](/images/protokoll-brukerveiledning/3_velg_system.png "Velg system")
+
+## Steg 2: Velg fanen Kontoer
+
+Velg fanen **Kontoer**.
+
+![Velg Kontoer](/images/protokoll-brukerveiledning/3_velg_kontoer.png "Velg kontoer")
 
 ## Steg 3: Opprett ny konto
-Trykk på "Opprett ny konto"
-![fiks protokoll](/images/protokoll-brukerveiledning/3_opprett_konto.png "Opprett konto")
+
+Trykk på **Opprett ny konto**.
+
+![Opprett ny konto](/images/protokoll-brukerveiledning/3_opprett_konto.png "Opprett konto")
 
 ## Steg 4: Navn og beskrivelse
-Fyll ut navn og beskrivelse. Dette vil identifisere kontoen for andre
-![fiks protokoll](/images/protokoll-brukerveiledning/3_opprett_del1.png "Navn og beskrivelse")
+
+Fyll ut navn og beskrivelse. Dette identifiserer kontoen for andre.
+
+![Navn og beskrivelse](/images/protokoll-brukerveiledning/3_opprett_del1.png "Navn og beskrivelse")
 
 ## Steg 5: Velg protokoll
-Velg protokoll fra nedtrekksmenyen. Dette bestemmer hvilken meldingsprotokoll kontoen hører til, og den vil kun kommunisere med kontoer i samme protokoll.
 
-![fiks protokoll](/images/protokoll-brukerveiledning/3_opprett_del2.png "Velg protokoll")
+Velg protokoll fra nedtrekksmenyen. Dette bestemmer hvilken meldingsprotokoll kontoen hører til. Kontoen kan kun kommunisere med andre kontoer i samme protokoll.
 
-## Steg 6: Velg Protokollpart
-Velg protokollpart fra nedtrekksmenyen. Dette bestemmer hvilken del av protokollen kontoen representerer. F.eks. vil fagsystemet i dette tilfellet være en klient som skal arkivere. Dette bestemmer hvilke meldinger kontoen kan sende og hvilke meldinger den kan motta. Det bestemmer også hvilke kontoer innenfor protokoll den kan kommunisere med. F.eks. vil en klient kun kunne kommunisere med andre arkiv, ikke andre klienter.
+![Velg protokoll](/images/protokoll-brukerveiledning/3_opprett_del2.png "Velg protokoll")
 
-Etter at part er valgt, vises det hvilke meldinger som kan sendes og mottas, og hvilke parter kontoen kan kommunisere med.
+## Steg 6: Velg protokollpart
 
-![fiks protokoll](/images/protokoll-brukerveiledning/3_opprett_del3.png "Velg protokollpart")
+Velg protokollpart fra nedtrekksmenyen. Parten bestemmer hvilken rolle kontoen har i protokollen — for eksempel et fagsystem som skal arkivere. Den avgjør hvilke meldinger kontoen kan sende og motta, og hvilke andre parter den kan kommunisere med. Et fagsystem kan for eksempel kommunisere med arkiv, men ikke med andre fagsystemer.
+
+Når du har valgt part, vises hvilke meldinger kontoen kan sende og motta, og hvilke parter den kan kommunisere med.
+
+![Velg protokollpart](/images/protokoll-brukerveiledning/3_opprett_del3.png "Velg protokollpart")
 
 ## Steg 7: Last opp offentlig nøkkel
-Meldinger som sendes over Fiks IO skal krypteres. Dette gjøres med et privat/offentlig-nøkkelpar. Den offentlige nøkkelen må være i form av et X509 sertifikat lagret i .pem filformat. Her laster du opp den offentlige nøkkelen, den private legges inn i Fiks IO-klienten. 
 
-NB! Du kan ikke opprette konto uten offentlig nøkkel. Dette er ikke det samme som virksomhetssertifikatet som ble brukt ved opprettelse av system. Du vil typisk generere et unikt par per konto (i test kan det hende samme par blir gjenbrukt på flere kontoer).
+Meldinger som sendes over Fiks IO krypteres med et offentlig/privat nøkkelpar. Den offentlige nøkkelen må være et X.509-sertifikat i `.pem`-format. Her laster du opp den offentlige nøkkelen — den private legger du senere inn i Fiks IO-klienten.
 
-![fiks protokoll](/images/protokoll-brukerveiledning/3_opprett_del4.png "Last opp nøkkdel")
+{{% notice style="warning" title="Ikke samme som virksomhetssertifikatet" %}}
+Du kan ikke opprette en konto uten offentlig nøkkel. Dette nøkkelparet er **ikke** det samme som virksomhetssertifikatet som ble brukt da systemet ble opprettet. Du oppretter normalt et eget nøkkelpar per konto. I test kan samme nøkkelpar gjenbrukes på flere kontoer.
+{{% /notice %}}
+
+![Last opp offentlig nøkkel](/images/protokoll-brukerveiledning/3_opprett_del4.png "Last opp nøkkel")
 
 ## Steg 8: Opprett konto
-Etter at nøkkelen er lastet opp, trykker du på "Opprett konto" for å opprette kontoen.
 
-![fiks protokoll](/images/protokoll-brukerveiledning/3_opprett_del5.png "Opprett konto")
+Når nøkkelen er lastet opp, trykker du på **Opprett konto**.
+
+![Opprett konto](/images/protokoll-brukerveiledning/3_opprett_del5.png "Opprett konto")
 
 ## Steg 9: Konto opprettet
-Da er kontoen opprettet. Konto-id er IDen som Fiks IO trenger for å sende og motta meldinger med kontoen. 
 
-For å begynne å sende meldinger må systemet fått tilgang til en konto i et annet system. 
-![fiks protokoll](/images/protokoll-brukerveiledning/3_opprettet_ferdig.png "Konto opprettet")
+Kontoen er opprettet. **Konto-id** er identifikatoren Fiks IO bruker for å sende og motta meldinger med kontoen.
 
-Når man har opprettet kontoen så vil man se en advarsel som sier at det finnes x antall kontoer som ikke har kobling.
-Dette betyr at den kontoen du akkurat har laget ikke enda har noe system "bak" som lytter til meldinger, som er helt naturlig da man nettopp har laget kontoen.
-Når systemet "bak" har fått detaljene for kontoen (integrasjonsid, passord og kontoid) og systemet har fått koblet seg opp, så vil denne advarselen forsvinne.
+For å begynne å sende meldinger må systemet ditt få tilgang til en konto i et annet system — se [Gi og få tilgang]({{< ref "5-gi-tilgang.md" >}}).
 
-Advarselen vil dukke opp igjen hvis systemet "bak" mister koblingen av en eller annen grunn.
+![Konto opprettet](/images/protokoll-brukerveiledning/3_opprettet_ferdig.png "Konto opprettet")
 
-![fiks protokoll](/images/protokoll-brukerveiledning/3_opprettet_ferdig_advarsel.png "Konto opprettet - advarsel")
+{{% notice style="note" title="«Konto uten kobling»-advarsel" %}}
+Etter at kontoen er opprettet ser du en advarsel om at det finnes kontoer uten kobling. Dette betyr at den nye kontoen ennå ikke har et fagsystem (en klient) som lytter på meldinger — helt naturlig rett etter opprettelse. Advarselen forsvinner når klienten er [koblet til]({{< ref "8-koble-til-klienten.md" >}}). Den dukker opp igjen hvis klienten mister koblingen. Se [Feilsøking]({{< ref "/Tjenester/fiksprotokoll/feilsoking.md" >}}).
+{{% /notice %}}
+
+![Konto opprettet – advarsel](/images/protokoll-brukerveiledning/3_opprettet_ferdig_advarsel.png "Konto opprettet - advarsel")
+
+## Neste steg
+
+[Gi og få tilgang]({{< ref "5-gi-tilgang.md" >}}).
+
+{{< get-help email="fiks@ksdigital.no" support_page="/felles/support/" >}}

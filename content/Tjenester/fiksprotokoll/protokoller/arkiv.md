@@ -31,7 +31,7 @@ For brukerhistorier fra arbeidet som ble gjort ved kartleggingen av protokollen,
 
 Hver melding består av en zip fil ASIC-E som inneholder f.eks. `arkivmelding.xml` eller `sok.xml` og tilhørende vedlegg som er definert i xml filen. 
 Hver melding kan ikke overskride 5GB. Meldingene skal også ha et sett med headere som blandt annet viser hvem som er avsender, mottaker, om det er et svar på en annen melding osv.
-Headerene er definert under Fiks-IO og man kan lese mer om de [her](https://ks-no.github.io/fiks-plattform/tjenester/fiksprotokoll/fiksio/#headere)
+Headerene er definert under Fiks-IO og man kan lese mer om de [her]({{< ref "/Tjenester/fiksprotokoll/fiksio.md" >}}#headere-og-properties-i-meldingsutvekslingen)
 
 ### Meldingsformat og skjema
 For mer informasjon rundt meldingsformatet **arkivmelding** kan man lese om definisjonen [her](https://docs.digdir.no/eformidling_nm_arkivmeldingen.html) hos Digdir.
@@ -75,7 +75,7 @@ Dette er en nuget-pakke for "forenklet arkivering", `KS.Fiks.Arkiv.Forenklet.Ark
 **Fiks-IO klient**
 
 Dette er en klient som forenkler autentisering, lytting til nye meldinger, sending av meldinger og svar på innkommende meldinger. Fiks-IO klienten forenkler meldingsutvekslingen blant annet også ved å sette korrekte headere i Fiks-IO meldingen, som f.eks. `svar-til` headeren når man svarer på en melding.
-Les mer om Fiks-IO og headerene [her](https://ks-no.github.io/fiks-plattform/tjenester/fiksprotokoll/fiksio/#headere)
+Les mer om Fiks-IO og headerene [her]({{< ref "/Tjenester/fiksprotokoll/fiksio.md" >}}#headere-og-properties-i-meldingsutvekslingen)
 
 **Fiks-IO send klient**
 
@@ -108,7 +108,7 @@ Modulen [`fiks-arkiv-forenklet-arkivering`](https://search.maven.org/artifact/no
 **Fiks-IO klient**
 
 Dette er en klient som forenkler autentisering, lytting til nye meldinger, sending av meldinger og svar på innkommende meldinger. Fiks-IO klienten forenkler meldingsutvekslingen blant annet også ved å sette korrekte headere i Fiks-IO meldingen, som f.eks. `svar-til` headeren når man svarer på en melding.
-Les mer om Fiks-IO og headerene [her](https://ks-no.github.io/fiks-plattform/tjenester/fiksprotokoll/fiksio/#headere)
+Les mer om Fiks-IO og headerene [her]({{< ref "/Tjenester/fiksprotokoll/fiksio.md" >}}#headere-og-properties-i-meldingsutvekslingen)
 
 **Fiks-IO send klient**
 
@@ -145,7 +145,7 @@ Avsender må da velge om man skal gjøre nytt forsøk på å sende melding.
 Når man sender en melding til Fiks IO så vil meldingen få en unik id hver gang.
 Dermed kan det i noen tilfeller kanskje være vanskelig for mottaker å vite at dette er en melding som sendes på nytt.
 
-Dette løses ved at meldinger til Fiks IO kan gis en header id med navnet **klientMeldingId** (les mer om headere [her](https://developers.fiks.ks.no/fiks-plattform/tjenester/fiksprotokoll/fiksio/#headere)) for å markere at det er en unik melding fra avsender, som man kan gjenbrukes ved nytt forsøk.
+Dette løses ved at meldinger til Fiks IO kan gis en header id med navnet **klientMeldingId** (les mer om headere [her]({{< ref "/Tjenester/fiksprotokoll/fiksio.md" >}}#headere-og-properties-i-meldingsutvekslingen)) for å markere at det er en unik melding fra avsender, som man kan gjenbrukes ved nytt forsøk.
 Mottaker kan da sende mottatt og kvittering på nytt.
 
 Det kan være lurt at man tar med seg noen kjøreregler for sending og retry av meldinger:
@@ -161,14 +161,14 @@ Når en melding er mottatt skal mottaker persistere meldingen og sende `ack` til
 En `ack` melding må ikke forveksles med `mottatt`meldingene som sendes tilbake i noen tilfeller. En `mottatt`melding er en melding tilbake til avsender, en `ack`melding er **kun** en beskjed tilbake til køen om å fjerne meldingen.
 
 Hvis `ack` for en melding uteblir vil meldingen bli værende på køen inntil den er blitt hentet 3 ganger uten å få en `ack` tilbake. Da vil Fiks-IO sende en `no.ks.fiks.kvittering.serverfeil.v1` melding tilbake til avsender. Med andre ord er det viktig at man sender `ack` når man har hentet en melding.
-Les mer om dette i Fiks-IO dokumentasjonen [her](https://developers.fiks.ks.no/fiks-plattform/tjenester/fiksprotokoll/fiksio/#serverfeil). 
+Les mer om dette i Fiks-IO dokumentasjonen [her]({{< ref "/Tjenester/fiksprotokoll/fiksio.md" >}}#serverfeil). 
 
 OBS: Dette erstatter tidligere TTL-håndtering på Fiks-IO køene. Det vil ikke lenger sendes noen `tidsavbrudd` meldinger basert på TTL. 
 
 ### Meldingsutveksling og headere
-For at meldingsutvekslingen skal bli korrekt settes det [headere](https://developers.fiks.ks.no/fiks-plattform/tjenester/fiksprotokoll/fiksio/#headere) på meldingen. Bruker man en av Fiks-IO klientene fra KS vil man stort sett ikke trenge å gjøre noe med dette da klienten gjør det meste for deg. Dette er f.eks. `avsender-id` for å identifisere avsender, `avsender-navn` og `type` som er meldingstypen. 
+For at meldingsutvekslingen skal bli korrekt settes det [headere]({{< ref "/Tjenester/fiksprotokoll/fiksio.md" >}}#headere-og-properties-i-meldingsutvekslingen) på meldingen. Bruker man en av Fiks-IO klientene fra KS vil man stort sett ikke trenge å gjøre noe med dette da klienten gjør det meste for deg. Dette er f.eks. `avsender-id` for å identifisere avsender, `avsender-navn` og `type` som er meldingstypen. 
 Når man sender en melding vil man få tilbake fra Fiks-IO en generert `melding-id`. Denne id følger med i header på meldingen som mottaker så setter inn i sitt eventuelle svar på meldingen i headeren `svar-til` slik at avsender av første melding ser at dette er et svar på sin opprinnelige melding.
-Dette vil Fiks-IO klienten fra KS gjøre for deg hvis man bruker `.Svar()` funksjonaliteten. Men i noen tilfeller vil det kanskje være aktuelt å gå utenfor denne funksjonaliteten og man må da sørge for at disse headerene blir korrekt selv. Les mer om headerene [her](https://developers.fiks.ks.no/fiks-plattform/tjenester/fiksprotokoll/fiksio/#headere).
+Dette vil Fiks-IO klienten fra KS gjøre for deg hvis man bruker `.Svar()` funksjonaliteten. Men i noen tilfeller vil det kanskje være aktuelt å gå utenfor denne funksjonaliteten og man må da sørge for at disse headerene blir korrekt selv. Les mer om headerene [her]({{< ref "/Tjenester/fiksprotokoll/fiksio.md" >}}#headere-og-properties-i-meldingsutvekslingen).
 
 ## Arkivering
 

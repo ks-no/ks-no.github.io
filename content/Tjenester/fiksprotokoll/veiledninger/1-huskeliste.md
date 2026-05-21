@@ -1,70 +1,51 @@
 ---
-title: Veiledning 1 - Huskeliste før man starter å sette opp protokoll
-date: 2022-09-23
+title: Før du starter
+date: 2026-05-20
 weight: 1
 aliases:
   - /tjenester/fiksprotokoll/veiledning_1_huskeliste_for_opprette_protokoll/
   - /fiks-plattform/tjenester/fiksprotokoll/brukerveiledning/huskeliste/
 ---
 
-## Hvorfor
+**Sjekkliste over hva og hvem du må ha klart før du setter opp Fiks Protokoll.**
 
-Før man begynner på arbeidet med å sette opp Fiks Protokoll er det lurt å sjekke at man har alt man trenger og personer med riktig tilgang tilgjengelig.
+Oppsettet av Fiks Protokoll involverer flere personer, roller, sertifikater og nøkler. Får du alt på plass i forkant, kan du følge veiledningene 2–6 uten å stoppe opp underveis.
 
-## Personer
+## Personer og roller
 
-### Person fra kunden
-Det må være en person fra kundeorganisasjonen (kommunen) som skal opprette protokoll system/konto, og som da kan logge seg på Fiks forvaltning og gjøre minstekravet for oppsett.
-Minstekravet for oppsettet er å få opprettet et *"system"* hvis leverandør(ene) setter opp resten via API. Se mer om dette lenger nede.
+Oppsettet krever som regel både en person fra kundeorganisasjonen (kommunen) og en eller flere fra leverandøren.
 
-Person fra kundeorganisasjon må da på forhånd ha registrert brukerkonto på Fiks plattformen slik at det kun er å logge inn.
+### Person fra kundeorganisasjonen
 
-Denne personen må også ha rettighet og tilgang til å:
-* Signere avtale for bruk av Fiks protokoll hvis ikke dette er gjort tidligere
-* Tilgang til Fiks protokoll som tjeneste i Fiks Forvaltning. 
+Dette er personen som tar tjenesten i bruk og som minst oppretter protokollsystemet. Personen må ha:
 
-### Person(er) fra leverandør/tjenestetilbyder
-Det bør være en person for hver leverandør/tjenestetilbyder som kan hjelpe til med eventuelle mangler og som har tilgang til ressurser som trengs.
-Se huskelisten lenger nede for hvilke ressurser det gjelder. 
+- En registrert brukerkonto på Fiks-plattformen (innlogging via ID-porten).
+- Rett til å signere avtale om bruk av Fiks Protokoll på vegne av organisasjonen — eventuelt at avtalen allerede er signert.
+- Tilgang til Fiks Protokoll som tjeneste i Fiks Forvaltning.
 
-## Huskeliste
+Hvis leverandøren setter opp resten via API, holder det at kundepersonen oppretter selve protokollsystemet.
 
-### 1. Maskinporten
-Leverandør(ene) skal ha satt opp integrasjon med Maskinporten på forhånd. 
-Her kan man velge å enten bruke leverandøren sitt organisasjonsnummer med leverandørens virksomhetssertifikat, eller kunden (kommunen) sitt organisasjonsnummer med kundens virksomhetssertifikat. 
-Det samme organsiasjonsnummeret som man velger å bruke **må** brukes i oppsett av *"system"* i FIKS forvaltning. Se mer om dette i punkt 3.
+### Person(er) fra leverandør
 
- [Se veiledning Maskinporten her]({{< ref "/Felles/difiIdportenKlient.md" >}})
+Det bør være én kontaktperson per leverandør som kan skaffe sertifikater, nøkler og avklaringer underveis. Se punktene nedenfor for hva leverandøren må stille med.
 
-### 2. Avtale om å bruke Fiks Protokoll
-Person fra kundeorganisasjon oppretter avtale om bruk av Fiks protokoll hvis ikke dette er gjort tidligere.
+## Teknisk sjekkliste
 
-### 3. Opprette *"system"* under Fiks Protokoll
-Person fra kundeorganisasjon oppretter *"system"* og bruker det samme organisasjonsnummeret som ble brukt i maskinporten integrasjonen og i det tilhørende virksomhetssertifikatet  (se punkt 1). Dette organisasjonsnummeret må man ha klart til oppsett.
-*"Systemet*" blir da et system for leverandøren som kan inneholder protokoll-kontoer for flere forskjellige protokoller. 
+Ha følgende klart før du begynner:
 
-Et godt valg av navn på *"system"* er leverandørens navn pluss eventuelt leverandørens navn på applikasjon, eller internt navn i organisasjonen på systemet. 
-Da er det lett å kjenne igjen og forstå hva det er i listen over systemer man etter hvert kan få.
+- [ ] **Virksomhetssertifikat** fra Buypass eller Commfides — ett for test og ett for produksjon.
+- [ ] **Maskinporten-klient** satt opp på forhånd. Se [veiledning for Maskinporten]({{< ref "/Felles/difiIdportenKlient.md" >}}).
+- [ ] **Avklart organisasjonsnummer.** Samme organisasjonsnummer **må** brukes i virksomhetssertifikatet, i Maskinporten-klienten og i protokollsystemet. Dette kan være enten leverandørens eller kommunens organisasjonsnummer — avklar hvilket før du starter.
+- [ ] **Valgt protokoll og part.** Avklar hvilken protokoll (f.eks. `no.ks.fiks.arkiv.v1`) og hvilken part i protokollen systemet ditt skal være. Se [Protokoller]({{< ref "/Tjenester/fiksprotokoll/protokoller" >}}).
+- [ ] **Offentlig/privat nøkkelpar** generert. Den offentlige nøkkelen må være et X.509-sertifikat i `.pem`-format, og lastes opp når du oppretter kontoen. Den private nøkkelen legges senere inn i Fiks IO-klienten. Dette nøkkelparet er **ikke** det samme som virksomhetssertifikatet.
+- [ ] **Sikker delingsmetode avklart.** Når protokollsystemet er opprettet får du `integrasjonId` og `integrasjonspassord` som må deles med leverandøren på en sikker måte. Avklar hvordan på forhånd — vær oppmerksom på at mange e-postsystemer blokkerer nøkkelfiler.
 
-#### 3.1 Skal *"system"* støtte API?
-Leverandør(ene) må ha avklart på forhånd om *"systemet"* som settes opp for dem skal støtte å bruke API. Dette er et valg man må gjøre under oppsett av *"system"*. 
+## Det skal to til
 
-### 4. Dele integrasjonsid og passord
-Når *"system*" er opprettet skal integrasjonsid og integrasjonspassord som man får i oppsettet deles med leverandøren på en sikker måte. Hvordan dette kan deles på en sikker måte bør man ha klarert på forhånd.
+Fiks Protokoll er en topartskommunikasjon. For å faktisk utveksle meldinger må det finnes et **motpart-system** med en konto i samme protokoll — for eksempel et arkiv hvis du setter opp et fagsystem. Du kan gjøre steg 2–4 alene, men [Gi og få tilgang]({{< ref "5-gi-tilgang.md" >}}) forutsetter at motparten finnes.
 
-Hvis leverandør skal bruke API for resten av oppsett er man ferdig, hvis ikke se videre i huskelisten
+## Neste steg
 
-### 5. Gyldig generert public key
-Når man setter opp en *"protokoll-konto"* i forvaltningssidene  må leverandøren ha gjort klar en public-key som man har generert på forhånd i form av et X509 sertifikat lagret i .pem filformat.
-Dette må personen fra kundeorganisasjon ha fått slik at man kan laste det opp i forvaltningssidene. 
-Vi anbefaler at leverandøren deler filen slik at den kan lastes ned.
+Når sjekklisten er i orden: [Ta i bruk tjenesten]({{< ref "2-ta-i-bruk.md" >}}).
 
-**Husk:** Ikke alle e-post kontoer godtar filformatene for public-key og deling via e-post anbefales dermed ikke.
-
-
-### 6. Valg av protokoll og part
-Leverandør(ene) har klart hvilken protokoll og hvilken *"part*" sin side skal være i kommunikasjonen
-
-### 7. Gi tilgang
-Man må huske å gi tilganger mellom kontoene. Det enkleste er å gjøre det fra "tjener" siden, søke opp og gi tilgang til "klient" kontoen slik at "klient" konto kan sende meldinger til "tjener" kontoen.
-Alternativt kan man søke opp "tjener" kontoen man ønsker å sende meldinger til fra "klient" siden, og så be om å få tilgang. Men da må man inn på "tjener" siden igjen og bekrefte tilgangsforespørselen.
+{{< get-help email="fiks@ksdigital.no" support_page="/felles/support/" >}}
