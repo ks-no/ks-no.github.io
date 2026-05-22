@@ -2,6 +2,16 @@
 
 Se tempalte for tjeneste dokumentasjon under docs
 
+## Submoduler
+
+`themes/hugo-theme-relearn` er en git submodul. Initialiser/oppdater den med:
+
+```sh
+git submodule update --init --recursive
+```
+
+## Bygge lokalt
+
 For å bygge lokalt 
 `./hugo.sh --cleanDestinationDir`
 
