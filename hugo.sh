@@ -5,8 +5,8 @@
 #   ./hugo.sh               - build site
 #   ./hugo.sh <any args>    - passed directly to hugo
 
-HUGO_VERSION="0.146.0"
-IMAGE="hugomods/hugo:exts-${HUGO_VERSION}"
+HUGO_VERSION="v0.161.1"
+IMAGE="ghcr.io/gohugoio/hugo:${HUGO_VERSION}"
 
 # Use -it only if running in a terminal
 TTY_FLAG=""
@@ -22,7 +22,7 @@ fi
 
 docker run --rm $TTY_FLAG \
   --user "$(id -u):$(id -g)" \
-  -v "$(pwd):/src" \
+  -v "$(pwd):/project" \
   -p 1313:1313 \
   "$IMAGE" \
-  hugo "$@" $EXTRA_ARGS
+  "$@" $EXTRA_ARGS
