@@ -14,9 +14,9 @@ Et **protokollsystem** representerer et system som skal sende og motta meldinger
 
 **Fiks IO** er transportkanalen — den sørger for sikker, asynkron maskin-til-maskin-meldingsutveksling. **Fiks Protokoll** legger et lag oppå med versjonerte protokoller som definerer gyldige meldingstyper og parter, og med tilgangsstyring og validering. Når du oppretter en protokollkonto, opprettes det samtidig en Fiks IO-konto «under». Se [Fiks IO]({{% ref "fiksio.md" %}}).
 
-### Hvem gjør hva — kommunen eller leverandøren?
+### Hvem gjør hva — kundeorganisasjonen eller leverandøren?
 
-En person fra kundeorganisasjonen (kommunen) tar tjenesten i bruk, signerer avtalen og oppretter minst protokollsystemet. Leverandøren stiller med sertifikater, nøkler og tekniske avklaringer. Hvis systemet settes opp for konfigurasjon via API, kan leverandøren gjøre resten av oppsettet (kontoer og tilganger) via API. Se [Før du starter]({{% ref "veiledninger/1-huskeliste.md" %}}).
+En person fra kundeorganisasjonen tar tjenesten i bruk, signerer avtalen og oppretter i det minste protokollsystemet. Leverandøren stiller med sertifikater, nøkler og tekniske avklaringer. Hvis systemet settes opp for konfigurasjon via API, kan leverandøren gjøre resten av oppsettet (kontoer og tilganger) via API. Se [Før du starter]({{% ref "veiledninger/1-huskeliste.md" %}}).
 
 ### Kan jeg gjenbruke samme nøkkelpar på flere kontoer?
 

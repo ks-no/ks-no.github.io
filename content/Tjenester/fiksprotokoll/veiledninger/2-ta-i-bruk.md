@@ -14,7 +14,7 @@ aliases:
 Det første du må gjøre for å bruke Fiks Protokoll er å signere avtalen om bruk og ta tjenesten i bruk. Dette gjøres i Fiks Forvaltning. Sjekk først at du har det du trenger klart — se [Før du starter]({{% ref "1-huskeliste.md" %}}).
 
 {{% notice style="note" title="Hvem kan gjøre dette?" %}}
-I produksjon må dette gjøres av en person med administrasjonstilgang til organisasjonen i Fiks, og signeringen må gjøres av noen som har rett til å signere avtale på vegne av kommunen. I test bruker du en testbruker som har tilgang til testorganisasjonen. Trenger du hjelp med å opprette testbruker og testorganisasjon, kontakt [fiks@ksdigital.no](mailto:fiks@ksdigital.no).
+I produksjon må dette gjøres av en person med administrasjonstilgang til organisasjonen i Fiks, og signeringen må gjøres av noen som har rett til å signere avtale på vegne av kundeorganisasjonen. I test bruker du en testbruker som har tilgang til testorganisasjonen. Trenger du hjelp med å opprette testbruker og testorganisasjon, kontakt [fiks@ksdigital.no](mailto:fiks@ksdigital.no).
 {{% /notice %}}
 
 ## Steg 1: Logg inn

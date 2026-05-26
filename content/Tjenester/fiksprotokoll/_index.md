@@ -11,7 +11,7 @@ aliases:
 
 **Tjenestegruppe for å sende asynkrone, ende-til-ende-krypterte meldinger fra maskin til maskin.**
 
-Fiks Protokoll gjør det mulig for kommunale fagsystemer å utveksle strukturerte meldinger over et sett med versjonerte protokoller. [Fiks IO]({{% ref "fiksio.md" %}}) er transportkanalen som sørger for den asynkrone maskin-til-maskin-meldingsutvekslingen.
+Fiks Protokoll gjør det mulig for fagsystemer å utveksle strukturerte meldinger over et sett med versjonerte protokoller. [Fiks IO]({{% ref "fiksio.md" %}}) er transportkanalen som sørger for den asynkrone maskin-til-maskin-meldingsutvekslingen.
 
 Fiks Protokoll støtter meldinger definert under et sett med protokoller. Protokollene er versjonert, og nye protokoller er under utvikling. Fiks Protokoll validerer at det kun er gyldige meldingstyper som sendes for de ulike protokollene. Den kan også validere at det kun kan sendes meldinger mellom avsender- og mottakersystem som er forhåndsgodkjent av systemadministratorene.
 
@@ -23,7 +23,7 @@ Fiks Protokoll er designet kun for meldingsutveksling som dekker «daglig overf�
 
 Fiks Protokoll settes opp og brukes av tre roller:
 
-* **Kommunen (IT-ansvarlig og administrator i Fiks-organisasjonen)** – tar tjenesten i bruk, signerer avtalen og setter opp system, kontoer og tilganger i Fiks Forvaltning. Å ta tjenesten i bruk og signere avtalen krever administratortilgang i Fiks-organisasjonen. Start med [Veiledninger]({{% ref "veiledninger" %}}).
+* **Kundeorganisasjonen (IT-ansvarlig og administrator i Fiks-organisasjonen)** – tar tjenesten i bruk, signerer avtalen og setter opp system, kontoer og tilganger i Fiks Forvaltning. Å ta tjenesten i bruk og signere avtalen krever administratortilgang i Fiks-organisasjonen. Start med [Veiledninger]({{% ref "veiledninger" %}}).
 * **Fagsystem (utvikler)** – bygger klienten som sender forespørsler og mottar svar og kvitteringer.
 * **Arkivsystem (utvikler)** – bygger klienten som mottar forespørsler og sender kvitteringer tilbake.
 
@@ -32,7 +32,7 @@ Begge utviklerrollene må følge [Beste praksis for meldingshåndtering]({{% ref
 ## Innhold
 
 * **[Veiledninger]({{% ref "veiledninger" %}})** – steg-for-steg-guider for å komme i gang og vedlikeholde Fiks Protokoll i Fiks Forvaltning
-* **[Beste praksis for meldingshåndtering]({{% ref "meldingshandtering.md" %}})** – hvordan en klient håndterer asynkron meldingsutveksling riktig
+* **[Beste praksis for meldingshåndtering]({{% ref "meldingshandtering.md" %}})** – hvordan en klient korrekt håndterer asynkron meldingsutveksling
 * **[Protokoller]({{% ref "protokoller" %}})** – oversikt og status for de ulike protokollene (Arkiv, Plan, Matrikkelføring, Barnevern, Link, Saksfaser)
 * **[Tilgangsstyring]({{% ref "tilgangsstyring.md" %}})** – hvordan gi og be om tilgang mellom systemer (forvaltning og API)
 * **[Konfigurere systemet via API]({{% ref "konfigurasjon-api.md" %}})** – anbefalt fremgangsmåte for leverandører som automatiserer oppsettet
@@ -59,7 +59,7 @@ Via [Fiks Protokoll API (OpenAPI Specification)](https://editor-next.swagger.io/
 - Hente informasjon om protokoll og parter for konto
 - Oppdatere konto med nøkler, parter osv.
 
-Fiks IO Katalog API er en oppslagstjeneste som brukes for å hente offentlig nøkkel og informasjon om en konto. Via [Fiks IO Katalog API (OpenAPI Specification)](https://editor-next.swagger.io/?url=https://developers.fiks.ks.no/api/fiksio-katalog-api-v1.json) kan man bl.a.:
+Fiks IO Katalog API er en oppslagstjeneste som brukes for å hente offentlig nøkkel og informasjon om hvilken som helst konto. Via [Fiks IO Katalog API (OpenAPI Specification)](https://editor-next.swagger.io/?url=https://developers.fiks.ks.no/api/fiksio-katalog-api-v1.json) kan man bl.a.:
 
 - Hente offentlig nøkkel for konto
 - Hente kontoinformasjon, f.eks. status med antall konsumenter på køen

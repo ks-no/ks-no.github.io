@@ -11,7 +11,7 @@ aliases:
 
 **Slik oppretter du et protokollsystem for fagsystemet eller arkivet ditt.**
 
-For å bruke Fiks Protokoll må du opprette et protokollsystem. Hvert system i kommunen som skal bruke Fiks Protokoll — for eksempel et fagsystem eller et arkiv — trenger sitt eget protokollsystem.
+For å bruke Fiks Protokoll må du opprette et protokollsystem. Hvert system i kundeorganisasjonen som skal bruke Fiks Protokoll — for eksempel et fagsystem eller et arkiv — trenger sitt eget protokollsystem.
 
 Logg inn på [forvaltning.fiks.ks.no](https://forvaltning.fiks.ks.no) ([forvaltning.fiks.test.ks.no](https://forvaltning.fiks.test.ks.no) for testmiljøet) og gå til **Konfigurasjon**.
 
@@ -41,7 +41,7 @@ Trykk **Neste**.
 
 ## Steg 4: Sett opp integrasjon
 
-For å sende og motta meldinger gjennom Fiks Protokoll kreves en integrasjon. Integrasjonen autentiseres via Maskinporten, der et virksomhetssertifikat identifiserer eieren. Virksomhetssertifikatet hører til et organisasjonsnummer som må fylles ut her. I produksjon varierer det om dette er kommunens eller leverandørens virksomhetssertifikat — se [Før du starter]({{% ref "1-huskeliste.md" %}}).
+For å sende og motta meldinger gjennom Fiks Protokoll kreves en integrasjon. Integrasjonen autentiseres via Maskinporten, der et virksomhetssertifikat identifiserer eieren. Virksomhetssertifikatet hører til et organisasjonsnummer som må fylles ut her. I produksjon varierer det om dette er kundeorganisasjonens eller leverandørens virksomhetssertifikat — se [Før du starter]({{% ref "1-huskeliste.md" %}}).
 
 {{% notice style="warning" title="Riktig organisasjonsnummer" %}}
 Du kan ikke bruke Fiks Protokoll i test uten et virksomhetssertifikat. Organisasjonsnummeret du oppgir her **må** være det samme som i virksomhetssertifikatet og i Maskinporten-klienten. Det er mulig å endre organisasjonsnummeret senere hvis du velger feil. Se [veiledning for Maskinporten]({{% ref "/Felles/difiIdportenKlient.md" %}}).

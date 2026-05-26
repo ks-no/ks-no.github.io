@@ -8,9 +8,9 @@ weight: 35
 
 ## Arbeidsdeling: GUI én gang, API resten
 
-Å opprette selve protokollsystemet kan **kun** gjøres av en kommunal ansatt eller administrator i Fiks-organisasjonen, i Fiks Forvaltning. Når systemet opprettes, er **API-konfigurasjon aktivert som standard**.
+Å opprette selve protokollsystemet kan **kun** gjøres av en administrator i kundens Fiks-organisasjon, i Fiks Forvaltning. Når systemet opprettes, er **API-konfigurasjon aktivert som standard**.
 
-Alt det videre oppsettet kan — og bør — leverandøren gjøre via Konfigurasjons-API-et i stedet for webgrensesnittet. Da slipper leverandøren manuell klikking i GUI for hver konto, og oppsettet blir enkelt å gjenta — for eksempel for nye kommuner eller i testmiljøet.
+Alt det videre oppsettet kan — og bør — leverandøren gjøre via Konfigurasjons-API-et i stedet for webgrensesnittet. Da slipper leverandøren manuell klikking i GUI for hver konto, og oppsettet blir enkelt å gjenta — for eksempel for nye kunder eller i testmiljøet.
 
 | Person i Fiks Forvaltning | Leverandøren via API |
 |---|---|

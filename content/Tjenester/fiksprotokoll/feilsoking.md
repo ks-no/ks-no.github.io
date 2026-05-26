@@ -57,7 +57,7 @@ Finn symptomet som passer, og følg løsningen. Får du ikke løst problemet, ta
 **Løsning:**
 
 - Innlogging skjer via ID-porten. I produksjon må brukeren ha administrasjonstilgang til organisasjonen i Fiks.
-- Signering må gjøres av noen som har rett til å signere avtale på vegne av kommunen.
+- Signering må gjøres av noen som har rett til å signere avtale på vegne av kundeorganisasjonen.
 - I test trenger du en testbruker med tilgang til testorganisasjonen — kontakt [fiks@ksdigital.no](mailto:fiks@ksdigital.no) for hjelp.
 
 ### Kryptering eller dekryptering feiler

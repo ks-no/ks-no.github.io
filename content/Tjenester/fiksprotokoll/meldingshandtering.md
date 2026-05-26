@@ -4,7 +4,7 @@ date: 2026-05-21
 weight: 15
 ---
 
-**Slik håndterer en klient asynkron meldingsutveksling i Fiks Protokoll riktig — hold tilkoblingen åpen, og bekreft hver melding med `ack()`.**
+**Slik håndterer en klient korrekt asynkron meldingsutveksling i Fiks Protokoll — hold tilkoblingen åpen, og bekreft hver melding med `ack()`.**
 
 Fiks Protokoll er asynkron og kø-basert. Den vanligste feilen hos nye integrasjoner er at klienten ikke konsumerer meldinger riktig: meldinger blir liggende, leveres på nytt, havner i dead-letter-køen og går ut på tid. Denne siden samler reglene som gjelder **alle protokoller** og **all meldingsutveksling** over Fiks Protokoll.
 
