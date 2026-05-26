@@ -24,7 +24,7 @@ Fiks IO tilbyr:
 
 * _Rask leveranse_: ved hjelp av kø-basert arkitektur ([AMQP)](https://en.wikipedia.org/wiki/Advanced_Message_Queuing_Protocol)  kan Fiks IO levere meldinger raskt, stort sett på under ett sekund plus eventuelt overføring av data. Dette oppnås ved at meldinger nå sendes til det mottakende fagsystemet i det øyeblikket de ankommer (push), i stedet for at fagsystemet må hente meldingen (pull).
 * _Svar på melding_: Fiks IO lar en mottaker svare på en spesifikk melding, f.eks. for å svare på en spørring eller å bekrefte at en forespurt handling er utført.
-* _Sikker kommunikasjon med ende-til-ende kryptering_: Fiks IO tilbyr ende-til-ende kryptering av meldinger. Merk at dette ikke gjelder alle bruks-scenarioer, se "Sikkerhet" for detaljer.
+* _Sikker kommunikasjon med ende-til-ende kryptering_: Fiks IO tilbyr ende-til-ende kryptering av meldinger. Merk at dette ikke gjelder alle bruks-scenarioer, se [Sikkerhet](#sikkerhet) for detaljer.
 * _Sikker identifisering av avsender_: Bruk av standard for kryptografisk signatur [(ASiC-E)](https://github.com/difi/asic) for meldinger gjør at man kan være sikker på identiteten til avsender.
 * _Levetid på meldinger_: En melding har en default levetid på 7 dager med mindre avsender setter det selv. Minste TTL (se mer om dette lenger nede) man kan sette er 1 sekund.
 * _Sending av store filer_: Fiks IO integrerer mot [Fiks Dokumentlager]({{% ref "/Tjenester/dokumentlager.md" %}}) for å støtte sending av store filer, helt opp til dokumentlagers grense på fem gigabyte.
@@ -47,8 +47,13 @@ Hovedsakelig bør man benytte svarut/svarinn for "post": meldinger hvor payload 
 #### Er dette en maskin-til-maskin integrasjon? 
 Benytt Fiks IO, denne leverer utelukkende til spesifisert mottakerkonto og benytter ingen alternative kanaler, som for eksempel printet post.
 
-#### Skal meldingen sikres gjennom ende-til-ende kryptering? 
-Benytt Fiks IO, SvarUt/SvarInn meldinger kan bare krypteres med Fiks-plattformens nøkkel, ikke mottakers. Se "Sikkerhet" for detaljer om hvordan man oppnår trygg ende-til-ende kryptering gjennom Fiks IO
+#### Skal meldingen sikres gjennom ende-til-ende-kryptering?
+Benytt Fiks IO. Begge kanalene krypterer payloaden, men med ulik nøkkel:
+
+- **Fiks IO** (og dermed Fiks Protokoll, som går over Fiks IO) krypterer med **mottakerens offentlige nøkkel**. Kun mottakeren har den private nøkkelen og kan dekryptere — ekte ende-til-ende.
+- **SvarUt/SvarInn** krypterer med **Fiks-plattformens nøkkel**.
+
+Se [Sikkerhet](#sikkerhet) for detaljer om hvordan man oppnår trygg ende-til-ende-kryptering gjennom Fiks IO.
 
 #### Trenger man rask levering? 
 Benytt Fiks IO for å få leveranse på sekunder, ved bruk av SvarUt/SvarInn kan levering ta lang tid, siden SvarUt prøver flere kanaler etter tur og defaulter til print ved leveranseproblemer.
@@ -92,7 +97,7 @@ Adresser opprettes og forvaltes gjennom Fiks Forvaltning. Katalogen gir også mu
 
 Fiks Organisasjoner kan gjøre oppslag i registrerte adresser gjennom [katalog-api'et](https://editor-next.swagger.io/?url=https://developers.fiks.ks.no/api/fiksio-katalog-api-v1.json). 
 
-Merk at bruk av dette api'et i stede for manuell innhenting av sertifikater kan gi noe redusert sikkerhet. Se "Sikkerhet" for detaljer.
+Merk at bruk av dette api'et i stede for manuell innhenting av sertifikater kan gi noe redusert sikkerhet. Se [Sikkerhet](#sikkerhet) for detaljer.
 
 ### Protokollkatalogen
 Som nevnt over har Fiks IO i utgangspunktet ingen formening om hva innholdet i en melding er, men det er i mange integrasjon-scenarioer nyttig å ha et felles repository med kontrakter for hvordan meldinger skal bygges opp. Protokollkatalogen tilbyr en slik oversikt, og man kan her referere til spesifikasjoner for meldingstypene som inngår i protokollen, og hvordan disse skal benyttes. 
