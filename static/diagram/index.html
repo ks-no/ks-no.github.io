@@ -554,13 +554,17 @@
     let panZoomInstance = null;
 
     function openDiagram(event, card) {
-      event.preventDefault();
+      if (event) event.preventDefault();
       const title = card.querySelector('.diagram-title').textContent;
       document.getElementById('modalTitle').textContent = title;
       const modal = document.getElementById('diagramModal');
       const inner = document.getElementById('modalSvgInner');
       modal.style.display = 'flex';
       document.body.style.overflow = 'hidden';
+
+      // Update URL hash so the diagram can be shared/linked
+      const rel = card.getAttribute('data-svg');
+      history.replaceState(null, '', '#' + encodeURIComponent(rel));
 
       const svgDataEl = card.querySelector('.diagram-svg-data');
       const svgText = svgDataEl ? svgDataEl.textContent : '';
@@ -602,6 +606,8 @@
       document.body.style.overflow = '';
       if (panZoomInstance) { try { panZoomInstance.destroy(); } catch(e) {} panZoomInstance = null; }
       document.getElementById('modalSvgInner').innerHTML = '';
+      // Remove hash from URL when closing
+      history.replaceState(null, '', window.location.pathname + window.location.search);
     }
 
     function resetZoom() {
@@ -615,6 +621,15 @@
     document.addEventListener('keydown', function(e) {
       if (e.key === 'Escape') closeDiagram();
     });
+
+    // On page load, open diagram from URL hash if present
+    (function() {
+      const hash = window.location.hash;
+      if (!hash) return;
+      const rel = decodeURIComponent(hash.slice(1));
+      const card = document.querySelector('.diagram-card[data-svg="' + CSS.escape(rel) + '"]');
+      if (card) openDiagram(null, card);
+    })();
   </script>
 </body>
 </html>
