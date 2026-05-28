@@ -1,7 +1,9 @@
 ---
-title: Protokoll - Fiks Link
+title: Fiks Link
 date: 2024-12-16
-aliases: []
+weight: 50
+aliases:
+  - /tjenester/fiksprotokoll/protokoll-link/
 ---
 
 # Fiks Link - protokoll som erstatning for GI Link

@@ -1,7 +1,10 @@
 ---
-title: Protokoll - Fiks arkiv
-date: 2021-07-29
-alias: ["/fiks-plattform/tjenester/fiksprotokoll/arkiv"]
+title: Fiks Arkiv
+date: 2026-05-28
+weight: 10
+aliases:
+  - /tjenester/fiksprotokoll/protokoll-arkiv/
+  - /fiks-plattform/tjenester/fiksprotokoll/arkiv/
 ---
 
 > Tjenesten er under utvikling/testing/pilotering
@@ -28,7 +31,7 @@ For brukerhistorier fra arbeidet som ble gjort ved kartleggingen av protokollen,
 
 Hver melding består av en zip fil ASIC-E som inneholder f.eks. `arkivmelding.xml` eller `sok.xml` og tilhørende vedlegg som er definert i xml filen. 
 Hver melding kan ikke overskride 5GB. Meldingene skal også ha et sett med headere som blandt annet viser hvem som er avsender, mottaker, om det er et svar på en annen melding osv.
-Headerene er definert under Fiks-IO og man kan lese mer om de [her](https://ks-no.github.io/fiks-plattform/tjenester/fiksprotokoll/fiksio/#headere)
+Headerene er definert under Fiks-IO og man kan lese mer om de [her]({{% ref "/Tjenester/fiksprotokoll/fiksio.md" %}}#headere-og-properties-i-meldingsutvekslingen)
 
 ### Meldingsformat og skjema
 For mer informasjon rundt meldingsformatet **arkivmelding** kan man lese om definisjonen [her](https://docs.digdir.no/eformidling_nm_arkivmeldingen.html) hos Digdir.
@@ -72,7 +75,7 @@ Dette er en nuget-pakke for "forenklet arkivering", `KS.Fiks.Arkiv.Forenklet.Ark
 **Fiks-IO klient**
 
 Dette er en klient som forenkler autentisering, lytting til nye meldinger, sending av meldinger og svar på innkommende meldinger. Fiks-IO klienten forenkler meldingsutvekslingen blant annet også ved å sette korrekte headere i Fiks-IO meldingen, som f.eks. `svar-til` headeren når man svarer på en melding.
-Les mer om Fiks-IO og headerene [her](https://ks-no.github.io/fiks-plattform/tjenester/fiksprotokoll/fiksio/#headere)
+Les mer om Fiks-IO og headerene [her]({{% ref "/Tjenester/fiksprotokoll/fiksio.md" %}}#headere-og-properties-i-meldingsutvekslingen)
 
 **Fiks-IO send klient**
 
@@ -105,7 +108,7 @@ Modulen [`fiks-arkiv-forenklet-arkivering`](https://search.maven.org/artifact/no
 **Fiks-IO klient**
 
 Dette er en klient som forenkler autentisering, lytting til nye meldinger, sending av meldinger og svar på innkommende meldinger. Fiks-IO klienten forenkler meldingsutvekslingen blant annet også ved å sette korrekte headere i Fiks-IO meldingen, som f.eks. `svar-til` headeren når man svarer på en melding.
-Les mer om Fiks-IO og headerene [her](https://ks-no.github.io/fiks-plattform/tjenester/fiksprotokoll/fiksio/#headere)
+Les mer om Fiks-IO og headerene [her]({{% ref "/Tjenester/fiksprotokoll/fiksio.md" %}}#headere-og-properties-i-meldingsutvekslingen)
 
 **Fiks-IO send klient**
 
@@ -122,7 +125,7 @@ Denne kan brukes hvis man bare skal sende meldinger til Fiks-IO og ikke motta me
 
 **Fiks protokoll validator**
 
-Dette er en applikasjon, kodet i .net og Vue, og som kjører i KS sitt testmiljø. Ved å bruke applikasjonen som kjører i testmiljøet kan man teste protokollene mot sitt eget arkiv-testmiljø ved å sende ferdige meldinger med statisk XML innhold til den aktuelle FIKS-IO arkiv-kontoen. 
+Validerer flere av protokollene, inkludert Fiks Arkiv. Beskrivelse og lenker: [Protokoller → Teste protokollimplementasjonen]({{% ref "_index.md" %}}#teste-protokollimplementasjonen).
 
 **Valideringstester**
 
@@ -132,40 +135,11 @@ Disse testene kan gjennomføre flere meldingsutvekslinger og steg enn `Fiks prot
 Testene er skrevet i .net og kjøres ved at man laster ned prosjektet og kjører de lokalt. Det oppfordres til å bidra med enda flere tester.
 
 
-### Asynkrone meldinger og retry
+### Asynkron meldingshåndtering
 
-Siden denne protokollen er asynkron betyr det at man må ta forbehold om at man kanskje ikke får svar på en melding som ble sendt.
-Det kan være mange ulike årsaker til dette som f.eks. at mottaker midlertidig feilet ved persistering eller andre tekniske feil.
-Men det kan også være at mottaker faktisk har lagret arkivmelding som den skal, men det er mottat og kvitteringsmelding tilbake til avsender som aldri kom fram.
+Fiks Arkiv er asynkron. Klienten må holde en langtlevende tilkobling, lytte på køen og bekrefte hver melding med `ack()` — også ved feil. Disse reglene gjelder alle protokoller og er beskrevet samlet under [Beste praksis for meldingshåndtering]({{% ref "/Tjenester/fiksprotokoll/meldingshandtering.md" %}}), inkludert retry, idempotens med `klientMeldingId`, og hvorfor manglende `ack()` sender meldinger til dead-letter-køen.
 
-Avsender må da velge om man skal gjøre nytt forsøk på å sende melding.
-Når man sender en melding til Fiks IO så vil meldingen få en unik id hver gang.
-Dermed kan det i noen tilfeller kanskje være vanskelig for mottaker å vite at dette er en melding som sendes på nytt.
-
-Dette løses ved at meldinger til Fiks IO kan gis en header id med navnet **klientMeldingId** (les mer om headere [her](https://developers.fiks.ks.no/fiks-plattform/tjenester/fiksprotokoll/fiksio/#headere)) for å markere at det er en unik melding fra avsender, som man kan gjenbrukes ved nytt forsøk.
-Mottaker kan da sende mottatt og kvittering på nytt.
-
-Det kan være lurt at man tar med seg noen kjøreregler for sending og retry av meldinger:
-
-- Ha et maks antall forsøk på å sende meldinger på nytt
-- Ikke forsøk å sende en melding på nytt med en gang. Gi det litt tid for å ikke "plage" mottaker.
-- Bruk klientMeldingId på alle meldinger. Både ved første forsøk og retry. Dette kan gjøre det lettere å gjenkjenne duplikate meldinger hos mottaker.
-
-### Ack
-
-Når en melding er mottatt skal mottaker persistere meldingen og sende `ack` tilbake til Fiks-IO. Sending av `ack` tilbake til Fiks-IO sørger for at meldingen blir tatt bort fra køen.
-
-En `ack` melding må ikke forveksles med `mottatt`meldingene som sendes tilbake i noen tilfeller. En `mottatt`melding er en melding tilbake til avsender, en `ack`melding er **kun** en beskjed tilbake til køen om å fjerne meldingen.
-
-Hvis `ack` for en melding uteblir vil meldingen bli værende på køen inntil den er blitt hentet 3 ganger uten å få en `ack` tilbake. Da vil Fiks-IO sende en `no.ks.fiks.kvittering.serverfeil.v1` melding tilbake til avsender. Med andre ord er det viktig at man sender `ack` når man har hentet en melding.
-Les mer om dette i Fiks-IO dokumentasjonen [her](https://developers.fiks.ks.no/fiks-plattform/tjenester/fiksprotokoll/fiksio/#serverfeil). 
-
-OBS: Dette erstatter tidligere TTL-håndtering på Fiks-IO køene. Det vil ikke lenger sendes noen `tidsavbrudd` meldinger basert på TTL. 
-
-### Meldingsutveksling og headere
-For at meldingsutvekslingen skal bli korrekt settes det [headere](https://developers.fiks.ks.no/fiks-plattform/tjenester/fiksprotokoll/fiksio/#headere) på meldingen. Bruker man en av Fiks-IO klientene fra KS vil man stort sett ikke trenge å gjøre noe med dette da klienten gjør det meste for deg. Dette er f.eks. `avsender-id` for å identifisere avsender, `avsender-navn` og `type` som er meldingstypen. 
-Når man sender en melding vil man få tilbake fra Fiks-IO en generert `melding-id`. Denne id følger med i header på meldingen som mottaker så setter inn i sitt eventuelle svar på meldingen i headeren `svar-til` slik at avsender av første melding ser at dette er et svar på sin opprinnelige melding.
-Dette vil Fiks-IO klienten fra KS gjøre for deg hvis man bruker `.Svar()` funksjonaliteten. Men i noen tilfeller vil det kanskje være aktuelt å gå utenfor denne funksjonaliteten og man må da sørge for at disse headerene blir korrekt selv. Les mer om headerene [her](https://developers.fiks.ks.no/fiks-plattform/tjenester/fiksprotokoll/fiksio/#headere).
+Headerne som styrer meldingsutvekslingen (`avsender-id`, `type`, `svar-til` osv.) settes stort sett av Fiks IO-klienten fra KS når du bruker `.Svar()`-funksjonaliteten. Se [headere og properties]({{% ref "/Tjenester/fiksprotokoll/fiksio.md" %}}#headere-og-properties-i-meldingsutvekslingen).
 
 ## Arkivering
 
@@ -334,22 +308,14 @@ Ved serverfeil hos mottaker skal det sendes en `no.ks.fiks.arkiv.v1.feilmelding.
 
 For meldinger som skal hente eller oppdatere noe i arkivet vil det returneres en ikkefunnet melding tilbake.  
 
-### Fiks-io feilmelding når meldinger ikke er hentet
+### Når en melding ikke håndteres
 
-Når en melding er mottatt skal mottaker persistere meldingen og sende `ack` tilbake til Fiks-IO. Sending av `ack` tilbake til Fiks-IO sørger for at meldingen blir tatt bort fra køen.
-
-Hvis `ack` for en melding uteblir vil meldingen bli værende på køen inntil den er blitt hentet 3 ganger uten å få en `ack` tilbake. Da vil Fiks-IO sende en `no.ks.fiks.io.feilmelding.serverfeil` melding tilbake til avsender. Med andre ord er det viktig at man sender `ack` når man vellykket har hentet en melding.
-
-Dette erstatter tidligere TTL-håndtering på Fiks-IO køene. Det vil ikke lenger sendes noen `tidsavbrudd` meldinger basert på TTL.
+Bekreftes ikke en mottatt melding med `ack()`, sender Fiks IO til slutt `no.ks.fiks.kvittering.serverfeil.v1` tilbake til avsender. Se [Beste praksis for meldingshåndtering]({{% ref "/Tjenester/fiksprotokoll/meldingshandtering.md" %}}).
 
 
 ## Testing av meldingsutveksling
 
-Det er opprettet en test-applikasjon, **fiks-protokoll-validator**, som kjører i KS sitt testmiljø. Med denne kan man teste protokollene mot sitt eget arkiv-testmiljø ved å sende ferdige meldinger med statisk XML innhold til den arkivets FIKS-IO konto.
-Fiks-protokoll-validator vil validere svaret den får tilbake via Fiks-IO og gi en pekepinn på om implementasjon fungerer som det skal.
-Applikasjonen er kun tilgjengelig i KS test-miljø: [fiks-validator](https://forvaltning.fiks.test.ks.no/fiks-validator/#/)
-
-Koden for validatoren er tilgjengelig på [github](https://github.com/ks-no/fiks-protokoll-validator).
+Test implementasjonen i KS sitt testmiljø før produksjon. **Fiks Protokoll-validator** kan brukes til å teste Fiks Arkiv ved å sende ferdige meldinger til arkivets Fiks IO-konto og validere svaret. Beskrivelse og lenker finner du under [Protokoller → Teste protokollimplementasjonen]({{% ref "_index.md" %}}#teste-protokollimplementasjonen).
 
 ### Integrasjonstester
 
