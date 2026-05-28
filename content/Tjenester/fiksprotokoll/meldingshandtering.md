@@ -10,7 +10,7 @@ Fiks Protokoll er asynkron og kø-basert. Den vanligste feilen hos nye integrasj
 
 ### Hvem er dette for?
 
-Dette er for **utviklere av klienter** — både fagsystem og arkivsystem. Begge rollene både sender og mottar meldinger: et arkiv mottar forespørsler og sender kvitteringer, et fagsystem sender forespørsler og mottar `mottatt`-meldinger, kvitteringer og svar. Reglene under gjelder derfor begge.
+Dette er for **utviklere av klienter** — både fagsystem og arkivsystem. Begge rollene både sender og mottar meldinger: et arkiv mottar forespørsler og sender kvitteringer, et fagsystem sender forespørsler og mottar mottatt-meldinger, kvitteringer og svar. Reglene under gjelder derfor begge.
 
 ### Tankemodell: kø-basert og asynkront
 
@@ -33,7 +33,7 @@ Klienten må holde en **åpen, langtlevende tilkobling** og lytte kontinuerlig p
 Hver melding du mottar **må** bekreftes med `ack()` etter at du har håndtert den ferdig (typisk persistert den).
 
 - `ack()` forteller køen at meldingen er konsumert, slik at den fjernes fra køen.
-- `ack()` er **ikke** det samme som en `mottatt`-melding. En `mottatt`-melding er en protokollmelding du sender tilbake til avsender. `ack()` er kun en beskjed til køen om å fjerne meldingen. Du gjør begge deler: send eventuell `mottatt`/`kvittering` som protokollen krever, **og** `ack()` meldingen.
+- `ack()` er **ikke** det samme som en mottatt-melding. En mottatt-melding er en protokollmelding du sender tilbake til avsender. `ack()` er kun en beskjed til køen om å fjerne meldingen. Du gjør begge deler: send eventuell mottatt/kvittering som protokollen krever, **og** `ack()` meldingen.
 - Du skal `ack()`-e så snart meldingen er trygt håndtert — verken før (da kan den gå tapt ved en feil) eller aldri.
 
 ### Regel 3: Håndter feil — `ack()` og send feilmelding
@@ -43,7 +43,7 @@ Også når håndteringen **feiler**, skal du:
 1. **Sende protokollens feilmelding** tilbake til avsender — for eksempel en `...feilmelding.serverfeil` ved en intern feil, eller `...feilmelding.ugyldigforespoersel` hvis forespørselen var ugyldig. Da vet avsenderen at noe gikk galt, og hva.
 2. **`ack()`-e den innkommende meldingen** etterpå, slik at den ikke blir liggende på køen.
 
-Aldri la en melding ligge uhåndtert i håp om at den «ordner seg», og ikke bruk `nack` som standard måte å håndtere feil på. Riktig feilhåndtering er en kontrollert feilmelding tilbake — ikke en taus avvisning.
+Aldri la en melding ligge uhåndtert i håp om at den «ordner seg», og ikke bruk nack som standard måte å håndtere feil på. Riktig feilhåndtering er en kontrollert feilmelding tilbake — ikke en taus avvisning.
 
 ### Hva skjer hvis du ikke `ack()`-er?
 
@@ -53,16 +53,16 @@ Resultatet er at avsenderen tror noe er galt, meldinger går tapt, og feilen er 
 
 ### Nack og NackWithRequeue
 
-Klientene støtter også `nack` (avvis) og `NackWithRequeue` (avvis og legg tilbake på køen), men disse bør du sjelden bruke:
+Klientene støtter også nack (avvis) og `NackWithRequeue` (avvis og legg tilbake på køen), men disse bør du sjelden bruke:
 
-- **`nack`** avviser meldingen helt, og Fiks IO sender **ingen** feilmelding tilbake til avsender — avsenderen får dermed ingen beskjed om at noe gikk galt. **Ikke bruk `nack`.** Riktig håndtering av en feil er å sende protokollens feilmelding tilbake og deretter `ack()`-e meldingen.
+- **Nack** avviser meldingen helt, og Fiks IO sender **ingen** feilmelding tilbake til avsender — avsenderen får dermed ingen beskjed om at noe gikk galt. **Ikke bruk nack.** Riktig håndtering av en feil er å sende protokollens feilmelding tilbake og deretter `ack()`-e meldingen.
 - **`NackWithRequeue`** legger meldingen tilbake på køen, men dette teller som et leveringsforsøk. Gjentatt `NackWithRequeue` bruker raskt opp de tre forsøkene og sender meldingen mot DLQ.
 
 I praksis er riktig mønster nesten alltid: håndtér meldingen, send eventuell feilmelding ved feil, og `ack()`.
 
 ### Følg protokollens spesifikasjon
 
-Hver protokoll definerer sine egne meldingstyper for `mottatt`-meldinger, kvitteringer og feilmeldinger — for eksempel `no.ks.fiks.arkiv.v1.arkivering.arkivmelding.opprett.kvittering` og `no.ks.fiks.arkiv.v1.feilmelding.serverfeil`. Hvilke meldinger du skal sende tilbake, og når, er definert i protokollens spesifikasjon.
+Hver protokoll definerer sine egne meldingstyper for mottatt-meldinger, kvitteringer og feilmeldinger — for eksempel `no.ks.fiks.arkiv.v1.arkivering.arkivmelding.opprett.kvittering` og `no.ks.fiks.arkiv.v1.feilmelding.serverfeil`. Hvilke meldinger du skal sende tilbake, og når, er definert i protokollens spesifikasjon.
 
 Bruk meldingstypene og rekkefølgen protokollen din beskriver. Se [Protokoller]({{% ref "protokoller" %}}) for oversikt og lenker til hver protokolls spesifikasjon.
 
@@ -84,7 +84,7 @@ Kjøreregler for retry:
 - Sett `klientKorrelasjonsId` på den første meldingen i en dialog, og kopiér den uendret inn i alle svar. Bruker du `.Svar()`-funksjonaliteten i Fiks IO-klienten fra KS, gjøres dette automatisk — sender du svar med `.Send()`, må du kopiere den selv.
 - Ha et **maks antall** retry-forsøk, og vent litt mellom forsøkene — ikke retry umiddelbart.
 
-Mottakeren bør være idempotent: får den en melding med en `klientMeldingId` den allerede har håndtert, kan den sende `mottatt`/`kvittering` på nytt uten å utføre handlingen to ganger. Se [headere og properties]({{% ref "fiksio.md" %}}#headere-og-properties-i-meldingsutvekslingen).
+Mottakeren bør være idempotent: får den en melding med en `klientMeldingId` den allerede har håndtert, kan den sende mottatt/kvittering på nytt uten å utføre handlingen to ganger. Se [headere og properties]({{% ref "fiksio.md" %}}#headere-og-properties-i-meldingsutvekslingen).
 
 ### Overvåk tilkoblingen
 
@@ -92,7 +92,7 @@ Overvåk at klienten faktisk er koblet til og henter meldinger. Mister klienten 
 
 ### Test grundig før produksjon
 
-Både fagsystem og arkivsystem skal ha testet meldingsutvekslingen **grundig i KS sitt testmiljø** før de tas i bruk i produksjon. Bekreft at klienten holder tilkoblingen, konsumerer meldinger, `ack()`-er, og sender riktige `mottatt`-, `kvittering`- og feilmeldinger i tråd med protokollen — også for feiltilfeller.
+Både fagsystem og arkivsystem skal ha testet meldingsutvekslingen **grundig i KS sitt testmiljø** før de tas i bruk i produksjon. Bekreft at klienten holder tilkoblingen, konsumerer meldinger, `ack()`-er, og sender riktige mottatt-, kvittering- og feilmeldinger i tråd med protokollen — også for feiltilfeller.
 
 Verktøy for testing — bl.a. **Fiks Protokoll-validator**, som validerer flere av protokollene — er samlet under [Protokoller → Teste protokollimplementasjonen]({{% ref "protokoller" %}}#teste-protokollimplementasjonen).
 

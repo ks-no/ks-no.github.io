@@ -28,7 +28,7 @@ Finn symptomet som passer, og følg løsningen. Får du ikke løst problemet, ta
 
 **Løsning:** Aktivér API-konfigurasjon på systemet under fanen **Konfigurasjon** i Fiks Forvaltning. Se [Opprett system]({{% ref "veiledninger/3-opprette-system.md" %}}), steg 8.
 
-### Du får meldingstype `tidsavbrudd` tilbake
+### Du får meldingstype tidsavbrudd tilbake
 
 **Symptom:** Du mottar en melding av typen `no.ks.fiks.kvittering.tidsavbrudd`.
 
@@ -40,13 +40,13 @@ Finn symptomet som passer, og følg løsningen. Får du ikke løst problemet, ta
 - Vurdér en lengre TTL hvis mottaker kan være nede i perioder.
 - Vær oppmerksom på at TTL trigges når meldingen kommer fremst i køen — ligger det en melding med lang TTL foran, kan tidsavbrudd-meldingen komme senere enn forventet. Se [Fiks IO]({{% ref "fiksio.md" %}}#levetid-på-melding-og-ttl).
 
-### Du får meldingstype `serverfeil` tilbake
+### Du får meldingstype serverfeil tilbake
 
 **Symptom:** Du mottar en melding av typen `no.ks.fiks.kvittering.serverfeil.v1`.
 
 **Årsak:** Levering til mottaker feilet. Denne sendes etter tre mislykkede leveringsforsøk — for eksempel at mottaker hentet meldingen uten å bekrefte den (Ack), eller avviste den med `NackWithRequeue` tre ganger.
 
-**Løsning:** Kontakt mottaker for å undersøke hvorfor håndteringen feiler. Merk at protokollene også har egne `serverfeil`-meldingstyper som mottakers system kan sende kontrollert tilbake med en beskrivelse av hva som gikk galt. Se [Feilmeldinger fra Fiks IO]({{% ref "fiksio.md" %}}#feilmeldinger-fra-fiks-io).
+**Løsning:** Kontakt mottaker for å undersøke hvorfor håndteringen feiler. Merk at protokollene også har egne serverfeil-meldingstyper som mottakers system kan sende kontrollert tilbake med en beskrivelse av hva som gikk galt. Se [Feilmeldinger fra Fiks IO]({{% ref "fiksio.md" %}}#feilmeldinger-fra-fiks-io).
 
 ### Innlogging eller signering feiler
 

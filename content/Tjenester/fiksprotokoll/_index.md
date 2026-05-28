@@ -79,6 +79,6 @@ Fiks IO Katalog API er en oppslagstjeneste som brukes for å hente offentlig nø
 
 Her er en forenklet oversikt over Fiks Protokoll-arkitekturen:
 
-![Fiks Protokoll arkitektur](/Tjenester/images/fiks-protokoll-arkitektur-innsikt.png "Fiks Protokoll arkitektur oversikt")
+![Fiks Protokoll arkitektur](/tjenester/images/fiks-protokoll-arkitektur-innsikt.png "Fiks Protokoll arkitektur oversikt")
 
 {{< get-help email="fiks@ksdigital.no" support_page="/felles/support/" >}}

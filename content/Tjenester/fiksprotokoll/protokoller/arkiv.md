@@ -130,7 +130,7 @@ Validerer flere av protokollene, inkludert Fiks Arkiv. Beskrivelse og lenker: [P
 **Valideringstester**
 
 Dette prosjekter inneholder valideringstester (integrasjonstester) som tester at et arkiv som har implementert Fiks Arkiv protokollen fungerer som forventet i meldings-utvekslinger. F.eks. at arkivet kan ta i mot og lagre en ny journalpost, oppdatere journalposten, og levere den oppdaterte journalposten på en hent-melding.
-Disse testene kan gjennomføre flere meldingsutvekslinger og steg enn `Fiks protokoll validator` som kun tester å sende en melding og så sjekker svaret.
+Disse testene kan gjennomføre flere meldingsutvekslinger og steg enn **Fiks Protokoll-validator** som kun tester å sende en melding og så sjekker svaret.
 
 Testene er skrevet i .net og kjøres ved at man laster ned prosjektet og kjører de lokalt. Det oppfordres til å bidra med enda flere tester.
 

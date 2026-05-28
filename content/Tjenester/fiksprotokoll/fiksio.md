@@ -284,6 +284,6 @@ Merk at det er egentlig bare ett Fiks IO API som begge systemene bruker, men det
 
 #### Håndtering av mottatt melding
 
-Hver mottatt melding må bekreftes med `ack()`, og feil må håndteres ved å sende protokollens feilmelding tilbake. Hvordan en klient skal håndtere innkommende meldinger — `ack()`, `nack`, `NackWithRequeue`, retry og idempotens — er beskrevet samlet under [Beste praksis for meldingshåndtering]({{% ref "meldingshandtering.md" %}}).
+Hver mottatt melding må bekreftes med `ack()`, og feil må håndteres ved å sende protokollens feilmelding tilbake. Hvordan en klient skal håndtere innkommende meldinger — `ack()`, nack, `NackWithRequeue`, retry og idempotens — er beskrevet samlet under [Beste praksis for meldingshåndtering]({{% ref "meldingshandtering.md" %}}).
 
 
