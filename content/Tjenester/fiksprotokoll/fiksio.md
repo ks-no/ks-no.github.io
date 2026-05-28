@@ -1,6 +1,6 @@
 ---
 title: Fiks IO
-date: 2021-12-17
+date: 2026-05-28
 weight: 50
 aliases: [/fiks-platform/tjenester/fiksio, /fiks-plattform/tjenester/fiksprotokoll/fiksio]
 ---

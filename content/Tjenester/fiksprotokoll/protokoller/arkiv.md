@@ -1,6 +1,6 @@
 ---
 title: Fiks Arkiv
-date: 2021-07-29
+date: 2026-05-28
 weight: 10
 aliases:
   - /tjenester/fiksprotokoll/protokoll-arkiv/
