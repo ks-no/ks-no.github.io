@@ -1,0 +1,753 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Systemkatalog oppslag API",
+    "description": "Katalog API for å endre og gjøre oppslag i systemkatalogen",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "/systemkatalog/katalog/api/v1",
+      "description": "Katalog API for systemkatalogen"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Katalog"
+    }
+  ],
+  "paths": {
+    "/systemkatalog/katalog/api/v1/leverandoer": {
+      "post": {
+        "tags": [
+          "Katalog"
+        ],
+        "summary": "Registrer ny leverandør",
+        "operationId": "registrerLeverandoer",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "fiks-systemkatalog-felles-modeller-v1.json#/components/schemas/LeverandoerRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Leverandør opprettet",
+            "headers": {
+              "Location": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LeverandoerKatalogResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Ugyldig input",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Manglende eller ugyldig integrasjonsautentisering",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Organisasjonsnummeret finnes allerede",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/systemkatalog/katalog/api/v1/leverandoer/{leverandoerId}": {
+      "get": {
+        "tags": [
+          "Katalog"
+        ],
+        "summary": "Hente en leverandør med leverandørid",
+        "operationId": "hentLeverandoer",
+        "parameters": [
+          {
+            "name": "leverandoerId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Leverandør funnet",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LeverandoerKatalogResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Manglende eller ugyldig integrasjonsautentisering",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Leverandør ikke funnet",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/systemkatalog/katalog/api/v1/leverandoer/organisasjonsnummer/{organisasjonsnummer}": {
+      "get": {
+        "tags": [
+          "Katalog"
+        ],
+        "summary": "Hente en leverandør med organisasjonsnummer",
+        "operationId": "hentLeverandoerByOrganisasjonsnummer",
+        "parameters": [
+          {
+            "name": "organisasjonsnummer",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^\\d{9}$"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Leverandør funnet",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LeverandoerKatalogResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Manglende eller ugyldig integrasjonsautentisering",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Leverandør ikke funnet",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/systemkatalog/katalog/api/v1/leverandoer/{leverandoerId}/produkter": {
+      "get": {
+        "tags": [
+          "Katalog"
+        ],
+        "summary": "Hente alle produkter for en leverandør med leverandørid",
+        "operationId": "hentProdukterForLeverandoer",
+        "parameters": [
+          {
+            "name": "leverandoerId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Liste over produkter",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "fiks-systemkatalog-felles-modeller-v1.json#/components/schemas/ProduktResponse"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Manglende eller ugyldig integrasjonsautentisering",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Leverandør ikke funnet",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Katalog"
+        ],
+        "summary": "Registrer nytt produkt på leverandør",
+        "operationId": "registrerProdukt",
+        "parameters": [
+          {
+            "name": "leverandoerId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "fiks-systemkatalog-felles-modeller-v1.json#/components/schemas/ProduktRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Produkt opprettet",
+            "headers": {
+              "Location": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "fiks-systemkatalog-felles-modeller-v1.json#/components/schemas/ProduktResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Ugyldig input",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Manglende eller ugyldig integrasjonsautentisering",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Leverandøren finnes ikke",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/systemkatalog/katalog/api/v1/leverandoer/organisasjonsnummer/{organisasjonsnummer}/produkter": {
+      "get": {
+        "tags": [
+          "Katalog"
+        ],
+        "summary": "Hente alle produkter for en leverandør med organisasjonsnummer",
+        "operationId": "hentProdukterForLeverandoerByOrganisasjonsnummer",
+        "parameters": [
+          {
+            "name": "organisasjonsnummer",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^\\d{9}$"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Liste over produkter",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "fiks-systemkatalog-felles-modeller-v1.json#/components/schemas/ProduktResponse"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Manglende eller ugyldig integrasjonsautentisering",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Leverandør ikke funnet",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/systemkatalog/katalog/api/v1/produkter/{produktId}": {
+      "get": {
+        "tags": [
+          "Katalog"
+        ],
+        "summary": "Hente et produkt med produktid",
+        "operationId": "hentProdukt",
+        "parameters": [
+          {
+            "name": "produktId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Produkt funnet",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "fiks-systemkatalog-felles-modeller-v1.json#/components/schemas/ProduktResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Manglende eller ugyldig integrasjonsautentisering",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Produkt ikke funnet",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Katalog"
+        ],
+        "summary": "Oppdater produkt",
+        "operationId": "oppdaterProdukt",
+        "parameters": [
+          {
+            "name": "produktId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "fiks-systemkatalog-felles-modeller-v1.json#/components/schemas/ProduktRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Produkt oppdatert",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "fiks-systemkatalog-felles-modeller-v1.json#/components/schemas/ProduktResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Ugyldig input",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Manglende eller ugyldig integrasjonsautentisering",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Produkt ikke funnet",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/systemkatalog/katalog/api/v1/produkter/{produktId}/kontaktpunkter": {
+      "get": {
+        "tags": [
+          "Katalog"
+        ],
+        "summary": "Hente alle kontaktpunkter for et produkt",
+        "description": "Støtter filtrering på type og formål via query-parametere.",
+        "operationId": "hentKontaktpunkterForProdukt",
+        "parameters": [
+          {
+            "name": "produktId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "type",
+            "in": "query",
+            "required": false,
+            "description": "Filtrer på kontaktpunkttype",
+            "schema": {
+              "$ref": "fiks-systemkatalog-felles-modeller-v1.json#/components/schemas/KontaktpunktType"
+            }
+          },
+          {
+            "name": "formaalKode",
+            "in": "query",
+            "required": false,
+            "description": "Filtrer på formålkode",
+            "schema": {
+              "type": "string",
+              "maxLength": 50
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Liste over kontaktpunkter",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "fiks-systemkatalog-felles-modeller-v1.json#/components/schemas/KontaktpunktResponse"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Manglende eller ugyldig integrasjonsautentisering",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Produkt ikke funnet",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Katalog"
+        ],
+        "summary": "Registrer nytt kontaktpunkt på produkt",
+        "operationId": "registrerKontaktpunkt",
+        "parameters": [
+          {
+            "name": "produktId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "fiks-systemkatalog-felles-modeller-v1.json#/components/schemas/KontaktpunktRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Kontaktpunkt opprettet",
+            "headers": {
+              "Location": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "fiks-systemkatalog-felles-modeller-v1.json#/components/schemas/KontaktpunktResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Ugyldig input",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Manglende eller ugyldig integrasjonsautentisering",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Produktet finnes ikke",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/systemkatalog/katalog/api/v1/kontaktpunkter/{kontaktpunktId}": {
+      "put": {
+        "tags": [
+          "Katalog"
+        ],
+        "summary": "Oppdater kontaktpunkt",
+        "operationId": "oppdaterKontaktpunkt",
+        "parameters": [
+          {
+            "name": "kontaktpunktId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "fiks-systemkatalog-felles-modeller-v1.json#/components/schemas/KontaktpunktUpdateRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Kontaktpunkt oppdatert",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "fiks-systemkatalog-felles-modeller-v1.json#/components/schemas/KontaktpunktResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Ugyldig input",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Manglende eller ugyldig integrasjonsautentisering",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Kontaktpunkt ikke funnet",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "LeverandoerKatalogResponse": {
+        "type": "object",
+        "required": [
+          "id",
+          "enhet",
+          "produkter"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "enhet": {
+            "$ref": "fiks-systemkatalog-felles-modeller-v1.json#/components/schemas/Enhet"
+          },
+          "produkter": {
+            "type": "array",
+            "items": {
+              "$ref": "fiks-systemkatalog-felles-modeller-v1.json#/components/schemas/ProduktResponse"
+            }
+          }
+        }
+      }
+    }
+  }
+}
