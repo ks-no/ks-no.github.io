@@ -19,6 +19,8 @@ tags:
     description: Innlevering og statusendring av selvdeklareringer
   - name: Innsyn
     description: Innsynsforespørsler for innleverte selvdeklareringer
+  - name: Kravspesifikasjon
+    description: Navngitte kravspesifikasjoner (pakke-komposisjoner) jf. V1-spek §4.3
 paths:
   /selvdeklarering/api/v1/selvdeklareringer:
     get:
@@ -132,6 +134,42 @@ paths:
                 $ref: '#/components/schemas/Selvdeklarering'
       security:
         - bearerAuth: []
+  /selvdeklarering/api/v1/selvdeklareringer/{id}/deaktiver:
+    put:
+      summary: Deaktiver selvdeklarering (AKTIV → DEAKTIVERT)
+      operationId: deaktiverSelvdeklarering
+      tags:
+        - Selvdeklarering
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Deaktivert
+      security:
+        - bearerAuth: []
+  /selvdeklarering/api/v1/selvdeklareringer/{id}/reaktiver:
+    put:
+      summary: Reaktiver selvdeklarering (DEAKTIVERT → AKTIV)
+      operationId: reaktiverSelvdeklarering
+      tags:
+        - Selvdeklarering
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Reaktivert
+      security:
+        - bearerAuth: []
   /selvdeklarering/api/v1/innleveringer:
     post:
       summary: Opprett ny innlevering (UTKAST)
@@ -220,6 +258,43 @@ paths:
           description: Innlevert
       security:
         - bearerAuth: []
+  /selvdeklarering/api/v1/innleveringer/{id}/publiser:
+    put:
+      summary: Publiser selvdeklarering (UTKAST → INNLEVERT) — alias for lever-inn
+      description: Alias for `PUT /innleveringer/{id}/lever-inn` per V1-spek §12. Delegerer til samme tjenestemetode; identisk oppførsel, sideeffekter og responsformat.
+      operationId: publiser
+      tags:
+        - Innlevering
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Innlevert (publisert)
+      security:
+        - bearerAuth: []
+  /selvdeklarering/api/v1/innleveringer/{id}/pdf:
+    get:
+      summary: Last ned innlevert selvdeklarering som PDF
+      operationId: lastNedPdf
+      tags:
+        - Innlevering
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: PDF-dokument
+      security:
+        - bearerAuth: []
   /selvdeklarering/api/v1/innleveringer/{id}/score:
     get:
       summary: Evaluer poeng for innlevert selvdeklarering
@@ -262,6 +337,25 @@ paths:
           description: Trukket tilbake
       security:
         - bearerAuth: []
+  /selvdeklarering/api/v1/innleveringer/{id}/av-publiser:
+    put:
+      summary: Av-publiser innlevering (INNLEVERT → TRUKKET_TILBAKE) — alias for trekk-tilbake
+      description: Alias for `PUT /innleveringer/{id}/trekk-tilbake` per V1-spek §12. Delegerer til samme tjenestemetode; identisk oppførsel, sideeffekter og responsformat.
+      operationId: avPubliser
+      tags:
+        - Innlevering
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Av-publisert (trukket tilbake)
+      security:
+        - bearerAuth: []
   /selvdeklarering/api/v1/innleveringer/{id}/gjor-ugyldig:
     put:
       summary: Gjør innlevering ugyldig (INNLEVERT → UGYLDIG)
@@ -278,6 +372,28 @@ paths:
       responses:
         '200':
           description: Ugyldiggjort
+      security:
+        - bearerAuth: []
+  /selvdeklarering/api/v1/innleveringer/{id}/revidere:
+    post:
+      summary: Opprett revisjon av innlevert selvdeklarering (klon som nytt UTKAST)
+      operationId: reviderInnlevering
+      tags:
+        - Innlevering
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '201':
+          description: Ny revisjon opprettet som UTKAST
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InnlevertSelvdeklarering'
       security:
         - bearerAuth: []
   /selvdeklarering/api/v1/selvdeklareringer/{selvdeklareringId}/innleveringer:
@@ -479,6 +595,47 @@ paths:
           description: Avslått
       security:
         - bearerAuth: []
+  /selvdeklarering/api/v1/kravspesifikasjoner:
+    get:
+      summary: Hent tilgjengelige kravspesifikasjoner (V1-spek §4.3, FR1)
+      operationId: hentAlleKravspesifikasjoner
+      tags:
+        - Kravspesifikasjon
+      responses:
+        '200':
+          description: Liste over kravspesifikasjoner
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Kravspesifikasjon'
+      security:
+        - bearerAuth: []
+  /selvdeklarering/api/v1/kravspesifikasjoner/{id}:
+    get:
+      summary: Hent enkelt kravspesifikasjon
+      operationId: hentKravspesifikasjon
+      tags:
+        - Kravspesifikasjon
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Kravspesifikasjon
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Kravspesifikasjon'
+        '404':
+          description: Ikke funnet
+      security:
+        - bearerAuth: []
 components:
   schemas:
     Selvdeklarering:
@@ -581,10 +738,17 @@ components:
           type: string
           format: date-time
           readOnly: true
+        opprettetAv:
+          type: string
+          readOnly: true
+          description: Hvem som opprettet innleveringen
+        innlevertAv:
+          type: string
+          readOnly: true
+          description: Hvem som leverte inn
     OpprettInnlevering:
       type: object
       required:
-        - selvdeklareringId
         - versjon
         - produktId
         - leverandorId
@@ -593,6 +757,17 @@ components:
         selvdeklareringId:
           type: string
           format: uuid
+          description: |
+            Eksisterende selvdeklarering. Enten denne ELLER kravspesifikasjonId må være satt.
+            Beholdt for bakoverkompatibilitet - nye klienter bør foretrekke kravspesifikasjonId
+            (V1-spek §4.3, FR1).
+        kravspesifikasjonId:
+          type: string
+          format: uuid
+          description: |
+            Velg navngitt kravspesifikasjon (V1-spek §4.3). Server resolver til pakkeIder og
+            oppretter/snapper opp en tilhørende Selvdeklarering. Tar presedens over selvdeklareringId
+            hvis begge er satt.
         versjon:
           type: integer
           format: int64
@@ -632,6 +807,8 @@ components:
         opprettet:
           type: string
           format: date-time
+        opprettetAv:
+          type: string
     SporsmalSvar:
       type: object
       required:
@@ -686,6 +863,29 @@ components:
         forespurtAv:
           type: string
           description: Hvem som ber om innsyn, f.eks. e-post eller org.nr
+    Kravspesifikasjon:
+      type: object
+      required:
+        - id
+        - navn
+        - pakkeIder
+      properties:
+        id:
+          type: string
+          format: uuid
+        navn:
+          type: string
+          maxLength: 255
+          description: Visningsnavn, f.eks. "Elektronisk medisinering"
+        beskrivelse:
+          type: string
+          description: Forklarende tekst som vises til leverandøren ved valg
+        pakkeIder:
+          type: array
+          items:
+            type: string
+            format: uuid
+          description: Sporsmalsbank-pakke-IDer som komposisjonen består av
     PoengResultat:
       type: object
       properties:
