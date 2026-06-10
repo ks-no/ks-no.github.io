@@ -1,12 +1,12 @@
 ---
-title: Fiks eiendomsavtaler
+title: Fiks konsesjon
 date: 2026-06-10
 aliases: [/fiks-platform/tjenester/konsesjon/, /fiks-plattform/tjenester/konsesjon/]
 ---
 ## Kort beskrivelse
 Fiks Konsesjon er en tjeneste under KS Min kommune for digital innsending og behandling av egenerklæring om konsesjonsfrihet og søknad om konsesjon. Tjenesten er under utvikling i samarbeid med Landbruksdirektoratet, Kartverket, KS og Eiendom Norge. Gradvis utrulling er planlagt fra oktober 2026.
 
-Fiks eiendomsavtaler tilbyr:
+Fiks konsesjon tilbyr:
 * Digitale skjemaer for egenerklæring om konsesjonsfrihet og søknad om konsesjon, som erstatter dagens papirbaserte løsning.
 * Automatisert behandling av egenerklæringer der regelverket gir rom for det.
 * Et nasjonalt register over bopliktsområder (områder med nedsatt konsesjonsgrense).
