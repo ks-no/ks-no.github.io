@@ -1,0 +1,1265 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "KS Fiks: Spørsmålsbank",
+    "description": "API for versjonerte spørreskjemaer og pakker for selvdeklarering",
+    "contact": {
+      "name": "Fiks-brukerstøtte",
+      "url": "https://ks-no.github.io/",
+      "email": "fiks-utvikling@ksdigital.no"
+    },
+    "version": "v1"
+  },
+  "servers": [
+    {
+      "url": "https://api.fiks.test.ks.no",
+      "description": "KS Fiks API host"
+    }
+  ],
+  "security": [
+    {
+      "bearerAuth": []
+    }
+  ],
+  "tags": [
+    {
+      "name": "Spørreskjema",
+      "description": "Administrasjon av spørreskjemaversjoner"
+    },
+    {
+      "name": "Pakke",
+      "description": "Administrasjon av spørsmålspakker"
+    },
+    {
+      "name": "Intern",
+      "description": "Interne endepunkter for tjeneste-til-tjeneste-kall (integrasjonsautentisering)"
+    }
+  ],
+  "paths": {
+    "/sporsmalsbank/api/v1/versjoner": {
+      "get": {
+        "summary": "Hent alle spørreskjemaversjoner",
+        "operationId": "hentAlleVersjoner",
+        "tags": [
+          "Spørreskjema"
+        ],
+        "responses": {
+          "200": {
+            "description": "Liste over spørreskjemaversjoner",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/SporreskjemaOversikt"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "post": {
+        "summary": "Opprett ny spørreskjemaversjon",
+        "operationId": "opprettVersjon",
+        "tags": [
+          "Spørreskjema"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OpprettSporreskjemaVersjon"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Opprettet",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SporreskjemaVersjon"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/sporsmalsbank/api/v1/versjoner/{id}": {
+      "get": {
+        "summary": "Hent spørreskjemaversjon med spørsmål",
+        "operationId": "hentVersjon",
+        "tags": [
+          "Spørreskjema"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Spørreskjemaversjon",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SporreskjemaVersjon"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Ikke funnet",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Feilmelding"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "put": {
+        "summary": "Oppdater spørreskjemaversjon (kun UTKAST)",
+        "operationId": "oppdaterVersjon",
+        "tags": [
+          "Spørreskjema"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SporreskjemaVersjon"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Oppdatert",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SporreskjemaVersjon"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "delete": {
+        "summary": "Slett spørreskjemaversjon (kun UTKAST)",
+        "operationId": "slettVersjon",
+        "tags": [
+          "Spørreskjema"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Slettet"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/sporsmalsbank/api/v1/versjoner/publisert": {
+      "get": {
+        "summary": "Hent publisert spørreskjemaversjon",
+        "operationId": "hentPublisertVersjon",
+        "tags": [
+          "Spørreskjema"
+        ],
+        "responses": {
+          "200": {
+            "description": "Publisert versjon",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SporreskjemaVersjon"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Ingen publisert versjon funnet"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/sporsmalsbank/api/v1/versjoner/{id}/publiser": {
+      "put": {
+        "summary": "Publiser spørreskjemaversjon (kun UTKAST)",
+        "operationId": "publiserVersjon",
+        "tags": [
+          "Spørreskjema"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Publisert"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/sporsmalsbank/api/v1/versjoner/paginert": {
+      "get": {
+        "summary": "Hent alle spørreskjemaversjoner paginert",
+        "operationId": "hentAlleVersjonerPaginert",
+        "tags": [
+          "Spørreskjema"
+        ],
+        "parameters": [
+          {
+            "name": "side",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "default": 0
+            }
+          },
+          {
+            "name": "antallPerSide",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "default": 20
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Paginert liste over spørreskjemaversjoner",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SideSporreskjemaOversikt"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/sporsmalsbank/api/v1/versjoner/{id}/arkiver": {
+      "put": {
+        "summary": "Arkiver en publisert spørreskjemaversjon",
+        "operationId": "arkiverVersjon",
+        "tags": [
+          "Spørreskjema"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Arkivert"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/sporsmalsbank/api/v1/versjoner/{kildeId}/klon": {
+      "post": {
+        "summary": "Klon eksisterende versjon til nytt utkast",
+        "operationId": "klonVersjon",
+        "tags": [
+          "Spørreskjema"
+        ],
+        "parameters": [
+          {
+            "name": "kildeId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Klonet versjon",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SporreskjemaVersjon"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/sporsmalsbank/api/v1/pakker": {
+      "get": {
+        "summary": "Hent alle pakker",
+        "operationId": "hentAllePakker",
+        "tags": [
+          "Pakke"
+        ],
+        "responses": {
+          "200": {
+            "description": "Liste over pakker",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/PakkeOversikt"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "post": {
+        "summary": "Opprett ny pakke",
+        "operationId": "opprettPakke",
+        "tags": [
+          "Pakke"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Pakke"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Opprettet",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Pakke"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/sporsmalsbank/api/v1/pakker/{id}": {
+      "get": {
+        "summary": "Hent pakke med innhold",
+        "operationId": "hentPakke",
+        "tags": [
+          "Pakke"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Pakke",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Pakke"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Ikke funnet"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "put": {
+        "summary": "Oppdater pakke (kun UTKAST)",
+        "operationId": "oppdaterPakke",
+        "tags": [
+          "Pakke"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Pakke"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Oppdatert",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Pakke"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "delete": {
+        "summary": "Slett pakke (kun UTKAST)",
+        "operationId": "slettPakke",
+        "tags": [
+          "Pakke"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Slettet"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/sporsmalsbank/api/v1/pakker/{id}/publiser": {
+      "put": {
+        "summary": "Publiser pakke",
+        "operationId": "publiserPakke",
+        "tags": [
+          "Pakke"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Publisert"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/sporsmalsbank/api/v1/pakker/paginert": {
+      "get": {
+        "summary": "Hent alle pakker paginert",
+        "operationId": "hentAllePakkerPaginert",
+        "tags": [
+          "Pakke"
+        ],
+        "parameters": [
+          {
+            "name": "side",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "default": 0
+            }
+          },
+          {
+            "name": "antallPerSide",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "default": 20
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Paginert liste over pakker",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SidePakkeOversikt"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/sporsmalsbank/api/v1/pakker/{id}/arkiver": {
+      "put": {
+        "summary": "Arkiver en publisert pakke",
+        "operationId": "arkiverPakke",
+        "tags": [
+          "Pakke"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Arkivert"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/sporsmalsbank/api/v1/versjoner/{sporreskjemaVersjonId}/pakker": {
+      "get": {
+        "summary": "Hent pakker for en spørreskjemaversjon",
+        "operationId": "hentPakkerForSporreskjema",
+        "tags": [
+          "Pakke"
+        ],
+        "parameters": [
+          {
+            "name": "sporreskjemaVersjonId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Pakker for spørreskjemaversjon",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/PakkeOversikt"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/sporsmalsbank/api/v1/intern/pakker/{id}": {
+      "get": {
+        "summary": "Hent pakke (tjeneste-til-tjeneste)",
+        "operationId": "hentPakkeIntern",
+        "tags": [
+          "Intern"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Pakke",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Pakke"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/sporsmalsbank/api/v1/intern/versjoner/publisert": {
+      "get": {
+        "summary": "Hent publisert versjon (tjeneste-til-tjeneste)",
+        "operationId": "hentPublisertVersjonIntern",
+        "tags": [
+          "Intern"
+        ],
+        "responses": {
+          "200": {
+            "description": "Publisert spørreskjemaversjon",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SporreskjemaVersjon"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/sporsmalsbank/api/v1/intern/versjoner/{id}": {
+      "get": {
+        "summary": "Hent sporreskjemaversjon (tjeneste-til-tjeneste)",
+        "operationId": "hentVersjonIntern",
+        "tags": [
+          "Intern"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Sporreskjemaversjon med sporsmal",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SporreskjemaVersjon"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Ikke funnet",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Feilmelding"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "SporreskjemaVersjon": {
+        "type": "object",
+        "required": [
+          "versjon",
+          "tittel",
+          "sporsmal"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "readOnly": true
+          },
+          "versjon": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "tittel": {
+            "type": "string",
+            "maxLength": 500
+          },
+          "beskrivelse": {
+            "type": "string",
+            "maxLength": 2000
+          },
+          "sporsmal": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Sporsmal"
+            }
+          },
+          "status": {
+            "$ref": "#/components/schemas/VersjonStatus"
+          },
+          "opprettet": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true
+          },
+          "oppdatert": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true
+          }
+        }
+      },
+      "OpprettSporreskjemaVersjon": {
+        "type": "object",
+        "required": [
+          "tittel",
+          "sporsmal"
+        ],
+        "properties": {
+          "tittel": {
+            "type": "string",
+            "maxLength": 500
+          },
+          "beskrivelse": {
+            "type": "string",
+            "maxLength": 2000
+          },
+          "sporsmal": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Sporsmal"
+            }
+          }
+        }
+      },
+      "SporreskjemaOversikt": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "versjon": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "tittel": {
+            "type": "string"
+          },
+          "beskrivelse": {
+            "type": "string"
+          },
+          "antallSporsmal": {
+            "type": "integer"
+          },
+          "status": {
+            "$ref": "#/components/schemas/VersjonStatus"
+          },
+          "opprettet": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "oppdatert": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "Sporsmal": {
+        "type": "object",
+        "required": [
+          "id",
+          "tekst"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unik ID for spørsmålet innenfor spørreskjemaet"
+          },
+          "tekst": {
+            "type": "string",
+            "description": "Spørsmålstekst som vises til leverandør"
+          },
+          "kortBeskrivelse": {
+            "type": "string"
+          },
+          "hjelpetekst": {
+            "type": "string",
+            "description": "Utfyllende hjelpetekst for spørsmålet"
+          },
+          "begrunnelse": {
+            "type": "string",
+            "description": "Begrunnelse fra spørsmålsstiller — informasjonstekst, ikke besvart av leverandør"
+          },
+          "kommentar": {
+            "type": "string",
+            "description": "Kommentar fra spørsmålsstiller — tilleggsinformasjon, ikke besvart av leverandør"
+          },
+          "erSeksjon": {
+            "type": "boolean",
+            "default": false,
+            "description": "Om dette er en seksjonsoverskrift (ikke et spørsmål)"
+          },
+          "paakrevd": {
+            "type": "boolean",
+            "default": true
+          },
+          "kategori": {
+            "type": "string",
+            "description": "Kategori for gruppering, f.eks. Informasjonssikkerhet"
+          },
+          "svaralternativer": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Svaralternativ"
+            },
+            "description": "Radioknapper — leverandør velger ett alternativ"
+          },
+          "referanser": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Referanse"
+            },
+            "description": "Lovverk og anbefalinger knyttet til spørsmålet"
+          },
+          "rekkefolge": {
+            "type": "integer",
+            "default": 0
+          },
+          "figurreferanse": {
+            "type": "string"
+          }
+        }
+      },
+      "Svaralternativ": {
+        "type": "object",
+        "required": [
+          "id",
+          "tekst"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unik ID for svaralternativet"
+          },
+          "tekst": {
+            "type": "string",
+            "description": "Tekst som vises på radioknappen"
+          },
+          "poeng": {
+            "type": "integer",
+            "default": 0,
+            "description": "Poengverdi for dette svaret"
+          },
+          "rekkefolge": {
+            "type": "integer",
+            "default": 0
+          }
+        }
+      },
+      "Referanse": {
+        "type": "object",
+        "required": [
+          "type",
+          "tekst"
+        ],
+        "properties": {
+          "type": {
+            "$ref": "#/components/schemas/ReferanseType"
+          },
+          "tekst": {
+            "type": "string",
+            "description": "Beskrivelse av lovverket eller anbefalingen"
+          },
+          "url": {
+            "type": "string",
+            "description": "Lenke til Lovdata, veileder e.l."
+          }
+        }
+      },
+      "ReferanseType": {
+        "type": "string",
+        "enum": [
+          "LOVVERK",
+          "ANBEFALING"
+        ]
+      },
+      "Pakke": {
+        "type": "object",
+        "required": [
+          "versjon",
+          "tittel",
+          "sporreskjemaVersjonId",
+          "innhold"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "readOnly": true
+          },
+          "versjon": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "tittel": {
+            "type": "string",
+            "maxLength": 500
+          },
+          "beskrivelse": {
+            "type": "string",
+            "maxLength": 2000
+          },
+          "sporreskjemaVersjonId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "erGrunnpakke": {
+            "type": "boolean",
+            "default": false,
+            "description": "Om dette er en grunnpakke som er obligatorisk for alle leverandører"
+          },
+          "innhold": {
+            "$ref": "#/components/schemas/PakkeInnhold"
+          },
+          "status": {
+            "$ref": "#/components/schemas/VersjonStatus"
+          },
+          "opprettet": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true
+          },
+          "oppdatert": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true
+          }
+        }
+      },
+      "PakkeOversikt": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "versjon": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "tittel": {
+            "type": "string"
+          },
+          "beskrivelse": {
+            "type": "string"
+          },
+          "sporreskjemaVersjonId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "erGrunnpakke": {
+            "type": "boolean"
+          },
+          "antallSporsmal": {
+            "type": "integer"
+          },
+          "status": {
+            "$ref": "#/components/schemas/VersjonStatus"
+          },
+          "opprettet": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "oppdatert": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "PakkeInnhold": {
+        "type": "object",
+        "required": [
+          "sporsmalIder"
+        ],
+        "properties": {
+          "sporsmalIder": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "IDer til spørsmål fra spørreskjemaet som inngår i pakken"
+          },
+          "poengOverstyringer": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PoengOverstyring"
+            },
+            "description": "Overstyring av poeng for svaralternativer i denne pakken"
+          },
+          "terskelRegler": {
+            "$ref": "#/components/schemas/TerskelRegler"
+          }
+        }
+      },
+      "PoengOverstyring": {
+        "type": "object",
+        "required": [
+          "sporsmalId",
+          "svaralternativId",
+          "poeng"
+        ],
+        "properties": {
+          "sporsmalId": {
+            "type": "string"
+          },
+          "svaralternativId": {
+            "type": "string"
+          },
+          "poeng": {
+            "type": "integer",
+            "description": "Overstyrt poengverdi for dette svaralternativet i denne pakken"
+          }
+        }
+      },
+      "TerskelRegler": {
+        "type": "object",
+        "properties": {
+          "minimumPoeng": {
+            "type": "integer",
+            "description": "Minimum totalpoeng for å bestå. Null betyr ingen krav."
+          }
+        }
+      },
+      "VersjonStatus": {
+        "type": "string",
+        "enum": [
+          "UTKAST",
+          "PUBLISERT",
+          "ARKIVERT"
+        ]
+      },
+      "SideSporreskjemaOversikt": {
+        "type": "object",
+        "properties": {
+          "innhold": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SporreskjemaOversikt"
+            }
+          },
+          "side": {
+            "type": "integer"
+          },
+          "antallPerSide": {
+            "type": "integer"
+          },
+          "totaltAntall": {
+            "type": "integer",
+            "format": "int64"
+          }
+        }
+      },
+      "SidePakkeOversikt": {
+        "type": "object",
+        "properties": {
+          "innhold": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PakkeOversikt"
+            }
+          },
+          "side": {
+            "type": "integer"
+          },
+          "antallPerSide": {
+            "type": "integer"
+          },
+          "totaltAntall": {
+            "type": "integer",
+            "format": "int64"
+          }
+        }
+      },
+      "Feilmelding": {
+        "type": "object",
+        "properties": {
+          "melding": {
+            "type": "string"
+          },
+          "tidspunkt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "description": "Ansattporten JWT-token"
+      }
+    }
+  }
+}
