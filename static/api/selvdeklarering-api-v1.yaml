@@ -277,6 +277,38 @@ paths:
           description: Innlevert (publisert)
       security:
         - bearerAuth: []
+  /selvdeklarering/api/v1/innleveringer/{id}/sporreskjema:
+    get:
+      summary: Hent komplett sporreskjema for innlevering (composite)
+      description: |
+        Returnerer hele sporreskjemaet (alle pakker med spørsmål, svaralternativer
+        og terskelregler) som innleveringen viser til, resolvert server-side fra
+        sporsmalsbank. Erstatter behovet for at frontend kaller `/sporsmalsbank/pakker/{id}`
+        per pakke. Arkitekturen krever at frontend ikke kommuniserer direkte mot
+        sporsmalsbank — denne komposittendepointen er den autoriserte inngangen.
+      operationId: hentSporreskjema
+      tags:
+        - Innlevering
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Komplett sporreskjema for innleveringen
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SporreskjemaForInnlevering'
+        '404':
+          description: Innlevering eller tilknyttet selvdeklarering ikke funnet
+        '409':
+          description: Selvdeklareringen er deaktivert
+      security:
+        - bearerAuth: []
   /selvdeklarering/api/v1/innleveringer/{id}/pdf:
     get:
       summary: Last ned innlevert selvdeklarering som PDF
@@ -927,6 +959,50 @@ components:
         totaltAntall:
           type: integer
           format: int64
+    SporreskjemaForInnlevering:
+      type: object
+      required:
+        - innleveringId
+        - pakker
+      description: |
+        Komposittobjekt som returneres fra `/innleveringer/{id}/sporreskjema`.
+        Inneholder innleveringens id og en liste av komplette sporsmalsbank-pakker
+        (med spørsmål, svaralternativer, poeng- og terskelregler).
+      properties:
+        innleveringId:
+          type: string
+          format: uuid
+        pakker:
+          type: array
+          items:
+            $ref: '#/components/schemas/PakkeMedSporsmal'
+    PakkeMedSporsmal:
+      type: object
+      required:
+        - id
+        - versjon
+        - tittel
+        - sporreskjemaVersjonId
+        - innhold
+      description: |
+        Hentet fra sporsmalsbank pakke-respons. Frontend skal ikke kalle
+        sporsmalsbank direkte — selvdeklarering komponerer denne strukturen.
+      properties:
+        id:
+          type: string
+          format: uuid
+        versjon:
+          type: integer
+          format: int64
+        tittel:
+          type: string
+        sporreskjemaVersjonId:
+          type: string
+          format: uuid
+        innhold:
+          type: object
+          description: Pakkens innhold (spørsmål, svaralternativer, poeng- og terskelregler) som returnert av sporsmalsbank.
+          additionalProperties: true
   securitySchemes:
     bearerAuth:
       type: http
