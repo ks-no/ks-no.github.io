@@ -1,12 +1,12 @@
 {
-  "openapi": "3.0.4",
+  "openapi": "3.0.3",
   "info": {
     "title": "KS FIKS: Eiendomsregister service",
     "description": "Eiendomsregister service",
     "contact": {
       "name": "Fiks brukerstøtte",
       "url": "https://ksdigital.no/om-oss/kontakt-oss",
-      "email": "fiks@ks.no"
+      "email": "fiks@ksdigital.no"
     },
     "version": "v1"
   },
@@ -16,31 +16,100 @@
       "description": "KS Fiks API host"
     },
     {
-      "url": "https://api.test.fiks.ks.no",
+      "url": "https://api.fiks.test.ks.no",
       "description": "KS Fiks TEST API host"
     }
   ],
   "tags": [
     {
-      "name": "eiendomsregister",
-      "description": "API for Fiks eiendomsregister"
+      "name": "Eiendomsregister",
+      "description": "API for oppslag i eiendomsregisteret"
     }
   ],
   "paths": {
-    "/eiendomsregister/api/v1/eiendom": {
+    "/eiendomsregister/api/v1/adresser": {
       "get": {
         "tags": [
-          "eiendomsregister"
+          "Eiendomsregister"
         ],
-        "description": "Hente en eiendom",
-        "operationId": "eiendom",
+        "description": "Hent adresser for en matrikkelenhet",
+        "operationId": "hentAdresser",
+        "parameters": [
+          {
+            "name": "kommunenummer",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "gaardsnummer",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "bruksnummer",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "seksjonsnummer",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "festenummer",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
         "responses": {
           "200": {
-            "description": "Returnerer en eiendom",
+            "description": "Adresser for matrikkelenheten",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Eiendom"
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/AdresseAPIModel"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Ugyldig matrikkelnummer",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Ikke tilgang",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
                 }
               }
             }
@@ -51,23 +120,32 @@
   },
   "components": {
     "schemas": {
-      "Eiendom": {
+      "AdresseAPIModel": {
         "type": "object",
         "properties": {
-          "gardsnummer": {
-            "type": "integer"
+          "adressenavn": {
+            "type": "string"
           },
-          "bruksnummer": {
-            "type": "integer"
+          "adressekode": {
+            "type": "integer",
+            "format": "int32"
           },
-          "festenummer": {
-            "type": "integer"
+          "kommunenummer": {
+            "type": "string"
           },
-          "seksjonsnummer": {
-            "type": "integer"
+          "nummer": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "bokstav": {
+            "type": "string"
           }
         },
-        "required": ["gardsnummer", "bruksnummer", "festenummer", "seksjonsnummer"]
+        "required": [
+          "adressenavn",
+          "adressekode",
+          "kommunenummer"
+        ]
       }
     }
   }
