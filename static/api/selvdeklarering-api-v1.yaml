@@ -280,12 +280,7 @@ paths:
   /selvdeklarering/api/v1/innleveringer/{id}/sporreskjema:
     get:
       summary: Hent komplett sporreskjema for innlevering (composite)
-      description: |
-        Returnerer hele sporreskjemaet (alle pakker med spørsmål, svaralternativer
-        og terskelregler) som innleveringen viser til, resolvert server-side fra
-        sporsmalsbank. Erstatter behovet for at frontend kaller `/sporsmalsbank/pakker/{id}`
-        per pakke. Arkitekturen krever at frontend ikke kommuniserer direkte mot
-        sporsmalsbank — denne komposittendepointen er den autoriserte inngangen.
+      description: Returnerer hele sporreskjemaet (alle pakker med spørsmål, svaralternativer og terskelregler) som innleveringen viser til, resolvert server-side fra sporsmalsbank. Erstatter behovet for at frontend kaller `/sporsmalsbank/pakker/{id}` per pakke. Arkitekturen krever at frontend ikke kommuniserer direkte mot sporsmalsbank — denne komposittendepointen er den autoriserte inngangen.
       operationId: hentSporreskjema
       tags:
         - Innlevering
@@ -307,6 +302,31 @@ paths:
           description: Innlevering eller tilknyttet selvdeklarering ikke funnet
         '409':
           description: Selvdeklareringen er deaktivert
+      security:
+        - bearerAuth: []
+  /selvdeklarering/api/v1/innleveringer/{id}/status:
+    get:
+      summary: Hent utledet statusoversikt for innlevering
+      description: Returnerer arbeidsstatus (utledet fra innleveringsstatus) og kvalifikasjonsstatus (beregnet fra poeng-snapshot). Begge beregnes runtime og lagres ikke. UTKAST uten poeng-snapshot gir kvalifikasjonsstatus IKKE_VURDERT.
+      operationId: hentStatusOversikt
+      tags:
+        - Innlevering
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Utledet statusoversikt
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InnleveringStatusOversikt'
+        '404':
+          description: Innlevering ikke funnet
       security:
         - bearerAuth: []
   /selvdeklarering/api/v1/innleveringer/{id}/pdf:
@@ -1004,10 +1024,7 @@ components:
       required:
         - innleveringId
         - pakker
-      description: |
-        Komposittobjekt som returneres fra `/innleveringer/{id}/sporreskjema`.
-        Inneholder innleveringens id og en liste av komplette sporsmalsbank-pakker
-        (med spørsmål, svaralternativer, poeng- og terskelregler).
+      description: Komposittobjekt som returneres fra `/innleveringer/{id}/sporreskjema`. Inneholder innleveringens id og en liste av komplette sporsmalsbank-pakker (med spørsmål, svaralternativer, poeng- og terskelregler).
       properties:
         innleveringId:
           type: string
@@ -1024,9 +1041,7 @@ components:
         - tittel
         - sporreskjemaVersjonId
         - innhold
-      description: |
-        Hentet fra sporsmalsbank pakke-respons. Frontend skal ikke kalle
-        sporsmalsbank direkte — selvdeklarering komponerer denne strukturen.
+      description: Hentet fra sporsmalsbank pakke-respons. Frontend skal ikke kalle sporsmalsbank direkte — selvdeklarering komponerer denne strukturen.
       properties:
         id:
           type: string
@@ -1043,6 +1058,33 @@ components:
           type: object
           description: Pakkens innhold (spørsmål, svaralternativer, poeng- og terskelregler) som returnert av sporsmalsbank.
           additionalProperties: true
+    Arbeidsstatus:
+      type: string
+      description: Utledet arbeidsstatus (lagres ikke). IKKE_STARTET når leverandøren ikke har opprettet innlevering.
+      enum:
+        - IKKE_STARTET
+        - PAABEGYNT
+        - INNLEVERT
+        - TRUKKET_TILBAKE
+        - UGYLDIG
+    Kvalifikasjonsstatus:
+      type: string
+      description: Beregnet kvalifikasjonsstatus (lagres ikke). IKKE_VURDERT før innleveringen er evaluert.
+      enum:
+        - IKKE_VURDERT
+        - OPPFYLLER_KRAV
+        - OPPFYLLER_IKKE_KRAV
+    InnleveringStatusOversikt:
+      type: object
+      required:
+        - arbeidsstatus
+        - kvalifikasjonsstatus
+      description: Utledet statusoversikt for en innlevering. Begge feltene beregnes runtime og lagres ikke.
+      properties:
+        arbeidsstatus:
+          $ref: '#/components/schemas/Arbeidsstatus'
+        kvalifikasjonsstatus:
+          $ref: '#/components/schemas/Kvalifikasjonsstatus'
   securitySchemes:
     bearerAuth:
       type: http
