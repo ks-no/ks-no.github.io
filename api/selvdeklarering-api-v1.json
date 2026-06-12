@@ -512,6 +512,47 @@
         ]
       }
     },
+    "/selvdeklarering/api/v1/innleveringer/{id}/status": {
+      "get": {
+        "summary": "Hent utledet statusoversikt for innlevering",
+        "description": "Returnerer arbeidsstatus (utledet fra innleveringsstatus) og kvalifikasjonsstatus (beregnet fra poeng-snapshot). Begge beregnes runtime og lagres ikke. UTKAST uten poeng-snapshot gir kvalifikasjonsstatus IKKE_VURDERT.",
+        "operationId": "hentStatusOversikt",
+        "tags": [
+          "Innlevering"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Utledet statusoversikt",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InnleveringStatusOversikt"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Innlevering ikke funnet"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
     "/selvdeklarering/api/v1/innleveringer/{id}/pdf": {
       "get": {
         "summary": "Last ned innlevert selvdeklarering som PDF",
@@ -1613,6 +1654,42 @@
           "DELVIS_GODKJENT",
           "IKKE_GODKJENT"
         ]
+      },
+      "Arbeidsstatus": {
+        "type": "string",
+        "description": "Utledet arbeidsstatus (lagres ikke). IKKE_STARTET når leverandøren ikke har opprettet innlevering.",
+        "enum": [
+          "IKKE_STARTET",
+          "PAABEGYNT",
+          "INNLEVERT",
+          "TRUKKET_TILBAKE",
+          "UGYLDIG"
+        ]
+      },
+      "Kvalifikasjonsstatus": {
+        "type": "string",
+        "description": "Beregnet kvalifikasjonsstatus (lagres ikke). IKKE_VURDERT før innleveringen er evaluert.",
+        "enum": [
+          "IKKE_VURDERT",
+          "OPPFYLLER_KRAV",
+          "OPPFYLLER_IKKE_KRAV"
+        ]
+      },
+      "InnleveringStatusOversikt": {
+        "type": "object",
+        "required": [
+          "arbeidsstatus",
+          "kvalifikasjonsstatus"
+        ],
+        "description": "Utledet statusoversikt for en innlevering. Begge feltene beregnes runtime og lagres ikke.",
+        "properties": {
+          "arbeidsstatus": {
+            "$ref": "#/components/schemas/Arbeidsstatus"
+          },
+          "kvalifikasjonsstatus": {
+            "$ref": "#/components/schemas/Kvalifikasjonsstatus"
+          }
+        }
       }
     },
     "securitySchemes": {
