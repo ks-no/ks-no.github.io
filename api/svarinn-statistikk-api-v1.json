@@ -1,0 +1,287 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "Fiks SvarUt: SvarInn Statistikk",
+    "description": "SvarInn Statistikk API som gir oversikt over forsendelser knyttet mot et mottakersystem.",
+    "contact": {
+      "name": "Fiks-brukerstøtte",
+      "url": "https://ks-no.github.io/",
+      "email": "fiks@ksdigital.no"
+    },
+    "license": {
+      "name": "MIT",
+      "url": "https://opensource.org/licenses/MIT"
+    },
+    "version": "v3"
+  },
+  "servers": [
+    {
+      "url": "https://api.fiks.ks.no",
+      "description": "KS Fiks API host"
+    }
+  ],
+  "security": [
+    {
+      "bearerAuth": []
+    }
+  ],
+  "tags": [
+    {
+      "name": "Statistikk",
+      "description": "API for SvarInn konfigurasjon"
+    }
+  ],
+  "paths": {
+    "/svarinn/api/v3/statistikk/mottakersystemer/{mottakersystemId}": {
+      "get": {
+        "tags": [
+          "Statistikk"
+        ],
+        "description": "Henter statistikk om et mottakersystem",
+        "summary": "Henter statistikk om et mottakersystem",
+        "operationId": "hentStatistikkMottakersystem",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/MottakersystemId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Statistikk for et mottakersystem",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MottakersystemStatistikk"
+                }
+              }
+            }
+          },
+          "403": {
+            "$ref": "#/components/responses/Error403"
+          },
+          "500": {
+            "$ref": "#/components/responses/Error500"
+          }
+        }
+      }
+    },
+    "/svarinn/api/v3/statistikk/organisasjoner": {
+      "get": {
+        "tags": [
+          "Statistikk"
+        ],
+        "description": "Henter statistikk om antall forsendelser som er klart for mottak for en organiasjons",
+        "summary": "Henter statistikk om en organisasjon",
+        "operationId": "hentStatistikkOrganisasjon",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OrganisasjonStatistikkRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Statistikk post til et organsiasjonsnummer med gitt sikkerhetsnivå og forsendelsetyper",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrganisasjonStatistikk"
+                }
+              }
+            }
+          },
+          "403": {
+            "$ref": "#/components/responses/Error403"
+          },
+          "500": {
+            "$ref": "#/components/responses/Error500"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "parameters": {
+      "MottakersystemId": {
+        "name": "mottakersystemId",
+        "required": true,
+        "in": "path",
+        "schema": {
+          "type": "string",
+          "format": "uuid",
+          "description": "Mottakersystemets id"
+        }
+      }
+    },
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    },
+    "responses": {
+      "Error400": {
+        "description": "Ugyldig forespørsel",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorMessage"
+            }
+          }
+        }
+      },
+      "Error401": {
+        "description": "Autentisering feilt",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorMessage"
+            }
+          }
+        }
+      },
+      "Error403": {
+        "description": "Ingen tilgang",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorMessage"
+            }
+          }
+        }
+      },
+      "Error500": {
+        "description": "Systemfeil",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorMessage"
+            }
+          }
+        }
+      }
+    },
+    "schemas": {
+      "MottakersystemStatistikk": {
+        "type": "object",
+        "properties": {
+          "mottakersystemId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Id til mottakersystemet det er hentet statistikk for"
+          },
+          "klarForMottakOver2timer": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Antall forsendelser som har hatt status KLAR_FOR_MOTTAK i over 2 timer"
+          },
+          "klarForMottakUnder2timer": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Antall forsendelser som har hatt status KLAR_FOR_MOTTAK i under 2 timer"
+          }
+        }
+      },
+      "OrganisasjonStatistikkRequest": {
+        "type": "object",
+        "properties": {
+          "organisasjonsnummer": {
+            "$ref": "#/components/schemas/Organisasjonsnummer"
+          },
+          "sikkerhetsniva": {
+            "$ref": "#/components/schemas/Sikkerhetsniva"
+          },
+          "forsendelsestyper": {
+            "$ref": "#/components/schemas/Forsendelsestyper"
+          }
+        }
+      },
+      "OrganisasjonStatistikk": {
+        "type": "object",
+        "properties": {
+          "organisasjonsnummer": {
+            "type": "string",
+            "description": "Organisasjonsnummeret det er hentet statistikk for"
+          },
+          "klarForMottakOver2timer": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "klarForMottakUnder2timer": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "Organisasjonsnummer": {
+        "type": "string",
+        "pattern": "^[0-9]{9}$"
+      },
+      "Sikkerhetsniva": {
+        "type": "string",
+        "enum": [
+          "ALLE",
+          "HOYESTE",
+          "BETYDELIG"
+        ]
+      },
+      "Forsendelsestyper": {
+        "required": [
+          "forsendelsestyper"
+        ],
+        "type": "object",
+        "properties": {
+          "forsendelsestyper": {
+            "uniqueItems": true,
+            "type": "array",
+            "description": "Liste med alle eksisterende forsendelsestyper",
+            "items": {
+              "type": "string",
+              "description": "Liste med alle eksisterende forsendelsestyper"
+            }
+          }
+        }
+      },
+      "ErrorMessage": {
+        "type": "object",
+        "properties": {
+          "timestamp": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "status": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "error": {
+            "type": "string"
+          },
+          "errorId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "path": {
+            "type": "string"
+          },
+          "originalPath": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          },
+          "errorCode": {
+            "type": "string"
+          },
+          "errorJson": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}
