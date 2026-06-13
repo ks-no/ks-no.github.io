@@ -1,91 +1,95 @@
 ---
-title: Fiks dokumentlager
+title: Fiks Dokumentlager
 date: 2018-09-10
 aliases: ["/fiks-platform/tjenester/dokumentlager/", "/fiks-plattform/tjenester/dokumentlager/"]
 ---
 
 ## Kort beskrivelse
-Dokumentlager-tjenesten lar kommunen og andre Fiks-organisasjoner laste opp dokumenter. Ved opplasting autoriseres en eller 
-flere personer og/eller organisasjoner for tilgang til dokumentet. Det er også mulig å laste opp dokumenter med en begrenset
-levetid, slik at det blir gjort utilgjengelig når denne tiden utløper.
 
-En Fiks-organisasjon kan organisere sine dokumenter ved bruk av det som kalles kontoer. Alle dokumenter som lastes opp 
-vil tilhøre en konto. Om man vil bruke en eller flere kontoer er helt opp til hver organisasjon. Kontoer administreres 
-gjennom konfigurasjonsgrensesnittet, hvor man også finner statistikk for diskbruk, metadata for dokumenter, med mer.
+**Sikker og tilgangsstyrt lagring av dokumenter i Fiks-plattformen.**
 
-Dokumentlageret vil bli benyttet av flere Fiks-tjenester: SvarUt, SvarInn, Digisos og Innsyn, men det kan også benyttes av 
-en Fiks-organisasjons egne integrasjoner.
+Fiks Dokumentlager er en tjeneste som lar kommunen og andre Fiks-organisasjoner laste opp dokumenter. Ved opplasting autoriseres en eller flere personer og/eller organisasjoner for tilgang til dokumentet. Det er også mulig å laste opp dokumenter med en begrenset levetid, slik at det blir gjort utilgjengelig når denne tiden utløper.
 
-## Tilgjengelige grensesnitt
-| Grensesnitt | Støtte |
-|------|------|
-| Web portal | Nei |
-| Maskin til maskin | Ja |
+Tjenesten tilbyr:
+- Sikker og kryptert lagring av dokumenter.
+- Detaljert tilgangsstyring ("eksponert for").
+- Tidsbegrenset levetid (TTL) for midlertidige dokumenter.
+- Fysisk og logisk inndeling via dokumentlager-kontoer.
+
+Dokumentlageret benyttes av flere Fiks-tjenester (SvarUt, SvarInn, Digisos, Innsyn), men kan også i høyeste grad benyttes direkte av kommunens egne integrasjoner.
+
+API-spesifikasjon: [Fiks Dokumentlager Swagger/OpenAPI](https://editor-next.swagger.io/?url=https://developers.fiks.ks.no/api/dokumentlager-api-v1.json) <!-- Oppdater URL dersom api-filen heter noe annet i swagger -->
+
+## Kom i gang
+
+Tjenestespesifikke forutsetninger:
+
+1. Dokumentlager administreres gjennom [Fiks Konfigurasjon](https://forvaltning.fiks.ks.no/fiks-konfigurasjon/tjenester).
+2. Man oppretter én eller flere **Kontoer** i Fiks Konfigurasjon for å organisere sine dokumenter.
+3. Integrasjonen må gis rettighet til å laste opp/slette dokumenter på den/de spesifikke dokumentlager-kontoen(e). Dette gjøres i konfigurasjonsgrensesnittet på kontonivå.
+4. Følg standard [autentiseringsregler]({{% ref "sikkerhet.md" %}}) (Maskinporten) for å kalle API-et.
 
 ## Beskrivelse av tjenesten
-Dokumentlageret fungerer på følgende måte:
 
-1. En laster opp metadata om dokumentet. Her spesifiseres blant annet hvem dokumentet skal eksponeres for, dokumentets levetid, osv.
-2. En laster opp dokumentdata
-3. Dokumentet blir tilgjengelig for alle som er autorisert til å se det
-4. Dokumentet kan bli utilgjengeliggjort og slettet av en av grunnene spesifisert under
+### Konsepter og begreper
 
-Det er tre forskjellige måter et dokument kan bli slettet på:
+| Begrep | Beskrivelse |
+|--------|-------------|
+| **Konto** | Tjenesteressurs for organisering. Alle dokumenter tilknyttes en konto. Slettes kontoen, slettes også alle dokumentene. |
+| **Metadata** | Informasjon og regler for dokumentet ("dokumentnavn", "mimetype", "sikkerhetsniva"). Sentralt her er `eksponertFor` (hvem som får laste ned filen, f.eks fødselsnummer eller integrasjonsId) og utløpstidspunkt (automatisk sletting satt via `ttl` eller `tilgjengeligTil`). |
+| **Korrelasjons-id** | Valgfri ID som kan brukes til å gruppere relaterte dokumenter sammen for enklere batch-sletting. |
 
-- Manuelt gjennom webgrensesnitt eller API
-- Ved at dokumentets levetid utløper
-- Dersom kontoen dokumentet hører til blir slettet
+### Overordnet flyt
 
-Når et dokument slettes vil metadata fortsette å eksistere, men selve dokumentet vil ikke lenger være tilgjengelig.
+1. **Opplasting:** Integrasjonen sender metadata og dokumentdata som en multipart request til Dokumentlageret.
+2. **Lagring og kryptering:** Dokumentlageret lagrer dokumentet kryptert (eventuelt har klienten allerede ende-til-ende kryptert det) tilknyttet angitt konto.
+3. **Bekreftelse:** Dokumentlageret returnerer en respons med dokument-ID, samt en direktelenke (URL) for personnedlasting i `Location`-headeren.
+4. **Tilgjengeliggjørelse:** Dokumentet er nå eksponert og kan lastes ned av de som ble autorisert i metadata (enten via API for maskiner eller via nedlastings-urlen i en nettleser).
+5. **Sletting:** Dokumentet kan fjernes manuelt via API/webgrensesnitt, slettes automatisk pga. TTL, eller forsvinne om hele kontoen slettes.
 
-### Klienter
+Når et dokument slettes, vil metadata fortsette å eksistere, men selve dokumentet (innholdet) vil ikke lenger være tilgjengelig. Etter en periode vil også metadata bli slettet. Dette vil bli implementert i framtiden.
 
-For å gjøre det enklere å ta i bruk Dokumentlageret har KS utviklet en klient for opplasting og nedlasting. Denne støtter 
-blant annet klient-side kryptering ved opplasting.
- 
-Per i dag finnes denne klienten kun for Java, med en egen modul for konfigurering via Spring Boot. Kode og dokumentasjon 
-finnes på GitHub: https://github.com/ks-no/fiks-dokumentlager-klient
+### Tjenestespesifikke regler
 
-### Integrasjonsutvikling
+**Kryptering under opplasting**
 
-Alle operasjoner i dokumentlageret utføres på en konto, som er en ressurs som hører til dokumentlager-tjenesten til en 
-Fiks-organisasjon. Hvordan disse organiseres er opp til hver organisasjon. Man kan ha én konto for alt, eller dele det 
-opp over mange, slik at man for eksempel kan gi forskjellige tilganger for hver konto.
+Dersom ikke `kryptert` query-parameter er satt til `true` ved opplasting, vil dokumentet krypteres av Fiks-tjenesten før det lagres. Uavhengig av metoden er alle dokumenter kryptert "at rest".
+For dokumenter med **sikkerhetsnivå 4**, kreves imidlertid ende-til-ende-kryptering. Da MÅ integrasjonen kryptere dokumentet hos seg før opplasting med Fiks Dokumentlager sin public key.
 
-De vanlige [autentiseringsreglene]({{% ref "sikkerhet.md" %}}) for Fiks-plattformen gjelder for denne tjenesten, men i 
-tillegg må integrasjonen ha rett til å laste opp dokumenter på en dokumentlager konto. Disse tilgangene tildeles som vanlig 
-gjennom konfigurasjonsgrensesnittet, men må gis på kontonivå. Dersom man har flere kontoer, men ønsker å gi en integrasjon 
-tilgang til flere av disse må tilgang gis på hver enkelt konto.
+Public-key hentes via GET:
+- `GET /dokumentlager/api/v1/public-key`
 
-#### Opplasting
+---
 
-Opplasting gjøres med en POST-request mot følgende URL:
+## API-referanse
 
-- Test: ``https://api.fiks.test.ks.no/dokumentlager/api/v1/{fiksOrganisasjonId}/kontoer/{kontoId}/dokumenter/``
-- Prod: ``https://api.fiks.ks.no/dokumentlager/api/v1/{fiksOrganisasjonId}/kontoer/{kontoId}/dokumenter/``
+All interaksjon med Dokumentlageret krever vanlig integrasjonsautentisering (Bearer token + IntegrasjonId/passord). 
 
-Ved vellykket opplasting returneres et JSON objekt som inneholder ID for det opplastede dokumentet:
+### Miljøer og endepunkter
 
-```json
-{
-  "id": "9dba7b9e-8fb8-4589-ae3e-740897852a6b"
-}
-```
+Grunn-URL for API-er og nedlasting varierer per miljø. Se [felles dokumentasjon for miljøer]({{% ref "/Felles/testmiljo.md" %}}) for generell info, men for dokumentlager gjelder følgende adresser:
 
-URL for nedlasting ligger i Location-header på returnert 201 CREATED respons, eller her:
+**For API-kall (opplasting, sletting, m.m.):**
+- **Test:** `https://api.fiks.test.ks.no`
+- **Produksjon:** `https://api.fiks.ks.no`
 
-- Test
-    - ``https://minside.fiks.test.ks.no/dokumentlager/nedlasting/{id}``
-    - ``https://minside.fiks.test.ks.no/dokumentlager/nedlasting/niva4/{id}`` (Krever nivå 4 innlogging)
-- Prod
-    - ``https://minside.kommune.no/dokumentlager/nedlasting/{id}``
-    - ``https://minside.kommune.no/dokumentlager/nedlasting/niva4/{id}`` (Krever nivå 4 innlogging)
+**For personnedlasting (sluttbruker i browser):**
+- **Test:** `https://min.fiks.test.ks.no/dokumentlager/nedlasting/{dokumentId}`
+    - Nivå 4: `https://min.fiks.test.ks.no/dokumentlager/nedlasting/niva4/{dokumentId}`
+- **Produksjon:** `https://min.kommune.no/dokumentlager/nedlasting/{dokumentId}`
+    - Nivå 4: `https://min.kommune.no/dokumentlager/nedlasting/niva4/{dokumentId}`
 
-##### Metadata
+### Opplasting av dokument
 
-Metadata for dokumenter legges i multipart med navn ``metadata`` og defineres i JSON. 
-Content-Type må på multiparten må settes til application/json.
-Et eksempel er vist under (ttl og tilgjengeligTil kan ikke settes samtidig):
+POST-request for registrering og opplasting:
+- `POST /dokumentlager/api/v1/{fiksOrganisasjonId}/kontoer/{kontoId}/dokumenter/`
+
+URL for personnedlasting leveres tilbake i `Location`-header på opplastingsresponsen (201 Created).
+
+**1. Metadata (multipart "metadata")**
+
+Defineres i JSON. `Content-Type` må settes til `application/json`.
+`ttl` og `tilgjengeligTil` kan ikke settes samtidig.
 
 ```json
 {
@@ -104,60 +108,24 @@ Et eksempel er vist under (ttl og tilgjengeligTil kan ikke settes samtidig):
 }
 ```
 
-- Dokumentnavn - Dokumentets navn, ved nedlasting gjennom en browser vil dette bli satt som default navn på filen som lagres på disk
-- MIME type - Dokumenttype på gyldig MIME-format. Se https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/MIME_types
-- TTL - Hvor mange sekunder etter opplasting dokumentet skal være tilgjengelig. Ved utløp blir dokumentet utilgjengeliggjort og slettes. En negativ verdi betyr at dokumentet aldri vil slettes. Kan ikke settes sammen med tilgjengeligTil, men en av disse må settes.
-- Tilgjengelig til - Tidspunkt for når dokumentet utløper og skal slettes på ISO 8601-format. Opplastingen vil bli avvist dersom tidspunktet er i fortiden. Kan ikke settes sammen med ttl, men en av disse må settes.
-- Sikkerhetsniva - Sikkerhetsnivå som skal kreves ved nedlasting av dokument. Ved nivå 4 kreves kryptering hos klient før opplasting.
-Se https://eid.difi.no/nb/sikkerhet-og-informasjonskapsler/ulike-sikkerhetsniva
-- Korrelasjonsid - Id som kan brukes til å indikere at flere dokumenter hører sammen. Feltet er ikke påkrevd.
-- Eksponert for - Liste over aktører som skal ha tilgang til å laste ned dokumentet. Kan være følgende typer:
-    - Person - Eksponeres for en persons fødselsnummer. En gyldig ID-porten innlogging for en person med dette 
-    fødselsnummeret vil ha lov til å laste ned dokumentet.
-    - Integrasjon - Eksponeres for en UUID som identifiserer en integrasjon. En klient innlogget med integrasjonsid, 
-    integrasjonspassord og virksomhetssertifikatet som er autentisert til å bruke integrasjonen vil ha lov til å laste ned dokumentet.
-    - Organisasjon - Eksponeres for et organisasjonsnummer. Personer med *Post/arkiv*- eller *Kommunale tjenester*-rollen i Altinn på dette 
-    organisasjonsnummeret vil ha lov til å laste ned dokumentet.
-    - Autorisasjon - Eksponeres for et "privilegium, ressurs"-par. Personer eller integrasjoner med gitt privilegium på 
-    gitt ressurs vil ha lov til å laste ned dokumentet.
+*Feltbeskrivelser (metadata):*
+- **dokumentnavn:** Dokumentets navn. Ved nedlasting gjennom en browser vil dette bli satt som default navn på filen som lagres på disk.
+- **mimetype:** Dokumenttype på gyldig MIME-format (f.eks. `application/pdf`).
+- **ttl:** Hvor mange sekunder etter opplasting dokumentet skal være tilgjengelig før det utilgjengeliggjøres og slettes. En negativ verdi betyr at det aldri slettes. Må settes hvis `tilgjengeligTil` ikke er satt.
+- **tilgjengeligTil:** Eksakt tidspunkt (ISO 8601) for når dokumentet utløper og skal slettes. Må settes hvis `ttl` ikke er satt.
+- **sikkerhetsniva:** Sikkerhetsnivå som kreves ved nedlasting (typisk `3` eller `4`). Nivå 4 krever klient-kryptering før opplasting.
+- **korrelasjonsid:** Valgfri UUID for å bygge logiske relasjoner mellom flere dokumenter for batch-håndtering.
+- **eksponertFor:** Liste over aktører med nedlastingstilgang:
+    - `PERSON`: En gyldig ID-porten innlogging for en person med dette fnr/dnr får nedlastingstilgang.
+    - `INTEGRASJON`: Maskin-til-maskin tilgang ved bruk av gyldig Virksomhetssertifikat + integrasjon autentisering.
+    - `ORGANISASJON`: Personer med *Post/arkiv*- eller *Kommunale tjenester*-rollen i Altinn på dette org.nummeret får tilgang.
+    - `AUTORISASJON`: Personer eller integrasjoner med gitt privilegium på gitt ressurs i Fiks Plattformen.
 
-##### Dokument
+**2. Dokumentdata (multipart "dokument")**
 
-Dokumentdata legges i multipart med navn ``dokument``.
+Dette er den faktiske filen. Hvis filen er pre-kryptert på klienten, husk å oppgi query param `?kryptert=true`.
 
-Dersom ikke ``kryptert`` query parameter er satt til true vil dokumentet krypteres av tjenesten før det lagres. Dersom man ønsker 
-å laste opp dokumenter på nivå 4, eller bare ønsker ende-til-ende-kryptering ved opplasting, må dette flagget settes til
-true, og dokumentet må krypteres med dokumentlagerets public-key før opplasting. Uavhengig av hva man velger vil alle
-dokumenter være kryptert etter opplasting, og vil kun dekrypteres når en aktør som er autorisert til å laste ned dokumentet 
-laster det ned.
-
-Public-keyen kan hentes med en GET-request mot følgende endepunkt:
-
-- Test: ``https://api.fiks.test.ks.no/dokumentlager/api/v1/public-key``
-- Prod: ``https://api.fiks.ks.no/dokumentlager/api/v1/public-key``
-
-##### Responskoder
-- 201 Created - Dokumentet ble lastet opp. 
-  Body inneholder metadata:
-  ```json
-  {
-    "id": "5636b391-41e7-4504-ab3c-1f3df122b483",
-    "dokumentnavn": "dokument.pdf",
-    "mimeType": "application/pdf",
-    "ukryptertStorrelse": 29765,
-    "kryptertStorrelse": 30680
-  }
-  ```
-
-  Url for personnedlasting returneres i Location-header:
-  `Location: https://minside.kommune.no/dokumentlager/nedlasting/5636b391-41e7-4504-ab3c-1f3df122b483`
-- 400 Bad Request - Request er ikke i henhold til spesifikasjonen.
-- 403 Forbidden - Integrasjonen har ikke nødvendige tilganger til å laste opp dokumenter på spesifisert konto og organisasjon.
-- 404 Not Found - Fant ingen konto med spesifisert id for organisasjonen.
-- 410 Gone - Konto er slettet.
-
-##### Eksempel (cURL)
-
+**Eksempel (cURL for opplasting):**
 ```bash
 curl -X POST https://api.fiks.test.ks.no/dokumentlager/api/v1/{fiksOrganisasjonId}/kontoer/{kontoId}/dokumenter/ \
 -H "Authorization: Bearer <gyldig access token>" \
@@ -167,15 +135,29 @@ curl -X POST https://api.fiks.test.ks.no/dokumentlager/api/v1/{fiksOrganisasjonI
 -F "dokument=@dokument.pdf"
 ```
 
-#### Oppdatering av metadata
+**Responskoder:**
+- `201 Created`: Dokumentet ble lastet opp. Returnerer JSON med ID og størrelser, pluss nedlastings-url i Location-headeren.
+  ```json
+  {
+    "id": "5636b391-41e7-4504-ab3c-1f3df122b483",
+    "dokumentnavn": "dokument.pdf",
+    "mimeType": "application/pdf",
+    "ukryptertStorrelse": 29765,
+    "kryptertStorrelse": 30680
+  }
+  ```
+- `400 Bad Request`: Ugyldig request.
+- `403 Forbidden`: Integrasjonen mangler kontotilgang.
+- `404 Not Found`: Finner ikke forespurt konto/organisasjon.
+- `410 Gone`: Konto er slettet/utilgjengelig.
 
-Oppdatering av metadata gjøres med en PATCH-request mot følgende URL:
+### Oppdatering av metadata
 
-- Test: ``https://api.fiks.test.ks.no/dokumentlager/api/v1/{fiksOrganisasjonId}/kontoer/{kontoId}/dokumenter/{dokumentId}``
-- Prod: ``https://api.fiks.ks.no/dokumentlager/api/v1/{fiksOrganisasjonId}/kontoer/{kontoId}/dokumenter/{dokumentId}``
+PATCH-request for å endre utløpstid:
+`PATCH /dokumentlager/api/v1/{fiksOrganisasjonId}/kontoer/{kontoId}/dokumenter/{dokumentId}`
 
-Kun tilgjengeligTil kan oppdateres, enten via ttl, som oppgis i sekunder relativt til tid for oppdateringen, eller via tilgjengeligTil, som er et eksakt tidspunkt i fremtiden.
-Eksempel på request body:
+Kun `tilgjengeligTil` og `ttl` kan oppdateres (`ttl` oppgis i sekunder relativt til oppdateringstidspunktet).
+
 ```json
 {
   "ttl": 3600,
@@ -183,50 +165,57 @@ Eksempel på request body:
 }
 ```
 
-##### Responskoder
-- 200 OK - Dokumentet med spesifisert id oppdatert. Body inneholder id og oppdatert data:
-  ```json
-  {
-    "id": "bd393a3a-78f6-4902-af96-b604c24850a6",
-    "tilgjengeligTil": "2023-05-04T10:41:13.485+02:00"
-  }
-  ```
-- 400 Bad Request - Request er ikke i henhold til spesifikasjonen.
-- 403 Forbidden - Integrasjonen har ikke nødvendige tilganger til å slette dokumenter på spesifisert konto og organisasjon.
-- 404 Not Found - Fant ikke et dokument med oppgitt id, eller spesifisert konto og organisasjon.
-- 410 Gone - Dokumentet er allerede slettet, eller konto er slettet.
+**Responskoder:**
+- `200 OK`: Vellykket oppdatering, returnerer nye utløpsverdier.
+- `410 Gone`: Dokumentet eller kontoen er allerede slettet.
 
-#### Sletting av dokument
+### Sletting av dokument
 
-Integrasjoner som er autorisert til å laste opp dokumenter har også lov til å slette.
+DELETE-request:
+`DELETE /dokumentlager/api/v1/{fiksOrganisasjonId}/kontoer/{kontoId}/dokumenter/{dokumentId}`
 
-Dette gjøres med en DELETE-request mot følgende URL:
+**Responskoder:**
+- `200 OK`: Spesifikt dokument utilgjengeliggjort/slettet.
+- `410 Gone`: Dokument/konto allerede slettet.
 
-- Test: ``https://api.fiks.test.ks.no/dokumentlager/api/v1/{fiksOrganisasjonId}/kontoer/{kontoId}/dokumenter/{dokumentId}``
-- Prod: ``https://api.fiks.ks.no/dokumentlager/api/v1/{fiksOrganisasjonId}/kontoer/{kontoId}/dokumenter/{dokumentId}``
+### Sletting via korrelasjonsid
 
-##### Responskoder
-- 200 OK - Dokumentet med spesifisert id ble slettet. Tom body.
-- 400 Bad Request - Request er ikke i henhold til spesifikasjonen.
-- 403 Forbidden - Integrasjonen har ikke nødvendige tilganger til å slette dokumenter på spesifisert konto og organisasjon.
-- 404 Not Found - Fant ikke et dokument med oppgitt id, eller spesifisert konto og/eller organisasjon.
-- 410 Gone - Dokumentet er allerede slettet, eller konto er slettet.
+Sletter asynkront grupper av dokumenter. DELETE:
+`DELETE /dokumentlager/api/v1/{fiksOrganisasjonId}/kontoer/{kontoId}/korrelasjonsid/{korrelasjonsid}`
 
-#### Sletting via korrelasjonsid
+**Responskoder:**
+- `204 No Content`: Korrelasjons-ID er markert som slettet.
+- standard `400`/`403`/`404`/`410` for vanlige feilsituasjoner.
 
-Integrasjoner kan også slette alle dokumenter med en gitt korrelasjonsid som er lastet opp på en konto de har tilgang til.
+---
 
-Dette gjøres med en DELETE-request mot følgende URL:
+## Versjonering
 
-- Test: ``https://api.fiks.test.ks.no/dokumentlager/api/v1/{fiksOrganisasjonId}/kontoer/{kontoId}/korrelasjonsid/{korrelasjonsid}``
-- Prod: ``https://api.fiks.ks.no/dokumentlager/api/v1/{fiksOrganisasjonId}/kontoer/{kontoId}/korrelasjonsid/{korrelasjonsid}``
+| Versjon | Status | Utfasingsdato | Hva er nytt |
+|---------|--------|---------------|-------------|
+| v1 | ✅ Gjeldende | – | Første versjon av Fiks Dokumentlager REST API |
 
-##### Responskoder
-- 204 No Content - Korrelasjonsid er markert som slettet. Dokumentene vil bli slettet asynkront.
-- 400 Bad Request - Request er ikke i henhold til spesifikasjonen.
-- 403 Forbidden - Integrasjonen har ikke nødvendige tilganger til å slette dokumenter på spesifisert konto og organisasjon.
-- 404 Not Found - Fant ikke spesifisert konto og/eller organisasjon.
-- 410 Gone - Kontoen er slettet.
+---
 
-#### Feilmeldinger
-[Beskrivelse av feilmeldinger](../../integrasjoner/#feilmeldinger) 
+## Klientbibliotek
+
+KS tilbyr en Java-klient for opplasting og nedlasting. Denne støtter blant annet klient-side kryptering automatisk ved opplasting.
+Per i dag finnes denne med en egen modul for konfigurering via Spring Boot. 
+
+Kode og dokumentasjon: [ks-no/fiks-dokumentlager-klient på GitHub](https://github.com/ks-no/fiks-dokumentlager-klient).
+Se også [samlet oversikt over klientbiblioteker]({{% ref "klientbiblioteker.md" %}}).
+
+---
+
+## Relaterte tjenester
+
+- [Fiks IO]({{% ref "fiksio.md" %}}) – Refererer ofte til dokumenter i dokumentlager.
+- [SvarUt / SvarInn]({{% ref "svarut/_index.md" %}}) – Benytter Dokumentlageret for å lagre forsendelser.
+- [Fiks Digisos]({{% ref "digisos.md" %}}) – Lagrer sosialsøknader kryptert via Fiks Dokumentlager.
+- Generell [Feilhåndtering og feilmeldinger]({{% ref "integrasjoner.md" %}}#feilmeldinger) for APIet.
+
+---
+
+## Få hjelp
+
+{{< get-help email="fiks@ksdigital.no" support_page="/felles/support/" >}}
