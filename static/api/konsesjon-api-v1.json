@@ -603,6 +603,80 @@
         }
       }
     },
+    "/konsesjon-api/v1/avklaring/godkjenn": {
+      "post": {
+        "tags": [
+          "KonsesjonAvklaring"
+        ],
+        "description": "Godkjenner konsesjonsavklaringer, sender dem til Fiks-Arkiv, og oppretter oppgave i Min Kommune",
+        "operationId": "godkjennKonsesjonsAvklaring",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GodkjenningsRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Konsesjonsavklaring godkjent og sendt til Fiks-Arkiv, og oppgave opprettet i Min Kommune",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/GodkjenningsResponse"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Feil input",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Ikke tilgang – bearer token ikke sent",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Ikke tilgang",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Ingen treff - Fant ikke egenerklaering som matchet den gitte id-en",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/konsesjon-api/v1/egenerklaering/{avklaringsId}/skjemadata": {
       "get": {
         "tags": [
@@ -2651,6 +2725,49 @@
             }
           }
         }
+      },
+      "GodkjenningsRequest": {
+        "type": "object",
+        "required": [
+          "avklaringsId"
+        ],
+        "properties": {
+          "avklaringsId": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        }
+      },
+      "GodkjenningsResponse": {
+        "type": "object",
+        "required": [
+          "avklaringsId",
+          "erverver",
+          "status"
+        ],
+        "properties": {
+          "avklaringsId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "erverver": {
+            "$ref": "#/components/schemas/ErververId"
+          },
+          "status": {
+            "$ref": "#/components/schemas/GodkjenningsStatus"
+          }
+        }
+      },
+      "GodkjenningsStatus": {
+        "type": "string",
+        "enum": [
+          "GODKJENT_SENDT_TIL_ARKIV",
+          "FEILET_IKKE_SENDT_TIL_ARKIV"
+        ]
       }
     }
   }
