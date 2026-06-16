@@ -17,6 +17,8 @@ tags:
     description: Administrasjon av spørreskjemaversjoner
   - name: Pakke
     description: Administrasjon av spørsmålspakker
+  - name: Klassifisering
+    description: Klassifiseringsregister — lister med gyldige koder
   - name: Intern
     description: Interne endepunkter for tjeneste-til-tjeneste-kall (integrasjonsautentisering)
 paths:
@@ -421,6 +423,50 @@ paths:
                   $ref: '#/components/schemas/PakkeOversikt'
       security:
         - bearerAuth: []
+  /sporsmalsbank/api/v1/klassifiseringslister:
+    get:
+      summary: Hent alle klassifiseringslister
+      operationId: hentAlleKlassifiseringslister
+      tags:
+        - Klassifisering
+      responses:
+        '200':
+          description: Liste over klassifiseringslister
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Klassifiseringsliste'
+      security:
+        - bearerAuth: []
+  /sporsmalsbank/api/v1/klassifiseringslister/{listeKilde}:
+    get:
+      summary: Hent klassifiseringsliste med gyldige koder
+      operationId: hentKlassifiseringsliste
+      tags:
+        - Klassifisering
+      parameters:
+        - name: listeKilde
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Klassifiseringsliste
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Klassifiseringsliste'
+        '404':
+          description: Ikke funnet
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Feilmelding'
+      security:
+        - bearerAuth: []
   /sporsmalsbank/api/v1/intern/pakker/{id}:
     get:
       summary: Hent pakke (tjeneste-til-tjeneste)
@@ -807,6 +853,52 @@ components:
         totaltAntall:
           type: integer
           format: int64
+    Klassifisering:
+      type: object
+      required:
+        - listeKilde
+        - kode
+      properties:
+        listeKilde:
+          type: string
+          description: Identifikator for klassifiseringslisten
+        kode:
+          type: string
+          description: Kode innenfor listen
+    Klassifiseringskode:
+      type: object
+      required:
+        - kode
+        - visningsnavn
+      properties:
+        kode:
+          type: string
+          description: Unik kode innenfor listen
+        visningsnavn:
+          type: string
+          description: Menneskelig lesbart navn for koden
+    Klassifiseringsliste:
+      type: object
+      required:
+        - listeKilde
+        - navn
+        - versjon
+        - gyldigeKoder
+      properties:
+        listeKilde:
+          type: string
+          description: Primærnøkkel — unik identifikator for listen
+        navn:
+          type: string
+          description: Visningsnavn for listen
+        versjon:
+          type: string
+          description: Versjonsbetegnelse for listen
+        gyldigeKoder:
+          type: array
+          items:
+            $ref: '#/components/schemas/Klassifiseringskode'
+          description: Gyldige koder i denne listen
     Feilmelding:
       type: object
       properties:
