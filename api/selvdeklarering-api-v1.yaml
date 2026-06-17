@@ -21,6 +21,12 @@ tags:
     description: Innsynsforespørsler for innleverte selvdeklareringer
   - name: Kravspesifikasjon
     description: Navngitte kravspesifikasjoner (pakke-komposisjoner) jf. V1-spek §4.3
+  - name: Offentlig
+    description: Offentlig tilgjengelige innleveringsdata (krever pålogging)
+  - name: Spørsmålsbank
+    description: Proxy-endepunkter mot spørsmålsbank (versjoner og pakker)
+  - name: Systemkatalog
+    description: Proxy-endepunkter mot systemkatalog (produkter og leverandører)
 paths:
   /selvdeklarering/api/v1/selvdeklareringer:
     get:
@@ -674,6 +680,89 @@ paths:
           description: Avslått
       security:
         - bearerAuth: []
+  /selvdeklarering/api/v1/innleveringer/gjenbruk-kandidater:
+    get:
+      summary: Finn gjenbruk-kandidater (Fix 3)
+      description: Returnerer INNLEVERTE innleveringer fra samme leverandør (leverandorId) med samme klassifisering (via kravspesifikasjonId) som malproduktet, men annet produktId. Brukes til å la leverandøren velge hva svarene skal kopieres fra.
+      operationId: finnGjenbrukKandidater
+      tags:
+        - Innlevering
+      parameters:
+        - name: produktId
+          in: query
+          required: true
+          description: Produktet leverandøren holder på å deklarere (ekskluderes fra resultater)
+          schema:
+            type: string
+            format: uuid
+        - name: leverandorId
+          in: query
+          required: true
+          description: Leverandørens UUID
+          schema:
+            type: string
+            format: uuid
+        - name: kravspesifikasjonId
+          in: query
+          required: true
+          description: Kravspesifikasjonen valgt for malproduktet — brukes til klassifiseringsoppslag
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Liste over gjenbruk-kandidater (kan være tom)
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/GjenbrukKandidat'
+        '400':
+          description: Kravspesifikasjon mangler klassifisering
+        '404':
+          description: Kravspesifikasjon ikke funnet
+      security:
+        - bearerAuth: []
+  /selvdeklarering/api/v1/innleveringer/{id}/kopier-svar:
+    post:
+      summary: Kopier svar til nytt produkt (Fix 3)
+      description: Kopierer svar fra kilde-innlevering ({id}) til en ny innlevering for et annet produkt (tilProduktId). Returnerer nytt UTKAST med kopierte svar. Kilde og mål må ha samme klassifisering.
+      operationId: kopierSvar
+      tags:
+        - Innlevering
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID til kildeinnleveringen svarene kopieres fra
+          schema:
+            type: string
+            format: uuid
+        - name: tilProduktId
+          in: query
+          required: true
+          description: ProduktId til det nye produktet svarene kopieres til
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '201':
+          description: Nytt UTKAST opprettet med kopierte svar
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InnlevertSelvdeklarering'
+        '400':
+          description: Kildeinnlevering mangler klassifisering eller er ugyldig
+        '403':
+          description: Ikke eier av kildeinnlevering
+        '404':
+          description: Kildeinnlevering ikke funnet
+        '409':
+          description: Tilhørende selvdeklarering er deaktivert
+      security:
+        - bearerAuth: []
   /selvdeklarering/api/v1/kravspesifikasjoner:
     get:
       summary: Hent tilgjengelige kravspesifikasjoner (V1-spek §4.3, FR1)
@@ -713,6 +802,130 @@ paths:
                 $ref: '#/components/schemas/Kravspesifikasjon'
         '404':
           description: Ikke funnet
+      security:
+        - bearerAuth: []
+  /selvdeklarering/api/v1/offentlig/selvdeklareringer:
+    get:
+      summary: Søk i offentlig tilgjengelige innleveringer
+      description: Returnerer innleverte selvdeklareringer som er synlige for innloggede brukere. Kan filtreres på produktId og/eller leverandorId.
+      operationId: sokOffentligeInnleverte
+      tags:
+        - Offentlig
+      parameters:
+        - name: produktId
+          in: query
+          required: false
+          description: Filtrer på produkt-UUID
+          schema:
+            type: string
+            format: uuid
+        - name: leverandorId
+          in: query
+          required: false
+          description: Filtrer på leverandør-UUID
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Liste over offentlige innleveringer
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/OffentligInnlevertOversikt'
+      security:
+        - bearerAuth: []
+  /selvdeklarering/api/v1/sporsmalsbank/versjoner/{id}:
+    get:
+      summary: Hent spørreskjemaversjon fra spørsmålsbanken
+      operationId: hentSporreskjemaVersjon
+      tags:
+        - Spørsmålsbank
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: UUID til spørreskjemaversjonen
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Spørreskjemaversjon
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SporreskjemaVersjonRespons'
+      security:
+        - bearerAuth: []
+  /selvdeklarering/api/v1/sporsmalsbank/pakker/{id}:
+    get:
+      summary: Hent pakke fra spørsmålsbanken
+      operationId: hentPakke
+      tags:
+        - Spørsmålsbank
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: UUID til pakken
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Pakke
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PakkeRespons'
+      security:
+        - bearerAuth: []
+  /selvdeklarering/api/v1/systemkatalog/produkter/{id}:
+    get:
+      summary: Hent produkt fra systemkatalogen
+      operationId: hentProdukt
+      tags:
+        - Systemkatalog
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: UUID til produktet
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Produkt
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProduktRespons'
+      security:
+        - bearerAuth: []
+  /selvdeklarering/api/v1/systemkatalog/leverandorer/{orgnr}:
+    get:
+      summary: Hent leverandør fra systemkatalogen
+      operationId: hentLeverandor
+      tags:
+        - Systemkatalog
+      parameters:
+        - name: orgnr
+          in: path
+          required: true
+          description: Organisasjonsnummer til leverandøren
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Leverandør
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LeverandorRespons'
       security:
         - bearerAuth: []
 components:
@@ -942,6 +1155,47 @@ components:
         forespurtAv:
           type: string
           description: Hvem som ber om innsyn, f.eks. e-post eller org.nr
+    Klassifisering:
+      type: object
+      required:
+        - listeKilde
+        - kode
+      description: 'Produktklassifisering brukt for kryss-sjekk og gjenbruk av svar. HDiR-testverdier: listeKilde="HDIR_VELFERDSTEKNOLOGI", kode in { "DIGITALT_TILSYN", "ELEKTRONISK_MEDISINERING" }.'
+      properties:
+        listeKilde:
+          type: string
+          description: Kilde-liste, f.eks. "HDIR_VELFERDSTEKNOLOGI"
+        kode:
+          type: string
+          description: Klassifiseringskode, f.eks. "DIGITALT_TILSYN"
+    GjenbrukKandidat:
+      type: object
+      required:
+        - fraInnleveringId
+        - produktId
+        - klassifisering
+        - pakkeTyper
+        - antallSvar
+      description: En INNLEVERT innlevering fra samme leverandør med samme klassifisering men annet produkt.
+      properties:
+        fraInnleveringId:
+          type: string
+          format: uuid
+          description: ID til kildeinnleveringen
+        produktId:
+          type: string
+          format: uuid
+          description: Produktet som kilde-innleveringen tilhører
+        klassifisering:
+          $ref: '#/components/schemas/Klassifisering'
+        pakkeTyper:
+          type: array
+          items:
+            type: string
+          description: Liste over pakketyper i innleveringen (f.eks. MINIMUMSKRAV, EVALUERINGSKRAV). Tom liste inntil pakketyper-snapshot er implementert (TODO).
+        antallSvar:
+          type: integer
+          description: Antall svar i kildeinnleveringen
     Kravspesifikasjon:
       type: object
       required:
@@ -965,6 +1219,10 @@ components:
             type: string
             format: uuid
           description: Sporsmalsbank-pakke-IDer som komposisjonen består av
+        klassifisering:
+          $ref: '#/components/schemas/Klassifisering'
+          nullable: true
+          description: Klassifisering for kryss-sjekk og gjenbruk (null for eldre rader)
     Evaluering:
       type: string
       description: |
@@ -1085,6 +1343,214 @@ components:
           $ref: '#/components/schemas/Arbeidsstatus'
         kvalifikasjonsstatus:
           $ref: '#/components/schemas/Kvalifikasjonsstatus'
+    OffentligInnlevertOversikt:
+      type: object
+      required:
+        - id
+        - selvdeklareringId
+        - produktId
+        - leverandorId
+        - versjon
+      properties:
+        id:
+          type: string
+          format: uuid
+        selvdeklareringId:
+          type: string
+          format: uuid
+        produktId:
+          type: string
+          format: uuid
+        leverandorId:
+          type: string
+          format: uuid
+        versjon:
+          type: integer
+          format: int64
+        innlevert:
+          type: string
+          format: date-time
+          nullable: true
+    SporreskjemaVersjonRespons:
+      type: object
+      description: Spørreskjemaversjon fra spørsmålsbanken.
+      required:
+        - id
+        - versjon
+        - tittel
+      properties:
+        id:
+          type: string
+          format: uuid
+        versjon:
+          type: integer
+          format: int64
+        tittel:
+          type: string
+        beskrivelse:
+          type: string
+          nullable: true
+        sporsmal:
+          type: array
+          items:
+            $ref: '#/components/schemas/SporsmalRespons'
+    SporsmalRespons:
+      type: object
+      description: Spørsmål fra spørsmålsbanken.
+      properties:
+        id:
+          type: string
+        tekst:
+          type: string
+        kortBeskrivelse:
+          type: string
+          nullable: true
+        hjelpetekst:
+          type: string
+          nullable: true
+        begrunnelse:
+          type: string
+          nullable: true
+        kommentar:
+          type: string
+          nullable: true
+        erSeksjon:
+          type: boolean
+        paakrevd:
+          type: boolean
+        kategori:
+          type: string
+          nullable: true
+        svaralternativer:
+          type: array
+          items:
+            $ref: '#/components/schemas/SvaralternativRespons'
+        referanser:
+          type: array
+          items:
+            $ref: '#/components/schemas/ReferanseRespons'
+        rekkefolge:
+          type: integer
+    SvaralternativRespons:
+      type: object
+      properties:
+        id:
+          type: string
+        tekst:
+          type: string
+        poeng:
+          type: integer
+        rekkefolge:
+          type: integer
+    ReferanseRespons:
+      type: object
+      properties:
+        type:
+          type: string
+        tekst:
+          type: string
+        url:
+          type: string
+          nullable: true
+    PakkeRespons:
+      type: object
+      description: Pakke fra spørsmålsbanken.
+      required:
+        - id
+        - versjon
+        - tittel
+        - sporreskjemaVersjonId
+        - innhold
+      properties:
+        id:
+          type: string
+          format: uuid
+        versjon:
+          type: integer
+          format: int64
+        tittel:
+          type: string
+        sporreskjemaVersjonId:
+          type: string
+          format: uuid
+        innhold:
+          $ref: '#/components/schemas/PakkeInnholdRespons'
+    PakkeInnholdRespons:
+      type: object
+      properties:
+        sporsmalIder:
+          type: array
+          items:
+            type: string
+        poengOverstyringer:
+          type: array
+          items:
+            $ref: '#/components/schemas/PoengOverstyringRespons'
+        terskelRegler:
+          $ref: '#/components/schemas/TerskelReglerRespons'
+          nullable: true
+    PoengOverstyringRespons:
+      type: object
+      properties:
+        sporsmalId:
+          type: string
+        svaralternativId:
+          type: string
+        poeng:
+          type: integer
+    TerskelReglerRespons:
+      type: object
+      properties:
+        minimumPoeng:
+          type: integer
+          nullable: true
+    ProduktRespons:
+      type: object
+      description: Produkt fra systemkatalogen.
+      required:
+        - id
+        - navn
+        - leverandorOrgnr
+      properties:
+        id:
+          type: string
+          format: uuid
+        navn:
+          type: string
+        beskrivelse:
+          type: string
+          nullable: true
+        leverandorOrgnr:
+          type: string
+        leverandorNavn:
+          type: string
+          nullable: true
+        kategori:
+          type: string
+          nullable: true
+        klassifisering:
+          $ref: '#/components/schemas/Klassifisering'
+          nullable: true
+    LeverandorRespons:
+      type: object
+      description: Leverandør fra systemkatalogen.
+      required:
+        - orgnr
+        - navn
+      properties:
+        orgnr:
+          type: string
+        navn:
+          type: string
+        kontaktEpost:
+          type: string
+          nullable: true
+        kontaktTelefon:
+          type: string
+          nullable: true
+        nettsted:
+          type: string
+          nullable: true
   securitySchemes:
     bearerAuth:
       type: http
