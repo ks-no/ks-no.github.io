@@ -593,6 +593,45 @@
         }
       }
     },
+    "/svarinn-konfigurasjon/api/v1/organisasjoner/{fiksOrgId}/mottakersystemer/{mottakersystemId}/statistikk": {
+      "get": {
+        "tags": [
+          "Statistikk"
+        ],
+        "description": "Henter statistikk for mottakersystem",
+        "summary": "Henter statistikk for mottakersystem",
+        "operationId": "hentStatistikk",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/FiksOrgId"
+          },
+          {
+            "$ref": "#/components/parameters/MottakersystemId"
+          },
+          {
+            "$ref": "#/components/parameters/OverGrenseverdi"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Hent statistikk",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MottakersystemStatistikk"
+                }
+              }
+            }
+          },
+          "403": {
+            "$ref": "#/components/responses/Error403"
+          },
+          "500": {
+            "$ref": "#/components/responses/Error500"
+          }
+        }
+      }
+    },
     "/svarinn-konfigurasjon/api/v1/forsendelsestyper": {
       "get": {
         "tags": [
@@ -730,6 +769,20 @@
         "schema": {
           "$ref": "#/components/schemas/SikkerhetsnivaParam"
         }
+      },
+      "OverGrenseverdi": {
+        "name": "overGrenseverdi",
+        "description": "Grenseverdi som skal brukes for å gruppere forsendelser etter hvor lenge de har ligget klare til uthenting (av fagsystem) i mottaksystemet",
+        "in": "query",
+        "schema": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/components/schemas/Tidsgrenseverdi"
+          }
+        },
+        "style": "form",
+        "explode": true
       },
       "Sidenummer": {
         "name": "sidenummer",
@@ -1014,6 +1067,56 @@
           "format": "uuid"
         }
       },
+      "MottakersystemStatistikk": {
+        "required": [
+          "forsendelserKlareForUthenting",
+          "forsendelserHentetSisteDoegn"
+        ],
+        "type": "object",
+        "description": "Statistikk for et mottakersystem",
+        "properties": {
+          "forsendelserKlareForUthenting": {
+            "required": [
+              "totalt"
+            ],
+            "type": "object",
+            "description": "Statistikk for forsendelser som er klare for å hentes ut av fagsystem",
+            "properties": {
+              "totalt": {
+                "type": "integer",
+                "format": "int32",
+                "minimum": 0,
+                "description": "Totalt antall forsendelser som er klare for å hentes ut fra mottakersystemet"
+              },
+              "overGrenseverdi": {
+                "type": "array",
+                "description": "Liste med en eller flere grupperinger med forsendelser som har ligget klare til mottak over en gitt grenseverdi",
+                "minItems": 1,
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "antall": {
+                      "type": "integer",
+                      "format": "int32",
+                      "minimum": 0,
+                      "description": "Antall forsendelser over grenseverdi"
+                    },
+                    "grenseverdi": {
+                      "$ref": "#/components/schemas/Tidsgrenseverdi"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "forsendelserHentetSisteDoegn": {
+            "type": "integer",
+            "format": "int32",
+            "minimum": 0,
+            "description": "Antall forsendelser hentet ut av fagsystem de siste 24 timene"
+          }
+        }
+      },
       "AktivStatusUpdateRequest": {
         "required": [
           "aktiv"
@@ -1217,6 +1320,12 @@
           "HOYESTE",
           "BETYDELIG"
         ]
+      },
+      "Tidsgrenseverdi": {
+        "type": "string",
+        "format": "duration",
+        "example": "P3Y6M4DT12H30M5S",
+        "description": "Grenseverdi for tid"
       },
       "Forsendelsestyper": {
         "required": [
