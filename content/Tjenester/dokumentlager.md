@@ -17,7 +17,7 @@ Tjenesten tilbyr:
 - Tidsbegrenset levetid for dokumenter
 - Logisk inndeling via kontoer
 
-Dokumentlageret benyttes av flere Fiks-tjenester (SvarUt, SvarInn, Digisos, Innsyn), men kan også i høyeste grad benyttes direkte av kommunens egne integrasjoner.
+Dokumentlageret benyttes av flere Fiks-tjenester, for eksempel SvarUt, SvarInn, Digisos og Innsyn, men kan også i høyeste grad benyttes direkte av kommunens egne integrasjoner.
 
 API-spesifikasjon: Kommer snart
 
@@ -45,9 +45,9 @@ Tjenestespesifikke forutsetninger:
 2. **Lagring og kryptering:** Dokumentlageret lagrer dokumentet kryptert (eventuelt har klienten allerede ende-til-ende kryptert det) tilknyttet angitt konto.
 3. **Bekreftelse:** Dokumentlageret returnerer en respons med dokument-ID, samt en direktelenke (URL) for personnedlasting i `Location`-headeren.
 4. **Tilgjengeliggjørelse:** Dokumentet er nå eksponert og kan lastes ned av de som ble autorisert i metadata (enten via API for maskiner eller via nedlastings-urlen i en nettleser).
-5. **Sletting:** Dokumentet kan fjernes manuelt via API/webgrensesnitt, slettes automatisk pga. TTL, eller forsvinne om hele kontoen slettes.
+5. **Sletting:** Dokumentet kan slettes manuelt via API/webgrensesnitt, automatisk fordi TTL utløper, eller som et resultat av at kontoen slettes.
 
-Når et dokument slettes, vil metadata fortsette å eksistere, men selve dokumentet (innholdet) vil ikke lenger være tilgjengelig. Etter en periode vil også metadata bli slettet. Dette vil bli implementert i framtiden.
+Når et dokument slettes, vil metadata fortsette å eksistere, men selve dokumentet (innholdet) vil umiddelbart bli utilgjengelig, og slettes helt i løpet av kort tid.
 
 ## API-referanse
 
@@ -91,7 +91,7 @@ URL for nedlasting ligger i Location-header på returnert 201 CREATED respons, e
 #### Metadata
 
 Metadata for dokumenter legges i multipart med navn ``metadata`` og defineres i JSON. 
-Content-Type må på multiparten må settes til application/json.
+Content-Type må settes til application/json for multiparten.
 Et eksempel er vist under (ttl og tilgjengeligTil kan ikke settes samtidig):
 
 ```json
