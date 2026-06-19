@@ -1,6 +1,6 @@
 ---
-title: Fiks dokumentlager
-date: 2018-09-10
+title: Fiks Dokumentlager
+date: 2026-06-19
 aliases: ["/fiks-platform/tjenester/dokumentlager/", "/fiks-plattform/tjenester/dokumentlager/"]
 ---
 
@@ -49,7 +49,7 @@ Tjenestespesifikke forutsetninger:
 
 Når et dokument slettes, vil metadata fortsette å eksistere, men selve dokumentet (innholdet) vil ikke lenger være tilgjengelig. Etter en periode vil også metadata bli slettet. Dette vil bli implementert i framtiden.
 
-## Integrasjonsutvikling
+## API-referanse
 
 Alle operasjoner i dokumentlageret utføres på en konto, som er en ressurs som hører til dokumentlager-tjenesten til en 
 Fiks-organisasjon. Hvordan disse organiseres er opp til hver organisasjon. Man kan ha én konto for alt, eller dele det 
