@@ -49,13 +49,6 @@ Tjenestespesifikke forutsetninger:
 
 Når et dokument slettes, vil metadata fortsette å eksistere, men selve dokumentet (innholdet) vil ikke lenger være tilgjengelig. Etter en periode vil også metadata bli slettet. Dette vil bli implementert i framtiden.
 
-## Klientbibliotek
-
-KS tilbyr en Java-klient for opplasting og nedlasting. Denne støtter blant annet klient-side kryptering automatisk ved opplasting.
-
-Kode og dokumentasjon: [ks-no/fiks-dokumentlager-klient på GitHub](https://github.com/ks-no/fiks-dokumentlager-klient).
-Se også [samlet oversikt over klientbiblioteker]({{% ref "klientbiblioteker.md" %}}).
-
 ## Integrasjonsutvikling
 
 Alle operasjoner i dokumentlageret utføres på en konto, som er en ressurs som hører til dokumentlager-tjenesten til en 
@@ -227,5 +220,32 @@ Integrasjoner kan også slette alle dokumenter med en gitt korrelasjonsid som er
 - 404 Not Found - Fant ikke spesifisert konto og/eller organisasjon.
 - 410 Gone - Kontoen er slettet.
 
-### Feilmeldinger
-[Beskrivelse av feilmeldinger](../../integrasjoner/#feilmeldinger) 
+## Versjonering
+
+| Versjon | Status | Utfasingsdato | Hva er nytt |
+|---------|--------|---------------|-------------|
+| v1 | ✅ Gjeldende | – | Første versjon av Fiks Dokumentlager REST API |
+
+---
+
+## Klientbibliotek
+
+KS tilbyr en Java-klient for opplasting og nedlasting. Denne støtter blant annet klient-side kryptering automatisk ved opplasting.
+
+Kode og dokumentasjon: [ks-no/fiks-dokumentlager-klient på GitHub](https://github.com/ks-no/fiks-dokumentlager-klient).
+Se også [samlet oversikt over klientbiblioteker]({{% ref "klientbiblioteker.md" %}}).
+
+---
+
+## Relaterte tjenester
+
+- [Fiks IO]({{% ref "fiksio.md" %}}) – Refererer ofte til dokumenter i dokumentlager.
+- [SvarUt / SvarInn]({{% ref "svarut/_index.md" %}}) – Benytter Dokumentlageret for å lagre forsendelser.
+- [Fiks Digisos]({{% ref "digisos.md" %}}) – Lagrer sosialsøknader kryptert via Fiks Dokumentlager.
+- Generell [Feilhåndtering og feilmeldinger]({{% ref "integrasjoner.md" %}}#feilmeldinger) for APIet.
+
+---
+
+## Få hjelp
+
+{{< get-help email="fiks@ksdigital.no" support_page="/felles/support/" >}}
