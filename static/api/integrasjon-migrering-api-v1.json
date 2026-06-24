@@ -1,0 +1,150 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "KS SvarUt: Integrasjon migrering API",
+    "description": "API for å hjelpe overgang fra Basic auth til Fiks-integrasjon med Maskinporten",
+    "contact": {
+      "name": "Fiks-brukerstøtte",
+      "url": "https://developers.fiks.ks.no",
+      "email": "fiks@ksdigital.no"
+    },
+    "version": "v1"
+  },
+  "servers": [
+    {
+      "url": "https://api.fiks.ks.no",
+      "description": "KS Fiks API host"
+    }
+  ],
+  "security": [
+    {
+      "basicAuth": []
+    }
+  ],
+  "tags": [
+    {
+      "name": "Migrering",
+      "description": "API for migrering"
+    }
+  ],
+  "paths": {
+    "/svarut-konfigurasjon/api/v1/migrering/integrasjoner": {
+      "post": {
+        "tags": [
+          "Migrering"
+        ],
+        "summary": "Oppretter nødvendig konfigurasjon for å bytte fra Basic Auth (SOAP / REST v1) til Fiks-integrasjon med Maskinporten (REST v2 og v3). Endepunktet krever både Basic auth og et Maskinporten-token. Førstnevnte benyttes til å autentisere kontoen man vil migrere, og opprettet integrasjon vil få tilgang til å sende forsendelser via denne. Integrasjonen vil kunne benyttes med Maskinporten-tokens som er utstedt til samme organisasjonsnummer som tokenet som legges ved denne requesten.Man vil kun kunne opprette én integrasjon per avsender. Om endepunktet kalles flere ganger vil hvert nye kall generere og returnere et nytt passord.",
+        "operationId": "opprettIntegrasjon",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/IntegrasjonMigreringRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Returnerer et objekt som består av id til akseptert forsendelse",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpprettetIntegrasjon"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Feil",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "basicAuth": {
+        "type": "http",
+        "scheme": "basic"
+      }
+    },
+    "schemas": {
+      "IntegrasjonMigreringRequest": {
+        "required": [
+          "maskinportenToken"
+        ],
+        "type": "object",
+        "properties": {
+          "maskinportenToken": {
+            "type": "string",
+            "description": "Gyldig ikke-utløpt Maskinporten-token som er utstedt til samme organisasjonsnummer som senere skal benytte denne integrasjonen."
+          }
+        },
+        "description": "Ekstra informasjon for oppretting av integrasjon"
+      },
+      "OpprettetIntegrasjon": {
+        "required": [
+          "id",
+          "passord"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Id for opprettet integrasjon. Benyttes i IntegrasjonId header for endepunkter som er beskyttet av Maskinporten"
+          },
+          "passord": {
+            "type": "string",
+            "description": "Generert passord for integrasjonen. Benyttes i IntegrasjonPassord header for endepunkter som er beskyttet av Maskinporten"
+          }
+        },
+        "description": "Id for opprettet integrasjon og generert passord"
+      },
+      "ErrorMessage": {
+        "type": "object",
+        "properties": {
+          "timestamp": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "status": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "error": {
+            "type": "string"
+          },
+          "errorId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "path": {
+            "type": "string"
+          },
+          "originalPath": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          },
+          "errorCode": {
+            "type": "string"
+          },
+          "errorJson": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}
