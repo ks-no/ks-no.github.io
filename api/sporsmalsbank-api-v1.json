@@ -35,6 +35,10 @@
       "description": "Klassifiseringsregister — lister med gyldige koder"
     },
     {
+      "name": "Pakketype",
+      "description": "Data-drevne pakketyper med runtime CRUD"
+    },
+    {
       "name": "Intern",
       "description": "Interne endepunkter for tjeneste-til-tjeneste-kall (integrasjonsautentisering)"
     }
@@ -710,6 +714,160 @@
         ]
       }
     },
+    "/sporsmalsbank/api/v1/pakketyper": {
+      "get": {
+        "summary": "Hent alle pakketyper",
+        "operationId": "hentAllePakketyper",
+        "tags": [
+          "Pakketype"
+        ],
+        "responses": {
+          "200": {
+            "description": "Liste over pakketyper",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Pakketype"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "post": {
+        "summary": "Opprett ny pakketype",
+        "operationId": "opprettPakketype",
+        "tags": [
+          "Pakketype"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OpprettPakketype"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Opprettet",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Pakketype"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Ugyldig input"
+          },
+          "409": {
+            "description": "Kode er allerede i bruk"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/sporsmalsbank/api/v1/pakketyper/{kode}": {
+      "put": {
+        "summary": "Oppdater pakketype (kode er immutabel)",
+        "operationId": "oppdaterPakketype",
+        "tags": [
+          "Pakketype"
+        ],
+        "parameters": [
+          {
+            "name": "kode",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OpprettPakketype"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Oppdatert",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Pakketype"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Forsøk på å endre kode"
+          },
+          "404": {
+            "description": "Ikke funnet"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "delete": {
+        "summary": "Slett pakketype (kun hvis ikke i bruk)",
+        "operationId": "slettPakketype",
+        "tags": [
+          "Pakketype"
+        ],
+        "parameters": [
+          {
+            "name": "kode",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Slettet"
+          },
+          "404": {
+            "description": "Ikke funnet"
+          },
+          "409": {
+            "description": "Pakketype er i bruk — deaktiver via aktiv=false"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
     "/sporsmalsbank/api/v1/versjoner/{sporreskjemaVersjonId}/pakker": {
       "get": {
         "summary": "Hent pakker for en spørreskjemaversjon",
@@ -1219,6 +1377,18 @@
             "$ref": "#/components/schemas/PakkeType",
             "description": "Klassifisering av pakken — MINIMUMSKRAV (grønn/gul/rød-evaluering) eller EVALUERINGSKRAV (poengbasert). Null for eldre pakker."
           },
+          "pakkeTypeNavn": {
+            "type": "string",
+            "nullable": true,
+            "readOnly": true,
+            "description": "Visningsnavn for pakketypen"
+          },
+          "pakkeTypeAutoSkar": {
+            "type": "boolean",
+            "nullable": true,
+            "readOnly": true,
+            "description": "Om pakketypen støtter automatisk skåring"
+          },
           "selvdeklareringstyper": {
             "type": "array",
             "items": {
@@ -1270,6 +1440,18 @@
           },
           "pakkeType": {
             "$ref": "#/components/schemas/PakkeType"
+          },
+          "pakkeTypeNavn": {
+            "type": "string",
+            "nullable": true,
+            "readOnly": true,
+            "description": "Visningsnavn for pakketypen"
+          },
+          "pakkeTypeAutoSkar": {
+            "type": "boolean",
+            "nullable": true,
+            "readOnly": true,
+            "description": "Om pakketypen støtter automatisk skåring"
           },
           "selvdeklareringstyper": {
             "type": "array",
@@ -1355,11 +1537,7 @@
       },
       "PakkeType": {
         "type": "string",
-        "enum": [
-          "MINIMUMSKRAV",
-          "EVALUERINGSKRAV"
-        ],
-        "description": "Klassifisering av pakken brukt av FTIKS V1"
+        "description": "Stabil kode-nøkkel for pakketypen (f.eks. \"MINIMUMSKRAV\", \"EVALUERINGSKRAV\"). Verdien er immutabel etter oppretting. Nye typer kan opprettes via POST /pakketyper."
       },
       "Evaluering": {
         "type": "string",
@@ -1502,6 +1680,75 @@
           "tidspunkt": {
             "type": "string",
             "format": "date-time"
+          }
+        }
+      },
+      "Pakketype": {
+        "type": "object",
+        "required": [
+          "kode",
+          "navn"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "readOnly": true
+          },
+          "kode": {
+            "type": "string",
+            "maxLength": 50,
+            "description": "Stabil, unik kode. Immutabel etter oppretting."
+          },
+          "navn": {
+            "type": "string",
+            "maxLength": 200,
+            "description": "Visningsnavn"
+          },
+          "beskrivelse": {
+            "type": "string",
+            "nullable": true,
+            "description": "Valgfri beskrivelse"
+          },
+          "autoSkar": {
+            "type": "boolean",
+            "default": false,
+            "description": "Om pakker med denne typen kan auto-scores"
+          },
+          "aktiv": {
+            "type": "boolean",
+            "default": true,
+            "description": "Inaktive typer kan ikke tildeles nye pakker"
+          }
+        }
+      },
+      "OpprettPakketype": {
+        "type": "object",
+        "required": [
+          "kode",
+          "navn"
+        ],
+        "properties": {
+          "kode": {
+            "type": "string",
+            "maxLength": 50,
+            "description": "Stabil, unik kode. Immutabel etter oppretting."
+          },
+          "navn": {
+            "type": "string",
+            "maxLength": 200
+          },
+          "beskrivelse": {
+            "type": "string",
+            "nullable": true
+          },
+          "autoSkar": {
+            "type": "boolean",
+            "default": false
+          },
+          "aktiv": {
+            "type": "boolean",
+            "default": true
           }
         }
       }
