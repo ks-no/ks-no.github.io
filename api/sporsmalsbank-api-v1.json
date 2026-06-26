@@ -750,6 +750,81 @@
         ]
       }
     },
+    "/sporsmalsbank/api/v1/klassifiseringslister": {
+      "get": {
+        "summary": "Hent alle klassifiseringslister",
+        "operationId": "hentAlleKlassifiseringslister",
+        "tags": [
+          "Klassifisering"
+        ],
+        "responses": {
+          "200": {
+            "description": "Liste over klassifiseringslister",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Klassifiseringsliste"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/sporsmalsbank/api/v1/klassifiseringslister/{listeKilde}": {
+      "get": {
+        "summary": "Hent klassifiseringsliste med gyldige koder",
+        "operationId": "hentKlassifiseringsliste",
+        "tags": [
+          "Klassifisering"
+        ],
+        "parameters": [
+          {
+            "name": "listeKilde",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Klassifiseringsliste",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Klassifiseringsliste"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Ikke funnet",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Feilmelding"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
     "/sporsmalsbank/api/v1/intern/pakker/{id}": {
       "get": {
         "summary": "Hent pakke (tjeneste-til-tjeneste)",
@@ -859,81 +934,6 @@
           }
         ]
       }
-    },
-    "/sporsmalsbank/api/v1/klassifiseringslister": {
-      "get": {
-        "summary": "Hent alle klassifiseringslister",
-        "operationId": "hentAlleKlassifiseringslister",
-        "tags": [
-          "Klassifisering"
-        ],
-        "responses": {
-          "200": {
-            "description": "Liste over klassifiseringslister",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/Klassifiseringsliste"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "bearerAuth": []
-          }
-        ]
-      }
-    },
-    "/sporsmalsbank/api/v1/klassifiseringslister/{listeKilde}": {
-      "get": {
-        "summary": "Hent klassifiseringsliste med gyldige koder",
-        "operationId": "hentKlassifiseringsliste",
-        "tags": [
-          "Klassifisering"
-        ],
-        "parameters": [
-          {
-            "name": "listeKilde",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Klassifiseringsliste",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Klassifiseringsliste"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Ikke funnet",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Feilmelding"
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "bearerAuth": []
-          }
-        ]
-      }
     }
   },
   "components": {
@@ -971,6 +971,19 @@
           },
           "status": {
             "$ref": "#/components/schemas/VersjonStatus"
+          },
+          "selvdeklareringstype": {
+            "type": "string",
+            "maxLength": 200,
+            "description": "Identifier for selvdeklareringstypen dette skjemaet er gjeldende for (AC #7). Eksempel: \"digitalt-tilsyn\". Livssyklus følger VersjonStatus (UTKAST/PUBLISERT/ARKIVERT). Null = ikke klassifisert (eldre data).\n"
+          },
+          "pakker": {
+            "type": "array",
+            "readOnly": true,
+            "description": "Pakkene som hører til dette skjemaet (C14). Co-modellert i read-responsen for å unngå ekstra rundtur til pakke-endepunktet. Populeres kun ved lesing, ignoreres ved skriv.\n",
+            "items": {
+              "$ref": "#/components/schemas/PakkeOversikt"
+            }
           },
           "opprettet": {
             "type": "string",
@@ -1030,6 +1043,10 @@
           "status": {
             "$ref": "#/components/schemas/VersjonStatus"
           },
+          "selvdeklareringstype": {
+            "type": "string",
+            "description": "Identifier for selvdeklareringstypen dette skjemaet er gjeldende for"
+          },
           "opprettet": {
             "type": "string",
             "format": "date-time"
@@ -1079,9 +1096,9 @@
             "type": "boolean",
             "default": true
           },
-          "kategori": {
-            "type": "string",
-            "description": "Kategori for gruppering, f.eks. Informasjonssikkerhet"
+          "kravomrade": {
+            "$ref": "#/components/schemas/Kravomrade",
+            "description": "Tematisk kravområde for spørsmålet — brukes til gruppering og filtrering"
           },
           "svaralternativer": {
             "type": "array",
@@ -1129,6 +1146,10 @@
           "rekkefolge": {
             "type": "integer",
             "default": 0
+          },
+          "evaluering": {
+            "$ref": "#/components/schemas/Evaluering",
+            "description": "Evalueringsresultat for Minimumskrav-svaralternativer (grønn/gul/rød). Null for Evalueringskrav."
           }
         }
       },
@@ -1194,6 +1215,17 @@
             "default": false,
             "description": "Om dette er en grunnpakke som er obligatorisk for alle leverandører"
           },
+          "pakkeType": {
+            "$ref": "#/components/schemas/PakkeType",
+            "description": "Klassifisering av pakken — MINIMUMSKRAV (grønn/gul/rød-evaluering) eller EVALUERINGSKRAV (poengbasert). Null for eldre pakker."
+          },
+          "selvdeklareringstyper": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Selvdeklareringstyper pakken er bundet til (AC #7, #13, #14). MINIMUMSKRAV-pakker kan være FELLES — bundet til flere typer uten å kopiere spørsmål. Tom liste = ikke klassifisert (eldre data).\n"
+          },
           "innhold": {
             "$ref": "#/components/schemas/PakkeInnhold"
           },
@@ -1235,6 +1267,16 @@
           },
           "erGrunnpakke": {
             "type": "boolean"
+          },
+          "pakkeType": {
+            "$ref": "#/components/schemas/PakkeType"
+          },
+          "selvdeklareringstyper": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Selvdeklareringstyper pakken er bundet til"
           },
           "antallSporsmal": {
             "type": "integer"
@@ -1311,6 +1353,32 @@
           }
         }
       },
+      "PakkeType": {
+        "type": "string",
+        "enum": [
+          "MINIMUMSKRAV",
+          "EVALUERINGSKRAV"
+        ],
+        "description": "Klassifisering av pakken brukt av FTIKS V1"
+      },
+      "Evaluering": {
+        "type": "string",
+        "enum": [
+          "GODKJENT",
+          "DELVIS_GODKJENT",
+          "IKKE_GODKJENT"
+        ],
+        "description": "Evalueringsresultat for et Minimumskrav-svaralternativ (grønn/gul/rød). Utvidbart — nye verdier vil legges til uten at eksisterende fjernes.\n"
+      },
+      "Kravomrade": {
+        "type": "string",
+        "enum": [
+          "STYRING_KONTROLL_OG_ETTERLEVELSE",
+          "LOSNING_OG_FUNKSJONALITET",
+          "OPERASJONELL_SIKKERHET"
+        ],
+        "description": "Tematisk kravområde for et spørsmål. Brukes til gruppering og filtrering. Visningsnavn: STYRING_KONTROLL_OG_ETTERLEVELSE = \"Styring, kontroll og etterlevelse\", LOSNING_OG_FUNKSJONALITET = \"Løsning og funksjonalitet\", OPERASJONELL_SIKKERHET = \"Operasjonell sikkerhet\". Utvidbart — nye verdier kan legges til uten at eksisterende fjernes.\n"
+      },
       "VersjonStatus": {
         "type": "string",
         "enum": [
@@ -1358,18 +1426,6 @@
           "totaltAntall": {
             "type": "integer",
             "format": "int64"
-          }
-        }
-      },
-      "Feilmelding": {
-        "type": "object",
-        "properties": {
-          "melding": {
-            "type": "string"
-          },
-          "tidspunkt": {
-            "type": "string",
-            "format": "date-time"
           }
         }
       },
@@ -1434,6 +1490,18 @@
               "$ref": "#/components/schemas/Klassifiseringskode"
             },
             "description": "Gyldige koder i denne listen"
+          }
+        }
+      },
+      "Feilmelding": {
+        "type": "object",
+        "properties": {
+          "melding": {
+            "type": "string"
+          },
+          "tidspunkt": {
+            "type": "string",
+            "format": "date-time"
           }
         }
       }
