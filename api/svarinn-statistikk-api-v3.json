@@ -4,7 +4,7 @@
     "title": "Fiks SvarUt: SvarInn Statistikk",
     "description": "SvarInn Statistikk API som gir oversikt over forsendelser knyttet mot et mottakersystem.",
     "contact": {
-      "name": "Fiks-brukerstøtte",
+      "name": "Fiks brukerstøtte",
       "url": "https://ks-no.github.io/",
       "email": "fiks@ksdigital.no"
     },
@@ -18,6 +18,10 @@
     {
       "url": "https://api.fiks.ks.no",
       "description": "KS Fiks API host"
+    },
+    {
+      "url": "https://api.fiks.test.ks.no",
+      "description": "KS Fiks TEST API host"
     }
   ],
   "security": [
@@ -28,7 +32,7 @@
   "tags": [
     {
       "name": "Statistikk",
-      "description": "API for SvarInn konfigurasjon"
+      "description": "Operasjoner for statistikk over SvarInn-forsendelser"
     }
   ],
   "paths": {
@@ -43,6 +47,9 @@
         "parameters": [
           {
             "$ref": "#/components/parameters/MottakersystemId"
+          },
+          {
+            "$ref": "#/components/parameters/OverGrenseverdi"
           }
         ],
         "responses": {
@@ -56,6 +63,9 @@
               }
             }
           },
+          "401": {
+            "$ref": "#/components/responses/Error401"
+          },
           "403": {
             "$ref": "#/components/responses/Error403"
           },
@@ -65,27 +75,28 @@
         }
       }
     },
-    "/svarinn/api/v3/statistikk/organisasjoner": {
-      "get": {
+    "/svarinn/api/v3/statistikk/mottakersystemer/{mottakersystemId}/organisasjoner/{organisasjonsnummer}": {
+      "post": {
         "tags": [
           "Statistikk"
         ],
-        "description": "Henter statistikk om antall forsendelser som er klart for mottak for en organiasjons",
+        "description": "Henter statistikk om antall forsendelser som er klart for mottak for en organisasjon knyttet til et mottakersystem.",
         "summary": "Henter statistikk om en organisasjon",
         "operationId": "hentStatistikkOrganisasjon",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/OrganisasjonStatistikkRequest"
-              }
-            }
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/MottakersystemId"
           },
-          "required": true
-        },
+          {
+            "$ref": "#/components/parameters/Organisasjonsnummer"
+          },
+          {
+            "$ref": "#/components/parameters/OverGrenseverdi"
+          }
+        ],
         "responses": {
           "200": {
-            "description": "Statistikk post til et organsiasjonsnummer med gitt sikkerhetsnivå og forsendelsetyper",
+            "description": "Statistikk for post som ligger i Klart for mottak for et gitt organisasjonsnummer knyttet til et mottakersystem.",
             "content": {
               "application/json": {
                 "schema": {
@@ -93,6 +104,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Error401"
           },
           "403": {
             "$ref": "#/components/responses/Error403"
@@ -108,13 +122,38 @@
     "parameters": {
       "MottakersystemId": {
         "name": "mottakersystemId",
+        "description": "Mottakersystemets id",
         "required": true,
         "in": "path",
         "schema": {
           "type": "string",
-          "format": "uuid",
-          "description": "Mottakersystemets id"
+          "format": "uuid"
         }
+      },
+      "Organisasjonsnummer": {
+        "name": "organisasjonsnummer",
+        "description": "Organisasjonsnummeret til organisasjonen som skal hentes statistikk for",
+        "required": true,
+        "in": "path",
+        "schema": {
+          "type": "string",
+          "pattern": "^[0-9]{9}$"
+        }
+      },
+      "OverGrenseverdi": {
+        "name": "overGrenseverdi",
+        "description": "Grenseverdi som brukes for å gruppere forsendelser etter hvor lenge de har ligget klare til uthenting i mottakersystemet",
+        "in": "query",
+        "required": false,
+        "schema": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/components/schemas/Tidsgrenseverdi"
+          }
+        },
+        "style": "form",
+        "explode": true
       }
     },
     "securitySchemes": {
@@ -130,7 +169,7 @@
         "content": {
           "application/json": {
             "schema": {
-              "$ref": "#/components/schemas/ErrorMessage"
+              "$ref": "#/components/schemas/ErrorMessage-2"
             }
           }
         }
@@ -140,7 +179,7 @@
         "content": {
           "application/json": {
             "schema": {
-              "$ref": "#/components/schemas/ErrorMessage"
+              "$ref": "#/components/schemas/ErrorMessage-2"
             }
           }
         }
@@ -150,7 +189,7 @@
         "content": {
           "application/json": {
             "schema": {
-              "$ref": "#/components/schemas/ErrorMessage"
+              "$ref": "#/components/schemas/ErrorMessage-2"
             }
           }
         }
@@ -160,7 +199,7 @@
         "content": {
           "application/json": {
             "schema": {
-              "$ref": "#/components/schemas/ErrorMessage"
+              "$ref": "#/components/schemas/ErrorMessage-2"
             }
           }
         }
@@ -169,35 +208,17 @@
     "schemas": {
       "MottakersystemStatistikk": {
         "type": "object",
+        "required": [
+          "organisasjoner"
+        ],
+        "description": "Statistikk for forsendelser som er klare for å hentes ut av fagsystem",
         "properties": {
-          "mottakersystemId": {
-            "type": "string",
-            "format": "uuid",
-            "description": "Id til mottakersystemet det er hentet statistikk for"
-          },
-          "klarForMottakOver2timer": {
-            "type": "integer",
-            "format": "int32",
-            "description": "Antall forsendelser som har hatt status KLAR_FOR_MOTTAK i over 2 timer"
-          },
-          "klarForMottakUnder2timer": {
-            "type": "integer",
-            "format": "int32",
-            "description": "Antall forsendelser som har hatt status KLAR_FOR_MOTTAK i under 2 timer"
-          }
-        }
-      },
-      "OrganisasjonStatistikkRequest": {
-        "type": "object",
-        "properties": {
-          "organisasjonsnummer": {
-            "$ref": "#/components/schemas/Organisasjonsnummer"
-          },
-          "sikkerhetsniva": {
-            "$ref": "#/components/schemas/Sikkerhetsniva"
-          },
-          "forsendelsestyper": {
-            "$ref": "#/components/schemas/Forsendelsestyper"
+          "organisasjoner": {
+            "type": "array",
+            "description": "Liste med en eller flere organisasjoner som har forsendelser klare for uthenting",
+            "items": {
+              "$ref": "#/components/schemas/OrganisasjonStatistikk"
+            }
           }
         }
       },
@@ -208,44 +229,53 @@
             "type": "string",
             "description": "Organisasjonsnummeret det er hentet statistikk for"
           },
-          "klarForMottakOver2timer": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "klarForMottakUnder2timer": {
-            "type": "integer",
-            "format": "int32"
+          "forsendelserKlareForUthenting": {
+            "required": [
+              "totalt",
+              "overGrenseverdi"
+            ],
+            "type": "object",
+            "description": "Statistikk for forsendelser som er klare for å hentes ut av fagsystem",
+            "properties": {
+              "totalt": {
+                "type": "integer",
+                "format": "int32",
+                "minimum": 0,
+                "description": "Totalt antall forsendelser som er klare for å hentes ut fra mottakersystemet"
+              },
+              "overGrenseverdi": {
+                "type": "array",
+                "description": "Liste med en eller flere grupperinger med forsendelser som har ligget klare til mottak over en gitt grenseverdi",
+                "minItems": 1,
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "antall": {
+                      "type": "integer",
+                      "format": "int32",
+                      "minimum": 0,
+                      "description": "Antall forsendelser over grenseverdi"
+                    },
+                    "grenseverdi": {
+                      "$ref": "#/components/schemas/Tidsgrenseverdi"
+                    }
+                  }
+                }
+              }
+            }
           }
         }
       },
       "Organisasjonsnummer": {
         "type": "string",
-        "pattern": "^[0-9]{9}$"
+        "pattern": "^[0-9]{9}$",
+        "description": "Organisasjonsnummeret til organisasjonen som skal hentes statistikk for"
       },
-      "Sikkerhetsniva": {
+      "Tidsgrenseverdi": {
         "type": "string",
-        "enum": [
-          "ALLE",
-          "HOYESTE",
-          "BETYDELIG"
-        ]
-      },
-      "Forsendelsestyper": {
-        "required": [
-          "forsendelsestyper"
-        ],
-        "type": "object",
-        "properties": {
-          "forsendelsestyper": {
-            "uniqueItems": true,
-            "type": "array",
-            "description": "Liste med alle eksisterende forsendelsestyper",
-            "items": {
-              "type": "string",
-              "description": "Liste med alle eksisterende forsendelsestyper"
-            }
-          }
-        }
+        "format": "duration",
+        "example": "P3Y6M4DT12H30M5S",
+        "description": "Grenseverdi for tid"
       },
       "ErrorMessage": {
         "type": "object",
@@ -280,6 +310,51 @@
           "errorJson": {
             "type": "string"
           }
+        }
+      },
+      "ErrorMessage-2": {
+        "type": "object",
+        "description": "Feilmelding fra Fiks-plattformen",
+        "externalDocs": {
+          "description": "Beskrivelse av feilmeldinger",
+          "url": "https://ks-no.github.io/fiks-plattform/integrasjoner/#feilmeldinger"
+        },
+        "properties": {
+          "timestamp": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "status": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "error": {
+            "type": "string"
+          },
+          "errorId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "path": {
+            "type": "string"
+          },
+          "originalPath": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          },
+          "errorCode": {
+            "type": "string"
+          },
+          "errorJson": {
+            "type": "string"
+          }
+        },
+        "example": {
+          "message": "Mangler tilgang",
+          "errorId": "ee2ed64d-de8b-45f9-b9c6-3363d662d93b",
+          "status": 403
         }
       }
     }
