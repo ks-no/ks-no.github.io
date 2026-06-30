@@ -1588,6 +1588,114 @@
           }
         ]
       }
+    },
+    "/selvdeklarering/api/v1/innleveringer/start": {
+      "post": {
+        "summary": "Start innlevering (integrasjon/LP)",
+        "description": "LP kaller dette endepunktet for å starte en selvdeklareringsprosess. Oppretter et UTKAST-innlevering med produktnavn+kontaktEpost snapshot. Krever maskinporten/integrasjonsautentisering.",
+        "operationId": "startInnlevering",
+        "tags": [
+          "Innlevering"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/StartInnleveringRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "UTKAST innlevering opprettet",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InnlevertSelvdeklarering"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/selvdeklarering/api/v1/offentlig/selvdeklareringer/sok": {
+      "get": {
+        "summary": "Paginert søk i offentlig tilgjengelige innleveringer",
+        "description": "Returnerer INNLEVERT-poster med produktnavn+kontaktEpost snapshot. D1-lock: kun tilgjengelig bak `app.offentlig-sok.enabled=true` (default false). Krever innlogging.",
+        "operationId": "sokOffentligPaginert",
+        "tags": [
+          "Offentlig"
+        ],
+        "parameters": [
+          {
+            "name": "produktId",
+            "in": "query",
+            "required": false,
+            "description": "Filtrer på produkt-UUID",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "leverandorId",
+            "in": "query",
+            "required": false,
+            "description": "Filtrer på leverandør-UUID",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "side",
+            "in": "query",
+            "required": false,
+            "description": "Sidenummer (0-basert, default 0)",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 0
+            }
+          },
+          {
+            "name": "antallPerSide",
+            "in": "query",
+            "required": false,
+            "description": "Antall resultater per side (default 20, max 100)",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 20
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Paginert søkeresultat",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OffentligInnlevertSokResultat"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
     }
   },
   "components": {
@@ -1735,6 +1843,16 @@
             "type": "string",
             "readOnly": true,
             "description": "Hvem som leverte inn"
+          },
+          "produktnavn": {
+            "type": "string",
+            "nullable": true,
+            "description": "Produktnavn snapshot fra LP ved start av innlevering (V11)"
+          },
+          "kontaktEpost": {
+            "type": "string",
+            "nullable": true,
+            "description": "Kontaktepost snapshot fra LP ved start av innlevering (V11)"
           }
         }
       },
@@ -1813,6 +1931,16 @@
           },
           "opprettetAv": {
             "type": "string"
+          },
+          "produktnavn": {
+            "type": "string",
+            "nullable": true,
+            "description": "Produktnavn snapshot fra LP"
+          },
+          "kontaktEpost": {
+            "type": "string",
+            "nullable": true,
+            "description": "Kontaktepost snapshot fra LP"
           }
         }
       },
@@ -2193,6 +2321,16 @@
             "type": "string",
             "format": "date-time",
             "nullable": true
+          },
+          "produktnavn": {
+            "type": "string",
+            "nullable": true,
+            "description": "Produktnavn snapshot fra LP"
+          },
+          "kontaktEpost": {
+            "type": "string",
+            "nullable": true,
+            "description": "Kontaktepost snapshot fra LP"
           }
         }
       },
@@ -2469,6 +2607,120 @@
           "nettsted": {
             "type": "string",
             "nullable": true
+          }
+        }
+      },
+      "StartInnleveringRequest": {
+        "type": "object",
+        "required": [
+          "produktId",
+          "leverandorId"
+        ],
+        "description": "Request fra LP for å starte en selvdeklareringsprosess med produktnavn+kontaktEpost snapshot.",
+        "properties": {
+          "produktId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Produkt-UUID fra systemkatalog"
+          },
+          "leverandorId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Leverandør-UUID fra systemkatalog"
+          },
+          "kravspesifikasjonId": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true,
+            "description": "Kravspesifikasjon LP vil knytte innleveringen til"
+          },
+          "produktnavn": {
+            "type": "string",
+            "nullable": true,
+            "description": "Produktnavn snapshot fra systemkatalog ved opprettingstidspunktet"
+          },
+          "kontaktEpost": {
+            "type": "string",
+            "nullable": true,
+            "description": "Kontaktepost snapshot fra systemkatalog ved opprettingstidspunktet"
+          }
+        }
+      },
+      "OffentligInnlevertOversiktMedSnapshot": {
+        "type": "object",
+        "required": [
+          "id",
+          "produktId",
+          "leverandorId",
+          "versjon"
+        ],
+        "description": "Søkeresultat fra offentlig paginert søk. Inkluderer produktnavn+kontaktEpost snapshot.",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "selvdeklareringId": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "produktId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "leverandorId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "versjon": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "innlevert": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "produktnavn": {
+            "type": "string",
+            "nullable": true,
+            "description": "Produktnavn snapshot fra LP"
+          },
+          "kontaktEpost": {
+            "type": "string",
+            "nullable": true,
+            "description": "Kontaktepost snapshot fra LP"
+          }
+        }
+      },
+      "OffentligInnlevertSokResultat": {
+        "type": "object",
+        "required": [
+          "innhold",
+          "side",
+          "antallPerSide",
+          "totaltAntall"
+        ],
+        "description": "Paginert søkeresultat fra offentlig søk over INNLEVERT-poster.",
+        "properties": {
+          "innhold": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/OffentligInnlevertOversiktMedSnapshot"
+            }
+          },
+          "side": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "antallPerSide": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totaltAntall": {
+            "type": "integer",
+            "format": "int64"
           }
         }
       }
