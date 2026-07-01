@@ -29,8 +29,8 @@
   ],
   "tags": [
     {
-      "name": "Hendelse",
-      "description": "Endepunkt for å håndtere konto hendelser fra saksbehandling system "
+      "name": "Postering",
+      "description": "Endepunkt for å håndtere konto posteringer fra saksbehandling system "
     },
     {
       "name": "Query",
@@ -38,27 +38,34 @@
     }
   ],
   "paths": {
-    "/tilskuddkonto/api/v1/hendelse": {
+    "/tilskuddkonto/api/v1/postering": {
       "post": {
         "tags": [
-          "Hendelse"
+          "Postering"
         ],
-        "operationId": "mottaHendelse",
-        "summary": "Mottar en hendelse og genererer domenehendelser",
-        "description": "Idempotens håndteres automatisk ved at `Hendelse.id` (UUID) brukes som idempotensnøkkel.   Hvis en hendelse med samme `id` mottas flere ganger, returneres HTTP 409 Conflict.\n",
+        "operationId": "mottaPostering",
+        "summary": "Mottar en postering og genererer domeneposteringer",
+        "description": "Idempotens håndteres automatisk ved at `Postering.tilskuddskontoId` (UUID) brukes som idempotensnøkkel.   Hvis en postering med samme `tilskuddskontoId` mottas flere ganger, returneres HTTP 409 Conflict.\n",
         "requestBody": {
           "required": true,
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/Hendelse"
+                "$ref": "#/components/schemas/Postering"
               }
             }
           }
         },
         "responses": {
-          "202": {
-            "description": "Hendelse akseptert"
+          "201": {
+            "description": "Postering er registrert",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Postering"
+                }
+              }
+            }
           },
           "400": {
             "$ref": "#/components/responses/400BadRequest"
@@ -78,7 +85,7 @@
         }
       }
     },
-    "/tilskuddkonto/api/v1/ordninger/{tilskuddsregisterId}": {
+    "/tilskuddkonto/api/v1/utlysinger/{tilskuddsregisterId}": {
       "get": {
         "tags": [
           "Query"
@@ -212,19 +219,19 @@
           }
         }
       },
-      "Hendelse": {
+      "Postering": {
         "type": "object",
         "required": [
-          "id",
-          "type",
+          "tilskuddskontoId",
+          "posteringType",
           "belop"
         ],
         "properties": {
-          "id": {
+          "tilskuddskontoId": {
             "type": "string",
             "format": "uuid"
           },
-          "type": {
+          "posteringType": {
             "type": "string",
             "enum": [
               "INNGAENDE BALANSE",
@@ -236,7 +243,7 @@
               "REVERSERT POSTERING"
             ]
           },
-          "tidsstempel": {
+          "posteringDatoTid": {
             "type": "string",
             "format": "date-time"
           },
@@ -268,9 +275,6 @@
           "belop": {
             "type": "number",
             "format": "double"
-          },
-          "signatur": {
-            "type": "string"
           },
           "reversererId": {
             "type": "string",
@@ -334,7 +338,7 @@
             "type": "string",
             "default": "NOK"
           },
-          "hendelser": {
+          "posteringer": {
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/SoknadHistorikkEntry"
@@ -346,10 +350,10 @@
       "SoknadHistorikkEntry": {
         "type": "object",
         "properties": {
-          "type": {
+          "posteringType": {
             "type": "string"
           },
-          "tid": {
+          "posteringDatoTid": {
             "type": "string",
             "format": "date-time"
           },
@@ -363,7 +367,7 @@
           }
         }
       },
-      "schemas-ErrorMessage": {
+      "ErrorMessage-2": {
         "type": "object",
         "description": "Feilmelding fra Fiks-plattformen",
         "externalDocs": {
@@ -415,7 +419,7 @@
         "content": {
           "application/json": {
             "schema": {
-              "$ref": "#/components/schemas/schemas-ErrorMessage"
+              "$ref": "#/components/schemas/ErrorMessage-2"
             }
           }
         }
@@ -425,7 +429,7 @@
         "content": {
           "application/json": {
             "schema": {
-              "$ref": "#/components/schemas/schemas-ErrorMessage"
+              "$ref": "#/components/schemas/ErrorMessage-2"
             }
           }
         }
@@ -435,17 +439,17 @@
         "content": {
           "application/json": {
             "schema": {
-              "$ref": "#/components/schemas/schemas-ErrorMessage"
+              "$ref": "#/components/schemas/ErrorMessage-2"
             }
           }
         }
       },
       "409Duplicate": {
-        "description": "Allerede mottatt (Idempotens via `id`)",
+        "description": "Allerede mottatt (Idempotens via `tilskuddskontoId`)",
         "content": {
           "application/json": {
             "schema": {
-              "$ref": "#/components/schemas/schemas-ErrorMessage"
+              "$ref": "#/components/schemas/ErrorMessage-2"
             }
           }
         }
@@ -455,7 +459,7 @@
         "content": {
           "application/json": {
             "schema": {
-              "$ref": "#/components/schemas/schemas-ErrorMessage"
+              "$ref": "#/components/schemas/ErrorMessage-2"
             }
           }
         }
