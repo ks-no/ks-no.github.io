@@ -22,6 +22,52 @@
     "description" : "API for konfigurering av Fiks Protokoll"
   } ],
   "paths" : {
+    "/fiks-protokoll/api/v1/konfigurasjon/protokollSystemInfo" : {
+      "get" : {
+        "tags" : [ "Protokoll-konfigurasjon-internal" ],
+        "description" : "Henter systemInfo for system/integrasjon/konto/kommune/fiksOrgId",
+        "operationId" : "getProtokollSystemInfo",
+        "parameters" : [ {
+          "name" : "type",
+          "in" : "query",
+          "schema" : {
+            "type" : "string",
+            "enum" : [ "SYSTEMID", "INTEGRASJONID", "FIKSORGID", "FIKSIOKONTOID", "KOMMUNENUMMER" ]
+          }
+        }, {
+          "name" : "id",
+          "in" : "query",
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Henter alle protokoller",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/ProtokollSystemResponse"
+                  }
+                }
+              }
+            }
+          },
+          "default" : {
+            "description" : "Noe gikk galt",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/fiks-protokoll/api/v1/konfigurasjon/valider" : {
       "post" : {
         "tags" : [ "Protokoll-konfigurasjon-internal" ],
@@ -56,6 +102,325 @@
   },
   "components" : {
     "schemas" : {
+      "EksternProtokollKontoResponse" : {
+        "required" : [ "beskrivelse", "id", "navn", "parter", "stottetProtokollNavn", "system" ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "minLength" : 1,
+            "type" : "string",
+            "description" : "Id på konto og tilhørende Fiks IO-konto",
+            "format" : "uuid"
+          },
+          "navn" : {
+            "minLength" : 1,
+            "type" : "string",
+            "description" : "Navn på konto"
+          },
+          "stottetProtokollNavn" : {
+            "minLength" : 1,
+            "type" : "string",
+            "description" : "Protokoll protokollkontoen implementerer"
+          },
+          "beskrivelse" : {
+            "minLength" : 1,
+            "type" : "string",
+            "description" : "Beskrivelse av kontoen"
+          },
+          "parter" : {
+            "type" : "array",
+            "description" : "Parter protokollkontoen implementerer",
+            "items" : {
+              "$ref" : "#/components/schemas/PartResponse"
+            }
+          },
+          "system" : {
+            "$ref" : "#/components/schemas/EksternProtokollSystemResponse"
+          }
+        },
+        "description" : "Kontoer systemet har har forespurt tilgang til"
+      },
+      "EksternProtokollSystemResponse" : {
+        "required" : [ "beskrivelse", "fiksOrg", "id", "navn" ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "minLength" : 1,
+            "type" : "string",
+            "description" : "System-id",
+            "format" : "uuid"
+          },
+          "navn" : {
+            "minLength" : 1,
+            "type" : "string",
+            "description" : "Navn på system"
+          },
+          "beskrivelse" : {
+            "minLength" : 1,
+            "type" : "string",
+            "description" : "Beskrivelse av system"
+          },
+          "fiksOrg" : {
+            "$ref" : "#/components/schemas/FiksOrgResponse"
+          }
+        },
+        "description" : "Eiersystem"
+      },
+      "FiksOrgResponse" : {
+        "required" : [ "id", "navn" ],
+        "type" : "object",
+        "properties" : {
+          "navn" : {
+            "type" : "string",
+            "description" : "Navn på fiksOrg"
+          },
+          "id" : {
+            "type" : "string",
+            "description" : "fiksOrgId",
+            "format" : "uuid"
+          },
+          "kommunenummer" : {
+            "type" : "string",
+            "description" : "Kommunenummer dersom fiksOrg er kommune"
+          }
+        },
+        "description" : "FiksOrg til eier av systemet"
+      },
+      "PartResponse" : {
+        "required" : [ "avsenderMeldingstyper", "beskrivelse", "mottakerMeldingstyper", "navn", "protokollnavn", "protokollversjon", "stottedeParter" ],
+        "type" : "object",
+        "properties" : {
+          "navn" : {
+            "minLength" : 1,
+            "pattern" : "^[A-Za-z0-9\\.\\-_]+$",
+            "type" : "string",
+            "description" : "Navn på part"
+          },
+          "beskrivelse" : {
+            "minLength" : 1,
+            "type" : "string",
+            "description" : "Beskrivelse av part"
+          },
+          "protokollnavn" : {
+            "minLength" : 1,
+            "type" : "string",
+            "description" : "Protokollnavn"
+          },
+          "protokollversjon" : {
+            "minLength" : 1,
+            "type" : "string",
+            "description" : "Protokollversjon"
+          },
+          "avsenderMeldingstyper" : {
+            "minItems" : 1,
+            "type" : "array",
+            "description" : "Meldingstyper part sender",
+            "items" : {
+              "type" : "string",
+              "description" : "Meldingstyper part sender"
+            }
+          },
+          "mottakerMeldingstyper" : {
+            "minItems" : 1,
+            "type" : "array",
+            "description" : "Meldingstyper part mottar",
+            "items" : {
+              "type" : "string",
+              "description" : "Meldingstyper part mottar"
+            }
+          },
+          "stottedeParter" : {
+            "type" : "array",
+            "description" : "Part dette part kan kommunisere med",
+            "items" : {
+              "type" : "string",
+              "description" : "Part dette part kan kommunisere med"
+            }
+          }
+        },
+        "description" : "Parter protokollkontoen implementerer"
+      },
+      "PartSummaryResponse" : {
+        "required" : [ "navn", "protokollnavn", "protokollversjon" ],
+        "type" : "object",
+        "properties" : {
+          "navn" : {
+            "minLength" : 1,
+            "pattern" : "^[A-Za-z0-9\\.\\-_]+$",
+            "type" : "string",
+            "description" : "Navn på part"
+          },
+          "protokollnavn" : {
+            "minLength" : 1,
+            "type" : "string",
+            "description" : "Protokollnavn"
+          },
+          "protokollversjon" : {
+            "minLength" : 1,
+            "type" : "string",
+            "description" : "Protokollversjon"
+          }
+        },
+        "description" : "Parter protokollkontoen implementerer"
+      },
+      "ProtokollKontoMetrikkResponse" : {
+        "type" : "object",
+        "properties" : {
+          "meldingerPaKo" : {
+            "type" : "integer",
+            "description" : "Antall meldinger på kø",
+            "format" : "int32"
+          },
+          "antallKonsumenter" : {
+            "type" : "integer",
+            "description" : "Antall konsumenter for protokollkonto",
+            "format" : "int32"
+          }
+        },
+        "description" : "Metrikk for konto"
+      },
+      "ProtokollKontoSummaryResponse" : {
+        "required" : [ "beskrivelse", "id", "navn", "parter", "stottetProtokollNavn" ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "minLength" : 1,
+            "type" : "string",
+            "description" : "Id på konto og tilhørende Fiks IO-konto",
+            "format" : "uuid"
+          },
+          "navn" : {
+            "minLength" : 1,
+            "type" : "string",
+            "description" : "Navn på konto"
+          },
+          "stottetProtokollNavn" : {
+            "minLength" : 1,
+            "type" : "string",
+            "description" : "Protokoll protokollkontoen implementerer"
+          },
+          "beskrivelse" : {
+            "minLength" : 1,
+            "type" : "string",
+            "description" : "Beskrivelse av kontoen"
+          },
+          "parter" : {
+            "type" : "array",
+            "description" : "Parter protokollkontoen implementerer",
+            "items" : {
+              "$ref" : "#/components/schemas/PartSummaryResponse"
+            }
+          },
+          "metrikk" : {
+            "$ref" : "#/components/schemas/ProtokollKontoMetrikkResponse"
+          },
+          "sendMeldingerDeaktivert" : {
+            "type" : "boolean",
+            "description" : "Hvis true, kan kontoen kun motta meldinger og ikke sende meldinger"
+          }
+        },
+        "description" : "Kontoer"
+      },
+      "ProtokollSystemResponse" : {
+        "required" : [ "automatiskGodkjenning", "beskrivelse", "eposter", "forespurteTilgangerTilKontoer", "id", "integrasjonId", "konfigureresAvIntegrasjon", "kontoer", "navn", "offentlig", "orgnummer", "tilgangTilKontoer" ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "minLength" : 1,
+            "type" : "string",
+            "description" : "System-id",
+            "format" : "uuid"
+          },
+          "integrasjonId" : {
+            "minLength" : 1,
+            "type" : "string",
+            "description" : "Integrasjon-id",
+            "format" : "uuid"
+          },
+          "orgnummer" : {
+            "minLength" : 1,
+            "pattern" : "^[0-9]{9}$",
+            "type" : "string",
+            "description" : "Orgnummer for organisasjon"
+          },
+          "navn" : {
+            "minLength" : 1,
+            "type" : "string",
+            "description" : "Navn på system"
+          },
+          "beskrivelse" : {
+            "minLength" : 1,
+            "type" : "string",
+            "description" : "Beskrivelse av system"
+          },
+          "eposter" : {
+            "minItems" : 1,
+            "type" : "array",
+            "description" : "Kontakteposter",
+            "items" : {
+              "type" : "string",
+              "description" : "Kontakteposter"
+            }
+          },
+          "kontoer" : {
+            "minItems" : 1,
+            "type" : "array",
+            "description" : "Kontoer",
+            "items" : {
+              "$ref" : "#/components/schemas/ProtokollKontoSummaryResponse"
+            }
+          },
+          "tilgangTilKontoer" : {
+            "minItems" : 1,
+            "type" : "array",
+            "description" : "Kontoer systemet har tilgang på",
+            "items" : {
+              "$ref" : "#/components/schemas/EksternProtokollKontoResponse"
+            }
+          },
+          "forespurteTilgangerTilKontoer" : {
+            "minItems" : 1,
+            "type" : "array",
+            "description" : "Kontoer systemet har har forespurt tilgang til",
+            "items" : {
+              "$ref" : "#/components/schemas/EksternProtokollKontoResponse"
+            }
+          },
+          "offentlig" : {
+            "type" : "boolean",
+            "description" : "Begrenser synlighet utover egen organisasjon"
+          },
+          "automatiskGodkjenning" : {
+            "type" : "boolean",
+            "description" : "Godkjenner automatisk forespørsler om tilgang"
+          },
+          "konfigureresAvIntegrasjon" : {
+            "type" : "boolean",
+            "description" : "Konfigureres av integrasjon"
+          },
+          "leverandorNavn" : {
+            "type" : "string",
+            "description" : "Systemleverandør"
+          },
+          "leverandorKontaktpunkt" : {
+            "type" : "string",
+            "description" : "Kontaktpunkt for systemleverendør"
+          },
+          "fiksOrg" : {
+            "$ref" : "#/components/schemas/FiksOrgResponse"
+          },
+          "opprettet" : {
+            "type" : "string",
+            "description" : "Tidspunkt protokoll-system ble opprettet",
+            "format" : "date-time"
+          },
+          "sistEndret" : {
+            "type" : "string",
+            "description" : "Tidspunkt protokoll-system sist ble endret",
+            "format" : "date-time"
+          }
+        }
+      },
       "ErrorMessage" : {
         "type" : "object",
         "properties" : {
