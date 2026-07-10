@@ -69,6 +69,47 @@
             "schema": {
               "type": "string"
             }
+          },
+          {
+            "name": "region",
+            "in": "query",
+            "required": false,
+            "style": "form",
+            "explode": true,
+            "description": "Filtrer på fylkesnummer (2 siffer) eller kommunenummer (4 siffer). Fylkesnummer inkluderer alle kommuner i fylket, kommunenummer inkluderer fylket kommunen ligger i. Utlysinger uten regioner (gjelder hele landet) matcher alltid. Flere verdier gir ELLER.",
+            "schema": {
+              "type": "array",
+              "maxItems": 100,
+              "items": {
+                "type": "string",
+                "pattern": "^\\d{2}(\\d{2})?$"
+              }
+            }
+          },
+          {
+            "name": "sokergruppe",
+            "in": "query",
+            "required": false,
+            "style": "form",
+            "explode": true,
+            "description": "Filtrer på søkergrupper. Flere verdier gir ELLER.",
+            "schema": {
+              "type": "array",
+              "maxItems": 7,
+              "items": {
+                "$ref": "#/components/schemas/Sokergruppe"
+              }
+            }
+          },
+          {
+            "name": "inkluderFiltreringsinfo",
+            "in": "query",
+            "required": false,
+            "description": "Når true inkluderes filtreringsinfo i responsen: antall utlysinger som gjelder SPESIFIKT hver mulige filterverdi (søkergruppe, fylke, kommune), pluss antall landsdekkende utlysinger. Tallene beregnes med søket og alle ANDRE dimensjoners filtre anvendt, men verdiens egen dimensjon ekskludert, over hele resultatsettet — de påvirkes ikke av paginering. Merk at tallene ikke er lik antall treff etter påført filter — et fylkesfilter inkluderer også kommunene i fylket og landsdekkende utlysinger.",
+            "schema": {
+              "type": "boolean",
+              "default": false
+            }
           }
         ],
         "responses": {
@@ -303,6 +344,20 @@
         ],
         "example": "REGISTRERT"
       },
+      "Sokergruppe": {
+        "type": "string",
+        "enum": [
+          "BEDRIFTER_OG_FORETAK",
+          "LAG_OG_FORENINGER",
+          "STIFTELSER",
+          "FRIVILLIGE_ORGANISASJONER",
+          "OFFENTLIG_SEKTOR",
+          "FORSKNING_OG_UTDANNINGSINSTITUSJONER",
+          "PRIVATPERSON"
+        ],
+        "example": "FRIVILLIGE_ORGANISASJONER",
+        "description": "Gruppe av søkere en utlysing retter seg mot"
+      },
       "UtlysingBase": {
         "type": "object",
         "properties": {
@@ -319,21 +374,22 @@
           "status": {
             "$ref": "#/components/schemas/StatusPaaUtlysing"
           },
-          "naering": {
-            "type": "array",
-            "maxItems": 5,
-            "items": {
-              "type": "string"
-            }
-          },
-          "regionsnivaa": {
-            "$ref": "#/components/schemas/Regionsnivaa"
-          },
           "region": {
             "type": "array",
             "maxItems": 10,
+            "description": "Regioner utlysingen gjelder for. Tom eller utelatt liste betyr at utlysingen gjelder alle regioner.",
             "items": {
-              "type": "string"
+              "$ref": "#/components/schemas/Region"
+            }
+          },
+          "sokergruppe": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 7,
+            "uniqueItems": true,
+            "description": "Søkergrupper utlysingen retter seg mot. Minst én verdi er påkrevd.",
+            "items": {
+              "$ref": "#/components/schemas/Sokergruppe"
             }
           },
           "soknadsfrist": {
@@ -411,9 +467,8 @@
           "tittel",
           "kortBeskrivelse",
           "status",
-          "naering",
-          "regionsnivaa",
           "region",
+          "sokergruppe",
           "soknadsfrist",
           "behandlingstidDager",
           "rapporteringsfristDager",
@@ -459,9 +514,8 @@
           "tittel",
           "kortBeskrivelse",
           "status",
-          "naering",
-          "regionsnivaa",
           "region",
+          "sokergruppe",
           "soknadsfrist",
           "forvalter"
         ],
@@ -499,6 +553,121 @@
           },
           "totaltAntallUtlysinger": {
             "type": "integer"
+          },
+          "filtreringsinfo": {
+            "$ref": "#/components/schemas/Filtreringsinfo"
+          }
+        }
+      },
+      "Filtreringsinfo": {
+        "type": "object",
+        "readOnly": true,
+        "description": "Antall utlysinger som gjelder SPESIFIKT hver mulige filterverdi. Tallene er beregnet med søket og alle ANDRE dimensjoners filtre anvendt, men verdiens egen dimensjon ekskludert, over hele resultatsettet — de påvirkes ikke av paginering. En utlysing som lister både et fylke og en kommune teller på begge. Tallene er ikke lik antall treff etter påført filter — et fylkesfilter inkluderer også kommunene i fylket og landsdekkende utlysinger. Verdier uten utlysinger har antallTreff 0.",
+        "required": [
+          "sokergrupper",
+          "fylker",
+          "antallLandsdekkende"
+        ],
+        "properties": {
+          "sokergrupper": {
+            "type": "array",
+            "maxItems": 7,
+            "items": {
+              "$ref": "#/components/schemas/SokergruppeMedAntall"
+            }
+          },
+          "fylker": {
+            "type": "array",
+            "maxItems": 50,
+            "items": {
+              "$ref": "#/components/schemas/FylkeMedAntall"
+            }
+          },
+          "antallLandsdekkende": {
+            "type": "integer",
+            "description": "Antall utlysinger uten regioner, som gjelder hele landet",
+            "example": 1
+          }
+        }
+      },
+      "SokergruppeMedAntall": {
+        "type": "object",
+        "readOnly": true,
+        "required": [
+          "sokergruppe",
+          "antallTreff"
+        ],
+        "properties": {
+          "sokergruppe": {
+            "$ref": "#/components/schemas/Sokergruppe"
+          },
+          "antallTreff": {
+            "type": "integer",
+            "example": 3
+          }
+        }
+      },
+      "FylkeMedAntall": {
+        "type": "object",
+        "readOnly": true,
+        "required": [
+          "kode",
+          "antallTreff",
+          "treffIKommuner",
+          "kommuner"
+        ],
+        "properties": {
+          "kode": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Fylkesnummer",
+            "example": "46"
+          },
+          "navn": {
+            "type": "string",
+            "example": "Vestland"
+          },
+          "antallTreff": {
+            "type": "integer",
+            "description": "Antall utlysinger som gjelder spesifikt fylket",
+            "example": 5
+          },
+          "treffIKommuner": {
+            "type": "integer",
+            "description": "Summen av antallTreff for kommunene i fylket",
+            "example": 3
+          },
+          "kommuner": {
+            "type": "array",
+            "maxItems": 200,
+            "items": {
+              "$ref": "#/components/schemas/KommuneMedAntall"
+            }
+          }
+        }
+      },
+      "KommuneMedAntall": {
+        "type": "object",
+        "readOnly": true,
+        "required": [
+          "kode",
+          "antallTreff"
+        ],
+        "properties": {
+          "kode": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Kommunenummer",
+            "example": "4601"
+          },
+          "navn": {
+            "type": "string",
+            "example": "Bergen"
+          },
+          "antallTreff": {
+            "type": "integer",
+            "description": "Antall utlysinger som gjelder spesifikt kommunen",
+            "example": 2
           }
         }
       },
@@ -509,9 +678,7 @@
           "tittel",
           "kortBeskrivelse",
           "status",
-          "naering",
-          "regionsnivaa",
-          "region",
+          "sokergruppe",
           "soknadsfrist",
           "behandlingstidDager",
           "rapporteringsfristDager",
@@ -621,14 +788,24 @@
           }
         }
       },
-      "Regionsnivaa": {
-        "type": "string",
-        "enum": [
-          "ALLE",
-          "ALLE_UTENOM_SVALBARD",
-          "SPESIFIKT_ANGITT"
+      "Region": {
+        "type": "object",
+        "required": [
+          "kode"
         ],
-        "example": "ALLE"
+        "properties": {
+          "kode": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Fylkesnummer eller kommunenummer",
+            "example": "46"
+          },
+          "navn": {
+            "type": "string",
+            "readOnly": true,
+            "example": "Vestland"
+          }
+        }
       },
       "Kontaktinfo": {
         "type": "object",
