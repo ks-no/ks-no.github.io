@@ -1321,24 +1321,13 @@
         }
       }
     },
-    "/konsesjon-api/v1/egenerklaering/{avklaringsId}/manuell-behandling": {
+    "/konsesjon-api/v1/egenerklaering/manuell-behandling": {
       "post": {
         "tags": [
           "Egenerklaering"
         ],
         "description": "Sender inn manuelt utfylt egenerklæring",
         "operationId": "manuellBehandlingEgenerklaering",
-        "parameters": [
-          {
-            "in": "path",
-            "name": "avklaringsId",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          }
-        ],
         "requestBody": {
           "content": {
             "application/json": {
@@ -1355,7 +1344,10 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/InnsendtSkjemaStatus"
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/KonsesjonsavklaringIDOgNyStatusResponse"
+                  }
                 }
               }
             }
@@ -1924,6 +1916,22 @@
           }
         }
       },
+      "KonsesjonsavklaringIDOgNyStatusResponse": {
+        "type": "object",
+        "required": [
+            "avklaringsId",
+            "innsendtSkjemaStatus"
+        ],
+        "properties": {
+          "avklaringsId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "innsendtSkjemaStatus": {
+            "$ref": "#/components/schemas/InnsendtSkjemaStatus"
+          }
+        }
+      },
       "KonsesjonAvklaringStatus": {
         "type": "string",
         "enum": [
@@ -2207,7 +2215,8 @@
           }
         },
         "required": [
-          "eiendomsId"
+          "eiendomsId",
+          "eierandel"
         ]
       },
       "Eierandel": {
@@ -2523,12 +2532,14 @@
       "ManuellBehandlingRequest": {
         "type": "object",
         "required": [
-          "feltId"
+          "konsesjonsavklaringIder",
+          "valgtPunkt"
         ],
         "properties": {
-          "feltId": {
+          "valgtPunkt": {
             "type": "string",
             "enum": [
+              "BEBYGD",
               "UBEBYGD_TOMT",
               "UBEBYGD_TOMT_I_OMRAADE_FOR_BEBYGGELSE",
               "ANDRE_UBEBYGDE_AREALER",
@@ -2544,6 +2555,14 @@
               "SAERTILFELLE_N",
               "SAERTILFELLE_O"
             ]
+          },
+          "konsesjonsavklaringIder": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            }
           }
         }
       },
@@ -2627,7 +2646,12 @@
         "type": "object",
         "properties": {
           "egenerklaeringPaakrevd": {
-            "type": "boolean"
+            "type": "string",
+            "enum": [
+              "JA",
+              "NEI",
+              "IKKE_TILLATT"
+            ]
           },
           "boplikt": {
             "$ref": "#/components/schemas/BopliktResponse"
