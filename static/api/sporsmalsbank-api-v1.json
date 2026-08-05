@@ -1092,6 +1092,160 @@
           }
         ]
       }
+    },
+    "/sporsmalsbank/api/v1/kategorier": {
+      "get": {
+        "summary": "Hent alle kategorier",
+        "operationId": "hentAlleKategorier",
+        "tags": [
+          "Kategori"
+        ],
+        "responses": {
+          "200": {
+            "description": "Liste over kategorier",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Kategori"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "post": {
+        "summary": "Opprett ny kategori",
+        "operationId": "opprettKategori",
+        "tags": [
+          "Kategori"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OpprettKategori"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Opprettet",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Kategori"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Ugyldig input"
+          },
+          "409": {
+            "description": "Kode er allerede i bruk"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/sporsmalsbank/api/v1/kategorier/{kode}": {
+      "put": {
+        "summary": "Oppdater kategori (kode er immutabel)",
+        "operationId": "oppdaterKategori",
+        "tags": [
+          "Kategori"
+        ],
+        "parameters": [
+          {
+            "name": "kode",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OpprettKategori"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Oppdatert",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Kategori"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Forsøk på å endre kode"
+          },
+          "404": {
+            "description": "Ikke funnet"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "delete": {
+        "summary": "Slett kategori (kun hvis ikke i bruk)",
+        "operationId": "slettKategori",
+        "tags": [
+          "Kategori"
+        ],
+        "parameters": [
+          {
+            "name": "kode",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Slettet"
+          },
+          "404": {
+            "description": "Ikke funnet"
+          },
+          "409": {
+            "description": "Kategori er i bruk — deaktiver via aktiv=false"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
     }
   },
   "components": {
@@ -1258,15 +1412,6 @@
             "$ref": "#/components/schemas/Kravomrade",
             "description": "Tematisk kravområde for spørsmålet — brukes til gruppering og filtrering"
           },
-          "svartype": {
-            "type": "string",
-            "default": "ENVALG",
-            "enum": [
-              "ENVALG",
-              "FLERVALG"
-            ],
-            "description": "Styrer hvordan svaralternativene presenteres. ENVALG = radioknapper (leverandør velger ett). FLERVALG = avkrysningsbokser (velg ett eller flere)."
-          },
           "svaralternativer": {
             "type": "array",
             "items": {
@@ -1287,6 +1432,16 @@
           },
           "figurreferanse": {
             "type": "string"
+          },
+          "svartype": {
+            "type": "string",
+            "default": "ENVALG",
+            "description": "Styrer hvordan svaralternativene presenteres. ENVALG = radioknapper (velg ett). FLERVALG = avkrysningsbokser (velg ett eller flere). KOMBINASJON = miks, der alternativene deles i grupper og hver gruppe har sin egen svartype. Åpen string — nye verdier kan komme uten at kontrakten brytes."
+          },
+          "kategoriKode": {
+            "type": "string",
+            "nullable": true,
+            "description": "Kode til kategori i sporsmalsbank.kategori. Null for spørsmål uten kategori."
           }
         }
       },
@@ -1317,6 +1472,22 @@
           "evaluering": {
             "$ref": "#/components/schemas/Evaluering",
             "description": "Evalueringsresultat for Minimumskrav-svaralternativer (grønn/gul/rød). Null for Evalueringskrav."
+          },
+          "gruppe": {
+            "type": "string",
+            "maxLength": 200,
+            "nullable": true,
+            "description": "Gruppe-identitet og visningsnavn ved KOMBINASJON. Alternativer med samme gruppe presenteres sammen og deler svartype. Null ved ENVALG/FLERVALG."
+          },
+          "svartype": {
+            "type": "string",
+            "nullable": true,
+            "description": "Presentasjonstype for gruppen dette alternativet hører til (ENVALG/FLERVALG). Settes kun når spørsmålets svartype er KOMBINASJON — ellers gjelder spørsmålets egen svartype."
+          },
+          "tillaterEgenTekst": {
+            "type": "boolean",
+            "default": false,
+            "description": "Alternativet kan suppleres med egen tekst ('Annet: ___'). Score-nøytralt: gir ingen poeng og holdes utenfor maksscore-nevneren, siden teksten ikke vurderes maskinelt."
           }
         }
       },
@@ -1754,6 +1925,57 @@
           "autoSkar": {
             "type": "boolean",
             "default": false
+          },
+          "aktiv": {
+            "type": "boolean",
+            "default": true
+          }
+        }
+      },
+      "Kategori": {
+        "type": "object",
+        "required": [
+          "kode",
+          "navn"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "readOnly": true
+          },
+          "kode": {
+            "type": "string",
+            "maxLength": 50,
+            "description": "Stabil, unik kode. Immutabel etter oppretting."
+          },
+          "navn": {
+            "type": "string",
+            "maxLength": 200,
+            "description": "Visningsnavn"
+          },
+          "aktiv": {
+            "type": "boolean",
+            "default": true,
+            "description": "Inaktive kategorier kan ikke tildeles nye spørsmål"
+          }
+        }
+      },
+      "OpprettKategori": {
+        "type": "object",
+        "required": [
+          "kode",
+          "navn"
+        ],
+        "properties": {
+          "kode": {
+            "type": "string",
+            "maxLength": 50,
+            "description": "Stabil, unik kode. Immutabel etter oppretting."
+          },
+          "navn": {
+            "type": "string",
+            "maxLength": 200
           },
           "aktiv": {
             "type": "boolean",
