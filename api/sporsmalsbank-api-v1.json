@@ -714,6 +714,59 @@
         ]
       }
     },
+    "/sporsmalsbank/api/v1/pakker/{id}/sluttbruker-score": {
+      "post": {
+        "summary": "Beregn sluttbrukerscore for pakke",
+        "operationId": "beregnSluttbrukerScore",
+        "tags": [
+          "Pakke"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SluttbrukerScoreForesporsel"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Beregnet score",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SluttbrukerScore"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Pakken har ingen pakketype satt, eller pakketypen har auto_skar=false"
+          },
+          "404": {
+            "description": "Ikke funnet"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
     "/sporsmalsbank/api/v1/pakketyper": {
       "get": {
         "summary": "Hent alle pakketyper",
@@ -1488,6 +1541,16 @@
             "type": "boolean",
             "default": false,
             "description": "Alternativet kan suppleres med egen tekst ('Annet: ___'). Score-nøytralt: gir ingen poeng og holdes utenfor maksscore-nevneren, siden teksten ikke vurderes maskinelt."
+          },
+          "beskrivelse": {
+            "type": "string",
+            "nullable": true,
+            "description": "Utfyllende beskrivelse av svaralternativet"
+          },
+          "scoreLabel": {
+            "type": "string",
+            "nullable": true,
+            "description": "Pakke-kontekstuell score-label (f.eks. GRONN, GUL, ROD) — settes kun når spørsmålet hentes i kontekst av en pakke, og speiler PoengOverstyring.scoreLabel. Fritekst; klienter skal tolke ukjente verdier leniently. Null betyr at pakken ikke har overstyrt score-label for dette alternativet."
           }
         }
       },
@@ -1714,6 +1777,60 @@
             "description": "Minimum totalpoeng for å bestå. Null betyr ingen krav."
           }
         }
+      },
+      "SluttbrukerScoreForesporsel": {
+        "type": "object",
+        "required": [
+          "besvarelser"
+        ],
+        "properties": {
+          "besvarelser": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "description": "Sluttbrukerens besvarelser: spørsmålId → valgte svaralternativIder. ENVALG sender én id i listen, FLERVALG og KOMBINASJON kan sende flere."
+          }
+        }
+      },
+      "SluttbrukerScore": {
+        "type": "object",
+        "required": [
+          "totalPoeng",
+          "maksPoeng",
+          "resultat",
+          "minimumPoeng"
+        ],
+        "properties": {
+          "totalPoeng": {
+            "type": "integer",
+            "description": "Sum av oppnådde poeng for besvarelsene, basert på pakkens PoengOverstyring der satt, ellers Svaralternativ.poeng."
+          },
+          "maksPoeng": {
+            "type": "integer",
+            "description": "Høyeste oppnåelige poengsum for pakken. Følger spørsmålets svartype: ENVALG gir det høyest scorende alternativet, FLERVALG gir summen av alle positive alternativer, KOMBINASJON summerer gruppevis med samme regel per gruppe."
+          },
+          "resultat": {
+            "$ref": "#/components/schemas/SluttbrukerScoreResultat",
+            "description": "BESTATT hvis totalPoeng er minst minimumPoeng, IKKE_BESTATT hvis lavere. UKJENT når pakken ikke har en konfigurert terskel."
+          },
+          "minimumPoeng": {
+            "type": "integer",
+            "nullable": true,
+            "description": "Pakkens konfigurerte terskel for bestått (TerskelRegler.minimumPoeng). Null betyr at pakken ikke har noen konfigurert terskel — resultat blir da UKJENT."
+          }
+        }
+      },
+      "SluttbrukerScoreResultat": {
+        "type": "string",
+        "enum": [
+          "BESTATT",
+          "IKKE_BESTATT",
+          "UKJENT"
+        ]
       },
       "PakkeType": {
         "type": "string",
