@@ -40,13 +40,25 @@
             }
           },
           {
-            "name": "vannkraftverknummer",
+            "name": "personidentifikator",
             "in": "query",
             "required": false,
-            "description": "Vannkraftverknummeret til anlegget for filtrert søk, standardverdi: null",
+            "description": "Brukes når man filtrer på personidentifikator til personen som eier vannkraftverket. Ikke bruk sammen med organisasjonsnummer.",
             "schema": {
+              "pattern": "^[0-9]{11}$",
               "type": "string",
-              "example": "1001"
+              "example": "29880098401"
+            }
+          },
+          {
+            "name": "organisasjonsnummer",
+            "in": "query",
+            "required": false,
+            "description": "Brukes når man filtrer på organisasjonsnummeret til bedriften som eier vannkraftverket. Ikke bruk sammen med personidentifikator.",
+            "schema": {
+              "pattern": "^[0-9]{9}$",
+              "type": "string",
+              "example": "311910701"
             }
           },
           {
@@ -97,6 +109,29 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/EiendomsskattegrunnlagVannkraftanleggEndringer"
+                },
+                "example": {
+                  "side": 1,
+                  "endringerPerSide": 10,
+                  "totaltAntallEndringer": 2,
+                  "endringer": [
+                    {
+                      "endringsId": "a9ab0374-0c84-46dc-955f-845fcfc7e1dc",
+                      "datotid": "2026-04-05T14:48:00.000Z",
+                      "eier": {              
+                        "navn": "TREKANTET SEBRA",
+                        "personidentifikator": "29880098401"
+                      }
+                    },
+                    {
+                      "endringsId": "5165d076-70ec-4569-967d-eff4384d0ee2",
+                      "datotid": "2026-04-05T13:37:00.000Z",
+                      "eier": {
+                        "navn": "LØSNINGSORIENTERT ALLSLAGS FJELLREV",
+                        "organisasjonsnummer": "311910701"
+                      }
+                    }
+                  ]
                 }
               }
             }
@@ -104,10 +139,10 @@
         }
       }
     },
-    "/register/api/v1/ks/{rolleId}/eiendomsskattegrunnlag/vannkraftanlegg/anlegg": {
+    "/register/api/v1/ks/{rolleId}/eiendomsskattegrunnlag/vannkraftanlegg/eiere": {
       "get": {
         "tags": ["EiendomsskattegrunnlagVannkraftanlegg"],
-        "operationId": "hentAlleAnlegg",
+        "operationId": "hentAlleEiere",
         "parameters": [
           {
             "name": "rolleId",
@@ -123,14 +158,24 @@
         ],
         "responses": {
           "200": {
-            "description": "Liste over alle vannkraftanlegg rollen kan se i sin kommune",
+            "description": "Liste over alle eiere av vannkraftanlegg rollen kan se i sin kommune",
             "content": {
               "application/json": {
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/Vannkraftverk"
-                  }
+                    "$ref": "#/components/schemas/Eier"
+                  },
+                  "example": [
+                    {
+                      "navn": "TREKANTET SEBRA",
+                      "personidentifikator": "29880098401"
+                    },
+                    {
+                      "navn": "LØSNINGSORIENTERT ALLSLAGS FJELLREV",
+                      "organisasjonsnummer": "311910701"
+                    }
+                  ]
                 }
               }
             }
@@ -184,56 +229,48 @@
   },
   "components": {
     "schemas": {
-      "Vannkraftverk": {
+      "Eier": {
         "type": "object",
-        "required": ["vannkraftverknummer", "vannkraftverknavn"],
+        "required": ["navn"],
+        "description": "Eier av vannkraftanlegg.",
         "properties": {
-          "vannkraftverknummer": {
+          "organisasjonsnummer": {
+            "pattern": "^[0-9]{9}$",
             "type": "string",
-            "description": "ID-nummeret til vannkraftverket",
-            "example": "1234"
+            "example": "311910701",
+            "description": "Organisasjonsnummeret til bedriften som eier kraftverket. Påkrevd når eier er organisasjon."
           },
-          "vannkraftverknavn": {
+          "personidentifikator": {
+            "pattern": "^[0-9]{11}$",
             "type": "string",
-            "description": "Navnet til vannkraftverket",
-            "example": "Turbinen Vannkraft"
+            "example": "29880098401",
+            "description": "Personidentifikatoren til personen som eier kraftverket. Påkrevd når eier er person."
+          },
+          "navn": {
+            "type": "string",
+            "example": "LØSNINGSORIENTERT ALLSLAGS FJELLREV",
+            "description": "Navnet til personen eller bedriften som eier kraftverket"
           }
         }
       },
-      "Endringstype": {
-        "type": "string",
-        "example": "NYTT_KRAFTANLEGG",
-        "enum": [
-          "ENDRING_EIERFORHOLD",
-          "ENDRING_FORDELT_EIENDOMSSKATTEGRUNNLAG",
-          "NYTT_KRAFTANLEGG",
-          "AVSLUTTET_KRAFTANLEGG"
-        ]
-      },
-      "VannkraftanleggEndringer": {
-        "type": "array",
+      "VannkraftanleggEndring": {
+        "type": "object",
         "description": "Listen av endringer for vannkraftanlegg",
-        "items": {
-          "type": "object",
-          "properties": {
-            "endringsId": {
-              "type": "string",
-              "format": "uuid",
-              "description": "IDen til endringen, kan brukes for å laste ned Excel-filen fra annet endepunkt",
-              "example": "a9ab0374-0c84-46dc-955f-845fcfc7e1dc"
-            },
-            "datotid": {
-              "type": "string",
-              "format": "date-time",
-              "description": "Tiden når endringen skjedde",
-              "example": "2026-04-05T14:48:00.000Z"
-            },
-            "endringstype": {
-              "$ref": "#/components/schemas/Endringstype"
-            },
-            "vannkraftverk": {
-              "$ref": "#/components/schemas/Vannkraftverk"
-            }
+        "properties": {
+          "endringsId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "IDen til endringen, kan brukes for å laste ned Excel-filen fra annet endepunkt",
+            "example": "a9ab0374-0c84-46dc-955f-845fcfc7e1dc"
+          },
+          "datotid": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Tiden når endringen skjedde",
+            "example": "2026-04-05T14:48:00.000Z"
+          },
+          "eier": {
+            "$ref": "#/components/schemas/Eier"
           }
         }
       },
@@ -257,7 +294,11 @@
             "example": 1337
           },
           "endringer": {
-            "$ref": "#/components/schemas/VannkraftanleggEndringer"
+            "type": "array",
+            "description": "Listen av endringer for vannkraftanlegg",
+            "items": {
+              "$ref": "#/components/schemas/VannkraftanleggEndring"
+            }
           }
         }
       }
