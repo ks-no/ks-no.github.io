@@ -23,9 +23,9 @@ Fiks konsesjon tilbyr:
 Fiks konsesjon vil eksponere APIer som fagsystem- og meglersystemleverandører kan integrere mot for å tilby bedre sluttbrukerløsninger til privatpersoner og kommuner.
 
 | Type              | Detaljer                                                                                                            |
-| ----------------- | ----------------------------------------------------------------------------------------------------------------- |
+| ----------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------   |
 | Web portal        | Min kommune (innbygger) og Fiks Forvaltning (kommune)                                                              |
-| Maskin til maskin | [Konsesjon megler-API (v1)](https://editor-next.swagger.io/?url=https://developers.fiks.ks.no/api/konsesjon-megler-api-v1.json) |
+| Maskin til maskin | Foreslått API, ikke implementert [Konsesjon megler-API (v1)](https://editor-next.swagger.io/?url=https://developers.fiks.ks.no/api/konsesjon-megler-api-v1.json) |
 | Autentisering     | ID-porten (innbygger og saksbehandler), Maskinporten (meglersystem)                                                |
 
 **Vær obs på at det vil det komme endringer som brekker API-kontrakten. Kontrakten låses ikke før vi er i produksjon.**
@@ -50,18 +50,18 @@ Fiks konsesjon binder sammen flere aktører i konsesjonsprosessen:
 2. **Datainnhenting og preutfylling.** Skjemaet fylles automatisk med opplysninger fra nasjonale registre — matrikkel- og bopliktdata fra Kartverket, folkeregisteropplysninger, og organisasjonsdata fra Brønnøysundregistrene.
 3. **Konsesjonslogikk.** Ldirs regellogikk vurderer opplysningene mot gjeldende regelverk og avgjør om ervervet er konsesjonsfritt, om egenerklæring kreves, eller om det må søkes konsesjon. Logikken er koordinert med tinglysningslogikken hos Kartverket slik at de gir samme svar.
 4. **Innsending.**
-   - *Egenerklæring:* PDF genereres og oversendes kommunens fagsystem via Fiks Arkiv.
-   - *Konsesjonssøknad:* PDF signeres digitalt via Digdirs signeringsløsning før den oversendes kommunen via Fiks Arkiv.
+   - *Egenerklæring:* PDF genereres, oppgave lages i Min Kommune for godkjenning og oversendes kommunens fagsystem via Fiks Arkiv.
+   - *Konsesjonssøknad:* PDF genereres, oppgave lages i Min Kommune for godkjenning og oversendes kommunens fagsystem via Fiks Arkiv.
 5. **Saksbehandling.** Kommunen behandler saken i eget fagsystem der regelverket krever manuell vurdering, og registrerer avklart konsesjon.
-6. **Status og innsyn.** Saksstatus (åpen / under arbeid / avsluttet) gjøres tilgjengelig for innbygger i Min kommune og for megler via megler-API.
+6. **Status og innsy (fremtidig versjon)** Saksstatus (åpen / under arbeid / avsluttet) gjøres tilgjengelig for innbygger i Min kommune og for megler via megler-API.
 
 ## Kom i gang
 
 **For kommuner**
 
-1. Aktiver Fiks konsesjon via [Fiks Forvaltning](https://forvaltning.fiks.ks.no/).
+1. Aktiver Fiks konsesjon via [Fiks Forvaltning](https://forvaltning.fiks.ks.no/). NB: Min Kommune og oppgaver må være aktivert.
 2. Konfigurer mottak i fagsystemet gjennom Fiks Arkiv.
-3. Opprett saksbehandlere og tildel tilgang i Fiks Forvaltning.
+4. Opprett saksbehandlere og tildel tilgang i Fiks Forvaltning.
 
 **For meglersystemleverandører**
 
@@ -87,7 +87,8 @@ Full API-spesifikasjon: [Konsesjon megler-API (v1)](https://editor-next.swagger.
 ## Relaterte tjenester
 
 - [Fiks Arkiv](https://developers.fiks.ks.no/tjenester/fiksprotokoll/protokoller/arkiv/index.html) – oversendelse av saker til kommunenes fagsystem
-- [Min kommune](https://developers.fiks.ks.no/tjenester/minkommune/index.html) – Min Kommune, innbyggerløsning som konsesjon baserer seg på for utfylling og statusinnsyn
+- [Min kommune](https://developers.fiks.ks.no/tjenester/minkommune/index.html) – innbyggerløsning som konsesjon baserer seg på for utfylling og statusinnsyn
+- [Fiks folkeregister](https://developers.fiks.ks.no/tjenester/register/folkeregister/index.html) - benyttes for å gjøre navne- og adresseoppslag på erververe
 - [Maskinporten](https://developers.fiks.ks.no/felles/difiidportenklient/index.html) – autentisering for API-integrasjon
 
 ## Kontakt
