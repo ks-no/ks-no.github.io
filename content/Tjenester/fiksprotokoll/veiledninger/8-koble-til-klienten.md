@@ -60,9 +60,9 @@ Ved oppstart av fiks-io klienten, det gjelder b√•de dotnet og java vil denne, n√
 
 ### Konfigurasjon av dotnet klienten 
 
-Se [dokumentasjonen](https://github.com/ks-no/fiks-io-client-dotnet/blob/docs/AutomaticPublicKeySync.md) for DotNet-klienten
+Se [dokumentasjonen](https://github.com/ks-no/fiks-io-client-dotnet/blob/main/docs/AutomaticPublicKeySync.md) for DotNet-klienten
 
-Se [dokumentasjonen](https://github.com/ks-no/fiks-io-client-dotnet/blob/README.md) for Java-klienten
+Se [dokumentasjonen](https://github.com/ks-no/fiks-io-klient-java/blob/main/README.md) for Java-klienten
 
 
 ## Send og motta meldinger
