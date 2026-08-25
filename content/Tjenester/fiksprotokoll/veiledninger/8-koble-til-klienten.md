@@ -52,6 +52,19 @@ var klient = await FiksIOClient.CreateAsync(config);
 
 Bruk testkonfigurasjon (`BuildTestConfiguration` / tilsvarende) mot testmiljøet. Se [miljøer]({{% ref "/Felles/integrasjoner.md" %}}#miljoer).
 
+## Automatisk opplasting av offentlig nøkkel 
+
+Konfigurasjon av en Fiks Protokoll konto har tradisjonelt involvert å laste opp kontoens offentlige nøkkel vha admin-grensesnittet i Fiks Forvaltning. Dette er nå valgfritt, og man kan la fiks-io klienten gjøre dette automatisk og programmatisk istedetfor. 
+
+Ved oppstart av fiks-io klienten, det gjelder både dotnet og java vil denne, når den er konfigurert for det, synkronisere innstillingene for offentlig nøkkel med katalogen i Fiks Protokoll uten behov for manuelle operasjoner.  Den ansatte i kommunen eller fylkeskommunen kan da konfigurere opp kontoen uavhengig av leverandør, og dele detaljene for denne med leverandøren på et senere tidspunkt.  Når så leverandøren starter opp klienten første gang, vil nøkkelen være automatisk konfigurert. Dette vil muliggjøre at leverandører kan registrere nøkler og rotere nøkkelpar uten manuell koordinering med Fiks Forvaltning. 
+
+### Konfigurasjon av klienten 
+
+Se [dokumentasjonen](https://github.com/ks-no/fiks-io-client-dotnet/blob/main/docs/AutomaticPublicKeySync.md) for DotNet-klienten
+
+Se [dokumentasjonen](https://github.com/ks-no/fiks-io-klient-java/blob/main/README.md) for Java-klienten
+
+
 ## Send og motta meldinger
 
 - **Sende:** bygg en meldingsforespørsel med avsenderkonto, mottakerkonto og meldingstype, og send den med eventuell payload (fil, strøm eller tekst).

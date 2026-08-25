@@ -11,7 +11,7 @@ aliases:
 
 **Slik oppretter du et protokollsystem for fagsystemet eller arkivet ditt.**
 
-For å bruke Fiks Protokoll må du opprette et protokollsystem. Hvert system i kundeorganisasjonen som skal bruke Fiks Protokoll — for eksempel et fagsystem eller et arkiv — trenger sitt eget protokollsystem.
+For å bruke Fiks Protokoll må du opprette et protokollsystem. Hvert system i kundeorganisasjonen som skal bruke Fiks Protokoll — for eksempel et fagsystem eller et arkiv — må konfigureres i Fiks Protokoll som et protokoll-system.
 
 Logg inn på [forvaltning.fiks.ks.no](https://forvaltning.fiks.ks.no) ([forvaltning.fiks.test.ks.no](https://forvaltning.fiks.test.ks.no) for testmiljøet) og gå til **Konfigurasjon**.
 
