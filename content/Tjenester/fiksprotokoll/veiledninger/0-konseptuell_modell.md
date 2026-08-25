@@ -34,18 +34,20 @@ En melding er en stykke informasjon som sendes mellom to Systemer i en **Integra
 
 ## System 
 
-Et **System** er enten et fagsystem eller et leverandørsystem.  Et system må ha en **Integrasjon** for å kunne kommunisere med **Fiks Protokoll**.  I tillegg må det ha fått tilgang til minst en **Konto**
+Et **System** kan for eksempel være et fagsystem eller et leverandørsystem.  For at et **System** skal kunne kommunisere med et annet system vha Fiks Protokoll, må det være definert som et System i Fiks Protokoll. I tillegg må det være definert en **Integrasjon** for Systemet, og Systemet må ha blitt gitt tilgang til minst en **Konto**
 
 ## Integrasjon 
 
-Et **System** må ha en **Integrasjon** definert for å kunne kommunisere vha **Fiks Protokoll**.  Det brukes til å koble et fagsystem til en tjeneste  hos oss. En **Integrasjon** har bl.a  følgende attributter: 
+Et **System** må ha en **Integrasjon** definert for å kunne kommunisere vha **Fiks Protokoll**.  Integrasjonen brukes til å koble et fagsystem til en tjeneste  hos oss, og forteller hvem systemet opererer på vegne av.  En **Integrasjon** har bl.a  følgende attributter: 
 
 - id (brukernavn)
 - et passord 
 - organisasjonsnummer for **Virksomhetssertifikatet** systemet/integrasjonen kommuniserer på vegne av 
 - Beskrivelse - fritekst som beskriver omfanget av integrasjonen
 
-Integrasjonen sier med andre ord hvem systemet opererer på vegne av.  Organisasjonsnummeret kan være Leverandøren sitt eller tilhøre kunden leverandøren opererer på vegne av. 
+Organisasjonsnummeret kan være Leverandøren sitt eller tilhøre kunden leverandøren opererer på vegne av.  Kunde og Leverandør bør avklare på et tidlig tidspunkt hvilken verdi som skal benyttes her. 
+
+En Integrasjon har også et sett med tilganger, som beskriver hvilke ressurser/systemer den har tillatelse til interagere med.  
 
 ## Konto 
 
