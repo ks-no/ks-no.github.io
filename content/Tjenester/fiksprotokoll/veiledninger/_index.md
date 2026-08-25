@@ -7,7 +7,7 @@ ordersectionsby: weight
 
 **Steg-for-steg-guider for å ta i bruk og vedlikeholde Fiks Protokoll i Fiks Forvaltning.**
 
-Før du starter, kan det være lurt å gjøre seg kjent med den [konseptuelle modellen]({{% ref "0-konseptuell_modell.md" %}}) for Fiks Protokoll, slik at du vet hva de forskjellige begrepene betyr og innebærer. 
+Før du starter, kan det være lurt å gjøre seg kjent med den [konseptuelle modellen]({{% ref "konseptuell_modell" %}}) for Fiks Protokoll, slik at du vet hva de forskjellige begrepene betyr og innebærer. 
 
 Følg veiledningene i rekkefølge når du tar tjenesten i bruk for første gang. Hver veiledning forutsetter at den forrige er fullført.
 
