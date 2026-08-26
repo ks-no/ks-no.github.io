@@ -31,7 +31,7 @@ Begge utviklerrollene må følge [Beste praksis for meldingshåndtering]({{% ref
 
 ## Innhold
 
-* **[Konseptuell modell]({{% ref "konseptuell_modell" %}})** En oversikt over den konseptuelle modellen bak Fiks Protokoll
+* **[Konseptuell modell]({{% ref "konseptuell_modell.md" %}})** - En oversikt over den konseptuelle modellen bak Fiks Protokoll
 * **[Veiledninger]({{% ref "veiledninger" %}})** – steg-for-steg-guider for å komme i gang og vedlikeholde Fiks Protokoll i Fiks Forvaltning
 * **[Beste praksis for meldingshåndtering]({{% ref "meldingshandtering.md" %}})** – hvordan en klient korrekt håndterer asynkron meldingsutveksling
 * **[Protokoller]({{% ref "protokoller" %}})** – oversikt og status for de ulike protokollene (Arkiv, Plan, Matrikkelføring, Barnevern, Link, Saksfaser)
