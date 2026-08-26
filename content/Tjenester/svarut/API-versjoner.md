@@ -3,8 +3,13 @@ title: 'API: Versjonsoversikt'
 aliases: [/tjenester/svarut/api/api-versjoner, /svarut/api/api-versjoner]
 ---
 
+{{% notice style="note" title="Viktig informasjon" %}}
+Vi planlegger å avvikle støtte for alle gjenværende SOAP-versjoner og REST v1 i starten av 2027, les mer [her](https://ksdigital.no/2026/01/13/avvikling-av-soap-og-rest-v-1-api-for-svarut/).
+
+Vi har også lagt til støtte for å automatisk opprette integrasjoner som kan brukes for kall til Rest v2/v3 - du kan lese mer om det [her](/svarut/api/avvikling-api).
+{{% /notice %}}
+
 ## REST API-er
-**NB! Vi planlegger å avvikle støtte for REST V1 i løpet av 2026, les mer [her](https://ksdigital.no/2026/01/13/avvikling-av-soap-og-rest-v-1-api-for-svarut/).**
 
 Det kommer ikke ny funksjonalitet for SOAP-servicen etter V11. Nye endringer og features vil komme i REST-servicene.
 Dersom JSON-strukturen bli forandret vil det komme en ny versjon av servicen. Alle implementasjoner må takle at det kan legges til nye JSON-felt, og at eksisterende ikke-obligatoriske felt kan forsvinne.

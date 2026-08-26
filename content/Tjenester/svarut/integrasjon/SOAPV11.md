@@ -1,10 +1,15 @@
 ---
-title: 'API: Integrasjon med SOAP'
+title: 'SOAP v11'
 date: 2019-05-07
 aliases: [/svarut/integrasjon/ForsendelseServiceV11]
 ---
 
-**NB! Vi planlegger å avvikle støtte for alle gjenværende SOAP-versjoner i løpet av 2026, les mer [her](https://ksdigital.no/2026/01/13/avvikling-av-soap-og-rest-v-1-api-for-svarut/).**
+
+{{% notice style="warning" title="Viktig informasjon" %}}
+Vi planlegger å avvikle støtte for alle gjenværende SOAP-versjoner og REST v1 i starten av 2027, les mer [her](https://ksdigital.no/2026/01/13/avvikling-av-soap-og-rest-v-1-api-for-svarut/).
+
+Vi har også lagt til støtte for å automatisk opprette integrasjoner som kan brukes for kall til Rest v2/v3 - du kan lese mer om det [her](/svarut/api/avvikling-api).
+{{% /notice %}}
 
 SOAP APIene er deprecated, og det vil ikke komme noen ny versjon av eller ny funksjonalitet til disse. 
 Vi anbefaler bruk av nyeste versjon av REST-APIet for nye integrasjoner.

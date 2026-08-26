@@ -20,7 +20,7 @@ Endepunktet vil automatisk opprette en integrasjon med riktige tilganger til en 
 * Vi vil på baksiden opprette en integrasjon med riktige tilganger til SvarUt-kontoen, og integrasjonId og passord blir returnert sammen med kontoId til SvarUt-konto
 
 
-## Ikke på plass enda - sammenkobling mot Systemkatalogen
+## Gjenstår - oppkobling mot Systemkatalogen
 ### Hva er Systemkatalogen?
 KS Digital holder også på å lage en Systemkatalog der vi på sikt ønsker å ha oversikt over alle leverandører og fag- og arkiv-systemene som integrerer seg mot KS Digital sine tjenester,
 og hvilke ressurser/integrasjoner de forskjellige fag- og arkiv-systemene bruker. Dette vil gjøre det enklere å ha oversikt over hvilke systemer som integrerer seg mot SvarUt, og hvilke ressurser de er konsumenter av. 

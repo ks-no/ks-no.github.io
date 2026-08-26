@@ -1,10 +1,14 @@
 ---
-title: SOAP V9
+title: SOAP V8
 date: 2017-01-01
 aliases: [/svarut/integrasjon/ForsendelseServiceV8, /tjenester/svarut/integrasjon/forsendelseservicev8/]
 ---
 
-**NB! Vi planlegger å avvikle støtte for alle gjenværende SOAP-versjoner i løpet av 2026, les mer [her](https://ksdigital.no/2026/01/13/avvikling-av-soap-og-rest-v-1-api-for-svarut/).**
+{{% notice style="warning" title="Viktig informasjon" %}}
+Vi planlegger å avvikle støtte for alle gjenværende SOAP-versjoner og REST v1 i starten av 2027, les mer [her](https://ksdigital.no/2026/01/13/avvikling-av-soap-og-rest-v-1-api-for-svarut/).
+
+Vi har også lagt til støtte for å automatisk opprette integrasjoner som kan brukes for kall til Rest v2/v3 - du kan lese mer om det [her](/svarut/api/avvikling-api).
+{{% /notice %}}
 
 ### Tilgang
 
