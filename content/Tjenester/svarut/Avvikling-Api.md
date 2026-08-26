@@ -4,38 +4,34 @@ aliases: [/tjenester/svarut/api/avvikling-api, /svarut/api/avvikling-api]
 ---
 
 ## Kort beskrivelse
-Vi planlegger å avvikle støtte for REST V1 i løpet av 2026, du kan lese mer om det [her](https://ksdigital.no/2026/01/13/avvikling-av-soap-og-rest-v-1-api-for-svarut/).
+Støtte for SOAP og REST v1 avvikles i løpet av 2026. Les mer her: [Avvikling av SOAP- og REST v1-API for SvarUt](https://ksdigital.no/2026/01/13/avvikling-av-soap-og-rest-v-1-api-for-svarut/).
 
-I tillegg er vi i gang med å tilrettelegge for et eget migrerings-endepunkt som gjør det lettere å migrere fra SOAP og Rest v1 og over til Rest v2/v3.
+For å gjøre overgangen enklere tilbyr vi et migreringsendepunkt. Endepunktet lar deg bruke eksisterende BasicAuth-tilgang (SOAP/REST v1) for å opprette en ny Fiks-integrasjon som kan brukes videre mot REST v2/v3.
 
 ## Migreringsendepunkt
+Migreringsendepunktet brukes når du skal gå fra SOAP/REST v1 til REST v2/v3.
 
-Vi har utarbeidet et migreringsendepunkt hos oss som vi håper vil vere til hjelp i arbeidet med å migrere fra SOAP/Rest v1 til Rest v2/v3. 
-Autentiseringsmekanismen for SOAP/Rest v1 er BasicAuth med brukernavn/passord, mens for Rest v2/v3 kreves det bruk av [integrasjoner](/fiks-platform/integrasjoner) sammen med [maskinporten-token](/fiks-platform/difiidportenklient).
-Se [spec](https://developers.fiks.ks.no/api/integrasjon-migrering-api-v1.json) for informasjon om hvordan dette skal brukes. 
+- BasicAuth (brukernavn/passord) bekrefter at du har tilgang til SvarUt-kontoen det skal migreres fra.
+- `maskinportenToken` i requesten identifiserer organisasjonen som skal bruke den nye integrasjonen.
+- Ved gyldig autentisering oppretter vi en ny integrasjon med riktige tilganger til samme SvarUt-konto.
+- Responsen inneholder `integrasjonId`, `passord` og `kontoId` som brukes videre i REST v2/v3.
 
-Endepunktet vil automatisk opprette en integrasjon med riktige tilganger til en spesifikk SvarUt-konto:
-* Endepunktet autentiseres med BasicAuth (brukernavn+passord), der brukernavnet identifiserer SvarUt-konto det skal opprettes integrasjon på. 
-* Det må legges ved et maskinporten-token i request-objektet som vil identifisere organisasjonsnummeret som skal få tilgang til den nye integrasjonen
-* Vi vil på baksiden opprette en integrasjon med riktige tilganger til SvarUt-kontoen, og integrasjonId og passord blir returnert sammen med kontoId til SvarUt-konto
+Se [spec](https://developers.fiks.ks.no/api/integrasjon-migrering-api-v1.json) for detaljer om request og respons.
 
-
-## Gjenstår - oppkobling mot Systemkatalogen
+## Planlagt videreutvikling: kobling mot Systemkatalogen
 ### Hva er Systemkatalogen?
-KS Digital holder også på å lage en Systemkatalog der vi på sikt ønsker å ha oversikt over alle leverandører og fag- og arkiv-systemene som integrerer seg mot KS Digital sine tjenester,
-og hvilke ressurser/integrasjoner de forskjellige fag- og arkiv-systemene bruker. Dette vil gjøre det enklere å ha oversikt over hvilke systemer som integrerer seg mot SvarUt, og hvilke ressurser de er konsumenter av. 
+KS Digital utvikler en Systemkatalog for bedre oversikt over leverandører, fag- og arkivsystemer og hvilke integrasjoner de bruker mot KS Digital sine tjenester.
+Dette vil gjøre det enklere å følge opp driftsavvik. For eksempel kan vi varsle riktig leverandør direkte dersom en integrasjon får 401-feil, i stedet for å gå via kommunen.
 
-Et eksempel der dette vil komme til nytte, er når vi ser i våre logger at en bestemt integrasjon får 401 (typisk at passord er endret i fagsystem eller et nytt er generert via Fiks konfiguasjon). 
-I dag kan vi bare kontakte kommunen som eier integrasjonen, som så tar kontakt med sine fagsystem. 
-Systemkatalogen vil altså gjøre det mulig for oss å ta direkte kontakt med fagsystemet som bruker integrasjonen for å gi beskjed om eventuelle problemer vi ser fra vår side.  
+### Hvordan vil dette påvirke migreringsendepunktet?
+Vi planlegger å utvide valideringen for kall mot migreringsendepunktet.
+Planen er at organisasjonsnummeret i `maskinportenToken` må finnes som leverandør i Systemkatalogen.
+I tillegg ønsker vi at nye integrasjoner kobles til riktig produkt/undersystem. Vi kommer tilbake med mer informasjon og fremgangsmåte når vi har fått dette på plass. 
 
-### Hvordan passer Systemkatalogen inn med migreringsendepunktet?
-Vi ønsker å legge til enda mer validering på de som bruker migreringsendepunktet. 
-Dette betyr at vi kommer til å kreve at organiasasjonsnummeret som finnes i maskinporten-tokenet, finnes som en leverandør i Systemkatalogen. 
+[//]: # (Planlagt fremgangsmåte:)
 
-I tillegg ønsker vi å legge til rette for at de nye integrasjonene er koblet sammen med riktig produkt/undersystem. 
+[//]: # (- Ta kontakt med brukerstøtte for å bekrefte at hovedleverandøren deres er registrert i Systemkatalogen.)
 
-Fremgangsmåte: 
-- Ta kontakt med Brukerstøtte hos oss for å vere sikker på at deres hovedleverandør er registrert i Systemkatalogen. Dette vil altså si at det finnes en leverandør i Systemkatalogen med organisasjonsnummeret som finnes i maskinporten-tokenet. 
-- Systemet som bruker integrasjonen bør også vere registrert som et eget produkt under leverandøren. Denne vil da ha fått en egen produktId
-- Legg ved produktId i kallet mot migreringsendepunktet. Vi vil da validere at dette faktisk er en produktId som finnes i Systemkatalogen (og hører til organisasjonsnummer til leverandør) og deretter koble integrasjon sammen med produktId
+[//]: # (- Sørg for at systemet som bruker integrasjonen er registrert som eget produkt under leverandøren.)
+
+[//]: # (- Oppgi `produktId` i kall mot migreringsendepunktet når dette kravet innføres.)
