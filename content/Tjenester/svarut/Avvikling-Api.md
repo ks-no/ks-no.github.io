@@ -14,7 +14,7 @@ Migreringsendepunktet brukes når du skal gå fra SOAP/REST v1 til REST v2/v3.
 - BasicAuth (brukernavn/passord) bekrefter at du har tilgang til SvarUt-kontoen det skal migreres fra.
 - `maskinportenToken` i requesten identifiserer organisasjonen som skal bruke den nye integrasjonen.
 - Ved gyldig autentisering oppretter vi en ny integrasjon med riktige tilganger til samme SvarUt-konto.
-- Responsen inneholder `integrasjonId`, `passord` og `kontoId` som brukes videre i REST v2/v3.
+- Responsen inneholder `id`, `passord` og `kontoId` som brukes videre i REST v2/v3.
 
 Se [spec](https://developers.fiks.ks.no/api/integrasjon-migrering-api-v1.json) for detaljer om request og respons.
 
