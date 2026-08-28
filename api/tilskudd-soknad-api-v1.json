@@ -33,10 +33,6 @@
     {
       "name": "Melding",
       "description": "Endepunkter for å opprette og lese meldinger knyttet til en søknad"
-    },
-    {
-      "name": "Fil",
-      "description": "Endepunkter for å hente filer knyttet til en søknad"
     }
   ],
   "paths": {
@@ -46,7 +42,7 @@
           "Tilskuddssoknad"
         ],
         "operationId": "hentSoknaderForPerson",
-        "summary": "Henter søknader for en person. Krever authetisering med IdPorten",
+        "summary": "Henter søknader for en person.",
         "responses": {
           "200": {
             "description": "Liste med søknader",
@@ -107,6 +103,59 @@
       }
     },
     "/tilskuddssoknad/api/v1/{soknadsregisterId}": {
+      "patch": {
+        "tags": [
+          "Tilskuddssoknad"
+        ],
+        "operationId": "oppdaterSoknad",
+        "summary": "Oppdaterer felter på en søknad (status, tittel og/eller fagsystemreferanse)",
+        "parameters": [
+          {
+            "name": "soknadsregisterId",
+            "in": "path",
+            "description": "SoknadsregisterId for søknaden",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OppdaterSoknadRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Søknaden er oppdatert",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SoknadDetaljer"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/400BadRequest"
+          },
+          "403": {
+            "$ref": "#/components/responses/403Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/404NotFound"
+          },
+          "default": {
+            "$ref": "#/components/responses/DefaultError"
+          }
+        }
+      },
       "get": {
         "tags": [
           "Tilskuddssoknad"
@@ -309,13 +358,60 @@
         }
       }
     },
-    "/tilskuddssoknad/api/v1/{soknadsregisterId}/status": {
-      "patch": {
+    "/tilskuddssoknad/api/v1/{soknadsregisterId}/meldingstraad": {
+      "get": {
         "tags": [
-          "Tilskuddssoknad"
+          "Melding"
         ],
-        "operationId": "oppdaterStatus",
-        "summary": "Oppdaterer status til en søknad",
+        "operationId": "hentMeldingstraaderForSoknad",
+        "summary": "Henter alle meldingstrådene på en søknad, nyeste aktivitet først",
+        "parameters": [
+          {
+            "name": "soknadsregisterId",
+            "in": "path",
+            "description": "SoknadsregisterId for søknaden",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Liste med meldingstrådene på søknaden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "maxItems": 100,
+                  "items": {
+                    "$ref": "#/components/schemas/Meldingstraadoversikt"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/400BadRequest"
+          },
+          "403": {
+            "$ref": "#/components/responses/403Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/404NotFound"
+          },
+          "default": {
+            "$ref": "#/components/responses/DefaultError"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Melding"
+        ],
+        "operationId": "nyMeldingstraad",
+        "summary": "Oppretter en ny meldingstråd med den første meldingen på en søknad",
         "parameters": [
           {
             "name": "soknadsregisterId",
@@ -332,19 +428,19 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/OppdaterStatusRequest"
+                "$ref": "#/components/schemas/NyMeldingstraadRequest"
               }
             }
           },
           "required": true
         },
         "responses": {
-          "200": {
-            "description": "Status oppdatert",
+          "201": {
+            "description": "Meldingstråden er opprettet",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/SoknadDetaljer"
+                  "$ref": "#/components/schemas/Meldingstraad"
                 }
               }
             }
@@ -364,13 +460,13 @@
         }
       }
     },
-    "/tilskuddssoknad/api/v1/{soknadsregisterId}/tittel": {
-      "patch": {
+    "/tilskuddssoknad/api/v1/{soknadsregisterId}/meldingstraad/{meldingstraadId}": {
+      "get": {
         "tags": [
-          "Tilskuddssoknad"
+          "Melding"
         ],
-        "operationId": "oppdaterTittel",
-        "summary": "Oppdaterer tittel på søknad",
+        "operationId": "hentMeldingstraad",
+        "summary": "Henter en meldingstråd med alle meldingene i tråden, eldste melding først",
         "parameters": [
           {
             "name": "soknadsregisterId",
@@ -381,25 +477,25 @@
               "type": "string",
               "format": "uuid"
             }
+          },
+          {
+            "name": "meldingstraadId",
+            "in": "path",
+            "description": "MeldingstraadId for meldingstråden",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
           }
         ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/OppdaterTittelRequest"
-              }
-            }
-          },
-          "required": true
-        },
         "responses": {
           "200": {
-            "description": "Status oppdatert",
+            "description": "OK",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/SoknadDetaljer"
+                  "$ref": "#/components/schemas/Meldingstraad"
                 }
               }
             }
@@ -419,13 +515,35 @@
         }
       }
     },
-    "/tilskuddssoknad/api/v1/melding": {
+    "/tilskuddssoknad/api/v1/{soknadsregisterId}/meldingstraad/{meldingstraadId}/melding": {
       "post": {
         "tags": [
           "Melding"
         ],
         "operationId": "nyMelding",
-        "summary": "Registrerer ny melding knyttet til en søknad",
+        "summary": "Legger en ny melding på en eksisterende meldingstråd",
+        "parameters": [
+          {
+            "name": "soknadsregisterId",
+            "in": "path",
+            "description": "SoknadsregisterId for søknaden",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "meldingstraadId",
+            "in": "path",
+            "description": "MeldingstraadId for meldingstråden meldingen skal legges på",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
         "requestBody": {
           "content": {
             "application/json": {
@@ -438,14 +556,17 @@
         },
         "responses": {
           "201": {
-            "description": "Meldingen er registrert",
+            "description": "Meldingen er lagt på meldingstråden",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Melding"
+                  "$ref": "#/components/schemas/Meldingstraad"
                 }
               }
             }
+          },
+          "400": {
+            "$ref": "#/components/responses/400BadRequest"
           },
           "403": {
             "$ref": "#/components/responses/403Unauthorized"
@@ -459,16 +580,16 @@
         }
       }
     },
-    "/tilskuddssoknad/api/v1/melding/{soknadregisterId}": {
-      "get": {
+    "/tilskuddssoknad/api/v1/{soknadsregisterId}/fil": {
+      "post": {
         "tags": [
-          "Melding"
+          "Tilskuddssoknad"
         ],
-        "operationId": "hentMeldinger",
-        "summary": "Henter meldinger knyttet til en søknad",
+        "operationId": "leggTilFil",
+        "summary": "Legger til en fil i en søknad",
         "parameters": [
           {
-            "name": "soknadregisterId",
+            "name": "soknadsregisterId",
             "in": "path",
             "description": "SoknadsregisterId for søknaden",
             "required": true,
@@ -478,36 +599,6 @@
             }
           }
         ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Meldingslogg"
-                }
-              }
-            }
-          },
-          "403": {
-            "$ref": "#/components/responses/403Unauthorized"
-          },
-          "404": {
-            "$ref": "#/components/responses/404NotFound"
-          },
-          "default": {
-            "$ref": "#/components/responses/DefaultError"
-          }
-        }
-      }
-    },
-    "/tilskuddssoknad/api/v1/fil": {
-      "post": {
-        "tags": [
-          "Fil"
-        ],
-        "operationId": "nyFil",
-        "summary": "Registrerer ny fil knyttet til en søknad",
         "requestBody": {
           "content": {
             "application/json": {
@@ -520,14 +611,17 @@
         },
         "responses": {
           "201": {
-            "description": "Filen er registrert",
+            "description": "Filen er lagt til",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Fil"
+                  "$ref": "#/components/schemas/SoknadDetaljer"
                 }
               }
             }
+          },
+          "400": {
+            "$ref": "#/components/responses/400BadRequest"
           },
           "403": {
             "$ref": "#/components/responses/403Unauthorized"
@@ -541,18 +635,28 @@
         }
       }
     },
-    "/tilskuddssoknad/api/v1/fil/{soknadregisterId}": {
-      "get": {
+    "/tilskuddssoknad/api/v1/{soknadsregisterId}/fil/{filregisterId}": {
+      "delete": {
         "tags": [
-          "Fil"
+          "Tilskuddssoknad"
         ],
-        "operationId": "hentFiler",
-        "summary": "Henter filer knyttet til en søknad",
+        "operationId": "fjernFil",
+        "summary": "Fjerner en fil fra en søknad",
         "parameters": [
           {
-            "name": "soknadregisterId",
+            "name": "soknadsregisterId",
             "in": "path",
             "description": "SoknadsregisterId for søknaden",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "filregisterId",
+            "in": "path",
+            "description": "FilregisterId for filen som skal fjernes",
             "required": true,
             "schema": {
               "type": "string",
@@ -562,14 +666,190 @@
         ],
         "responses": {
           "200": {
-            "description": "OK",
+            "description": "Filen er fjernet",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Filliste"
+                  "$ref": "#/components/schemas/SoknadDetaljer"
                 }
               }
             }
+          },
+          "400": {
+            "$ref": "#/components/responses/400BadRequest"
+          },
+          "403": {
+            "$ref": "#/components/responses/403Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/404NotFound"
+          },
+          "default": {
+            "$ref": "#/components/responses/DefaultError"
+          }
+        }
+      }
+    },
+    "/tilskuddssoknad/api/v1/{soknadsregisterId}/oppgave": {
+      "post": {
+        "tags": [
+          "Tilskuddssoknad"
+        ],
+        "operationId": "leggTilOppgave",
+        "summary": "Legger til en oppgave i en søknad",
+        "parameters": [
+          {
+            "name": "soknadsregisterId",
+            "in": "path",
+            "description": "SoknadsregisterId for søknaden",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NyOppgaveRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Oppgaven er lagt til",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SoknadDetaljer"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/400BadRequest"
+          },
+          "403": {
+            "$ref": "#/components/responses/403Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/404NotFound"
+          },
+          "default": {
+            "$ref": "#/components/responses/DefaultError"
+          }
+        }
+      }
+    },
+    "/tilskuddssoknad/api/v1/{soknadsregisterId}/oppgave/{oppgaveregisterId}": {
+      "patch": {
+        "tags": [
+          "Tilskuddssoknad"
+        ],
+        "operationId": "oppdaterOppgave",
+        "summary": "Oppdaterer en oppgave på en søknad",
+        "parameters": [
+          {
+            "name": "soknadsregisterId",
+            "in": "path",
+            "description": "SoknadsregisterId for søknaden",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "oppgaveregisterId",
+            "in": "path",
+            "description": "OppgaveregisterId for oppgaven som skal oppdateres",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OppdaterOppgaveRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Oppgaven er oppdatert",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SoknadDetaljer"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/400BadRequest"
+          },
+          "403": {
+            "$ref": "#/components/responses/403Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/404NotFound"
+          },
+          "default": {
+            "$ref": "#/components/responses/DefaultError"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Tilskuddssoknad"
+        ],
+        "operationId": "fjernOppgave",
+        "summary": "Fjerner en oppgave fra en søknad",
+        "parameters": [
+          {
+            "name": "soknadsregisterId",
+            "in": "path",
+            "description": "SoknadsregisterId for søknaden",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "oppgaveregisterId",
+            "in": "path",
+            "description": "OppgaveregisterId for oppgaven som skal fjernes",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Oppgaven er fjernet",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SoknadDetaljer"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/400BadRequest"
           },
           "403": {
             "$ref": "#/components/responses/403Unauthorized"
@@ -593,22 +873,6 @@
       }
     },
     "schemas": {
-      "SoknadId": {
-        "type": "object",
-        "properties": {
-          "soknadsregisterId": {
-            "type": "string",
-            "format": "uuid",
-            "readOnly": true
-          },
-          "soknadId": {
-            "type": "string",
-            "pattern": "^[A-Za-z0-9-]+$",
-            "example": "TS-1000000001",
-            "readOnly": true
-          }
-        }
-      },
       "SoknadBase": {
         "type": "object",
         "properties": {
@@ -618,7 +882,8 @@
             "description": "Id til utlysing i tilskuddsregisgteret"
           },
           "tittel": {
-            "$ref": "#/components/schemas/Tittel"
+            "type": "string",
+            "maxLength": 100
           },
           "paaVegneAvForetak": {
             "$ref": "#/components/schemas/Foretak",
@@ -627,6 +892,11 @@
           "soker": {
             "$ref": "#/components/schemas/Person",
             "description": "Informasjon om søker"
+          },
+          "fagsystemReferanse": {
+            "type": "string",
+            "description": "Referanse for søknad til fagsystem",
+            "maxLength": 100
           }
         }
       },
@@ -634,19 +904,33 @@
         "type": "object",
         "required": [
           "soknadsregisterId",
-          "soknadId",
           "tilskuddsregisterId",
           "tittel",
           "paaVegneAvForetak",
           "soker",
           "deltagere",
+          "filer",
+          "oppgaver",
           "status",
           "opprettetDatoTid",
           "endretDatoTid"
         ],
         "allOf": [
           {
-            "$ref": "#/components/schemas/SoknadId"
+            "type": "object",
+            "properties": {
+              "soknadsregisterId": {
+                "type": "string",
+                "format": "uuid",
+                "readOnly": true
+              },
+              "soknadId": {
+                "type": "string",
+                "pattern": "^[A-Za-z0-9-]+$",
+                "example": "TS-1000000001",
+                "readOnly": true
+              }
+            }
           },
           {
             "$ref": "#/components/schemas/SoknadBase"
@@ -660,6 +944,22 @@
                 "description": "Informasjon om andre deltagere",
                 "items": {
                   "$ref": "#/components/schemas/Person"
+                }
+              },
+              "filer": {
+                "type": "array",
+                "maxItems": 50,
+                "description": "Filer knyttet til søknaden",
+                "items": {
+                  "$ref": "#/components/schemas/Fil"
+                }
+              },
+              "oppgaver": {
+                "type": "array",
+                "maxItems": 25,
+                "description": "Oppgaver knyttet til søknaden",
+                "items": {
+                  "$ref": "#/components/schemas/Oppgave"
                 }
               },
               "status": {
@@ -694,7 +994,8 @@
           "tilskuddsregisterId",
           "tittel",
           "soker",
-          "paaVegneAvForetak"
+          "paaVegneAvForetak",
+          "fagsystemReferanse"
         ],
         "allOf": [
           {
@@ -714,39 +1015,26 @@
           }
         }
       },
-      "OppdaterStatusRequest": {
+      "OppdaterSoknadRequest": {
         "type": "object",
+        "description": "Felter som skal oppdateres på søknaden. Kun felter som er oppgitt (ikke null) blir endret.",
+        "minProperties": 1,
         "properties": {
           "status": {
             "$ref": "#/components/schemas/SoknadsStatus",
             "description": "Ny status for søknaden"
           },
-          "timestamp": {
-            "type": "string",
-            "format": "date-time",
-            "description": "Tidspunkt for statusendringen (ISO 8601 format). Hvis ikke oppgitt, brukes servertid",
-            "example": "2025-12-10T10:30:00Z"
-          }
-        },
-        "required": [
-          "status"
-        ]
-      },
-      "OppdaterTittelRequest": {
-        "type": "object",
-        "properties": {
           "tittel": {
-            "$ref": "#/components/schemas/Tittel",
+            "type": "string",
+            "maxLength": 100,
             "description": "Ny tittel for søknaden"
+          },
+          "fagsystemReferanse": {
+            "type": "string",
+            "maxLength": 100,
+            "description": "Ny fagsystemreferanse for søknaden"
           }
-        },
-        "required": [
-          "tittel"
-        ]
-      },
-      "Tittel": {
-        "type": "string",
-        "maxLength": 100
+        }
       },
       "Person": {
         "type": "object",
@@ -795,55 +1083,79 @@
       },
       "SoknadsStatus": {
         "type": "string",
+        "default": "UTKAST",
         "enum": [
           "UTKAST",
-          "INNSENDT",
           "TIL_BEHANDLING",
           "GJENÅPNET",
           "INNVILGET",
           "AVSLÅTT",
-          "AVVIST",
           "AVSLUTTET",
           "TRUKKET",
           "SLETTET"
         ]
       },
+      "Retning": {
+        "type": "string",
+        "enum": [
+          "INNGAAENDE",
+          "UTGAAENDE"
+        ]
+      },
       "MeldingBase": {
         "type": "object",
         "properties": {
-          "soknadregisterId": {
-            "type": "string",
-            "format": "uuid",
-            "description": "Id for søknad som meldingen gjelder"
-          },
-          "tittel": {
-            "type": "string",
-            "description": "Tittel på meldingen"
-          },
-          "meldingstype": {
-            "$ref": "#/components/schemas/Meldingstype",
-            "description": "Meldingstype"
+          "retning": {
+            "$ref": "#/components/schemas/Retning",
+            "description": "Om meldingen er inngående (fra søker) eller utgående (fra forvalter)"
           },
           "avsender": {
             "type": "string",
-            "description": "System eller person som har sendt meldingen"
+            "minLength": 1,
+            "maxLength": 100,
+            "description": "Navn på person som har sendt meldingen"
           },
           "innhold": {
             "type": "string",
-            "description": "Meldingen innhold"
+            "minLength": 1,
+            "maxLength": 1600,
+            "description": "Meldingens innhold. Ren tekst - HTML-tagger fjernes ved lagring"
           }
         }
       },
       "NyMeldingRequest": {
         "type": "object",
         "required": [
-          "soknadregisterId",
-          "tittel",
-          "meldingstype",
+          "retning",
           "avsender",
           "innhold"
         ],
         "allOf": [
+          {
+            "$ref": "#/components/schemas/MeldingBase"
+          }
+        ]
+      },
+      "NyMeldingstraadRequest": {
+        "type": "object",
+        "required": [
+          "tittel",
+          "retning",
+          "avsender",
+          "innhold"
+        ],
+        "allOf": [
+          {
+            "type": "object",
+            "properties": {
+              "tittel": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 50,
+                "description": "Tittel på meldingstråden"
+              }
+            }
+          },
           {
             "$ref": "#/components/schemas/MeldingBase"
           }
@@ -854,9 +1166,7 @@
         "readOnly": true,
         "required": [
           "meldingsregisterId",
-          "soknadregisterId",
-          "tittel",
-          "meldingstype",
+          "retning",
           "avsender",
           "innhold",
           "mottattDatoTid"
@@ -886,36 +1196,79 @@
           }
         ]
       },
-      "Meldingslogg": {
+      "Meldingstraad": {
+        "type": "object",
+        "readOnly": true,
+        "required": [
+          "meldingstraadId",
+          "soknadsregisterId",
+          "tittel",
+          "meldinger"
+        ],
         "properties": {
+          "meldingstraadId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Id for meldingstråden"
+          },
+          "soknadsregisterId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Id for søknaden meldingstråden gjelder"
+          },
+          "tittel": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 50,
+            "description": "Tittel på meldingstråden"
+          },
           "meldinger": {
             "type": "array",
+            "minItems": 1,
             "maxItems": 1000,
+            "description": "Meldingene i tråden, eldste først",
             "items": {
               "$ref": "#/components/schemas/Melding"
             }
           }
-        },
-        "required": [
-          "meldinger"
-        ]
+        }
       },
-      "Meldingstype": {
-        "type": "string",
-        "enum": [
-          "HENDELSE",
-          "OPPGAVE",
-          "DIALOG"
-        ]
+      "Meldingstraadoversikt": {
+        "type": "object",
+        "readOnly": true,
+        "required": [
+          "meldingstraadId",
+          "tittel",
+          "foersteMelding",
+          "sisteMeldingDatoTid"
+        ],
+        "properties": {
+          "meldingstraadId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Id for meldingstråden"
+          },
+          "tittel": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 50,
+            "description": "Tittel på meldingstråden"
+          },
+          "foersteMelding": {
+            "$ref": "#/components/schemas/Melding",
+            "description": "Første melding i meldingstråden."
+          },
+          "sisteMeldingDatoTid": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2026-02-11T14:02:00Z",
+            "description": "Tidspunkt for den nyeste meldingen i tråden"
+          }
+        }
       },
       "FilBase": {
         "type": "object",
         "properties": {
-          "soknadsregisterId": {
-            "type": "string",
-            "format": "uuid",
-            "description": "Id for søknad som filen er tilknyttet"
-          },
           "tittel": {
             "type": "string",
             "description": "Tittel på filen"
@@ -941,7 +1294,6 @@
       "NyFilRequest": {
         "type": "object",
         "required": [
-          "soknadsregisterId",
           "tittel",
           "filtype",
           "status",
@@ -959,7 +1311,6 @@
         "readOnly": true,
         "required": [
           "filregisterId",
-          "soknadsregisterId",
           "tittel",
           "filtype",
           "status",
@@ -1003,26 +1354,129 @@
           }
         ]
       },
-      "Filliste": {
-        "properties": {
-          "filer": {
-            "type": "array",
-            "maxItems": 20,
-            "items": {
-              "$ref": "#/components/schemas/Fil"
-            }
-          }
-        },
-        "required": [
-          "filer"
-        ]
-      },
       "Filtype": {
         "type": "string",
         "enum": [
           "BUDSJETT",
           "SLUTTRAPPORT"
         ]
+      },
+      "OppgaveBase": {
+        "type": "object",
+        "properties": {
+          "tittel": {
+            "type": "string",
+            "maxLength": 100,
+            "description": "Tittel på oppgaven"
+          },
+          "merknad": {
+            "$ref": "#/components/schemas/OppgaveMerknad",
+            "description": "Utfyllende merknad til oppgaven"
+          },
+          "fristDatoTid": {
+            "$ref": "#/components/schemas/OppgaveFrist",
+            "description": "Frist for oppgaven"
+          }
+        }
+      },
+      "NyOppgaveRequest": {
+        "type": "object",
+        "required": [
+          "tittel",
+          "fristDatoTid"
+        ],
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/OppgaveBase"
+          }
+        ]
+      },
+      "OppdaterOppgaveRequest": {
+        "type": "object",
+        "description": "Felter som skal oppdateres på oppgaven. Kun felter som er oppgitt (ikke null) blir endret.",
+        "minProperties": 1,
+        "properties": {
+          "merknad": {
+            "$ref": "#/components/schemas/OppgaveMerknad",
+            "description": "Ny merknad for oppgaven"
+          },
+          "fristDatoTid": {
+            "$ref": "#/components/schemas/OppgaveFrist",
+            "description": "Ny frist for oppgaven"
+          },
+          "status": {
+            "$ref": "#/components/schemas/OppgaveStatus",
+            "description": "Ny status for oppgaven"
+          }
+        }
+      },
+      "Oppgave": {
+        "type": "object",
+        "readOnly": true,
+        "required": [
+          "oppgaveregisterId",
+          "tittel",
+          "fristDatoTid",
+          "status",
+          "opprettetDatoTid",
+          "endretDatoTid"
+        ],
+        "allOf": [
+          {
+            "type": "object",
+            "properties": {
+              "oppgaveregisterId": {
+                "type": "string",
+                "format": "uuid"
+              }
+            }
+          },
+          {
+            "$ref": "#/components/schemas/OppgaveBase"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "status": {
+                "$ref": "#/components/schemas/OppgaveStatus",
+                "description": "Status for oppgaven"
+              },
+              "opprettetDatoTid": {
+                "type": "string",
+                "format": "date-time",
+                "example": "2025-08-27T15:45:30Z",
+                "description": "Tidspunkt for når oppgaven ble opprettet"
+              },
+              "endretDatoTid": {
+                "type": "string",
+                "format": "date-time",
+                "example": "2025-08-27T15:45:30Z",
+                "description": "Tidspunkt for når oppgaven sist ble endret"
+              }
+            }
+          }
+        ]
+      },
+      "OppgaveStatus": {
+        "type": "string",
+        "default": "IKKE_PÅBEGYNT",
+        "enum": [
+          "IKKE_PÅBEGYNT",
+          "UTKAST",
+          "INNSENDT",
+          "GJENÅPNET",
+          "GODKJENT",
+          "IKKE_GODKJENT"
+        ]
+      },
+      "OppgaveMerknad": {
+        "type": "string",
+        "maxLength": 250
+      },
+      "OppgaveFrist": {
+        "type": "string",
+        "format": "date-time",
+        "example": "2026-03-01T23:59:59Z"
       },
       "ErrorMessage": {
         "type": "object",
