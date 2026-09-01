@@ -1,0 +1,23 @@
+@startuml
+/'!include skin.puml'/
+
+title Synkronisering av store grupper
+
+participant "Målsystem" as target
+participant "Sync API" as sync
+
+target -> sync : GET /grupper?syncToken=token_1
+activate sync
+sync --> target : { "events": [\n  { "id": "small_group", "requiresSeparateFetch": false, "resource": {...} },\n  { "id": "large_group", "requiresSeparateFetch": true, "resource": null }\n] }
+deactivate sync
+
+note over target : Klienten ser at 'large_group'\nhar **requiresSeparateFetch: true**
+
+target -> sync : GET /gruppe/large_group
+activate sync
+sync --> target : { "id": "large_group", "displayName": "...", "members": [...] }
+deactivate sync
+
+note over target : Klienten har nå fullstendig\ntilstand for begge gruppene
+
+@enduml

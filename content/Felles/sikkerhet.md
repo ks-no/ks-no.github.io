@@ -17,7 +17,7 @@ På samme måte har KS-Digitale fellestjenester også påbegynt en vurdering av 
 Den enkelte digitale fellestjeneste avtalefestes ved et eget tjenestevedlegg til den grunnleggende avtalen om tilknytning og bruk av Fiks-plattformen.
 
 ## Styringsystem for personvern og informasjonssikkerhet
-KS-Digitale fellestjenester har etablert og jobber etter et eget styringssystem for personvern og informasjonssikkerhet. Styringssystemet bygger på anerkjente standarder som ISO27001, ISO27701 og NSMs grunnprinsipper for IKT-sikkerhet. For spesifikke spørsmål om sikkerhet og personvern på plattformen, ta kontakt med [brukerstøtte](mailto:fiks@ks.no) eller [sikkerhetsavdelingen](mailto:fiks-sikkerhet@ks.no) vår.
+KS-Digitale fellestjenester har etablert og jobber etter et eget styringssystem for personvern og informasjonssikkerhet. Styringssystemet bygger på anerkjente standarder som ISO27001, ISO27701 og NSMs grunnprinsipper for IKT-sikkerhet. For spesifikke spørsmål om sikkerhet og personvern på plattformen, ta kontakt med [brukerstøtte](mailto:fiks@ksdigital.no) eller [sikkerhetsavdelingen](mailto:fiks-sikkerhet@ksdigital.no) vår.
 
 ## Overordnet om teknologiske sikringstiltak
 Digdirs fellestjenester ID-porten og maskinporten benyttes til autentisering, og benyttes som identitetsbærer i hele Fiks-plattformen. ID- og maskinporten-tokens benyttes også som grunnlag for plattformens gjennom-gående autorisasjonslag, som benyttes på tvers av alle tjenester.  Gjennom faste prinsipper og komponenter oppnår plattformen er veletablert og godt testet funksjonalitet for autentisering og autorisasjon.
@@ -50,9 +50,9 @@ Når organisasjonen opprettes settes et personnummer som administrator. Dette er
 Tildeling av privilegier er underlagt audit-logging, se under for detaljer.
 
 ### Integrasjoner
-De fleste tjenestene på Fiks-plattformen har mulighet for maskin-til-maskin integrasjon, for eksempel når et saksystem laster opp meldinger til Fiks Innsyn. Dette gjøres gjennom å opprette  _integrasjoner_, som autentiseres ved hjelp av et virksomhetsertifikat-basert access token utstedt av ID-Porten i kombinasjon med integrasjonsid og passord generert av Fiks-konfigurasjon. Se [integrasjoner]{{< relref "integrasjoner.md" >}} for mer informasjon om oppsett av dette.
+De fleste tjenestene på Fiks-plattformen har mulighet for maskin-til-maskin integrasjon, for eksempel når et saksystem laster opp meldinger til Fiks Innsyn. Dette gjøres gjennom å opprette  _integrasjoner_, som autentiseres ved hjelp av et virksomhetsertifikat-basert access token utstedt av ID-Porten i kombinasjon med integrasjonsid og passord generert av Fiks-konfigurasjon. Se [integrasjoner]{{% relref "integrasjoner.md" %}} for mer informasjon om oppsett av dette.
 
-Integrasjoner autentiseres gjennom to mekanismer: for det første trenger man en kombinasjon av integrasjonId og passord som genereres via Fiks Konfigurasjon. For det andre benyttes et virksomhetssertifikat og ID-Porten for å bekrefter identiteten til virksomheten som drifter integrasjonen. Denne identiteten må sammsvare med orgnummer som er registrert som integrasjonseier i Fiks-konfigurasjon. Se ["Integrasjoner"]({{< ref "integrasjoner.md" >}}) for en mer detaljert beskrivelse.  
+Integrasjoner autentiseres gjennom to mekanismer: for det første trenger man en kombinasjon av integrasjonId og passord som genereres via Fiks Konfigurasjon. For det andre benyttes et virksomhetssertifikat og ID-Porten for å bekrefter identiteten til virksomheten som drifter integrasjonen. Denne identiteten må sammsvare med orgnummer som er registrert som integrasjonseier i Fiks-konfigurasjon. Se ["Integrasjoner"]({{% ref "integrasjoner.md" %}}) for en mer detaljert beskrivelse.  
 
 Autorisering av integrasjoner gjøres på bakgrunn av privilegier tildelt i Fiks-konfigurasjon. Hver Fiks-organisasjon må eksplisitt si at en integrasjon skal ha tilgang til sine systemer, for eksempel ved å gi svarut integrasjonen tilgang til en kommunes Fiks Innsyn tjeneste.
 

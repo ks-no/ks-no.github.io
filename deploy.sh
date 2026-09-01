@@ -2,16 +2,17 @@
 set -e
 echo -e "\033[0;32mDeploying updates to GitHub...\033[0m"
 rm -rf public
-git clone https://github.com/ks-no/ks-no.github.io.git public
+git clone --depth 1 --branch master https://github.com/ks-no/ks-no.github.io.git public
 
 cd public
-git checkout master
-git pull
 rm -rf *
 cd ..
 
 # Build the project.
-hugo --cleanDestinationDir 
+./hugo.sh --cleanDestinationDir
+
+# Ensure GitHub Pages does not ignore underscore-prefixed folders.
+touch public/.nojekyll
 
 # Go To Public 
 cd public

@@ -4,4 +4,4 @@ hidden: true
 aliases: [/svarut/integrasjon/]
 ---
 
-{{% children style="h5" showhidden= "false" %}}
+{{% children type="list" %}}

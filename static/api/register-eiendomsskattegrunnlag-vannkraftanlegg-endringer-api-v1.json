@@ -1,0 +1,223 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "",
+    "description": "",
+    "contact": {
+      "name": "Fiks brukerstøtte",
+      "url": "https://www.ks.no/fagomrader/digitalisering/utviklingsprosjekter",
+      "email": "fiks@ksdigital.no"
+    },
+    "version": "v1"
+  },
+  "servers": [
+    {
+      "url": "",
+      "description": "KS Fiks API host",
+      "variables": {}
+    },
+    {
+      "url": "",
+      "description": "KS Fiks TEST API host",
+      "variables": {}
+    }
+  ],
+  "paths": {
+    "/register/api/v1/ks/{rolleId}/eiendomsskattegrunnlag/vannkraftanlegg/endringer": {
+      "get": {
+        "tags": ["EiendomsskattegrunnlagVannkraftanlegg"],
+        "operationId": "hentEndringer",
+        "parameters": [
+          {
+            "name": "rolleId",
+            "in": "path",
+            "required": true,
+            "description": "UUID format, andre strenger kan brukes i testmiljø",
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "example": "123e4567-e89b-12d3-a456-426614174000"
+            }
+          },
+          {
+            "name": "vannkraftverknummer",
+            "in": "query",
+            "required": false,
+            "description": "Vannkraftverknummeret til anlegget for filtrert søk, standardverdi: null",
+            "schema": {
+              "type": "string",
+              "example": "1001"
+            }
+          },
+          {
+            "name": "fraDato",
+            "in": "query",
+            "required": false,
+            "description": "Fra dato for periodesøk, krever også tilDato",
+            "schema": {
+              "type": "string",
+              "example": "2026-03-01"
+            }
+          },
+          {
+            "name": "tilDato",
+            "in": "query",
+            "required": false,
+            "description": "Til dato for periodesøk, krever også fraDato",
+            "schema": {
+              "type": "string",
+              "example": "2026-05-01"
+            }
+          },
+          {
+            "name": "side",
+            "in": "query",
+            "required": false,
+            "description": "Sidenummer for paginering, standardverdi: 1",
+            "schema": {
+              "type": "number",
+              "example": "1"
+            }
+          },
+          {
+            "name": "endringerPerSide",
+            "in": "query",
+            "required": false,
+            "description": "Sidenummer for paginering, standardverdi: 10",
+            "schema": {
+              "type": "number",
+              "example": "10"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Filtrert paginert liste av endringer for vannkraftanlegg",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EiendomsskattegrunnlagVannkraftanleggEndringer"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/register/api/v1/ks/{rolleId}/eiendomsskattegrunnlag/vannkraftanlegg/anlegg": {
+      "get": {
+        "tags": ["EiendomsskattegrunnlagVannkraftanlegg"],
+        "operationId": "hentAlleAnlegg",
+        "parameters": [
+          {
+            "name": "rolleId",
+            "in": "path",
+            "required": true,
+            "description": "UUID format, andre strenger kan brukes i testmiljø",
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "example": "123e4567-e89b-12d3-a456-426614174000"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Liste over alle vannkraftanlegg rollen kan se i sin kommune",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Vannkraftverk"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Vannkraftverk": {
+        "type": "object",
+        "required": ["vannkraftverknummer", "vannkraftverknavn"],
+        "properties": {
+          "vannkraftverknummer": {
+            "type": "string",
+            "description": "ID-nummeret til vannkraftverket",
+            "example": "1234"
+          },
+          "vannkraftverknavn": {
+            "type": "string",
+            "description": "Navnet til vannkraftverket",
+            "example": "Turbinen Vannkraft"
+          }
+        }
+      },
+      "Endringstype": {
+        "type": "string",
+        "example": "NYTT_KRAFTANLEGG",
+        "enum": [
+          "ENDRING_EIERFORHOLD",
+          "ENDRING_FORDELT_EIENDOMSSKATTEGRUNNLAG",
+          "NYTT_KRAFTANLEGG",
+          "AVSLUTTET_KRAFTANLEGG"
+        ]
+      },
+      "VannkraftanleggEndringer": {
+        "type": "array",
+        "description": "Listen av endringer for vannkraftanlegg",
+        "items": {
+          "type": "object",
+          "properties": {
+            "endringsId": {
+              "type": "string",
+              "format": "uuid",
+              "description": "IDen til endringen, kan brukes for å laste ned PDF fra annet endepunkt (ukjent)",
+              "example": "a9ab0374-0c84-46dc-955f-845fcfc7e1dc"
+            },
+            "datotid": {
+              "type": "string",
+              "format": "date-time",
+              "description": "Tiden når endringen skjedde",
+              "example": "2026-04-05T14:48:00.000Z"
+            },
+            "endringstype": {
+              "$ref": "#/components/schemas/Endringstype"
+            },
+            "vannkraftverk": {
+              "$ref": "#/components/schemas/Vannkraftverk"
+            }
+          }
+        }
+      },
+      "EiendomsskattegrunnlagVannkraftanleggEndringer": {
+        "type": "object",
+        "description": "GET /eiendomsskattegrunnlag/vannkraftanlegg/endringer",
+        "properties": {
+          "side": {
+            "type": "number",
+            "description": "Gjeldende sidetall for paginering",
+            "example": 1
+          },
+          "endringerPerSide": {
+            "type": "number",
+            "description": "Antall endringer per side",
+            "example": 10
+          },
+          "totaltAntallEndringer": {
+            "type": "number",
+            "description": "Antall endringer tilgjengelig totalt",
+            "example": 1337
+          },
+          "endringer": {
+            "$ref": "#/components/schemas/VannkraftanleggEndringer"
+          }
+        }
+      }
+    }
+  }
+}

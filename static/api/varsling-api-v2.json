@@ -1,12 +1,12 @@
 {
   "openapi": "3.0.1",
   "info": {
-    "title": "KS Fiks: Varsling",
-    "description": "Service for varsling med sms og epost",
+    "title": "KS Fiks: Varsling Forvaltning V2",
+    "description": "Service for varsling via web grensesnitt",
     "contact": {
       "name": "Fiks-brukerstøtte",
       "url": "https://ks-no.github.io/",
-      "email": "fiks-utvikling@ks.no"
+      "email": "fiks@ksdigital.no"
     },
     "version": "v2"
   },
@@ -1399,6 +1399,75 @@
         }
       }
     },
+    "/varsling/api/v2/kontoer/{kontoId}/utsendelser/sok": {
+      "get": {
+        "tags": [
+          "Utsending"
+        ],
+        "summary": "Henter utsendelser for konto",
+        "operationId": "hentUtsendelserForKontoMedPagination",
+        "parameters": [
+          {
+            "name": "kontoId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "sidenummer",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "minimum": 0,
+              "maximum": 1000,
+              "default": 0
+            }
+          },
+          {
+            "name": "antallPerSide",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "minimum": 1,
+              "maximum": 1000,
+              "default": 25
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Hent utsendelser for konto",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/UtsendelseSok"
+                  }
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Noe gikk galt",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/varsling/api/v2/kontoer/{kontoId}/utsendelser": {
       "get": {
         "tags": [
@@ -2391,7 +2460,8 @@
           "avsender",
           "fiksOrgId",
           "kontoId",
-          "navn"
+          "navn",
+          "folkeregisterAktivert"
         ],
         "type": "object",
         "properties": {
@@ -2424,6 +2494,10 @@
           "tjeneste": {
             "type": "string",
             "description": "Tjeneste som benytter kontoen"
+          },
+          "folkeregisterAktivert": {
+            "type": "boolean",
+            "description": "Beskriver om Folkeregister er aktivert på konto."
           }
         }
       },
@@ -2860,11 +2934,21 @@
       "KartUtsnitt": {
         "type": "object",
         "required": [
-          "punkter"
+          "punkter",
+          "hentEiere",
+          "hentBeboere"
         ],
         "properties": {
           "punkter": {
             "$ref": "#/components/schemas/Punkter"
+          },
+          "hentEiere": {
+            "description": "Skal hente huseiere",
+            "type": "boolean"
+          },
+          "hentBeboere": {
+            "description": "Skal hente beborere",
+            "type": "boolean"
           }
         }
       },

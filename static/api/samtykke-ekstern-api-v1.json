@@ -22,6 +22,54 @@
     "description" : "API for å opprette og slette nytt samtykke"
   } ],
   "paths" : {
+    "/samtykke/api/v1/ekstern/{fiksOrgId}/deleteSamtykke/{samtykkeId}" : {
+      "delete" : {
+        "tags" : [ "samtykke-ekstern" ],
+        "description" : "Sletter samtykke permanent fra eventstore og projeksjon",
+        "operationId" : "deleteSamtykke",
+        "parameters" : [ {
+          "name" : "fiksOrgId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        }, {
+          "name" : "samtykkeId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/InvaliderSamtykkeRequest"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "204" : {
+            "description" : "Slettet samtykke permanent"
+          },
+          "default" : {
+            "description" : "Noe gikk galt",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/samtykke/api/v1/ekstern/{fiksOrgId}/endreInnbyggertjenesteTilgangForPart/{samtykkeId}" : {
       "put" : {
         "tags" : [ "samtykke-ekstern" ],
@@ -332,6 +380,37 @@
           }
         }
       },
+      "InvaliderSamtykkeRequest" : {
+        "required" : [ "begrunnelse", "saksbehandler" ],
+        "type" : "object",
+        "properties" : {
+          "saksbehandler" : {
+            "$ref" : "#/components/schemas/Saksbehandler"
+          },
+          "begrunnelse" : {
+            "minLength" : 1,
+            "type" : "string",
+            "description" : "Begrunnelse for invalidering av samtykke"
+          }
+        }
+      },
+      "Saksbehandler" : {
+        "required" : [ "fagsystem", "saksbehandlerId" ],
+        "type" : "object",
+        "properties" : {
+          "saksbehandlerId" : {
+            "minLength" : 1,
+            "type" : "string",
+            "description" : "Identifikator til saksbehandler"
+          },
+          "fagsystem" : {
+            "minLength" : 1,
+            "type" : "string",
+            "description" : "Info om fagsystem"
+          }
+        },
+        "description" : "Info om saksbehandler som oppretter samtykke"
+      },
       "OppdatertSamtykke" : {
         "required" : [ "samtykkeId", "sekvensnummer" ],
         "type" : "object",
@@ -364,23 +443,6 @@
             "$ref" : "#/components/schemas/Saksbehandler"
           }
         }
-      },
-      "Saksbehandler" : {
-        "required" : [ "fagsystem", "saksbehandlerId" ],
-        "type" : "object",
-        "properties" : {
-          "saksbehandlerId" : {
-            "minLength" : 1,
-            "type" : "string",
-            "description" : "Identifikator til saksbehandler"
-          },
-          "fagsystem" : {
-            "minLength" : 1,
-            "type" : "string",
-            "description" : "Info om fagsystem"
-          }
-        },
-        "description" : "Info om saksbehandler som oppretter samtykke"
       },
       "DatoVerdi" : {
         "type" : "object",
@@ -455,20 +517,6 @@
             "items" : {
               "$ref" : "#/components/schemas/SamtykkeHendelse"
             }
-          }
-        }
-      },
-      "InvaliderSamtykkeRequest" : {
-        "required" : [ "begrunnelse", "saksbehandler" ],
-        "type" : "object",
-        "properties" : {
-          "saksbehandler" : {
-            "$ref" : "#/components/schemas/Saksbehandler"
-          },
-          "begrunnelse" : {
-            "minLength" : 1,
-            "type" : "string",
-            "description" : "Begrunnelse for invalidering av samtykke"
           }
         }
       },

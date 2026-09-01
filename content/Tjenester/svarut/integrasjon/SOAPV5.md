@@ -4,9 +4,12 @@ date: 2017-01-01
 aliases: [/svarut/integrasjon/ForsendelseServiceV5, /tjenester/svarut/integrasjon/forsendelseservicev5/]
 ---
 
-**NB! Vi planlegger å avvikle støtte for alle gjenværende SOAP-versjoner i løpet av 2026, les mer [her](https://ksdigital.no/2026/01/13/avvikling-av-soap-og-rest-v-1-api-for-svarut/).**
 
-Her beskrives funksjonalitet for ForsendelseServiceV5
+{{% notice style="note" title="Viktig informasjon" %}}
+Vi avvikler støtte for alle gjenværende SOAP-versjoner og REST v1 1.1.2027, les mer [her](https://ksdigital.no/2026/01/13/avvikling-av-soap-og-rest-v-1-api-for-svarut/).
+
+Vi har også lagt til støtte for å automatisk opprette integrasjoner som kan brukes for kall til REST v2/v3 - du kan lese mer om det [her](/svarut/api/avvikling-api).
+{{% /notice %}}
 
 ### [WSDL](https://svarut.ks.no/tjenester/forsendelseservice/ForsendelsesServiceV5?wsdl)
 
@@ -130,7 +133,7 @@ Hovedtjeneste som sender inn forsendelse til ekspedering av KS-SvarUt. Følgende
 
 <td class="bold">Avgivende system</td>
 
-<td colspan="2">Identifikator som identifiserer systemet som gjør web-service kallet, vil blant annet kunne benyttes for statistikk og feilsøking. Bruk følgende for sak/arkivsystemene: Doculive, Ephorte, ESA, 360 og Websak. For andre fagsystemer avtales dette med KS KommIT på [svarut@ks.no](mailto:svarut@ks.no). Obligatorisk felt.</td>
+<td colspan="2">Identifikator som identifiserer systemet som gjør web-service kallet, vil blant annet kunne benyttes for statistikk og feilsøking. Bruk følgende for sak/arkivsystemene: Doculive, Ephorte, ESA, 360 og Websak. For andre fagsystemer avtales dette med KS KommIT på [fiks@ksdigital.no](mailto:fiks@ksdigital.no). Obligatorisk felt.</td>
 
 </tr>
 <tr>

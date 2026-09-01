@@ -1,13 +1,16 @@
 ---
-title: 'API: Integrasjon med SOAP'
+title: 'SOAP V11'
 date: 2019-05-07
 aliases: [/svarut/integrasjon/ForsendelseServiceV11]
 ---
 
-**NB! Vi planlegger å avvikle støtte for alle gjenværende SOAP-versjoner i løpet av 2026, les mer [her](https://ksdigital.no/2026/01/13/avvikling-av-soap-og-rest-v-1-api-for-svarut/).**
 
-SOAP APIene er deprecated, og det vil ikke komme noen ny versjon av eller ny funksjonalitet til disse. 
-Vi anbefaler bruk av nyeste versjon av REST-APIet for nye integrasjoner.
+{{% notice style="note" title="Viktig informasjon" %}}
+Vi avvikler støtte for alle gjenværende SOAP-versjoner og REST v1 1.1.2027, les mer [her](https://ksdigital.no/2026/01/13/avvikling-av-soap-og-rest-v-1-api-for-svarut/).
+
+Vi har også lagt til støtte for å automatisk opprette integrasjoner som kan brukes for kall til REST v2/v3 - du kan lese mer om det [her](/svarut/api/avvikling-api).
+{{% /notice %}}
+
 
 ### Tilgang
 
@@ -95,7 +98,7 @@ Henter liste med informasjon om dokumentene til en forsendelse.
 | Felt                         | Type                                  | Beskrivelse                                                                                                                                                                                                                                                                                                                                                                                         | Validering                                            |
 |------------------------------|---------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-------------------------------------------------------|
 | mottaker                     | Adresse                               | Addresse, full post adresse må være utfylt, for sending til Altinn må digitaladresse med orgnr/fødselsnr være utfylt. Støtte for utenlandske adresser.                                                                                                                                                                                                                                              | Ved signeringsoppdrag må PersonDigitalAdresse brukes. |
-| avgivendeSystem              | String                                | Identifikator som identifiserer systemet som gjør web-service kallet, vil blant annet kunne benyttes for statistikk og feilsøking. Bruk følgende for sak/arkivsystemene: Doculive, Ephorte, ESA, 360 og Websak. For andre fagsystemer avtales dette med KS KommIT på [svarut@ks.no](mailto:svarut@ks.no). Obligatorisk felt.                                                                        |                                                       |
+| avgivendeSystem              | String                                | Identifikator som identifiserer systemet som gjør web-service kallet, vil blant annet kunne benyttes for statistikk og feilsøking. Bruk følgende for sak/arkivsystemene: Doculive, Ephorte, ESA, 360 og Websak. For andre fagsystemer avtales dette med KS KommIT på [fiks@ksdigital.no](mailto:fiks@ksdigital.no). Obligatorisk felt.                                                              |                                                       |
 | tittel                       | String                                | Tittel på forsendelsen. Tittel blir vist i tittelfeltet på melding til Altinn, og i listen over innkommende meldinger.                                                                                                                                                                                                                                                                              | Må være utfylt                                        |
 | konteringsKode               | String                                | Kode som beskriver faktureringskonto for forsendelsen. Kan benyttes for å gruppere meldingsstatistikk gjennom forvaltningsløsningen, og sendes videre til print-leverandør.                                                                                                                                                                                                                         | ^[a-zA-Z0-9\-\.øæåØÆÅ]{0,20}$                         |
 | leveringsmetode              | Leveringsmetode                       | Dersom leveringsmetode er satt til en "kunDigital"-verdi blir leveransen kun forsøkt levert digitalt, ingen print og postlegging. Hvis dokumentet ikke kan leveres digital blir det ikke levert. Hvis KunDigitalLevering er valgt må fødselsnr eller orgnr være utfylt.                                                                                                                             |                                                       |

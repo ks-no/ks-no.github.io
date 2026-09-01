@@ -2,7 +2,7 @@
   "openapi": "3.1.1",
   "info": {
     "title": "KS Fiks: Tilskuddsregister v1",
-    "description": "Service for Tilskuddregister",
+    "description": "Service for Tilskuddsregister",
     "contact": {
       "name": "Fiks-brukerstøtte",
       "url": "https://ks-no.github.io/",
@@ -17,8 +17,7 @@
     },
     {
       "url": "https://api.fiks.test.ks.no",
-      "description": "KS Fiks TEST API host",
-      "variables": {}
+      "description": "KS Fiks TEST API host"
     }
   ],
   "security": [
@@ -37,13 +36,13 @@
     }
   ],
   "paths": {
-    "/tilskuddsregister/api/v1/oppslag/ordning": {
+    "/tilskuddsregister/api/v1/oppslag/utlysing": {
       "get": {
         "tags": [
           "RegisterOppslag"
         ],
-        "operationId": "soekEtterTilskuddsordning",
-        "summary": "Lister ut tilgjengelig tilskuddsordninger",
+        "operationId": "soekEtterUtlysing",
+        "summary": "Lister ut utlysinger for tilskuddsordninger",
         "parameters": [
           {
             "name": "sidenummer",
@@ -55,7 +54,7 @@
             }
           },
           {
-            "name": "ordningerPrSide",
+            "name": "utlysingerPrSide",
             "in": "query",
             "required": false,
             "schema": {
@@ -70,6 +69,47 @@
             "schema": {
               "type": "string"
             }
+          },
+          {
+            "name": "region",
+            "in": "query",
+            "required": false,
+            "style": "form",
+            "explode": true,
+            "description": "Filtrer på fylkesnummer (2 siffer) eller kommunenummer (4 siffer). Fylkesnummer inkluderer alle kommuner i fylket, kommunenummer inkluderer fylket kommunen ligger i. Utlysinger uten regioner (gjelder hele landet) matcher alltid. Flere verdier gir ELLER.",
+            "schema": {
+              "type": "array",
+              "maxItems": 100,
+              "items": {
+                "type": "string",
+                "pattern": "^\\d{2}(\\d{2})?$"
+              }
+            }
+          },
+          {
+            "name": "sokergruppe",
+            "in": "query",
+            "required": false,
+            "style": "form",
+            "explode": true,
+            "description": "Filtrer på søkergrupper. Flere verdier gir ELLER.",
+            "schema": {
+              "type": "array",
+              "maxItems": 7,
+              "items": {
+                "$ref": "#/components/schemas/Sokergruppe"
+              }
+            }
+          },
+          {
+            "name": "inkluderFiltreringsinfo",
+            "in": "query",
+            "required": false,
+            "description": "Når true inkluderes filtreringsinfo i responsen: antall utlysinger som gjelder SPESIFIKT hver mulige filterverdi (søkergruppe, fylke, kommune), pluss antall landsdekkende utlysinger. Tallene beregnes med søket og alle ANDRE dimensjoners filtre anvendt, men verdiens egen dimensjon ekskludert, over hele resultatsettet — de påvirkes ikke av paginering. Merk at tallene ikke er lik antall treff etter påført filter — et fylkesfilter inkluderer også kommunene i fylket og landsdekkende utlysinger.",
+            "schema": {
+              "type": "boolean",
+              "default": false
+            }
           }
         ],
         "responses": {
@@ -78,36 +118,29 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/SokEtterOrdningResponse"
+                  "$ref": "#/components/schemas/SokEtterUtlysingResponse"
                 }
               }
             }
           },
           "default": {
-            "description": "Noe gikk galt",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorMessage"
-                }
-              }
-            }
+            "$ref": "#/components/responses/DefaultError"
           }
         }
       }
     },
-    "/tilskuddsregister/api/v1/oppslag/ordning/{id}": {
+    "/tilskuddsregister/api/v1/oppslag/utlysing/{tilskuddsregisterId}": {
       "get": {
         "tags": [
           "RegisterOppslag"
         ],
-        "operationId": "hentTilskuddsordning",
-        "summary": "Henter ut en tilskuddsordning med id",
+        "operationId": "hentUtlysing",
+        "summary": "Henter ut en utlysing med id",
         "parameters": [
           {
-            "name": "id",
+            "name": "tilskuddsregisterId",
             "in": "path",
-            "description": "TilskuddsId",
+            "description": "TilskuddsregisterId",
             "required": true,
             "schema": {
               "type": "string",
@@ -121,87 +154,72 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/OrdningDetaljer"
+                  "$ref": "#/components/schemas/UtlysingDetaljer"
                 }
               }
             }
           },
           "404": {
-            "description": "Tilskuddsordningen ikke funnet",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorMessage"
-                }
-              }
-            }
+            "$ref": "#/components/responses/404NotFound"
+          },
+          "default": {
+            "$ref": "#/components/responses/DefaultError"
           }
         }
       }
     },
-    "/tilskuddsregister/api/v1/endring/ordning": {
+    "/tilskuddsregister/api/v1/endring/utlysing": {
       "post": {
         "tags": [
           "RegisterEndring"
         ],
-        "operationId": "registrerTilskuddsordning",
-        "summary": "Registrer en tilskuddsordning i tilskuddsregisteret",
+        "operationId": "registrerUtlysing",
+        "summary": "Registrer en utlysing i tilskuddsregisteret",
         "requestBody": {
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/RegistrerOrdningRequest"
+                "$ref": "#/components/schemas/RegistrerUtlysingRequest"
               }
             }
           },
           "required": true
         },
         "responses": {
-          "200": {
-            "description": "Tilskuddsordningen er registrert",
+          "201": {
+            "description": "Utlysingen er registrert",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/OrdningId"
+                  "$ref": "#/components/schemas/UtlysingDetaljer"
                 }
               }
             }
+          },
+          "400": {
+            "$ref": "#/components/responses/400BadRequest"
           },
           "403": {
-            "description": "Ikke tilgang",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorMessage"
-                }
-              }
-            }
+            "$ref": "#/components/responses/403Unauthorized"
           },
           "default": {
-            "description": "Noe gikk galt",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorMessage"
-                }
-              }
-            }
+            "$ref": "#/components/responses/DefaultError"
           }
         }
       }
     },
-    "/tilskuddsregister/api/v1/endring/ordning/{id}": {
+    "/tilskuddsregister/api/v1/endring/utlysing/{tilskuddsregisterId}": {
       "put": {
         "tags": [
           "RegisterEndring"
         ],
-        "operationId": "overskrivTilskuddsordning",
-        "summary": "Overskriver alle data for en eksisterende tilskuddsordning i tilskuddsregisteret",
+        "operationId": "overskrivUtlysing",
+        "summary": "Overskriver alle data for en eksisterende utlysing i tilskuddsregisteret",
         "parameters": [
           {
-            "name": "id",
+            "name": "tilskuddsregisterId",
             "in": "path",
-            "description": "TilskuddsId",
+            "description": "TilskuddsregisterId",
             "required": true,
             "schema": {
               "type": "string",
@@ -213,7 +231,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/RegistrerOrdningRequest"
+                "$ref": "#/components/schemas/RegistrerUtlysingRequest"
               }
             }
           },
@@ -221,44 +239,26 @@
         },
         "responses": {
           "200": {
-            "description": "Tilskuddsordingen er endret",
+            "description": "Utlysingen er endret",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/OrdningId"
+                  "$ref": "#/components/schemas/UtlysingDetaljer"
                 }
               }
             }
+          },
+          "400": {
+            "$ref": "#/components/responses/400BadRequest"
           },
           "403": {
-            "description": "Ikke tilgang",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorMessage"
-                }
-              }
-            }
+            "$ref": "#/components/responses/403Unauthorized"
           },
           "404": {
-            "description": "Tilskuddsordningen ikke funnet",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorMessage"
-                }
-              }
-            }
+            "$ref": "#/components/responses/404NotFound"
           },
           "default": {
-            "description": "Noe gikk galt",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorMessage"
-                }
-              }
-            }
+            "$ref": "#/components/responses/DefaultError"
           }
         }
       },
@@ -266,13 +266,13 @@
         "tags": [
           "RegisterEndring"
         ],
-        "operationId": "slettTilskuddsordning",
-        "summary": "Sletter en tilskuddsordning. (Soft delete: Setter status til slettet, men informasjon om ordningen vil fortsatt ligge i databasen)",
+        "operationId": "slettUtlysing",
+        "summary": "Sletter en utlysing. (Soft delete: Setter status til slettet, men informasjon om utlysingen vil fortsatt ligge i databasen)",
         "parameters": [
           {
-            "name": "id",
+            "name": "tilskuddsregisterId",
             "in": "path",
-            "description": "TilskuddsId",
+            "description": "TilskuddsregisterId",
             "required": true,
             "schema": {
               "type": "string",
@@ -282,44 +282,23 @@
         ],
         "responses": {
           "200": {
-            "description": "Tilskuddsordningen er slettet",
+            "description": "Utlysingen er slettet",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/OrdningId"
+                  "$ref": "#/components/schemas/IdOgKode"
                 }
               }
             }
           },
           "403": {
-            "description": "Ikke tilgang",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorMessage"
-                }
-              }
-            }
+            "$ref": "#/components/responses/403Unauthorized"
           },
           "404": {
-            "description": "Tilskuddsordningen ikke funnet",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorMessage"
-                }
-              }
-            }
+            "$ref": "#/components/responses/404NotFound"
           },
           "default": {
-            "description": "Noe gikk galt",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorMessage"
-                }
-              }
-            }
+            "$ref": "#/components/responses/DefaultError"
           }
         }
       }
@@ -334,186 +313,177 @@
       }
     },
     "schemas": {
-      "OrdningId": {
+      "IdOgKode": {
         "type": "object",
         "properties": {
           "tilskuddsordningId": {
             "type": "string",
             "format": "uuid",
-            "readOnly": true
+            "description": "Id for tilskuddsordning. Kobler sammen utlysinger."
           },
-          "ordningId": {
+          "tilskuddsregisterId": {
             "type": "string",
-            "pattern": "^[A-Za-z0-9-]+$",
-            "example": "TO-100001",
-            "readOnly": true
+            "format": "uuid",
+            "description": "Id for utlysing."
           }
         }
       },
-      "OrdningStatus": {
+      "StatusPaaUtlysing": {
         "type": "string",
         "enum": [
           "KLADD",
           "REGISTRERT",
-          "SLETTET"
+          "SLETTET",
+          "AVSLUTTET"
         ],
         "example": "REGISTRERT"
       },
-      "OrdningBase": {
+      "Sokergruppe": {
+        "type": "string",
+        "enum": [
+          "BEDRIFTER_OG_FORETAK",
+          "LAG_OG_FORENINGER",
+          "STIFTELSER",
+          "FRIVILLIGE_ORGANISASJONER",
+          "OFFENTLIG_SEKTOR",
+          "FORSKNING_OG_UTDANNINGSINSTITUSJONER",
+          "PRIVATPERSON"
+        ],
+        "example": "FRIVILLIGE_ORGANISASJONER",
+        "description": "Gruppe av søkere en utlysing retter seg mot"
+      },
+      "UtlysingBase": {
         "type": "object",
         "properties": {
           "tittel": {
-            "type": "array",
-            "maxItems": 6,
-            "items": {
-              "$ref": "#/components/schemas/Tekst"
-            }
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100
           },
           "kortBeskrivelse": {
-            "type": "array",
-            "maxItems": 6,
-            "items": {
-              "$ref": "#/components/schemas/Tekst"
-            }
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 300
           },
           "status": {
-            "$ref": "#/components/schemas/OrdningStatus"
-          },
-          "stoerrelseMottaker": {
-            "type": "array",
-            "maxItems": 5,
-            "items": {
-              "type": "string"
-            }
-          },
-          "naering": {
-            "type": "array",
-            "maxItems": 5,
-            "items": {
-              "type": "string"
-            }
-          },
-          "regionsnivaa": {
-            "$ref": "#/components/schemas/Regionsnivaa"
+            "$ref": "#/components/schemas/StatusPaaUtlysing"
           },
           "region": {
             "type": "array",
             "maxItems": 10,
+            "description": "Regioner utlysingen gjelder for. Tom eller utelatt liste betyr at utlysingen gjelder alle regioner.",
             "items": {
-              "type": "string"
+              "$ref": "#/components/schemas/Region"
+            }
+          },
+          "sokergruppe": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 7,
+            "uniqueItems": true,
+            "description": "Søkergrupper utlysingen retter seg mot. Minst én verdi er påkrevd.",
+            "items": {
+              "$ref": "#/components/schemas/Sokergruppe"
             }
           },
           "soknadsfrist": {
             "$ref": "#/components/schemas/Soknadsfrist"
           },
-          "rolle": {
-            "type": "array",
-            "maxItems": 5,
-            "items": {
-              "$ref": "#/components/schemas/Rolle"
-            }
+          "forvalter": {
+            "$ref": "#/components/schemas/Forvalter"
+          },
+          "kildesystem": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100,
+            "description": "System som er kilde for å generere denne utlysingen"
           }
         }
       },
-      "OrdningUtvidet": {
+      "UtlysingUtvidet": {
         "type": "object",
         "properties": {
           "stoettetiltaksnummer": {
             "type": "string",
             "description": "Id for støtteordning i Støtteregisteret"
           },
-          "skjemaUrl": {
+          "kontaktinfo": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 3,
+            "description": "Kontaktinformasjon for en ordning. Enten avdeling eller person. Enten telefon eller epost er obligatorisk",
+            "items": {
+              "$ref": "#/components/schemas/Kontaktinfo"
+            }
+          },
+          "publisering": {
+            "$ref": "#/components/schemas/Publisering"
+          },
+          "soknadsbelop": {
             "type": "string",
-            "format": "uri"
+            "maxLength": 150
           },
-          "kontaktperson": {
-            "$ref": "#/components/schemas/Kontaktperson"
+          "tilleggsinformasjon": {
+            "type": "string",
+            "maxLength": 300
           },
-          "maalOgMaalgruppe": {
+          "behandlingstidDager": {
+            "type": "integer",
+            "description": "Antatt behandlingstid etter søknadsfrist"
+          },
+          "rapporteringsfristDager": {
+            "type": "integer",
+            "description": "Rapporteringsfrist etter tilsagn"
+          },
+          "avsnitt": {
             "type": "array",
-            "maxItems": 6,
+            "maxItems": 15,
             "items": {
-              "$ref": "#/components/schemas/Tekst"
-            }
-          },
-          "hvemKanMotta": {
-            "type": "array",
-            "maxItems": 6,
-            "items": {
-              "$ref": "#/components/schemas/Tekst"
-            }
-          },
-          "bruksomraade": {
-            "type": "array",
-            "maxItems": 6,
-            "items": {
-              "$ref": "#/components/schemas/Tekst"
-            }
-          },
-          "andreTildeingskriterier": {
-            "type": "array",
-            "maxItems": 6,
-            "items": {
-              "$ref": "#/components/schemas/Tekst"
-            }
-          },
-          "rapporteringskrav": {
-            "type": "array",
-            "maxItems": 6,
-            "items": {
-              "$ref": "#/components/schemas/Tekst"
-            }
-          },
-          "infoOmSokeprosessen": {
-            "type": "array",
-            "maxItems": 6,
-            "items": {
-              "$ref": "#/components/schemas/Tekst"
+              "$ref": "#/components/schemas/Avsnitt"
             }
           }
         }
       },
-      "OrdningDetaljer": {
+      "UtlysingDetaljer": {
         "type": "object",
         "readOnly": true,
         "required": [
+          "tilskuddsregisterId",
           "tilskuddsordningId",
-          "ordningId",
-          "opprettet",
-          "endret",
+          "opprettetDatoTid",
+          "endretDatoTid",
           "tittel",
           "kortBeskrivelse",
           "status",
-          "stoerrelseMottaker",
-          "naering",
-          "regionsnivaa",
           "region",
+          "sokergruppe",
           "soknadsfrist",
-          "rolle",
-          "kontaktperson"
+          "behandlingstidDager",
+          "rapporteringsfristDager",
+          "forvalter",
+          "kontaktinfo",
+          "publisering",
+          "avsnitt"
         ],
         "allOf": [
           {
-            "$ref": "#/components/schemas/OrdningId"
+            "$ref": "#/components/schemas/IdOgKode"
           },
           {
-            "$ref": "#/components/schemas/OrdningBase"
+            "$ref": "#/components/schemas/UtlysingBase"
           },
           {
-            "$ref": "#/components/schemas/OrdningUtvidet"
-          },
-          {
-            "$ref": "#/components/schemas/Publisering"
+            "$ref": "#/components/schemas/UtlysingUtvidet"
           },
           {
             "type": "object",
             "properties": {
-              "opprettet": {
+              "opprettetDatoTid": {
                 "type": "string",
                 "format": "date-time",
                 "example": "2025-08-27T15:45:30Z"
               },
-              "endret": {
+              "endretDatoTid": {
                 "type": "string",
                 "format": "date-time",
                 "example": "2025-08-27T15:45:30Z"
@@ -522,151 +492,286 @@
           }
         ]
       },
-      "OrdningElement": {
+      "UtlysingElement": {
         "type": "object",
         "readOnly": true,
         "required": [
+          "tilskuddsregisterId",
           "tilskuddsordningId",
-          "ordningId",
           "tittel",
           "kortBeskrivelse",
           "status",
-          "naering",
-          "regionsnivaa",
           "region",
+          "sokergruppe",
           "soknadsfrist",
-          "rolle"
+          "forvalter"
         ],
         "allOf": [
           {
-            "$ref": "#/components/schemas/OrdningId"
+            "$ref": "#/components/schemas/IdOgKode"
           },
           {
-            "$ref": "#/components/schemas/OrdningBase"
+            "$ref": "#/components/schemas/UtlysingBase"
           }
         ]
       },
-      "SokEtterOrdningResponse": {
+      "SokEtterUtlysingResponse": {
         "type": "object",
         "readOnly": true,
         "required": [
-          "ordninger"
+          "utlysinger"
         ],
         "properties": {
-          "ordninger": {
+          "utlysinger": {
             "type": "array",
             "maxItems": 1000,
             "items": {
-              "$ref": "#/components/schemas/OrdningElement"
+              "$ref": "#/components/schemas/UtlysingElement"
             }
           },
           "sidenummer": {
             "type": "integer"
           },
-          "ordningerPrSide": {
+          "utlysingerPrSide": {
             "type": "integer"
           },
           "totaltAntallSider": {
             "type": "integer"
           },
-          "totaltAntallOrdninger": {
+          "totaltAntallUtlysinger": {
             "type": "integer"
+          },
+          "filtreringsinfo": {
+            "$ref": "#/components/schemas/Filtreringsinfo"
           }
         }
       },
-      "RegistrerOrdningRequest": {
+      "Filtreringsinfo": {
+        "type": "object",
+        "readOnly": true,
+        "description": "Antall utlysinger som gjelder SPESIFIKT hver mulige filterverdi. Tallene er beregnet med søket og alle ANDRE dimensjoners filtre anvendt, men verdiens egen dimensjon ekskludert, over hele resultatsettet — de påvirkes ikke av paginering. En utlysing som lister både et fylke og en kommune teller på begge. Tallene er ikke lik antall treff etter påført filter — et fylkesfilter inkluderer også kommunene i fylket og landsdekkende utlysinger. Verdier uten utlysinger har antallTreff 0.",
+        "required": [
+          "sokergrupper",
+          "fylker",
+          "antallLandsdekkende"
+        ],
+        "properties": {
+          "sokergrupper": {
+            "type": "array",
+            "maxItems": 7,
+            "items": {
+              "$ref": "#/components/schemas/SokergruppeMedAntall"
+            }
+          },
+          "fylker": {
+            "type": "array",
+            "maxItems": 50,
+            "items": {
+              "$ref": "#/components/schemas/FylkeMedAntall"
+            }
+          },
+          "antallLandsdekkende": {
+            "type": "integer",
+            "description": "Antall utlysinger uten regioner, som gjelder hele landet",
+            "example": 1
+          }
+        }
+      },
+      "SokergruppeMedAntall": {
+        "type": "object",
+        "readOnly": true,
+        "required": [
+          "sokergruppe",
+          "antallTreff"
+        ],
+        "properties": {
+          "sokergruppe": {
+            "$ref": "#/components/schemas/Sokergruppe"
+          },
+          "antallTreff": {
+            "type": "integer",
+            "example": 3
+          }
+        }
+      },
+      "FylkeMedAntall": {
+        "type": "object",
+        "readOnly": true,
+        "required": [
+          "kode",
+          "antallTreff",
+          "treffIKommuner",
+          "kommuner"
+        ],
+        "properties": {
+          "kode": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Fylkesnummer",
+            "example": "46"
+          },
+          "navn": {
+            "type": "string",
+            "example": "Vestland"
+          },
+          "antallTreff": {
+            "type": "integer",
+            "description": "Antall utlysinger som gjelder spesifikt fylket",
+            "example": 5
+          },
+          "treffIKommuner": {
+            "type": "integer",
+            "description": "Summen av antallTreff for kommunene i fylket",
+            "example": 3
+          },
+          "kommuner": {
+            "type": "array",
+            "maxItems": 200,
+            "items": {
+              "$ref": "#/components/schemas/KommuneMedAntall"
+            }
+          }
+        }
+      },
+      "KommuneMedAntall": {
+        "type": "object",
+        "readOnly": true,
+        "required": [
+          "kode",
+          "antallTreff"
+        ],
+        "properties": {
+          "kode": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Kommunenummer",
+            "example": "4601"
+          },
+          "navn": {
+            "type": "string",
+            "example": "Bergen"
+          },
+          "antallTreff": {
+            "type": "integer",
+            "description": "Antall utlysinger som gjelder spesifikt kommunen",
+            "example": 2
+          }
+        }
+      },
+      "RegistrerUtlysingRequest": {
         "type": "object",
         "writeOnly": true,
         "required": [
           "tittel",
           "kortBeskrivelse",
           "status",
-          "naering",
-          "regionsnivaa",
-          "region",
+          "sokergruppe",
           "soknadsfrist",
-          "rolle",
-          "kontaktperson"
+          "behandlingstidDager",
+          "rapporteringsfristDager",
+          "forvalter",
+          "kontaktinfo",
+          "publisering",
+          "avsnitt",
+          "kildesystem"
         ],
         "allOf": [
           {
-            "$ref": "#/components/schemas/OrdningBase"
+            "$ref": "#/components/schemas/IdOgKode"
           },
           {
-            "$ref": "#/components/schemas/OrdningUtvidet"
+            "$ref": "#/components/schemas/UtlysingBase"
           },
           {
-            "$ref": "#/components/schemas/Publisering"
+            "$ref": "#/components/schemas/UtlysingUtvidet"
           }
         ]
       },
-      "Tekst": {
+      "Avsnitt": {
         "type": "object",
         "required": [
-          "tekst",
-          "spraak"
+          "tittel",
+          "innhold"
         ],
         "properties": {
-          "tekst": {
+          "tittel": {
             "type": "string",
-            "maxLength": 3000
+            "minLength": 1,
+            "maxLength": 80
           },
-          "spraak": {
+          "innhold": {
             "type": "string",
-            "enum": [
-              "NN",
-              "NB",
-              "SE",
-              "EN"
-            ],
-            "example": "NB"
+            "minLength": 1,
+            "maxLength": 10000
           }
         }
       },
       "Soknadsfrist": {
         "type": "object",
         "required": [
-          "tilDato"
+          "tilDatoTid",
+          "dagerMedVarselForFrist",
+          "erLopende"
         ],
         "properties": {
-          "fraDato": {
+          "fraDatoTid": {
             "type": "string",
-            "format": "date",
-            "example": "2025-01-01"
+            "format": "date-time",
+            "example": "2025-08-01T00:00:00Z"
           },
-          "tilDato": {
+          "tilDatoTid": {
             "type": "string",
-            "format": "date",
-            "example": "2025-01-01"
+            "format": "date-time",
+            "example": "2025-10-20T00:00:00Z"
+          },
+          "dagerMedVarselForFrist": {
+            "type": "integer",
+            "description": "Felt for å sette hvor mange dager før søknadsfristen man skal markere at søknadsfristen nærmer seg."
+          },
+          "erLopende": {
+            "type": "boolean",
+            "description": "Felt som beskriver om dette er en løpende utlysing hvor søknader behandles fortløpende"
           }
         }
       },
       "Publisering": {
         "type": "object",
         "required": [
-          "publiseringsdato"
+          "tilDatoTid"
         ],
         "properties": {
-          "publiseringsdato": {
+          "fraDatoTid": {
             "type": "string",
             "format": "date-time",
             "example": "2025-08-27T15:45:30Z"
           },
-          "avpubliseringsdato": {
+          "tilDatoTid": {
             "type": "string",
             "format": "date-time",
             "example": "2025-08-27T18:45:30Z"
           }
         }
       },
-      "Rolleinnehaver": {
+      "Forvalter": {
         "type": "object",
         "required": [
-          "organisasjonsnummer"
+          "organisasjonsnummer",
+          "kode"
         ],
         "properties": {
           "organisasjonsnummer": {
-            "type": "string"
+            "type": "string",
+            "minLength": 9,
+            "maxLength": 9,
+            "pattern": "^\\d{9}$"
+          },
+          "kode": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 4,
+            "pattern": "^\\d{2}(\\d{2})?$",
+            "description": "Fylkesnummer, kommunenummer eller Statskode \"00\"",
+            "example": "00"
           },
           "navn": {
             "type": "string",
@@ -674,51 +779,58 @@
           }
         }
       },
-      "Rolle": {
+      "Region": {
         "type": "object",
         "required": [
-          "type",
-          "rolleinnehaver"
+          "kode"
         ],
         "properties": {
-          "type": {
-            "type": "string"
+          "kode": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 4,
+            "pattern": "^\\d{2}(\\d{2})?$",
+            "description": "Fylkesnummer eller kommunenummer",
+            "example": "46"
           },
-          "rolleinnehaver": {
-            "$ref": "#/components/schemas/Rolleinnehaver"
+          "navn": {
+            "type": "string",
+            "readOnly": true,
+            "example": "Vestland"
           }
         }
       },
-      "Regionsnivaa": {
-        "type": "string",
-        "enum": [
-          "ALLE",
-          "ALLE_UTENOM_SVALBARD",
-          "SPESIFIKT_ANGITT"
-        ],
-        "example": "ALLE"
-      },
-      "Kontaktperson": {
+      "Kontaktinfo": {
         "type": "object",
         "required": [
-          "navn",
-          "epost"
+          "type",
+          "navn"
         ],
         "properties": {
-          "navn": {
-            "type": "string"
+          "type": {
+            "type": "string",
+            "enum": [
+              "PERSON",
+              "VIRKSOMHET"
+            ]
           },
-          "stilling": {
+          "navn": {
+            "type": "string",
+            "minLength": 1
+          },
+          "stillingAvdeling": {
             "type": "string"
           },
           "epost": {
             "type": "string",
-            "pattern": "^[\\w\\-\\.]+@([\\w-]+\\.)+[\\w-]{2,}$",
-            "example": "name@example.com"
+            "minLength": 1,
+            "pattern": "^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$",
+            "example": "test@test.no"
           },
           "telefon": {
             "type": "string",
-            "pattern": "(0047|\\+47)?\\d{8}"
+            "minLength": 8,
+            "pattern": "^(0047|\\+47)?\\d{8}$"
           }
         }
       },
@@ -765,6 +877,48 @@
           "message": "Mangler tilgang",
           "errorId": "ee2ed64d-de8b-45f9-b9c6-3363d662d93b",
           "status": 403
+        }
+      }
+    },
+    "responses": {
+      "400BadRequest": {
+        "description": "Ugyldig forespørsel",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorMessage"
+            }
+          }
+        }
+      },
+      "403Unauthorized": {
+        "description": "Ikke tilgang",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorMessage"
+            }
+          }
+        }
+      },
+      "404NotFound": {
+        "description": "Utlysingen ikke funnet",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorMessage"
+            }
+          }
+        }
+      },
+      "DefaultError": {
+        "description": "Noe gikk galt",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorMessage"
+            }
+          }
         }
       }
     }

@@ -290,7 +290,8 @@
     },
     "/fiksporten/api/v1/services": {
       "get": {
-        "summary": "Hent alle tjenester som kan tildeles",
+        "deprecated": true,
+        "summary": "Hent alle tjenester som kan tildeles fra lokalt namespace",
         "description": "Hent alle tjenester",
         "operationId": "hentTjenester",
         "tags": [
@@ -303,6 +304,34 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/ServiceList"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/NotAuthenticatedResponse"
+          },
+          "403": {
+            "$ref": "#/components/responses/UnauthorizedResponse"
+          }
+        }
+      }
+    },
+    "/fiksporten/api/v1/selectableServices": {
+      "get": {
+        "summary": "Hent alle tjenester som kan tildeles på tvers av alle konfigurerte namespaces",
+        "description": "Hent alle tjenester",
+        "operationId": "hentValgbareTjenester",
+        "tags": [
+          "clients"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ServiceWithNamespaceList"
                 }
               }
             }
@@ -448,6 +477,9 @@
             "items": {
               "$ref": "#/components/schemas/BasicResourcePrivileges"
             }
+          },
+          "namespace": {
+            "$ref": "#/components/schemas/Namespace"
           }
         },
         "required": [
@@ -481,6 +513,9 @@
             "items": {
               "$ref": "#/components/schemas/BasicResourcePrivileges"
             }
+          },
+          "namespace": {
+            "$ref": "#/components/schemas/Namespace"
           }
         },
         "required": [
@@ -521,6 +556,9 @@
             "items": {
               "$ref": "#/components/schemas/ResourcePrivileges"
             }
+          },
+          "namespace": {
+            "$ref": "#/components/schemas/Namespace"
           }
         },
         "readOnly": true,
@@ -660,11 +698,41 @@
           "$ref": "#/components/schemas/Service"
         }
       },
+      "ServiceWithNamespace": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "$ref": "#/components/schemas/Service"
+          },
+          "namespace": {
+            "$ref": "#/components/schemas/Namespace"
+          }
+        },
+        "required": [
+          "name",
+          "namespace"
+        ]
+      },
+      "ServiceWithNamespaceList": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/ServiceWithNamespace"
+        }
+      },
       "TimeToLive": {
         "type": "string",
         "format": "duration",
         "description": "Tidspunkt for når klienten utløper (ISO8601 duration format)",
         "example": "PT1M"
+      },
+      "Namespace": {
+        "type": "string",
+        "pattern": "^[a-z0-9]([a-z0-9\\-]{0,61}[a-z0-9])?$",
+        "minLength": 1,
+        "maxLength": 63,
+        "description": "Kubernetes namespace som klienten tilhører. Om ikke satt, vil fiks-dev/fiks-test/fiks-prod bli brukt avhengig av miljø",
+        "nullable": true,
+        "example": "fiks-prod"
       },
       "Error": {
         "$ref": "#/components/schemas/ErrorMessage"

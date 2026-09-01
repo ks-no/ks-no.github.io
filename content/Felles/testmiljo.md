@@ -11,7 +11,7 @@ Fiks test blir brukt til å verifisere endringer før de går i produksjon, og v
 Merk at testmiljøet ikke har de samme sikkerhetsgarantiene som produksjon - det er dermed viktig at man ikke benytter sensitive data under test. 
 
 ## Tilgang til testmiljøet
-Send e-post til fiks@ks.no for tilgang til testmiljøet. Send gjerne med eventuelle eksisterende testbrukere i ID-porten, slik at disse kan gjenbrukes for tilganger på Fiks-plattformen.
+Send e-post til fiks@ksdigital.no for tilgang til testmiljøet. Send gjerne med eventuelle eksisterende testbrukere i ID-porten, slik at disse kan gjenbrukes for tilganger på Fiks-plattformen.
 
 ## Hvor er testmiljøet?
 
@@ -46,4 +46,4 @@ Alle testbrukere dere får fra oss har "Min Id"-innlogging i ID-Porten. Her anbe
 ## Integrasjoninnlogging
 For å kunne teste integrasjoner mot Fiks-plattformen sitt testmiljø må organisasjonen ha tilgang til Maskinporten. For å få dette må en henvende seg til servicedesk@digdir.no og sende med orgnr i fra testvirksomhetssertifikat.
 
-For at Maskinportklienten skal kunne kommunisere med Fiks sitt testmiljø må den opprettes i Maskinporten Ver2 og ha lagt til ks:fiks-scopet. Om dette scopet mangler fra listen kan dere oppgi deres orgnr til fiks@ks.no.
+For at Maskinportklienten skal kunne kommunisere med Fiks sitt testmiljø må den opprettes i Maskinporten Ver2 og ha lagt til ks:fiks-scopet. Om dette scopet mangler fra listen kan dere oppgi deres orgnr til fiks@ksdigital.no.

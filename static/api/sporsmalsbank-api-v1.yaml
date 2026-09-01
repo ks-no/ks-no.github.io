@@ -1,0 +1,976 @@
+openapi: 3.0.1
+info:
+  title: 'KS Fiks: Spørsmålsbank'
+  description: API for versjonerte spørreskjemaer og pakker for selvdeklarering
+  contact:
+    name: Fiks-brukerstøtte
+    url: https://ks-no.github.io/
+    email: fiks-utvikling@ksdigital.no
+  version: v1
+servers:
+  - url: https://api.fiks.test.ks.no
+    description: KS Fiks API host
+security:
+  - bearerAuth: []
+tags:
+  - name: Spørreskjema
+    description: Administrasjon av spørreskjemaversjoner
+  - name: Pakke
+    description: Administrasjon av spørsmålspakker
+  - name: Klassifisering
+    description: Klassifiseringsregister — lister med gyldige koder
+  - name: Intern
+    description: Interne endepunkter for tjeneste-til-tjeneste-kall (integrasjonsautentisering)
+paths:
+  /sporsmalsbank/api/v1/versjoner:
+    get:
+      summary: Hent alle spørreskjemaversjoner
+      operationId: hentAlleVersjoner
+      tags:
+        - Spørreskjema
+      responses:
+        '200':
+          description: Liste over spørreskjemaversjoner
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SporreskjemaOversikt'
+      security:
+        - bearerAuth: []
+    post:
+      summary: Opprett ny spørreskjemaversjon
+      operationId: opprettVersjon
+      tags:
+        - Spørreskjema
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OpprettSporreskjemaVersjon'
+      responses:
+        '201':
+          description: Opprettet
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SporreskjemaVersjon'
+      security:
+        - bearerAuth: []
+  /sporsmalsbank/api/v1/versjoner/{id}:
+    get:
+      summary: Hent spørreskjemaversjon med spørsmål
+      operationId: hentVersjon
+      tags:
+        - Spørreskjema
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Spørreskjemaversjon
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SporreskjemaVersjon'
+        '404':
+          description: Ikke funnet
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Feilmelding'
+      security:
+        - bearerAuth: []
+    put:
+      summary: Oppdater spørreskjemaversjon (kun UTKAST)
+      operationId: oppdaterVersjon
+      tags:
+        - Spørreskjema
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SporreskjemaVersjon'
+      responses:
+        '200':
+          description: Oppdatert
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SporreskjemaVersjon'
+      security:
+        - bearerAuth: []
+    delete:
+      summary: Slett spørreskjemaversjon (kun UTKAST)
+      operationId: slettVersjon
+      tags:
+        - Spørreskjema
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Slettet
+      security:
+        - bearerAuth: []
+  /sporsmalsbank/api/v1/versjoner/publisert:
+    get:
+      summary: Hent publisert spørreskjemaversjon
+      operationId: hentPublisertVersjon
+      tags:
+        - Spørreskjema
+      responses:
+        '200':
+          description: Publisert versjon
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SporreskjemaVersjon'
+        '404':
+          description: Ingen publisert versjon funnet
+      security:
+        - bearerAuth: []
+  /sporsmalsbank/api/v1/versjoner/{id}/publiser:
+    put:
+      summary: Publiser spørreskjemaversjon (kun UTKAST)
+      operationId: publiserVersjon
+      tags:
+        - Spørreskjema
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Publisert
+      security:
+        - bearerAuth: []
+  /sporsmalsbank/api/v1/versjoner/paginert:
+    get:
+      summary: Hent alle spørreskjemaversjoner paginert
+      operationId: hentAlleVersjonerPaginert
+      tags:
+        - Spørreskjema
+      parameters:
+        - name: side
+          in: query
+          schema:
+            type: integer
+            default: 0
+        - name: antallPerSide
+          in: query
+          schema:
+            type: integer
+            default: 20
+      responses:
+        '200':
+          description: Paginert liste over spørreskjemaversjoner
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SideSporreskjemaOversikt'
+      security:
+        - bearerAuth: []
+  /sporsmalsbank/api/v1/versjoner/{id}/arkiver:
+    put:
+      summary: Arkiver en publisert spørreskjemaversjon
+      operationId: arkiverVersjon
+      tags:
+        - Spørreskjema
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '204':
+          description: Arkivert
+      security:
+        - bearerAuth: []
+  /sporsmalsbank/api/v1/versjoner/{kildeId}/klon:
+    post:
+      summary: Klon eksisterende versjon til nytt utkast
+      operationId: klonVersjon
+      tags:
+        - Spørreskjema
+      parameters:
+        - name: kildeId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '201':
+          description: Klonet versjon
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SporreskjemaVersjon'
+      security:
+        - bearerAuth: []
+  /sporsmalsbank/api/v1/pakker:
+    get:
+      summary: Hent alle pakker
+      operationId: hentAllePakker
+      tags:
+        - Pakke
+      responses:
+        '200':
+          description: Liste over pakker
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PakkeOversikt'
+      security:
+        - bearerAuth: []
+    post:
+      summary: Opprett ny pakke
+      operationId: opprettPakke
+      tags:
+        - Pakke
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Pakke'
+      responses:
+        '201':
+          description: Opprettet
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Pakke'
+      security:
+        - bearerAuth: []
+  /sporsmalsbank/api/v1/pakker/{id}:
+    get:
+      summary: Hent pakke med innhold
+      operationId: hentPakke
+      tags:
+        - Pakke
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Pakke
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Pakke'
+        '404':
+          description: Ikke funnet
+      security:
+        - bearerAuth: []
+    put:
+      summary: Oppdater pakke (kun UTKAST)
+      operationId: oppdaterPakke
+      tags:
+        - Pakke
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Pakke'
+      responses:
+        '200':
+          description: Oppdatert
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Pakke'
+      security:
+        - bearerAuth: []
+    delete:
+      summary: Slett pakke (kun UTKAST)
+      operationId: slettPakke
+      tags:
+        - Pakke
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Slettet
+      security:
+        - bearerAuth: []
+  /sporsmalsbank/api/v1/pakker/{id}/publiser:
+    put:
+      summary: Publiser pakke
+      operationId: publiserPakke
+      tags:
+        - Pakke
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Publisert
+      security:
+        - bearerAuth: []
+  /sporsmalsbank/api/v1/pakker/paginert:
+    get:
+      summary: Hent alle pakker paginert
+      operationId: hentAllePakkerPaginert
+      tags:
+        - Pakke
+      parameters:
+        - name: side
+          in: query
+          schema:
+            type: integer
+            default: 0
+        - name: antallPerSide
+          in: query
+          schema:
+            type: integer
+            default: 20
+      responses:
+        '200':
+          description: Paginert liste over pakker
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SidePakkeOversikt'
+      security:
+        - bearerAuth: []
+  /sporsmalsbank/api/v1/pakker/{id}/arkiver:
+    put:
+      summary: Arkiver en publisert pakke
+      operationId: arkiverPakke
+      tags:
+        - Pakke
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '204':
+          description: Arkivert
+      security:
+        - bearerAuth: []
+  /sporsmalsbank/api/v1/pakker/{kildeId}/klon:
+    post:
+      summary: Klon eksisterende pakke til nytt utkast
+      operationId: klonPakke
+      tags:
+        - Pakke
+      parameters:
+        - name: kildeId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '201':
+          description: Klonet pakke
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Pakke'
+      security:
+        - bearerAuth: []
+  /sporsmalsbank/api/v1/versjoner/{sporreskjemaVersjonId}/pakker:
+    get:
+      summary: Hent pakker for en spørreskjemaversjon
+      operationId: hentPakkerForSporreskjema
+      tags:
+        - Pakke
+      parameters:
+        - name: sporreskjemaVersjonId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Pakker for spørreskjemaversjon
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PakkeOversikt'
+      security:
+        - bearerAuth: []
+  /sporsmalsbank/api/v1/klassifiseringslister:
+    get:
+      summary: Hent alle klassifiseringslister
+      operationId: hentAlleKlassifiseringslister
+      tags:
+        - Klassifisering
+      responses:
+        '200':
+          description: Liste over klassifiseringslister
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Klassifiseringsliste'
+      security:
+        - bearerAuth: []
+  /sporsmalsbank/api/v1/klassifiseringslister/{listeKilde}:
+    get:
+      summary: Hent klassifiseringsliste med gyldige koder
+      operationId: hentKlassifiseringsliste
+      tags:
+        - Klassifisering
+      parameters:
+        - name: listeKilde
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Klassifiseringsliste
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Klassifiseringsliste'
+        '404':
+          description: Ikke funnet
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Feilmelding'
+      security:
+        - bearerAuth: []
+  /sporsmalsbank/api/v1/intern/pakker/{id}:
+    get:
+      summary: Hent pakke (tjeneste-til-tjeneste)
+      operationId: hentPakkeIntern
+      tags:
+        - Intern
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Pakke
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Pakke'
+      security:
+        - bearerAuth: []
+  /sporsmalsbank/api/v1/intern/versjoner/publisert:
+    get:
+      summary: Hent publisert versjon (tjeneste-til-tjeneste)
+      operationId: hentPublisertVersjonIntern
+      tags:
+        - Intern
+      responses:
+        '200':
+          description: Publisert spørreskjemaversjon
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SporreskjemaVersjon'
+      security:
+        - bearerAuth: []
+  /sporsmalsbank/api/v1/intern/versjoner/{id}:
+    get:
+      summary: Hent sporreskjemaversjon (tjeneste-til-tjeneste)
+      operationId: hentVersjonIntern
+      tags:
+        - Intern
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Sporreskjemaversjon med sporsmal
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SporreskjemaVersjon'
+        '404':
+          description: Ikke funnet
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Feilmelding'
+      security:
+        - bearerAuth: []
+components:
+  schemas:
+    SporreskjemaVersjon:
+      type: object
+      required:
+        - versjon
+        - tittel
+        - sporsmal
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        versjon:
+          type: integer
+          format: int64
+        tittel:
+          type: string
+          maxLength: 500
+        beskrivelse:
+          type: string
+          maxLength: 2000
+        sporsmal:
+          type: array
+          items:
+            $ref: '#/components/schemas/Sporsmal'
+        status:
+          $ref: '#/components/schemas/VersjonStatus'
+        selvdeklareringstype:
+          type: string
+          maxLength: 200
+          description: |
+            Identifier for selvdeklareringstypen dette skjemaet er gjeldende for (AC #7). Eksempel: "digitalt-tilsyn". Livssyklus følger VersjonStatus (UTKAST/PUBLISERT/ARKIVERT). Null = ikke klassifisert (eldre data).
+        pakker:
+          type: array
+          readOnly: true
+          description: |
+            Pakkene som hører til dette skjemaet (C14). Co-modellert i read-responsen for å unngå ekstra rundtur til pakke-endepunktet. Populeres kun ved lesing, ignoreres ved skriv.
+          items:
+            $ref: '#/components/schemas/PakkeOversikt'
+        opprettet:
+          type: string
+          format: date-time
+          readOnly: true
+        oppdatert:
+          type: string
+          format: date-time
+          readOnly: true
+    OpprettSporreskjemaVersjon:
+      type: object
+      required:
+        - tittel
+        - sporsmal
+      properties:
+        tittel:
+          type: string
+          maxLength: 500
+        beskrivelse:
+          type: string
+          maxLength: 2000
+        sporsmal:
+          type: array
+          items:
+            $ref: '#/components/schemas/Sporsmal'
+    SporreskjemaOversikt:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        versjon:
+          type: integer
+          format: int64
+        tittel:
+          type: string
+        beskrivelse:
+          type: string
+        antallSporsmal:
+          type: integer
+        status:
+          $ref: '#/components/schemas/VersjonStatus'
+        selvdeklareringstype:
+          type: string
+          description: Identifier for selvdeklareringstypen dette skjemaet er gjeldende for
+        opprettet:
+          type: string
+          format: date-time
+        oppdatert:
+          type: string
+          format: date-time
+    Sporsmal:
+      type: object
+      required:
+        - id
+        - tekst
+      properties:
+        id:
+          type: string
+          description: Unik ID for spørsmålet innenfor spørreskjemaet
+        tekst:
+          type: string
+          description: Spørsmålstekst som vises til leverandør
+        kortBeskrivelse:
+          type: string
+        hjelpetekst:
+          type: string
+          description: Utfyllende hjelpetekst for spørsmålet
+        begrunnelse:
+          type: string
+          description: Begrunnelse fra spørsmålsstiller — informasjonstekst, ikke besvart av leverandør
+        kommentar:
+          type: string
+          description: Kommentar fra spørsmålsstiller — tilleggsinformasjon, ikke besvart av leverandør
+        erSeksjon:
+          type: boolean
+          default: false
+          description: Om dette er en seksjonsoverskrift (ikke et spørsmål)
+        paakrevd:
+          type: boolean
+          default: true
+        kravomrade:
+          $ref: '#/components/schemas/Kravomrade'
+          description: Tematisk kravområde for spørsmålet — brukes til gruppering og filtrering
+        svaralternativer:
+          type: array
+          items:
+            $ref: '#/components/schemas/Svaralternativ'
+          description: Radioknapper — leverandør velger ett alternativ
+        referanser:
+          type: array
+          items:
+            $ref: '#/components/schemas/Referanse'
+          description: Lovverk og anbefalinger knyttet til spørsmålet
+        rekkefolge:
+          type: integer
+          default: 0
+        figurreferanse:
+          type: string
+    Svaralternativ:
+      type: object
+      required:
+        - id
+        - tekst
+      properties:
+        id:
+          type: string
+          description: Unik ID for svaralternativet
+        tekst:
+          type: string
+          description: Tekst som vises på radioknappen
+        poeng:
+          type: integer
+          default: 0
+          description: Poengverdi for dette svaret
+        rekkefolge:
+          type: integer
+          default: 0
+        evaluering:
+          $ref: '#/components/schemas/Evaluering'
+          description: Evalueringsresultat for Minimumskrav-svaralternativer (grønn/gul/rød). Null for Evalueringskrav.
+    Referanse:
+      type: object
+      required:
+        - type
+        - tekst
+      properties:
+        type:
+          $ref: '#/components/schemas/ReferanseType'
+        tekst:
+          type: string
+          description: Beskrivelse av lovverket eller anbefalingen
+        url:
+          type: string
+          description: Lenke til Lovdata, veileder e.l.
+    ReferanseType:
+      type: string
+      enum:
+        - LOVVERK
+        - ANBEFALING
+    Pakke:
+      type: object
+      required:
+        - versjon
+        - tittel
+        - sporreskjemaVersjonId
+        - innhold
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        versjon:
+          type: integer
+          format: int64
+        tittel:
+          type: string
+          maxLength: 500
+        beskrivelse:
+          type: string
+          maxLength: 2000
+        sporreskjemaVersjonId:
+          type: string
+          format: uuid
+        erGrunnpakke:
+          type: boolean
+          default: false
+          description: Om dette er en grunnpakke som er obligatorisk for alle leverandører
+        pakkeType:
+          $ref: '#/components/schemas/PakkeType'
+          description: Klassifisering av pakken — MINIMUMSKRAV (grønn/gul/rød-evaluering) eller EVALUERINGSKRAV (poengbasert). Null for eldre pakker.
+        selvdeklareringstyper:
+          type: array
+          items:
+            type: string
+          description: |
+            Selvdeklareringstyper pakken er bundet til (AC #7, #13, #14). MINIMUMSKRAV-pakker kan være FELLES — bundet til flere typer uten å kopiere spørsmål. Tom liste = ikke klassifisert (eldre data).
+        innhold:
+          $ref: '#/components/schemas/PakkeInnhold'
+        status:
+          $ref: '#/components/schemas/VersjonStatus'
+        opprettet:
+          type: string
+          format: date-time
+          readOnly: true
+        oppdatert:
+          type: string
+          format: date-time
+          readOnly: true
+    PakkeOversikt:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        versjon:
+          type: integer
+          format: int64
+        tittel:
+          type: string
+        beskrivelse:
+          type: string
+        sporreskjemaVersjonId:
+          type: string
+          format: uuid
+        erGrunnpakke:
+          type: boolean
+        pakkeType:
+          $ref: '#/components/schemas/PakkeType'
+        selvdeklareringstyper:
+          type: array
+          items:
+            type: string
+          description: Selvdeklareringstyper pakken er bundet til
+        antallSporsmal:
+          type: integer
+        status:
+          $ref: '#/components/schemas/VersjonStatus'
+        opprettet:
+          type: string
+          format: date-time
+        oppdatert:
+          type: string
+          format: date-time
+    PakkeInnhold:
+      type: object
+      required:
+        - sporsmalIder
+      properties:
+        sporsmalIder:
+          type: array
+          items:
+            type: string
+          description: IDer til spørsmål fra spørreskjemaet som inngår i pakken
+        poengOverstyringer:
+          type: array
+          items:
+            $ref: '#/components/schemas/PoengOverstyring'
+          description: Overstyring av poeng for svaralternativer i denne pakken
+        terskelRegler:
+          $ref: '#/components/schemas/TerskelRegler'
+    PoengOverstyring:
+      type: object
+      required:
+        - sporsmalId
+        - svaralternativId
+        - poeng
+      properties:
+        sporsmalId:
+          type: string
+        svaralternativId:
+          type: string
+        poeng:
+          type: integer
+          description: Overstyrt poengverdi for dette svaralternativet i denne pakken
+        scoreLabel:
+          type: string
+          nullable: true
+          description: Pakke-kontekstuell score-label for dette svaralternativet (f.eks. GRONN, GUL, ROD). Fritekst — nye verdier kan legges til uten å fjerne eksisterende. Klienter skal tolke ukjente verdier leniently. Null betyr ingen score-binding fra denne pakken.
+    TerskelRegler:
+      type: object
+      properties:
+        minimumPoeng:
+          type: integer
+          description: Minimum totalpoeng for å bestå. Null betyr ingen krav.
+    PakkeType:
+      type: string
+      enum:
+        - MINIMUMSKRAV
+        - EVALUERINGSKRAV
+      description: Klassifisering av pakken brukt av FTIKS V1
+    Evaluering:
+      type: string
+      enum:
+        - GODKJENT
+        - DELVIS_GODKJENT
+        - IKKE_GODKJENT
+      description: |
+        Evalueringsresultat for et Minimumskrav-svaralternativ (grønn/gul/rød). Utvidbart — nye verdier vil legges til uten at eksisterende fjernes.
+    Kravomrade:
+      type: string
+      enum:
+        - STYRING_KONTROLL_OG_ETTERLEVELSE
+        - LOSNING_OG_FUNKSJONALITET
+        - OPERASJONELL_SIKKERHET
+      description: |
+        Tematisk kravområde for et spørsmål. Brukes til gruppering og filtrering. Visningsnavn: STYRING_KONTROLL_OG_ETTERLEVELSE = "Styring, kontroll og etterlevelse", LOSNING_OG_FUNKSJONALITET = "Løsning og funksjonalitet", OPERASJONELL_SIKKERHET = "Operasjonell sikkerhet". Utvidbart — nye verdier kan legges til uten at eksisterende fjernes.
+    VersjonStatus:
+      type: string
+      enum:
+        - UTKAST
+        - PUBLISERT
+        - ARKIVERT
+    SideSporreskjemaOversikt:
+      type: object
+      properties:
+        innhold:
+          type: array
+          items:
+            $ref: '#/components/schemas/SporreskjemaOversikt'
+        side:
+          type: integer
+        antallPerSide:
+          type: integer
+        totaltAntall:
+          type: integer
+          format: int64
+    SidePakkeOversikt:
+      type: object
+      properties:
+        innhold:
+          type: array
+          items:
+            $ref: '#/components/schemas/PakkeOversikt'
+        side:
+          type: integer
+        antallPerSide:
+          type: integer
+        totaltAntall:
+          type: integer
+          format: int64
+    Klassifisering:
+      type: object
+      required:
+        - listeKilde
+        - kode
+      properties:
+        listeKilde:
+          type: string
+          description: Identifikator for klassifiseringslisten
+        kode:
+          type: string
+          description: Kode innenfor listen
+    Klassifiseringskode:
+      type: object
+      required:
+        - kode
+        - visningsnavn
+      properties:
+        kode:
+          type: string
+          description: Unik kode innenfor listen
+        visningsnavn:
+          type: string
+          description: Menneskelig lesbart navn for koden
+    Klassifiseringsliste:
+      type: object
+      required:
+        - listeKilde
+        - navn
+        - versjon
+        - gyldigeKoder
+      properties:
+        listeKilde:
+          type: string
+          description: Primærnøkkel — unik identifikator for listen
+        navn:
+          type: string
+          description: Visningsnavn for listen
+        versjon:
+          type: string
+          description: Versjonsbetegnelse for listen
+        gyldigeKoder:
+          type: array
+          items:
+            $ref: '#/components/schemas/Klassifiseringskode'
+          description: Gyldige koder i denne listen
+    Feilmelding:
+      type: object
+      properties:
+        melding:
+          type: string
+        tidspunkt:
+          type: string
+          format: date-time
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: Ansattporten JWT-token

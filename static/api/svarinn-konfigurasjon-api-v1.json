@@ -29,6 +29,10 @@
     {
       "name": "SvarInn",
       "description": "API for SvarInn konfigurasjon"
+    },
+    {
+      "name": "Autentisering",
+      "description": "API for bruk av autentisering mot SvarInn konfigurasjon"
     }
   ],
   "paths": {
@@ -37,8 +41,8 @@
         "tags": [
           "Mottakersystem"
         ],
-        "description": "Henter mottakersystemer som innfrir søkekriterier",
-        "summary": "Henter mottakersystemer som innfrir søkekriterier",
+        "description": "Henter mottakersystemer",
+        "summary": "Henter mottakersystemer",
         "operationId": "hentMottakersystemer",
         "parameters": [
           {
@@ -49,15 +53,6 @@
           },
           {
             "$ref": "#/components/parameters/AntallPerSide"
-          },
-          {
-            "name": "sokebegrep",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "string",
-              "description": "Søker etter navn, mottakersystemId eller organisasjonsnummer i mottakersystemer"
-            }
           }
         ],
         "responses": {
@@ -200,14 +195,80 @@
         }
       }
     },
-    "/svarinn-konfigurasjon/api/v1/{fiksOrgId}/mottakersystemer/{mottakersystemId}/organisasjonskoblinger": {
+    "/svarinn-konfigurasjon/api/v1/mottakersystemer/oppslag": {
       "get": {
         "tags": [
-          "Organisasjonskobling"
+          "Mottakersystem"
+        ],
+        "description": "Henter mottakersystem som tilfredsstiller kombinasjon av organisasjonsnummer, forsendelsestype og sikkerhetsnivå",
+        "summary": "Henter mottakersystem som tilfredsstiller kombinasjon av organisasjonsnummer, forsendelsestype og sikkerhetsnivå",
+        "operationId": "hentMottakersystemOppslag",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Organisasjonsnummer"
+          },
+          {
+            "$ref": "#/components/parameters/Sikkerhetsniva"
+          },
+          {
+            "$ref": "#/components/parameters/Forsendelsestype"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Mottakersystemoppslag",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MottakersystemOppslag"
+                }
+              }
+            }
+          },
+          "403": {
+            "$ref": "#/components/responses/Error403"
+          },
+          "500": {
+            "$ref": "#/components/responses/Error500"
+          }
+        }
+      }
+    },
+    "/svarinn-konfigurasjon/api/v1/sertifikat": {
+      "get": {
+        "tags": [
+          "Mottakersystem"
+        ],
+        "summary": "Hent sertifikat for SvarInn mottakersystem",
+        "operationId": "hentSertifikat",
+        "responses": {
+          "200": {
+            "description": "Hent sertifikat for SvarInn mottakersystem",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Sertifikat"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Error401"
+          },
+          "500": {
+            "$ref": "#/components/responses/Error500"
+          }
+        }
+      }
+    },
+    "/svarinn-konfigurasjon/api/v1/{fiksOrgId}/mottakersystemer/{mottakersystemId}/organisasjoner": {
+      "get": {
+        "tags": [
+          "Organisasjon"
         ],
         "description": "Henter organisasjoner som er koblet mot mottakersystemet",
         "summary": "Henter organisasjoner som er koblet mot mottakersystemet",
-        "operationId": "hentOrganisasjonskoblinger",
+        "operationId": "hentOrganisasjoner",
         "parameters": [
           {
             "$ref": "#/components/parameters/FiksOrgId"
@@ -220,24 +281,15 @@
           },
           {
             "$ref": "#/components/parameters/AntallPerSide"
-          },
-          {
-            "name": "sokebegrep",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "string",
-              "description": "Søker etter navn og organisasjonsnummer i organisasjonskoblinger"
-            }
           }
         ],
         "responses": {
           "200": {
-            "description": "Organisasjonskoblinger",
+            "description": "Organisasjoner",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Organisasjonskoblinger"
+                  "$ref": "#/components/schemas/Organisasjoner"
                 }
               }
             }
@@ -252,11 +304,11 @@
       },
       "post": {
         "tags": [
-          "Organisasjonskobling"
+          "Organisasjon"
         ],
-        "description": "Oppretter organisasjonskobling",
-        "summary": "Oppretter organisasjonskobling",
-        "operationId": "opprettOrganisasjonskobling",
+        "description": "Oppretter organisasjon",
+        "summary": "Oppretter organisasjon",
+        "operationId": "opprettOrganisasjon",
         "parameters": [
           {
             "$ref": "#/components/parameters/FiksOrgId"
@@ -269,7 +321,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/OrganisasjonskoblingCreateRequest"
+                "$ref": "#/components/schemas/OrganisasjonCreateRequest"
               }
             }
           },
@@ -277,7 +329,14 @@
         },
         "responses": {
           "201": {
-            "description": "Opprettet organisasjonskobling"
+            "description": "Opprettet organisasjon",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrganisasjonCreateResponse"
+                }
+              }
+            }
           },
           "400": {
             "$ref": "#/components/responses/Error400"
@@ -289,14 +348,16 @@
             "$ref": "#/components/responses/Error500"
           }
         }
-      },
+      }
+    },
+    "/svarinn-konfigurasjon/api/v1/{fiksOrgId}/mottakersystemer/{mottakersystemId}/organisasjoner/{organisasjonId}": {
       "put": {
         "tags": [
-          "Organisasjonskobling"
+          "Organisasjon"
         ],
-        "description": "Endrer organisasjonskobling",
-        "summary": "Endrer organisasjonskobling",
-        "operationId": "endreOrganisasjonskobling",
+        "description": "Endrer organisasjon",
+        "summary": "Endrer organisasjon",
+        "operationId": "endreOrganisasjon",
         "parameters": [
           {
             "$ref": "#/components/parameters/FiksOrgId"
@@ -305,19 +366,14 @@
             "$ref": "#/components/parameters/MottakersystemId"
           },
           {
-            "name": "organisasjonskoblingsId",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
+            "$ref": "#/components/parameters/OrganisasjonId"
           }
         ],
         "requestBody": {
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/OrganisajonskoblingUpdateRequest"
+                "$ref": "#/components/schemas/OrganisasjonUpdateRequest"
               }
             }
           },
@@ -325,13 +381,23 @@
         },
         "responses": {
           "204": {
-            "description": "Endret organisasjonskobling"
+            "description": "Endret organisasjon"
           },
           "400": {
             "$ref": "#/components/responses/Error400"
           },
           "403": {
             "$ref": "#/components/responses/Error403"
+          },
+          "404": {
+            "description": "Ingen organisasjon",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
           },
           "500": {
             "$ref": "#/components/responses/Error500"
@@ -340,11 +406,11 @@
       },
       "delete": {
         "tags": [
-          "Organisasjonskobling"
+          "Organisasjon"
         ],
-        "description": "Sletter organisasjonskobling",
-        "summary": "Sletter organisasjonskobling",
-        "operationId": "sletteOrganisasjonskobling",
+        "description": "Sletter organisasjon",
+        "summary": "Sletter organisasjon",
+        "operationId": "sletteOrganisasjon",
         "parameters": [
           {
             "$ref": "#/components/parameters/FiksOrgId"
@@ -353,23 +419,18 @@
             "$ref": "#/components/parameters/MottakersystemId"
           },
           {
-            "name": "organisasjonskoblingsId",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
+            "$ref": "#/components/parameters/OrganisasjonId"
           }
         ],
         "responses": {
           "204": {
-            "description": "Slettet organisasjonskobling"
+            "description": "Slettet organisasjon"
           },
           "403": {
             "$ref": "#/components/responses/Error403"
           },
           "404": {
-            "description": "Ingen organisasjonskobling",
+            "description": "Ingen organisasjon",
             "content": {
               "application/json": {
                 "schema": {
@@ -448,7 +509,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "string"
+                  "$ref": "#/components/schemas/GenerertPassord"
                 }
               }
             }
@@ -463,40 +524,6 @@
       }
     },
     "/svarinn-konfigurasjon/api/v1/{fiksOrgId}/mottakersystemer/{mottakersystemId}/innstillinger/sertifikat": {
-      "get": {
-        "tags": [
-          "Innstillinger"
-        ],
-        "description": "Henter SHA1 signatur for mottakersystem",
-        "summary": "Henter SHA1 signatur for mottakersystem",
-        "operationId": "hentSha1Signatur",
-        "parameters": [
-          {
-            "$ref": "#/components/parameters/FiksOrgId"
-          },
-          {
-            "$ref": "#/components/parameters/MottakersystemId"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Signatur",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "string"
-                }
-              }
-            }
-          },
-          "403": {
-            "$ref": "#/components/responses/Error403"
-          },
-          "500": {
-            "$ref": "#/components/responses/Error500"
-          }
-        }
-      },
       "put": {
         "tags": [
           "Innstillinger"
@@ -518,6 +545,121 @@
           },
           "400": {
             "$ref": "#/components/responses/Error400"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error403"
+          },
+          "500": {
+            "$ref": "#/components/responses/Error500"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Innstillinger"
+        ],
+        "description": "Sletter sertifikat",
+        "summary": "Sletter sertifikat",
+        "operationId": "slettSertifikat",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/FiksOrgId"
+          },
+          {
+            "$ref": "#/components/parameters/MottakersystemId"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Slettet sertifikat"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error403"
+          },
+          "404": {
+            "description": "Ingen sertifikat",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/components/responses/Error500"
+          }
+        }
+      }
+    },
+    "/svarinn-konfigurasjon/api/v1/organisasjoner/{fiksOrgId}/mottakersystemer/{mottakersystemId}/statistikk": {
+      "get": {
+        "tags": [
+          "Statistikk"
+        ],
+        "description": "Henter statistikk for mottakersystem",
+        "summary": "Henter statistikk for mottakersystem",
+        "operationId": "hentStatistikk",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/FiksOrgId"
+          },
+          {
+            "$ref": "#/components/parameters/MottakersystemId"
+          },
+          {
+            "$ref": "#/components/parameters/Grenseverdi"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Hent statistikk",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MottakersystemStatistikk"
+                }
+              }
+            }
+          },
+          "403": {
+            "$ref": "#/components/responses/Error403"
+          },
+          "500": {
+            "$ref": "#/components/responses/Error500"
+          }
+        }
+      }
+    },
+    "/svarinn-konfigurasjon/api/v1/organisasjoner/{fiksOrgId}/mottakersystemer/{mottakersystemId}/organisasjoner/{organisasjonsnummer}/statistikk": {
+      "get": {
+        "tags": [
+          "Statistikk"
+        ],
+        "description": "Henter statistikk for et spesifikt organisasjonsnummer på et mottakersystem",
+        "summary": "Henter statistikk for et spesifikt organisasjonsnummer på et mottakersystem",
+        "operationId": "hentStatistikkForOrganisasjon",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/FiksOrgId"
+          },
+          {
+            "$ref": "#/components/parameters/MottakersystemId"
+          },
+          {
+            "$ref": "#/components/parameters/OrganisasjonsnummerPathParam"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Hentet statistikk for en organisasjon på et mottakersystem",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrganisasjonStatistikk"
+                }
+              }
+            }
           },
           "403": {
             "$ref": "#/components/responses/Error403"
@@ -577,7 +719,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Organisasjoner"
+                  "$ref": "#/components/schemas/OrganisasjonerTreff"
                 }
               }
             }
@@ -588,40 +730,19 @@
         }
       }
     },
-    "/svarinn-konfigurasjon/api/v1/oppslag": {
-      "post": {
+    "/svarinn-konfigurasjon/api/v1/autentiser": {
+      "get": {
         "tags": [
-          "Oppslag"
+          "Autentisering"
         ],
-        "description": "Oppslag mot enhetsregisteret på organisasjonsnummer eller organisasjonsnavn",
-        "summary": "Oppslag mot enhetsregisteret på organisasjonsnummer eller organisasjonsnavn",
-        "operationId": "oppslag",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/OppslagRequest"
-              }
-            }
-          },
-          "required": true
-        },
+        "summary": "Autentiserer SvarInn mottakersystem",
+        "operationId": "autentiser",
         "responses": {
-          "200": {
-            "description": "Organisasjon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/OppslagResponse"
-                }
-              }
-            }
+          "204": {
+            "description": "Autentisere SvarInn mottakersystem"
           },
-          "400": {
-            "$ref": "#/components/responses/Error400"
-          },
-          "403": {
-            "$ref": "#/components/responses/Error403"
+          "401": {
+            "$ref": "#/components/responses/Error401"
           },
           "500": {
             "$ref": "#/components/responses/Error500"
@@ -651,6 +772,63 @@
           "format": "uuid",
           "description": "Mottakersystemets id"
         }
+      },
+      "OrganisasjonId": {
+        "name": "organisasjonId",
+        "required": true,
+        "in": "path",
+        "schema": {
+          "type": "string",
+          "format": "uuid",
+          "description": "Organisasjonens id"
+        }
+      },
+      "Organisasjonsnummer": {
+        "name": "organisasjonsnummer",
+        "required": true,
+        "in": "query",
+        "schema": {
+          "$ref": "#/components/schemas/Organisasjonsnummer"
+        }
+      },
+      "OrganisasjonsnummerPathParam": {
+        "name": "organisasjonsnummer",
+        "required": true,
+        "in": "path",
+        "schema": {
+          "$ref": "#/components/schemas/Organisasjonsnummer"
+        }
+      },
+      "Forsendelsestype": {
+        "name": "forsendelsestype",
+        "description": "Forsendelsestype som skal brukes i oppslaget. Hvis ikke satt, vil alle forsendelsestyper bli vurdert i oppslaget",
+        "in": "query",
+        "schema": {
+          "type": "string"
+        }
+      },
+      "Sikkerhetsniva": {
+        "name": "sikkerhetsniva",
+        "description": "Sikkerhetsnivå som skal brukes i oppslaget",
+        "required": true,
+        "in": "query",
+        "schema": {
+          "$ref": "#/components/schemas/SikkerhetsnivaParam"
+        }
+      },
+      "Grenseverdi": {
+        "name": "intervallGrenseverdi",
+        "description": "Grenseverdier (ISO-8601 duration) brukt til intervallbasert gruppering av forsendelser. Verdiene skal oppgis i stigende rekkefølge uten duplikater.",
+        "in": "query",
+        "schema": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/components/schemas/IntervallGrense"
+          }
+        },
+        "style": "form",
+        "explode": true
       },
       "Sidenummer": {
         "name": "sidenummer",
@@ -692,6 +870,16 @@
           }
         }
       },
+      "Error401": {
+        "description": "Autentisering feilt",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorMessage"
+            }
+          }
+        }
+      },
       "Error403": {
         "description": "Ingen tilgang",
         "content": {
@@ -714,6 +902,18 @@
       }
     },
     "schemas": {
+      "GenerertPassord": {
+        "type": "object",
+        "required": [
+          "passord"
+        ],
+        "properties": {
+          "passord": {
+            "type": "string",
+            "description": "Generert passord for mottakersystem"
+          }
+        }
+      },
       "Mottakersystemer": {
         "type": "object",
         "properties": {
@@ -747,6 +947,14 @@
         }
       },
       "Mottakersystem": {
+        "required": [
+          "mottakersystemId",
+          "navn",
+          "eposter",
+          "status",
+          "merknader",
+          "antallTilknyttedeOrganisasjoner"
+        ],
         "type": "object",
         "properties": {
           "mottakersystemId": {
@@ -762,19 +970,37 @@
               "type": "string"
             }
           },
-          "aktiv": {
-            "type": "boolean"
+          "status": {
+            "$ref": "#/components/schemas/MottakersystemStatus"
           },
-          "sertifikatStatus": {
-            "$ref": "#/components/schemas/SertifikatStatus"
+          "merknader": {
+            "type": "array",
+            "description": "Merknader som kan brukes for å gi mer informasjon om mottakersystemet, for eksempel ved feil i konfigurasjon",
+            "items": {
+              "$ref": "#/components/schemas/MottakersystemMerknad"
+            }
+          },
+          "sertifikat": {
+            "$ref": "#/components/schemas/SertifikatInfo"
           },
           "antallTilknyttedeOrganisasjoner": {
             "type": "integer",
             "format": "int32"
+          },
+          "servicePassord": {
+            "$ref": "#/components/schemas/ServicePassordInfo"
           }
         }
       },
       "MottakersystemTreff": {
+        "required": [
+          "mottakersystemId",
+          "navn",
+          "status",
+          "merknader",
+          "antallTilknyttedeOrganisasjoner",
+          "opprettet"
+        ],
         "type": "object",
         "properties": {
           "mottakersystemId": {
@@ -784,17 +1010,55 @@
           "navn": {
             "type": "string"
           },
-          "aktiv": {
-            "type": "boolean"
+          "status": {
+            "$ref": "#/components/schemas/MottakersystemStatus"
           },
-          "sertifikatStatus": {
-            "$ref": "#/components/schemas/SertifikatStatus"
+          "opprettet": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Dato for når mottakersystemet ble opprettet"
+          },
+          "merknader": {
+            "type": "array",
+            "description": "Merknader som kan brukes for å gi mer informasjon om mottakersystemet, for eksempel ved feil i konfigurasjon",
+            "items": {
+              "$ref": "#/components/schemas/MottakersystemMerknad"
+            }
+          },
+          "sertifikat": {
+            "$ref": "#/components/schemas/SertifikatInfo"
           },
           "antallTilknyttedeOrganisasjoner": {
             "type": "integer",
             "format": "int32"
+          },
+          "servicePassord": {
+            "$ref": "#/components/schemas/ServicePassordInfo"
           }
         }
+      },
+      "MottakersystemStatus": {
+        "type": "string",
+        "enum": [
+          "IKKE_KONFIGURERT",
+          "AKTIV",
+          "DEAKTIVERT",
+          "FEIL_I_KONFIGURASJON"
+        ]
+      },
+      "MottakersystemMerknad": {
+        "type": "string",
+        "enum": [
+          "UTLOPT_SERTIFIKAT",
+          "SERTIFIKAT_UTLOPER_SNART",
+          "SERTIFIKAT_MANGLER",
+          "POST_KLAR_OVER_2_TIMER",
+          "IKKE_FORSOKT_HENTET_POST_30_DAGER",
+          "INGEN_AKTIVITET",
+          "INGEN_ORGANISASJON_TILKNYTTET",
+          "SERVICEPASSORD_MANGLER",
+          "DUPLIKAT_ORGANISASJON_TILKNYTTET"
+        ]
       },
       "MottakersystemCreateRequest": {
         "required": [
@@ -850,6 +1114,85 @@
         },
         "description": "Modell for å endre et mottakersystem"
       },
+      "MottakersystemOppslag": {
+        "type": "array",
+        "description": "Liste av mottakersystemIder",
+        "items": {
+          "type": "string",
+          "format": "uuid"
+        }
+      },
+      "MottakersystemStatistikk": {
+        "required": [
+          "forsendelserKlareForUthenting"
+        ],
+        "type": "object",
+        "description": "Statistikk for et mottakersystem",
+        "properties": {
+          "forsendelserKlareForUthenting": {
+            "required": [
+              "totalt"
+            ],
+            "type": "object",
+            "description": "Statistikk for forsendelser som er klare for å hentes ut av fagsystem",
+            "properties": {
+              "totalt": {
+                "type": "integer",
+                "format": "int32",
+                "minimum": 0,
+                "description": "Totalt antall forsendelser som er klare for å hentes ut fra mottakersystemet"
+              },
+              "intervall": {
+                "type": "array",
+                "description": "Liste med grupperinger av forsendelser per tidsintervall. Intervallene er [grenseverdiFra, grenseverdiTil] og siste intervall er [grenseverdiFra, uendelig].",
+                "minItems": 1,
+                "items": {
+                  "type": "object",
+                  "required": [
+                    "antall",
+                    "grenseverdiFra"
+                  ],
+                  "properties": {
+                    "antall": {
+                      "type": "integer",
+                      "format": "int32",
+                      "minimum": 0,
+                      "description": "Antall forsendelser innenfor gitt tidsintervall"
+                    },
+                    "grenseverdiFra": {
+                      "$ref": "#/components/schemas/IntervallGrense"
+                    },
+                    "grenseverdiTil": {
+                      "$ref": "#/components/schemas/IntervallGrense"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "forsendelserHentetSisteDoegn": {
+            "type": "integer",
+            "format": "int32",
+            "minimum": 0,
+            "description": "Antall forsendelser hentet ut av fagsystem de siste 24 timene"
+          }
+        }
+      },
+      "OrganisasjonStatistikk": {
+        "required": [
+          "antallForsendelser"
+        ],
+        "type": "object",
+        "description": "Statistikk for et mottakersystem",
+        "properties": {
+          "antallForsendelser": {
+            "type": "integer",
+            "format": "int32",
+            "minimum": 0,
+            "description": "Antall forsendelser som er klare for å hentes ut fra mottakersystemet for en gitt organisasjon"
+          }
+        }
+      },
       "AktivStatusUpdateRequest": {
         "required": [
           "aktiv"
@@ -862,7 +1205,7 @@
         },
         "description": "Modell for å endre aktiv status for et mottakersystem"
       },
-      "Organisasjonskoblinger": {
+      "Organisasjoner": {
         "type": "object",
         "properties": {
           "sidenummer": {
@@ -887,17 +1230,17 @@
           },
           "treff": {
             "type": "array",
-            "description": "Organisasjonskoblingene for mottakersystemet",
+            "description": "Organisasjonene for mottakersystemet",
             "items": {
-              "$ref": "#/components/schemas/Organisasjonskobling"
+              "$ref": "#/components/schemas/Organisasjon"
             }
           }
         }
       },
-      "Organisasjonskobling": {
+      "Organisasjon": {
         "type": "object",
         "properties": {
-          "organisasjonskoblingsId": {
+          "organisasjonId": {
             "type": "string",
             "format": "uuid"
           },
@@ -913,17 +1256,45 @@
           },
           "forsendelsestyper": {
             "type": "array",
-            "description": "Forsendelsestyper som er knyttet til organisasjonskoblingen",
+            "description": "Forsendelsestyper som er knyttet til organisasjonen",
             "items": {
               "type": "string"
             }
           },
           "sikkerhetsniva": {
             "$ref": "#/components/schemas/Sikkerhetsniva"
+          },
+          "duplikatIMottakersystem": {
+            "type": "array",
+            "description": "Liste over alle mottakersystemer denne organisasjonen finnes i. Inkludert mottakersystemet forespørselen stammer fra.",
+            "items": {
+              "type": "object",
+              "properties": {
+                "mottakersystemId": {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                "mottakersystemNavn": {
+                  "type": "string"
+                },
+                "fiksOrgNavn": {
+                  "type": "string",
+                  "description": "Navnet på Fiks-organisasjonen, dersom duplikatet finnes i en annen Fiks-organisasjon."
+                },
+                "fullstendigDuplikat": {
+                  "type": "boolean",
+                  "description": "Indikerer om organisasjonen er et fullstendig duplikat i mottakersystemet, dvs. at noen forsendelsestyper og sikkerhetsnivåer er overlappende"
+                }
+              }
+            }
           }
         }
       },
-      "OrganisasjonskoblingCreateRequest": {
+      "OrganisasjonCreateRequest": {
+        "required": [
+          "organisasjonsnummer",
+          "sikkerhetsniva"
+        ],
         "type": "object",
         "properties": {
           "organisasjonsnummer": {
@@ -931,7 +1302,7 @@
           },
           "forsendelsestyper": {
             "type": "array",
-            "description": "Forsendelsestyper som skal knyttes til organisasjonskoblingen",
+            "description": "Forsendelsestyper som skal knyttes til organisasjonen",
             "items": {
               "type": "string"
             }
@@ -940,14 +1311,27 @@
             "$ref": "#/components/schemas/Sikkerhetsniva"
           }
         },
-        "description": "Modell for å opprette en organisasjonskobling"
+        "description": "Modell for å opprette en organisasjon"
       },
-      "OrganisajonskoblingUpdateRequest": {
+      "OrganisasjonCreateResponse": {
+        "type": "object",
+        "properties": {
+          "organisasjonId": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "description": "Modell for organisasjonens id ved opprettelse"
+      },
+      "OrganisasjonUpdateRequest": {
+        "required": [
+          "sikkerhetsniva"
+        ],
         "type": "object",
         "properties": {
           "forsendelsestyper": {
             "type": "array",
-            "description": "Forsendelsestyper som skal knyttes til organisasjonskoblingen",
+            "description": "Forsendelsestyper som skal knyttes til organisasjonen",
             "items": {
               "type": "string"
             }
@@ -956,9 +1340,27 @@
             "$ref": "#/components/schemas/Sikkerhetsniva"
           }
         },
-        "description": "Modell for å endre en organisasjonskobling"
+        "description": "Modell for å endre en organisasjon"
       },
-      "SertifikatStatus": {
+      "Sertifikat": {
+        "type": "object",
+        "required": [
+          "sertifikat",
+          "gyldigTil"
+        ],
+        "properties": {
+          "sertifikat": {
+            "type": "string",
+            "description": "Sertifikatet som er lastet opp"
+          },
+          "gyldigTil": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Utløpsdato for sertifikatets gyldighetsperiode"
+          }
+        }
+      },
+      "SertifikatInfo": {
         "type": "object",
         "properties": {
           "status": {
@@ -966,13 +1368,39 @@
             "enum": [
               "GYLDIG",
               "UTLOPT",
-              "UTLOPT_SNART",
-              "MANGLER"
+              "UTLOPER_SNART",
+              "MANGLER",
+              "IKKE_STARTET"
             ]
           },
-          "utlopsDato": {
+          "gyldigFra": {
             "type": "string",
-            "format": "date"
+            "format": "date-time",
+            "description": "Starten på sertifikatets gyldighetsperiode"
+          },
+          "gyldigTil": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Utløpsdato for sertifikatets gyldighetsperiode"
+          },
+          "opplastet": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Dato for når sertifikatet ble lastet opp"
+          }
+        }
+      },
+      "ServicePassordInfo": {
+        "type": "object",
+        "properties": {
+          "harServicePassord": {
+            "type": "boolean",
+            "description": "Indikerer om det er et gyldig servicepassord for mottakersystemet"
+          },
+          "generert": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Dato for når servicepassordet ble generert"
           }
         }
       },
@@ -987,6 +1415,19 @@
           "HOYESTE",
           "BETYDELIG"
         ]
+      },
+      "SikkerhetsnivaParam": {
+        "type": "string",
+        "enum": [
+          "HOYESTE",
+          "BETYDELIG"
+        ]
+      },
+      "IntervallGrense": {
+        "type": "string",
+        "format": "duration",
+        "example": "P3Y6M4DT12H30M5S",
+        "description": "Grenseverdi for tidsintervall"
       },
       "Forsendelsestyper": {
         "required": [
@@ -1005,14 +1446,14 @@
           }
         }
       },
-      "Organisasjoner": {
+      "OrganisasjonerTreff": {
         "type": "array",
         "description": "Liste av organisasjoner",
         "items": {
-          "$ref": "#/components/schemas/Organisasjon"
+          "$ref": "#/components/schemas/OrganisasjonTreff"
         }
       },
-      "Organisasjon": {
+      "OrganisasjonTreff": {
         "type": "object",
         "properties": {
           "organisasjonsnummer": {
@@ -1044,25 +1485,6 @@
           }
         },
         "description": "Informasjon om organisasjon hentet fra enhetsregisteret"
-      },
-      "OppslagRequest": {
-        "type": "object",
-        "required": [
-          "sokebegrep"
-        ],
-        "properties": {
-          "sokebegrep": {
-            "type": "string",
-            "description": "Søkebegrep for oppslag. Organisasjonsnummer eller navn."
-          }
-        }
-      },
-      "OppslagResponse": {
-        "type": "array",
-        "description": "Treff på oppslag",
-        "items": {
-          "$ref": "#/components/schemas/Oppslag"
-        }
       },
       "ErrorMessage": {
         "type": "object",

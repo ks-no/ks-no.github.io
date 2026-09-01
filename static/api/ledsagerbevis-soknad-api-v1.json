@@ -372,6 +372,8 @@
           "name" : "side",
           "in" : "query",
           "schema" : {
+            "minimum" : 0,
+            "exclusiveMinimum" : true,
             "type" : "integer",
             "format" : "int32"
           }
@@ -380,6 +382,8 @@
           "in" : "query",
           "schema" : {
             "maximum" : 100,
+            "minimum" : 0,
+            "exclusiveMinimum" : true,
             "type" : "integer",
             "format" : "int32"
           }
@@ -628,34 +632,6 @@
           }
         }
       }
-    },
-    "/digitalt-ledsagerbevis-soknad/api/v1/soknad/saksbehandling/ping/{instanceId}/{instanceOwnerId}" : {
-      "get" : {
-        "operationId" : "pingAltinn",
-        "parameters" : [ {
-          "name" : "instanceId",
-          "in" : "path",
-          "required" : true,
-          "schema" : {
-            "type" : "string"
-          }
-        }, {
-          "name" : "instanceOwnerId",
-          "in" : "path",
-          "required" : true,
-          "schema" : {
-            "type" : "string"
-          }
-        } ],
-        "responses" : {
-          "default" : {
-            "description" : "default response",
-            "content" : {
-              "*/*" : { }
-            }
-          }
-        }
-      }
     }
   },
   "components" : {
@@ -775,7 +751,7 @@
             "description" : "Kontakt telefonnummer for innsender"
           }
         },
-        "description" : "Person som sender inn søknad, hvis de ikke søker på vegne av seg selv"
+        "description" : "Person som sender inn søknaden. Ved MEG_SELV er dette samme person som beviseier."
       },
       "Person" : {
         "required" : [ "fnr", "navn" ],
@@ -797,16 +773,25 @@
           "telefonnummer" : {
             "type" : "string",
             "description" : "Telefonnummer til person"
+          },
+          "foedselsdato" : {
+            "type" : "string",
+            "description" : "Fødselsdato til person",
+            "format" : "date"
           }
         },
         "description" : "Person som skal eie beviset"
       },
       "SubmitSoknadRequest" : {
-        "required" : [ "administratorer", "altinnInstanse", "behov", "bevisEier", "fiksOrgId", "onskerFysiskBevis", "onsketVarighet", "sokerFor", "vedlegg" ],
+        "required" : [ "administratorer", "altinnInstanse", "behov", "bevisEier", "fiksOrgId", "innsender", "onskerFysiskBevis", "onsketVarighet", "sokerFor", "vedlegg" ],
         "type" : "object",
         "properties" : {
           "altinnInstanse" : {
             "$ref" : "#/components/schemas/AltinnInstanse"
+          },
+          "dialogId" : {
+            "type" : "string",
+            "description" : "Dialog ID for Altinn Dialog Porten"
           },
           "fiksOrgId" : {
             "type" : "string",
@@ -968,7 +953,7 @@
         "description" : "Intern merknad fra saksbehandler"
       },
       "Soknad" : {
-        "required" : [ "administratorer", "behov", "bevisEier", "onskerFysiskBevis", "sokerFor" ],
+        "required" : [ "administratorer", "behov", "bevisEier", "innsender", "onskerFysiskBevis", "sokerFor" ],
         "type" : "object",
         "properties" : {
           "sokerFor" : {
@@ -1064,6 +1049,12 @@
           "saksbehandler" : {
             "type" : "string",
             "description" : "Saksbehandler"
+          },
+          "utlopsdato" : {
+            "type" : "string",
+            "description" : "Utløpsdato",
+            "format" : "date",
+            "example" : "2026-05-03"
           }
         },
         "description" : "Vedtaket"
@@ -1221,6 +1212,12 @@
           "punktSkrift" : {
             "type" : "boolean",
             "description" : "Har behov for punktskrift"
+          },
+          "utlopsdato" : {
+            "type" : "string",
+            "description" : "Utløpsdato",
+            "format" : "date",
+            "example" : "2026-05-03"
           }
         },
         "description" : "Skal endre vedtak"

@@ -1,0 +1,253 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "KS Fiks: Svarinn - Resource Migration API",
+    "description": "KS Fiks: Svarinn temporary API for resource creation with predefined ID during migration",
+    "contact": {
+      "name": "Fiks brukerstøtte",
+      "url": "https://ks-no.github.io/",
+      "email": "fiks@ks.no"
+    },
+    "version": "v1"
+  },
+  "servers": [
+    {
+      "url": "http://autorisasjon-update-service:8080",
+      "description": "Cluster internal service URI"
+    }
+  ],
+  "security": [
+    {
+      "bearerAuth": []
+    }
+  ],
+  "tags": [
+    {
+      "name": "Svarinn",
+      "description": "API for Svarinn resource migration"
+    }
+  ],
+  "paths": {
+    "/autorisasjon-update/api/v1/svarinn/ressurs": {
+      "post": {
+        "deprecated": true,
+        "tags": [
+          "Svarinn"
+        ],
+        "description": "Creates a Svarinn resource with predefined ID for migration. This endpoint is only for time-limited Svarinn migration.",
+        "summary": "Create Svarinn resource with predefined ID",
+        "operationId": "svarinnOpprettRessurs",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OpprettRessursForMigreringRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Opprettet Ressurs",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Ressurs"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/ugyldigParameterverdi"
+          },
+          "403": {
+            "$ref": "#/components/responses/manglerTilgang"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    },
+    "responses": {
+      "ugyldigParameterverdi": {
+        "description": "Feil i inputdata",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorMessage"
+            }
+          }
+        }
+      },
+      "manglerTilgang": {
+        "description": "Ugyldig tilgang",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorMessage"
+            },
+            "example": {
+              "message": "Ugyldig tilgang",
+              "status": 403
+            }
+          }
+        }
+      }
+    },
+    "schemas": {
+      "Ressurs": {
+        "required": [
+          "forelder",
+          "id",
+          "navn",
+          "type"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Ressursens ID",
+            "format": "uuid"
+          },
+          "forelder": {
+            "type": "string",
+            "description": "UUID til ressursens forelderressurs",
+            "format": "uuid"
+          },
+          "type": {
+            "type": "string",
+            "description": "Ressursens type"
+          },
+          "navn": {
+            "type": "string",
+            "description": "Ressursens visningsnavn"
+          }
+        },
+        "description": "Representerer en ressurs, som er en entitet som kan tilordnes privilegier."
+      },
+      "OpprettRessursForMigreringRequest": {
+        "required": [
+          "id",
+          "forelderRessurs",
+          "type"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Forhåndsdefinert ressurs-ID som skal brukes ved opprettelse",
+            "format": "uuid"
+          },
+          "forelderRessurs": {
+            "type": "string",
+            "description": "UUID til ressursens forelderressurs",
+            "format": "uuid"
+          },
+          "type": {
+            "pattern": "^[0-9A-Z_.]+$",
+            "type": "string",
+            "description": "Ressursens type"
+          },
+          "navn": {
+            "maxLength": 200,
+            "minLength": 2,
+            "pattern": "^[A-ZÆØÅa-zæøå0-9ÁáÀàÂâÉéÈèÊêÍíÌìÎîÓóÒòÔôÚúÙùÛûÝýÄäËëÏïÖöÜü,.!?\\-:;/\\\\'()&+*=%§]+[A-ZÆØÅa-zæøå0-9ÁáÀàÂâÉéÈèÊêÍíÌìÎîÓóÒòÔôÚúÙùÛûÝýÄäËëÏïÖöÜü ,.!?\\-:;/\\\\'()&+*=%§]*[A-ZÆØÅa-zæøå0-9ÁáÀàÂâÉéÈèÊêÍíÌìÎîÓóÒòÔôÚúÙùÛûÝýÄäËëÏïÖöÜü,.!?\\-:;/\\\\'()&+*=%§]+$",
+            "type": "string",
+            "description": "Ressursens visningsnavn"
+          },
+          "tilganger": {
+            "$ref": "#/components/schemas/TilgangBulkRequest"
+          }
+        },
+        "description": "En request for å opprette en ny ressurs med forhåndsdefinert ID"
+      },
+      "TilgangBulkRequest": {
+        "required": [
+          "tilganger"
+        ],
+        "type": "object",
+        "properties": {
+          "tilganger": {
+            "type": "array",
+            "description": "Liste over tilganger som skal opprettes samtidig med ressursen",
+            "items": {
+              "$ref": "#/components/schemas/TilgangRequest"
+            }
+          }
+        },
+        "description": "Representerer en rekke autorisasjoner som ønskes tildelt"
+      },
+      "TilgangRequest": {
+        "required": [
+          "aktor",
+          "privilegium"
+        ],
+        "type": "object",
+        "properties": {
+          "aktor": {
+            "type": "string",
+            "description": "Aktør-ID som skal tildeles privilegium"
+          },
+          "privilegium": {
+            "type": "string",
+            "description": "Privilegium som skal tildeles aktøren"
+          }
+        },
+        "description": "Representerer en tilgang som skal knyttes til ressursen"
+      },
+      "ErrorMessage": {
+        "type": "object",
+        "description": "Feilmelding fra Fiks-plattformen",
+        "externalDocs": {
+          "description": "Beskrivelse av feilmeldinger",
+          "url": "https://ks-no.github.io/fiks-plattform/integrasjoner/#feilmeldinger"
+        },
+        "properties": {
+          "timestamp": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "status": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "error": {
+            "type": "string"
+          },
+          "errorId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "path": {
+            "type": "string"
+          },
+          "originalPath": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          },
+          "errorCode": {
+            "type": "string"
+          },
+          "errorJson": {
+            "type": "string"
+          }
+        },
+        "example": {
+          "message": "Mangler tilgang",
+          "errorId": "ee2ed64d-de8b-45f9-b9c6-3363d662d93b",
+          "status": 403
+        }
+      }
+    }
+  }
+}

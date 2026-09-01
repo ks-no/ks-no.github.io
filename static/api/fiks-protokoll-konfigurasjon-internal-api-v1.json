@@ -22,6 +22,91 @@
     "description" : "API for konfigurering av Fiks Protokoll"
   } ],
   "paths" : {
+    "/fiks-protokoll/api/v1/konfigurasjon/protokollKontoInfo/{kontoId}" : {
+      "get" : {
+        "tags" : [ "Protokoll-konfigurasjon-internal" ],
+        "description" : "Henter info om protokoll konto for bruk i Fiks-io",
+        "operationId" : "getProtokollKontoInfo",
+        "parameters" : [ {
+          "name" : "kontoId",
+          "in" : "path",
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "required": true
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Informasjon om protokoll konto",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ProtokollKontoInfoResponse"
+                }
+              }
+            }
+          },
+          "default" : {
+            "description" : "Noe gikk galt",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "fiks-protokoll-konfigurasjon-api-v1.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/fiks-protokoll/api/v1/konfigurasjon/protokollSystemInfo" : {
+      "get" : {
+        "tags" : [ "Protokoll-konfigurasjon-internal" ],
+        "description" : "Henter systemInfo for system/integrasjon/konto/kommune/fiksOrgId",
+        "operationId" : "getProtokollSystemInfo",
+        "parameters" : [ {
+          "name" : "type",
+          "in" : "query",
+          "schema" : {
+            "$ref" : "#/components/schemas/SearchParamType"
+          },
+          "required": true
+        }, {
+          "name" : "id",
+          "in" : "query",
+          "schema" : {
+            "type" : "string"
+          },
+          "required": true
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Henter alle protokoller",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "fiks-protokoll-konfigurasjon-api-v1.json#/components/schemas/ProtokollSystemResponse"
+                  }
+                }
+              }
+            }
+          },
+          "default" : {
+            "description" : "Noe gikk galt",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "fiks-protokoll-konfigurasjon-api-v1.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/fiks-protokoll/api/v1/konfigurasjon/valider" : {
       "post" : {
         "tags" : [ "Protokoll-konfigurasjon-internal" ],
@@ -34,10 +119,11 @@
                 "$ref" : "#/components/schemas/ValiderForsendelseRequest"
               }
             }
-          }
+          },
+          "required" : true
         },
         "responses" : {
-          "200" : {
+          "204" : {
             "description" : "Sjekker at melding kan sendes fra en konto til en annen"
           },
           "default" : {
@@ -45,7 +131,7 @@
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/ErrorMessage"
+                  "$ref" : "fiks-protokoll-konfigurasjon-api-v1.json#/components/schemas/ErrorMessage"
                 }
               }
             }
@@ -56,41 +142,6 @@
   },
   "components" : {
     "schemas" : {
-      "ErrorMessage" : {
-        "type" : "object",
-        "properties" : {
-          "timestamp" : {
-            "type" : "integer",
-            "format" : "int64"
-          },
-          "status" : {
-            "type" : "integer",
-            "format" : "int32"
-          },
-          "error" : {
-            "type" : "string"
-          },
-          "errorId" : {
-            "type" : "string",
-            "format" : "uuid"
-          },
-          "path" : {
-            "type" : "string"
-          },
-          "originalPath" : {
-            "type" : "string"
-          },
-          "message" : {
-            "type" : "string"
-          },
-          "errorCode" : {
-            "type" : "string"
-          },
-          "errorJson" : {
-            "type" : "string"
-          }
-        }
-      },
       "ValiderForsendelseRequest" : {
         "required" : [ "avsenderFiksIoKonto", "meldingstype", "mottakerFiksIoKonto" ],
         "type" : "object",
@@ -112,6 +163,36 @@
           "harPayload" : {
             "type" : "boolean",
             "description" : "Har meldingen en payload"
+          }
+        }
+      },
+      "SearchParamType": {
+        "type" : "string",
+        "enum" : [ "SYSTEMID", "INTEGRASJONID", "FIKSORGID", "FIKSIOKONTOID", "KOMMUNENUMMER" ]
+      },
+      "ProtokollKontoInfoResponse" : {
+        "required" : [ "id", "navn", "systemNavn", "fiksOrgNavn" ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "navn" : {
+            "type" : "string",
+            "description" : "Navn på konto"
+          },
+          "systemNavn": {
+            "type" : "string",
+            "description" : "Navn på system som konto tilhører"
+          },
+          "fiksOrgNavn": {
+            "type" : "string",
+            "description" : "Navn på kommune"
+          },
+          "leverandorNavn": {
+            "type" : "string",
+            "description" : "Navn på leverandør"
           }
         }
       }
