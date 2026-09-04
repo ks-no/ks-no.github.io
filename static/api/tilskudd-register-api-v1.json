@@ -43,6 +43,7 @@
         ],
         "operationId": "soekEtterUtlysing",
         "summary": "Lister ut utlysinger for tilskuddsordninger",
+        "description": "Uten fritekstsøk sorteres utlysingene på søknadsfrist med kortest frist først. Utlysinger med utløpt søknadsfrist listes til slutt, med den sist utløpte først. Er sok satt, styres rekkefølgen av relevansen til søketreffet.",
         "parameters": [
           {
             "name": "sidenummer",
@@ -76,7 +77,7 @@
             "required": false,
             "style": "form",
             "explode": true,
-            "description": "Filtrer på fylkesnummer (2 siffer) eller kommunenummer (4 siffer). Fylkesnummer inkluderer alle kommuner i fylket, kommunenummer inkluderer fylket kommunen ligger i. Utlysinger uten regioner (gjelder hele landet) matcher alltid. Flere verdier gir ELLER.",
+            "description": "Filtrer på fylkesnummer (2 siffer) eller kommunenummer (4 siffer). Koden matches eksakt — et fylkesnummer gir ikke utlysingene til kommunene i fylket, og et kommunenummer gir ikke utlysingene til fylket. Utlysinger uten regioner (gjelder hele landet) matcher alltid. Flere verdier gir ELLER.",
             "schema": {
               "type": "array",
               "maxItems": 100,
@@ -105,7 +106,7 @@
             "name": "inkluderFiltreringsinfo",
             "in": "query",
             "required": false,
-            "description": "Når true inkluderes filtreringsinfo i responsen: antall utlysinger som gjelder SPESIFIKT hver mulige filterverdi (søkergruppe, fylke, kommune), pluss antall landsdekkende utlysinger. Tallene beregnes med søket og alle ANDRE dimensjoners filtre anvendt, men verdiens egen dimensjon ekskludert, over hele resultatsettet — de påvirkes ikke av paginering. Merk at tallene ikke er lik antall treff etter påført filter — et fylkesfilter inkluderer også kommunene i fylket og landsdekkende utlysinger.",
+            "description": "Når true inkluderes filtreringsinfo i responsen: antall utlysinger som gjelder SPESIFIKT hver mulige filterverdi (søkergruppe, fylke, kommune), pluss antall landsdekkende utlysinger. Tallene beregnes med søket og alle ANDRE dimensjoners filtre anvendt, men verdiens egen dimensjon ekskludert, over hele resultatsettet — de påvirkes ikke av paginering. Antallet for en regionkode teller bare utlysingene som lister koden selv; de landsdekkende kommer alltid i tillegg når man filtrerer på regionen.",
             "schema": {
               "type": "boolean",
               "default": false
@@ -565,7 +566,7 @@
       "Filtreringsinfo": {
         "type": "object",
         "readOnly": true,
-        "description": "Antall utlysinger som gjelder SPESIFIKT hver mulige filterverdi. Tallene er beregnet med søket og alle ANDRE dimensjoners filtre anvendt, men verdiens egen dimensjon ekskludert, over hele resultatsettet — de påvirkes ikke av paginering. En utlysing som lister både et fylke og en kommune teller på begge. Tallene er ikke lik antall treff etter påført filter — et fylkesfilter inkluderer også kommunene i fylket og landsdekkende utlysinger. Verdier uten utlysinger har antallTreff 0.",
+        "description": "Antall utlysinger som gjelder SPESIFIKT hver mulige filterverdi. Tallene er beregnet med søket og alle ANDRE dimensjoners filtre anvendt, men verdiens egen dimensjon ekskludert, over hele resultatsettet — de påvirkes ikke av paginering. En utlysing som lister både et fylke og en kommune teller på begge, og et fylke teller ikke med utlysingene til kommunene sine. Antallet for en regionkode inkluderer ikke de landsdekkende utlysingene, som alltid kommer i tillegg når man filtrerer på regionen. Verdier uten utlysinger har antallTreff 0.",
         "required": [
           "sokergrupper",
           "fylker",
@@ -616,7 +617,6 @@
         "required": [
           "kode",
           "antallTreff",
-          "treffIKommuner",
           "kommuner"
         ],
         "properties": {
@@ -634,11 +634,6 @@
             "type": "integer",
             "description": "Antall utlysinger som gjelder spesifikt fylket",
             "example": 5
-          },
-          "treffIKommuner": {
-            "type": "integer",
-            "description": "Summen av antallTreff for kommunene i fylket",
-            "example": 3
           },
           "kommuner": {
             "type": "array",
