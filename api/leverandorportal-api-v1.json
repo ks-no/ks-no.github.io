@@ -1,0 +1,751 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "KS Fiks: Leverandorportal",
+    "description": "API for leverandør-selvbetjening i Fiks Allmenningen — autentisering via Ansattporten, organisasjonsscoped tilgang til egne produkter og kontaktpunkter.",
+    "contact": {
+      "name": "Fiks-brukerstøtte",
+      "url": "https://ks-no.github.io/",
+      "email": "fiks-utvikling@ksdigital.no"
+    },
+    "version": "v1"
+  },
+  "servers": [
+    {
+      "url": "https://api.fiks.test.ks.no",
+      "description": "KS Fiks API host"
+    }
+  ],
+  "security": [
+    {
+      "bearerAuth": []
+    }
+  ],
+  "tags": [
+    {
+      "name": "Leverandor",
+      "description": "Leverandørregistrering og oppslag"
+    },
+    {
+      "name": "Produkter",
+      "description": "Produkter eid av innlogget leverandør"
+    },
+    {
+      "name": "Kontaktpunkter",
+      "description": "Kontaktpunkter (epost/telefon) for produkter"
+    },
+    {
+      "name": "Selvdeklareringer",
+      "description": "Selvdeklareringer for innlogget leverandør"
+    }
+  ],
+  "paths": {
+    "/leverandorportal/api/v1/leverandor/meg": {
+      "get": {
+        "summary": "Hent leverandørrad for orgnr i token",
+        "operationId": "hentMeg",
+        "tags": [
+          "Leverandor"
+        ],
+        "responses": {
+          "200": {
+            "description": "Leverandørrad",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Leverandor"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Leverandør ikke registrert"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/leverandorportal/api/v1/leverandor/registrer": {
+      "post": {
+        "summary": "Idempotent selvregistrering",
+        "operationId": "registrer",
+        "tags": [
+          "Leverandor"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegistrerLeverandorBody"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Registrert — returnerer ny eller eksisterende leverandør",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Leverandor"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/leverandorportal/api/v1/produkter/mine": {
+      "get": {
+        "summary": "Liste produkter for innlogget leverandørs orgnr",
+        "operationId": "hentMineProdukter",
+        "tags": [
+          "Produkter"
+        ],
+        "responses": {
+          "200": {
+            "description": "Liste over produkter",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Produkt"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/leverandorportal/api/v1/produktkategorier": {
+      "get": {
+        "summary": "Liste produktkategorier å registrere produkt under",
+        "operationId": "hentProduktkategorier",
+        "tags": [
+          "Produkter"
+        ],
+        "responses": {
+          "200": {
+            "description": "Liste over produktkategorier",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Produktkategori"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/leverandorportal/api/v1/produkter": {
+      "post": {
+        "summary": "Opprett nytt produkt",
+        "operationId": "opprettProdukt",
+        "tags": [
+          "Produkter"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OpprettProduktBody"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Produkt opprettet",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Produkt"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/leverandorportal/api/v1/produkter/{produktId}": {
+      "put": {
+        "summary": "Oppdater produkt",
+        "operationId": "oppdaterProdukt",
+        "tags": [
+          "Produkter"
+        ],
+        "parameters": [
+          {
+            "name": "produktId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OpprettProduktBody"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Oppdatert",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Produkt"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Caller eier ikke produktet"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/leverandorportal/api/v1/produkter/{produktId}/kontaktpunkter": {
+      "post": {
+        "summary": "Legg til kontaktpunkt på produkt",
+        "operationId": "opprettKontaktpunkt",
+        "tags": [
+          "Kontaktpunkter"
+        ],
+        "parameters": [
+          {
+            "name": "produktId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/KontaktpunktInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Opprettet",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Kontaktpunkt"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Caller eier ikke produktet"
+          },
+          "404": {
+            "description": "Produkt ikke funnet"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/leverandorportal/api/v1/produkter/{produktId}/selvdeklarering": {
+      "post": {
+        "summary": "Start selvdeklarering for produkt",
+        "operationId": "startSelvdeklarering",
+        "tags": [
+          "Selvdeklareringer"
+        ],
+        "parameters": [
+          {
+            "name": "produktId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "kravspesifikasjonId",
+            "in": "query",
+            "required": false,
+            "description": "UUID for kravspesifikasjon som skal brukes for innleveringen. Må oppgis til SD er implementert med maskintoken-tilgang til kravspek-oppslag (styring Q6/§7).",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Selvdeklarering startet",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InnlevertOversikt"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Ugyldig forespørsel — kravspesifikasjonId mangler eller produkt har ingen klassifisering"
+          },
+          "403": {
+            "description": "Caller eier ikke produktet eller mangler Altinn-rolle"
+          },
+          "501": {
+            "description": "Ikke implementert enda (feature-flag av)"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/leverandorportal/api/v1/kontaktpunkter/{kontaktpunktId}": {
+      "put": {
+        "summary": "Oppdater eksisterende kontaktpunkt (ikke støttet i v1)",
+        "operationId": "oppdaterKontaktpunkt",
+        "tags": [
+          "Kontaktpunkter"
+        ],
+        "parameters": [
+          {
+            "name": "kontaktpunktId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/KontaktpunktInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "501": {
+            "description": "Ikke støttet før eierskap kan verifiseres"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/leverandorportal/api/v1/selvdeklareringer/mine": {
+      "get": {
+        "summary": "Liste selvdeklareringer for innlogget leverandør",
+        "operationId": "hentMineSelvdeklareringer",
+        "tags": [
+          "Selvdeklareringer"
+        ],
+        "responses": {
+          "200": {
+            "description": "Liste over selvdeklareringer",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/InnlevertOversikt"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Leverandør ikke registrert"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    },
+    "schemas": {
+      "Leverandor": {
+        "type": "object",
+        "required": [
+          "leverandoerId",
+          "organisasjonsnummer",
+          "navn"
+        ],
+        "properties": {
+          "leverandoerId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "organisasjonsnummer": {
+            "type": "string"
+          },
+          "navn": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          },
+          "nettsted": {
+            "type": "string",
+            "format": "uri",
+            "pattern": "^https://[^\\s]+$",
+            "maxLength": 500,
+            "nullable": true
+          }
+        }
+      },
+      "RegistrerLeverandorBody": {
+        "type": "object",
+        "required": [
+          "navn"
+        ],
+        "properties": {
+          "navn": {
+            "type": "string"
+          },
+          "nettsted": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
+      "Produkt": {
+        "type": "object",
+        "required": [
+          "produktId",
+          "navn",
+          "leverandoerId",
+          "leverandoerOrgnr"
+        ],
+        "properties": {
+          "produktId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "navn": {
+            "type": "string"
+          },
+          "beskrivelse": {
+            "type": "string",
+            "nullable": true
+          },
+          "leverandoerId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "leverandoerOrgnr": {
+            "type": "string"
+          },
+          "klassifisering": {
+            "$ref": "#/components/schemas/Klassifisering",
+            "nullable": true
+          },
+          "webadresse": {
+            "type": "string",
+            "format": "uri",
+            "nullable": true
+          },
+          "kildeKode": {
+            "type": "string",
+            "format": "uri",
+            "nullable": true
+          }
+        }
+      },
+      "OpprettProduktBody": {
+        "type": "object",
+        "required": [
+          "navn"
+        ],
+        "properties": {
+          "navn": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          },
+          "beskrivelse": {
+            "type": "string",
+            "maxLength": 2000,
+            "nullable": true
+          },
+          "produktKategoriId": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "klassifisering": {
+            "$ref": "#/components/schemas/Klassifisering",
+            "nullable": true
+          },
+          "webadresse": {
+            "type": "string",
+            "format": "uri",
+            "maxLength": 255,
+            "nullable": true,
+            "description": "Kun http eller https. Systemkatalog lagrer feltet som VARCHAR(255)."
+          },
+          "kildeKode": {
+            "type": "string",
+            "format": "uri",
+            "maxLength": 255,
+            "nullable": true,
+            "description": "Kun http eller https. Systemkatalog lagrer feltet som VARCHAR(255)."
+          }
+        }
+      },
+      "Produktkategori": {
+        "type": "object",
+        "required": [
+          "id",
+          "navn"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "navn": {
+            "type": "string"
+          },
+          "beskrivelse": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
+      "Klassifisering": {
+        "type": "object",
+        "required": [
+          "listeKilde",
+          "kode"
+        ],
+        "properties": {
+          "listeKilde": {
+            "type": "string"
+          },
+          "kode": {
+            "type": "string"
+          }
+        }
+      },
+      "KontaktpunktType": {
+        "type": "string",
+        "enum": [
+          "EPOST",
+          "TELEFON"
+        ]
+      },
+      "KontaktpunktInput": {
+        "type": "object",
+        "required": [
+          "type",
+          "navn",
+          "verdi"
+        ],
+        "properties": {
+          "type": {
+            "$ref": "#/components/schemas/KontaktpunktType"
+          },
+          "navn": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 320
+          },
+          "verdi": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 320
+          },
+          "beskrivelse": {
+            "type": "string",
+            "maxLength": 500,
+            "nullable": true
+          },
+          "formaalKoder": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Kontaktformål-koder. Valgfri; tom liste hvis utelatt."
+          }
+        }
+      },
+      "Kontaktpunkt": {
+        "type": "object",
+        "required": [
+          "kontaktpunktId",
+          "produktId",
+          "type",
+          "navn",
+          "verdi"
+        ],
+        "properties": {
+          "kontaktpunktId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "produktId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "type": {
+            "$ref": "#/components/schemas/KontaktpunktType"
+          },
+          "navn": {
+            "type": "string"
+          },
+          "verdi": {
+            "type": "string"
+          },
+          "beskrivelse": {
+            "type": "string",
+            "nullable": true
+          },
+          "formaalIds": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "Resolvert fra formaalKoder i KontaktpunktInput."
+          }
+        }
+      },
+      "InnlevertOversikt": {
+        "type": "object",
+        "required": [
+          "id",
+          "versjon",
+          "produktId",
+          "leverandorId",
+          "status"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "selvdeklareringId": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true,
+            "description": "Null for kravspesifikasjonsbaserte innleveringer — Selvdeklarering setter ikke feltet på den stien. Bruk kravspesifikasjonId for å navigere videre."
+          },
+          "kravspesifikasjonId": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true,
+            "description": "Null for eldre innleveringer fra før kravspesifikasjonsstien. Nøyaktig én av selvdeklareringId og kravspesifikasjonId er satt."
+          },
+          "versjon": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "produktId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "leverandorId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "status": {
+            "type": "string"
+          },
+          "innlevert": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "opprettet": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true,
+            "description": "Kan mangle: Selvdeklarering oppgir feltet som valgfritt."
+          },
+          "oppdatert": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true,
+            "description": "Alltid null i dag — Selvdeklarering har ikke noe oppdatert-tidspunkt på innleveringsoversikten. Beholdt for bakoverkompatibilitet."
+          }
+        }
+      }
+    }
+  }
+}
