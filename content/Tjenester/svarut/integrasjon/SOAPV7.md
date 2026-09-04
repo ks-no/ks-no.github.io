@@ -5,7 +5,7 @@ aliases: [/svarut/integrasjon/ForsendelseServiceV7, /tjenester/svarut/integrasjo
 ---
 
 {{% notice style="note" title="Viktig informasjon" %}}
-Vi avvikler støtte for alle gjenværende SOAP-versjoner og REST v1 1.1.2027, les mer [her](https://ksdigital.no/2026/01/13/avvikling-av-soap-og-rest-v-1-api-for-svarut/).
+Vi avvikler støtte for alle gjenværende SOAP-versjoner og REST v1 i 2027. SOAP-versjonene har fått sluttdato 1.1.27, mens REST v1 blir avviklet 31.7.2027, [les mer her](https://ksdigital.no/2026/01/13/avvikling-av-soap-og-rest-v-1-api-for-svarut/).
 
 Vi har også lagt til støtte for å automatisk opprette integrasjoner som kan brukes for kall til REST v2/v3 - du kan lese mer om det [her](/svarut/api/avvikling-api).
 {{% /notice %}}

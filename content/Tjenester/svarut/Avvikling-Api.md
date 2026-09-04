@@ -4,7 +4,7 @@ aliases: [/tjenester/svarut/api/avvikling-api, /svarut/api/avvikling-api]
 ---
 
 ## Kort beskrivelse
-Støtte for SOAP og REST v1 avvikles 1.1.2027. Les mer her: [Avvikling av SOAP- og REST v1-API for SvarUt](https://ksdigital.no/2026/01/13/avvikling-av-soap-og-rest-v-1-api-for-svarut/).
+Sluttdato for støtte for SOAP og REST v1 er satt til 1.1.2027 for SOAP og 31.7.2027 for REST v1. Les mer her: [Avvikling av SOAP- og REST v1-API for SvarUt](https://ksdigital.no/2026/01/13/avvikling-av-soap-og-rest-v-1-api-for-svarut/).
 
 For å gjøre overgangen enklere tilbyr vi et migreringsendepunkt. Endepunktet lar deg bruke eksisterende BasicAuth-tilgang (SOAP/REST v1) for å opprette en ny Fiks-integrasjon som kan brukes videre mot REST v2/v3.
 
