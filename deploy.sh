@@ -11,9 +11,6 @@ cd ..
 # Build the project.
 ./hugo.sh --cleanDestinationDir
 
-# Ensure GitHub Pages does not ignore underscore-prefixed folders.
-touch public/.nojekyll
-
 # Go To Public 
 cd public
 
