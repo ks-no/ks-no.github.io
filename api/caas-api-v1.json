@@ -36,21 +36,50 @@
     }
   ],
   "paths": {
-    "/caas/api/v1/integrasjon": {
+    "/caas/api/v1/konfigurasjon/{fiksOrgId}/tjeneste/{tjeneste}": {
       "get": {
         "tags": [
           "caas"
         ],
-        "summary": "Hent service informasjon for integrasjoner",
-        "description": "Standard service informasjon som kun skal være tilgjengelig for integrasjoner",
-        "operationId": "integrasjon",
+        "summary": "Hent konfigurasjon for en tjeneste",
+        "description": "Henter lagret konfigurasjon for en gitt tjeneste under en FIKS-organisasjon",
+        "operationId": "hentKonfigurasjon",
+        "parameters": [
+          {
+            "name": "fiksOrgId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "tjeneste",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
         "responses": {
           "200": {
-            "description": "Informasjon om tjeneste",
+            "description": "Konfigurasjon funnet",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ServiceInformation"
+                  "$ref": "#/components/schemas/Konfigurasjon"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Ukjent tjeneste",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage"
                 }
               }
             }
@@ -64,31 +93,9 @@
                 }
               }
             }
-          }
-        }
-      }
-    },
-    "/caas/api/v1/integrasjonPerson": {
-      "get": {
-        "tags": [
-          "caas"
-        ],
-        "summary": "Hent service informasjon for integrasjon som representerer en person",
-        "description": "Standard service informasjon som kun skal være tilgjengelig for integrasjon som representerer en person",
-        "operationId": "integrasjonPerson",
-        "responses": {
-          "200": {
-            "description": "Informasjon om tjeneste",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ServiceInformation"
-                }
-              }
-            }
           },
-          "401": {
-            "description": "Ikke autorisert",
+          "404": {
+            "description": "Ingen konfigurasjon funnet for denne tjenesten",
             "content": {
               "application/json": {
                 "schema": {
@@ -98,55 +105,53 @@
             }
           }
         }
-      }
-    },
-    "/caas/api/v1/person": {
-      "get": {
+      },
+      "post": {
         "tags": [
           "caas"
         ],
-        "summary": "Hent service informasjon for personer",
-        "description": "Standard service informasjon som kun skal være tilgjengelig for personer",
-        "operationId": "person",
-        "responses": {
-          "200": {
-            "description": "Informasjon om tjeneste",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ServiceInformation"
-                }
-              }
+        "summary": "Sett konfigurasjon for en tjeneste",
+        "description": "Setter (oppretter eller overskriver) konfigurasjon for en gitt tjeneste under en FIKS-organisasjon. Payload valideres ikke i denne omgangen.",
+        "operationId": "settKonfigurasjon",
+        "parameters": [
+          {
+            "name": "fiksOrgId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
             }
           },
-          "401": {
-            "description": "Ikke autorisert",
+          {
+            "name": "tjeneste",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Konfigurasjon"
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": "Konfigurasjon lagret"
+          },
+          "400": {
+            "description": "Ukjent tjeneste",
             "content": {
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/ErrorMessage"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/caas/api/v1": {
-      "get": {
-        "tags": [
-          "caas"
-        ],
-        "summary": "Hent standard service informasjon",
-        "description": "Standard service informasjon som skal være tilgjengelig for ALLE med gyldig token",
-        "operationId": "standard",
-        "responses": {
-          "200": {
-            "description": "Informasjon om tjeneste",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ServiceInformation"
                 }
               }
             }
@@ -196,31 +201,10 @@
           }
         }
       },
-      "ServiceInformation": {
+      "Konfigurasjon": {
+        "description": "Vilkårlig JSON-struktur. Valideres ikke i denne omgangen — vil senere kunne styres av et schema per tjeneste.",
         "type": "object",
-        "properties": {
-          "apiName": {
-            "type": "string"
-          },
-          "apiVersion": {
-            "type": "string"
-          },
-          "authorizationDescription": {
-            "type": "string",
-            "enum": [
-              "ALLE",
-              "INTEGRASJON",
-              "PERSON",
-              "PERSON_INTEGRASJON",
-              "ORG_ADMIN"
-            ]
-          }
-        },
-        "required": [
-          "apiName",
-          "apiVersion",
-          "authorizationDescription"
-        ]
+        "additionalProperties": true
       }
     }
   }
