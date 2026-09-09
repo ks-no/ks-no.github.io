@@ -41,6 +41,10 @@
     {
       "name": "Intern",
       "description": "Interne endepunkter for tjeneste-til-tjeneste-kall (integrasjonsautentisering)"
+    },
+    {
+      "name": "Spørsmål",
+      "description": "Leseoppslag på enkeltspørsmål i en skjemaversjon"
     }
   ],
   "paths": {
@@ -1365,6 +1369,156 @@
           }
         ]
       }
+    },
+    "/sporsmalsbank/api/v1/sporsmal": {
+      "get": {
+        "summary": "Søk i spørsmålene i en skjemaversjon",
+        "description": "Paginert liste over spørsmålene i en skjemaversjon, med valgfri filtrering. Filtrene kombineres med AND.",
+        "operationId": "sokSporsmal",
+        "tags": [
+          "Spørsmål"
+        ],
+        "parameters": [
+          {
+            "name": "versjonId",
+            "in": "query",
+            "required": false,
+            "description": "Skjemaversjonen spørsmålet skal leses fra. Utelates den, brukes publisert versjon.",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "kravomrade",
+            "in": "query",
+            "required": false,
+            "description": "Begrens til ett kravområde",
+            "schema": {
+              "$ref": "#/components/schemas/Kravomrade"
+            }
+          },
+          {
+            "name": "kategoriKode",
+            "in": "query",
+            "required": false,
+            "description": "Begrens til én kategorikode",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "q",
+            "in": "query",
+            "required": false,
+            "description": "Fritekstsøk i spørsmålstekst og kort beskrivelse, uavhengig av store/små bokstaver",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "side",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "default": 0
+            }
+          },
+          {
+            "name": "antallPerSide",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "default": 20
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Paginert liste over spørsmål",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SideSporsmal"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Skjemaversjonen finnes ikke",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Feilmelding"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/sporsmalsbank/api/v1/sporsmal/{id}": {
+      "get": {
+        "summary": "Hent ett spørsmål",
+        "description": "Slår opp spørsmålet i en skjemaversjon. id er bare unik innenfor én versjon, så oppslaget er alltid relativt til en versjon — publisert versjon om ingen oppgis.",
+        "operationId": "hentSporsmal",
+        "tags": [
+          "Spørsmål"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Spørsmåls-ID slik den står i skjemaversjonen",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "versjonId",
+            "in": "query",
+            "required": false,
+            "description": "Skjemaversjonen spørsmålet skal leses fra. Utelates den, brukes publisert versjon.",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Spørsmålet",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Sporsmal"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Spørsmålet eller skjemaversjonen finnes ikke",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Feilmelding"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
     }
   },
   "components": {
@@ -1402,11 +1556,6 @@
           },
           "status": {
             "$ref": "#/components/schemas/VersjonStatus"
-          },
-          "selvdeklareringstype": {
-            "type": "string",
-            "maxLength": 200,
-            "description": "Identifier for selvdeklareringstypen dette skjemaet er gjeldende for (AC #7). Eksempel: \"digitalt-tilsyn\". Livssyklus følger VersjonStatus (UTKAST/PUBLISERT/ARKIVERT). Null = ikke klassifisert (eldre data).\n"
           },
           "pakker": {
             "type": "array",
@@ -1474,10 +1623,6 @@
           "status": {
             "$ref": "#/components/schemas/VersjonStatus"
           },
-          "selvdeklareringstype": {
-            "type": "string",
-            "description": "Identifier for selvdeklareringstypen dette skjemaet er gjeldende for"
-          },
           "opprettet": {
             "type": "string",
             "format": "date-time"
@@ -1497,7 +1642,13 @@
         "properties": {
           "id": {
             "type": "string",
-            "description": "Unik ID for spørsmålet innenfor spørreskjemaet"
+            "description": "Unik ID for spørsmålet innenfor spørreskjemaet. Kommer fra importen og kopieres verbatim ved klon, så samme verdi kan finnes i flere skjemaversjoner uten å bety samme spørsmål. Bruk sporsmalUuid for å referere til et spørsmål på tvers av versjoner."
+          },
+          "sporsmalUuid": {
+            "type": "string",
+            "format": "uuid",
+            "readOnly": true,
+            "description": "Stabil identitet for spørsmålet, tildelt av tjenesten ved første lagring og bevart gjennom klon. Settes ikke av klienten — sendes den inn, vinner den lagrede verdien. Kan være null for spørsmål lagret før feltet fantes; de får en UUID neste gang skjemaversjonen skrives."
           },
           "tekst": {
             "type": "string",
@@ -1682,11 +1833,6 @@
             "type": "string",
             "format": "uuid"
           },
-          "erGrunnpakke": {
-            "type": "boolean",
-            "default": false,
-            "description": "Om dette er en grunnpakke som er obligatorisk for alle leverandører"
-          },
           "pakkeType": {
             "$ref": "#/components/schemas/PakkeType",
             "description": "Klassifisering av pakken — MINIMUMSKRAV (grønn/gul/rød-evaluering) eller EVALUERINGSKRAV (poengbasert). Null for eldre pakker."
@@ -1709,13 +1855,6 @@
             "nullable": true,
             "readOnly": true,
             "description": "Om pakketypen støtter automatisk skåring"
-          },
-          "selvdeklareringstyper": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            },
-            "description": "Selvdeklareringstyper pakken er bundet til (AC #7, #13, #14). MINIMUMSKRAV-pakker kan være FELLES — bundet til flere typer uten å kopiere spørsmål. Tom liste = ikke klassifisert (eldre data).\n"
           },
           "innhold": {
             "$ref": "#/components/schemas/PakkeInnhold"
@@ -1756,9 +1895,6 @@
             "type": "string",
             "format": "uuid"
           },
-          "erGrunnpakke": {
-            "type": "boolean"
-          },
           "pakkeType": {
             "$ref": "#/components/schemas/PakkeType"
           },
@@ -1780,13 +1916,6 @@
             "nullable": true,
             "readOnly": true,
             "description": "Om pakketypen støtter automatisk skåring"
-          },
-          "selvdeklareringstyper": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            },
-            "description": "Selvdeklareringstyper pakken er bundet til"
           },
           "antallSporsmal": {
             "type": "integer"
@@ -2194,6 +2323,27 @@
           "aktiv": {
             "type": "boolean",
             "default": true
+          }
+        }
+      },
+      "SideSporsmal": {
+        "type": "object",
+        "properties": {
+          "innhold": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Sporsmal"
+            }
+          },
+          "side": {
+            "type": "integer"
+          },
+          "antallPerSide": {
+            "type": "integer"
+          },
+          "totaltAntall": {
+            "type": "integer",
+            "format": "int64"
           }
         }
       }
