@@ -1,68 +1,87 @@
 {
-  "openapi" : "3.0.1",
-  "info" : {
-    "title" : "KS SvarUt: Status API",
-    "description" : "API for henting av status for forsendelser",
-    "contact" : {
-      "name" : "Fiks-brukerstøtte",
-      "url" : "https://ks-no.github.io/",
-      "email" : "fiks@ksdigital.no"
+  "openapi": "3.0.1",
+  "info": {
+    "title": "KS SvarUt: Status API",
+    "description": "API for henting av status for forsendelser",
+    "license": {
+      "name": "MIT",
+      "url": "https://opensource.org/licenses/MIT"
     },
-    "version" : "v2"
+    "contact": {
+      "name": "Fiks-brukerstøtte",
+      "url": "https://ks-no.github.io/",
+      "email": "fiks@ksdigital.no"
+    },
+    "version": "v2"
   },
-  "servers" : [ {
-    "url" : "https://test.svarut.ks.no/api",
-    "description" : "SvarUt testmiljø"
-  }, {
-    "url" : "https://svarut.ks.no/api",
-    "description" : "SvarUt produksjonsmiljø"
-  } ],
-  "tags" : [ {
-    "name" : "Status",
-    "description" : "API for henting av status for forsendelser"
-  } ],
-  "paths" : {
-    "/v2/kontoer/{kontoId}/forsendelser/status-sok" : {
-      "post" : {
-        "tags" : [ "Status" ],
-        "description" : "Henter status for forsendelse",
-        "operationId" : "hentStatuser",
-        "parameters" : [ {
-          "name" : "kontoId",
-          "in" : "path",
-          "required" : true,
-          "schema" : {
-            "type" : "string",
-            "format" : "uuid"
+  "servers": [
+    {
+      "url": "https://test.svarut.ks.no/api",
+      "description": "SvarUt testmiljø"
+    },
+    {
+      "url": "https://svarut.ks.no/api",
+      "description": "SvarUt produksjonsmiljø"
+    }
+  ],
+  "security": [
+    {
+      "bearerAuth": []
+    }
+  ],
+  "tags": [
+    {
+      "name": "Status",
+      "description": "API for henting av status for forsendelser"
+    }
+  ],
+  "paths": {
+    "/v2/kontoer/{kontoId}/forsendelser/status-sok": {
+      "post": {
+        "tags": [
+          "Status"
+        ],
+        "summary": "Hent status for forsendelser",
+        "description": "Henter status for forsendelse",
+        "operationId": "hentStatuser",
+        "parameters": [
+          {
+            "name": "kontoId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
           }
-        } ],
-        "requestBody" : {
-          "content" : {
-            "*/*" : {
-              "schema" : {
-                "$ref" : "#/components/schemas/StatusSok"
+        ],
+        "requestBody": {
+          "content": {
+            "*/*": {
+              "schema": {
+                "$ref": "#/components/schemas/StatusSok"
               }
             }
           },
-          "required" : true
+          "required": true
         },
-        "responses" : {
-          "200" : {
-            "description" : "Status for forsendelser",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/ForsendelseStatuser"
+        "responses": {
+          "200": {
+            "description": "Status for forsendelser",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForsendelseStatuser"
                 }
               }
             }
           },
-          "default" : {
-            "description" : "Feil",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/ErrorMessage"
+          "default": {
+            "description": "Feil",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage"
                 }
               }
             }
@@ -71,94 +90,123 @@
       }
     }
   },
-  "components" : {
-    "schemas" : {
-      "ForsendelseStatus" : {
-        "required" : [ "id", "sisteStatusEndring", "status" ],
-        "type" : "object",
-        "properties" : {
-          "id" : {
-            "type" : "string",
-            "description" : "Forsendelse id denne statusen gjelder",
-            "format" : "uuid",
-            "example" : "d6b23522-ddf3-462a-8140-16e59e1f476d"
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    },
+    "schemas": {
+      "ForsendelseStatus": {
+        "required": [
+          "id",
+          "sisteStatusEndring",
+          "status"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Forsendelse id denne statusen gjelder",
+            "format": "uuid",
+            "example": "d6b23522-ddf3-462a-8140-16e59e1f476d"
           },
-          "sisteStatusEndring" : {
-            "type" : "string",
-            "description" : "Tidspunkt for siste endring av status",
-            "format" : "date-time",
-            "example" : "2023-01-01T11:33:55.008+01:00"
+          "sisteStatusEndring": {
+            "type": "string",
+            "description": "Tidspunkt for siste endring av status",
+            "format": "date-time",
+            "example": "2023-01-01T11:33:55.008+01:00"
           },
-          "status" : {
-            "type" : "string",
-            "description" : "Gyldige statuser for en forsendelse",
-            "example" : "LEST",
-            "enum" : [ "MOTTATT", "AKSEPTERT", "AVVIST", "VARSLET", "LEST", "SENDT_PRINT", "PRINTET", "MANUELT_HANDTERT", "SENDT_DIGITALT", "SENDT_SDP", "LEVERT_SDP", "KLAR_FOR_MOTTAK", "IKKE_LEVERT" ]
+          "status": {
+            "type": "string",
+            "description": "Gyldige statuser for en forsendelse",
+            "example": "LEST",
+            "enum": [
+              "MOTTATT",
+              "AKSEPTERT",
+              "AVVIST",
+              "VARSLET",
+              "LEST",
+              "SENDT_PRINT",
+              "PRINTET",
+              "MANUELT_HANDTERT",
+              "SENDT_DIGITALT",
+              "SENDT_SDP",
+              "LEVERT_SDP",
+              "KLAR_FOR_MOTTAK",
+              "IKKE_LEVERT"
+            ]
           }
         },
-        "description" : "Liste over status for hver forsendelse"
+        "description": "Liste over status for hver forsendelse"
       },
-      "ForsendelseStatuser" : {
-        "required" : [ "statuser" ],
-        "type" : "object",
-        "properties" : {
-          "statuser" : {
-            "type" : "array",
-            "description" : "Liste over status for hver forsendelse",
-            "items" : {
-              "$ref" : "#/components/schemas/ForsendelseStatus"
+      "ForsendelseStatuser": {
+        "required": [
+          "statuser"
+        ],
+        "type": "object",
+        "properties": {
+          "statuser": {
+            "type": "array",
+            "description": "Liste over status for hver forsendelse",
+            "items": {
+              "$ref": "#/components/schemas/ForsendelseStatus"
             }
           }
         }
       },
-      "ErrorMessage" : {
-        "type" : "object",
-        "properties" : {
-          "timestamp" : {
-            "type" : "integer",
-            "format" : "int64"
+      "ErrorMessage": {
+        "type": "object",
+        "properties": {
+          "timestamp": {
+            "type": "integer",
+            "format": "int64"
           },
-          "status" : {
-            "type" : "integer",
-            "format" : "int32"
+          "status": {
+            "type": "integer",
+            "format": "int32"
           },
-          "error" : {
-            "type" : "string"
+          "error": {
+            "type": "string"
           },
-          "errorId" : {
-            "type" : "string",
-            "format" : "uuid"
+          "errorId": {
+            "type": "string",
+            "format": "uuid"
           },
-          "path" : {
-            "type" : "string"
+          "path": {
+            "type": "string"
           },
-          "originalPath" : {
-            "type" : "string"
+          "originalPath": {
+            "type": "string"
           },
-          "message" : {
-            "type" : "string"
+          "message": {
+            "type": "string"
           },
-          "errorCode" : {
-            "type" : "string"
+          "errorCode": {
+            "type": "string"
           },
-          "errorJson" : {
-            "type" : "string"
+          "errorJson": {
+            "type": "string"
           }
         }
       },
-      "StatusSok" : {
-        "required" : [ "forsendelseIds" ],
-        "type" : "object",
-        "properties" : {
-          "forsendelseIds" : {
-            "maxItems" : 1000,
-            "minItems" : 1,
-            "type" : "array",
-            "description" : "Liste med forsendelseids man ønsker å søke etter",
-            "items" : {
-              "type" : "string",
-              "description" : "Liste med forsendelseids man ønsker å søke etter",
-              "format" : "uuid"
+      "StatusSok": {
+        "required": [
+          "forsendelseIds"
+        ],
+        "type": "object",
+        "properties": {
+          "forsendelseIds": {
+            "maxItems": 1000,
+            "minItems": 1,
+            "type": "array",
+            "description": "Liste med forsendelseids man ønsker å søke etter",
+            "items": {
+              "type": "string",
+              "description": "Liste med forsendelseids man ønsker å søke etter",
+              "format": "uuid"
             }
           }
         }
