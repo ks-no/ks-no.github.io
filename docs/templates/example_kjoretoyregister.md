@@ -1,5 +1,5 @@
 ---
-title: Fiks kjøretøyregister
+title: Fiks Kjøretøyregister
 date: 2019-12-11
 aliases: [/fiks-platform/tjenester/kjoretoyregister, /fiks-plattform/tjenester/kjoretoyregister]
 ---
@@ -16,11 +16,6 @@ Tjenesten tilbyr:
 - Eierforhold på nåværende eller historisk tidspunkt
 - Kjøretøysøk på eiernavn
 
-### Når passer ikke denne tjenesten?
-
-- Trenger du sanntids-strøm av endringer i kjøretøyregisteret – bruk SVVs egne event-API-er direkte.
-- Trenger du tilgang uten Fiks-organisasjon – bruk SVVs åpne API-er der det er tilgjengelig.
-
 API-spesifikasjon: [Swagger / OpenAPI (SVV)](https://autosys-kjoretoy-api.atlas.vegvesen.no/swagger-ui/index-akf.html)
 
 ## Kom i gang
@@ -30,7 +25,7 @@ Tjenestespesifikke forutsetninger:
 1. Tjenesten må aktiveres via [Fiks Konfigurasjon](https://forvaltning.fiks.ks.no/fiks-konfigurasjon/tjenester).
 2. Integrasjonen må gis tilgang til tjenesten via [Fiks Konfigurasjon](https://forvaltning.fiks.ks.no/fiks-konfigurasjon/tjenester).
 
-Fiks Kjøretøyregister er en ren maskin-til-maskin-tjeneste. Det finnes per i dag ikke noe administrativt grensesnitt for kommuneansatte.
+Fiks Kjøretøyregister er en ren maskin-til-maskin-tjeneste. Det finnes per i dag ikke noe administrativt grensesnitt for kommuneansatte. På sikt vil det bli vurdert å utvikle et administrativt grensesnitt for kommuneansatte.
 
 ## Beskrivelse av tjenesten
 
@@ -52,32 +47,10 @@ Fiks Kjøretøyregister er en ren maskin-til-maskin-tjeneste. Det finnes per i d
 
 ### Tjenestespesifikke regler
 
-- API-kall følger [SVVs Swagger-spesifikasjon](https://autosys-kjoretoy-api.atlas.vegvesen.no/swagger-ui/index-akf.html) med følgende avvik:
-  - Autorisering skjer via Fiks-plattformen (ikke direkte mot SVV). Se [Felles/integrasjoner]({{< ref "integrasjoner.md" >}}).
-  - `fiksOrgId` blir en del av URL-stien for alle forespørsler.
+API-kall følger [SVVs Swagger-spesifikasjon](https://autosys-kjoretoy-api.atlas.vegvesen.no/swagger-ui/index-akf.html) med følgende avvik:
 
-- **Base-URL prod:** `https://api.fiks.ks.no/kjoretoyregister/api/{fiksOrgId}`
-- **Base-URL test:** `https://api.fiks.test.ks.no/kjoretoyregister/api/{fiksOrgId}`
-
-Endepunkter relativt til base-URL:
-
-| Metode | Sti | Beskrivelse |
-|--------|-----|-------------|
-| POST | `/rest/distribusjon/kjoretoy/v2.0/bulk/kjennemerke` | Oppslag på kjennemerke(r) |
-| POST | `/rest/distribusjon/kjoretoy/v2.0/bulk/kuid` | Oppslag på kuid(er) |
-| GET  | `/rest/distribusjon/kjoretoy/v2.0/bulk/understellsnummer/{understellsnummer}` | Oppslag på understellsnummer |
-| GET  | `/rest/distribusjon/kjoretoy/v2.0/sok/eiernavn?navn={navn}` | Søk på eiernavn |
-
-**Eksempel: oppslag på kjennemerke med historisk dato:**
-
-```json
-[
-  {
-    "kjennemerke": "BR12345",
-    "dtg": "2018-11-15T23:00:00.000+01:00"
-  }
-]
-```
+- Autorisering skjer via Fiks-plattformen (ikke direkte mot SVV) med et access token fra Maskinporten basert på organisasjonens virksomhetssertifikat. Token må ha scope `ks:fiks`, og headere for `IntegrasjonId` og `IntegrasjonPassord` må settes på requesten. Se [Felles/integrasjoner]({{% ref "integrasjoner.md" %}}) for detaljer.
+- `fiksOrgId` blir en del av URL-stien for alle forespørsler.
 
 ### Testdata
 
@@ -91,20 +64,40 @@ Endepunkter, request/response-skjemaer og statuskoder er dokumentert i SVVs Swag
 
 [Api-spec (SVV Autosys)](https://autosys-kjoretoy-api.atlas.vegvesen.no/swagger-ui/index-akf.html)
 
-Fiks-spesifikke avvik fra SVVs spec:
-- Alle URL-er prefixes med `https://api.fiks.ks.no/kjoretoyregister/api/{fiksOrgId}`
-- Autentisering skjer mot Fiks, ikke mot SVV
+### Miljøer og endepunkter
 
----
+**Base-URL per miljø:**
+- **Test:** `https://api.fiks.test.ks.no/kjoretoyregister/api/{fiksOrgId}`
+- **Produksjon:** `https://api.fiks.ks.no/kjoretoyregister/api/{fiksOrgId}`
 
-## Relaterte tjenester
+Hvor `{fiksOrgId}` er ID-en til Fiks-organisasjonen spørringen gjøres på vegne av.
 
-- [Fiks Register – Folkeregisteret]({{< ref "folkeregister.md" >}}) – kan brukes for å slå opp eier basert på fødselsnummer
+### Endepunkter
+
+Endepunkter relativt til base-URL:
+
+| Metode | Sti | Beskrivelse |
+|--------|-----|-------------|
+| `POST` | `/rest/distribusjon/kjoretoy/v2.0/bulk/kjennemerke` | Oppslag på kjennemerke(r). Body inneholder en liste av kjennemerker. |
+| `POST` | `/rest/distribusjon/kjoretoy/v2.0/bulk/kuid` | Oppslag på kuid(er). Body inneholder en liste av kuider. |
+| `GET`  | `/rest/distribusjon/kjoretoy/v2.0/bulk/understellsnummer/{understellsnummer}` | Oppslag på understellsnummer |
+| `GET`  | `/rest/distribusjon/kjoretoy/v2.0/sok/eiernavn?navn={navn}` | Søk på eiernavn |
+
+**Eksempel: oppslag på kjennemerke med historisk dato:**
+
+```json
+[
+  {
+    "kjennemerke": "BR12345",
+    "dtg": "2018-11-15T23:00:00.000+01:00"
+  }
+]
+```
 
 ---
 
 ## Få hjelp
 
-{{< get-help email="fiks-utvikling@ksdigital.no" support_page="../../felles/support/" >}}
+{{< get-help email="fiks@ksdigital.no" support_page="/felles/support/" >}}
 
-*Feil returnert med `svvguid` i JSON: kontakt `api-kjoretoy@vegvesen.no` direkte.*
+*Feil returnert med `svvguid` i JSON fra SVV: kontakt `api-kjoretoy@vegvesen.no` direkte.*
