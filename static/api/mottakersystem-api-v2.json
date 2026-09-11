@@ -1,75 +1,96 @@
 {
-  "openapi" : "3.0.1",
-  "info" : {
-    "title" : "KS SvarUt: Mottakersystem-API",
-    "description" : "API henting av mottakersystem",
-    "contact" : {
-      "name" : "Fiks-brukerstøtte",
-      "url" : "https://ks-no.github.io/",
-      "email" : "fiks@ksdigital.no"
+  "openapi": "3.0.1",
+  "info": {
+    "title": "KS SvarUt: Mottakersystem-API",
+    "description": "API henting av mottakersystem",
+    "license": {
+      "name": "MIT",
+      "url": "https://opensource.org/licenses/MIT"
     },
-    "version" : "v2"
+    "contact": {
+      "name": "Fiks-brukerstøtte",
+      "url": "https://ks-no.github.io/",
+      "email": "fiks@ksdigital.no"
+    },
+    "version": "v2"
   },
-  "servers" : [ {
-    "url" : "https://test.svarut.ks.no/api",
-    "description" : "SvarUt testmiljø"
-  }, {
-    "url" : "https://svarut.ks.no/api",
-    "description" : "SvarUt produksjonsmiljø"
-  } ],
-  "tags" : [ {
-    "name" : "Mottakersystem",
-    "description" : "API henting av mottakersystem"
-  } ],
-  "paths" : {
-    "/v2/mottakersystem" : {
-      "get" : {
-        "tags" : [ "Mottakersystem" ],
-        "description" : "Henter mottakersystem tilknyttet et orgnummer",
-        "operationId" : "hentMottakersystem",
-        "parameters" : [ {
-          "name" : "organisasjonsnummer",
-          "in" : "query",
-          "schema" : {
-            "pattern" : "^[0-9]{9}$",
-            "type" : "string"
+  "servers": [
+    {
+      "url": "https://test.svarut.ks.no/api",
+      "description": "SvarUt testmiljø"
+    },
+    {
+      "url": "https://svarut.ks.no/api",
+      "description": "SvarUt produksjonsmiljø"
+    }
+  ],
+  "security": [
+    {
+      "bearerAuth": []
+    }
+  ],
+  "tags": [
+    {
+      "name": "Mottakersystem",
+      "description": "API henting av mottakersystem"
+    }
+  ],
+  "paths": {
+    "/v2/mottakersystem": {
+      "get": {
+        "tags": [
+          "Mottakersystem"
+        ],
+        "summary": "Hent mottakersystem",
+        "description": "Henter mottakersystem tilknyttet et orgnummer",
+        "operationId": "hentMottakersystem",
+        "parameters": [
+          {
+            "name": "organisasjonsnummer",
+            "in": "query",
+            "schema": {
+              "pattern": "^[0-9]{9}$",
+              "type": "string"
+            }
+          },
+          {
+            "name": "forsendelseType",
+            "in": "query",
+            "schema": {
+              "maxLength": 100,
+              "minLength": 1,
+              "pattern": "^[a-zA-ZæøåÆØÅ0-9]+(\\.[a-zA-ZæøåÆØÅ0-9]+)*$",
+              "type": "string"
+            }
+          },
+          {
+            "name": "niva",
+            "in": "query",
+            "schema": {
+              "maximum": 9,
+              "minimum": 0,
+              "type": "integer",
+              "format": "int32"
+            }
           }
-        }, {
-          "name" : "forsendelseType",
-          "in" : "query",
-          "schema" : {
-            "maxLength" : 100,
-            "minLength" : 1,
-            "pattern" : "^[a-zA-ZæøåÆØÅ0-9]+(\\.[a-zA-ZæøåÆØÅ0-9]+)*$",
-            "type" : "string"
-          }
-        }, {
-          "name" : "niva",
-          "in" : "query",
-          "schema" : {
-            "maximum" : 9,
-            "minimum" : 0,
-            "type" : "integer",
-            "format" : "int32"
-          }
-        } ],
-        "responses" : {
-          "200" : {
-            "description" : "Mottakersystem knyttet til orgnummer",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/Mottakersystemer"
+        ],
+        "responses": {
+          "200": {
+            "description": "Mottakersystem knyttet til orgnummer",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Mottakersystemer"
                 }
               }
             }
           },
-          "default" : {
-            "description" : "Feil",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/ErrorMessage"
+          "default": {
+            "description": "Feil",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage"
                 }
               }
             }
@@ -78,81 +99,96 @@
       }
     }
   },
-  "components" : {
-    "schemas" : {
-      "Mottakersystem" : {
-        "required" : [ "forsendelseType", "id", "navn", "niva", "organisasjonsnummer" ],
-        "type" : "object",
-        "properties" : {
-          "id" : {
-            "type" : "string",
-            "description" : "Mottakersystemets id"
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    },
+    "schemas": {
+      "Mottakersystem": {
+        "required": [
+          "forsendelseType",
+          "id",
+          "navn",
+          "niva",
+          "organisasjonsnummer"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Mottakersystemets id"
           },
-          "navn" : {
-            "type" : "string",
-            "description" : "Navn på mottakersystem"
+          "navn": {
+            "type": "string",
+            "description": "Navn på mottakersystem"
           },
-          "organisasjonsnummer" : {
-            "type" : "string",
-            "description" : "Organisasjonsnummer for denne registreringen"
+          "organisasjonsnummer": {
+            "type": "string",
+            "description": "Organisasjonsnummer for denne registreringen"
           },
-          "forsendelseType" : {
-            "type" : "string",
-            "description" : "Forsendelsestype for denne registreringen"
+          "forsendelseType": {
+            "type": "string",
+            "description": "Forsendelsestype for denne registreringen"
           },
-          "niva" : {
-            "type" : "integer",
-            "description" : "Sikkerhetsnivå for denne registreringen",
-            "format" : "int32"
+          "niva": {
+            "type": "integer",
+            "description": "Sikkerhetsnivå for denne registreringen",
+            "format": "int32"
           }
         },
-        "description" : "Liste med mottakersystemer"
+        "description": "Liste med mottakersystemer"
       },
-      "Mottakersystemer" : {
-        "required" : [ "mottakersystemer" ],
-        "type" : "object",
-        "properties" : {
-          "mottakersystemer" : {
-            "type" : "array",
-            "description" : "Liste med mottakersystemer",
-            "items" : {
-              "$ref" : "#/components/schemas/Mottakersystem"
+      "Mottakersystemer": {
+        "required": [
+          "mottakersystemer"
+        ],
+        "type": "object",
+        "properties": {
+          "mottakersystemer": {
+            "type": "array",
+            "description": "Liste med mottakersystemer",
+            "items": {
+              "$ref": "#/components/schemas/Mottakersystem"
             }
           }
         }
       },
-      "ErrorMessage" : {
-        "type" : "object",
-        "properties" : {
-          "timestamp" : {
-            "type" : "integer",
-            "format" : "int64"
+      "ErrorMessage": {
+        "type": "object",
+        "properties": {
+          "timestamp": {
+            "type": "integer",
+            "format": "int64"
           },
-          "status" : {
-            "type" : "integer",
-            "format" : "int32"
+          "status": {
+            "type": "integer",
+            "format": "int32"
           },
-          "error" : {
-            "type" : "string"
+          "error": {
+            "type": "string"
           },
-          "errorId" : {
-            "type" : "string",
-            "format" : "uuid"
+          "errorId": {
+            "type": "string",
+            "format": "uuid"
           },
-          "path" : {
-            "type" : "string"
+          "path": {
+            "type": "string"
           },
-          "originalPath" : {
-            "type" : "string"
+          "originalPath": {
+            "type": "string"
           },
-          "message" : {
-            "type" : "string"
+          "message": {
+            "type": "string"
           },
-          "errorCode" : {
-            "type" : "string"
+          "errorCode": {
+            "type": "string"
           },
-          "errorJson" : {
-            "type" : "string"
+          "errorJson": {
+            "type": "string"
           }
         }
       }
