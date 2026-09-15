@@ -23,7 +23,6 @@
       "url": "https://min.fiks.dev.ks.no",
       "description": "KS Min Kommune dev host"
     }
-
   ],
   "tags": [
     {
@@ -32,7 +31,7 @@
     }
   ],
   "paths": {
-    "/minkommune-barnevern-innbygger/api/v1/opprettEdialogSkjema": {
+    "/minkommune-barnevern-innbygger/api/v1/edialog": {
       "post": {
         "tags": [
           "Barnevern-innbygger"
@@ -44,15 +43,22 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/EdialogRequest"
+                "$ref": "#/components/schemas/OpprettEdialogSkjemaRequest"
               }
             }
           },
           "required": true
         },
         "responses": {
-          "201": {
-            "description": "Opprett mottaker"
+          "200": {
+            "description": "Opprett mottaker",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpprettEdialogSkjemaResponse"
+                }
+              }
+            }
           },
           "403": {
             "description": "Ingen tilgang",
@@ -86,22 +92,143 @@
           }
         }
       }
+    },
+    "/minkommune-barnevern-innbygger/api/v1/edialog/{skjemaId}": {
+      "put": {
+        "tags": [
+          "Barnevern-innbygger"
+        ],
+        "description": "Oppdater edialog-skjema",
+        "summary": "Oppdater edialog-skjema",
+        "operationId": "oppdaterEdialogskjema",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "skjemaId",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OppdaterEdialogSkjemaRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Oppdatert skjema"
+          },
+          "403": {
+            "description": "Ingen tilgang",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Ugyldig data for oppdatering av skjema",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Systemfeil",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/minkommune-barnevern-innbygger/api/v1/edialog/{skjemaId}/send": {
+      "post": {
+        "tags": [
+          "Barnevern-innbygger"
+        ],
+        "description": "Send edialog-skjema",
+        "summary": "Send edialog-skjema",
+        "operationId": "sendEdialogSkjema",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "skjemaId",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Sendt skjema"
+          },
+          "403": {
+            "description": "Ingen tilgang",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Ugyldig data for oppdatering av skjema",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Systemfeil",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
     "schemas": {
-      "EdialogRequest": {
+      "EdialogType": {
+        "type": "string",
+        "description": "Type av edialog",
+        "enum": ["POST", "SVAR"]
+      },
+      "OpprettEdialogSkjemaRequest": {
         "type": "object",
-        "required": ["melding", "edialogType", "dokumentId"],
+        "required": ["edialogType", "dokumentId"],
         "properties": {
-          "melding": {
-            "type": "string",
-            "description": "Innhold i edialog-meldingen"
-          },
           "edialogType": {
-            "type": "string",
-            "description": "Type av edialog",
-            "enum": ["POST", "SVAR"]
+            "$ref": "#/components/schemas/EdialogType"
           },
           "dokumentId": {
             "type": "string",
@@ -109,6 +236,39 @@
           }
         },
         "description": "Request-objekt for å søke etter mottaker med organisasjonsnummer eller fødselsnummer. Må ha med enten organisasjonsnummer eller fødselsnummer. Bør ha med mottakerId for eksisterende mottaker for å hindre at DUPLIKAT-sjekken slår inn"
+      },
+      "OpprettEdialogSkjemaResponse": {
+        "type": "object",
+        "required": ["skjemaId"],
+        "properties": {
+          "skjemaId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "melding": {
+            "type": "string"
+          }
+        }
+      },
+      "OppdaterEdialogSkjemaRequest": {
+        "type": "object",
+        "required": [
+          "dokumentId",
+          "edialogType",
+          "melding"
+        ],
+        "properties": {
+          "dokumentId": {
+            "type": "string"
+          },
+          "melding": {
+            "type": "string"
+          },
+          "edialogType": {
+            "$ref": "#/components/schemas/EdialogType"
+          }
+        },
+        "description": "Request-objekt for å oppdatere et eksisterende eDialog-skjema tilknyttet et barnevernskontor."
       },
       "ErrorMessage": {
         "type": "object",
