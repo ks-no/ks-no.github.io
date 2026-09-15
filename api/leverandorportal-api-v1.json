@@ -58,8 +58,27 @@
               }
             }
           },
+          "401": {
+            "$ref": "#/components/responses/IkkeAutentisert"
+          },
+          "403": {
+            "$ref": "#/components/responses/ManglerTilgang"
+          },
           "404": {
-            "description": "Leverandør ikke registrert"
+            "description": "Organisasjonen er ikke registrert i Systemkatalogen. errorCode LEVERANDOER_IKKE_REGISTRERT — rut brukeren til registrering på denne, ikke på statusen alene.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/components/responses/UgyldigNedstroemskall"
+          },
+          "502": {
+            "$ref": "#/components/responses/NedstroemsFeil"
           }
         },
         "security": [
@@ -96,6 +115,31 @@
                 }
               }
             }
+          },
+          "400": {
+            "description": "Ugyldig kropp. errorCode VALIDATION_ERROR med feltnivådetaljer i message, eller BAD_REQUEST uten.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/IkkeAutentisert"
+          },
+          "403": {
+            "$ref": "#/components/responses/ManglerTilgang"
+          },
+          "413": {
+            "$ref": "#/components/responses/ForStorRequest"
+          },
+          "500": {
+            "$ref": "#/components/responses/UgyldigNedstroemskall"
+          },
+          "502": {
+            "$ref": "#/components/responses/NedstroemsFeil"
           }
         },
         "security": [
@@ -114,7 +158,7 @@
         ],
         "responses": {
           "200": {
-            "description": "Liste over produkter",
+            "description": "Liste over produkter. Tom liste når organisasjonen ikke er registrert i Systemkatalogen — en samling avgrenset til kalleren er tom, ikke borte.",
             "content": {
               "application/json": {
                 "schema": {
@@ -125,6 +169,18 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/IkkeAutentisert"
+          },
+          "403": {
+            "$ref": "#/components/responses/ManglerTilgang"
+          },
+          "500": {
+            "$ref": "#/components/responses/UgyldigNedstroemskall"
+          },
+          "502": {
+            "$ref": "#/components/responses/NedstroemsFeil"
           }
         },
         "security": [
@@ -143,7 +199,7 @@
         ],
         "responses": {
           "200": {
-            "description": "Liste over produktkategorier",
+            "description": "Liste over produktkategorier. Krever Altinn-tilgang, men ikke at organisasjonen er registrert — en uregistrert leverandør kan lese kategorier og blir først avvist på opprettProdukt.",
             "content": {
               "application/json": {
                 "schema": {
@@ -154,6 +210,18 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/IkkeAutentisert"
+          },
+          "403": {
+            "$ref": "#/components/responses/ManglerTilgang"
+          },
+          "500": {
+            "$ref": "#/components/responses/UgyldigNedstroemskall"
+          },
+          "502": {
+            "$ref": "#/components/responses/NedstroemsFeil"
           }
         },
         "security": [
@@ -190,6 +258,51 @@
                 }
               }
             }
+          },
+          "400": {
+            "description": "Ugyldig kropp — blankt eller for langt navn, for lang beskrivelse, ugyldig klassifiseringskode, webadresse eller kildeKode som ikke er http(s) eller er over 255 tegn, eller ingen kategori og ingen standardkategori. errorCode VALIDATION_ERROR med feltnivådetaljer i message, eller BAD_REQUEST uten.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/IkkeAutentisert"
+          },
+          "403": {
+            "$ref": "#/components/responses/ManglerTilgang"
+          },
+          "404": {
+            "description": "Organisasjonen er ikke registrert i Systemkatalogen. errorCode LEVERANDOER_IKKE_REGISTRERT. Validering av kroppen kjører først, så en ugyldig kropp gir 400 selv om leverandøren også er uregistrert.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Produktet finnes allerede med en annen klassifisering. errorCode CONFLICT.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "413": {
+            "$ref": "#/components/responses/ForStorRequest"
+          },
+          "500": {
+            "$ref": "#/components/responses/UgyldigNedstroemskall"
+          },
+          "502": {
+            "$ref": "#/components/responses/NedstroemsFeil"
           }
         },
         "security": [
@@ -200,6 +313,70 @@
       }
     },
     "/leverandorportal/api/v1/produkter/{produktId}": {
+      "get": {
+        "summary": "Hent enkeltprodukt",
+        "operationId": "hentProdukt",
+        "tags": [
+          "Produkter"
+        ],
+        "parameters": [
+          {
+            "name": "produktId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Produktet",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Produkt"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/IkkeAutentisert"
+          },
+          "403": {
+            "description": "Organisasjonen er registrert, men eier ikke det forespurte produktet. errorCode FORBIDDEN.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Enten finnes produktet ikke, eller organisasjonen er ikke registrert i Systemkatalogen — begge gir errorCode NOT_FOUND. I motsetning til oppdaterProdukt svarer vi ikke LEVERANDOER_IKKE_REGISTRERT for en uregistrert leverandør her: hentMineProdukter svarer 200 med tom liste (ikke feil) for samme kaller, så et enkeltoppslag mot den tomme samlingen er «ikke funnet», konsistent med listen.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/components/responses/UgyldigNedstroemskall"
+          },
+          "502": {
+            "$ref": "#/components/responses/NedstroemsFeil"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
       "put": {
         "summary": "Oppdater produkt",
         "operationId": "oppdaterProdukt",
@@ -238,8 +415,57 @@
               }
             }
           },
+          "400": {
+            "description": "Ugyldig kropp, samme regler som opprettProdukt. errorCode VALIDATION_ERROR eller BAD_REQUEST.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/IkkeAutentisert"
+          },
           "403": {
-            "description": "Caller eier ikke produktet"
+            "description": "Caller eier ikke produktet, eller token mangler Altinn-tilgang. errorCode FORBIDDEN.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Enten er organisasjonen ikke registrert i Systemkatalogen (errorCode LEVERANDOER_IKKE_REGISTRERT) eller produktet finnes ikke (errorCode NOT_FOUND). Leverandøroppslaget kjører først, så en uregistrert leverandør får LEVERANDOER_IKKE_REGISTRERT også for en ukjent produktId.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Klassifiseringen kan ikke settes i produktets nåværende tilstand. errorCode CONFLICT.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "413": {
+            "$ref": "#/components/responses/ForStorRequest"
+          },
+          "500": {
+            "$ref": "#/components/responses/UgyldigNedstroemskall"
+          },
+          "502": {
+            "$ref": "#/components/responses/NedstroemsFeil"
           }
         },
         "security": [
@@ -288,11 +514,47 @@
               }
             }
           },
+          "400": {
+            "description": "Ugyldig kropp — type, navn og verdi er påkrevd. errorCode VALIDATION_ERROR med feltnivådetaljer i message, eller BAD_REQUEST uten.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/IkkeAutentisert"
+          },
           "403": {
-            "description": "Caller eier ikke produktet"
+            "description": "Caller eier ikke produktet. errorCode FORBIDDEN.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
           },
           "404": {
-            "description": "Produkt ikke funnet"
+            "description": "Enten finnes ikke produktet (errorCode NOT_FOUND) eller organisasjonen er ikke registrert i Systemkatalogen (errorCode LEVERANDOER_IKKE_REGISTRERT). Produktoppslaget kjører først her, motsatt av oppdaterProdukt, så en uregistrert leverandør med ukjent produktId får NOT_FOUND.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "413": {
+            "$ref": "#/components/responses/ForStorRequest"
+          },
+          "500": {
+            "$ref": "#/components/responses/UgyldigNedstroemskall"
+          },
+          "502": {
+            "$ref": "#/components/responses/NedstroemsFeil"
           }
         },
         "security": [
@@ -342,13 +604,53 @@
             }
           },
           "400": {
-            "description": "Ugyldig forespørsel — kravspesifikasjonId mangler eller produkt har ingen klassifisering"
+            "description": "Ugyldig forespørsel — kravspesifikasjonId mangler eller produkt har ingen klassifisering. errorCode BAD_REQUEST.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/IkkeAutentisert"
           },
           "403": {
-            "description": "Caller eier ikke produktet eller mangler Altinn-rolle"
+            "description": "Caller eier ikke produktet eller mangler Altinn-rolle. errorCode FORBIDDEN.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Organisasjonen er ikke registrert i Systemkatalogen. errorCode LEVERANDOER_IKKE_REGISTRERT.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/components/responses/UgyldigNedstroemskall"
           },
           "501": {
-            "description": "Ikke implementert enda (feature-flag av)"
+            "description": "Ikke implementert enda (feature-flag av). errorCode NOT_IMPLEMENTED.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "502": {
+            "$ref": "#/components/responses/NedstroemsFeil"
           }
         },
         "security": [
@@ -387,8 +689,21 @@
           }
         },
         "responses": {
+          "401": {
+            "$ref": "#/components/responses/IkkeAutentisert"
+          },
+          "403": {
+            "$ref": "#/components/responses/ManglerTilgang"
+          },
           "501": {
-            "description": "Ikke støttet før eierskap kan verifiseres"
+            "description": "Ikke støttet før eierskap kan verifiseres. errorCode NOT_IMPLEMENTED.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
           }
         },
         "security": [
@@ -419,8 +734,27 @@
               }
             }
           },
+          "401": {
+            "$ref": "#/components/responses/IkkeAutentisert"
+          },
+          "403": {
+            "$ref": "#/components/responses/ManglerTilgang"
+          },
           "404": {
-            "description": "Leverandør ikke registrert"
+            "description": "Organisasjonen er ikke registrert i Systemkatalogen. errorCode LEVERANDOER_IKKE_REGISTRERT. Merk at hentMineProdukter svarer 200 med tom liste i samme situasjon; de to samlingene har ulik kontrakt.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/components/responses/UgyldigNedstroemskall"
+          },
+          "502": {
+            "$ref": "#/components/responses/NedstroemsFeil"
           }
         },
         "security": [
@@ -439,7 +773,105 @@
         "bearerFormat": "JWT"
       }
     },
+    "responses": {
+      "IkkeAutentisert": {
+        "description": "Ingen gyldig Ansattporten-token. errorCode UNAUTHORIZED.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorMessage"
+            }
+          }
+        }
+      },
+      "ManglerTilgang": {
+        "description": "Token mangler verifisert Altinn-tilgang for nøyaktig én organisasjon. errorCode FORBIDDEN.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorMessage"
+            }
+          }
+        }
+      },
+      "ForStorRequest": {
+        "description": "Request-kroppen er større enn grensen. errorCode REQUEST_ENTITY_TOO_LARGE.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorMessage"
+            }
+          }
+        }
+      },
+      "UgyldigNedstroemskall": {
+        "description": "Nedstrømstjenesten avviste kallet vårt — kontraktsfeil på vår side, ikke nedetid. errorCode DOWNSTREAM_REQUEST_ERROR.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorMessage"
+            }
+          }
+        }
+      },
+      "NedstroemsFeil": {
+        "description": "Nedstrømstjeneste (Systemkatalog, BRREG, Selvdeklarering) svarte ikke som forventet. errorCode DOWNSTREAM_ERROR.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorMessage"
+            }
+          }
+        }
+      }
+    },
     "schemas": {
+      "ErrorMessage": {
+        "type": "object",
+        "description": "Feilkroppen alle 4xx- og 5xx-svar bruker. Samme form som ErrorMessage i fiks-commons, så den er lik på tvers av fiks-tjenestene.",
+        "required": [
+          "status",
+          "error",
+          "errorCode"
+        ],
+        "properties": {
+          "status": {
+            "type": "integer",
+            "format": "int32",
+            "description": "HTTP-status, samme verdi som statuslinjen."
+          },
+          "error": {
+            "type": "string",
+            "description": "HTTP-statusens reason phrase, for eksempel Not Found."
+          },
+          "errorCode": {
+            "type": "string",
+            "description": "Maskinlesbar årsak. Klienten skal rute på denne, ikke på message. Kjente verdier: UNAUTHORIZED, FORBIDDEN, BAD_REQUEST, VALIDATION_ERROR, NOT_FOUND, LEVERANDOER_IKKE_REGISTRERT, CONFLICT, REQUEST_ENTITY_TOO_LARGE, DOWNSTREAM_REQUEST_ERROR, DOWNSTREAM_ERROR. Uhåndterte JAX-RS-feil bruker statusnavnet, for eksempel NOT_IMPLEMENTED, så verdimengden er ikke lukket og er derfor ikke modellert som enum."
+          },
+          "message": {
+            "type": "string",
+            "nullable": true,
+            "description": "Menneskelesbar melding. Bevisst generisk på de fleste kodene fordi de underliggende meldingene interpolerer orgnr og id-er. VALIDATION_ERROR har feltnivådetaljer på formen «felt: melding»."
+          },
+          "errorId": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true,
+            "description": "Korrelasjons-id support kan slå opp i loggen. Null i dagens driftsversjon; settes når feil-envelopen er rullet ut."
+          },
+          "path": {
+            "type": "string",
+            "nullable": true,
+            "description": "Request-stien feilen oppsto på. Null i dagens driftsversjon; settes når feil-envelopen er rullet ut."
+          },
+          "timestamp": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true,
+            "description": "Tidspunktet feilen oppsto. Null i dagens driftsversjon; settes når feil-envelopen er rullet ut."
+          }
+        }
+      },
       "Leverandor": {
         "type": "object",
         "required": [
