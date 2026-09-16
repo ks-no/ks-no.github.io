@@ -1,14 +1,14 @@
 ---
-title: Fiks bekymringsmelding
-date: 2019-11-25 
+title: KS Bekymringsmelding
+date: 2026-09-16
 aliases: ["/fiks-platform/tjenester/bekymringsmelding", "/fiks-platform/tjenester_under_utvikling/bekymringsmelding", "/fiks-plattform/tjenester/bekymringsmelding"]
 ---
 
 ## Kort beskrivelse
 
-Fiks bekymringsmelding er en portal laget for Norges innbyggere for å varsle bekymring ovenfor et barn til barnevernet. Løsningen består av to ulike skjema, ett for privat melder og ett for offentlige ansatte.
+KS Bekymringsmelding er en løsning som lar innbyggere som er bekymret for ett eller flere barn sende bekymringsmelding digitalt til barnevernet på en trygg og sikker måte. Løsningen består av to ulike skjema, ett for privat melder og ett for offentlige ansatte.
 
-Brukerne logger seg inn på portalen, fyller ut og sender inn bekymringsmeldingen. Løsningen vil deretter levere bekymringsmeldingen på en eller flere av følgende måter:
+Brukerne logger seg inn via ID porten, fyller ut og sender inn bekymringsmeldingen. Løsningen vil deretter levere bekymringsmeldingen på en eller flere av følgende måter:
 
 * Direkte i fagsystem (Strukturert informasjon)
 * Manuell nedlastning, ustrukturert informasjon i digital form – PDF
@@ -21,24 +21,24 @@ Brukerne logger seg inn på portalen, fyller ut og sender inn bekymringsmeldinge
 | Maskin til maskin | Ja |
 
 ## Beskrivelse av tjenesten
-Når bekymringsmeldingen er sendt vil systemet forsøke å levere den som strukturert data via Fiks-plattformen til kommunens fagsystem. Dersom kommunens fagsystem ikke støtter integrasjon mot [Fiks IO](https://ks-no.github.io/fiks-plattform/tjenester/fiksprotokoll/fiksio/) finnes det en løsning for å laste ned bekymeringsmeldingen manuelt. Bekymringsmeldinger som ikke markeres som mottatt sendes ut som brevpost.
+Når bekymringsmeldingen er sendt vil systemet forsøke å levere den som strukturerte data via Fiks-plattformen til kommunens fagsystem. Dersom kommunens fagsystem ikke støtter integrasjon mot [Fiks IO](https://ks-no.github.io/fiks-plattform/tjenester/fiksprotokoll/fiksio/) finnes det en løsning for å laste ned bekymeringsmeldingen manuelt. Bekymringsmeldinger som ikke markeres som mottatt sendes ut som brevpost.
 
 ### Teknisk oversikt skisse
 ![alt text](https://ks-no.github.io/images/Bekymringsmelding_4.png "Overordnet designløsning")
 
 Bekymringsmeldingen blir omgjort til strukturert data (JSON) for integrasjon mot fagsystem og ustrukturert data (PDF) til manuell nedlastning og for brevpost. All kommunikasjon mellom bruker og løsningen er kanalkryptert. I tillegg lagres både strukturert og ustrukturert data kryptert med mottakersystemets offentlige nøkkel (fagsystem, utskriftsleverandør, manuell nedlastning).  
 
-Portalen tilbyr også et API hvor det er mulig å sende en bekymringsmelding fra fagsystemet til en annen kommunes barneverntjeneste.
+Løsningen tilbyr også et API hvor det er mulig å sende en bekymringsmelding fra fagsystemet til en annen kommunes barneverntjeneste.
 
 ### Teknisk beskrivelse av løsning og integrasjon
-#### Hvordan tar man i bruk Fiks Bekymringsmelding?
-Portalen inneholder to skjema, en for innbyggere og en for offentlig ansatte, som kan brukes for å melde inn bekymringsmeldinger.
+#### Hvordan tar man i bruk KS Bekymringsmelding?
+Løsningen inneholder to skjema, ett for innbyggere og ett for offentlig ansatte, som kan brukes for å melde inn bekymringsmeldinger.
 
-Noen ganger kan det være hensiktsmessig å ha skjema for offentlig melder som en integrert del av et eget fagsystem (eks: skole, politi, ol) og da kan man benytte API for bekymringsmelding for å implementere dette. API-et støtter maskin-til-maskin integrasjon både som produsent (avsender) av bekymringsmelding og konsument (mottaker) av bekymringsmelding. Ta kontakt med din leverandør av fagsystem og hør om de støtter integrasjon mot bekymringsmelding. 
+Noen ganger kan det være hensiktsmessig å ha skjema for offentlig melder som en integrert del av et eget fagsystem (eks: skole, politi, o.l.) og da kan man benytte API for bekymringsmelding for å implementere dette. API-et støtter maskin-til-maskin integrasjon både som produsent (avsender) av bekymringsmelding og konsument (mottaker) av bekymringsmelding. Ta kontakt med din leverandør av fagsystem og hør om de støtter integrasjon mot bekymringsmelding. 
 
 Dersom fagsystemet støtter integrasjon kan dere konfigurere bekymringsmeldingstjeneste til å konsumere og/eller produsere bekymringsmeldinger. Dersom fagsystem ikke støtter maskin-til-maskin integrasjon for å konsumere bekymringsmeldinger er det mulig å laste bekymringsmeldingene ned manuelt.
 
-Dersom en bekymringsmelding ikke er lastet ned innen 2 virkedager vil den bli sendt ut som brevpost.
+Dersom en bekymringsmelding ikke er lastet ned innen 2 virkedager vil den bli sendt som brevpost.
 
 Før løsningen kan tas i bruk må kommunen inngå en [avtale](https://svarut.wordpress.com/fiks/avtalen/) om bruk.
 
