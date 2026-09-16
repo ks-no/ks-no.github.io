@@ -1519,6 +1519,113 @@
           }
         ]
       }
+    },
+    "/sporsmalsbank/api/v1/sporsmal/versjoner/{sporsmalVersjonId}": {
+      "patch": {
+        "summary": "Rett en spørsmålsversjon uten å lage en ny",
+        "description": "Retter felt som ikke endrer hva det spørres om — en trykkleif i teksten, en presisering i hjelpeteksten. Utelatte felt står urørt. Svartype, paakrevd, kravomrade, kategoriKode, svaralternativer og rekkefolge kan ikke settes her: de bestemmer hva som spørres om og hvordan det scores, og en innlevert selvdeklarering peker på pakkeversjoner som peker hit. Slike endringer krever en ny spørsmålsversjon. Vurderingen av hva en endring er gjør redaktøren; konsekvens-endepunktet viser hvem en ny versjon ville dratt med seg.",
+        "operationId": "rettSporsmalVersjon",
+        "tags": [
+          "Spørsmål"
+        ],
+        "parameters": [
+          {
+            "name": "sporsmalVersjonId",
+            "in": "path",
+            "required": true,
+            "description": "Spørsmålsversjonen som skal rettes",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SporsmalRetting"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Den rettede spørsmålsversjonen",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Sporsmal"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Ingen felt å rette",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Feilmelding"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Spørsmålsversjonen finnes ikke",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Feilmelding"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/sporsmalsbank/api/v1/sporsmal/versjoner/{sporsmalVersjonId}/konsekvens": {
+      "get": {
+        "summary": "Hvem blir berørt hvis spørsmålsversjonen må versjoneres på nytt",
+        "description": "Lister pakkeversjonene som inneholder spørsmålsversjonen, og skjemaversjonene som inneholder de pakkene. Grunnlaget redaktøren trenger for å velge mellom en retting og en ny versjon.",
+        "operationId": "hentSporsmalVersjonKonsekvens",
+        "tags": [
+          "Spørsmål"
+        ],
+        "parameters": [
+          {
+            "name": "sporsmalVersjonId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Berørte pakke- og skjemaversjoner. Tomme lister når ingen bruker versjonen.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SporsmalVersjonKonsekvens"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
     }
   },
   "components": {
@@ -2344,6 +2451,79 @@
           "totaltAntall": {
             "type": "integer",
             "format": "int64"
+          }
+        }
+      },
+      "SporsmalRetting": {
+        "type": "object",
+        "description": "Felt som kan rettes på en eksisterende spørsmålsversjon. Utelatte felt står urørt. Ingen av feltene endrer hvordan spørsmålet besvares eller scores — derfor trengs ingen ny versjon.",
+        "properties": {
+          "tekst": {
+            "type": "string",
+            "description": "Spørsmålstekst som vises til leverandør"
+          },
+          "kortBeskrivelse": {
+            "type": "string"
+          },
+          "hjelpetekst": {
+            "type": "string"
+          },
+          "begrunnelse": {
+            "type": "string"
+          },
+          "kommentar": {
+            "type": "string"
+          },
+          "figurreferanse": {
+            "type": "string"
+          }
+        }
+      },
+      "BerortVersjon": {
+        "type": "object",
+        "required": [
+          "id",
+          "versjon",
+          "tittel",
+          "status"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "versjon": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "tittel": {
+            "type": "string"
+          },
+          "status": {
+            "$ref": "#/components/schemas/VersjonStatus"
+          }
+        }
+      },
+      "SporsmalVersjonKonsekvens": {
+        "type": "object",
+        "required": [
+          "pakker",
+          "sporreskjema"
+        ],
+        "properties": {
+          "pakker": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/BerortVersjon"
+            },
+            "description": "Pakkeversjonene som inneholder spørsmålsversjonen"
+          },
+          "sporreskjema": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/BerortVersjon"
+            },
+            "description": "Skjemaversjonene som inneholder minst én av pakkene over"
           }
         }
       }
