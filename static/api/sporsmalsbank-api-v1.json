@@ -238,6 +238,72 @@
             "bearerAuth": []
           }
         ]
+      },
+      "patch": {
+        "summary": "Rett en skjemaversjon uten å lage en ny",
+        "description": "Retter tittel eller beskrivelse på versjonen der den står, uansett status. PUT erstatter et utkast og avvises på publiserte versjoner; PATCH er den smale veien for en trykkleif. Pakkesammensetningen kan ikke settes her — den er hva skjemaet er, ikke hvordan det er skrevet, og endres den må det bli en ny versjon.",
+        "operationId": "rettSporreskjemaVersjon",
+        "tags": [
+          "Spørreskjema"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SporreskjemaRetting"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Den rettede skjemaversjonen",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SporreskjemaVersjon"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Ingen felt å rette",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Feilmelding"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Skjemaversjonen finnes ikke",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Feilmelding"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
       }
     },
     "/sporsmalsbank/api/v1/versjoner/publisert": {
@@ -628,6 +694,72 @@
           },
           "409": {
             "description": "Kan kun slette utkast"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "patch": {
+        "summary": "Rett en pakkeversjon uten å lage en ny",
+        "description": "Retter tittel eller beskrivelse på versjonen der den står, uansett status. PUT erstatter et utkast og avvises på publiserte pakker; PATCH er den smale veien for en trykkleif. minimumPoeng, pakkeinnholdet og poengoverstyringene kan ikke settes her — de avgjør hva pakken måler, og en skjemaversjon som allerede er publisert med pakken må kunne stole på at de står.",
+        "operationId": "rettPakkeVersjon",
+        "tags": [
+          "Pakke"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PakkeRetting"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Den rettede pakkeversjonen",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Pakke"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Ingen felt å rette",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Feilmelding"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Pakkeversjonen finnes ikke",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Feilmelding"
+                }
+              }
+            }
           }
         },
         "security": [
@@ -1819,6 +1951,18 @@
             "type": "string",
             "nullable": true,
             "description": "Kode til kategori i sporsmalsbank.kategori. Null for spørsmål uten kategori."
+          },
+          "opprettet": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true,
+            "description": "Når denne spørsmålsversjonen ble skrevet."
+          },
+          "oppdatert": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true,
+            "description": "Når innholdet sist ble rettet. En retting flytter ikke versjonsnummeret, så dette er det eneste som viser at teksten er endret siden versjonen ble skrevet."
           }
         }
       },
@@ -2451,6 +2595,34 @@
           "totaltAntall": {
             "type": "integer",
             "format": "int64"
+          }
+        }
+      },
+      "PakkeRetting": {
+        "type": "object",
+        "description": "Felt som kan rettes på en eksisterende pakkeversjon. Utelatte felt står urørt. Ingen av feltene endrer hva pakken måler — derfor trengs ingen ny versjon.",
+        "properties": {
+          "tittel": {
+            "type": "string",
+            "maxLength": 500
+          },
+          "beskrivelse": {
+            "type": "string",
+            "maxLength": 2000
+          }
+        }
+      },
+      "SporreskjemaRetting": {
+        "type": "object",
+        "description": "Felt som kan rettes på en eksisterende skjemaversjon. Utelatte felt står urørt. Ingen av feltene endrer hvilke pakker skjemaet består av — derfor trengs ingen ny versjon.",
+        "properties": {
+          "tittel": {
+            "type": "string",
+            "maxLength": 200
+          },
+          "beskrivelse": {
+            "type": "string",
+            "maxLength": 2000
           }
         }
       },
