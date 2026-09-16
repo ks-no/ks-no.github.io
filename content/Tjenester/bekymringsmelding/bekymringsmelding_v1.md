@@ -1,5 +1,5 @@
 ---
-title: Fiks bekymringsmelding V1
+title: KS bekymringsmelding V1
 date: 2019-11-25 
 aliases: ["/fiks-platform/tjenester/bekymringsmelding/v1", "/fiks-platform/tjenester_under_utvikling/bekymringsmelding/v1", "/fiks-plattform/tjenester/bekymringsmelding/v1"]
 ---
@@ -90,9 +90,9 @@ Et fagsystem kan hente status med tilhørende historikk for sendte bekymringsmel
 
 Endepunktet `/bekymringsmelding/api/v1/mottak/fagsystem/{fraFiksOrgId}/bekymringsmelding/{bekymringsmeldingId}/status` returnerer en liste av alle hendelsene for den angitte bekymringsmelding-id-en. Hver hendelse inneholder en tilstand for bekymringsmeldingen, som kan inneholde følgende verdier:
 
-* `AKSEPTERT` (alltid 1. tilstand) - Fiks Bekymringsmelding har mottatt og lagret bekymringsmeldingen.
+* `AKSEPTERT` (alltid 1. tilstand) - KS Bekymringsmelding har mottatt og lagret bekymringsmeldingen.
 * `SENDT_FAGSYSTEM` (alltid 2. tilstand) - Bekymringsmeldingen er sendt til fagsystemet til mottakeren.
-* `AVVIST_FAGSYSTEM` - Fagsystemet har avvist mottak av bekymringsmeldingen. Fiks Bekymringsmelding vil automatisk sende denne til brevpost.
+* `AVVIST_FAGSYSTEM` - Fagsystemet har avvist mottak av bekymringsmeldingen. KS Bekymringsmelding vil automatisk sende denne til brevpost.
 * `SENDT_PRINT` - Bekymringsmeldingen er sendt til printleverandør for å sende den med brevpost.
 * `AVVIST_PRINT` - Printleverandøren kan ikke printe ut bekymringsmeldingen for brevpost. Fiks følger opp bekymringsmeldingen manuelt.
 * `LEVERT` (alltid siste tilstand) - Bekymringsmeldingen er levert fagsystem eller sendt som brevpost til barnevernskontoret.
