@@ -1,6 +1,6 @@
 ---
 title: KS bekymringsmelding V1
-date: 2019-11-25 
+date: 2026-09-16
 aliases: ["/fiks-platform/tjenester/bekymringsmelding/v1", "/fiks-platform/tjenester_under_utvikling/bekymringsmelding/v1", "/fiks-plattform/tjenester/bekymringsmelding/v1"]
 ---
 
