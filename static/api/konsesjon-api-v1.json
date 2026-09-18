@@ -461,7 +461,7 @@
         "tags": [
           "KonsesjonAvklaring"
         ],
-        "description": "Godkjenner konsesjonsavklaringer, sender dem til Fiks-Arkiv, og oppretter oppgave i Min Kommune",
+       "description": "Godkjenner konsesjonsavklaringer. Innsenderens eventuelle oppgave opprettes og fullføres som del av kallet; øvrige oppgaver i Min Kommune opprettes asynkront av en jobb i konsesjon-send-service.",
         "operationId": "godkjennKonsesjonsAvklaring",
         "requestBody": {
           "content": {
@@ -474,18 +474,8 @@
           "required": true
         },
         "responses": {
-          "201": {
-            "description": "Konsesjonsavklaring godkjent og sendt til Fiks-Arkiv, og oppgave opprettet i Min Kommune",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/GodkjenningsResponse"
-                  }
-                }
-              }
-            }
+          "204": {
+            "description": "Konsesjonsavklaringene er godkjent"
           },
           "400": {
             "description": "Feil input",
@@ -519,6 +509,16 @@
           },
           "404": {
             "description": "Ingen treff - Fant ikke egenerklaering som matchet den gitte id-en",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Konsesjonsavklaringen har en status som ikke kan godkjennes",
             "content": {
               "application/json": {
                 "schema": {
@@ -2751,35 +2751,6 @@
             }
           }
         }
-      },
-      "GodkjenningsResponse": {
-        "type": "object",
-        "required": [
-          "avklaringsId",
-          "erverver",
-          "status"
-        ],
-        "properties": {
-          "avklaringsId": {
-            "type": "string",
-            "format": "uuid"
-          },
-          "erverver": {
-            "$ref": "#/components/schemas/ErververId"
-          },
-          "status": {
-            "$ref": "#/components/schemas/GodkjenningsStatus"
-          }
-        }
-      },
-      "GodkjenningsStatus": {
-        "type": "string",
-        "enum": [
-          "GODKJENT_SENDT_TIL_ARKIV",
-          "FEILET_IKKE_SENDT_TIL_ARKIV",
-          "OPPRETTET_OPPGAVE_I_MIN_KOMMUNE",
-          "FEILET_VED_OPPRETTING_AV_OPPGAVE_I_MIN_KOMMUNE"
-        ]
       },
       "PDFStatusResponse": {
         "type": "string",
