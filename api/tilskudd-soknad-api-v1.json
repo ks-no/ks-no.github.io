@@ -37,6 +37,10 @@
     {
       "name": "Melding",
       "description": "Endepunkter for å opprette og lese meldinger knyttet til en søknad"
+    },
+    {
+      "name": "Fagsystemtoken",
+      "description": "Endepunkt for å hente et signert token som lar fagsystemet verifisere at søknadsdata kommer fra fiks-tilskuddsoknad"
     }
   ],
   "paths": {
@@ -631,14 +635,14 @@
         }
       }
     },
-    "/tilskuddssoknad/api/v1/{soknadsregisterId}/fil": {
+    "/tilskuddssoknad/api/v1/{soknadsregisterId}/brev": {
       "post": {
         "tags": [
           "Tilskuddssoknad"
         ],
-        "operationId": "leggTilFil",
-        "summary": "Legger til en fil i en søknad",
-        "description": "Filens id kan settes av kallende system via filId. Dersom id-en allerede er i bruk på søknaden, returneres HTTP 409.",
+        "operationId": "leggTilBrev",
+        "summary": "Legger til et brev i en søknad",
+        "description": "Brevets id kan settes av kallende system via brevId. Dersom id-en allerede er i bruk på søknaden, returneres HTTP 409.",
         "parameters": [
           {
             "name": "soknadsregisterId",
@@ -655,7 +659,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/NyFilRequest"
+                "$ref": "#/components/schemas/NyttBrevRequest"
               }
             }
           },
@@ -663,7 +667,7 @@
         },
         "responses": {
           "201": {
-            "description": "Filen er lagt til",
+            "description": "Brevet er lagt til",
             "content": {
               "application/json": {
                 "schema": {
@@ -686,64 +690,6 @@
           },
           "409": {
             "$ref": "#/components/responses/409Conflict"
-          },
-          "default": {
-            "$ref": "#/components/responses/DefaultError"
-          }
-        }
-      }
-    },
-    "/tilskuddssoknad/api/v1/{soknadsregisterId}/fil/{filId}": {
-      "delete": {
-        "tags": [
-          "Tilskuddssoknad"
-        ],
-        "operationId": "fjernFil",
-        "summary": "Fjerner en fil fra en søknad",
-        "parameters": [
-          {
-            "name": "soknadsregisterId",
-            "in": "path",
-            "description": "SoknadsregisterId for søknaden",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          },
-          {
-            "name": "filId",
-            "in": "path",
-            "description": "Id for filen som skal fjernes",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Filen er fjernet",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/SoknadDetaljer"
-                }
-              }
-            }
-          },
-          "400": {
-            "$ref": "#/components/responses/400BadRequest"
-          },
-          "401": {
-            "$ref": "#/components/responses/401Unauthorized"
-          },
-          "403": {
-            "$ref": "#/components/responses/403Forbidden"
-          },
-          "404": {
-            "$ref": "#/components/responses/404NotFound"
           },
           "default": {
             "$ref": "#/components/responses/DefaultError"
@@ -936,6 +882,65 @@
           }
         }
       }
+    },
+    "/tilskuddssoknad/api/v1/{soknadsregisterId}/fagsystem-token": {
+      "post": {
+        "tags": [
+          "Fagsystemtoken"
+        ],
+        "operationId": "opprettFagsystemToken",
+        "summary": "Utsteder et kortlevd, signert token som fagsystemet bruker til å opprette eller hente en skjemasesjon",
+        "description": "Tokenet er en signert JWT. Denne lar fagsystemet verifisere at opplysningenene sendt. Signaturen verifiseres mot nøkkelsettet tjenesten publiserer på /oauth2/jwks, der kid i tokenets header angir hvilken nøkkel som er brukt. Tokenet er en kortlevd engangs token, fagsystemet er ansvarlig for å registrerer jti og avviser tokenet ved gjenbruk. Tokenet inneholder iss, aud, exp, iat, jti, scope, caseId som er søknadens soknadsregisterId, opplysningene soker-fnr, soker-navn, soker-orgnr og soker-org-navn om søker, og forvalter-orgnr for organisasjonen som forvalter tilskuddsordningen.",
+        "parameters": [
+          {
+            "name": "soknadsregisterId",
+            "in": "path",
+            "description": "SoknadsregisterId for søknaden",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FagsystemTokenRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Signert token for søknaden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FagsystemToken"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/400BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/401Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/403Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/404NotFound"
+          },
+          "default": {
+            "$ref": "#/components/responses/DefaultError"
+          }
+        }
+      }
     }
   },
   "components": {
@@ -1068,7 +1073,7 @@
           "paaVegneAvForetak",
           "soker",
           "deltagere",
-          "filer",
+          "brev",
           "oppgaver",
           "status",
           "opprettetDatoTid",
@@ -1106,12 +1111,12 @@
                   "$ref": "#/components/schemas/Person"
                 }
               },
-              "filer": {
+              "brev": {
                 "type": "array",
                 "maxItems": 50,
-                "description": "Filer knyttet til søknaden",
+                "description": "Brev knyttet til søknaden",
                 "items": {
-                  "$ref": "#/components/schemas/Fil"
+                  "$ref": "#/components/schemas/Brev"
                 }
               },
               "oppgaver": {
@@ -1243,6 +1248,42 @@
             "type": "string",
             "readOnly": true,
             "description": "Navn på foretak"
+          }
+        }
+      },
+      "Fil": {
+        "type": "object",
+        "required": [
+          "tittel",
+          "mimeType",
+          "storrelse",
+          "url"
+        ],
+        "properties": {
+          "tittel": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100,
+            "description": "Tittel på filen"
+          },
+          "mimeType": {
+            "type": "string",
+            "maxLength": 100,
+            "pattern": "^[a-z]+/[a-zA-Z0-9.+-]+$",
+            "example": "application/pdf",
+            "description": "Filens MIME-type"
+          },
+          "storrelse": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 1,
+            "description": "Filens størrelse i bytes"
+          },
+          "url": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 500,
+            "description": "URL til filen i dokumentlager"
           }
         }
       },
@@ -1451,109 +1492,84 @@
           }
         }
       },
-      "FilBase": {
+      "BrevBase": {
         "type": "object",
         "properties": {
           "tittel": {
             "type": "string",
-            "description": "Tittel på filen"
+            "minLength": 1,
+            "maxLength": 100,
+            "description": "Tittel på brevet"
           },
-          "filtype": {
-            "$ref": "#/components/schemas/Filtype",
-            "description": "Filtype"
-          },
-          "status": {
+          "avsender": {
             "type": "string",
-            "description": "Filens status (Hva enn nå det betyr??)"
+            "minLength": 1,
+            "maxLength": 100,
+            "description": "Navn på person som har sendt brevet"
           },
-          "filnavn": {
-            "type": "string",
-            "description": "Navn på filen"
-          },
-          "referanse": {
-            "type": "string",
-            "description": "Referanse til filen i dokumentlager"
+          "dokument": {
+            "$ref": "#/components/schemas/Fil",
+            "description": "Filen som utgjør brevet"
           }
         }
       },
-      "NyFilRequest": {
+      "NyttBrevRequest": {
         "type": "object",
         "required": [
           "tittel",
-          "filtype",
-          "status",
-          "filnavn",
-          "referanse"
+          "avsender",
+          "dokument"
         ],
         "allOf": [
           {
             "type": "object",
             "properties": {
-              "filId": {
+              "brevId": {
                 "type": "string",
                 "format": "uuid",
-                "description": "Id for filen. Kan settes av kallende system for å gjenbruke egen id. Genereres av tjenesten hvis den utelates. Må være unik innenfor søknaden."
+                "description": "Id for brevet. Kan settes av kallende system for å gjenbruke egen id. Genereres av tjenesten hvis den utelates. Må være unik innenfor søknaden."
               }
             }
           },
           {
-            "$ref": "#/components/schemas/FilBase"
+            "$ref": "#/components/schemas/BrevBase"
           }
         ]
       },
-      "Fil": {
+      "Brev": {
         "type": "object",
         "readOnly": true,
         "required": [
-          "filId",
+          "brevId",
           "tittel",
-          "filtype",
-          "status",
-          "filnavn",
-          "referanse",
-          "opprettetDatoTid",
-          "endretDatoTid"
+          "avsender",
+          "dokument",
+          "mottattDatoTid"
         ],
         "allOf": [
           {
             "type": "object",
             "properties": {
-              "filId": {
+              "brevId": {
                 "type": "string",
                 "format": "uuid"
               }
             }
           },
           {
-            "$ref": "#/components/schemas/FilBase"
+            "$ref": "#/components/schemas/BrevBase"
           },
           {
             "type": "object",
             "properties": {
-              "opprettetDatoTid": {
+              "mottattDatoTid": {
                 "type": "string",
                 "format": "date-time",
-                "example": "2025-08-27T15:45:30Z"
-              }
-            }
-          },
-          {
-            "type": "object",
-            "properties": {
-              "endretDatoTid": {
-                "type": "string",
-                "format": "date-time",
-                "example": "2025-08-27T15:45:30Z"
+                "example": "2025-08-27T15:45:30Z",
+                "description": "Tidspunkt for når brevet ble mottatt. Settes automatisk ved registrering og kan ikke sendes inn."
               }
             }
           }
-        ]
-      },
-      "Filtype": {
-        "type": "string",
-        "enum": [
-          "BUDSJETT",
-          "SLUTTRAPPORT"
         ]
       },
       "OppgaveBase": {
@@ -1682,6 +1698,42 @@
         "type": "string",
         "format": "date-time",
         "example": "2026-03-01T23:59:59Z"
+      },
+      "FagsystemTokenRequest": {
+        "type": "object",
+        "required": [
+          "scope",
+          "sokerNavn"
+        ],
+        "properties": {
+          "scope": {
+            "$ref": "#/components/schemas/FagsystemTokenScope",
+            "description": "Hva tokenet skal gi tilgang til i fagsystemet"
+          },
+          "sokerNavn": {
+            "type": "string",
+            "description": "Fult navn av person som søker, brukes kun for å informere fagsystem om navnet til søker"
+          }
+        }
+      },
+      "FagsystemTokenScope": {
+        "type": "string",
+        "enum": [
+          "soknad"
+        ]
+      },
+      "FagsystemToken": {
+        "type": "object",
+        "required": [
+          "token"
+        ],
+        "properties": {
+          "token": {
+            "type": "string",
+            "maxLength": 8192,
+            "description": "Signert JWT på kompakt serialisert form"
+          }
+        }
       }
     },
     "responses": {
