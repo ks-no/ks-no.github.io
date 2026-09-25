@@ -62,7 +62,7 @@ Ved oppstart av fiks-io klienten, det gjelder b√•de dotnet og java vil denne, n√
 
 Se [dokumentasjonen](https://github.com/ks-no/fiks-io-client-dotnet/blob/main/docs/AutomaticPublicKeySync.md) for DotNet-klienten
 
-Se [dokumentasjonen](https://github.com/ks-no/fiks-io-klient-java/blob/main/README.md) for Java-klienten
+Se [dokumentasjonen](https://github.com/ks-no/fiks-io-klient-java/blob/main/docs/AutomatiskOffentligNokkelSynkronisering.md) for Java-klienten
 
 
 ## Send og motta meldinger
