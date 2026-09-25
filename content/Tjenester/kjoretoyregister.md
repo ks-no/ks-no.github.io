@@ -1,56 +1,98 @@
 ---
-title: Fiks kjøretøyregister
+title: Fiks Kjøretøyregister
 date: 2019-12-11
 aliases: [/fiks-platform/tjenester/kjoretoyregister, /fiks-plattform/tjenester/kjoretoyregister]
 ---
 
 ## Kort beskrivelse
-Fiks kjøretøyregister er en tjeneste for å gjøre oppslag i Statens Vegvesen sitt [Kjøretøy register](https://autosys-kjoretoy-api.atlas.vegvesen.no/) (Autosys). Fiks Kjøretøyregister speiler [Kjøretøyoppslag](https://autosys-kjoretoy-api.atlas.vegvesen.no/api-ui/index-kjoretoyoppslag.html) og [Kjøretøysøk](https://autosys-kjoretoy-api.atlas.vegvesen.no/api-ui/index-kjoretoysok.html) tjenestene til Statens Vegvesen på Fiks-plattformen. Den gjør det mulig å slå opp et eller flere kjøretøy basert på *kjennemerke*, *kuid* (svv-identifikator), eller *understellsnummer*. Oppslaget vil gi informasjon om kjøretøyet og eierforhold på nåværende tidspunkt, eller på et spesifisert tidspunkt som angis i søket.  
 
-## Tilgjengelige grensesnitt
-| Grensesnitt | Støtte |
-|------|------|
-| Web portal | Nei |
-| Maskin til maskin | [Api spec](https://autosys-kjoretoy-api.atlas.vegvesen.no/swagger-ui/index-akf.html) |
+**Oppslag i Statens Vegvesens kjøretøyregister via Fiks-plattformen.**
 
+Fiks Kjøretøyregister speiler [Kjøretøyoppslag](https://autosys-kjoretoy-api.atlas.vegvesen.no/api-ui/index-kjoretoyoppslag.html) og [Kjøretøysøk](https://autosys-kjoretoy-api.atlas.vegvesen.no/api-ui/index-kjoretoysok.html) fra Statens Vegvesen (Autosys) på Fiks-plattformen. Tjenesten lar kommunale fagsystemer slå opp kjøretøy og eierforhold uten egen avtale med SVV.
 
-### Hvordan tar jeg i bruk Fiks Kjøretøyregister
+Tjenesten tilbyr:
 
-Fiks Kjøretøyregister er en tjeneste for maskin-til-maskin integrasjon. For å ta i bruk Fiks Kjøretøyregister trenger du derfor at en leverandør av fagsystem utvikler en integrasjon til tjenesten.
+- Oppslag på kjennemerke, kuid (SVV-identifikator) eller understellsnummer
+- Eierforhold på nåværende eller historisk tidspunkt
+- Kjøretøysøk på eiernavn
 
-På sikt vil det bli vurdert å utvikle et administrativt grensesnitt mot Fiks Kjøretøyregister for kommuneansatte.
- 
-### Integrasjon
- 
-API-kall gjøres i henhold til [Swagger-spesifikasjonen](https://autosys-kjoretoy-api.atlas.vegvesen.no/swagger-ui/index-akf.html) til Statens Vegvesen, med følgende endringer:
-  
-  * Autorisering skjer på fiks plattformen med et access token fra Maskinporten basert på organisasjonesn virksomhetssertifikat som beskrevet [her](https://ks-no.github.io/fiks-plattform/integrasjoner/#integrasjon).
-    Token må ha scope "ks:fiks", og headere for IntegrasjonId og IntegrasjonPassord må settes på requesten.
-  * Fiks-org som spørringen gjøres på vegne av blir en del av url'en for alle forespørsler.
-  
-URL som skal benyttes er `https://api.fiks.ks.no/kjoretoyregister/api/{fiksOrgId}` hvor `{fiksOrgId}` er ID til organisasjonen spørringen gjøres på vegne av. Resten av url'en er som spesifisert for de enkelte endepunktene i Swagger-filen:
-  
-  * `/rest/distribusjon/kjoretoy/v2.0/bulk/kjennemerke`
-  * `/rest/distribusjon/kjoretoy/v2.0/bulk/kuid`
-  * `/rest/distribusjon/kjoretoy/v2.0/bulk/understellsnummer/{understellsnummer}`
+API-spesifikasjon: [Swagger / OpenAPI (SVV)](https://autosys-kjoretoy-api.atlas.vegvesen.no/swagger-ui/index-akf.html)
 
-Oppslag på *understellsummer* utføres med en `GET` request. Oppslag på *kjennemerke* og *kuid* utføres med en `POST` request hvor body inneholder en liste av id'er det skal søkes på. Eksempel forespørsel for kjennemerke på angitt dato:
-```
+## Kom i gang
+
+Tjenestespesifikke forutsetninger:
+
+1. Tjenesten må aktiveres via [Fiks Konfigurasjon](https://forvaltning.fiks.ks.no/fiks-konfigurasjon/tjenester).
+2. Integrasjonen må gis tilgang til tjenesten via [Fiks Konfigurasjon](https://forvaltning.fiks.ks.no/fiks-konfigurasjon/tjenester).
+
+Fiks Kjøretøyregister er en ren maskin-til-maskin-tjeneste. Det finnes per i dag ikke noe administrativt grensesnitt for kommuneansatte. På sikt vil det bli vurdert å utvikle et administrativt grensesnitt for kommuneansatte.
+
+## Beskrivelse av tjenesten
+
+### Konsepter og begreper
+
+| Begrep | Beskrivelse |
+|--------|-------------|
+| `kjennemerke` | Registreringsnummer (f.eks. "BR12345") |
+| `kuid` | SVV sin unike identifikator for et kjøretøy |
+| `understellsnummer` | Chassisnummer / VIN |
+| `fiksOrgId` | UUID for Fiks-organisasjonen spørringen gjøres på vegne av |
+
+### Overordnet flyt
+
+1. Fagsystem autentiserer seg mot Fiks-plattformen (Maskinporten + IntegrasjonId/Passord).
+2. Fagsystem sender oppslag/søk til Fiks Kjøretøyregister med `fiksOrgId` i URL-stien.
+3. Fiks Kjøretøyregister videresender forespørselen til SVV Autosys.
+4. Svar fra SVV returneres til fagsystem.
+
+### Tjenestespesifikke regler
+
+API-kall følger [SVVs Swagger-spesifikasjon](https://autosys-kjoretoy-api.atlas.vegvesen.no/swagger-ui/index-akf.html) med følgende avvik:
+
+- Autorisering skjer via Fiks-plattformen (ikke direkte mot SVV) med et access token fra Maskinporten basert på organisasjonens virksomhetssertifikat. Token må ha scope `ks:fiks`, og headere for `IntegrasjonId` og `IntegrasjonPassord` må settes på requesten. Se [Felles/integrasjoner]({{% ref "integrasjoner.md" %}}) for detaljer.
+- `fiksOrgId` blir en del av URL-stien for alle forespørsler.
+
+### Testdata
+
+I testmiljøet rutes alle kall mot SVVs [syntetiske testdatasett](https://autosys-kjoretoy-api.atlas.vegvesen.no/api-ui/index-kjoretoyoppslag.html#testmiljo).
+
+---
+
+## API-referanse
+
+Endepunkter, request/response-skjemaer og statuskoder er dokumentert i SVVs Swagger:
+
+[Api-spec (SVV Autosys)](https://autosys-kjoretoy-api.atlas.vegvesen.no/swagger-ui/index-akf.html)
+
+### Miljøer og endepunkter
+
+**Base-URL per miljø:**
+- **Test:** `https://api.fiks.test.ks.no/kjoretoyregister/api/{fiksOrgId}`
+- **Produksjon:** `https://api.fiks.ks.no/kjoretoyregister/api/{fiksOrgId}`
+
+Hvor `{fiksOrgId}` er ID-en til Fiks-organisasjonen spørringen gjøres på vegne av.
+
+### Endepunkter
+
+Endepunkter relativt til base-URL:
+
+| Metode | Sti | Beskrivelse |
+|--------|-----|-------------|
+| `POST` | `/rest/distribusjon/kjoretoy/v2.0/bulk/kjennemerke` | Oppslag på kjennemerke(r). Body inneholder en liste av kjennemerker. |
+| `POST` | `/rest/distribusjon/kjoretoy/v2.0/bulk/kuid` | Oppslag på kuid(er). Body inneholder en liste av kuider. |
+| `GET`  | `/rest/distribusjon/kjoretoy/v2.0/bulk/understellsnummer/{understellsnummer}` | Oppslag på understellsnummer |
+| `GET`  | `/rest/distribusjon/kjoretoy/v2.0/sok/eiernavn?navn={navn}` | Søk på eiernavn |
+
+**Eksempel: oppslag på kjennemerke med historisk dato:**
+
+```json
 [
-  { 
-    "kjennemerke": "br12345",
+  {
+    "kjennemerke": "BR12345",
     "dtg": "2018-11-15T23:00:00.000+01:00"
   }
 ]
 ```
-
-For kjøretøysøk gjøres det en `GET` request med query parameter. F.eks for å søke på eier-navn:
-
-  * `/rest/distribusjon/kjoretoy/v2.0/sok/eiernavn?navn=[navn]`
-
-I testmiljøet (`https://api.fiks.test.ks.no/kjoretoyregister/api/{fiksOrgId}`) går alle api kall mot et syntetisk datasett hos SVV (https://autosys-kjoretoy-api.atlas.vegvesen.no/api-ui/index-kjoretoyoppslag.html#testmiljo).
-
-Hvis du opplever feil som blir returnert med json fra SVV med f.eks en svvguid kan en kontakte api-kjoretoy@vegvesen.no.
 
 ---
 
@@ -58,3 +100,4 @@ Hvis du opplever feil som blir returnert med json fra SVV med f.eks en svvguid k
 
 {{< get-help email="fiks@ksdigital.no" support_page="/felles/support/" >}}
 
+*Feil returnert med `svvguid` i JSON fra SVV: kontakt `api-kjoretoy@vegvesen.no` direkte.*
