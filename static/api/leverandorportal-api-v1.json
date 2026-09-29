@@ -23,6 +23,10 @@
   ],
   "tags": [
     {
+      "name": "InnloggetBruker",
+      "description": "Hvem som er innlogget, og for hvilken virksomhet"
+    },
+    {
       "name": "Leverandor",
       "description": "Leverandørregistrering og oppslag"
     },
@@ -40,6 +44,39 @@
     }
   ],
   "paths": {
+    "/leverandorportal/api/v1/me": {
+      "get": {
+        "summary": "Hent innlogget person og virksomheten personen representerer",
+        "description": "Leses fra Ansattporten-tokenet, uten nedstrømskall. Virksomheten er den Altinn har verifisert for selvdeklarering-ressursen, så svaret gir 403 i de samme tilfellene som resten av API-et.",
+        "operationId": "hentInnloggetBruker",
+        "tags": [
+          "InnloggetBruker"
+        ],
+        "responses": {
+          "200": {
+            "description": "Innlogget bruker",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InnloggetBruker"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/IkkeAutentisert"
+          },
+          "403": {
+            "$ref": "#/components/responses/ManglerTilgang"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
     "/leverandorportal/api/v1/leverandor/meg": {
       "get": {
         "summary": "Hent leverandørrad for orgnr i token",
@@ -872,6 +909,40 @@
           }
         }
       },
+      "InnloggetBruker": {
+        "type": "object",
+        "required": [
+          "organisasjon"
+        ],
+        "properties": {
+          "navn": {
+            "type": "string",
+            "nullable": true,
+            "maxLength": 200,
+            "description": "Personens fulle navn fra Ansattporten. Null når innloggingsmetoden ikke ga navn; vis da virksomheten, ikke fødselsnummeret."
+          },
+          "organisasjon": {
+            "$ref": "#/components/schemas/InnloggetOrganisasjon"
+          }
+        }
+      },
+      "InnloggetOrganisasjon": {
+        "type": "object",
+        "required": [
+          "orgnr"
+        ],
+        "properties": {
+          "orgnr": {
+            "type": "string",
+            "pattern": "^\\d{9}$"
+          },
+          "navn": {
+            "type": "string",
+            "nullable": true,
+            "description": "Virksomhetens navn slik Altinn oppga det ved innlogging."
+          }
+        }
+      },
       "Leverandor": {
         "type": "object",
         "required": [
@@ -964,7 +1035,7 @@
           "lagtTilAv": {
             "type": "string",
             "nullable": true,
-            "description": "Hvem som registrerte produktet. Portalen setter seg selv som kilde."
+            "description": "Navnet på personen som registrerte produktet, fra Ansattporten. «Leverandørportalen» når innloggingen ikke ga navn, og for produkter registrert før navnet ble tilgjengelig."
           },
           "opprettetDato": {
             "type": "string",
