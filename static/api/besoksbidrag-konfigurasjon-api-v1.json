@@ -1,7 +1,7 @@
 {
   "openapi": "3.0.3",
   "info": {
-    "title": "KS FIKS: Besoksbidrag service",
+    "title": "KS Besoksbidrag service",
     "description": "Besoksbidrag service",
     "contact": {
       "name": "Fiks brukerstøtte",
@@ -32,7 +32,11 @@
   "tags": [
     {
       "name": "besoksbidrag",
-      "description": "API for demoformål"
+      "description": "API for Besøksbidrag"
+    },
+    {
+      "name": "configuration",
+      "description": "Configuration of the visitor levy (besøksbidrag) service"
     }
   ],
   "paths": {
@@ -62,6 +66,92 @@
           },
           "400": {
             "$ref": "#/components/responses/Error400"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error403"
+          },
+          "500": {
+            "$ref": "#/components/responses/Error500"
+          }
+        }
+      }
+    },
+    "/besoksbidrag-konfigurasjon/api/v1/{fiksOrgId}/configuration": {
+      "get": {
+        "tags": [
+          "configuration"
+        ],
+        "summary": "Get configuration",
+        "description": "Returns the visitor levy configuration for the organization, including the periods in which the service is active and the contact persons.",
+        "operationId": "getConfiguration",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/FiksOrgId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Configuration found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Configuration"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Error401"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error403"
+          },
+          "404": {
+            "$ref": "#/components/responses/Error404"
+          },
+          "500": {
+            "$ref": "#/components/responses/Error500"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "configuration"
+        ],
+        "summary": "Create or replace configuration",
+        "description": "Creates or replaces the complete visitor levy configuration for the organization. Periods and contacts not included in the request are removed.",
+        "operationId": "updateConfiguration",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/FiksOrgId"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Configuration"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Configuration saved",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Configuration"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/Error400"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error401"
           },
           "403": {
             "$ref": "#/components/responses/Error403"
@@ -232,8 +322,28 @@
           }
         }
       },
+      "Error401": {
+        "description": "Unauthorized",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorMessage"
+            }
+          }
+        }
+      },
       "Error403": {
         "description": "Forbidden",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorMessage"
+            }
+          }
+        }
+      },
+      "Error404": {
+        "description": "Not Found",
         "content": {
           "application/json": {
             "schema": {
@@ -301,6 +411,107 @@
           "apiVersion",
           "authorizationDescription"
         ]
+      },
+      "Configuration": {
+        "type": "object",
+        "description": "Visitor levy configuration for an organization",
+        "required": [
+          "periods",
+          "contacts"
+        ],
+        "properties": {
+          "periods": {
+            "type": "array",
+            "description": "Periods in which the visitor levy service is active. Periods must not overlap, including their yearly repetitions.",
+            "items": {
+              "$ref": "#/components/schemas/Period"
+            }
+          },
+          "contacts": {
+            "type": "array",
+            "description": "Contact persons for the visitor levy service",
+            "minItems": 1,
+            "items": {
+              "$ref": "#/components/schemas/Contact"
+            }
+          }
+        },
+        "example": {
+          "periods": [
+            {
+              "startDate": "2027-05-01",
+              "endDate": "2027-05-31",
+              "repeatsYearly": true
+            },
+            {
+              "startDate": "2027-08-01",
+              "endDate": "2027-08-31",
+              "repeatsYearly": true
+            },
+            {
+              "startDate": "2027-12-15",
+              "endDate": "2028-01-15",
+              "repeatsYearly": false
+            }
+          ],
+          "contacts": [
+            {
+              "name": "Kari Nordmann",
+              "email": "kari.nordmann@kommune.no"
+            }
+          ]
+        }
+      },
+      "Period": {
+        "type": "object",
+        "description": "Period in which the visitor levy service is active. Both dates are inclusive. If repeatsYearly is true, the period repeats every year from the year of startDate. endDate must be less than one year after startDate, and may be in the following year for periods crossing new year.",
+        "required": [
+          "startDate",
+          "endDate",
+          "repeatsYearly"
+        ],
+        "properties": {
+          "startDate": {
+            "type": "string",
+            "format": "date",
+            "description": "First day of the period (ISO 8601, YYYY-MM-DD)",
+            "example": "2027-04-15"
+          },
+          "endDate": {
+            "type": "string",
+            "format": "date",
+            "description": "Last day of the period (ISO 8601, YYYY-MM-DD). Must be on or after startDate.",
+            "example": "2027-09-15"
+          },
+          "repeatsYearly": {
+            "type": "boolean",
+            "description": "Whether the period repeats every year"
+          }
+        }
+      },
+      "Contact": {
+        "type": "object",
+        "description": "Contact person for the visitor levy service",
+        "required": [
+          "name",
+          "email"
+        ],
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200,
+            "description": "Full name of the contact person",
+            "example": "Kari Nordmann"
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "maxLength": 254,
+            "description": "Email address of the contact person",
+            "example": "kari.nordmann@kommune.no"
+          }
+        }
       }
     }
   }
