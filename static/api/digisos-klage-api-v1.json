@@ -1,0 +1,495 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "KS Fiks: Digisos Klage Service",
+    "description": "API for innsending og håndtering av klager relatert til Digisos-søknader",
+    "contact": {
+      "name": "Fiks brukerstøtte",
+      "url": "https://developers.fiks.ks.no/",
+      "email": "fiks@ks.no"
+    },
+    "version": "v1"
+  },
+  "servers": [
+    {
+      "url": "https://api.fiks.test.ks.no",
+      "description": "KS Fiks API host"
+    }
+  ],
+  "tags": [
+    {
+      "name": "DigisosKlage",
+      "description": "API for håndtering av Digisos klager"
+    }
+  ],
+  "paths": {
+    "/digisos/klage/api/v1/{digisosId}/{navEksternRefId}/{klageId}/vedlegg": {
+      "post": {
+        "tags": [
+          "KlageController"
+        ],
+        "summary": "Send inn en ettersendelse på en klage for en Digisos-søknad",
+        "description": "Sender inn en ettersendelse på en klage for en spesifikk Digisos-søknad.",
+        "operationId": "ettersendVedlegg",
+        "parameters": [
+          {
+            "name": "digisosId",
+            "in": "path",
+            "description": "Id som peker til søknaden man sender en klage på",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "navEksternRefId",
+            "in": "path",
+            "description": "Ekstern referanse-ID fra NAV. Peker til id brukt ved opplasting av filer mot mellomlagring.",
+            "required": true,
+            "schema": {
+              "maxLength": 60,
+              "minLength": 0,
+              "pattern": "^[0-9a-zA-Z_\\-]*",
+              "type": "string"
+            }
+          },
+          {
+            "name": "klageId",
+            "in": "path",
+            "description": "Id som identifiserer klagen",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Klage ettersendelse sendt inn vellykket"
+          },
+          "500": {
+            "description": "Intern serverfeil"
+          }
+        }
+      }
+    },
+    "/digisos/klage/api/v1/klager": {
+      "get": {
+        "tags": [
+          "KlageController"
+        ],
+        "description": "Henter alle klager for innlogget person",
+        "operationId": "getKlager",
+        "parameters": [
+          {
+            "name": "digisosId",
+            "in": "query",
+            "description": "Id som peker til søknaden man sender en klage på",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Alle klager for innlogget person",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/MongoOriginalKlageNAV"
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Du har ikke tilgang til klagene tilhørende angitt fnr",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/digisos/klage/api/v1/{digisosId}/{navEksternRefId}/{klageId}/{vedtakId}": {
+      "post": {
+        "tags": [
+          "KlageController"
+        ],
+        "summary": "Send inn en klage for en Digisos-søknad",
+        "description": "Sender inn en klage for en spesifikk Digisos-søknad.",
+        "operationId": "sendKlage",
+        "parameters": [
+          {
+            "name": "digisosId",
+            "in": "path",
+            "description": "Id som peker til søknaden man sender en klage på",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "navEksternRefId",
+            "in": "path",
+            "description": "Ekstern referanse-ID fra NAV. Peker til id brukt ved opplasting av filer mot mellomlagring.",
+            "required": true,
+            "schema": {
+              "maxLength": 60,
+              "minLength": 0,
+              "pattern": "^[0-9a-zA-Z_\\-]*",
+              "type": "string"
+            }
+          },
+          {
+            "name": "klageId",
+            "in": "path",
+            "description": "Id som identifiserer klagen",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "vedtakId",
+            "in": "path",
+            "description": "Id som identifiserer vedtaket klagen gjelder",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Klage sendt inn vellykket"
+          },
+          "500": {
+            "description": "Intern serverfeil"
+          }
+        }
+      }
+    },
+    "/digisos/klage/api/v1/{digisosId}/{navEksternRefId}/{klageId}/trekk": {
+      "post": {
+        "tags": [
+          "KlageController"
+        ],
+        "summary": "Trekker en spesifikk klage som setter den til slettet",
+        "description": "Trekker en spesifikk klage som setter den til slettet.",
+        "operationId": "trekkKlage",
+        "parameters": [
+          {
+            "name": "digisosId",
+            "in": "path",
+            "description": "Unik DigisosId for søknaden",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "navEksternRefId",
+            "in": "path",
+            "description": "Ekstern referanse-ID fra NAV. Peker til id brukt ved opplasting av filer mot mellomlagring.",
+            "required": true,
+            "schema": {
+              "maxLength": 60,
+              "minLength": 0,
+              "pattern": "^[0-9a-zA-Z_\\-]*",
+              "type": "string"
+            }
+          },
+          {
+            "name": "klageId",
+            "in": "path",
+            "description": "Id som identifiserer klagen",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Klagen er trukket"
+          },
+          "500": {
+            "description": "Intern serverfeil"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "DokumentInfo": {
+        "type": "object",
+        "properties": {
+          "filnavn": {
+            "type": "string",
+            "description": "Logisk navn på fil",
+            "example": "example.pdf"
+          },
+          "dokumentlagerDokumentId": {
+            "type": "string",
+            "description": "ID på filen i KS Fiks Dokumentlager",
+            "format": "uuid"
+          },
+          "storrelse": {
+            "type": "integer",
+            "description": "Størrelse på filen (i bytes)",
+            "format": "int64"
+          }
+        },
+        "description": "Metadata om en fil"
+      },
+      "Ettersendelse": {
+        "type": "object",
+        "properties": {
+          "navEksternRefId": {
+            "type": "string"
+          },
+          "vedleggMetadata": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "vedlegg": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DokumentInfo"
+            }
+          },
+          "timestampSendt": {
+            "type": "integer",
+            "format": "int64"
+          }
+        }
+      },
+      "EttersendtInfoNAV": {
+        "type": "object",
+        "properties": {
+          "ettersendelser": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Ettersendelse"
+            }
+          }
+        }
+      },
+      "MongoEttersendelse": {
+        "type": "object",
+        "properties": {
+          "navEksternRefId": {
+            "type": "string"
+          },
+          "vedleggMetadata": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "vedlegg": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DokumentInfo"
+            }
+          },
+          "sendtKvittering": {
+            "$ref": "#/components/schemas/SendtKvittering"
+          },
+          "ettersendelse": {
+            "$ref": "#/components/schemas/Ettersendelse"
+          }
+        }
+      },
+      "MongoEttersendtInfoNAV": {
+        "type": "object",
+        "properties": {
+          "ettersendelser": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MongoEttersendelse"
+            }
+          },
+          "ettersendtInfoNAV": {
+            "$ref": "#/components/schemas/EttersendtInfoNAV"
+          }
+        }
+      },
+      "MongoOriginalKlageNAV": {
+        "type": "object",
+        "properties": {
+          "fiksOrgId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "klageId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "digisosId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "vedtakId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "navEksternRefId": {
+            "type": "string"
+          },
+          "klageMetadata": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "vedleggMetadata": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "klageDokument": {
+            "$ref": "#/components/schemas/DokumentInfo"
+          },
+          "trekkKlageInfo": {
+            "$ref": "#/components/schemas/TrekkKlageInfo"
+          },
+          "vedlegg": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DokumentInfo"
+            }
+          },
+          "sendtKvittering": {
+            "$ref": "#/components/schemas/SendtKvittering"
+          },
+          "ettersendtInfoNAV": {
+            "$ref": "#/components/schemas/MongoEttersendtInfoNAV"
+          },
+          "trukket": {
+            "type": "boolean"
+          }
+        }
+      },
+      "SendtKvittering": {
+        "type": "object",
+        "properties": {
+          "sendtKanal": {
+            "type": "string",
+            "enum": [
+              "FIKS_IO",
+              "SVARUT"
+            ]
+          },
+          "meldingId": {
+            "type": "string"
+          },
+          "sendtStatus": {
+            "$ref": "#/components/schemas/SendtStatus"
+          },
+          "statusListe": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SendtStatus"
+            }
+          }
+        }
+      },
+      "SendtStatus": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "SENDT",
+              "BEKREFTET",
+              "TTL_TIDSAVBRUDD",
+              "MAX_RETRIESAVBRUDD",
+              "IKKE_SENDT",
+              "SVARUT_FEIL",
+              "STOPPET"
+            ]
+          },
+          "timestamp": {
+            "type": "integer",
+            "format": "int64"
+          }
+        }
+      },
+      "TrekkKlageInfo": {
+        "type": "object",
+        "properties": {
+          "navEksternRefId": {
+            "type": "string"
+          },
+          "trekkPdfMetadata": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "vedleggMetadata": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "trekkKlageDokument": {
+            "$ref": "#/components/schemas/DokumentInfo"
+          },
+          "vedlegg": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DokumentInfo"
+            }
+          },
+          "sendtKvittering": {
+            "$ref": "#/components/schemas/SendtKvittering"
+          }
+        }
+      },
+      "ErrorMessage": {
+        "type": "object",
+        "properties": {
+          "timestamp": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "status": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "error": {
+            "type": "string"
+          },
+          "errorId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "path": {
+            "type": "string"
+          },
+          "originalPath": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          },
+          "errorCode": {
+            "type": "string"
+          },
+          "errorJson": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}
