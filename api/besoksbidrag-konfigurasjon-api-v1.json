@@ -82,7 +82,7 @@
           "configuration"
         ],
         "summary": "Get configuration",
-        "description": "Returns the visitor levy configuration for the organization, including the periods in which the service is active and the contact persons.",
+        "description": "Returns the visitor levy configuration for the organization. An unconfigured section is returned as an empty array after the first section has been saved.",
         "operationId": "getConfiguration",
         "parameters": [
           {
@@ -113,14 +113,16 @@
             "$ref": "#/components/responses/Error500"
           }
         }
-      },
+      }
+    },
+    "/besoksbidrag-konfigurasjon/api/v1/{fiksOrgId}/configuration/contacts": {
       "put": {
         "tags": [
           "configuration"
         ],
-        "summary": "Create or replace configuration",
-        "description": "Creates or replaces the complete visitor levy configuration for the organization. Periods and contacts not included in the request are removed.",
-        "operationId": "updateConfiguration",
+        "summary": "Create or replace contacts",
+        "description": "Creates the configuration if needed and replaces only its contacts. At least one contact is required. Periods are left unchanged.",
+        "operationId": "updateContacts",
         "parameters": [
           {
             "$ref": "#/components/parameters/FiksOrgId"
@@ -131,18 +133,67 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/Configuration"
+                "$ref": "#/components/schemas/ContactsConfiguration"
               }
             }
           }
         },
         "responses": {
           "200": {
-            "description": "Configuration saved",
+            "description": "Contacts saved",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Configuration"
+                  "$ref": "#/components/schemas/ContactsConfiguration"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/Error400"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error401"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error403"
+          },
+          "500": {
+            "$ref": "#/components/responses/Error500"
+          }
+        }
+      }
+    },
+    "/besoksbidrag-konfigurasjon/api/v1/{fiksOrgId}/configuration/periods": {
+      "put": {
+        "tags": [
+          "configuration"
+        ],
+        "summary": "Create or replace periods",
+        "description": "Creates the configuration if needed and replaces only its periods. An empty list removes all periods. Contacts are left unchanged.",
+        "operationId": "updatePeriods",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/FiksOrgId"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PeriodsConfiguration"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Periods saved",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PeriodsConfiguration"
                 }
               }
             }
@@ -414,7 +465,7 @@
       },
       "Configuration": {
         "type": "object",
-        "description": "Visitor levy configuration for an organization",
+        "description": "Visitor levy configuration for an organization. Sections not yet configured are empty arrays.",
         "required": [
           "periods",
           "contacts"
@@ -430,7 +481,6 @@
           "contacts": {
             "type": "array",
             "description": "Contact persons for the visitor levy service",
-            "minItems": 1,
             "items": {
               "$ref": "#/components/schemas/Contact"
             }
@@ -462,9 +512,42 @@
           ]
         }
       },
+      "ContactsConfiguration": {
+        "type": "object",
+        "description": "Contacts to save for an organization",
+        "required": [
+          "contacts"
+        ],
+        "properties": {
+          "contacts": {
+            "type": "array",
+            "description": "Full replacement list of contact persons",
+            "minItems": 1,
+            "items": {
+              "$ref": "#/components/schemas/Contact"
+            }
+          }
+        }
+      },
+      "PeriodsConfiguration": {
+        "type": "object",
+        "description": "Periods to save for an organization",
+        "required": [
+          "periods"
+        ],
+        "properties": {
+          "periods": {
+            "type": "array",
+            "description": "Full replacement list of active periods. Periods must not overlap, including yearly repetitions",
+            "items": {
+              "$ref": "#/components/schemas/Period"
+            }
+          }
+        }
+      },
       "Period": {
         "type": "object",
-        "description": "Period in which the visitor levy service is active. Both dates are inclusive. If repeatsYearly is true, the period repeats every year from the year of startDate. endDate must be less than one year after startDate, and may be in the following year for periods crossing new year.",
+        "description": "Period in which the visitor levy service is active. Both dates are inclusive and must be between years 2027 and 2100. If repeatsYearly is true, the period repeats every year from the year of startDate, must end before its next yearly occurrence begins, and cannot start or end on February 29. The period may cross new year.",
         "required": [
           "startDate",
           "endDate",
@@ -474,13 +557,13 @@
           "startDate": {
             "type": "string",
             "format": "date",
-            "description": "First day of the period (ISO 8601, YYYY-MM-DD)",
+            "description": "First day of the period (ISO 8601, YYYY-MM-DD). Year must be between 2027 and 2100.",
             "example": "2027-04-15"
           },
           "endDate": {
             "type": "string",
             "format": "date",
-            "description": "Last day of the period (ISO 8601, YYYY-MM-DD). Must be on or after startDate.",
+            "description": "Last day of the period (ISO 8601, YYYY-MM-DD). Must be on or after startDate and year must be between 2027 and 2100.",
             "example": "2027-09-15"
           },
           "repeatsYearly": {
@@ -501,14 +584,14 @@
             "type": "string",
             "minLength": 1,
             "maxLength": 200,
-            "description": "Full name of the contact person",
+            "description": "Full name of the contact person. Leading and trailing whitespace is removed. Must contain letters; spaces, periods, hyphens and apostrophes are allowed between name parts. Emoji and control characters are not allowed.",
             "example": "Kari Nordmann"
           },
           "email": {
             "type": "string",
             "format": "email",
             "maxLength": 254,
-            "description": "Email address of the contact person",
+            "description": "Email address of the contact person. Leading and trailing whitespace is removed. Validated using the shared Fiks email pattern.",
             "example": "kari.nordmann@kommune.no"
           }
         }
