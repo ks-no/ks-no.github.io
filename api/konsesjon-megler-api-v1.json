@@ -1,8 +1,8 @@
 {
   "openapi": "3.0.3",
   "info": {
-    "title": "KS FIKS: Konsesjon service",
-    "description": "Konsesjon service",
+    "title": "KS FIKS: Konsesjon megler-API",
+    "description": "API for eiendomsmeglere som skal avklare konsesjonsforhold ved salg av eiendom. Avklaringen gjøres mot Landbruksdirektoratet (LDIR).",
     "contact": {
       "name": "Fiks konsesjon",
       "url": "https://www.ks.no/fagomrader/digitalisering/utviklingsprosjekter",
@@ -33,52 +33,46 @@
           "Eiendomssalg - Konsesjonsavklaring"
         ],
         "description": "Returnerer om en egenerklæring er påkrevd for eiendommen og om det er boplikt",
-        "operationId": "getEgenerklaeringPaakrevdAndBoplikt",
+        "operationId": "hentEgenerklaeringPaakrevdOgBoplikt",
         "parameters": [
           {
-            "name": "knr",
+            "name": "kommunenummer",
             "in": "query",
             "required": true,
             "schema": {
-              "type": "string"
+              "$ref": "#/components/schemas/Kommunenummer"
             }
           },
           {
-            "name": "gnr",
+            "name": "gaardsnummer",
             "in": "query",
             "required": true,
             "schema": {
-              "type": "integer",
-              "format": "int32"
+              "$ref": "#/components/schemas/Gaardsnummer"
             }
           },
           {
-            "name": "bnr",
+            "name": "bruksnummer",
             "in": "query",
             "required": true,
             "schema": {
-              "type": "integer",
-              "format": "int32"
+              "$ref": "#/components/schemas/Bruksnummer"
             }
           },
           {
-            "name": "fnr",
+            "name": "festenummer",
             "in": "query",
             "required": false,
             "schema": {
-              "type": "integer",
-              "format": "int32",
-              "default": 0
+              "$ref": "#/components/schemas/Festenummer"
             }
           },
           {
-            "name": "snr",
+            "name": "seksjonsnummer",
             "in": "query",
             "required": false,
             "schema": {
-              "type": "integer",
-              "format": "int32",
-              "default": 0
+              "$ref": "#/components/schemas/Seksjonsnummer"
             }
           }
         ],
@@ -154,7 +148,7 @@
           "required": true
         },
         "responses": {
-          "200": {
+          "201": {
             "description": "Konsesjonsavklaring har blitt opprettet",
             "content": {
               "application/json": {
@@ -196,16 +190,6 @@
           },
           "409": {
             "description": "Konflikt - Det finnes allerede en konsesjonsavklaring for denne eiendommen og erververen",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
-                }
-              }
-            }
-          },
-          "410": {
-            "description": "Finnes ikke lenger",
             "content": {
               "application/json": {
                 "schema": {
@@ -278,16 +262,6 @@
           },
           "404": {
             "description": "Ingen treff - Fant ikke konsesjonsavklaring som matchet den gitte id-en",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
-                }
-              }
-            }
-          },
-          "410": {
-            "description": "Finnes ikke lenger",
             "content": {
               "application/json": {
                 "schema": {
@@ -384,16 +358,6 @@
                 }
               }
             }
-          },
-          "410": {
-            "description": "Finnes ikke lenger",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
-                }
-              }
-            }
           }
         }
       }
@@ -404,7 +368,7 @@
           "Eiendomssalg - Konsesjonsavklaring"
         ],
         "description": "Genererer en PDF av det ferdigstilte skjemaet",
-        "operationId": "getPdf",
+        "operationId": "hentPdf",
         "parameters": [
           {
             "in": "path",
@@ -424,6 +388,16 @@
                 "schema": {
                   "type": "string",
                   "format": "binary"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Feil input",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
                 }
               }
             }
@@ -460,16 +434,6 @@
           },
           "409": {
             "description": "Konflikt - Feil status",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
-                }
-              }
-            }
-          },
-          "410": {
-            "description": "Finnes ikke lenger",
             "content": {
               "application/json": {
                 "schema": {
@@ -553,16 +517,6 @@
                 }
               }
             }
-          },
-          "410": {
-            "description": "Finnes ikke lenger",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
-                }
-              }
-            }
           }
         }
       }
@@ -629,7 +583,7 @@
             }
           },
           "404": {
-            "description": "Ingen treff - Fant ikke egenerklaering som matchet den gitte id-en",
+            "description": "Ingen treff - Fant ikke en eller flere av konsesjonsavklaringene som matchet de gitte id-ene",
             "content": {
               "application/json": {
                 "schema": {
@@ -647,7 +601,7 @@
           "Eiendomssalg - Konsesjonsavklaring"
         ],
         "description": "Hent konsesjonsavklaringsstatus",
-        "operationId": "getAvklaringStatus",
+        "operationId": "hentAvklaringStatus",
         "parameters": [
           {
             "in": "path",
@@ -709,16 +663,6 @@
                 }
               }
             }
-          },
-          "410": {
-            "description": "Finnes ikke lenger",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
-                }
-              }
-            }
           }
         }
       }
@@ -753,7 +697,12 @@
         "type": "object",
         "properties": {
           "egenerklaeringPaakrevd": {
-            "type": "boolean"
+            "type": "string",
+            "enum": [
+              "JA",
+              "NEI",
+              "IKKE_TILLATT"
+            ]
           },
           "boplikt": {
             "$ref": "#/components/schemas/BopliktResponse"
@@ -766,7 +715,7 @@
           "KREVES_IKKE",
           "DEL_AV_STORRE_LANDBRUKSEIENDOM",
           "KREVER_EGENERKLARING",
-          "IKKE_IMPLEMENTERT",
+          "KREVER_MANUELL_VURDERING",
           "EIENDOM_ER_SEKSJONERT"
         ]
       },
@@ -832,15 +781,15 @@
       "EiendomMedEierandel": {
         "type": "object",
         "properties": {
-          "eiendomsId": {
-            "$ref": "#/components/schemas/EiendomsId"
+          "matrikkelnummer": {
+            "$ref": "#/components/schemas/Matrikkelnummer"
           },
           "eierandel": {
             "$ref": "#/components/schemas/Eierandel"
           }
         },
         "required": [
-          "eiendomsId"
+          "matrikkelnummer"
         ]
       },
       "Erverver": {
@@ -908,7 +857,7 @@
           }
         }
       },
-      "EiendomsId": {
+      "Matrikkelnummer": {
         "type": "object",
         "required": [
           "kommunenummer",
@@ -917,33 +866,19 @@
         ],
         "properties": {
           "kommunenummer": {
-            "type": "string",
-            "minLength": 4,
-            "maxLength": 4
+            "$ref": "#/components/schemas/Kommunenummer"
           },
           "gaardsnummer": {
-            "type": "integer",
-            "format": "int32",
-            "minimum": 1,
-            "maximum": 999999
+            "$ref": "#/components/schemas/Gaardsnummer"
           },
           "bruksnummer": {
-            "type": "integer",
-            "format": "int32",
-            "minimum": 1,
-            "maximum": 999999
+            "$ref": "#/components/schemas/Bruksnummer"
           },
           "festenummer": {
-            "type": "integer",
-            "format": "int32",
-            "minimum": 0,
-            "maximum": 999999
+            "$ref": "#/components/schemas/Festenummer"
           },
           "seksjonsnummer": {
-            "type": "integer",
-            "format": "int32",
-            "minimum": 0,
-            "maximum": 999999
+            "$ref": "#/components/schemas/Seksjonsnummer"
           }
         }
       },
@@ -972,50 +907,44 @@
         ],
         "properties": {
           "matrikkelnummer": {
-            "$ref": "#/components/schemas/MatrikkelNummer"
+            "$ref": "#/components/schemas/Matrikkelnummer"
           }
         }
       },
-      "MatrikkelNummer": {
-        "type": "object",
-        "properties": {
-          "kommunenummer": {
-            "type": "string",
-            "minLength": 4,
-            "maxLength": 4
-          },
-          "gaardsnummer": {
-            "type": "integer",
-            "format": "int32",
-            "maximum": 999999,
-            "minimum": 1
-          },
-          "bruksnummer": {
-            "type": "integer",
-            "format": "int32",
-            "maximum": 999999,
-            "minimum": 1
-          },
-          "festenummer": {
-            "type": "integer",
-            "format": "int32",
-            "maximum": 999999,
-            "minimum": 0
-          },
-          "seksjonsnummer": {
-            "type": "integer",
-            "format": "int32",
-            "maximum": 999999,
-            "minimum": 0
-          }
-        },
-        "required": [
-          "kommunenummer",
-          "gaardsnummer",
-          "bruksnummer",
-          "festenummer",
-          "seksjonsnummer"
-        ]
+      "Kommunenummer": {
+        "type": "string",
+        "description": "Firesifret kommunenummer, f.eks. 0301",
+        "minLength": 4,
+        "maxLength": 4,
+        "pattern": "^[0-9]{4}$"
+      },
+      "Gaardsnummer": {
+        "type": "integer",
+        "format": "int32",
+        "minimum": 1,
+        "maximum": 999999
+      },
+      "Bruksnummer": {
+        "type": "integer",
+        "format": "int32",
+        "minimum": 1,
+        "maximum": 999999
+      },
+      "Festenummer": {
+        "type": "integer",
+        "format": "int32",
+        "description": "0 betyr at eiendommen ikke er en festegrunn",
+        "minimum": 0,
+        "maximum": 999999,
+        "default": 0
+      },
+      "Seksjonsnummer": {
+        "type": "integer",
+        "format": "int32",
+        "description": "0 betyr at eiendommen ikke er seksjonert",
+        "minimum": 0,
+        "maximum": 999999,
+        "default": 0
       },
       "KonsesjonReferanse": {
         "type": "object",
@@ -1041,7 +970,7 @@
           "EIENDOM_IKKE_FUNNET",
           "DEL_AV_STORRE_LANDBRUKSEIENDOM",
           "KREVER_IKKE_EGENERKLAERING",
-          "IKKE_IMPLEMENTERT",
+          "KREVER_MANUELL_VURDERING",
           "EIENDOM_ER_SEKSJONERT"
         ]
       },
