@@ -6,7 +6,7 @@ aliases: [/fiks-platform/tjenester/eiendomsavtaler/, /fiks-plattform/tjenester/e
 ## Kort beskrivelse
 **Felles grunnlag for fakturering av kommunale gebyrer.**
 
-Fiks eiendomsavtaler gir kommunen ett register over eiendomsavtaler som fagsystemene for vann og avløp, feiing, renovasjon og eiendomsskatt kan fakturere etter. I dag har hvert fagsystem gjerne sin egen kopi av matrikkeldata. Med Fiks eiendomsavtaler hentes matrikkeldataene ett sted, og alle kommunens fagsystemer får det samme grunnlaget.
+Fiks eiendomsavtaler gir kommunen ett register over eiendomsavtaler som for eksempel fagsystemene for vann og avløp, feiing, renovasjon og eiendomsskatt kan fakturere etter. I dag har hvert fagsystem gjerne sin egen kopi av matrikkeldata. Med Fiks eiendomsavtaler hentes matrikkeldataene ett sted, og alle kommunens fagsystemer får det samme grunnlaget.
 
 Oslo kommune er pilotkommune.
 
