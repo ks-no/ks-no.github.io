@@ -29,7 +29,7 @@ TODO: Urler kan endre seg før endelig versjon er ferdig.
 ### Overordnet flyt
 
 1. Velg riktig operasjon og kall det tilhørende `POST`-endepunktet i API-et med JSON-data i forespørselen. Hvert kall gjelder én relasjon mellom fosterbarn og fosterforelder. Se [innsending]({{% ref "innsending.md" %}}).
-2. Fiks kvitterer for mottak med `202 Accepted`. Dette er **ikke** Folkeregisterets beslutning.
+2. Fiks kvitterer for mottak med `202 Accepted`.
 3. Hent startsekvens og [poll tilbakemeldinger]({{% ref "tilbakemeldinger.md" %}}) for å finne ut om meldingen ble registrert eller avvist.
 
 Se [brukseksemplene]({{% ref "brukseksempler.md" %}}) for valg av operasjon i typiske situasjoner.
