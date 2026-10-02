@@ -13,7 +13,7 @@ Oslo kommune er pilotkommune.
 ## Hvordan det fungerer
 
 - Hver matrikkelenhet i kommunen får automatisk en eiendomsavtale (hovedavtale). Hovedavtalen holdes fortløpende oppdatert mot matrikkelen med eiendom, eierforhold og adresser.
-- Kommunen kan i tillegg opprette særavtaler manuelt. Disse oppdateres ikke fra matrikkelen.
+- Kommunen kan i tillegg opprette særavtaler manuelt. Disse oppdateres ikke fra matrikkelen, og må vedlikeholdes manuelt.
 - Saksbehandlere i kommunen beriker avtalene med opplysninger som ikke finnes i matrikkelen, som eierkontakt, fakturamottaker, merknader og avtalestatus.
 - Fagsystemene henter avtalene fra Fiks eiendomsavtaler, og trenger ingen egen integrasjon mot Kartverket.
 - Endringer på avtalene og historikk lagres også.
@@ -29,7 +29,7 @@ Oslo kommune er pilotkommune.
 API-et lar fagsystemer:
 
 - hente alle avtaler i en kommune, og deretter bare det som er endret siden sist.
-- hente én avtale,
+- hente én avtale.
 - søke etter avtaler på matrikkelnummer, eierkontakt eller fakturamottaker.
 
 ### Hente endringer
