@@ -39,6 +39,7 @@ Hver endring på en avtale gir avtalen et nytt `sekvensnummer`. Et fagsystem hol
 1. Kall `GET /eiendomsavtaler/offentlig/api/v1/{fiksOrgId}/eiendomsavtaler?kommunenummer={kommunenummer}` uten `fraSekvensnummer` for å starte fra begynnelsen.
 2. Lagre høyeste `sekvensnummer` i svaret.
 3. Kall på nytt med `fraSekvensnummer` satt til lagret verdi + 1. Gjenta til svaret er tomt.
+4. Dette kan gjøres på nytt senere med høyeste `sekvensnummer` lagret fra forrige kjøring, for å hente nye endringer.
 
 `antall` styrer sidestørrelsen (standard 100, maks 1000).
 
