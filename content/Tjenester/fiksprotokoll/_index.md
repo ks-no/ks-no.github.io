@@ -31,6 +31,7 @@ Begge utviklerrollene må følge [Beste praksis for meldingshåndtering]({{% ref
 
 ## Innhold
 
+* **[Konseptuell modell]({{% ref "konseptuell_modell.md" %}})** - En oversikt over den konseptuelle modellen bak Fiks Protokoll
 * **[Veiledninger]({{% ref "veiledninger" %}})** – steg-for-steg-guider for å komme i gang og vedlikeholde Fiks Protokoll i Fiks Forvaltning
 * **[Beste praksis for meldingshåndtering]({{% ref "meldingshandtering.md" %}})** – hvordan en klient korrekt håndterer asynkron meldingsutveksling
 * **[Protokoller]({{% ref "protokoller" %}})** – oversikt og status for de ulike protokollene (Arkiv, Plan, Matrikkelføring, Barnevern, Link, Saksfaser)
@@ -63,22 +64,5 @@ Fiks IO Katalog API er en oppslagstjeneste som brukes for å hente offentlig nø
 
 - Hente offentlig nøkkel for konto
 - Hente kontoinformasjon, f.eks. status med antall konsumenter på køen
-
-## Termer
-
-* **Protokollsystem** – et system som skal sende og motta meldinger over Fiks Protokoll (f.eks. et arkiv, et fagsystem som skal arkivere, en matrikkelklient). Et system kan bruke flere protokoller, f.eks. både Fiks Arkiv og Fiks Plan.
-* **Protokollkonto** – et protokollsystem kan ha flere protokollkontoer. En protokollkonto er en Fiks IO-konto som er en part i en protokoll. F.eks. en konto i et arkiv som støtter arkivering og søk, en konto i et fagsystem som skal søke i et arkiv, eller en konto i eByggesak som skal matrikkelføre.
-* **Protokoll** – definisjon av en spesifikk protokoll, med meldingstyper og parter. F.eks. `no.ks.fiks.arkiv.v1` og `no.ks.fiks.plan.v1`.
-* **Meldingstype** – meldinger som sendes må ha en meldingstype. Gyldige meldingstyper defineres av protokollen, og vil typisk måtte følge meldingsskjema definert i enten XSD eller JSON-skjema.
-* **Protokollpart** – en rolle som er definert i en protokoll. Hver part bestemmer hvilke meldingstyper en konto kan sende og motta, og hvilke andre parter den kan utveksle meldinger med. Når du oppretter en konto, velger du hvilken part den skal være — typisk fagsystem-siden eller arkiv-siden i en protokoll. To kontoer kan bare utveksle meldinger hvis partene deres er definert til å kommunisere med hverandre. Hvilke parter en protokoll har, ser du i [protokollens beskrivelse]({{% ref "protokoller" %}}).
-* **Integrasjon** – på Fiks-plattformen brukes integrasjoner for maskinpålogging sammen med Maskinporten. Hvert system får opprettet en integrasjon som brukes for alle kontoer under systemet. Integrasjonen kan sende og motta meldinger, og dersom valgt også konfigurere systemet og opprette nye kontoer. Se [Felles → Integrasjoner]({{% ref "/Felles/integrasjoner.md" %}}).
-* **Fiks IO** – kanalen som brukes for å sende meldinger i Fiks Protokoll. Se [Fiks IO]({{% ref "fiksio.md" %}}).
-* **Fiks IO-konto** – meldinger sendes og mottas over Fiks IO med en Fiks IO-konto. Fiks IO-kontoen har samme ID som protokollkontoen. Protokollkontoen er en wrapper rundt Fiks IO-kontoen for å muliggjøre tilgangsstyring i Fiks Protokoll og validering av meldinger. En Fiks IO-konto er også en kø som holder på meldingene den mottar.
-
-## Arkitektur
-
-Her er en forenklet oversikt over Fiks Protokoll-arkitekturen:
-
-![Fiks Protokoll arkitektur](/tjenester/images/fiks-protokoll-arkitektur-innsikt.png "Fiks Protokoll arkitektur oversikt")
 
 {{< get-help email="fiks@ksdigital.no" support_page="/felles/support/" >}}
