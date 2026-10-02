@@ -5,7 +5,7 @@ date: 2026-10-02
 
 ## Eksempel på operasjonen `endre`
 
-Eksempelet nedenfor er JSON-bodyen for et kall til **`POST /api/v1/omsorgsansvar/endre`** ved en ny fosterhjemsplassering. De andre operasjonene har egne endepunkter og request-skjemaer i [Fiks-API-spesifikasjonen på GitHub](https://github.com/ks-no/fiks-register-fosterforeldre-produsent-spec/blob/main/register-fosterforeldre-produsent.json). Eksempelverdiene er kun illustrasjoner.
+Eksempelet nedenfor er JSON-bodyen for et kall til **`POST /api/v1/omsorgsansvar/endre`** ved en ny fosterhjemsplassering. Eksempelverdiene er syntetiske.
 
 ```json
 {
@@ -28,7 +28,7 @@ Eksempelet nedenfor er JSON-bodyen for et kall til **`POST /api/v1/omsorgsansvar
 }
 ```
 
-Scenarioene under viser hvilken **operasjon i Fiks-API-et** du skal kalle og hvilke opplysninger som er viktige i hvert tilfelle. Ikke bruk `endre`-eksempelet ukritisk for andre operasjoner: sjekk request-skjemaet for endepunktet du kaller. Bruk en ny unik meldingsidentifikator for hvert nytt kall, også når flere kall gjelder samme sak. Ved retry av *samme* innsending brukes derimot samme identifikator. Se [innsending]({{% ref "innsending.md" %}}) og [tilbakemeldinger]({{% ref "tilbakemeldinger.md" %}}) for reglene.
+Scenarioene under viser hvilken operasjon du skal kalle. Hvert nytt kall har sin egen meldingsidentifikator. Se [innsending]({{% ref "innsending.md" %}}) for reglene.
 
 ## 1. Ny fosterhjemsplassering
 
@@ -36,11 +36,11 @@ Barnet flytter inn hos en fosterforelder. Kall `POST /api/v1/omsorgsansvar/endre
 
 ## 2. Begge fosterforeldre skal registreres
 
-Én fosterforelder er registrert fra før, og en annen skal registreres for samme barn. Kall `POST /api/v1/omsorgsansvar/endre` for den andre fosterforelderen med fosterforelderens fødsels- eller d-nummer og en **ny** meldingsidentifikator. Innsender og ansvarlig tjeneste kan være den samme for begge relasjonene.
+Én fosterforelder er registrert fra før, og en annen skal registreres for samme barn. Kall `POST /api/v1/omsorgsansvar/endre` med den andre fosterforelderens fødsels- eller d-nummer. Innsender og ansvarlig tjeneste kan være den samme for begge relasjonene.
 
 ## 3. Feil person ble registrert
 
-Hvis feil fosterforelder ble meldt inn, eller et fødselsnummer eller d-nummer var feil, kall `POST /api/v1/omsorgsansvar/annullere` for den feilaktige relasjonen. Vent på tilbakemelding om annulleringen før du kaller `POST /api/v1/omsorgsansvar/endre` med riktig fødsels- eller d-nummer og ny meldingsidentifikator. Operasjonen `korrigere` kan ikke endre barnets eller fosterforelderens fødsels- eller d-nummer.
+Hvis feil fosterforelder ble meldt inn, eller et fødselsnummer eller d-nummer var feil, kall `POST /api/v1/omsorgsansvar/annullere` for den feilaktige relasjonen. Vent på tilbakemelding om annulleringen før du kaller `POST /api/v1/omsorgsansvar/endre` med riktig fødsels- eller d-nummer. Operasjonen `korrigere` kan ikke endre barnets eller fosterforelderens fødsels- eller d-nummer.
 
 ## 4. Feil fra-dato ble sendt inn
 
@@ -52,7 +52,7 @@ Når barnet flytter hjem, flytter til institusjon eller fosterhjemsavtalen opph�
 
 ## 6. Barnet flytter til nytt fosterhjem
 
-Kall `POST /api/v1/omsorgsansvar/opphoere` for den gamle relasjonen med datoen omsorgsansvaret opphører, og `POST /api/v1/omsorgsansvar/endre` for relasjonen til den nye fosterforelderen med datoen det nye ansvaret begynner. For eksempel kan den første relasjonen avsluttes `2026-09-30` og den neste begynne `2026-10-01`. Gjør hvert kall tidligst på datoen endringen gjelder fra, med hver sin meldingsidentifikator.
+Kall `POST /api/v1/omsorgsansvar/opphoere` for den gamle relasjonen med datoen omsorgsansvaret opphører, og `POST /api/v1/omsorgsansvar/endre` for relasjonen til den nye fosterforelderen med datoen det nye ansvaret begynner. For eksempel kan den første relasjonen avsluttes `2026-09-30` og den neste begynne `2026-10-01`. Gjør hvert kall tidligst på datoen endringen gjelder fra.
 
 ## 7. Annen barnevernstjeneste overtar ansvaret
 

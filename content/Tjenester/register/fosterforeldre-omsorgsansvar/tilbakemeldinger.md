@@ -14,14 +14,13 @@ Fiks-API-et gjør behandlingsresultatet fra Folkeregisteret tilgjengelig asynkro
 
 Sekvensnumrene for dine tilbakemeldinger er stigende, men kan ha hull.
 
-`GET /api/v1/tilbakemeldinger/meldinger/{avsendersMeldingsidentifikator}` returnerer siste kjente tilbakemelding for én innsending. Oppslaget gir `404` inntil tilbakemeldingen er tilgjengelig fra folkeregisteret, selv etter `202 Accepted`. 
-Bruk status per id som kilde om en bruker etterspør svar på denne meldingen. For normal flyt bruk sekvensen over.
+`GET /api/v1/tilbakemeldinger/meldinger/{avsendersMeldingsidentifikator}` returnerer siste kjente tilbakemelding for én innsending. Oppslaget gir `404` inntil tilbakemeldingen er tilgjengelig fra Folkeregisteret, selv etter `202 Accepted`. Bruk oppslaget når en bruker etterspør svar på en bestemt melding; for normal flyt brukes pollingen over.
 
 ## Tolk resultatet
 
-`status` i innsendingens kvittering er Fiks' `MOTTATT`; `status` i tilbakemeldingen tilsvarer Folkeregisterets beslutning. Kontrakten angir `GODKJENT`, `AVSLAATT`, `AVVIST`, `AVBRUTT` og `REGISTRERT`; I dag er kun `AVVIST` og `REGISTRERT` i aktiv bruk. Http `202` betyr ikke `REGISTRERT`, en må vente på tilbakemelding fra folkeregisteret.
+`status` i innsendingens kvittering er Fiks' `MOTTATT`; `status` i tilbakemeldingen tilsvarer Folkeregisterets beslutning. Kontrakten angir `GODKJENT`, `AVSLAATT`, `AVVIST`, `AVBRUTT` og `REGISTRERT`; i dag er kun `AVVIST` og `REGISTRERT` i bruk.
 
-`resultatkode` beskriver den faglige beslutningen maskinlesbart. Kjente koder fra dokumentasjonen:
+`resultatkode` beskriver beslutningen maskinlesbart. Kjente koder (skrivemåten er som oppgitt):
 
 | Operasjon | Registrert/bekreftet | Ikke registrert |
 |-----------|-----------------------|-----------------|
@@ -31,7 +30,7 @@ Bruk status per id som kilde om en bruker etterspør svar på denne meldingen. F
 | Annullere | `skalAnnullere` | `SkalIkkeAnnullere` |
 | Overføre | `skalOverføres` | `skalIkkeOverføres` |
 
-Skrivemåten i kodene følger kilden. `resultatbeskrivelse` gir en lesbar forklaring. `begrunnelser` kan forklare avvisning eller merknad; hver begrunnelse har `begrunnelseskode`, `begrunnelsesnavn` og eventuelt `begrunnelsesmerknad`. Kjente koder i den foreløpige dokumentasjonen (listen kan utvides):
+`resultatbeskrivelse` gir en lesbar forklaring. `begrunnelser` kan forklare avvisning eller merknad; hver begrunnelse har `begrunnelseskode`, `begrunnelsesnavn` og eventuelt `begrunnelsesmerknad`. Kjente koder:
 
 | Begrunnelseskode | Betydning |
 |------------------|-----------|
@@ -88,4 +87,4 @@ Eksempel på polling med én registrert og én avvist melding (to ulike innsendi
 }
 ```
 
-Hullet mellom sekvensnumrene er normalt. Ikke anta at listen over resultat- eller begrunnelseskoder er uttømmende. Se [API-kontrakten på GitHub](https://github.com/ks-no/fiks-register-fosterforeldre-produsent-spec/blob/main/register-fosterforeldre-produsent.json) for komplette responsfelter.
+Ingen av kodelistene er uttømmende; håndter ukjente koder.

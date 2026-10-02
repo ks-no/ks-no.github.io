@@ -11,8 +11,6 @@ API-et er laget for leverandører av fagsystemer til barnevernstjenestene. Fagsy
 
 > **Status:** API-et og kontrakten er under utvikling. Endepunkter, tilgang og tilgjengelighet i test og produksjon må avklares før integrasjon tas i bruk.
 
-API-spesifikasjon: [OpenAPI på GitHub](https://github.com/ks-no/fiks-register-fosterforeldre-produsent-spec/blob/main/register-fosterforeldre-produsent.json).
-
 ## Kom i gang
 
 Integrasjonen bruker Fiks integrasjonsinnlogging med Maskinporten. Se [felles veiledning for integrasjoner]({{% ref "integrasjoner.md" %}}) for opprettelse, autentisering og tilgang. TODO: avklare tilgangstyring
@@ -24,7 +22,7 @@ Følgende base-URL-er er **oppgitt i kontraktsutkastet**, ikke bekreftet som til
 | Test | `https://api.test.fiks.ks.no/folkeregister/produsent` |
 | Produksjon | `https://api.fiks.ks.no/folkeregister/produsent` |
 
-TODO: Urler kan endre seg før endlig versjon er ferdig.
+TODO: Urler kan endre seg før endelig versjon er ferdig.
 
 ## Beskrivelse av tjenesten
 
@@ -38,7 +36,7 @@ Se [brukseksemplene]({{% ref "brukseksempler.md" %}}) for valg av operasjon i ty
 
 ## API-referanse
 
-[OpenAPI-kontrakten på GitHub](https://github.com/ks-no/fiks-register-fosterforeldre-produsent-spec/blob/main/register-fosterforeldre-produsent.json) 
+[OpenAPI-kontrakten på GitHub](https://github.com/ks-no/fiks-register-fosterforeldre-produsent-spec/blob/main/register-fosterforeldre-produsent.json)
 
 {{% children %}}
 

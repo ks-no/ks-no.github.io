@@ -5,7 +5,7 @@ date: 2026-10-02
 
 ## Velg operasjon
 
-Velg operasjonen som svarer til endringen, og kall det tilhørende endepunktet i Fiks-API-et med en JSON-forespørsel. Se [API-spesifikasjonen](https://github.com/ks-no/fiks-register-fosterforeldre-produsent-spec/blob/main/register-fosterforeldre-produsent.json) for request- og responsskjemaene.
+Hver operasjon har sitt eget endepunkt. Se [OpenAPI-kontrakten](https://github.com/ks-no/fiks-register-fosterforeldre-produsent-spec/blob/main/register-fosterforeldre-produsent.json) for request- og responsskjemaer, feltnavn og datatyper.
 
 | Operasjon i Fiks-API-et | Brukes når | Betydningen av `gyldighetsdato` |
 |------------------------|------------|----------------------------------|
@@ -21,10 +21,10 @@ For `endre`, `korrigere`, `opphoere` og `overfoere` skal datoen ikke ligge i fre
 
 ## Forespørselen til Fiks-API-et
 
-Hver operasjon har et eget endepunkt og et eget request-skjema i OpenAPI. I gjeldende kontraktsutkast peker alle fem skjemaene til samme grunnmodell, men operasjonen og betydningen av datoen bestemmes av endepunktet. I JSON-bodyen oppgir klienten egen meldingsidentifikator (UUID), saksreferanse, kildesystem, gyldighetsdato, innsendende barnevernstjeneste, fosterbarn, fosterforelder og ansvarlig barnevernstjeneste. Se [OpenAPI på GitHub](https://github.com/ks-no/fiks-register-fosterforeldre-produsent-spec/blob/main/register-fosterforeldre-produsent.json) for nøyaktige feltnavn og datatyper.
+Alle felter i forespørselen er påkrevd: meldingsidentifikator, saksreferanse, kildesystem, gyldighetsdato, innsendende barnevernstjeneste, fosterbarn, fosterforelder og ansvarlig barnevernstjeneste.
 
 - `avsendersMeldingsidentifikator` skal være en unik UUID for hver **ny** innsending og brukes som idempotensnøkkel.
-- `avsendersSaksreferanse` er påkrevd. Oppgi din egen saksreferanse; samme verdi returneres i tilbakemeldingen.
+- `avsendersSaksreferanse` er din egen saksreferanse; samme verdi returneres i tilbakemeldingen.
 - `kildesystem` er navnet på fagsystemet. `gyldighetsdato` oppgis som dato i formatet `YYYY-MM-DD`.
 - `foedselsEllerDNummer` for barnet og fosterforelderen har 11 siffer. Organisasjonsnummeret til barnevernstjenesten har 9 siffer.
 
@@ -34,4 +34,4 @@ Hver operasjon har et eget endepunkt og et eget request-skjema i OpenAPI. I gjel
 
 Ved timeout uten kvittering kan samme melding sendes på nytt med **samme** `avsendersMeldingsidentifikator`. Ikke lag en ny identifikator for et mulig allerede sendt forsøk; det kan opprette en duplikatsak. Gjenbruk av identifikatoren gir ikke `409 Conflict`. Nye meldinger, også om samme sak, skal ha hver sin identifikator.
 
-Ugyldig forespørsel kan gi `400`, manglende eller ugyldig autentisering `401` og manglende tilgang `403`. Se [OpenAPI-kontrakten](https://github.com/ks-no/fiks-register-fosterforeldre-produsent-spec/blob/main/register-fosterforeldre-produsent.json) for responsmodeller, og [felles integrasjonsveiledning]({{% ref "integrasjoner.md" %}}) for generell autentisering og feilformat.
+Ugyldig forespørsel gir `400`, manglende eller ugyldig autentisering `401` og manglende tilgang `403`.
