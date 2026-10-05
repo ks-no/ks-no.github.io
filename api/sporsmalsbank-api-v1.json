@@ -624,7 +624,8 @@
         ]
       },
       "put": {
-        "summary": "Oppdater pakke (kun UTKAST)",
+        "summary": "Oppdater pakke",
+        "description": "Erstatter tittel, beskrivelse, pakkeType, terskelregler, spørsmålene (utvalg og rekkefølge) og poengoverstyringene i pakkeversjonen. En integrasjon kan bare oppdatere utkast. En root-administrator kan oppdatere pakken på plass uansett status, uten ny versjon; endringen slår da inn i alle skjemaversjoner som inneholder pakkeversjonen. Innleverte selvdeklareringer har frosset innholdet og påvirkes ikke.",
         "operationId": "oppdaterPakke",
         "tags": [
           "Pakke"
@@ -662,7 +663,7 @@
             }
           },
           "409": {
-            "description": "Kan kun redigere utkast"
+            "description": "Pakken er ikke et utkast, og kalleren er ikke root-administrator"
           }
         },
         "security": [
@@ -804,6 +805,93 @@
           },
           "404": {
             "description": "Pakkeversjonen finnes ikke",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Feilmelding"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "post": {
+        "summary": "Legg til et nytt spørsmål i en pakkeversjon",
+        "description": "Oppretter et nytt spørsmål og legger det sist i pakkeversjonen, uansett status. Kun for root-administrator. id må være unik i alle skjemaversjonene pakkeversjonen inngår i. Spørsmålet blir med i skjemaversjonene gjennom pakken.",
+        "operationId": "leggTilSporsmalIPakke",
+        "tags": [
+          "Pakke"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Pakkeversjonen spørsmålet legges i",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Sporsmal"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Det opprettede spørsmålet",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Sporsmal"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Ugyldig spørsmål",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Feilmelding"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Kun root-administrator kan legge til spørsmål",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Feilmelding"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Pakkeversjonen finnes ikke",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Feilmelding"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Et spørsmål med samme id finnes allerede i en skjemaversjon pakken inngår i",
             "content": {
               "application/json": {
                 "schema": {
