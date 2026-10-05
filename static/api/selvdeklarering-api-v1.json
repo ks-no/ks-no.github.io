@@ -1433,6 +1433,50 @@
             "bearerAuth": []
           }
         ]
+      },
+      "post": {
+        "summary": "Opprett kravspesifikasjon",
+        "description": "Oppretter en navngitt komposisjon av spørsmålsbank-pakker. Rekkefølgen i pakkeIder er rekkefølgen leverandøren får pakkene i. Alle pakkeIder må finnes i spørsmålsbanken. Kun for root-administrator (person med ADMIN på ROOT, innlogget i Fiks forvaltning).",
+        "operationId": "opprettKravspesifikasjon",
+        "tags": [
+          "Kravspesifikasjon"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/KravspesifikasjonInnhold"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Opprettet kravspesifikasjon",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Kravspesifikasjon"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/ugyldigParameterverdi"
+          },
+          "403": {
+            "$ref": "#/components/responses/manglerTilgang"
+          },
+          "409": {
+            "$ref": "#/components/responses/ugyldigTilstand"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
       }
     },
     "/selvdeklarering/api/v1/kravspesifikasjoner/{id}": {
@@ -1463,6 +1507,90 @@
           },
           "404": {
             "description": "Ikke funnet"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "put": {
+        "summary": "Oppdater kravspesifikasjon",
+        "description": "Erstatter navn, beskrivelse, pakkeIder og klassifisering. Utkast som peker på kravspesifikasjonen får de nye pakkene; innleverte selvdeklareringer har frosset pakkesettet og påvirkes ikke. Kun for root-administrator (person med ADMIN på ROOT, innlogget i Fiks forvaltning).",
+        "operationId": "oppdaterKravspesifikasjon",
+        "tags": [
+          "Kravspesifikasjon"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/id"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/KravspesifikasjonInnhold"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Oppdatert kravspesifikasjon",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Kravspesifikasjon"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/ugyldigParameterverdi"
+          },
+          "403": {
+            "$ref": "#/components/responses/manglerTilgang"
+          },
+          "404": {
+            "$ref": "#/components/responses/ikkeFunnet"
+          },
+          "409": {
+            "$ref": "#/components/responses/ugyldigTilstand"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "delete": {
+        "summary": "Slett kravspesifikasjon",
+        "description": "Sletter en kravspesifikasjon som ingen selvdeklarering bruker. 409 hvis den er i bruk. Kun for root-administrator (person med ADMIN på ROOT, innlogget i Fiks forvaltning).",
+        "operationId": "slettKravspesifikasjon",
+        "tags": [
+          "Kravspesifikasjon"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/id"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Slettet"
+          },
+          "403": {
+            "$ref": "#/components/responses/manglerTilgang"
+          },
+          "404": {
+            "$ref": "#/components/responses/ikkeFunnet"
+          },
+          "409": {
+            "$ref": "#/components/responses/ugyldigTilstand"
           }
         },
         "security": [
@@ -3178,6 +3306,41 @@
           "totaltAntall": {
             "type": "integer",
             "format": "int64"
+          }
+        }
+      },
+      "KravspesifikasjonInnhold": {
+        "type": "object",
+        "required": [
+          "navn",
+          "pakkeIder"
+        ],
+        "description": "Det en root-administrator setter på en kravspesifikasjon. id tildeles av tjenesten.",
+        "properties": {
+          "navn": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 255
+          },
+          "beskrivelse": {
+            "type": "string"
+          },
+          "pakkeIder": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "Spørsmålsbank-pakkeversjoner i den rekkefølgen leverandøren får dem"
+          },
+          "klassifisering": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Klassifisering"
+              }
+            ],
+            "description": "Produktklassifiseringen leverandørportalen finner kravspesifikasjonen med"
           }
         }
       },
