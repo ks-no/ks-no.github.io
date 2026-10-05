@@ -1800,6 +1800,93 @@
             "bearerAuth": []
           }
         ]
+      },
+      "put": {
+        "summary": "Erstatt innholdet i en spørsmålsversjon på plass",
+        "description": "Erstatter innholdet i spørsmålsversjonen — tekster, svartype, paakrevd, kravomrade, kategoriKode, svaralternativer og referanser — uten å lage en ny versjon. id og rekkefolge står urørt: selvdeklareringssvar peker på spørsmålet med id, og rekkefølgen eies av pakken. Kun for root-administrator. Når fri redigering er slått av, gjelder dette bare utkast. Når den er slått på, gjelder det også publiserte og arkiverte versjoner, og endringen slår inn i alle pakke- og skjemaversjoner som peker på spørsmålsversjonen (se konsekvens-endepunktet). Innleverte selvdeklareringer har frosset innholdet og påvirkes ikke. Poengoverstyringer for svaralternativer som ikke lenger finnes, fjernes.",
+        "operationId": "erstattSporsmalVersjon",
+        "tags": [
+          "Spørsmål"
+        ],
+        "parameters": [
+          {
+            "name": "sporsmalVersjonId",
+            "in": "path",
+            "required": true,
+            "description": "Spørsmålsversjonen som skal erstattes",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Sporsmal"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Den oppdaterte spørsmålsversjonen",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Sporsmal"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Ugyldig spørsmål",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Feilmelding"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Kun root-administrator kan erstatte en spørsmålsversjon",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Feilmelding"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Spørsmålsversjonen finnes ikke",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Feilmelding"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Spørsmålsversjonen er ikke et utkast, og fri redigering er slått av",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Feilmelding"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
       }
     },
     "/sporsmalsbank/api/v1/sporsmal/versjoner/{sporsmalVersjonId}/konsekvens": {
@@ -1969,6 +2056,12 @@
             "format": "uuid",
             "readOnly": true,
             "description": "Stabil identitet for spørsmålet, tildelt av tjenesten ved første lagring og bevart gjennom klon. Settes ikke av klienten — sendes den inn, vinner den lagrede verdien. Kan være null for spørsmål lagret før feltet fantes; de får en UUID neste gang skjemaversjonen skrives."
+          },
+          "sporsmalVersjonId": {
+            "type": "string",
+            "format": "uuid",
+            "readOnly": true,
+            "description": "ID-en til denne versjonen av spørsmålet. Brukes mot /sporsmal/versjoner/{sporsmalVersjonId}. Settes ikke av klienten."
           },
           "tekst": {
             "type": "string",
