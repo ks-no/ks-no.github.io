@@ -1,0 +1,189 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "KS Besøksbidrag Register",
+    "description": "Public register of municipalities that have visitor levy (besøksbidrag), and in which periods.",
+    "contact": {
+      "name": "Fiks brukerstøtte",
+      "url": "https://www.ks.no/fagomrader/digitalisering/utviklingsprosjekter",
+      "email": "fiks-utvikling@ks.no"
+    },
+    "license": {
+      "name": "MIT",
+      "url": "https://opensource.org/licenses/MIT"
+    },
+    "version": "v1"
+  },
+  "servers": [
+    {
+      "url": "https://api.fiks.ks.no",
+      "description": "KS Fiks API host"
+    },
+    {
+      "url": "https://api.test.fiks.ks.no",
+      "description": "KS Fiks TEST API host"
+    }
+  ],
+  "security": [],
+  "tags": [
+    {
+      "name": "register",
+      "description": "Public register of visitor levy (besøksbidrag)"
+    }
+  ],
+  "paths": {
+    "/besoksbidrag-register/api/v1/municipalities": {
+      "get": {
+        "tags": [
+          "register"
+        ],
+        "summary": "List municipalities",
+        "description": "Returns all municipalities that have at least one visitor levy period, with their periods, sorted by municipality number, with municipalities without number last (sorted by name). The response is cached and may be up to 10 minutes old.",
+        "operationId": "getMunicipalities",
+        "security": [],
+        "responses": {
+          "200": {
+            "description": "Municipalities with visitor levy",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MunicipalityList"
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/components/responses/Error500"
+          },
+          "503": {
+            "$ref": "#/components/responses/Error503"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "MunicipalityList": {
+        "type": "object",
+        "required": [
+          "municipalities"
+        ],
+        "properties": {
+          "municipalities": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Municipality"
+            }
+          }
+        }
+      },
+      "Municipality": {
+        "type": "object",
+        "description": "Visitor levy periods for one municipality",
+        "required": [
+          "municipalityName",
+          "periods"
+        ],
+        "properties": {
+          "organizationNumber": {
+            "type": "string",
+            "nullable": true,
+            "pattern": "^[0-9]{9}$",
+            "description": "Organization number of the municipality. Null if missing in Fiks-konfigurasjon.",
+            "example": "958935420"
+          },
+          "municipalityNumber": {
+            "type": "string",
+            "pattern": "^[0-9]{4}$",
+            "description": "Municipality number. Omitted if missing in Fiks-konfigurasjon.",
+            "example": "0301"
+          },
+          "municipalityName": {
+            "type": "string",
+            "description": "Municipality name",
+            "example": "Oslo kommune"
+          },
+          "periods": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "$ref": "#/components/schemas/Period"
+            }
+          }
+        }
+      },
+      "Period": {
+        "type": "object",
+        "description": "Period in which the visitor levy service is active. Both dates are inclusive and must be between years 2027 and 2100. If recurring is true, the period recurs every year from the year of startDate, must end before its next yearly occurrence begins, and cannot start or end on February 29. The period may cross new year.",
+        "required": [
+          "startDate",
+          "endDate",
+          "recurring"
+        ],
+        "properties": {
+          "startDate": {
+            "type": "string",
+            "format": "date",
+            "description": "First day of the period (ISO 8601, YYYY-MM-DD). Year must be between 2027 and 2100.",
+            "example": "2027-04-15"
+          },
+          "endDate": {
+            "type": "string",
+            "format": "date",
+            "description": "Last day of the period (ISO 8601, YYYY-MM-DD). Must be on or after startDate and year must be between 2027 and 2100.",
+            "example": "2027-09-15"
+          },
+          "recurring": {
+            "type": "boolean",
+            "description": "Whether the period recurs every year"
+          }
+        }
+      },
+      "ErrorMessage": {
+        "type": "object",
+        "properties": {
+          "errorId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "correlationId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "errorCode": {
+            "type": "string"
+          },
+          "errorMessage": {
+            "type": "string"
+          },
+          "httpStatus": {
+            "type": "integer"
+          }
+        }
+      }
+    },
+    "responses": {
+      "Error503": {
+        "description": "Service Unavailable. The register has not been built yet, e.g. right after startup or while Fiks-konfigurasjon is unavailable. Retry later.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorMessage"
+            }
+          }
+        }
+      },
+      "Error500": {
+        "description": "Internal Server Error",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorMessage"
+            }
+          }
+        }
+      }
+    }
+  }
+}
