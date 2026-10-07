@@ -1,8 +1,8 @@
 {
   "openapi": "3.1.3",
   "info": {
-    "title": "",
-    "description": "",
+    "title": "Fiks eiendomsskattegrunnlag for vannkraftanlegg endringer API",
+    "description": "Endringer og eieroversikt for kommunenes eiendomsskattegrunnlag for vannkraftanlegg.",
     "contact": {
       "name": "Fiks brukerstøtte",
       "url": "https://www.ks.no/fagomrader/digitalisering/utviklingsprosjekter",
@@ -12,23 +12,31 @@
   },
   "servers": [
     {
-      "url": "",
+      "url": "https://api.fiks.ks.no",
       "description": "KS Fiks API host",
       "variables": {}
     },
     {
-      "url": "",
+      "url": "https://api.fiks.test.ks.no",
       "description": "KS Fiks TEST API host",
       "variables": {}
+    }
+  ],
+  "tags": [
+    {
+      "name": "vannkraft",
+      "description": "Operasjoner for endringer og eiere av eiendomsskattegrunnlag for vannkraftanlegg."
     }
   ],
   "paths": {
     "/eiendomsskatt/vannkraft/api/v1/{fiksOrgId}/endringer": {
       "get": {
         "tags": [
-          "EiendomsskattegrunnlagVannkraftanlegg"
+          "vannkraft"
         ],
         "operationId": "hentEndringer",
+        "summary": "Hent endringer",
+        "description": "Henter sendte endringer for vannkraftanlegg kommunen har tilgang til, med valgfrie eier- og årsfiltre og paginering.",
         "parameters": [
           {
             "name": "fiksOrgId",
@@ -45,7 +53,7 @@
             "name": "personidentifikator",
             "in": "query",
             "required": false,
-            "description": "Brukes når man filtrer på personidentifikator til personen som eier vannkraftverket. Ikke bruk sammen med organisasjonsnummer.",
+            "description": "Filtrer på fødselsnummeret til eieren. Kan ikke brukes sammen med organisasjonsnummer.",
             "schema": {
               "type": "string",
               "pattern": "^[0-9]{11}$"
@@ -55,7 +63,7 @@
             "name": "organisasjonsnummer",
             "in": "query",
             "required": false,
-            "description": "Brukes når man filtrer på organisasjonsnummeret til bedriften som eier vannkraftverket. Ikke bruk sammen med personidentifikator.",
+            "description": "Filtrer på organisasjonsnummeret til eieren. Kan ikke brukes sammen med personidentifikator.",
             "schema": {
               "pattern": "^[0-9]{9}$",
               "type": "string"
@@ -65,7 +73,7 @@
             "name": "fraDato",
             "in": "query",
             "required": false,
-            "description": "Fra dato for periodesøk, krever også tilDato",
+            "description": "Nedre grense for inntektsåret (inkludert). Oppgis som dato, men det er kun årstallet som brukes. Kan brukes alene eller sammen med tilDato.",
             "schema": {
               "type": "string",
               "format": "date"
@@ -75,7 +83,7 @@
             "name": "tilDato",
             "in": "query",
             "required": false,
-            "description": "Til dato for periodesøk, krever også fraDato",
+            "description": "Øvre grense for inntektsåret (inkludert). Oppgis som dato, men det er kun årstallet som brukes. Kan brukes alene eller sammen med fraDato.",
             "schema": {
               "type": "string",
               "format": "date"
@@ -85,28 +93,30 @@
             "name": "side",
             "in": "query",
             "required": false,
-            "description": "Sidenummer for paginering.",
+            "description": "Sidenummer for paginering, starter på 1.",
             "schema": {
               "type": "integer",
               "format": "int32",
+              "minimum": 1,
               "default": 1
             }
           },
           {
             "name": "endringerPerSide",
             "in": "query",
-            "description": "Sidenummer for paginering",
+            "description": "Maksimalt antall endringer per side.",
             "required": false,
             "schema": {
               "type": "integer",
               "format": "int32",
+              "minimum": 1,
               "default": 50
             }
           }
         ],
         "responses": {
           "200": {
-            "description": "Filtrert paginert liste av endringer for vannkraftanlegg",
+            "description": "Filtrert side med sendte endringer for vannkraftanlegg. Endringene sorteres med nyeste ajourholdstidspunkt først.",
             "content": {
               "application/json": {
                 "schema": {
@@ -118,7 +128,7 @@
                   "totaltAntallEndringer": 2,
                   "endringer": [
                     {
-                      "endringsId": "a9ab0374-0c84-46dc-955f-845fcfc7e1dc",
+                      "dokumentId": "a9ab0374-0c84-46dc-955f-845fcfc7e1dc",
                       "datotid": "2026-04-05T14:48:00.000Z",
                       "eier": {
                         "navn": "TREKANTET SEBRA",
@@ -126,7 +136,7 @@
                       }
                     },
                     {
-                      "endringsId": "5165d076-70ec-4569-967d-eff4384d0ee2",
+                      "dokumentId": "5165d076-70ec-4569-967d-eff4384d0ee2",
                       "datotid": "2026-04-05T13:37:00.000Z",
                       "eier": {
                         "navn": "LØSNINGSORIENTERT ALLSLAGS FJELLREV",
@@ -137,6 +147,36 @@
                 }
               }
             }
+          },
+          "400": {
+            "description": "Ugyldige filtre eller pagineringsverdier.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Brukeren er ikke autentisert eller mangler tilgang.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Kommune ikke funnet.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
           }
         }
       }
@@ -144,9 +184,11 @@
     "/eiendomsskatt/vannkraft/api/v1/{fiksOrgId}/eiere": {
       "get": {
         "tags": [
-          "EiendomsskattegrunnlagVannkraftanlegg"
+          "vannkraft"
         ],
         "operationId": "hentAlleEiere",
+        "summary": "Hent eiere",
+        "description": "Henter eierne av vannkraftanlegg med sendte eiendomsskattegrunnlag som kommunen har tilgang til.",
         "parameters": [
           {
             "name": "fiksOrgId",
@@ -182,6 +224,26 @@
                 }
               }
             }
+          },
+          "401": {
+            "description": "Brukeren er ikke autentisert eller mangler tilgang.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Kommune ikke funnet.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
           }
         }
       }
@@ -189,9 +251,11 @@
     "/eiendomsskatt/vannkraft/api/v1/{fiksOrgId}/endringer/dokument/{dokumentId}": {
       "get": {
         "tags": [
-          "EiendomsskattegrunnlagVannkraftanlegg"
+          "vannkraft"
         ],
         "operationId": "hentEndringerDokument",
+        "summary": "Last ned endringsdokument",
+        "description": "Laster ned Excel-dokumentet for en endring som er sendt til kommunen.",
         "parameters": [
           {
             "name": "fiksOrgId",
@@ -222,6 +286,46 @@
                 "schema": {
                   "type": "string",
                   "format": "binary"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Dokumentet finnes ikke eller er ikke klart for nedlasting.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Brukeren er ikke autentisert eller mangler tilgang.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Kommunen har ikke tilgang til dokumentet.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Kommune eller eiendomsskattegrunnlag ikke funnet.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "https://developers.fiks.ks.no/api/fiks-common.json#/components/schemas/ErrorMessage"
                 }
               }
             }
@@ -262,31 +366,32 @@
         "type": "object",
         "description": "Listen av endringer for vannkraftanlegg",
         "required": [
-          "endringsId",
+          "dokumentId",
           "datotid",
           "eier"
         ],
         "properties": {
-          "endringsId": {
+          "dokumentId": {
             "type": "string",
             "format": "uuid",
-            "description": "IDen til endringen, kan brukes for å laste ned Excel-filen fra annet endepunkt",
+            "description": "ID-en som sendes som dokumentId til GET /eiendomsskatt/vannkraft/api/v1/{fiksOrgId}/endringer/dokument/{dokumentId} for å laste ned Excel-filen.",
             "example": "a9ab0374-0c84-46dc-955f-845fcfc7e1dc"
           },
           "datotid": {
             "type": "string",
             "format": "date-time",
-            "description": "Tiden når endringen skjedde",
+            "description": "Ajourholdstidspunktet for eiendomsskattegrunnlaget.",
             "example": "2026-04-05T14:48:00.000Z"
           },
           "eier": {
+            "description": "Eieren av vannkraftanlegget som endringen gjelder.",
             "$ref": "#/components/schemas/Eier"
           }
         }
       },
       "EiendomsskattegrunnlagVannkraftanleggEndringer": {
         "type": "object",
-        "description": "GET /eiendomsskattegrunnlag/vannkraftanlegg/endringer",
+        "description": "En side med sendte endringer for vannkraftanlegg.",
         "required": [
           "endringer",
           "totaltAntallEndringer",
