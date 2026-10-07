@@ -1602,7 +1602,7 @@
         "tags": [
           "Statistikk"
         ],
-        "description": "Henter alle kommuner som har aktivert Fiks konsesjon. Endepunktet er åpent og krever ikke pålogging.",
+        "description": "Henter alle kommuner som har aktivert Fiks konsesjon, med antall opprettede, leverte og konsesjonsfrie avklaringer per uke og totalt. Ukene beregnes ut fra når avklaringen ble opprettet. Svaret caches, så tallene kan være inntil 5 minutter gamle. Endepunktet er åpent og krever ikke pålogging.",
         "operationId": "getAktiverteKommuner",
         "security": [],
         "responses": {
@@ -2689,13 +2689,88 @@
       "KommuneStatistikk": {
         "type": "object",
         "required": [
-          "navn"
+          "navn",
+          "antallOpprettet",
+          "totaltAntallOpprettet",
+          "antallLevert",
+          "totaltAntallLevert",
+          "antallKonsesjonsfri",
+          "totaltAntallKonsesjonsfri"
         ],
         "properties": {
           "navn": {
             "type": "string",
             "description": "Navnet på kommunen.",
             "example": "Oslo kommune"
+          },
+          "antallOpprettet": {
+            "type": "array",
+            "description": "Antall opprettede avklaringer per uke, uavhengig av status. Kun uker med avklaringer er med, sortert stigende.",
+            "items": {
+              "$ref": "#/components/schemas/UkeAntall"
+            }
+          },
+          "totaltAntallOpprettet": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Totalt antall opprettede avklaringer, uavhengig av status.",
+            "example": 12
+          },
+          "antallLevert": {
+            "type": "array",
+            "description": "Antall avklaringer med status KVITTERT_ARKIV per uke de ble opprettet. Kun uker med avklaringer er med, sortert stigende.",
+            "items": {
+              "$ref": "#/components/schemas/UkeAntall"
+            }
+          },
+          "totaltAntallLevert": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Totalt antall avklaringer med status KVITTERT_ARKIV.",
+            "example": 8
+          },
+          "antallKonsesjonsfri": {
+            "type": "array",
+            "description": "Antall avklaringer med status KONSESJONSFRI per uke de ble opprettet. Kun uker med avklaringer er med, sortert stigende.",
+            "items": {
+              "$ref": "#/components/schemas/UkeAntall"
+            }
+          },
+          "totaltAntallKonsesjonsfri": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Totalt antall avklaringer med status KONSESJONSFRI.",
+            "example": 2
+          }
+        }
+      },
+      "UkeAntall": {
+        "type": "object",
+        "required": [
+          "aar",
+          "uke",
+          "antall"
+        ],
+        "properties": {
+          "aar": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Ukebasert år etter ISO-8601.",
+            "example": 2026
+          },
+          "uke": {
+            "type": "integer",
+            "format": "int32",
+            "minimum": 1,
+            "maximum": 53,
+            "description": "Ukenummer etter ISO-8601.",
+            "example": 40
+          },
+          "antall": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Antall avklaringer i uken.",
+            "example": 5
           }
         }
       },
