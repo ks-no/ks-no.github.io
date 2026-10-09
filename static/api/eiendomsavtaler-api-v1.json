@@ -32,6 +32,10 @@
     {
       "name": "Tilgang",
       "description": "Organisasjoner innlogget bruker har tilgang til"
+    },
+    {
+      "name": "Verge",
+      "description": "Vergeforhold knyttet til eiendomsavtale og/eller person"
     }
   ],
   "paths": {
@@ -1087,6 +1091,132 @@
           }
         }
       }
+    },
+    "/eiendomsavtaler/api/v1/{fiksOrgId}/verger": {
+      "post": {
+        "tags": [
+          "Verge"
+        ],
+        "description": "Opprett et vergeforhold knyttet til en eiendomsavtale, en person, eller begge",
+        "operationId": "opprettVergeforhold",
+        "parameters": [
+          {
+            "name": "fiksOrgId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/VergeRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Returnerer vergeforholdet",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VergeAPIModel"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Vergeforholdet mangler kobling til eiendomsavtale og person",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Ikke tilgang",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Kunde eller eiendomsavtale ikke funnet",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/eiendomsavtaler/api/v1/{fiksOrgId}/verger/{vergeforholdId}": {
+      "delete": {
+        "tags": [
+          "Verge"
+        ],
+        "description": "Slett et vergeforhold",
+        "operationId": "slettVergeforhold",
+        "parameters": [
+          {
+            "name": "fiksOrgId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "vergeforholdId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Vergeforhold slettet"
+          },
+          "403": {
+            "description": "Ikke tilgang",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Vergeforhold ikke funnet",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -1186,6 +1316,12 @@
             "type": "string",
             "format": "date-time",
             "description": "Tidspunkt da eiendomsavtalen sist ble oppdatert"
+          },
+          "verger": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/VergeAPIModel"
+            }
           }
         },
         "required": [
@@ -1535,9 +1671,6 @@
           "kunde": {
             "$ref": "#/components/schemas/KundeAPIModel"
           },
-          "eierstatus": {
-            "$ref": "#/components/schemas/EierStatusAPIModel"
-          },
           "reellEier": {
             "type": "boolean"
           },
@@ -1553,9 +1686,6 @@
           "eierforholdKodeVisningsnavn": {
             "type": "string",
             "description": "Matrikkelens visningsnavn for eierforholdKode, f.eks. «Framfester 2»."
-          },
-          "eierkategori": {
-            "$ref": "#/components/schemas/EierKategoriAPIModel"
           },
           "tinglystDato": {
             "type": "string",
@@ -1585,9 +1715,7 @@
         },
         "required": [
           "kunde",
-          "eierstatus",
           "rolle",
-          "eierkategori",
           "sistEndret",
           "eierforholdUuid",
           "fraMatrikkelen"
@@ -1729,17 +1857,11 @@
           "reellEier": {
             "type": "boolean"
           },
-          "eierstatus": {
-            "$ref": "#/components/schemas/EierStatusAPIModel"
-          },
           "andel": {
             "$ref": "#/components/schemas/AndelAPIModel"
           },
           "rolle": {
             "$ref": "#/components/schemas/EierRolleAPIModel"
-          },
-          "eierkategori": {
-            "$ref": "#/components/schemas/EierKategoriAPIModel"
           },
           "tinglystDato": {
             "type": "string",
@@ -1761,9 +1883,7 @@
         },
         "required": [
           "kundeId",
-          "eierstatus",
-          "rolle",
-          "eierkategori"
+          "rolle"
         ]
       },
       "EierPatch": {
@@ -1772,17 +1892,11 @@
           "reellEier": {
             "type": "boolean"
           },
-          "eierstatus": {
-            "$ref": "#/components/schemas/EierStatusAPIModel"
-          },
           "andel": {
             "$ref": "#/components/schemas/AndelAPIModel"
           },
           "rolle": {
             "$ref": "#/components/schemas/EierRolleAPIModel"
-          },
-          "eierkategori": {
-            "$ref": "#/components/schemas/EierKategoriAPIModel"
           },
           "tinglystDato": {
             "type": "string",
@@ -1985,25 +2099,6 @@
           "IKKE_FAKTURERBAR"
         ]
       },
-      "EierStatusAPIModel": {
-        "type": "string",
-        "enum": [
-          "BOSATT",
-          "UTFLYTTET",
-          "DOED",
-          "UKJENT"
-        ]
-      },
-      "EierKategoriAPIModel": {
-        "type": "string",
-        "enum": [
-          "SELVEIER",
-          "ANDELSEIER",
-          "AKSJEEIER",
-          "BESKYTTET",
-          "UKJENT"
-        ]
-      },
       "KundeTypeAPIModel": {
         "type": "string",
         "enum": [
@@ -2067,7 +2162,6 @@
         "enum": [
           "TINGLYST",
           "IKKE_TINGLYST",
-          "VERGE",
           "INDIREKTE",
           "KONTAKTINSTANS",
           "ANNEN"
@@ -2241,6 +2335,50 @@
         },
         "required": [
           "avtaler"
+        ]
+      },
+      "VergeAPIModel": {
+        "type": "object",
+        "properties": {
+          "vergeforholdId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "verge": {
+            "$ref": "#/components/schemas/KundeAPIModel"
+          },
+          "vergeFor": {
+            "$ref": "#/components/schemas/KundeAPIModel"
+          },
+          "eiendomsavtaleId": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "required": [
+          "vergeforholdId",
+          "verge"
+        ]
+      },
+      "VergeRequest": {
+        "type": "object",
+        "description": "Minst én av eiendomsavtaleId og vergeForKundeId må være satt.",
+        "properties": {
+          "vergeKundeId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "eiendomsavtaleId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "vergeForKundeId": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "required": [
+          "vergeKundeId"
         ]
       },
       "ErrorMessage": {
