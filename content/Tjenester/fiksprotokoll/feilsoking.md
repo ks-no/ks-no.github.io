@@ -92,7 +92,7 @@ Finn symptomet som passer, og følg løsningen. Får du ikke løst problemet, ta
 **Løsning:**
 
 - Bruk testsertifikat og `forvaltning.fiks.test.ks.no` mot test, og produksjonssertifikat og `forvaltning.fiks.ks.no` mot produksjon.
-- Sørg for at klienten bygger riktig konfigurasjon (test vs. produksjon). Se [miljøer]({{% ref "/Felles/integrasjoner.md" %}}#miljoer).
+- Sørg for at klienten bygger riktig konfigurasjon (test vs. produksjon). Se [miljøer]({{% ref "/Felles/integrasjoner.md#test-og-produksjon" %}}).
 
 ### Se også
 

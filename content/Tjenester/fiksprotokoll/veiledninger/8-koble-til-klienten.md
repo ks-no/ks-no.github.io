@@ -50,7 +50,7 @@ var config = FiksIOConfigurationBuilder
 var klient = await FiksIOClient.CreateAsync(config);
 ```
 
-Bruk testkonfigurasjon (`BuildTestConfiguration` / tilsvarende) mot testmiljøet. Se [miljøer]({{% ref "/Felles/integrasjoner.md" %}}#miljoer).
+Bruk testkonfigurasjon (`BuildTestConfiguration` / tilsvarende) mot testmiljøet. Se [miljøer]({{% ref "/Felles/integrasjoner.md#test-og-produksjon" %}}).
 
 ## Automatisk opplasting av offentlig nøkkel 
 

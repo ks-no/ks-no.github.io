@@ -1,49 +1,44 @@
 ---
 title: Testmiljø
-date: 2018-05-29
+date: 2026-10-10
 aliases: ["/fiks-platform/testmiljo", "/fiks-plattform/testmiljo"]
 ---
 
-Fiks-plattformens testmiljø er tilgjengelig for kommuner,fylkeskommuner og leverandører som ønsker å teste konfigurasjon og integrasjoner. Miljøet er koblet til eksterne testmiljøer for integrerte komponenter: ID-Porten, Altinn og KS-SvarUt. Man kan dermed teste hele løpet, komplett med autentisering og autorisering. 
+Fiks-plattformens testmiljø er for kommuner, fylkeskommuner og leverandører som vil teste konfigurasjon og integrasjoner. Miljøet er koblet til testmiljøene til ID-porten, Altinn og SvarUt, så du kan teste hele løpet, med autentisering og autorisasjon.
 
-Fiks test blir brukt til å verifisere endringer før de går i produksjon, og vil derfor ligge litt foran produksjon. Vi har ingen garantier på oppetid i test, men forsøker å holde eventuell nedetid så kort som mulig.
+Vi bruker testmiljøet til å verifisere endringer før de går i produksjon, så det ligger som regel litt foran produksjon. Vi garanterer ikke oppetid i test, men prøver å holde nedetid kort.
 
-Merk at testmiljøet ikke har de samme sikkerhetsgarantiene som produksjon - det er dermed viktig at man ikke benytter sensitive data under test. 
+Testmiljøet har ikke samme sikkerhet som produksjon. Testmiljøet skal bare inneholde testdata. Produksjonsdata skal ikke inn i testmiljøet: ikke personopplysninger, ikke dokumenter og ikke annet som kommer fra reelle saker. Bruk syntetiske testpersoner. Organisasjoner er som regel deres egne fra Enhetsregisteret, og det er dem testvirksomhetssertifikatet er utstedt til.
 
 ## Tilgang til testmiljøet
-Send e-post til fiks@ksdigital.no for tilgang til testmiljøet. Send gjerne med eventuelle eksisterende testbrukere i ID-porten, slik at disse kan gjenbrukes for tilganger på Fiks-plattformen.
 
-## Hvor er testmiljøet?
+Send e-post til [fiks@ksdigital.no](mailto:fiks@ksdigital.no). Har dere alt testbrukere i ID-porten, send dem med, så kan de få tilganger på Fiks-plattformen.
 
-Konfigurasjon finnes på https://forvaltning.fiks.test.ks.no. 
+## Adresser i testmiljøet
 
-Min kommune finnes på https://min.fiks.test.ks.no/
+| Hva | Adresse |
+|---|---|
+| Fiks forvaltning | https://forvaltning.fiks.test.ks.no/ |
+| Min kommune | https://min.fiks.test.ks.no/ |
+| Bekymringsmelding | https://bekymringsmelding.fiks.test.ks.no/ |
+| SvarUt | https://test.svarut.ks.no/ |
 
-Bekymringsmelding finnes på https://bekymringsmelding.fiks.test.ks.no/
+Logg inn med en testbruker fra ID-porten.
 
-SvarUt finnes på https://test.svarut.ks.no
+«Post fra kommunen» på Minside henter data fra SvarUts testmiljø. Aktiver avsendere i Fiks forvaltning for å indeksere meldinger.
 
-Benytt ID-porten testbruker for innlogging. 
+## Andre testmiljøer
 
-SvarUt data for "Post fra kommunen" på Minside kommer fra SvarUts testmiljø. Aktiver avsendere i Fiks-konfigurasjonen for å indeksere meldinger.
-
-## Ekstrene lenker til andre testmiljø
-
-Altinn test: https://tt02.altinn.no
-
-Digipost test: https://www.difitest.digipost.no/
-
-eBoks test: http://demo2-www.e-boks.no/default.aspx
-
-idporten brukerprofil (krr og valg av postkasse): https://brukerprofil-ver2.difi.no/minprofil/ og  https://brukerprofil-ver1.difi.no/minprofil/ Må endres begge plasser da forskjellige
-tjenester bruker forskjellig testmiljø hos digdir.
-
-Tenor testdata for f.eks folkeregisteret: https://www.skatteetaten.no/skjema/testdata/
+| Hva | Adresse |
+|---|---|
+| Altinn test | https://tt02.altinn.no/ |
+| Digipost test | https://www.difitest.digipost.no/ |
+| Tenor testdata, for eksempel for Folkeregisteret | https://www.skatteetaten.no/testdata/ |
 
 ## Personinnlogging
-Alle testbrukere dere får fra oss har "Min Id"-innlogging i ID-Porten. Her anbefaler vi at dere setter telefonnummer og e-post slik at brukeren kan låses opp om noen skulle sperre den med feilede innloggingsforsøk.
 
-## Integrasjoninnlogging
-For å kunne teste integrasjoner mot Fiks-plattformen sitt testmiljø må organisasjonen ha tilgang til Maskinporten. For å få dette må en henvende seg til servicedesk@digdir.no og sende med orgnr i fra testvirksomhetssertifikat.
+Testbrukerne dere får fra oss, logger inn med MinID i ID-porten. Legg inn telefonnummer og e-post på dem, så kan brukeren låses opp hvis noen sperrer den med mislykkede innlogginger.
 
-For at Maskinportklienten skal kunne kommunisere med Fiks sitt testmiljø må den opprettes i Maskinporten Ver2 og ha lagt til ks:fiks-scopet. Om dette scopet mangler fra listen kan dere oppgi deres orgnr til fiks@ksdigital.no.
+## Integrasjoner
+
+For å teste integrasjoner trenger du en Maskinporten-klient i Digdirs testmiljø med scopet `ks:fiks`, og en Fiks-integrasjon i testmiljøet til Fiks forvaltning. Hvordan du får det på plass, står på [Integrasjoner]({{% ref "Felles/integrasjoner.md#test-og-produksjon" %}}).
