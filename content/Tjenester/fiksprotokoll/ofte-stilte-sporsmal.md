@@ -28,7 +28,7 @@ Integrasjonspassordet kan ikke hentes fram igjen etter at systemet er opprettet.
 
 ### Hva er forskjellen på test og produksjon?
 
-Test og produksjon er adskilte miljøer med egne virksomhetssertifikater, URL-er og oppsett. Test bruker `forvaltning.fiks.test.ks.no`, produksjon bruker `forvaltning.fiks.ks.no`. Klienten må bygge riktig konfigurasjon for miljøet. Se [miljøer]({{% ref "/Felles/integrasjoner.md" %}}#miljoer).
+Test og produksjon er adskilte miljøer med egne virksomhetssertifikater, URL-er og oppsett. Test bruker `forvaltning.fiks.test.ks.no`, produksjon bruker `forvaltning.fiks.ks.no`. Klienten må bygge riktig konfigurasjon for miljøet. Se [miljøer]({{% ref "/Felles/integrasjoner.md#test-og-produksjon" %}}).
 
 ### Hvilken klient skal jeg velge?
 

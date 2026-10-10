@@ -24,7 +24,7 @@ På sikt vil det bli vurdert å utvikle et administrativt grensesnitt mot Fiks K
  
 API-kall gjøres i henhold til [Swagger-spesifikasjonen](https://autosys-kjoretoy-api.atlas.vegvesen.no/swagger-ui/index-akf.html) til Statens Vegvesen, med følgende endringer:
   
-  * Autorisering skjer på fiks plattformen med et access token fra Maskinporten basert på organisasjonesn virksomhetssertifikat som beskrevet [her](https://ks-no.github.io/fiks-plattform/integrasjoner/#integrasjon).
+  * Autorisering skjer på fiks plattformen med et access token fra Maskinporten basert på organisasjonesn virksomhetssertifikat som beskrevet [her](https://ks-no.github.io/fiks-plattform/integrasjoner/#slik-henger-det-sammen).
     Token må ha scope "ks:fiks", og headere for IntegrasjonId og IntegrasjonPassord må settes på requesten.
   * Fiks-org som spørringen gjøres på vegne av blir en del av url'en for alle forespørsler.
   
