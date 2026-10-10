@@ -34,7 +34,7 @@ Hvis systemet fra leverandøren ikke er selvbetjent med tanke på oppsett av Fik
 Ha følgende klart før du begynner:
 
 - [ ] **Virksomhetssertifikat** fra Buypass eller Commfides — ett for test og ett for produksjon.
-- [ ] **Maskinporten-klient** satt opp på forhånd. Se [veiledning for Maskinporten]({{% ref "/Felles/difiIdportenKlient.md" %}}).
+- [ ] **Maskinporten-klient** satt opp på forhånd. Se [Maskinporten på siden om integrasjoner]({{% ref "Felles/integrasjoner.md#maskinporten" %}}).
 - [ ] **Avklart organisasjonsnummer.** Samme organisasjonsnummer **må** brukes i virksomhetssertifikatet, i Maskinporten-klienten og i protokollsystemet. Vi anbefaler at leverandøren bruker sitt **eget** virksomhetssertifikat og organisasjonsnummer — ikke kundeorganisasjonens. Avklar dette før du starter.
 - [ ] **Valgt protokoll og part.** Avklar hvilken protokoll (f.eks. `no.ks.fiks.arkiv.v1`) og hvilken part i protokollen systemet ditt skal være. Se [Protokoller]({{% ref "/Tjenester/fiksprotokoll/protokoller" %}}).
 - [ ] **Offentlig/privat nøkkelpar** generert. **Kun den offentlige nøkkelen** lastes opp (når du oppretter kontoen) — den må være et X.509-sertifikat i `.pem`-format. Den **private nøkkelen skal beholdes av leverandøren og aldri lastes opp noe sted**; den legges kun inn i klientkonfigurasjonen og brukes til å dekryptere innkommende meldinger. Dette nøkkelparet er **ikke** det samme som virksomhetssertifikatet.
