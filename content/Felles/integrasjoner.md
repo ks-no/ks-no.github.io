@@ -159,18 +159,20 @@ API-ene er REST med JSON. Hver tjeneste har en [OpenAPI-spesifikasjon](https://g
 ## Feilmeldinger
 
 De fleste API-ene svarer med feil på dette formatet:
-
 ```json
 {
-  "timestamp": 1637218198035,
+  "timestamp": 1767222000000,
   "status": 400,
   "error": "Bad Request",
-  "errorId": "3389ad1b-afa4-42e1-b6f8-76f63e560ad5",
-  "path": "/tjeneste/api/v1/ressurs/123456",
-  "message": "Beskrivelse av feilen",
-  "errorCode": "FEILKODE",
-  "errorJson": {"antall": 13}
+  "errorId": "15a92338-8d98-4b05-a8a6-a879913259fd",
+  "path": "/tjeneste/api/v1/meldinger/40441e83-5120-445d-8c31-63ed2f4e8112",
+  "message": "Ugyldig forespørsel",
+  "errorCode": "FIKS-0001",
+  "errorDetails": {
+    "fiksOrgId": "1a5038d7-c1fe-4110-9310-fe3b096a0564",
+    "externalReference": "a8793ee2-b7b2-40a5-9731-51e018244cf4"
+  }
 }
 ```
 
-`errorId` er det vi trenger når du ber om hjelp. `errorCode` og `errorJson` er satt bare når tjenesten har en maskinlesbar feilkode.
+`errorId` er det vi trenger når du ber om hjelp. `errorCode` og `errorDetails` er satt bare når tjenesten har en maskinlesbar feilkode.
