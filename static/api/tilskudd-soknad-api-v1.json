@@ -223,13 +223,13 @@
         }
       }
     },
-    "/tilskuddssoknad/api/v1/{soknadsregisterId}/deltager": {
+    "/tilskuddssoknad/api/v1/{soknadsregisterId}/tilgang": {
       "post": {
         "tags": [
           "Tilskuddssoknad"
         ],
-        "operationId": "leggTilDeltager",
-        "summary": "Legger til en deltager i en søknad",
+        "operationId": "leggTilTilgang",
+        "summary": "Gir en person tilgang til en søknad",
         "parameters": [
           {
             "name": "soknadsregisterId",
@@ -246,7 +246,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/DeltagerRequest"
+                "$ref": "#/components/schemas/NyTilgangRequest"
               }
             }
           },
@@ -254,7 +254,7 @@
         },
         "responses": {
           "200": {
-            "description": "Deltager er oppdatert",
+            "description": "Tilgangen er lagt til",
             "content": {
               "application/json": {
                 "schema": {
@@ -275,73 +275,22 @@
           "404": {
             "$ref": "#/components/responses/404NotFound"
           },
-          "default": {
-            "$ref": "#/components/responses/DefaultError"
-          }
-        }
-      },
-      "put": {
-        "tags": [
-          "Tilskuddssoknad"
-        ],
-        "operationId": "oppdaterDeltager",
-        "summary": "Oppdaterer en deltager i en søknad",
-        "parameters": [
-          {
-            "name": "soknadsregisterId",
-            "in": "path",
-            "description": "SoknadsregisterId for søknaden",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/DeltagerRequest"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "description": "Status oppdatert",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/SoknadDetaljer"
-                }
-              }
-            }
-          },
-          "400": {
-            "$ref": "#/components/responses/400BadRequest"
-          },
-          "401": {
-            "$ref": "#/components/responses/401Unauthorized"
-          },
-          "403": {
-            "$ref": "#/components/responses/403Forbidden"
-          },
-          "404": {
-            "$ref": "#/components/responses/404NotFound"
+          "409": {
+            "$ref": "#/components/responses/409Conflict"
           },
           "default": {
             "$ref": "#/components/responses/DefaultError"
           }
         }
-      },
+      }
+    },
+    "/tilskuddssoknad/api/v1/{soknadsregisterId}/tilgang/{tilgangId}": {
       "delete": {
         "tags": [
           "Tilskuddssoknad"
         ],
-        "operationId": "fjernDeltager",
-        "summary": "Fjerner en deltager i en søknad",
+        "operationId": "fjernTilgang",
+        "summary": "Fjerner en tilgang fra en søknad",
         "parameters": [
           {
             "name": "soknadsregisterId",
@@ -352,21 +301,21 @@
               "type": "string",
               "format": "uuid"
             }
+          },
+          {
+            "name": "tilgangId",
+            "in": "path",
+            "description": "Id for tilgangen",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
           }
         ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/DeltagerRequest"
-              }
-            }
-          },
-          "required": true
-        },
         "responses": {
           "200": {
-            "description": "Status oppdatert",
+            "description": "Tilgangen er fjernet",
             "content": {
               "application/json": {
                 "schema": {
@@ -386,6 +335,9 @@
           },
           "404": {
             "$ref": "#/components/responses/404NotFound"
+          },
+          "409": {
+            "$ref": "#/components/responses/409Conflict"
           },
           "default": {
             "$ref": "#/components/responses/DefaultError"
@@ -1072,7 +1024,7 @@
           "tittel",
           "paaVegneAvForetak",
           "innsendtAv",
-          "deltagere",
+          "tilganger",
           "brev",
           "oppgaver",
           "status",
@@ -1104,12 +1056,13 @@
           {
             "type": "object",
             "properties": {
-              "deltagere": {
+              "tilganger": {
                 "type": "array",
-                "maxItems": 10,
-                "description": "Informasjon om andre deltagere",
+                "minItems": 1,
+                "maxItems": 300,
+                "description": "Personene som har tilgang til søknaden",
                 "items": {
-                  "$ref": "#/components/schemas/Person"
+                  "$ref": "#/components/schemas/Tilgang"
                 }
               },
               "brev": {
@@ -1176,23 +1129,80 @@
           "tilskuddsregisterId",
           "tittel",
           "innsendtAv",
-          "paaVegneAvForetak"
+          "paaVegneAvForetak",
+          "opprettetAv"
         ],
         "allOf": [
           {
             "$ref": "#/components/schemas/SoknadBase"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "opprettetAv": {
+                "type": "object",
+                "description": "Personen som oppretter søknaden. Blir første tilgang.",
+                "required": [
+                  "navn"
+                ],
+                "properties": {
+                  "navn": {
+                    "type": "string",
+                    "description": "Personens fulle navn"
+                  },
+                  "epost": {
+                    "$ref": "#/components/schemas/Epost",
+                    "description": "Personens epost"
+                  }
+                }
+              },
+              "tilganger": {
+                "type": "array",
+                "maxItems": 299,
+                "description": "Andre personer som skal ha tilgang til søknaden",
+                "items": {
+                  "$ref": "#/components/schemas/NyTilgangRequest"
+                }
+              }
+            }
           }
         ]
       },
-      "DeltagerRequest": {
+      "Tilgang": {
         "type": "object",
         "required": [
-          "person"
+          "tilgangId"
         ],
         "properties": {
-          "person": {
-            "$ref": "#/components/schemas/Person",
-            "description": "Informasjon om personen som innehar deltager"
+          "tilgangId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "navn": {
+            "type": "string",
+            "description": "Personens fulle navn"
+          },
+          "epost": {
+            "type": "string",
+            "format": "email",
+            "example": "ola.nordmann@example.com",
+            "description": "Personens epost. Unik innenfor søknaden."
+          }
+        }
+      },
+      "NyTilgangRequest": {
+        "type": "object",
+        "required": [
+          "epost"
+        ],
+        "properties": {
+          "tilgangId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "epost": {
+            "$ref": "#/components/schemas/Epost",
+            "description": "Personens epost. Unik innenfor søknaden."
           }
         }
       },
@@ -1233,28 +1243,27 @@
           }
         }
       },
+      "Epost": {
+        "type": "string",
+        "format": "email",
+        "maxLength": 254,
+        "pattern": "^[A-Za-z0-9!#$%&'*+/=?^_`{|}~-]+(\\.[A-Za-z0-9!#$%&'*+/=?^_`{|}~-]+)*@((?![Xx][Nn]--)[A-Za-z0-9]([A-Za-z0-9-]{0,61}[A-Za-z0-9])?\\.)+[A-Za-z]{2,63}$",
+        "example": "ola.nordmann@example.com"
+      },
       "Person": {
         "type": "object",
         "required": [
-          "fnr",
-          "navn"
+          "navn",
+          "epost"
         ],
         "properties": {
-          "fnr": {
-            "type": "string",
-            "minLength": 11,
-            "maxLength": 11,
-            "pattern": "^\\d{11}$",
-            "description": "Personens fødsels- og personnummer"
-          },
           "navn": {
             "type": "string",
             "description": "Personens fulle navn"
           },
           "epost": {
-            "type": "string",
-            "format": "email",
-            "description": "Epost"
+            "$ref": "#/components/schemas/Epost",
+            "description": "Personens epost"
           }
         }
       },
@@ -1825,7 +1834,7 @@
         }
       },
       "409Conflict": {
-        "description": "Id-en som ble sendt inn er allerede i bruk",
+        "description": "Forespørselen er i konflikt med det som alt er lagret.\n\n- `TILSKUDD-2001`: eposten har alt tilgang til søknaden\n- `TILSKUDD-2002`: tilgangId finnes alt på søknaden\n- `TILSKUDD-2003`: søknaden har alt 300 tilganger\n- `TILSKUDD-2004`: den siste tilgangen kan ikke fjernes",
         "content": {
           "application/json": {
             "schema": {
