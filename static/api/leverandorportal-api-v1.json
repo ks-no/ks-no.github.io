@@ -699,7 +699,7 @@
     },
     "/leverandorportal/api/v1/kontaktpunkter/{kontaktpunktId}": {
       "put": {
-        "summary": "Oppdater eksisterende kontaktpunkt (ikke støttet i v1)",
+        "summary": "Oppdater eksisterende kontaktpunkt på et av callerens produkter",
         "operationId": "oppdaterKontaktpunkt",
         "tags": [
           "Kontaktpunkter"
@@ -726,14 +726,18 @@
           }
         },
         "responses": {
-          "401": {
-            "$ref": "#/components/responses/IkkeAutentisert"
+          "200": {
+            "description": "Oppdatert",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Kontaktpunkt"
+                }
+              }
+            }
           },
-          "403": {
-            "$ref": "#/components/responses/ManglerTilgang"
-          },
-          "501": {
-            "description": "Ikke støttet før eierskap kan verifiseres. errorCode NOT_IMPLEMENTED.",
+          "400": {
+            "description": "Ugyldig kropp — type, navn og verdi er påkrevd. errorCode VALIDATION_ERROR med feltnivådetaljer i message, eller BAD_REQUEST uten.",
             "content": {
               "application/json": {
                 "schema": {
@@ -741,6 +745,38 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/IkkeAutentisert"
+          },
+          "403": {
+            "description": "Token mangler verifisert Altinn-tilgang for nøyaktig én organisasjon, organisasjonen er ikke registrert i Systemkatalogen, eller kontaktpunktet tilhører ikke et av organisasjonens produkter. Ukjent kontaktpunktId gir også 403, så svaret avslører ikke om id-en finnes. errorCode FORBIDDEN.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Kontaktpunktet ble fjernet mellom eierskapssjekken og oppdateringen. errorCode NOT_FOUND.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "413": {
+            "$ref": "#/components/responses/ForStorRequest"
+          },
+          "500": {
+            "$ref": "#/components/responses/UgyldigNedstroemskall"
+          },
+          "502": {
+            "$ref": "#/components/responses/NedstroemsFeil"
           }
         },
         "security": [
