@@ -1,0 +1,194 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "KS Besøksbidrag Root API",
+    "description": "Internal API for the Besøksbidrag root interface.",
+    "contact": {
+      "name": "Fiks brukerstøtte",
+      "url": "https://www.ks.no/fagomrader/digitalisering/utviklingsprosjekter",
+      "email": "fiks-utvikling@ks.no"
+    },
+    "license": {
+      "name": "MIT",
+      "url": "https://opensource.org/licenses/MIT"
+    },
+    "version": "v1"
+  },
+  "servers": [
+    {
+      "url": "https://api.fiks.ks.no",
+      "description": "KS Fiks API host"
+    },
+    {
+      "url": "https://api.test.fiks.ks.no",
+      "description": "KS Fiks TEST API host"
+    }
+  ],
+  "security": [
+    {
+      "bearerAuth": []
+    }
+  ],
+  "tags": [
+    {
+      "name": "root",
+      "description": "Internal operations for the Besøksbidrag root interface"
+    }
+  ],
+  "paths": {
+    "/besoksbidrag/api/v1/municipality-contacts": {
+      "get": {
+        "tags": [
+          "root"
+        ],
+        "summary": "List municipality contact persons",
+        "description": "Returns contact persons for all configured municipalities. Requires an authenticated person with ADMIN access to the ROOT resource.",
+        "operationId": "getMunicipalityContacts",
+        "responses": {
+          "200": {
+            "description": "Contact persons grouped by Fiks organization",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MunicipalityContactsList"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Error401"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error403"
+          },
+          "500": {
+            "$ref": "#/components/responses/Error500"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    },
+    "schemas": {
+      "MunicipalityContactsList": {
+        "type": "object",
+        "required": [
+          "municipalities"
+        ],
+        "properties": {
+          "municipalities": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MunicipalityContacts"
+            }
+          }
+        }
+      },
+      "MunicipalityContacts": {
+        "type": "object",
+        "required": [
+          "fiksOrgId",
+          "fiksOrgName",
+          "contacts"
+        ],
+        "properties": {
+          "fiksOrgId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Fiks organization identifier"
+          },
+          "fiksOrgName": {
+            "type": "string",
+            "description": "Name of the Fiks organization",
+            "example": "Oslo kommune"
+          },
+          "contacts": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ContactPerson"
+            }
+          }
+        }
+      },
+      "ContactPerson": {
+        "type": "object",
+        "required": [
+          "name",
+          "email"
+        ],
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Full name of the contact person"
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "description": "Email address of the contact person"
+          }
+        }
+      },
+      "ErrorMessage": {
+        "type": "object",
+        "properties": {
+          "errorId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "correlationId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "errorCode": {
+            "type": "string"
+          },
+          "errorMessage": {
+            "type": "string"
+          },
+          "httpStatus": {
+            "type": "integer"
+          }
+        }
+      }
+    },
+    "responses": {
+      "Error401": {
+        "description": "Unauthorized",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorMessage"
+            }
+          }
+        }
+      },
+      "Error403": {
+        "description": "Forbidden",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorMessage"
+            }
+          }
+        }
+      },
+      "Error500": {
+        "description": "Internal Server Error",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorMessage"
+            }
+          }
+        }
+      }
+    }
+  }
+}
