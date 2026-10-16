@@ -114,7 +114,7 @@
             "$ref": "#/components/responses/ikkeFunnet"
           },
           "409": {
-            "$ref": "#/components/responses/ugyldigTilstand"
+            "$ref": "#/components/responses/utkastEndretAvAnnen"
           }
         },
         "security": [
@@ -167,6 +167,9 @@
         "parameters": [
           {
             "$ref": "#/components/parameters/id"
+          },
+          {
+            "$ref": "#/components/parameters/lagringsversjon"
           }
         ],
         "responses": {
@@ -174,7 +177,7 @@
             "description": "Innlevert"
           },
           "400": {
-            "$ref": "#/components/responses/ugyldigParameterverdi"
+            "$ref": "#/components/responses/ufullstendigBesvarelse"
           },
           "403": {
             "$ref": "#/components/responses/manglerTilgang"
@@ -183,7 +186,7 @@
             "$ref": "#/components/responses/ikkeFunnet"
           },
           "409": {
-            "$ref": "#/components/responses/ugyldigTilstand"
+            "$ref": "#/components/responses/utkastEndretAvAnnen"
           }
         },
         "security": [
@@ -225,6 +228,47 @@
           },
           "404": {
             "description": "Innlevering eller tilknyttet selvdeklarering ikke funnet"
+          },
+          "409": {
+            "description": "Selvdeklareringen er deaktivert"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/selvdeklarering/api/v1/innleveringer/{id}/fremdrift": {
+      "get": {
+        "summary": "Hent fremdrift for innlevering",
+        "description": "Teller besvarte spørsmål totalt og per pakke med samme regel som lever-inn validerer etter: et spørsmål er besvart når minst ett alternativ er valgt, og et kombinasjonsspørsmål krever i tillegg minst ett valg under alternativet som åpner det. Seksjoner telles ikke. `klarForInnlevering` er true når alle spørsmål er besvart.",
+        "operationId": "hentFremdrift",
+        "tags": [
+          "Innlevering"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/id"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Fremdrift for innleveringen",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Fremdrift"
+                }
+              }
+            }
+          },
+          "403": {
+            "$ref": "#/components/responses/manglerTilgang"
+          },
+          "404": {
+            "$ref": "#/components/responses/ikkeFunnet"
           },
           "409": {
             "description": "Selvdeklareringen er deaktivert"
@@ -931,6 +975,11 @@
             "readOnly": true,
             "description": "Revisjonsteller satt av tjenesten. Settes til 1 ved opprettelse og økes ved kopiering og revidering."
           },
+          "lagringsversjon": {
+            "type": "integer",
+            "format": "int64",
+            "description": "Optimistisk låsing av utkast. Tjenesten øker verdien ved hver lagring og innlevering. Klienten sender verdien fra siste GET- eller PUT-respons tilbake på PUT; avviker den fra lagret verdi, avvises lagringen med 409 og errorCode UTKAST_ENDRET_AV_ANNEN. Uten verdi lagres det uten konfliktsjekk."
+          },
           "produktId": {
             "type": "string",
             "format": "uuid"
@@ -1329,6 +1378,63 @@
             "items": {
               "$ref": "#/components/schemas/PakkeMedSporsmal"
             }
+          }
+        }
+      },
+      "Fremdrift": {
+        "type": "object",
+        "required": [
+          "antallSporsmal",
+          "antallBesvart",
+          "klarForInnlevering",
+          "ubesvarteSporsmalIder",
+          "pakker"
+        ],
+        "properties": {
+          "antallSporsmal": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "antallBesvart": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "klarForInnlevering": {
+            "type": "boolean"
+          },
+          "ubesvarteSporsmalIder": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "pakker": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PakkeFremdrift"
+            }
+          }
+        }
+      },
+      "PakkeFremdrift": {
+        "type": "object",
+        "required": [
+          "pakkeId",
+          "antallSporsmal",
+          "antallBesvart"
+        ],
+        "properties": {
+          "pakkeId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "antallSporsmal": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "antallBesvart": {
+            "type": "integer",
+            "format": "int32"
           }
         }
       },
@@ -1794,7 +1900,7 @@
               "error": "Bad Request",
               "message": "Kan ikke levere inn uten svar",
               "path": "/selvdeklarering/api/v1/innleveringer/3fa85f64-5717-4562-b3fc-2c963f66afa6/lever-inn",
-              "errorCode": "BAD_REQUEST"
+              "errorCode": "0001"
             }
           }
         }
@@ -1828,7 +1934,7 @@
               "error": "Not Found",
               "message": "Innlevert selvdeklarering med id=3fa85f64-5717-4562-b3fc-2c963f66afa6 ble ikke funnet",
               "path": "/selvdeklarering/api/v1/innleveringer/3fa85f64-5717-4562-b3fc-2c963f66afa6",
-              "errorCode": "NOT_FOUND"
+              "errorCode": "0005"
             }
           }
         }
@@ -1845,7 +1951,41 @@
               "error": "Conflict",
               "message": "Kan kun levere inn utkast. Innlevering 3fa85f64-5717-4562-b3fc-2c963f66afa6 har status INNLEVERT",
               "path": "/selvdeklarering/api/v1/innleveringer/3fa85f64-5717-4562-b3fc-2c963f66afa6/lever-inn",
-              "errorCode": "CONFLICT"
+              "errorCode": "0007"
+            }
+          }
+        }
+      },
+      "utkastEndretAvAnnen": {
+        "description": "Utkastet er endret av en annen bruker eller nettleser siden klienten leste det (errorCode UTKAST_ENDRET_AV_ANNEN), eller innleveringen har ikke lenger status UTKAST (generell konfliktkode 0007).",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorMessage"
+            },
+            "example": {
+              "status": 409,
+              "error": "Conflict",
+              "message": "Utkastet er endret av en annen bruker eller nettleser. Last inn på nytt.",
+              "path": "/selvdeklarering/api/v1/innleveringer/3fa85f64-5717-4562-b3fc-2c963f66afa6",
+              "errorCode": "UTKAST_ENDRET_AV_ANNEN"
+            }
+          }
+        }
+      },
+      "ufullstendigBesvarelse": {
+        "description": "Innleveringen kan ikke leveres inn. errorCode UBESVARTE_SPORSMAL: ett eller flere spørsmål er ikke besvart. errorCode UFULLSTENDIG_KOMBINASJON: et kombinasjonsspørsmål mangler valg under alternativet som åpner det. Øvrig ugyldig input gir generell kode 0001.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorMessage"
+            },
+            "example": {
+              "status": 400,
+              "error": "Bad Request",
+              "message": "Kan ikke levere inn: 2 spørsmål er ikke besvart: K1.1, K1.2",
+              "path": "/selvdeklarering/api/v1/innleveringer/3fa85f64-5717-4562-b3fc-2c963f66afa6/lever-inn",
+              "errorCode": "UBESVARTE_SPORSMAL"
             }
           }
         }
@@ -1900,6 +2040,16 @@
           "items": {
             "$ref": "#/components/schemas/InnleveringStatus"
           }
+        }
+      },
+      "lagringsversjon": {
+        "name": "lagringsversjon",
+        "in": "query",
+        "required": false,
+        "description": "lagringsversjon fra siste GET- eller PUT-respons. Avviker den fra lagret verdi, avvises innleveringen med 409 og errorCode UTKAST_ENDRET_AV_ANNEN, slik at ingen leverer inn svar de ikke har sett.",
+        "schema": {
+          "type": "integer",
+          "format": "int64"
         }
       }
     }
