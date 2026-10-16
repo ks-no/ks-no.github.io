@@ -243,7 +243,7 @@
     "/selvdeklarering/api/v1/innleveringer/{id}/fremdrift": {
       "get": {
         "summary": "Hent fremdrift for innlevering",
-        "description": "Teller besvarte spørsmål totalt og per pakke med samme regel som lever-inn validerer etter: et spørsmål er besvart når minst ett alternativ er valgt, og et kombinasjonsspørsmål krever i tillegg minst ett valg under alternativet som åpner det. Seksjoner telles ikke. `klarForInnlevering` er true når alle spørsmål er besvart.",
+        "description": "Teller besvarte spørsmål totalt og per pakke med samme regel som lever-inn validerer etter: et spørsmål er besvart når minst ett alternativ er valgt, og et kombinasjonsspørsmål krever i tillegg minst ett valg under alternativet som åpner det. Seksjoner telles ikke. `klarForInnlevering` er true når alle spørsmål er besvart.\n\nI tillegg returneres oppsummeringen frontend tidligere regnet ut selv: `visningsstatus`, tellere og fordeling for minimumskrav og vurderingskriterier, samme tall per kravområde, og evaluering/risiko per spørsmål. Et spørsmål som finnes i både en minimumskrav- og en vurderingspakke telles én gang, som minimumskrav. Risiko følger samme regel som PDF-en: `scoreLabel` avgjør når den er en kjent risikotekst, ellers `evaluering` (GODKJENT med poeng ≥ 5 er LAV, GODKJENT under 5 er MODERAT, DELVIS_GODKJENT er HØY, IKKE_GODKJENT er SVÆRT_HØY). Ved flere valgte alternativer gjelder det svakeste. Pakkens poengoverstyringer brukes.",
         "operationId": "hentFremdrift",
         "tags": [
           "Innlevering"
@@ -260,6 +260,92 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/Fremdrift"
+                },
+                "example": {
+                  "antallSporsmal": 209,
+                  "antallBesvart": 11,
+                  "klarForInnlevering": false,
+                  "ubesvarteSporsmalIder": [
+                    "MK.1.2",
+                    "LV.3.1.6"
+                  ],
+                  "pakker": [
+                    {
+                      "pakkeId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+                      "antallSporsmal": 73,
+                      "antallBesvart": 1
+                    }
+                  ],
+                  "visningsstatus": "UTKAST",
+                  "minimumskrav": {
+                    "antallSporsmal": 73,
+                    "antallBesvart": 1,
+                    "fordeling": {
+                      "oppfylt": 1,
+                      "delvisOppfylt": 0,
+                      "ikkeOppfylt": 0,
+                      "ikkeVurdert": 0,
+                      "ubesvart": 72
+                    }
+                  },
+                  "vurderingskriterium": {
+                    "antallSporsmal": 136,
+                    "antallBesvart": 10,
+                    "fordeling": {
+                      "lav": 4,
+                      "moderat": 3,
+                      "høy": 1,
+                      "sværtHøy": 2,
+                      "ukjent": 0,
+                      "ubesvart": 126
+                    }
+                  },
+                  "kravomrader": [
+                    {
+                      "kravomrade": "STYRING_KONTROLL_OG_ETTERLEVELSE",
+                      "antallSporsmal": 80,
+                      "antallBesvart": 4,
+                      "minimumskrav": {
+                        "antallSporsmal": 30,
+                        "antallBesvart": 1,
+                        "fordeling": {
+                          "oppfylt": 1,
+                          "delvisOppfylt": 0,
+                          "ikkeOppfylt": 0,
+                          "ikkeVurdert": 0,
+                          "ubesvart": 29
+                        }
+                      },
+                      "vurderingskriterium": {
+                        "antallSporsmal": 50,
+                        "antallBesvart": 3,
+                        "fordeling": {
+                          "lav": 2,
+                          "moderat": 1,
+                          "høy": 0,
+                          "sværtHøy": 0,
+                          "ukjent": 0,
+                          "ubesvart": 47
+                        }
+                      }
+                    }
+                  ],
+                  "sporsmal": [
+                    {
+                      "sporsmalId": "MK.1.1",
+                      "kravType": "MINIMUMSKRAV",
+                      "kravomrade": "STYRING_KONTROLL_OG_ETTERLEVELSE",
+                      "besvart": true,
+                      "evaluering": "GODKJENT"
+                    },
+                    {
+                      "sporsmalId": "LV.3.1.5",
+                      "kravType": "VURDERINGSKRITERIUM",
+                      "kravomrade": "OPERASJONELL_SIKKERHET",
+                      "besvart": true,
+                      "risiko": "MODERAT"
+                    }
+                  ]
                 }
               }
             }
@@ -975,6 +1061,12 @@
             "readOnly": true,
             "description": "Revisjonsteller satt av tjenesten. Settes til 1 ved opprettelse og økes ved kopiering og revidering."
           },
+          "nyesteInnleveringId": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true,
+            "description": "Satt når en nyere versjon (UTKAST eller INNLEVERT) av samme selvdeklarering for samme produkt finnes. Frontend kan sende brukeren dit i stedet for å hente hele listen."
+          },
           "lagringsversjon": {
             "type": "integer",
             "format": "int64",
@@ -1388,7 +1480,12 @@
           "antallBesvart",
           "klarForInnlevering",
           "ubesvarteSporsmalIder",
-          "pakker"
+          "pakker",
+          "visningsstatus",
+          "minimumskrav",
+          "vurderingskriterium",
+          "kravomrader",
+          "sporsmal"
         ],
         "properties": {
           "antallSporsmal": {
@@ -1413,6 +1510,29 @@
             "items": {
               "$ref": "#/components/schemas/PakkeFremdrift"
             }
+          },
+          "visningsstatus": {
+            "$ref": "#/components/schemas/Visningsstatus"
+          },
+          "minimumskrav": {
+            "$ref": "#/components/schemas/MinimumskravFremdrift"
+          },
+          "vurderingskriterium": {
+            "$ref": "#/components/schemas/VurderingskriteriumFremdrift"
+          },
+          "kravomrader": {
+            "type": "array",
+            "description": "Én rad per kravområde, i rekkefølgen kravområdet først forekommer i spørreskjemaet. Spørsmål uten kravområde samles i en rad med `kravomrade` null.",
+            "items": {
+              "$ref": "#/components/schemas/KravomradeFremdrift"
+            }
+          },
+          "sporsmal": {
+            "type": "array",
+            "description": "Én rad per spørsmål (seksjoner utelatt), i spørreskjemaets rekkefølge.",
+            "items": {
+              "$ref": "#/components/schemas/SporsmalFremdrift"
+            }
           }
         }
       },
@@ -1435,6 +1555,230 @@
           "antallBesvart": {
             "type": "integer",
             "format": "int32"
+          }
+        }
+      },
+      "Visningsstatus": {
+        "type": "string",
+        "description": "Status slik leverandøren ser den. UTKAST der alle spørsmål er besvart blir KLAR_FOR_FERDIGSTILLING, INNLEVERT blir MARKERT_SOM_FERDIG.",
+        "enum": [
+          "UTKAST",
+          "KLAR_FOR_FERDIGSTILLING",
+          "MARKERT_SOM_FERDIG",
+          "TRUKKET_TILBAKE",
+          "UGYLDIG"
+        ]
+      },
+      "KravType": {
+        "type": "string",
+        "description": "MINIMUMSKRAV for pakker med automatisk evaluering (pakkeTypeAutoScore), ellers VURDERINGSKRITERIUM.",
+        "enum": [
+          "MINIMUMSKRAV",
+          "VURDERINGSKRITERIUM"
+        ]
+      },
+      "Risiko": {
+        "type": "string",
+        "description": "UKJENT når et valgt alternativ verken har kjent scoreLabel eller evaluering.",
+        "enum": [
+          "LAV",
+          "MODERAT",
+          "HØY",
+          "SVÆRT_HØY",
+          "UKJENT"
+        ]
+      },
+      "MinimumskravFordeling": {
+        "type": "object",
+        "description": "`ikkeVurdert` er besvarte spørsmål der valgt alternativ mangler evaluering.",
+        "required": [
+          "oppfylt",
+          "delvisOppfylt",
+          "ikkeOppfylt",
+          "ikkeVurdert",
+          "ubesvart"
+        ],
+        "properties": {
+          "oppfylt": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "delvisOppfylt": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "ikkeOppfylt": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "ikkeVurdert": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "ubesvart": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "Risikofordeling": {
+        "type": "object",
+        "required": [
+          "lav",
+          "moderat",
+          "høy",
+          "sværtHøy",
+          "ukjent",
+          "ubesvart"
+        ],
+        "properties": {
+          "lav": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "moderat": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "høy": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "sværtHøy": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "ukjent": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "ubesvart": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "MinimumskravFremdrift": {
+        "type": "object",
+        "required": [
+          "antallSporsmal",
+          "antallBesvart",
+          "fordeling"
+        ],
+        "properties": {
+          "antallSporsmal": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "antallBesvart": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "fordeling": {
+            "$ref": "#/components/schemas/MinimumskravFordeling"
+          }
+        }
+      },
+      "VurderingskriteriumFremdrift": {
+        "type": "object",
+        "required": [
+          "antallSporsmal",
+          "antallBesvart",
+          "fordeling"
+        ],
+        "properties": {
+          "antallSporsmal": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "antallBesvart": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "fordeling": {
+            "$ref": "#/components/schemas/Risikofordeling"
+          }
+        }
+      },
+      "KravomradeFremdrift": {
+        "type": "object",
+        "required": [
+          "antallSporsmal",
+          "antallBesvart",
+          "minimumskrav",
+          "vurderingskriterium"
+        ],
+        "properties": {
+          "kravomrade": {
+            "type": "string",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Kravomrade"
+              }
+            ],
+            "nullable": true
+          },
+          "antallSporsmal": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "antallBesvart": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "minimumskrav": {
+            "$ref": "#/components/schemas/MinimumskravFremdrift"
+          },
+          "vurderingskriterium": {
+            "$ref": "#/components/schemas/VurderingskriteriumFremdrift"
+          }
+        }
+      },
+      "SporsmalFremdrift": {
+        "type": "object",
+        "required": [
+          "sporsmalId",
+          "kravType",
+          "besvart"
+        ],
+        "properties": {
+          "sporsmalId": {
+            "type": "string"
+          },
+          "kravType": {
+            "$ref": "#/components/schemas/KravType"
+          },
+          "kravomrade": {
+            "type": "string",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Kravomrade"
+              }
+            ],
+            "nullable": true
+          },
+          "besvart": {
+            "type": "boolean"
+          },
+          "evaluering": {
+            "type": "string",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Evaluering"
+              }
+            ],
+            "nullable": true,
+            "description": "Kun for MINIMUMSKRAV: svakeste evaluering blant valgte alternativer."
+          },
+          "risiko": {
+            "type": "string",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Risiko"
+              }
+            ],
+            "nullable": true,
+            "description": "Kun for VURDERINGSKRITERIUM."
           }
         }
       },
