@@ -14,15 +14,15 @@
     },
     "version": "v1"
   },
-  "security": [
-    {
-      "bearerAuth": []
-    }
-  ],
   "servers": [
     {
       "url": "https://api.fiks.ks.no",
       "description": "KS Fiks API host"
+    }
+  ],
+  "security": [
+    {
+      "bearerAuth": []
     }
   ],
   "tags": [
@@ -125,8 +125,8 @@
               }
             }
           },
-          "401": {
-            "description": "Ingen tilgang",
+          "400": {
+            "description": "Ukjent",
             "content": {
               "application/json": {
                 "schema": {
@@ -135,8 +135,8 @@
               }
             }
           },
-          "400": {
-            "description": "Ukjent",
+          "401": {
+            "description": "Ingen tilgang",
             "content": {
               "application/json": {
                 "schema": {
@@ -174,7 +174,8 @@
               "type": "string",
               "format": "uuid"
             }
-          }, {
+          },
+          {
             "name": "oppgaveId",
             "in": "path",
             "required": true,
@@ -198,8 +199,8 @@
           "204": {
             "description": "Oppgave er oppdatert til ønsket status"
           },
-          "401": {
-            "description": "Ingen tilgang",
+          "400": {
+            "description": "Ukjent",
             "content": {
               "application/json": {
                 "schema": {
@@ -208,8 +209,8 @@
               }
             }
           },
-          "400": {
-            "description": "Ukjent",
+          "401": {
+            "description": "Ingen tilgang",
             "content": {
               "application/json": {
                 "schema": {
@@ -331,7 +332,8 @@
               "type": "string",
               "format": "uuid"
             }
-          }, {
+          },
+          {
             "name": "oppgaveId",
             "in": "path",
             "required": true,
@@ -352,12 +354,88 @@
               }
             }
           },
+          "400": {
+            "description": "Ukjent",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
           "401": {
             "description": "Ingen tilgang",
             "content": {
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Ikke funnet",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Systemfeil",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/min-kommune/api/v1/api/{fiksOrgId}/oppgaver/sok": {
+      "post": {
+        "tags": [
+          "OppgaveEkstern"
+        ],
+        "summary": "Søk etter oppgaver",
+        "description": "Søker etter oppgaver basert på oppgitte filtre. Alle oppgitte filtre kombineres med OG (AND).",
+        "operationId": "sokOppgaver",
+        "parameters": [
+          {
+            "name": "fiksOrgId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OppgaveSokRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Liste over oppgaver som matcher søket",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/OppgaveHentResponse"
+                  }
                 }
               }
             }
@@ -372,8 +450,18 @@
               }
             }
           },
-          "404": {
-            "description": "Ikke funnet",
+          "401": {
+            "description": "Ingen tilgang",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Ikke autorisert",
             "content": {
               "application/json": {
                 "schema": {
@@ -437,8 +525,8 @@
               }
             }
           },
-          "401": {
-            "description": "Ingen tilgang",
+          "400": {
+            "description": "Ukjent",
             "content": {
               "application/json": {
                 "schema": {
@@ -447,8 +535,8 @@
               }
             }
           },
-          "400": {
-            "description": "Ukjent",
+          "401": {
+            "description": "Ingen tilgang",
             "content": {
               "application/json": {
                 "schema": {
@@ -586,6 +674,9 @@
             "maxLength": 200,
             "description": "Valgfri ekstern id for oppgaven, satt av den som oppretter oppgaven. Kan brukes til å hente oppgaven basert på ekstern id."
           },
+          "eksternData": {
+            "$ref": "#/components/schemas/EksternData"
+          },
           "tilgjengeligFra": {
             "type": "string",
             "format": "date",
@@ -605,6 +696,64 @@
           }
         }
       },
+      "OppgaveSokRequest": {
+        "type": "object",
+        "properties": {
+          "oppgaveId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Filtrer på intern oppgave-id."
+          },
+          "batchId": {
+            "type": "string",
+            "maxLength": 200,
+            "description": "Filtrer på eksternData.batchId."
+          },
+          "eksternId": {
+            "type": "string",
+            "maxLength": 200,
+            "description": "Filtrer på ekstern id."
+          },
+          "opprettetFra": {
+            "type": "string",
+            "format": "date",
+            "description": "Nedre grense (inkludert) for intervallet for opprettelsesdato."
+          },
+          "opprettetTil": {
+            "type": "string",
+            "format": "date",
+            "description": "Øvre grense (inkludert) for intervallet for opprettelsesdato."
+          },
+          "fristFra": {
+            "type": "string",
+            "format": "date",
+            "description": "Nedre grense (inkludert) for intervallet for frist."
+          },
+          "fristTil": {
+            "type": "string",
+            "format": "date",
+            "description": "Øvre grense (inkludert) for intervallet for frist."
+          },
+          "tilgjengeligFra": {
+            "type": "string",
+            "format": "date",
+            "description": "Nedre grense (inkludert) for intervallet for dato oppgaven blir tilgjengelig."
+          },
+          "tilgjengeligTil": {
+            "type": "string",
+            "format": "date",
+            "description": "Øvre grense (inkludert) for intervallet for dato oppgaven blir tilgjengelig."
+          },
+          "status": {
+            "type": "string",
+            "description": "Filtrer på status. Oppgaven matcher når minst én mottaker har oppgitt status.",
+            "enum": [
+              "NY",
+              "FULLFORT"
+            ]
+          }
+        }
+      },
       "OppdaterStatusRequest": {
         "required": [
           "mottaker"
@@ -616,7 +765,7 @@
           }
         }
       },
-      "OppgaveHentResponse":  {
+      "OppgaveHentResponse": {
         "type": "object",
         "required": [
           "id",
@@ -643,6 +792,20 @@
             "type": "string",
             "maxLength": 200,
             "description": "Ekstern id for oppgaven, dersom satt ved opprettelse"
+          },
+          "eksternData": {
+            "$ref": "#/components/schemas/EksternData"
+          }
+        }
+      },
+      "EksternData": {
+        "type": "object",
+        "description": "Valgfri informasjon fra et eksternt system for kobling eller korrelasjon; inngår ikke i oppgavens funksjonelle innhold.",
+        "properties": {
+          "batchId": {
+            "type": "string",
+            "maxLength": 200,
+            "description": "Valgfri batch-id fra et eksternt system for kobling eller korrelasjon."
           }
         }
       },
@@ -741,7 +904,6 @@
       },
       "Varsling": {
         "type": "object",
-        "required": [],
         "properties": {
           "purringIntervallDager": {
             "type": "integer",
