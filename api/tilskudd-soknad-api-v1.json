@@ -125,7 +125,7 @@
           "Tilskuddssoknad"
         ],
         "operationId": "oppdaterSoknad",
-        "summary": "Oppdaterer felter på en søknad (status, tittel og/eller fagsystemreferanse)",
+        "summary": "Oppdaterer felter på en søknad",
         "parameters": [
           {
             "name": "soknadsregisterId",
@@ -170,6 +170,59 @@
           },
           "404": {
             "$ref": "#/components/responses/404NotFound"
+          },
+          "409": {
+            "$ref": "#/components/responses/409Conflict"
+          },
+          "default": {
+            "$ref": "#/components/responses/DefaultError"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Tilskuddssoknad"
+        ],
+        "operationId": "slettSoknad",
+        "summary": "Sletter et utkast til søknad",
+        "description": "Søknaden får status SLETTET og kan fortsatt hentes med id.",
+        "parameters": [
+          {
+            "name": "soknadsregisterId",
+            "in": "path",
+            "description": "SoknadsregisterId for søknaden",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Søknaden er slettet",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SoknadDetaljer"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/400BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/401Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/403Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/404NotFound"
+          },
+          "409": {
+            "$ref": "#/components/responses/409Conflict"
           },
           "default": {
             "$ref": "#/components/responses/DefaultError"
@@ -773,6 +826,9 @@
           "404": {
             "$ref": "#/components/responses/404NotFound"
           },
+          "409": {
+            "$ref": "#/components/responses/409Conflict"
+          },
           "default": {
             "$ref": "#/components/responses/DefaultError"
           }
@@ -1005,10 +1061,6 @@
             "$ref": "#/components/schemas/Foretak",
             "description": "Foretaket som man søker på vegne av"
           },
-          "innsendtAv": {
-            "$ref": "#/components/schemas/Person",
-            "description": "Personen som sendte inn søknaden"
-          },
           "fagsystemReferanse": {
             "type": "string",
             "description": "Referanse for søknad til fagsystem. Kan settes ved opprettelse, men settes normalt av fagsystemet i ettertid via PATCH.",
@@ -1023,7 +1075,6 @@
           "tilskuddsregisterId",
           "tittel",
           "paaVegneAvForetak",
-          "innsendtAv",
           "tilganger",
           "brev",
           "oppgaver",
@@ -1056,6 +1107,10 @@
           {
             "type": "object",
             "properties": {
+              "innsendtAv": {
+                "$ref": "#/components/schemas/Person",
+                "description": "Personen som sendte inn søknaden. Mangler så lenge søknaden ikke er sendt inn."
+              },
               "tilganger": {
                 "type": "array",
                 "minItems": 1,
@@ -1095,7 +1150,7 @@
                 "type": "string",
                 "format": "date-time",
                 "example": "2025-08-27T15:45:30Z",
-                "description": "Tidspunkt for når søknaden sist ble endret"
+                "description": "Tidspunkt for når søknaden sist ble endret. Ved endring fra fagsystemet er det fagsystemets tidspunkt."
               },
               "innsendtDatoTid": {
                 "type": "string",
@@ -1107,7 +1162,7 @@
                 "type": "string",
                 "format": "date-time",
                 "example": "2025-08-27T15:45:30Z",
-                "description": "Tidspunkt for når status på søknaden sist ble endret. Settes automatisk ved statusendring og kan ikke sendes inn."
+                "description": "Tidspunkt for når status på søknaden sist ble endret. Ved endring fra fagsystemet er det fagsystemets tidspunkt."
               },
               "fristForInnsendelseDatoTid": {
                 "type": "string",
@@ -1128,7 +1183,6 @@
         "required": [
           "tilskuddsregisterId",
           "tittel",
-          "innsendtAv",
           "paaVegneAvForetak",
           "opprettetAv"
         ],
@@ -1209,8 +1263,17 @@
       "OppdaterSoknadRequest": {
         "type": "object",
         "description": "Felter som skal oppdateres på søknaden. Kun felter som er oppgitt (ikke null) blir endret.",
-        "minProperties": 1,
+        "required": [
+          "endretDatoTid"
+        ],
+        "minProperties": 2,
         "properties": {
+          "endretDatoTid": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2026-02-20T10:15:00Z",
+            "description": "Tidspunkt for endringen i fagsystemet"
+          },
           "status": {
             "$ref": "#/components/schemas/SoknadsStatus",
             "description": "Ny status for søknaden"
@@ -1362,6 +1425,12 @@
             "minLength": 1,
             "maxLength": 1600,
             "description": "Meldingens innhold. Ren tekst - HTML-tagger fjernes ved lagring"
+          },
+          "sendtDatoTid": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2025-08-27T15:45:30Z",
+            "description": "Tidspunkt for når meldingen ble sendt i fagsystemet"
           }
         }
       },
@@ -1370,7 +1439,8 @@
         "required": [
           "retning",
           "avsender",
-          "innhold"
+          "innhold",
+          "sendtDatoTid"
         ],
         "allOf": [
           {
@@ -1394,7 +1464,8 @@
           "tittel",
           "retning",
           "avsender",
-          "innhold"
+          "innhold",
+          "sendtDatoTid"
         ],
         "allOf": [
           {
@@ -1431,7 +1502,7 @@
           "retning",
           "avsender",
           "innhold",
-          "mottattDatoTid"
+          "sendtDatoTid"
         ],
         "allOf": [
           {
@@ -1445,16 +1516,6 @@
           },
           {
             "$ref": "#/components/schemas/MeldingBase"
-          },
-          {
-            "type": "object",
-            "properties": {
-              "mottattDatoTid": {
-                "type": "string",
-                "format": "date-time",
-                "example": "2025-08-27T15:45:30Z"
-              }
-            }
           }
         ]
       },
@@ -1546,6 +1607,12 @@
           "dokument": {
             "$ref": "#/components/schemas/Fil",
             "description": "Filen som utgjør brevet"
+          },
+          "sendtDatoTid": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2025-08-27T15:45:30Z",
+            "description": "Tidspunkt for når brevet ble sendt i fagsystemet"
           }
         }
       },
@@ -1554,7 +1621,8 @@
         "required": [
           "tittel",
           "avsender",
-          "dokument"
+          "dokument",
+          "sendtDatoTid"
         ],
         "allOf": [
           {
@@ -1580,7 +1648,7 @@
           "tittel",
           "avsender",
           "dokument",
-          "mottattDatoTid"
+          "sendtDatoTid"
         ],
         "allOf": [
           {
@@ -1594,17 +1662,6 @@
           },
           {
             "$ref": "#/components/schemas/BrevBase"
-          },
-          {
-            "type": "object",
-            "properties": {
-              "mottattDatoTid": {
-                "type": "string",
-                "format": "date-time",
-                "example": "2025-08-27T15:45:30Z",
-                "description": "Tidspunkt for når brevet ble mottatt. Settes automatisk ved registrering og kan ikke sendes inn."
-              }
-            }
           }
         ]
       },
@@ -1630,7 +1687,8 @@
         "type": "object",
         "required": [
           "tittel",
-          "fristDatoTid"
+          "fristDatoTid",
+          "opprettetDatoTid"
         ],
         "allOf": [
           {
@@ -1640,6 +1698,12 @@
                 "type": "string",
                 "format": "uuid",
                 "description": "Id for oppgaven. Kan settes av kallende system for å gjenbruke egen id. Genereres av tjenesten hvis den utelates. Må være unik innenfor søknaden."
+              },
+              "opprettetDatoTid": {
+                "type": "string",
+                "format": "date-time",
+                "example": "2025-08-27T15:45:30Z",
+                "description": "Tidspunkt for når oppgaven ble opprettet i fagsystemet"
               }
             }
           },
@@ -1651,8 +1715,17 @@
       "OppdaterOppgaveRequest": {
         "type": "object",
         "description": "Felter som skal oppdateres på oppgaven. Kun felter som er oppgitt (ikke null) blir endret.",
-        "minProperties": 1,
+        "required": [
+          "endretDatoTid"
+        ],
+        "minProperties": 2,
         "properties": {
+          "endretDatoTid": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2026-02-20T10:15:00Z",
+            "description": "Tidspunkt for endringen i fagsystemet"
+          },
           "merknad": {
             "$ref": "#/components/schemas/OppgaveMerknad",
             "description": "Ny merknad for oppgaven"
@@ -1712,13 +1785,13 @@
                 "type": "string",
                 "format": "date-time",
                 "example": "2025-08-27T15:45:30Z",
-                "description": "Tidspunkt for når oppgaven ble opprettet"
+                "description": "Tidspunkt for når oppgaven ble opprettet i fagsystemet"
               },
               "endretDatoTid": {
                 "type": "string",
                 "format": "date-time",
                 "example": "2025-08-27T15:45:30Z",
-                "description": "Tidspunkt for når oppgaven sist ble endret"
+                "description": "Tidspunkt for når oppgaven sist ble endret i fagsystemet"
               },
               "innsendtDatoTid": {
                 "type": "string",
@@ -1834,7 +1907,7 @@
         }
       },
       "409Conflict": {
-        "description": "Forespørselen er i konflikt med det som alt er lagret.\n\n- `TILSKUDD-2001`: eposten har alt tilgang til søknaden\n- `TILSKUDD-2002`: tilgangId finnes alt på søknaden\n- `TILSKUDD-2003`: søknaden har alt 300 tilganger\n- `TILSKUDD-2004`: den siste tilgangen kan ikke fjernes",
+        "description": "Forespørselen er i konflikt med det som alt er lagret.\n\n- `TILSKUDD-2001`: eposten har alt tilgang til søknaden\n- `TILSKUDD-2002`: tilgangId finnes alt på søknaden\n- `TILSKUDD-2003`: søknaden har alt 300 tilganger\n- `TILSKUDD-2004`: den siste tilgangen kan ikke fjernes\n- `TILSKUDD-2005`: endretDatoTid er eldre enn forrige endring",
         "content": {
           "application/json": {
             "schema": {
