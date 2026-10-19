@@ -2,7 +2,7 @@
   "openapi": "3.0.3",
   "info": {
     "title": "KS FIKS: Konsesjon megler-API",
-    "description": "API for eiendomsmeglere som skal avklare konsesjonsforhold ved salg av eiendom. Avklaringen gjøres mot Landbruksdirektoratet (LDIR).",
+    "description": "API for eiendomsmeglere som skal avklare konsesjonsforhold ved salg av eiendom. Avklaringen gjøres mot Landbruksdirektoratet (LDIR).\n\n**Autentisering:** API-et kan bare brukes av Fiks-integrasjoner. Alle kall må ha et Maskinporten-token med scope `ks:fiks` i `Authorization`-headeren, samt headerne `IntegrasjonId` og `IntegrasjonPassord`. Se https://developers.fiks.ks.no/felles/integrasjoner/.\n\n**Tilgang:** Integrasjonen må ha privilegiet `KONSESJON.QUERY` (lesing) eller `KONSESJON.UPDATE` (lesing og skriving). En konsesjonsavklaring kan bare brukes av organisasjonen som opprettet den.",
     "contact": {
       "name": "Fiks konsesjon",
       "url": "https://www.ks.no/fagomrader/digitalisering/utviklingsprosjekter",
@@ -22,7 +22,11 @@
   ],
   "tags": [
     {
-      "name": "Eiendomssalg - Konsesjonsavklaring",
+      "name": "Megler - Eiendom",
+      "description": "Oppslag om eiendommen som kan gjøres før en konsesjonsavklaring startes"
+    },
+    {
+      "name": "Megler - Konsesjonsavklaring",
       "description": "API for konsesjonsavklaring ved eiendomssalg"
     }
   ],
@@ -30,7 +34,7 @@
     "/konsesjon/api/v1/eiendomssalg/egenerklaering/paakrevd": {
       "get": {
         "tags": [
-          "Eiendomssalg - Konsesjonsavklaring"
+          "Megler - Eiendom"
         ],
         "summary": "Sjekk om egenerklæring kreves",
         "description": "Slår opp om en egenerklæring er påkrevd for eiendommen, og om eiendommen har boplikt. Kallet oppretter ingen konsesjonsavklaring og kan brukes før en avklaring startes.",
@@ -109,7 +113,7 @@
             }
           },
           "403": {
-            "description": "Ikke tilgang",
+            "description": "Ikke tilgang – kalleren er ikke en integrasjon med privilegiet KONSESJON.QUERY eller KONSESJON.UPDATE",
             "content": {
               "application/json": {
                 "schema": {
@@ -127,6 +131,16 @@
                 }
               }
             }
+          },
+          "502": {
+            "description": "Feil mot ekstern tjeneste - Landbruksdirektoratet (LDIR) er midlertidig utilgjengelig",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
           }
         }
       }
@@ -134,7 +148,7 @@
     "/konsesjon/api/v1/eiendomssalg/avklaring/start": {
       "post": {
         "tags": [
-          "Eiendomssalg - Konsesjonsavklaring"
+          "Megler - Konsesjonsavklaring"
         ],
         "summary": "Opprett konsesjonsavklaring",
         "description": "Oppretter en konsesjonsavklaring for én eiendom og returnerer avklaringsId-en som brukes i de videre kallene. Datainnhenting om eiendommen starter i bakgrunnen. Følg med på status til den ikke lenger er INNHENTER_DATA før presjekk kjøres. Erververe oppgis først ved hovedsjekk.",
@@ -181,7 +195,27 @@
             }
           },
           "403": {
-            "description": "Ikke tilgang",
+            "description": "Ikke tilgang – kalleren er ikke en integrasjon med privilegiet KONSESJON.UPDATE",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Ingen treff - Fant ingen kommune i Fiks-konfigurasjon for kommunenummeret i matrikkelnummeret",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "502": {
+            "description": "Feil mot ekstern tjeneste - Landbruksdirektoratet (LDIR) eller Fiks-konfigurasjon er midlertidig utilgjengelig",
             "content": {
               "application/json": {
                 "schema": {
@@ -196,7 +230,7 @@
     "/konsesjon/api/v1/eiendomssalg/avklaring/{avklaringsId}/presjekk": {
       "post": {
         "tags": [
-          "Eiendomssalg - Konsesjonsavklaring"
+          "Megler - Konsesjonsavklaring"
         ],
         "summary": "Kjør presjekk",
         "description": "Vurderer ut fra eiendomsdataene om ervervet krever egenerklæring. Krever at datainnhentingen er ferdig. Ved KREVER_IKKE_EGENERKLAERING er ervervet konsesjonsfritt og avklaringen avsluttet. Ved KREVER_EGENERKLAERING fortsetter avklaringen med hovedsjekk.",
@@ -213,6 +247,17 @@
             }
           }
         ],
+        "requestBody": {
+          "description": "Valgfri. Utelat body, eller send et tomt objekt, når det ikke er manuelt innsendte eiendommer.",
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PresjekkRequest"
+              }
+            }
+          }
+        },
         "responses": {
           "200": {
             "description": "Presjekk fullført",
@@ -245,7 +290,7 @@
             }
           },
           "403": {
-            "description": "Ikke tilgang",
+            "description": "Ikke tilgang – kalleren er ikke en integrasjon med privilegiet KONSESJON.UPDATE",
             "content": {
               "application/json": {
                 "schema": {
@@ -255,7 +300,7 @@
             }
           },
           "404": {
-            "description": "Ingen treff - Fant ikke konsesjonsavklaring som matchet den gitte id-en",
+            "description": "Ingen treff - Fant ikke konsesjonsavklaring som matchet den gitte id-en, eller konsesjonsavklaringen er opprettet av en annen",
             "content": {
               "application/json": {
                 "schema": {
@@ -273,6 +318,16 @@
                 }
               }
             }
+          },
+          "502": {
+            "description": "Feil mot ekstern tjeneste - Landbruksdirektoratet (LDIR) er midlertidig utilgjengelig",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
           }
         }
       }
@@ -280,7 +335,7 @@
     "/konsesjon/api/v1/eiendomssalg/avklaring/{avklaringsId}/hovedsjekk": {
       "post": {
         "tags": [
-          "Eiendomssalg - Konsesjonsavklaring"
+          "Megler - Konsesjonsavklaring"
         ],
         "summary": "Kjør hovedsjekk",
         "description": "Sender inn erververne med eierandeler og kjører hovedsjekk av egenerklæringen. Krever at presjekken ga KREVER_EGENERKLAERING. Svaret inneholder ett resultat per erverver. Ved flere erververe kan hver erverver få sin egen avklaringsId, som brukes i de videre kallene for den erververen. Status FERDIGSTILT_AUTOMATISK_GODKJENT eller FERDIGSTILT_TRENGER_MANUELL_OPPFOELGING betyr at egenerklæringen er klar for bekreftelse.",
@@ -346,7 +401,7 @@
             }
           },
           "403": {
-            "description": "Ikke tilgang",
+            "description": "Ikke tilgang – kalleren er ikke en integrasjon med privilegiet KONSESJON.UPDATE",
             "content": {
               "application/json": {
                 "schema": {
@@ -356,7 +411,27 @@
             }
           },
           "404": {
-            "description": "Ingen treff - Fant ikke konsesjonsavklaring som matchet den gitte id-en",
+            "description": "Ingen treff - Fant ikke konsesjonsavklaring som matchet den gitte id-en, eller konsesjonsavklaringen er opprettet av en annen",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Konflikt - Presjekken er ikke bestått for konsesjonsavklaringen",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "502": {
+            "description": "Feil mot ekstern tjeneste - Landbruksdirektoratet (LDIR), Folkeregisteret eller Enhetsregisteret er midlertidig utilgjengelig, eller ga et ufullstendig svar",
             "content": {
               "application/json": {
                 "schema": {
@@ -371,7 +446,7 @@
     "/konsesjon/api/v1/eiendomssalg/avklaring/{avklaringsId}/pdf": {
       "get": {
         "tags": [
-          "Eiendomssalg - Konsesjonsavklaring"
+          "Megler - Konsesjonsavklaring"
         ],
         "summary": "Hent PDF av egenerklæringen",
         "description": "Returnerer egenerklæringen som PDF. PDF-en er tilgjengelig når hovedsjekken er fullført og avklaringen har status KLAR_FOR_BEKREFTELSE.",
@@ -421,7 +496,7 @@
             }
           },
           "403": {
-            "description": "Ikke tilgang",
+            "description": "Ikke tilgang – kalleren er ikke en integrasjon med privilegiet KONSESJON.QUERY eller KONSESJON.UPDATE",
             "content": {
               "application/json": {
                 "schema": {
@@ -431,7 +506,7 @@
             }
           },
           "404": {
-            "description": "Ingen treff - Fant ikke konsesjonsavklaring som matchet den gitte id-en",
+            "description": "Ingen treff - Fant ikke konsesjonsavklaring som matchet den gitte id-en, eller konsesjonsavklaringen er opprettet av en annen",
             "content": {
               "application/json": {
                 "schema": {
@@ -449,32 +524,41 @@
                 }
               }
             }
+          },
+          "502": {
+            "description": "Feil mot ekstern tjeneste - Landbruksdirektoratet (LDIR) er midlertidig utilgjengelig",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
           }
         }
       }
     },
-    "/konsesjon/api/v1/eiendomssalg/avklaring/{avklaringsId}/send": {
+    "/konsesjon/api/v1/eiendomssalg/avklaring/send": {
       "post": {
         "tags": [
-          "Eiendomssalg - Konsesjonsavklaring"
+          "Megler - Konsesjonsavklaring"
         ],
-        "summary": "Sender konsesjonsavklaring til erververe",
+        "summary": "Send konsesjonsavklaringer til erververne for signering",
+        "description": "Sender én eller flere konsesjonsavklaringer til signering. Det opprettes én oppgave i Min Kommune per konsesjonsavklaring, der erververen og eventuelle signaturberettigede personer må signere selv. Megleren signerer ikke. Ved flere erververe sendes avklaringsId-ene fra hovedsjekken samlet. Hver konsesjonsavklaring må ha status KLAR_FOR_BEKREFTELSE.",
         "operationId": "sendEgenerklaering",
-        "parameters": [
-          {
-            "name": "avklaringsId",
-            "in": "path",
-            "description": "UUID-en til konsesjonsavklaring",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid"
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GodkjenningsRequest"
+              }
             }
-          }
-        ],
+          },
+          "required": true
+        },
         "responses": {
           "204": {
-            "description": "Konsesjonsavklaring sendt"
+            "description": "Konsesjonsavklaringene er sendt til signering"
           },
           "400": {
             "description": "Feil input",
@@ -497,7 +581,7 @@
             }
           },
           "403": {
-            "description": "Ikke tilgang",
+            "description": "Ikke tilgang – kalleren er ikke en integrasjon med privilegiet KONSESJON.UPDATE",
             "content": {
               "application/json": {
                 "schema": {
@@ -507,7 +591,7 @@
             }
           },
           "404": {
-            "description": "Ingen treff - Fant ikke konsesjonsavklaring som matchet den gitte id-en",
+            "description": "Ingen treff - Fant ikke en eller flere av konsesjonsavklaringene som matchet de gitte id-ene, eller konsesjonsavklaringen er opprettet av en annen",
             "content": {
               "application/json": {
                 "schema": {
@@ -517,7 +601,7 @@
             }
           },
           "409": {
-            "description": "Konflikt - Har ikke passert presjekk enda",
+            "description": "Konflikt - En eller flere av konsesjonsavklaringene er ikke klare for signering",
             "content": {
               "application/json": {
                 "schema": {
@@ -529,32 +613,35 @@
         }
       }
     },
-    "/konsesjon/api/v1/eiendomssalg/avklaring/godkjenn": {
-      "post": {
+    "/konsesjon/api/v1/eiendomssalg/avklaring/{avklaringsId}/oppgavestatus": {
+      "get": {
         "tags": [
-          "Eiendomssalg - Konsesjonsavklaring"
+          "Megler - Konsesjonsavklaring"
         ],
-        "description": "Godkjenner konsesjonsavklaringer, sender dem til Fiks-Arkiv, og oppretter oppgave i Min Kommune",
-        "operationId": "godkjennKonsesjonsavklaring",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/GodkjenningsRequest"
-              }
+        "summary": "Hent status på signering",
+        "description": "Returnerer mottakerne av oppgaven i Min Kommune for konsesjonsavklaringen, med status på hver mottakers godkjenning. Mottakerne er erververen når erververen er en person, og de signaturberettigede personene når erververen er en organisasjon. Ved flere erververe har hver erverver sin egen avklaringsId fra hovedsjekken, og status hentes for hver av dem. Kan bare brukes etter at konsesjonsavklaringen er sendt til signering. Er oppgaven i Min Kommune ikke opprettet ennå, returneres de forventede mottakerne med status UNDER_OPPRETTELSE.",
+        "operationId": "hentOppgavestatus",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "avklaringsId",
+            "description": "ID-en til konsesjonsavklaringen",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
             }
-          },
-          "required": true
-        },
+          }
+        ],
         "responses": {
-          "201": {
-            "description": "Konsesjonsavklaring godkjent og sendt til Fiks-Arkiv, og oppgave opprettet i Min Kommune",
+          "200": {
+            "description": "Status på signering hentet",
             "content": {
               "application/json": {
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/GodkjenningsResponse"
+                    "$ref": "#/components/schemas/OppgaveMottakerStatus"
                   }
                 }
               }
@@ -581,7 +668,7 @@
             }
           },
           "403": {
-            "description": "Ikke tilgang",
+            "description": "Ikke tilgang – kalleren er ikke en integrasjon med privilegiet KONSESJON.QUERY eller KONSESJON.UPDATE",
             "content": {
               "application/json": {
                 "schema": {
@@ -591,7 +678,17 @@
             }
           },
           "404": {
-            "description": "Ingen treff - Fant ikke en eller flere av konsesjonsavklaringene som matchet de gitte id-ene",
+            "description": "Ingen treff - Fant ikke konsesjonsavklaring som matchet den gitte id-en, eller konsesjonsavklaringen er opprettet av en annen",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Konflikt - Konsesjonsavklaringen er ikke sendt til signering",
             "content": {
               "application/json": {
                 "schema": {
@@ -606,7 +703,7 @@
     "/konsesjon/api/v1/eiendomssalg/avklaring/{avklaringsId}/status": {
       "get": {
         "tags": [
-          "Eiendomssalg - Konsesjonsavklaring"
+          "Megler - Konsesjonsavklaring"
         ],
         "summary": "Hent status for konsesjonsavklaring",
         "description": "Returnerer hvor langt konsesjonsavklaringen har kommet. Brukes blant annet til å vente på at datainnhentingen etter opprettelse er ferdig (status er ikke lenger INNHENTER_DATA).",
@@ -655,7 +752,7 @@
             }
           },
           "403": {
-            "description": "Ikke tilgang",
+            "description": "Ikke tilgang – kalleren er ikke en integrasjon med privilegiet KONSESJON.QUERY eller KONSESJON.UPDATE",
             "content": {
               "application/json": {
                 "schema": {
@@ -665,7 +762,17 @@
             }
           },
           "404": {
-            "description": "Ingen treff - Fant ikke konsesjonsavklaring som matchet den gitte id-en",
+            "description": "Ingen treff - Fant ikke konsesjonsavklaring som matchet den gitte id-en, eller konsesjonsavklaringen er opprettet av en annen",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "502": {
+            "description": "Feil mot ekstern tjeneste - Landbruksdirektoratet (LDIR) er midlertidig utilgjengelig",
             "content": {
               "application/json": {
                 "schema": {
@@ -723,6 +830,18 @@
           },
           "boplikt": {
             "$ref": "#/components/schemas/BopliktResponse"
+          }
+        }
+      },
+      "PresjekkRequest": {
+        "type": "object",
+        "properties": {
+          "manueltInnsendteEiendommer": {
+            "type": "array",
+            "description": "Eiendommer som er sendt inn manuelt og skal vurderes sammen med eiendommen i konsesjonsavklaringen.",
+            "items": {
+              "$ref": "#/components/schemas/Matrikkelnummer"
+            }
           }
         }
       },
@@ -805,7 +924,8 @@
           }
         },
         "required": [
-          "matrikkelnummer"
+          "matrikkelnummer",
+          "eierandel"
         ]
       },
       "Erverver": {
@@ -817,18 +937,6 @@
         "properties": {
           "erververId": {
             "$ref": "#/components/schemas/ErververId"
-          },
-          "navn": {
-            "type": "string"
-          },
-          "adresse": {
-            "type": "string"
-          },
-          "postnr": {
-            "type": "string"
-          },
-          "poststed": {
-            "type": "string"
           },
           "epost": {
             "type": "string",
@@ -1033,35 +1141,50 @@
             "items": {
               "type": "string",
               "format": "uuid"
-            }
+            },
+            "description": "ID-ene til konsesjonsavklaringene som skal sendes til signering"
           }
         }
       },
-      "GodkjenningsResponse": {
+      "OppgaveMottakerStatus": {
         "type": "object",
         "required": [
-          "avklaringsId",
-          "erverver",
+          "foedselsnummer",
+          "rolle",
           "status"
         ],
         "properties": {
-          "avklaringsId": {
+          "foedselsnummer": {
             "type": "string",
-            "format": "uuid"
+            "description": "Fødselsnummeret til mottakeren av oppgaven",
+            "minLength": 11,
+            "maxLength": 11,
+            "pattern": "^\\d{11}$"
           },
-          "erverver": {
-            "$ref": "#/components/schemas/ErververId"
+          "rolle": {
+            "$ref": "#/components/schemas/OppgaveMottakerRolle"
           },
           "status": {
-            "$ref": "#/components/schemas/GodkjenningsStatus"
+            "$ref": "#/components/schemas/OppgaveStatus"
           }
         }
       },
-      "GodkjenningsStatus": {
+      "OppgaveMottakerRolle": {
         "type": "string",
+        "description": "ERVERVER: mottakeren er erververen selv. SIGNATURBERETTIGET: mottakeren signerer på vegne av en organisasjon som er erverver.",
         "enum": [
-          "GODKJENT_SENDT_TIL_ARKIV",
-          "FEILET_IKKE_SENDT_TIL_ARKIV"
+          "ERVERVER",
+          "SIGNATURBERETTIGET"
+        ]
+      },
+      "OppgaveStatus": {
+        "type": "string",
+        "description": "UNDER_OPPRETTELSE: konsesjonsavklaringen er sendt til signering, men oppgaven i Min Kommune er ikke opprettet ennå. Opprettelsen forsøkes på nytt automatisk. OPPRETTET: mottakeren har ikke svart ennå. GODKJENT: mottakeren har godkjent. AVVIST: mottakeren har avvist.",
+        "enum": [
+          "UNDER_OPPRETTELSE",
+          "OPPRETTET",
+          "GODKJENT",
+          "AVVIST"
         ]
       },
       "ErrorMessage": {
