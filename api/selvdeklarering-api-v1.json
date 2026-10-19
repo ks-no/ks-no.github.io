@@ -747,7 +747,7 @@
             "description": "Kildeinnlevering ikke funnet"
           },
           "409": {
-            "description": "Tilhørende selvdeklarering er deaktivert"
+            "description": "Tilhørende selvdeklarering er deaktivert, eller målproduktet har allerede et UTKAST (errorCode UTKAST_FINNES)"
           }
         },
         "security": [
@@ -994,7 +994,7 @@
     "/selvdeklarering/api/v1/innleveringer/start": {
       "post": {
         "summary": "Start innlevering (integrasjon/LP)",
-        "description": "LP kaller dette endepunktet for å starte en selvdeklareringsprosess. Oppretter et UTKAST-innlevering med produktnavn+kontaktEpost snapshot. Krever maskinporten/integrasjonsautentisering.",
+        "description": "LP kaller dette endepunktet for å starte en selvdeklareringsprosess. Oppretter et UTKAST-innlevering med produktnavn+kontaktEpost snapshot. Krever maskinporten/integrasjonsautentisering. Har virksomheten allerede et UTKAST for produktet, opprettes ingenting og tjenesten svarer 409 med errorCode UTKAST_FINNES; klienten finner det eksisterende utkastet via oversikten filtrert på produktId og status UTKAST.",
         "operationId": "startInnlevering",
         "tags": [
           "Innlevering"
@@ -1025,6 +1025,9 @@
           },
           "403": {
             "$ref": "#/components/responses/manglerTilgang"
+          },
+          "409": {
+            "$ref": "#/components/responses/utkastFinnes"
           }
         },
         "security": [
@@ -2313,6 +2316,23 @@
               "message": "Utkastet er endret av en annen bruker eller nettleser. Last inn på nytt.",
               "path": "/selvdeklarering/api/v1/innleveringer/3fa85f64-5717-4562-b3fc-2c963f66afa6",
               "errorCode": "UTKAST_ENDRET_AV_ANNEN"
+            }
+          }
+        }
+      },
+      "utkastFinnes": {
+        "description": "Virksomheten har allerede et UTKAST for produktet (errorCode UTKAST_FINNES). Ett åpent utkast per produkt hindrer at to parallelle utkast overskriver hverandre ved innlevering.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorMessage"
+            },
+            "example": {
+              "status": 409,
+              "error": "Conflict",
+              "message": "Det finnes allerede et utkast for dette produktet.",
+              "path": "/selvdeklarering/api/v1/innleveringer/start",
+              "errorCode": "UTKAST_FINNES"
             }
           }
         }
