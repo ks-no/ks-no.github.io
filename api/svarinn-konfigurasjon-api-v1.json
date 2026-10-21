@@ -205,13 +205,29 @@
         "operationId": "hentMottakersystemOppslag",
         "parameters": [
           {
-            "$ref": "#/components/parameters/Organisasjonsnummer"
+            "name": "organisasjonsnummer",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "$ref": "#/components/schemas/Organisasjonsnummer"
+            }
           },
           {
-            "$ref": "#/components/parameters/Sikkerhetsniva"
+            "name": "sikkerhetsniva",
+            "description": "Sikkerhetsnivå som skal brukes i oppslaget",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "$ref": "#/components/schemas/SikkerhetsnivaParam"
+            }
           },
           {
-            "$ref": "#/components/parameters/Forsendelsestype"
+            "name": "forsendelsestype",
+            "description": "Forsendelsestype som skal brukes i oppslaget. Hvis ikke satt, vil alle forsendelsestyper bli vurdert i oppslaget",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
@@ -481,6 +497,66 @@
                 }
               }
             }
+          },
+          "500": {
+            "$ref": "#/components/responses/Error500"
+          }
+        }
+      }
+    },
+    "/svarinn-konfigurasjon/api/v1/organisasjoner": {
+      "get": {
+        "tags": [
+          "Organisasjon"
+        ],
+        "description": "Henter informasjon om organisasjoner som matcher søkekriterier på tvers av alle mottakersystemer, inkludert informasjon om mottakersystemet",
+        "summary": "Henter organisasjoner som matcher søkekriterier",
+        "operationId": "finnOrganisasjoner",
+        "parameters": [
+          {
+            "name": "organisasjonsnummer",
+            "description": "Organisasjonsnummer som skal brukes i oppslaget.",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "$ref": "#/components/schemas/Organisasjonsnummer"
+            }
+          },
+          {
+            "name": "sikkerhetsniva",
+            "description": "Sikkerhetsnivå som skal brukes i oppslaget. Kan utelates for å inkludere alle sikkerhetsnivåer.",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "$ref": "#/components/schemas/SikkerhetsnivaParam"
+            }
+          },
+          {
+            "name": "forsendelsestype",
+            "description": "Forsendelsestype som skal brukes i oppslaget. Kan utelates for å inkludere alle forsendelsestyper.",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 100,
+              "pattern": "^[a-zA-ZæøåÆØÅ0-9]+(\\.[a-zA-ZæøåÆØÅ0-9]+)*$"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Hentet organisasjoner",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrganisasjonerMedMottakersystem"
+                }
+              }
+            }
+          },
+          "403": {
+            "$ref": "#/components/responses/Error403"
           },
           "500": {
             "$ref": "#/components/responses/Error500"
@@ -826,37 +902,12 @@
           "description": "Organisasjonens id"
         }
       },
-      "Organisasjonsnummer": {
-        "name": "organisasjonsnummer",
-        "required": true,
-        "in": "query",
-        "schema": {
-          "$ref": "#/components/schemas/Organisasjonsnummer"
-        }
-      },
       "OrganisasjonsnummerPathParam": {
         "name": "organisasjonsnummer",
         "required": true,
         "in": "path",
         "schema": {
           "$ref": "#/components/schemas/Organisasjonsnummer"
-        }
-      },
-      "Forsendelsestype": {
-        "name": "forsendelsestype",
-        "description": "Forsendelsestype som skal brukes i oppslaget. Hvis ikke satt, vil alle forsendelsestyper bli vurdert i oppslaget",
-        "in": "query",
-        "schema": {
-          "type": "string"
-        }
-      },
-      "Sikkerhetsniva": {
-        "name": "sikkerhetsniva",
-        "description": "Sikkerhetsnivå som skal brukes i oppslaget",
-        "required": true,
-        "in": "query",
-        "schema": {
-          "$ref": "#/components/schemas/SikkerhetsnivaParam"
         }
       },
       "Grenseverdi": {
@@ -1399,6 +1450,53 @@
                 }
               }
             }
+          }
+        }
+      },
+      "OrganisasjonerMedMottakersystem": {
+        "type": "object",
+        "required": [
+          "treff"
+        ],
+        "properties": {
+          "treff": {
+            "type": "array",
+            "description": "Organisasjonene som oppfylte søkekriteriene",
+            "items": {
+              "$ref": "#/components/schemas/OrganisasjonMedMottakersystem"
+            }
+          }
+        }
+      },
+      "OrganisasjonMedMottakersystem": {
+        "type": "object",
+        "required": [
+          "organisasjonsnummer",
+          "forsendelsestyper",
+          "sikkerhetsniva",
+          "mottakersystemId",
+          "mottakersystemNavn"
+        ],
+        "properties": {
+          "organisasjonsnummer": {
+            "$ref": "#/components/schemas/Organisasjonsnummer"
+          },
+          "forsendelsestyper": {
+            "type": "array",
+            "description": "Forsendelsestyper som matcher filter, eventuelt alle om forsendelsestype-filter ikke er satt",
+            "items": {
+              "type": "string"
+            }
+          },
+          "sikkerhetsniva": {
+            "$ref": "#/components/schemas/Sikkerhetsniva"
+          },
+          "mottakersystemId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "mottakersystemNavn": {
+            "type": "string"
           }
         }
       },
