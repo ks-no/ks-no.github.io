@@ -1,19 +1,31 @@
 ---
 title: Sikkerhet
+description: "Kryptering, lagring og sikkerhetsnivå for forsendelser."
 date: 2017-01-01
-hidden: false
+weight: 40
+aliases: [/tjenester/svarut/forsendelser-og-sikkerhet/]
 ---
 
-## Generelt om forsendelser 
+## Lagring og overføring
 
-* Forsendelser kan, men må ikke, krypteres før de sendes inn til SvarUt.
-* Forsendelsesfiler lagres kryptert på SvarUt sine servere.
-* Forsendelser som lastes ned via SvarInn overføres kryptert og må dekrypteres før de blir importert til sakssystemet.
-* Forsendelsesfiler som blir lastet ned av mottaker dekrypteres ellers i det de overføres til mottaker.
+- Dokumentene lagres kryptert hos SvarUt.
+- Avsender kan kryptere dokumentene før de sendes til SvarUt, men må ikke. Se [Kryptering](/tjenester/svarut/sende/dokumenter/#kryptering) under sending.
+- Dokumenter som hentes med SvarInn, er alltid kryptert med nøkkelen til mottakersystemet og må dekrypteres der. Se [Kryptering](/tjenester/svarut/motta/kryptering/) under mottak.
+- Dokumenter som mottakeren laster ned selv, dekrypteres når de overføres til mottakeren.
 
-## Forsendelser på nivå 4 ##
+## Sikkerhetsnivå
 
-Det er mulig å sende forsendelser som inneholder sensitive persondata via SvarUt (ikke gradert informasjon). Dette kan være brev som sendes fra sikker sone. 
+Feltet `sikkerhetsniva` bestemmer hvilket innloggingsnivå mottakeren må ha for å åpne eller signere forsendelsen.
 
-* En nivå 4-forsendelse må krypteres hos avgivende system før den sendes til SvarUt. Forsendelsen behandles på samme måte som alle andre forsendelser og forsendelsesfilen vil lagres kryptert på disk. 
-* Ingen andre enn mottaker har tilgang til forsendelsesfilen (heller ikke superadministratorer eller lokale administratorer hos avsender). 
+| `sikkerhetsniva` | Tilsvarer | Brukes til |
+|---|---|---|
+| `BETYDELIG` (standard) | Nivå 3 | Vanlig post |
+| `HOYESTE` | Nivå 4 | Sensitive personopplysninger, for eksempel brev fra sikker sone |
+
+Gradert informasjon kan ikke sendes med SvarUt.
+
+For forsendelser med `HOYESTE`:
+
+- Dokumentene må krypteres hos avsender før de sendes til SvarUt, og `kryptert` må være `true`.
+- Bare mottakeren har tilgang til dokumentene. Ikke superadministratorer eller lokale administratorer hos avsender heller.
+- SvarInn-mottakersystem må være satt opp for nivå 4 for å få dem. Se [Adressering](/tjenester/svarut/motta/adressering/).

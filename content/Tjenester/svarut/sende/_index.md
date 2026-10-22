@@ -1,70 +1,85 @@
 ---
-title: 'API: SvarUt REST'
-aliases: [/tjenester/svarut/api/rest, /svarut/api/rest]
+title: Sende post
+description: "Send forsendelser og følg dem opp med SvarUt REST v2/v3."
+weight: 20
+aliases: [/tjenester/svarut/rest/, /tjenester/svarut/api/rest, /svarut/api/rest]
 ---
 
-{{% notice style="note" title="Viktig informasjon" %}}
-Vi avvikler støtte for alle gjenværende SOAP-versjoner og REST v1 i 2027. SOAP-versjonene har fått sluttdato 1.1.27, mens REST v1 blir avviklet 31.7.2027, [les mer her](https://ksdigital.no/2026/01/13/avvikling-av-soap-og-rest-v-1-api-for-svarut/).
-
-Vi har også lagt til støtte for å automatisk opprette integrasjoner som kan brukes for kall til REST v2/v3 - du kan lese mer om det [her](/svarut/api/avvikling-api).
-{{% /notice %}}
+Et fagsystem sender post gjennom SvarUt med REST-API-ene på denne siden. Har du ikke satt opp Maskinporten og Fiks-integrasjon ennå, start med [Kom i gang](/tjenester/svarut/kom-i-gang/).
 
 ## Tilgang
 
-Autentisering og autorisering skjer ved bruk av OAuth 2.0 med Fiks-integrasjoner og Maskinporten, som beskrevet [her](/felles/integrasjoner/). 
-Tilganger må tildeles integrasjoner på alle kontoene de skal ha lov til å utføre operasjoner for. Tilgang til en forsendelse autoriseres via avsenderkontoen.
+Alle kall bruker Maskinporten og Fiks-integrasjon, som beskrevet på [Integrasjoner](/felles/integrasjoner/). Integrasjonen må ha sendetilgang på SvarUt-kontoen. Den samme tilgangen gjelder for alle endepunktene under, også de som bare leser.
 
-## Feilmeldinger
-Generell informasjon om feilmeldinger på Fiks-plattformen finnes [her](https://developers.fiks.ks.no/felles/integrasjoner/#feilmeldinger).
+| Miljø | Base-URL |
+|---|---|
+| Test | `https://test.svarut.ks.no/api` |
+| Produksjon | `https://svarut.ks.no/api` |
 
-## Forsendelse
+## Sende en forsendelse
 
-### Send
-Sending av forsendelser: [OpenAPI spec](https://editor-next.swagger.io/?url=https://developers.fiks.ks.no/api/forsendelse-send-api-v3.json)  
-For mer detaljer om sending av dokumenter, se [her](/tjenester/svarut/send-dokumenter).  
+Det er ett endepunkt per type mottaker. Velg det som passer mottakeren, så får du bare de feltene som gjelder.
 
-Endepunktet for sending i versjon 3 er delt opp basert på hvilken type mottaker forsendelsen skal sendes til. 
-Dette har vi gjort for å gjøre det enklere å vite hvilke valg som er tilgjengelige for de forskjellige typene.
-Det nye APIet har følgende endepunkter:
-* Send til privatperson - krever et gyldig fødsels- eller d-nummer. Dette brukes i oppslag mot kontaktregisteret for å finne ut om mottaker kan motta digital post og eventuell hvilken digital kanal SvarUt skal sende til (Digital Post til innbygger eller Altinn).
-* Send til virksomhet - krever et gyldig organisasjonsnummer som finnes i Enhetsregisteret.
-* Send til mottaker i Norsk Helsenett - krever et fødselsnummer som har fastlege, eller en gyldig HER-id til mottaker.
-* Send rett til print - krever kun gyldig postadresse. Bør så langt som mulig unngås av hensyn til både miljø og kostnader.
+| Mottaker | Endepunkt | Krever |
+|---|---|---|
+| Privatperson | `POST /v3/kontoer/{kontoId}/forsendelser/person` | Gyldig fødsels- eller d-nummer |
+| Virksomhet | `POST /v3/kontoer/{kontoId}/forsendelser/organisasjon` | Organisasjonsnummer som finnes i Enhetsregisteret |
+| Helseaktør i Norsk Helsenett | `POST /v3/kontoer/{kontoId}/forsendelser/nhn` | Fødselsnummer til pasient med fastlege, eller HER-id. Se [Norsk Helsenett](/tjenester/svarut/sende/nhn/) |
+| Rett til print | `POST /v3/kontoer/{kontoId}/forsendelser/print` | Postadresse |
 
-### Lest
-Markering av forsendelser som lest eksternt: [OpenAPI spec](https://editor-next.swagger.io/?url=https://developers.fiks.ks.no/api/forsendelse-lest-api-v2.json)
+Spesifikasjon: [forsendelse-send-api-v3.json](https://developers.fiks.ks.no/api/forsendelse-send-api-v3.json) ([åpne i Swagger Editor](https://editor-next.swagger.io/?url=https://developers.fiks.ks.no/api/forsendelse-send-api-v3.json))
 
-### Slett
-Sletting av forsendelser: [OpenAPI spec](https://editor-next.swagger.io/?url=https://developers.fiks.ks.no/api/forsendelse-slett-api-v2.json)
+Forsendelsen sendes som en multipart-request med metadata og dokumenter. Se [Dokumenter og vedlegg](/tjenester/svarut/sende/dokumenter/) for format, størrelser og kryptering.
+
+Svaret inneholder `id` til forsendelsen. Ta vare på den. Du trenger den for å hente status og hendelser.
+
+Bruk `/print` bare når mottakeren ikke kan nås digitalt. Papirpost koster mer og er dårligere for miljøet. Sender du til person eller virksomhet, går SvarUt uansett til print hvis det ikke finnes en digital kanal. Se [Kanalvalg](/tjenester/svarut/sende/kanalvalg/).
+
+Noen felter er nyttige å kjenne til:
+
+| Felt | Brukes til |
+|---|---|
+| `eksternReferanse` | Din egen id for forsendelsen. Kan brukes til å slå opp forsendelsen senere. |
+| `korrelasjonsid` | Grupperer flere forsendelser som hører sammen. |
+| `kunDigitalLevering` | Forsendelsen blir aldri printet. Lykkes ikke digital levering, får du status `IKKE_LEVERT`, men ingen annen beskjed. |
+| `sikkerhetsniva` | `BETYDELIG` (standard, nivå 3) eller `HOYESTE` (nivå 4). Ved `HOYESTE` må dokumentene være kryptert. Se [Sikkerhet](/tjenester/svarut/sikkerhet/). |
+| `svarSendesTil` | Hvor et svar skal sendes. Står også som avsenderadresse på papirbrev. |
+| `kanSvareViaEdialog` | Mottakeren får en lenke til å svare digitalt. Se [Svar på forsendelse](/tjenester/svarut/sende/svar-pa-forsendelse/). |
+| `forsendelsestype` | Bare til virksomheter. Avgjør hvilket SvarInn-mottakersystem som får forsendelsen. Se [Adressering](/tjenester/svarut/motta/adressering/). |
+| `taushetsbelagtPost` | Bare til virksomheter. Forsendelsen går til tjenesten for taushetsbelagt post i Altinn. |
+| `signering` | Bare til privatpersoner. Se [Signering](/tjenester/svarut/sende/signering/). |
+
+## Følge opp forsendelsen
+
+| Hva | Endepunkt | Spesifikasjon |
+|---|---|---|
+| Status for én eller flere forsendelser | `POST /v3/kontoer/{kontoId}/forsendelser/status/sok` | [status v3](https://editor-next.swagger.io/?url=https://developers.fiks.ks.no/api/forsendelse-status-api-v3.json) |
+| Hendelseslogg | `GET /v2/forsendelser/{forsendelseId}/hendelser` | [hendelser v2](https://editor-next.swagger.io/?url=https://developers.fiks.ks.no/api/forsendelse-hendelser-api-v2.json) |
+| Signeringshendelser | `GET /v2/forsendelser/{forsendelseId}/signeringshendelser` | [hendelser v2](https://editor-next.swagger.io/?url=https://developers.fiks.ks.no/api/forsendelse-hendelser-api-v2.json) |
+| Metadata for forsendelsen | `GET /v2/forsendelser/{forsendelseId}/metadata` | [metadata v2](https://editor-next.swagger.io/?url=https://developers.fiks.ks.no/api/forsendelse-metadata-api-v2.json) |
+| Finne forsendelser med ekstern referanse | `GET /v2/kontoer/{kontoId}/forsendelser` og `.../forsendelser/metadata` | [eksternref v2](https://editor-next.swagger.io/?url=https://developers.fiks.ks.no/api/forsendelse-eksternref-api-v2.json) |
 
 ### Status
-Henting av status for forsendelser: [OpenAPI spec](https://editor-next.swagger.io/?url=https://developers.fiks.ks.no/api/forsendelse-status-api-v3.json)
 
-V3 introduserer noen nye statuser:
-- FEILET_UNDER_MOTTAK - AVVIST status er nå endret til å gjelde spesifikke feil hvor SvarUt avviser forsendelsen, for eksempel grunnet valideringsfeil. Denne nye statusen dekker alle andre tilfeller som tidligere ble dekket av AVVIST.
-- SENDT_NHN_MOTTAKER - Forsendelsen er sendt til NHN, men mottaker har ikke bekreftet mottak enda.
-- LEVERT_NHN_MOTTAKER - Forsendelsen er sendt til NHN, og at mottaker har bekreftet at den er mottatt.
-- SLETTET - Filer og metadata som ikke er nødvendig for statistikk og fakturering er slettet for forsendelsen.
+Se [Status](/tjenester/svarut/sende/status/) for hva hver status betyr og hvilke som er endelige.
 
-### Hendelser
-Henting av hendelser tilknyttet en forsendelse: [OpenAPI spec](https://editor-next.swagger.io/?url=https://developers.fiks.ks.no/api/forsendelse-hendelser-api-v2.json)
+## Andre endepunkter
 
-### Metadata
-Henting av metadata tilknyttet en forsendelse: [OpenAPI spec](https://editor-next.swagger.io/?url=https://developers.fiks.ks.no/api/forsendelse-metadata-api-v2.json)
+| Hva | Endepunkt | Spesifikasjon |
+|---|---|---|
+| Markere som lest, når mottakeren har lest forsendelsen et annet sted | `POST /v2/forsendelser/{forsendelseId}/lest` | [lest v2](https://editor-next.swagger.io/?url=https://developers.fiks.ks.no/api/forsendelse-lest-api-v2.json) |
+| Slette dokumentene til en forsendelse | `DELETE /v2/forsendelser/{forsendelseId}/dokumenter` | [slett v2](https://editor-next.swagger.io/?url=https://developers.fiks.ks.no/api/forsendelse-slett-api-v2.json) |
+| Gyldige forsendelsestyper | `GET /v2/forsendelsestyper` | [typer v2](https://editor-next.swagger.io/?url=https://developers.fiks.ks.no/api/forsendelse-typer-api-v2.json) |
+| Mottakersystem for et organisasjonsnummer | `GET /v2/mottakersystem` | [mottakersystem v2](https://editor-next.swagger.io/?url=https://developers.fiks.ks.no/api/mottakersystem-api-v2.json) |
 
-### Ekstern ref
-Henting av forsendelser tilknyttet en ekstern referanse: [OpenAPI spec](https://editor-next.swagger.io/?url=https://developers.fiks.ks.no/api/forsendelse-eksternref-api-v2.json)
+## Feilmeldinger
 
-### Typer
-Henting av forsendelsestyper: [OpenAPI spec](https://editor-next.swagger.io/?url=https://developers.fiks.ks.no/api/forsendelse-typer-api-v2.json)
+Feil returneres som JSON med `errorCode`, `errorId` og `message`. Ta med `errorId` når du kontakter brukerstøtte. Generell beskrivelse finnes under [Feilmeldinger](/felles/integrasjoner/#feilmeldinger).
 
-## Mottakersystem
-Henting av mottakersystem: [OpenAPI spec](https://editor-next.swagger.io/?url=https://developers.fiks.ks.no/api/mottakersystem-api-v2.json)
+## Klientbibliotek
 
-## JVM-klient
-Vi har laget en klient som vi benytter internt, som også kan benyttes av andre i JVM-miljøer. Denne bruker genererte modeller fra OpenAPI spesifikasjonene.
-Koden kan finnes på [GitHub](https://github.com/ks-no/fiks-svarut-klient). 
-Ferdig bygget klient kan hentes fra [Maven Central](https://central.sonatype.com/artifact/no.ks.fiks/fiks-svarut-klient/1.0.0/versions) med ditt foretrukne byggeverktøy.
+[fiks-svarut-klient](https://github.com/ks-no/fiks-svarut-klient) er en klient for JVM-språk som KS Digital selv bruker. Den ligger på [Maven Central](https://central.sonatype.com/artifact/no.ks.fiks/fiks-svarut-klient).
 
-Dersom man ønsker å bygge sin egen klient kan det være utfordringer med å benytte en som er generert direkte fra spesifikasjonen for endepunktene 
-som benytter seg av multipart HTTP-requests. Dette gjelder per nå kun for sende-APIet.
+## Mer om sending
+
+{{% children %}}

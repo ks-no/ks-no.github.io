@@ -1,38 +1,41 @@
 ---
-title: SvarUt - SvarInn adressering
+title: Adressering
+description: "Hvordan SvarUt velger mottakersystem ut fra organisasjonsnummer, forsendelsestype og nivå."
 date: 2017-01-01
-hidden: false
+weight: 20
+aliases: [/tjenester/svarut/svarut-svarinn-adressering/]
 ---
 
-Tidligere hadde vi kun orgnr-adressering på forsendelser. Nå har SvarUt fått støtte for ForsendelseType. ForsendelseType skal beskrive hvilken type forsendelse dette er. Det er KS som styrer hvilken typer en kan benytte til adressering, hvis det er ønskelig med ny type sendes ønske om dette til fiks@ksdigital.no.
-***
+En virksomhet kan ha flere mottakersystem, for eksempel et arkivsystem og et fagsystem. SvarUt bestemmer hvilket mottakersystem som får en forsendelse ut fra tre ting:
 
+| Hva | Kommer fra |
+|---|---|
+| Organisasjonsnummer | Mottakeren av forsendelsen |
+| Forsendelsestype | Feltet `forsendelsestype` som avsender setter |
+| Sikkerhetsnivå | Feltet `sikkerhetsniva` som avsender setter (nivå 3 eller 4) |
 
-Mottakersystem kan nå filtrere på 3 felt, orgnr, forsendelseType og nivå.
-For å konfigurere to mottakersystem på samme orgnr, kan en derfor filtrere videre på forsendelseType.
+Hvert organisasjonsnummer på et mottakersystem settes opp med forsendelsestype og sikkerhetsnivå. Et oppsett med en bestemt forsendelsestype går foran «Alle forsendelsestyper».
 
-Eksempel system som ikke kan motta nivå4 dokument konfigureres da med.
-- 999888777, Alle forsendelsetyper, 3
+Mottakersystemet trenger ikke å gjøre noe selv. Filtreringen skjer i SvarUt, og listen fra SvarInn inneholder bare forsendelsene som hører til mottakersystemet.
 
-Dette systemet vil da kun motta nivå3 forsendelser, hvis kommunen har et annet system som kan motta nivå4 kan dette konfigureres slik:
-- 999888777, Alle forsendelsetyper, 4
+## Eksempler
 
+**Arkivsystem og fagsystem.** Fagsystemet skal ha byggesøknader. Alt annet skal til arkivsystemet.
 
-***
+| Mottakersystem | Organisasjonsnummer | Forsendelsestype | Nivå |
+|---|---|---|---|
+| Arkivsystem | 999777888 | Alle forsendelsestyper | Alle |
+| Fagsystem | 999777888 | `ks.byggesøknad` | Alle |
 
-Eksempel fagsystem og arkivsystem. Fagsystemet skal ha forsendelser av typen ks.byggesøknad, mens andre brev til kommunen skal i arkivsystemet.
-Arkivsystemet vil da konfigureres slik
-- 999777888, Alle forsendelsetyper, alle nivå
+**Ett system som ikke kan ta imot nivå 4.**
 
-Fagsystemet
-- 999777888, ks.byggesøknad, alle nivå
+| Mottakersystem | Organisasjonsnummer | Forsendelsestype | Nivå |
+|---|---|---|---|
+| Vanlig system | 999888777 | Alle forsendelsestyper | 3 |
+| System for sensitive opplysninger | 999888777 | Alle forsendelsestyper | 4 |
 
-Da vil arkivsystemet få alt utenom ks.byggesøknad forsendelser som blir levert til fagsystemet.
+## For avsender
 
-## Integrasjoner
+Sett `forsendelsestype` når du sender til en virksomhet. Gyldige typer hentes med `GET /v2/forsendelsestyper`. Hvilke mottakersystem et organisasjonsnummer har, hentes med `GET /v2/mottakersystem`. Se [Sende post](/tjenester/svarut/sende/#andre-endepunkter).
 
-### Sending SvarUt
-De som sender meldinger til SvarUt kan sette på forsendelseType.
-
-### Mottak SvarInn
-Trenger ikke gjør noen endringer, filtrering vil skje på SvarUt i konfigurasjonen, listen over forsendelser vil være de mottakersystemet skal motta.
+KS Digital bestemmer hvilke forsendelsestyper som finnes. Trenger dere en ny, send en e-post til [fiks@ksdigital.no](mailto:fiks@ksdigital.no).

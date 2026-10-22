@@ -1,27 +1,51 @@
 ---
-title: Sende til aktør i Norsk Helsenett
+title: Norsk Helsenett
+description: "Send brev til fastleger og andre aktører i Norsk Helsenett."
 date: 2026-02-01
-hidden: false
-aliases: [/tjenester/svarut/send-nhn]
+weight: 40
+aliases: [/tjenester/svarut/sendenhn/, /tjenester/svarut/send-nhn]
 ---
 
-## Sende til Norsk Helsenett
-Vi har i 2025 jobbet med å koble SvarUt til Norsk Helsenett. 
-Behovet har vært å kunne sende elektroniske brev mellom saksbehandlere i kommunale virksomheter og aktører på Norsk Helsenett (NHN). 
-Aktører på helsenettet vil gjerne være fastleger, men er ikke begrenset til det. Kravet er at mottaker skal finnes i NHN sitt adresseregister, enten som en tjeneste eller person. For mer informasjon om hvilke parter som kan adresseres, se [NHN dokumentasjon om communicationparty](https://utviklerportal.nhn.no/informasjonstjenester/virksomhetstjenester/adresseregisteret/communicationparty-api/docs/apimd).
+Med SvarUt kan saksbehandlere sende brev fra sak-, arkiv- eller fagsystemet til fastleger og andre aktører i Norsk Helsenett (NHN). Brevet havner direkte i pasientjournalsystemet (EPJ) hos mottakeren.
 
-Hensikten er at saksbehandler i offentlig virksomheter skal kunne opprette og sende digitalt brev til fastlege eller annen helseaktør, fra sitt saks/arkivsystem eller fagsystem. 
-Brevet skal da havne direkte i fastlegens pasientjournnalsystem (EPJ). I forlengelsen av dette skal SvarUt også håndtere at fastleger/andre aktører i Norsk Helsenett skal kunne sende brev tilbake til saksbehandler. 
+Mottakeren må finnes i adresseregisteret til NHN, som tjeneste eller person. Se [NHN sin dokumentasjon om CommunicationParty](https://utviklerportal.nhn.no/informasjonstjenester/virksomhetstjenester/adresseregisteret/communicationparty-api/docs/apimd) for hvem som kan adresseres.
 
-## Hvordan ta i bruk løsningen
-For å kunne sende til en aktør i NHN, så må avsender eksistere i Norsk Helsenett sitt adresseregister. 
-Når man har fått en herId fra NHN, og KS Digital har fått tilgang til å sende på vegne av denne herId'en, så må man legge inn denne herId'en på SvarUt-kontoen. Informasjon med beskrivelse av hvordan man gjør dette kommer senere. 
-Før SvarUt-konto har fått en gyldig herId, så vil alle forsøk på å sende via NHN-endepunktet til Rest v3 bli avvist.
+## Før dere kan sende
 
-## Hvordan sende til Norsk Helsenett
-Vi har lagt til rette for å kunne sende en forsendelse til Norsk Helsenett i Send Rest V3, se [Send Rest V3](/tjenester/svarut/api/rest/#send) for mer informasjon.
+Avsender må også finnes i adresseregisteret til NHN og ha en HER-id.
 
-Det er to valg når man sender en forsendelse: 
-* Sende til innbyggers fastlege. Da må man legge ved fødselsnummer til innbygger i metadata for forsendelsen. SvarUt vil hente ut herId til fastlegen via NHN sitt fastlegeregister. 
-* Sende til en vilkårlig herId i NHN. Da må denne herId'en legges ved i metadata for forsendelsen. SvarUt vil validere denne herId mot NHN sitt adresseregister. 
+1. Avsender får en HER-id fra NHN.
+2. KS Digital får tilgang til å sende på vegne av HER-id-en.
+3. HER-id-en legges inn på SvarUt-kontoen.
 
+Har SvarUt-kontoen ingen gyldig HER-id, blir alle forsendelser til NHN avvist.
+
+## Sende
+
+Bruk `POST /v3/kontoer/{kontoId}/forsendelser/nhn` ([spesifikasjon](https://editor-next.swagger.io/?url=https://developers.fiks.ks.no/api/forsendelse-send-api-v3.json)). Se [Sende post](/tjenester/svarut/sende/) for tilgang og base-URL.
+
+Velg mottaker med `mottakertype`:
+
+| `mottakertype` | Mottaker | Du må sende med |
+|---|---|---|
+| `FASTLEGE` | Fastlegen til pasienten. SvarUt slår opp HER-id-en i fastlegeregisteret. | Fødselsnummeret til pasienten i `pasient` |
+| `HER_ID` | En bestemt aktør i NHN. SvarUt sjekker HER-id-en mot adresseregisteret. | `mottakerHerId` |
+
+Påkrevde felter:
+
+| Felt | Innhold |
+|---|---|
+| `tittel` | Tittel på brevet |
+| `mottakertype` | `FASTLEGE` eller `HER_ID` |
+| `pasient` | `fodselsnummer`, `fornavn`, `etternavn` og eventuelt `mellomnavn` |
+| `avsenderKontakt` | `fornavn`, `etternavn` og `telefonnummer` til kontaktpersonen hos avsender |
+
+Forsendelsen kan ha nøyaktig ett dokument. Det må være PDF og kan ikke være større enn 18 MB. Dokumentdelen i requesten må ha `Content-Type: application/pdf`, og filnavnet må slutte på `.pdf`. Det er annerledes enn for andre mottakere, der dokumentdelen har `application/octet-stream`. Se [Dokumenter og vedlegg](/tjenester/svarut/sende/dokumenter/) for hvordan requesten bygges opp.
+
+## Status
+
+Forsendelsen får status `SENDT_NHN_MOTTAKER` når den er sendt, og `LEVERT_NHN_MOTTAKER` når mottakeren har bekreftet. Feiler leveringen, går den til print. Se [Kanalvalg](/tjenester/svarut/sende/kanalvalg/#norsk-helsenett).
+
+## Svar fra helseaktører
+
+Aktører i NHN kan svare tilbake til saksbehandleren. Svaret kommer som en ny forsendelse til SvarUt-kontoen, med `NHN MELDINGSTJENER` som avgivende system.

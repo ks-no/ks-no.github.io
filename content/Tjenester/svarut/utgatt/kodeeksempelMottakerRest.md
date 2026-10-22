@@ -1,8 +1,14 @@
 ---
 title: Kodeeksempel MottaksserviceV1
+description: "Utgått: Kodeeksempel MottaksserviceV1."
 date: 2017-01-01
-aliases: [/svarut/integrasjon/kodeeksempelMottakerRest]
+aliases: ["/tjenester/svarut/integrasjon/kodeeksempelmottakerrest/", /svarut/integrasjon/kodeeksempelMottakerRest]
+weight: 42
 ---
+
+{{% notice style="warning" title="Utgått" %}}
+SvarInn V1 er erstattet av [SvarInn V2](/tjenester/svarut/motta/api/). Nye mottakersystem skal bruke V2.
+{{% /notice %}}
 
 ### Maven dependencies
 

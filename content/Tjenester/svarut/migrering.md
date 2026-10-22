@@ -1,42 +1,94 @@
 ---
-title: 'API: Avvikling'
-aliases: [/tjenester/svarut/api/avvikling-api, /svarut/api/avvikling-api]
+title: Migrering til REST v2/v3
+description: "Gå fra SOAP eller REST v1 til REST v2/v3 med migreringsendepunktet."
+weight: 70
+aliases: [/tjenester/svarut/avvikling-api/, /tjenester/svarut/api/avvikling-api, /svarut/api/avvikling-api]
 ---
 
-## Kort beskrivelse
-Sluttdato for støtte for SOAP og REST v1 er satt til 1.1.2027 for SOAP og 31.7.2027 for REST v1. Les mer her: [Avvikling av SOAP- og REST v1-API for SvarUt](https://ksdigital.no/2026/01/13/avvikling-av-soap-og-rest-v-1-api-for-svarut/).
+{{< svarut-avvikling >}}
 
-For å gjøre overgangen enklere tilbyr vi et migreringsendepunkt. Med dette kan dere bruke eksisterende BasicAuth-tilgang (SOAP/REST v1) til å opprette en ny Fiks-integrasjon for videre bruk mot REST v2/v3.
+Denne siden er for dere som sender med SOAP eller REST v1 i dag. Den viser hvordan dere får tilgang til REST v2/v3 uten å sette opp alt fra bunnen, og hva hver gammel operasjon heter i de nye API-ene.
 
-## Migreringsendepunkt
-Migreringsendepunktet brukes når dere skal gå fra SOAP/REST v1 til REST v2/v3.
+## Slik migrerer dere
 
-- BasicAuth (brukernavn/passord) bekrefter at dere har tilgang til SvarUt-kontoen det skal migreres fra.
-- `maskinportenToken` i requesten identifiserer organisasjonen som skal bruke den nye integrasjonen.
-- Ved gyldig autentisering oppretter vi en ny integrasjon med riktige tilganger til den samme SvarUt-kontoen.
-- Responsen inneholder `id`, `passord` og `kontoId` som brukes videre i REST v2/v3.
+1. **Maskinporten.** Leverandøren må ha en Maskinporten-klient med scopet `ks:fiks`. Se [Maskinporten](/felles/integrasjoner/#maskinporten).
+2. **Systemkatalogen.** Leverandøren må være registrert i Systemkatalogen til KS Digital. Se [Systemkatalogen](#systemkatalogen).
+3. **Opprett integrasjon.** Kall migreringsendepunktet med brukernavnet og passordet dere bruker i dag. Da får dere en Fiks-integrasjon som har tilgang til å sende fra den samme SvarUt-kontoen.
+4. **Bytt kall.** Bytt ut operasjonene, se [Fra gamle til nye operasjoner](#fra-gamle-til-nye-operasjoner).
+5. **Test.** Test i testmiljøet før dere tar det i bruk i produksjon.
 
-Se [spec](https://developers.fiks.ks.no/api/integrasjon-migrering-api-v1.json) for detaljer om request og respons.
+## Migreringsendepunktet
 
-## Kobling mot Systemkatalogen
-### Hva er Systemkatalogen?
-KS Digital utvikler en Systemkatalog for bedre oversikt over leverandører, fag- og arkivsystemer og hvilke integrasjoner de bruker mot KS Digital sine tjenester.
-Dette vil gjøre det enklere å følge opp driftsavvik. For eksempel kan vi varsle riktig leverandør direkte dersom en integrasjon får autorisasjonsfeil, i stedet for å gå via kommunen.
+`POST /svarut-konfigurasjon/api/v1/migrering/integrasjoner` ([spesifikasjon](https://editor-next.swagger.io/?url=https://developers.fiks.ks.no/api/integrasjon-migrering-api-v1.json))
 
-### Hva betyr dette for migreringsendepunktet?
-Organisasjonsnummeret i `maskinportenToken` må være registrert som leverandør i Systemkatalogen. Dette er et sikkerhetstiltak som sikrer at bare leverandører registrert hos oss kan bruke migreringsendepunktet.
-Det er også mulig å knytte den nye integrasjonen til et spesifikt fag- eller arkivsystem i Systemkatalogen. Dette gjør dere ved å sende med `systemkatalogProduktId` i request body. Vi validerer at produktet tilhører leverandøren i Systemkatalogen.
+| Miljø | Base-URL |
+|---|---|
+| Test | `https://api.fiks.test.ks.no` |
+| Produksjon | `https://api.fiks.ks.no` |
 
-Inntil videre er det vår brukerstøtte som registrerer leverandører i Systemkatalogen. 
-Brukerstøtte kan også hjelpe dere med å registrere fag- eller arkivsystemene deres som produkter, og deretter oppgi `systemkatalogProduktId` dersom dere ønsker å bruke dette.
+Endepunktet ligger på Fiks-plattformen, ikke på `svarut.ks.no` som de andre SvarUt-API-ene.
 
-Fremgangsmåte:
+Kallet krever to ting:
 
-1. Ta kontakt med brukerstøtte på `fiks@ksdigital.no` for å sikre at dere er registrert som leverandør i Systemkatalogen.
-2. Hvis dere ønsker å koble den nye integrasjonen til et produkt i Systemkatalogen:
-   - be brukerstøtten registrere fag- eller arkivsystemet som et eget produkt knyttet til leverandøren
-   - send med `systemkatalogProduktId` i kall til migreringsendepunktet
+- **HTTP Basic** med brukernavnet og passordet til SvarUt-kontoen, slik dere bruker for SOAP og REST v1. Det viser at dere har tilgang til kontoen.
+- **`maskinportenToken`** i body. Et gyldig token fra Maskinporten. Organisasjonsnummeret i tokenet blir autorisert organisasjon på den nye integrasjonen.
 
+```bash
+curl https://api.fiks.test.ks.no/svarut-konfigurasjon/api/v1/migrering/integrasjoner \
+  -X POST \
+  -u "<brukernavn>:<passord>" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "maskinportenToken": "<access token fra Maskinporten>",
+    "systemkatalogProduktId": "<produkt-id, valgfri>"
+  }'
+```
+
+Svaret:
+
+```json
+{
+  "id": "<integrasjons-id>",
+  "passord": "<integrasjonspassord>",
+  "kontoId": "<konto-id>"
+}
+```
+
+Bruk `id` i headeren `IntegrasjonId`, `passord` i `IntegrasjonPassord` og `kontoId` i URL-en. Se [Sende post](/tjenester/svarut/sende/).
+
+Det blir bare én integrasjon per SvarUt-konto. Kaller dere endepunktet på nytt, får dere et nytt passord, og det gamle slutter å virke.
+
+## Systemkatalogen
+
+Systemkatalogen er KS Digital sin oversikt over leverandører, fag- og arkivsystemer og hvilke integrasjoner de bruker. Med den kan KS Digital for eksempel varsle riktig leverandør direkte hvis en integrasjon får autorisasjonsfeil.
+
+Organisasjonsnummeret i `maskinportenToken` må være registrert som leverandør i Systemkatalogen. Ellers blir kallet avvist.
+
+Dere kan også knytte integrasjonen til et bestemt system ved å sende med `systemkatalogProduktId`. Det er ikke påkrevd, men anbefalt. Produktet må høre til leverandøren med organisasjonsnummeret i tokenet.
+
+Inntil videre er det brukerstøtte som registrerer leverandører og produkter. Send en e-post til [fiks@ksdigital.no](mailto:fiks@ksdigital.no) for å bli registrert, og be om at fag- eller arkivsystemet registreres som produkt hvis dere vil bruke `systemkatalogProduktId`.
+
+## Fra gamle til nye operasjoner
+
+| SOAP | REST v1 | REST v2/v3 |
+|---|---|---|
+| `sendForsendelse` | `POST /sendForsendelse` | `POST /v3/kontoer/{kontoId}/forsendelser/person`, `/organisasjon`, `/nhn` eller `/print` |
+| `startNyForsendelse`, `sendForsendelseMedId` | `POST /startNyForsendelse`, `POST /{id}/sendForsendelse` | Finnes ikke. Id-en kommer i svaret når du sender. |
+| `retrieveForsendelsesStatus`, `retrieveForsendelsesStatuser` | `GET /{id}/status`, `POST /statuser` | `POST /v3/kontoer/{kontoId}/forsendelser/status/sok` |
+| `retrieveForsendelsesHistorikk` | `GET /{id}/historikk` | `GET /v2/forsendelser/{id}/hendelser` |
+| `retrieveSigneringsHistorikk` | `GET /{id}/signeringhistorikk` | `GET /v2/forsendelser/{id}/signeringshendelser` |
+| `retrieveDokumentMetadata` | `GET /{id}/dokumentMetadata` | `GET /v2/forsendelser/{id}/metadata` |
+| `setForsendelseLestAvEksterntSystem` | `POST /{id}/settLest` | `POST /v2/forsendelser/{id}/lest` |
+| `retrieveForsendelsesIderByEksternRef` | `GET /eksternref/{eksternref}` | `GET /v2/kontoer/{kontoId}/forsendelser?eksternRef=...` |
+| `retreiveForsendelsesTyper` | `GET /forsendelseTyper` | `GET /v2/forsendelsestyper` |
+| `retrieveMottakerSystemForOrgnr` | `GET /mottakersystem/{orgnr}` | `GET /v2/mottakersystem` |
+
+Noen ting er annerledes i v3:
+
+- Det er ett send-endepunkt per type mottaker. Feltene er litt ulike for hver type.
+- Statusene er flere og mer presise. Se [Fra status v2 til v3](/tjenester/svarut/sende/status/#fra-status-v2-til-v3).
+- `krevNiva4Innlogging` heter nå `sikkerhetsniva` og har verdiene `BETYDELIG` og `HOYESTE`.
+- `svarPaForsendelseLink` heter nå `kanSvareViaEdialog`.
 
 ## Få hjelp
 

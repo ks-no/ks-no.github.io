@@ -1,81 +1,113 @@
 ---
-title: 'API: Sending av dokumenter'
+title: Dokumenter og vedlegg
+description: "Multipart-request, filtyper, størrelser, tidsavbrudd og kryptering."
 date: 2026-02-01
-hidden: false
-aliases: [/tjenester/svarut/send-dokumenter, /tjenester/svarut/api/sendmeddokumenter, /svarut/api/sendmeddokumenter]
+weight: 10
+aliases: [/tjenester/svarut/sendmeddokumenter/, /tjenester/svarut/send-dokumenter, /tjenester/svarut/api/sendmeddokumenter, /svarut/api/sendmeddokumenter]
 ---
 
-## Send med dokumenter
+En forsendelse sendes som én multipart-request (`multipart/form-data`). Første del er metadata for forsendelsen. Resten er dokumentene.
 
-Innsending utføres ved bruk av en multipart HTTP request. Første part må inneholde forsendelsens metadata, og ha navn "forsendelse".
-Påfølgende parts skal inneholde dokumentene som skal sendes med forsendelsen.
-Dokumentene har følgende krav: 
-- Filene må være i samme rekkefølge som dokumentene definert i metadata
-- 'filename' benyttes som filnavn, og må samsvare navnet i metadata
-- 'name' ignoreres
+## Oppbygging av requesten
 
-**Ved innsending av forsendelser anbefales det en timeout på 16 minutter. Dette for å håndtere innsending av større filer.**
+- Første del må ha `name="forsendelse"` og `Content-Type: application/json`.
+- Hver av de neste delene er ett dokument, med `Content-Type: application/octet-stream`.
+- Dokumentene må komme i samme rekkefølge som i `dokumenter` i metadata.
+- `filename` på hver del må være lik `filnavn` i metadata. `name` på dokumentdelene blir ikke brukt.
+- Filnavn må være unike i forsendelsen og kan ikke inneholde `* : " \ / < > | ?`.
 
-Følgende begrensinger gjelder for innsending av dokumenter:
-* Dersom forsendelsen skal kunne gå til print: 
-  * PDF'ene som legges ved må ha en total filstørrelse under 350MB, ellers blir forsendelsen avvist. Når SvarUt sender dokumentene som skal printes til printleverandør, vil de bli slått sammen til å bli én stor PDF. 
-  * PDF'ene kan ikke være passordbeskyttet. Dette er en typisk feil vi ser skjer med forsendelser som blir avvist.
-* Dersom forsendelsen skal til NHN kan det kun sendes én PDF, og denne kan ikke overstige 18 MB.
-* Dersom man markerer forsendelse som kunDigital (til privatpersoner eller virksomheter) kan man sende større dokumentpakker enn 350MB. Her ligger det inne en tidsbegrensing hos oss, så all data må overføres innen 16 minutter.
+Til Norsk Helsenett sendes nøyaktig ett dokument, og dokumentdelen må ha `Content-Type: application/pdf`. Se [Norsk Helsenett](/tjenester/svarut/sende/nhn/).
 
+## Eksempel
 
-Eksempel på en hvordan en request med to vedlagte dokumenter kan se ut dersom man sender inn en forsendelse via REST V2:
-```
-POST /api/v2/kontoer/<konto-id>/forsendelser/ HTTP/1.1
+En forsendelse til en privatperson med to PDF-er:
+
+```http
+POST /api/v3/kontoer/<konto-id>/forsendelser/person HTTP/1.1
 Host: svarut.ks.no
-Authorization: Bearer <Maskinporten-token>
-IntegrasjonId: <integrasjon-id>
-IntegrasjonPassord: <integrasjon-passord>
-Content-Type: multipart/form-data; boundary=JettyHttpClientBoundarytt8xws4wfh61785q2obyg
+Authorization: Bearer <access token fra Maskinporten>
+IntegrasjonId: <integrasjons-id>
+IntegrasjonPassord: <passord>
+Content-Type: multipart/form-data; boundary=grense
 
---JettyHttpClientBoundarytt8xws4wfh61785q2obyg
+--grense
 Content-Disposition: form-data; name="forsendelse"
 Content-Type: application/json;charset=UTF-8
 
 {
+  "tittel": "Vedtak om barnehageplass",
   "mottaker": {
-    "digitalId": "38850903357",
-    "navn": "fce655ae-8a8f-43ec-be63-78f7321f47fc",
-    "adresselinje1": "60b079d3-08a9-43fe-9ed8-b2ea6b5ddffb",
-    "poststed": "d6d164ad-c302-4464-bf6f-0e4d39c56181",
-    "postnummer": "0612",
+    "navn": "Kari Nordmann",
+    "digitalId": "<fødselsnummer>",
+    "adresse": {
+      "adresselinje1": "Storgata 1",
+      "postnummer": "0155",
+      "poststed": "Oslo"
+    }
   },
-  "eksponertFor": [],
-  "avgivendeSystem": "3e0842fb-170f-49f2-9a39-345fee600e52",
-  "tittel": "5d624f2b-5eea-49ba-8d2d-dc6fa36e0d97",
-  "konteringskode": "0caae250-6c3d-4e37-a",
+  "avgivendeSystem": "Sak- og arkivsystem 4.2",
+  "eksternReferanse": "2026/1234-5",
   "utskriftskonfigurasjon": {
-    "utskriftMedFarger": false,
     "tosidig": true
   },
   "dokumenter": [
-    {
-      "filnavn": "small.pdf",
-      "mimeType": "application/pdf",
-    },
-    {
-      "filnavn": "another.pdf",
-      "mimeType": "application/pdf"
-    }
+    { "filnavn": "vedtak.pdf", "mimeType": "application/pdf" },
+    { "filnavn": "vedlegg.pdf", "mimeType": "application/pdf" }
   ]
 }
-
---JettyHttpClientBoundarytt8xws4wfh61785q2obyg
-Content-Disposition: form-data; name="name1"; filename="small.pdf"
+--grense
+Content-Disposition: form-data; name="dokument"; filename="vedtak.pdf"
 Content-Type: application/octet-stream
-... file data ...
 
---JettyHttpClientBoundarytt8xws4wfh61785q2obyg
-Content-Disposition: form-data; name="name2"; filename="another.pdf"
+... filinnhold ...
+--grense
+Content-Disposition: form-data; name="dokument"; filename="vedlegg.pdf"
 Content-Type: application/octet-stream
-... file data ...
+
+... filinnhold ...
+--grense--
 ```
 
-Offentlige nøkler for kryptering:  
-[TEST](https://test.svarut.ks.no/forsendelse/publickey/hent)  
-[PROD](https://svarut.ks.no/forsendelse/publickey/hent)  
+Svaret er `{"id": "<forsendelse-id>"}`.
+
+Ta med adressen til mottakeren selv om du sender digitalt. Uten adresse kan ikke SvarUt sende på papir hvis digital levering feiler.
+
+## Filtyper
+
+Bare PDF kan printes. Sender du andre filtyper, for eksempel XML, lyd eller video, må du gjøre ett av disse:
+
+- sette `skalEkskluderesFraUtskrift: true` på hver fil som ikke er PDF, eller
+- sette `kunDigitalLevering: true` på forsendelsen.
+
+PDF-er kan ikke være passordbeskyttet. Det er en vanlig grunn til at forsendelser blir avvist.
+
+Vil du ha med giroark, setter du `giroarkSide` på dokumentet. Siden printes på gult giroark. Første side er 1.
+
+## Størrelser og grenser
+
+| Grense | Gjelder |
+|---|---|
+| 350 MB totalt | Forsendelser som kan gå til print. PDF-ene slås sammen til én fil hos printleverandøren. Er forsendelsen større, blir den avvist. |
+| Ingen fast grense | Forsendelser med `kunDigitalLevering: true`. Alt må være overført innen tidsgrensen under. |
+| 50 MiB eller 200 vedlegg | Over dette får digital postkasse en lenke til dokumentene i stedet for selve filene. Se [Store forsendelser til digital postkasse](#store-forsendelser-til-digital-postkasse). |
+| 18 MB, ett dokument | Forsendelser til Norsk Helsenett. |
+| 10 MiB | Dokument som skal signeres. |
+
+### Tidsavbrudd
+
+SvarUt bryter innsendingen etter 15 minutter. Sett lesetimeout i klienten til minst 16 minutter. Bryter klienten først, kan forsendelsen være mottatt uten at du får id-en tilbake.
+
+### Store forsendelser til digital postkasse
+
+Er forsendelsen over 50 MiB eller har den mer enn 200 vedlegg, sender ikke SvarUt filene til Digipost eller e-Boks. Mottakeren får i stedet en melding med en lenke til hvert dokument og en lenke til en zip-fil med alle dokumentene. Dokumentene lastes ned fra SvarUt.
+
+## Kryptering
+
+Dere kan kryptere dokumentene før de sendes. Da må `kryptert` være `true`, og filene må være kryptert med CMS og den offentlige nøkkelen til SvarUt. Med `sikkerhetsniva: HOYESTE` må dokumentene være kryptert. Se [Sikkerhet](/tjenester/svarut/sikkerhet/).
+
+Offentlig nøkkel for SvarUt:
+
+- Test: <https://test.svarut.ks.no/forsendelse/publickey/hent>
+- Produksjon: <https://svarut.ks.no/forsendelse/publickey/hent>
+
+Nøkkelen lastes ned i nettleseren, og du må logge inn med ID-porten.

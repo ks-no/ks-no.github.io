@@ -1,15 +1,14 @@
 ---
 title: Kodeeksempel Java
+description: "Utgått: Kodeeksempel Java."
 date: 2021-02-22
-aliases: [/svarut/integrasjon/kodeeksempelJava]
+aliases: ["/tjenester/svarut/integrasjon/kodeeksempeljava/", /svarut/integrasjon/kodeeksempelJava]
+weight: 40
 ---
 
-{{% notice style="note" title="Viktig informasjon" %}}
-Vi planlegger å avvikle støtte for alle gjenværende SOAP-versjoner og REST v1 i starten av 2027, les mer [her](https://ksdigital.no/2026/01/13/avvikling-av-soap-og-rest-v-1-api-for-svarut/).
+{{< svarut-avvikling >}}
 
-Vi har også lagt til støtte for å automatisk opprette integrasjoner som kan brukes for kall til Rest v2/v3 - du kan lese mer om det [her](/svarut/api/avvikling-api).
-{{% /notice %}}
+- SOAP: [svarut-java-eksempel](https://github.com/ks-no/svarut-java-eksempel)
+- REST v1: [svarut-rest-klient](https://github.com/ks-no/svarut-rest-klient)
 
-Kodeeksempel soap på github [kodeeksempel](https://github.com/ks-no/svarut-java-eksempel)
-
-Rest klient for java https://github.com/ks-no/svarut-rest-klient
+For REST v2/v3, bruk [fiks-svarut-klient](https://github.com/ks-no/fiks-svarut-klient).

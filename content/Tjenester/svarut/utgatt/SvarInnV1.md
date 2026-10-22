@@ -1,7 +1,14 @@
 ---
 title: 'SvarInn V1'
+description: "Utgått: SvarInn V1."
 date: 2017-01-01
+aliases: ["/tjenester/svarut/svarinn/svarinnv1/"]
+weight: 30
 ---
+
+{{% notice style="warning" title="Utgått" %}}
+SvarInn V1 er erstattet av [SvarInn V2](/tjenester/svarut/motta/api/). Nye mottakersystem skal bruke V2.
+{{% /notice %}}
 
 Her beskrives funksjonalitet for Mottaksservice V1. For å sikre bakoverkompatibilitet for klientene så vil denne versjonen ikke endres.
 

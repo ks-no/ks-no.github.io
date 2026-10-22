@@ -1,52 +1,41 @@
 ---
-title: SvarInn
+title: Motta post (SvarInn)
+description: "Hent post til virksomheten direkte inn i sak- og arkivsystemet."
 date: 2017-01-01
-hidden: false
+weight: 30
+aliases: [/tjenester/svarut/svarinn-mottakservice/, /tjenester/svarut/svarinn/]
 ---
 
-Mottaksservice tilsvarer svarinn og gjør det mulig å laste ned og kvittere ut forsendelser før de varsles gjennom Altinn og sendes til eventuell printing.
+Med SvarInn henter sak- og arkivsystemet post som er sendt til virksomheten, direkte fra SvarUt. Posten går da ikke til Altinn eller i posten, så lenge mottakersystemet henter og kvitterer for den.
 
-## Hva er Mottaksservice?
+SvarInn er laget for å automatisere import av post. Systemet som henter, kalles et *mottakersystem*.
 
-Primært brukes Mottaksservice til å automatisere nedlasting og import av forsendelser direkte i sakssystemer. Fra en forsendelse er mottatt i SvarUt er den tilgjengelig for nedlasting via mottaksservicen. Dersom forsendelsen ikke blir lastet ned innen 2 timer vil mottakersystem få en advarsel mail.
+## Slik fungerer det
 
-Mottaksservice gir mulighet for å laste ned sensitive forsendelser. Dette betyr at mottaker må legge inn sitt offentlige sertifikat i SvarUt, og bruke sin private nøkkel til å dekryptere forsendelsesfilene som blir lastet ned. Alle forsendelser blir sendt på denne måten selv, uavhengig av om forsendelsen er nivå 3 eller 4.
+![SvarInn: mottakersystemet henter liste over nye forsendelser, laster ned kryptert zip, dekrypterer og kvitterer](/images/svarut/Svarinn-reisen.png)
 
-Mottaksservicen består av 3 tjenester (se også [detaljert beskrivelse](/tjenester/svarut/api/rest/)):
+1. Noen sender en forsendelse til et organisasjonsnummer. SvarUt finner et mottakersystem som passer, og forsendelsen får status `KLAR_FOR_MOTTAK`.
+2. Mottakersystemet henter listen over nye forsendelser. Listen har bare metadata, ikke filer.
+3. Mottakersystemet laster ned filene for hver forsendelse som en zip-fil. Filen er kryptert med den offentlige nøkkelen til mottakersystemet.
+4. Mottakersystemet dekrypterer med sin private nøkkel og importerer.
+5. Mottakersystemet kvitterer. Forsendelsen får status `LEST`, og SvarUt sender den ikke til Altinn eller print.
 
-1.  **hentNyeForsendelser -** Henter nye forsendelser som er klar for import.
-2.  **getForsendelsefil -** Henter filen for en gitt forsendelse, enten som PDF eller zipfil. Filen vil være kryptert og må dekrypteres etter nedlasting.
-3.  **kvitterMottak -** Kvitterer ut en gitt forsendelse. Forsendelsesstatus vil bli satt til lest. Dette stopper varsel til Altinn og senere printing.
+Kjør steg 2–5 som en jobb hvert 15. minutt.
 
-## Hvordan bruke Mottaksservice?
+Er en forsendelse ikke kvittert etter to timer, kommer den med i en e-post om manglende import. E-posten sendes tre ganger om dagen til dem som har tilgang til mottakersystemet.
 
-Mottaksservicen konfigureres under menypunktet Mottakersystem. Her kan administrator opprette nye mottakersystem og gi personer tilgang til mottakersystemet. Deretter kan personene som har fått tilgang selv utføre resten av stegene. De første 3 stegene utføres kun én gang, steg 4 en gang som en test. De siste tre stegene bør settes opp som en regelmessig jobb som kjøres hvert 15. minutt.
+## Sette opp et mottakersystem
 
-1. **Opprett mottakersystem**  
-En administrator oppretter et mottakersystem som skal ha tilgang til forsendelser. I dette steget legges det inn minst én person som har tilgang til dette mottakersystemet. Personen blir gitt tilgang basert på fødselsnummeret sitt.
+Oppsettet gjøres i SvarUt-portalen under [Mottakersystem](https://svarut.ks.no/mottaker/). Steg 1 gjøres av KS Digital. Resten gjør dere selv.
 
-2. **Legg til organisasjon**  
-Personen som ble gitt tilgang i punktet over legger inn organisasjoner som mottakersystemet skal ha tilgang til. SvarUt sjekker om personen har tilgang til organisasjonsnummeret ved å spørre Altinn.
+1. **Opprette mottakersystem.** KS Digital oppretter mottakersystemet og gir minst én person tilgang med fødselsnummer. Kontakt [fiks@ksdigital.no](mailto:fiks@ksdigital.no).
+2. **Legge til organisasjoner.** Personen med tilgang legger inn organisasjonsnumrene mottakersystemet skal hente post for. SvarUt sjekker i Altinn at personen har tilgang til organisasjonen. Velg også forsendelsestype og sikkerhetsnivå, se [Adressering](/tjenester/svarut/motta/adressering/).
+3. **Lage servicepassord.** Under fanen «Service» på mottakersystemet. Mottakersystemet bruker id-en og servicepassordet i alle kall.
+4. **Laste opp offentlig nøkkel.** Også under «Service». Krever innlogging på nivå 4. Se [Kryptering](/tjenester/svarut/motta/kryptering/).
+5. **Teste.** Send en forsendelse til et av organisasjonsnumrene, og hent den med [API-et](/tjenester/svarut/motta/api/).
 
-3. **Generer servicepassord**  
-Personen genererer et servicepassord. Dette passordet brukes for å validere mottakersystemet mot automatisk importtjeneste. Dette gjøres via Mottakersystem-siden, under "Service" fanen for et mottakersystem. Mottakersystemet må bruke brukernavnet og servicepassordet for autentisering ved hver nedlasting.
+SvarInn bruker ikke Maskinporten eller Fiks-integrasjon. Det er servicepassordet som gir tilgang.
 
-4. **Registrér offentlig sertifikat**  
-Personen må laste opp mottakersystemets offentlige sertifikat. Dette gjøres også via Mottakersystem-siden, under "Service" fanen for et mottakersystem. Den private nøkkelen brukes i mottakersystemet for å dekryptere forsendelsesfiler etter nedlasting.
+## Mer om SvarInn
 
-5. **Send forsendelse**  
-Opprett minst en forsendelse til en organisasjon som personen har tilgang til.
-
-6. **Hent nye forsendelser**  
-Kall automatisk importtjeneste og oppgi brukernavn og servicepassord ved autentisering. Alle forsendelser mottakersystemet har tilgang til returneres som en liste. Merk at listen ikke inneholder selve filene, kun informasjon om forsendelsen.
-
-7. **Hent forsendelsefil**  
-Etter autentisering og nedlasting av forsendelser, oppgi forsendelseid til en forsendelse til importtjenesten. Dette kallet returnerer selve filen enten som zip-fil eller som PDF.
-
-8. **Kvittér for mottak**  
-Siste steg er å kvittere ut forsendelsen. Oppgi forsendelsesid til importtjenesten, og forsendelsen markeres som lest.
-
-### Forsendelsesflyt i SvarUt
-
-![forsendelsestatusoversikt](https://raw.githubusercontent.com/wiki/ks-no/svarut-dokumentasjon/mottakerserviceflyt.png)
-
+{{% children %}}

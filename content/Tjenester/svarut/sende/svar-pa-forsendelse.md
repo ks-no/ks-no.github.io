@@ -1,26 +1,52 @@
 ---
-title: Fiks eDialog
+title: Svar på forsendelse
+description: "La mottakeren svare digitalt på en forsendelse via eDialog."
 date: 2023-06-29
-aliases: [/svarut/edialog]
+weight: 60
+aliases: [/tjenester/svarut/edialog/, /svarut/edialog]
 ---
 
-eDialog er nå en del av Fiks melding. Dokumentasjon for tjenesten finnes [her](/tjenester/fiksmelding/edialog).
+Mottakeren kan svare digitalt på en forsendelse gjennom Fiks eDialog. Svaret kommer tilbake som en ny forsendelse til organisasjonsnummeret avsender har oppgitt. eDialog er en del av Fiks melding og er beskrevet under [eDialog](/tjenester/fiksmelding/edialog).
 
-### Svare på forsendelse ved bruk av eDialog
-Dersom man benytter V6 eller nyere av SOAP-service, eller hvilken som helst versjon av REST, for sending av forsendelser til SvarUt, kan man sende med en lenke til eDialog for å besvare forsendelsen. 
-Denne linken vil da ha forhåndsutfylt avsender, mottaker og tittel.
-Bruk av denne funksjonaliteten krever ikke at man har konfigurert noen mottakere i eDialog, da svaret på forsendelsen vil bli sendt fra den opprinnelige avsenderen i SvarUt og også faktureres denne.
+Dere trenger ikke å ha satt opp mottakere i eDialog for å bruke dette. Svaret sendes fra den opprinnelige SvarUt-kontoen, og det er den som blir fakturert.
 
-![alternative text](http://www.plantuml.com/plantuml/proxy?src=https://raw.githubusercontent.com/wiki/ks-no/svarut-dokumentasjon/edialog/edialog.puml?2)
+## Slik bruker du det
 
-1. En sender inn forsendelse med svarPaForsendelseLink satt til true, og svarSendesTil utfylt med organisasjonsnummeret og adressen man ønsker at et svar skal sendes til.
-2. Avsender får en forsendelseid i retur.
-3. SvarUt sender vanlig varsel til SDP/Altinn med link for å kunne svare på forsendelsen.
-4. Mottaker klikker på "svar på forsendelse" link i Altinn/SDP.
-5. Mottaker fyller ut eDialog skjema og sender det inn.
-6. eDialog sender kvittering på innsendt skjema til innbygger på epost.
-6. eDialog lager en ny forsendelse til avsender. Dette er utfylt med svarPaForsendelse lik forsendelseid til opprinnelig forsendelse.
-7. Sak/Arkivsystem mottar forsendelse via SvarInn og ser at dette er svar på utgående forsendelse og putter svaret på samme sak.
+Sett disse feltene når du sender forsendelsen med REST v3:
 
+| Felt | Innhold |
+|---|---|
+| `kanSvareViaEdialog` | `true` |
+| `svarSendesTil` | Organisasjonen svaret skal til, med `type: ORGANISASJON`, gyldig organisasjonsnummer i `digitalId`, navn og adresse |
 
+Når forsendelsen er akseptert og sendt digitalt, får mottakeren en lenke til eDialog i meldingen. Lenken har avsender, mottaker og tittel fylt ut.
 
+I SOAP V6 og nyere heter feltet `svarPaForsendelseLink`.
+
+## Slik foregår det
+
+```mermaid
+sequenceDiagram
+    participant A as Sak- og arkivsystem
+    participant S as SvarUt
+    participant D as Altinn eller digital postkasse
+    actor I as Mottaker
+    participant E as eDialog
+    A->>S: 1. Sender forsendelse med kanSvareViaEdialog
+    S-->>A: 2. Forsendelse-id
+    S->>D: 3. Melding med lenke til eDialog
+    I->>D: 4. Trykker på lenken
+    I->>E: 5. Fyller ut og sender svaret
+    E-->>I: 6. Kvittering på e-post
+    E->>S: 7. Ny forsendelse med svarPaForsendelse
+    S->>A: 8. Svaret hentes med SvarInn
+```
+
+1. Sak- og arkivsystemet sender forsendelsen med `kanSvareViaEdialog: true` og `svarSendesTil`.
+2. Systemet får forsendelse-id-en tilbake.
+3. SvarUt sender melding til Altinn eller digital postkasse, med lenke for å svare.
+4. Mottakeren trykker på lenken.
+5. Mottakeren fyller ut skjemaet i eDialog og sender det.
+6. eDialog sender kvittering til mottakeren på e-post.
+7. eDialog lager en ny forsendelse til organisasjonen i `svarSendesTil`. Feltet `svarPaForsendelse` er id-en til den opprinnelige forsendelsen.
+8. Sak- og arkivsystemet henter svaret med [SvarInn](/tjenester/svarut/motta/), ser at det er et svar og legger det på samme sak.

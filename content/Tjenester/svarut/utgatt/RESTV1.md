@@ -1,14 +1,12 @@
 ---
 title: REST V1
+description: "Utgått: REST V1."
 date: 2019-04-11
-aliases: ["/svarut/integrasjon/ForsendelseRestServiceV1", "/svarut/integrasjon/forsendelserestservicev1/", "/tjenester/svarut/integrasjon/forsendelserestservicev1/"]
+aliases: ["/tjenester/svarut/integrasjon/restv1/", "/svarut/integrasjon/ForsendelseRestServiceV1", "/svarut/integrasjon/forsendelserestservicev1/", "/tjenester/svarut/integrasjon/forsendelserestservicev1/"]
+weight: 10
 ---
 
-{{% notice style="note" title="Viktig informasjon" %}}
-Vi avvikler støtte for alle gjenværende SOAP-versjoner og REST v1 i 2027. SOAP-versjonene har fått sluttdato 1.1.27, mens REST v1 blir avviklet 31.7.2027, [les mer her](https://ksdigital.no/2026/01/13/avvikling-av-soap-og-rest-v-1-api-for-svarut/).
-
-Vi har også lagt til støtte for å automatisk opprette integrasjoner som kan brukes for kall til REST v2/v3 - du kan lese mer om det [her](/svarut/api/avvikling-api).
-{{% /notice %}}
+{{< svarut-avvikling >}}
 
 ### Tilgang
 
@@ -43,7 +41,7 @@ Base URL: `/tjenester/api/forsendelse/v1`
 Klientbibliotek laget i Java finnes her: https://github.com/ks-no/svarut-rest-klient
 
 ### Feilmeldinger
-[Beskrivelse av feilmeldinger](../../../fiks-plattform/integrasjoner/#feilmeldinger)
+[Beskrivelse av feilmeldinger](/felles/integrasjoner/#feilmeldinger)
 
 ### VIKTIG!
 /sendForsendelse bør ha readtimeout på 16min. SvarUT har Timeout på 15min. SvarUt kan ta i mot ganske store filer, derfor er denne timeouten så høg. 
