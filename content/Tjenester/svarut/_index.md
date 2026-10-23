@@ -1,44 +1,65 @@
 ---
 title: SvarUt
+description: "Digital utsending av post fra kommuner og andre offentlige virksomheter, og mottak av post direkte i sak- og arkivsystemet."
 aliases: [/svarut/]
 ---
 
-{{% notice style="note" title="Viktig informasjon" %}}
-Vi avvikler støtte for alle gjenværende SOAP-versjoner og REST v1 i 2027. SOAP-versjonene har fått sluttdato 1.1.27, mens REST v1 blir avviklet 31.7.2027, [les mer her](https://ksdigital.no/2026/01/13/avvikling-av-soap-og-rest-v-1-api-for-svarut/). 
+{{< svarut-avvikling >}}
 
-Vi har også lagt til støtte for å automatisk opprette integrasjoner som kan brukes for kall til REST v2/v3 - [du kan lese mer om det her](/svarut/api/avvikling-api).
-{{% /notice %}}
+SvarUt er KS Digital sin tjeneste for digital utsending av post fra kommuner og andre offentlige virksomheter. Fagsystemet sender én forsendelse til SvarUt, og SvarUt finner den beste kanalen for mottakeren: digital postkasse, Altinn, SvarInn, Norsk Helsenett eller papirpost.
 
-## Kort beskrivelse
-KS FIKS meldingformidler er en sentralisert løsning som formidler dokumenter mellom avsender og mottaker via ulike kanaler. 
-Kommuner og andre kan benytte KS FIKS plattform. SvarUt benyttes for utgående post, mens SvarInn benyttes for innkommet post.
+SvarInn er motsatt vei. Med SvarInn henter sak- og arkivsystemet post som er sendt til virksomheten, direkte fra SvarUt.
 
-Edialog er grensesnittet som tilbys innbygger for å fylle ut et skjema som skal returneres til kommunen.
+![Fagsystemer sender til SvarUt, som leverer til digital postkasse, Altinn, SvarInn, Norsk Helsenett eller printleverandør](/images/svarut/svarut-kanaler.png)
 
-## Tilgjengelige grensesnitt
-| Grensesnitt       | Støtte                 |
-|-------------------|------------------------|
-| Web portal        | Ja                     |
-| Maskin til maskin | [Apier](api-versjoner) |
+## Hva vil du gjøre?
 
-## Beskrivelse av tjenesten
-SvarUt er en tjeneste som tilbyr et grensesnitt for aktørene i en digital dialog mellom kommune og innbygger.
+{{< cards >}}
+{{% card title="Komme i gang" href="/tjenester/svarut/kom-i-gang/" %}}
+Avtale, Maskinporten, Fiks-integrasjon og tilganger. Start her om du skal lage en ny integrasjon.
+{{% /card %}}
+{{% card title="Sende post" href="/tjenester/svarut/sende/" %}}
+Send forsendelser fra et fagsystem med SvarUt REST v3, og følg status til de er levert.
+{{% /card %}}
+{{% card title="Motta post" href="/tjenester/svarut/motta/" %}}
+Hent post til virksomheten direkte inn i sak- og arkivsystemet med SvarInn.
+{{% /card %}}
+{{% card title="Migrere fra SOAP eller REST v1" href="/tjenester/svarut/migrering/" %}}
+Opprett en ny integrasjon for REST v2/v3 med den tilgangen dere har i dag.
+{{% /card %}}
+{{< /cards >}}
 
-### Teknisk oversikt skisse
-![alternative text](http://www.plantuml.com/plantuml/proxy?src=https://raw.githubusercontent.com/wiki/ks-no/svarut-dokumentasjon/edialog/edialog.puml?2)
+## Grensesnitt
 
-### Konfigurasjon av Svarut
-Etter at det er signert avtale med KS Digital om bruk av SvarUt oversendes en veiledning i konfigurasjon av tjenesten: [Konfigurasjon av SvarUt](https://ksdigital.no/tjenestene/svarut-tjenesten/svarut-konfigurasjon/)
+| Grensesnitt | Brukes til | Autentisering | Dokumentasjon |
+|---|---|---|---|
+| SvarUt REST v2/v3 | Sende forsendelser og hente status | Maskinporten og Fiks-integrasjon | [Sende post](/tjenester/svarut/sende/) |
+| SvarInn v2 | Hente post til et mottakersystem | Mottakersystem-id og servicepassord | [Motta post](/tjenester/svarut/motta/) |
+| Webportal | Sende og følge opp forsendelser manuelt, sette opp mottakersystem | ID-porten | [svarut.ks.no](https://svarut.ks.no/) |
+| SOAP V4–V11 og REST v1 | Avvikles | Brukernavn og passord | [Utgåtte API-er](/tjenester/svarut/utgatt/) |
 
-Informasjon på nettstedet https://ksdigital.no er beregnet på kommuner og andre virksomheter som har tegnet avtale om bruk av SvarUt.
+Se [versjonsoversikten](/tjenester/svarut/api-versjoner/) for alle versjoner og spesifikasjoner.
 
-### IPer
+## Miljøer
 
-Hvis dere må åpne i brannvegg ligger svarut bak disse ipene:
+| Miljø | Webportal og API | Base-URL for API |
+|---|---|---|
+| Test | <https://test.svarut.ks.no/> | `https://test.svarut.ks.no/api` |
+| Produksjon | <https://svarut.ks.no/> | `https://svarut.ks.no/api` |
 
-| SvarUT-Test   | SvarUT-PROD   |
-|---------------|---------------|
-| 137.221.25.65 | 137.221.25.66 | 
-| 137.221.28.65 | 137.221.28.66 | 
+SvarUt har egen vertsadresse. API-et ligger ikke under `api.fiks.ks.no` som de fleste andre Fiks-tjenester. Se [Testmiljø](/tjenester/svarut/testmiljo/) for testbrukere og hvordan dere får tilgang.
+
+### IP-adresser
+
+Må dere åpne i brannmuren, ligger SvarUt bak disse adressene:
+
+| Test | Produksjon |
+|---|---|
+| 137.221.25.65 | 137.221.25.66 |
+| 137.221.28.65 | 137.221.28.66 |
+
+## Avtale og konfigurasjon
+
+Kommunen eller virksomheten må ha avtale med KS Digital om bruk av SvarUt. Etter at avtalen er signert, får dere en veiledning i [konfigurasjon av SvarUt](https://ksdigital.no/tjenestene/svarut-tjenesten/svarut-konfigurasjon/). Informasjonen på ksdigital.no er for kommuner og virksomheter som har avtale.
 
 {{< get-help email="fiks@ksdigital.no" support_page="/felles/support/" >}}

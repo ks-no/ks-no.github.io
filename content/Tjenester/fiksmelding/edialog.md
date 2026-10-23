@@ -3,7 +3,7 @@ title: eDialog
 date: 2023-09-13
 ---
 
-Sikker innsending av brev fra innbyggere til organisasjoner via SvarUt. For å bruke eDialog bør man allerede ha tatt i bruk [SvarUt](/tjenester/svarut) og [SvarInn](/tjenester/svarut/svarinn-mottakservice).
+Sikker innsending av brev fra innbyggere til organisasjoner via SvarUt. For å bruke eDialog bør man allerede ha tatt i bruk [SvarUt](/tjenester/svarut) og [SvarInn](/tjenester/svarut/motta/).
 Dersom SvarInn ikke er konfigurert opp for organisasjonsnummeret som mottar meldingene vil disse bli sendt til Altinn.
 
 ## Beskrivelse
@@ -18,6 +18,6 @@ Denne id'en kan finnes i konfigurasjonen for hver enkelt mottaker på https://fo
 
 
 ### Svare på forsendelse ved bruk av eDialog
-[Beskrevet i SvarUt-dokumentasjon](/tjenester/svarut/edialog)
+[Beskrevet i SvarUt-dokumentasjon](/tjenester/svarut/sende/svar-pa-forsendelse/)
 
 
