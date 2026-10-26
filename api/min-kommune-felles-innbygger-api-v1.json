@@ -1,0 +1,228 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "KS Min Kommune: Felles Innbygger API",
+    "description": "API for generelle innbygger-kall i Min Kommune.",
+    "contact": {
+      "name": "Fiks-brukerstøtte",
+      "url": "https://developers.fiks.ks.no/",
+      "email": "fiks@ksdigital.no"
+    },
+    "license": {
+      "name": "MIT",
+      "url": "https://opensource.org/licenses/MIT"
+    },
+    "version": "v1"
+  },
+  "servers": [
+    {
+      "url": "https://min.kommune.no",
+      "description": "KS Fiks Min Kommune intern API"
+    }
+  ],
+  "security": [
+    {
+      "bearerAuth": []
+    }
+  ],
+  "tags": [
+    {
+      "name": "FellesInnbygger",
+      "description": "API for generelle innbygger-kall i Min Kommune"
+    }
+  ],
+  "paths": {
+    "/min-kommune/api/v1/innbygger/kontaktinformasjon": {
+      "get": {
+        "tags": [
+          "FellesInnbygger"
+        ],
+        "summary": "Hent kontaktinformasjon for organisasjoner med konfigurert kontaktmetode",
+        "description": "Returnerer konfigurerte kontaktmetoder med tilhørende Fiks-organisasjons-ID, organisasjonsnavn og kommunenummer. Hver organisasjon forekommer maksimalt én gang. Organisasjoner uten konfigurert kontaktmetode eller med manglende eller blankt kommunenummer tas ikke med. Manglende kommunenummer logges som en datakvalitetsfeil. Krever en autentisert innbygger, men ikke administratorrettighet for organisasjonene. Returnerer en tom liste dersom ingen organisasjoner oppfyller kravene.",
+        "operationId": "hentKontaktinformasjon",
+        "responses": {
+          "200": {
+            "description": "Kontaktinformasjon for organisasjoner med konfigurert kontaktmetode og kommunenummer. Listen kan være tom.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Kontaktinformasjon"
+                  }
+                },
+                "example": [
+                  {
+                    "fiksOrgId": "b6e71675-72f5-4a70-a609-7f32348fd956",
+                    "navn": "Bergen kommune",
+                    "kommunenr": "4601",
+                    "kontaktmetode": {
+                      "type": "EPOST",
+                      "kontaktadresse": "post@bergen.kommune.no"
+                    }
+                  },
+                  {
+                    "fiksOrgId": "d317df15-c22e-42a0-9daa-53169df97306",
+                    "navn": "Oslo kommune",
+                    "kommunenr": "0301",
+                    "kontaktmetode": {
+                      "type": "KONTAKTSKJEMA",
+                      "kontaktadresse": "https://www.oslo.kommune.no/kontakt/"
+                    }
+                  }
+                ]
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/IkkeAutentisert"
+          },
+          "403": {
+            "$ref": "#/components/responses/IngenTilgang"
+          },
+          "500": {
+            "$ref": "#/components/responses/Systemfeil"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    },
+    "responses": {
+      "IkkeAutentisert": {
+        "description": "Manglende eller ugyldig autentisering.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorMessage"
+            }
+          }
+        }
+      },
+      "IngenTilgang": {
+        "description": "Den autentiserte aktøren er ikke en innbygger/person, for eksempel en integrasjon.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorMessage"
+            }
+          }
+        }
+      },
+      "Systemfeil": {
+        "description": "Systemfeil",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorMessage"
+            }
+          }
+        }
+      }
+    },
+    "schemas": {
+      "Kontaktinformasjon": {
+        "type": "object",
+        "description": "Organisasjonens konfigurerte kontaktmetode og organisasjonsopplysninger for visning til innbyggere.",
+        "required": [
+          "fiksOrgId",
+          "navn",
+          "kommunenr",
+          "kontaktmetode"
+        ],
+        "properties": {
+          "fiksOrgId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "ID til Fiks-organisasjonen kontaktmetoden gjelder for.",
+            "example": "b6e71675-72f5-4a70-a609-7f32348fd956"
+          },
+          "navn": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Navnet til Fiks-organisasjonen.",
+            "example": "Bergen kommune"
+          },
+          "kommunenr": {
+            "type": "string",
+            "pattern": "^[0-9]{4}$",
+            "description": "Kommunenummer med fire siffer, inkludert eventuelle innledende nuller. Organisasjoner uten kommunenummer utelates fra listen.",
+            "example": "4601"
+          },
+          "kontaktmetode": {
+            "$ref": "#/components/schemas/Kontaktmetode"
+          }
+        }
+      },
+      "Kontaktmetode": {
+        "type": "object",
+        "description": "Organisasjonens kontaktmetode. Kontaktadressen valideres av tjenesten ut fra valgt type.",
+        "required": [
+          "type",
+          "kontaktadresse"
+        ],
+        "properties": {
+          "type": {
+            "$ref": "#/components/schemas/KontaktmetodeType"
+          },
+          "kontaktadresse": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Adressen som benyttes for kontakt. For EPOST må verdien være en gyldig e-postadresse uten mailto:-prefiks. For KONTAKTSKJEMA må verdien være en absolutt HTTP- eller HTTPS-URL til kontaktskjemaet. Valideringen avhenger av type; feltet har derfor ikke ett felles format.",
+            "example": "post@eksempel.kommune.no"
+          }
+        }
+      },
+      "KontaktmetodeType": {
+        "type": "string",
+        "description": "Type kontaktmetode: EPOST for e-postadresse og KONTAKTSKJEMA for URL til et kontaktskjema. Flere typer kan legges til senere.",
+        "enum": [
+          "EPOST",
+          "KONTAKTSKJEMA"
+        ]
+      },
+      "ErrorMessage": {
+        "type": "object",
+        "properties": {
+          "timestamp": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "status": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "error": {
+            "type": "string"
+          },
+          "errorId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "path": {
+            "type": "string"
+          },
+          "originalPath": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          },
+          "errorCode": {
+            "type": "string"
+          },
+          "errorJson": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}
