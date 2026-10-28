@@ -5,13 +5,13 @@ date: 2026-10-28
 
 ## Short description
 
-**Reporting of visitor contribution (besøksbidrag) for accommodation providers and intermediaries.**
+**Reporting of visitor levy (besøksbidrag) for accommodation providers and intermediaries.**
 
-KS Besøksbidrag is a national service that helps Norwegian municipalities administer the visitor contribution introduced through the Besøksbidragsloven. This page is for accommodation providers, booking platforms and other intermediaries, and for vendors building systems for them. It explains how to find out which municipalities and periods have a visitor contribution, and how to report turnover.
+KS Besøksbidrag is a national service that helps Norwegian municipalities administer the visitor levy introduced through the Besøksbidragsloven. This page is for accommodation providers, booking platforms and other intermediaries, and for vendors building systems for them. It explains how to find out which municipalities and periods have a visitor levy, and how to report turnover.
 
 The service offers:
 
-- An open municipality register (Register API) of municipalities with visitor contribution, and the periods in which it applies
+- An open municipality register (Register API) of municipalities with visitor levy, and the periods in which it applies
 - Reporting of accommodation turnover through an Altinn form (coming)
 - Reporting through an API for automated submission from your own systems (coming)
 
@@ -21,7 +21,7 @@ The service offers:
 
 ### Who is this for?
 
-- **Accommodation providers:** hotels, campsites, cabin operators and private hosts who must report turnover subject to visitor contribution.
+- **Accommodation providers:** hotels, campsites, cabin operators and private hosts who must report turnover subject to visitor levy.
 - **Intermediaries:** booking platforms and others who report on behalf of accommodation providers.
 - **System vendors:** vendors of booking, PMS and accounting systems that will support automated reporting.
 
@@ -35,7 +35,7 @@ The service offers:
 
 ## Getting started
 
-1. Use the Register API to find out which municipalities have visitor contribution, and which periods apply. You can call it directly.
+1. Use the Register API to find out which municipalities have visitor levy, and which periods apply. You can call it directly.
 2. Reporting: the form and any reporting API are not yet published. See [API reference](#api-reference) for status.
 
 The Register API is open. It requires no authentication, integration or activation in [Fiks Konfigurasjon](https://forvaltning.fiks.ks.no/fiks-konfigurasjon/tjenester). The upcoming reporting API will probably require access. See [Integrasjoner](/felles/integrasjoner/) (Norwegian) for general guidance on authentication on the Fiks platform, but wait for the requirements to be published before building on it.
@@ -46,15 +46,15 @@ The Register API is open. It requires no authentication, integration or activati
 
 | Term | Description |
 |------|-------------|
-| Visitor contribution (besøksbidrag) | A contribution municipalities may collect for overnight stays, based on the Besøksbidragsloven |
-| Period | Time span (start and end date, both inclusive) in which the municipality collects the contribution. May cross new year |
-| Regulation effective date | The date the municipality's visitor contribution regulation (forskrift) takes effect. May differ from the periods in which the contribution is actually collected |
-| Turnover | Accommodation turnover you report, and from which the municipality calculates the contribution |
+| Visitor levy (besøksbidrag) | A levy municipalities may collect for overnight stays, based on the Besøksbidragsloven |
+| Period | Time span (start and end date, both inclusive) in which the municipality collects the levy. May cross new year |
+| Regulation effective date | The date the municipality's visitor levy regulation (forskrift) takes effect. May differ from the periods in which the levy is actually collected |
+| Turnover | Accommodation turnover you report, and from which the municipality calculates the levy |
 | Intermediary | Booking platforms and others who report on behalf of accommodation providers |
 
 ### Overall flow
 
-1. Look up in the Register API which municipalities have visitor contribution, and in which periods.
+1. Look up in the Register API which municipalities have visitor levy, and in which periods.
 2. Report turnover for stays in covered municipalities and periods, manually through Altinn or automatically through the API (coming).
 3. KS Besøksbidrag validates the data and calculates the invoice basis for the municipality.
 4. The municipality invoices and follows up in its own finance system.
@@ -134,4 +134,4 @@ Errors are returned in the [standard error format](/felles/integrasjoner/#feilme
 
 ## Get help
 
-{{< get-help email="fiks@ksdigital.no" support_page="/felles/support/" >}}
+{{< get-help email="fiks@ksdigital.no" support_page="/en/felles/support/" >}}
