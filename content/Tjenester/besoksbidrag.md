@@ -16,20 +16,20 @@ Tjenesten tilbyr:
 - Rapportering av omsetning fra overnatting via Altinn-skjema (kommer)
 - Rapportering via API for automatisert innsending fra egne systemer (kommer)
 
-> **Status:** Foreløpig er kun Register-API-et tilgjengelig. API-et kan endres frem til 1. desember. Skjema (schema) for rapportering publiseres via Altinn senere, og denne siden oppdateres når det er klart.
+> **Status:** Foreløpig er kun Register-API-et tilgjengelig. API-et kan endres frem til 1. desember. Skjema for rapportering publiseres via Altinn senere, og denne siden oppdateres når det er klart.
 
 ### Hvem er dette for?
 
-- **Overnattingstilbydere:** hoteller, campingplasser, hytteutleiere og private utleiere som skal rapportere omsetning som er omfattet av besøksbidrag.
-- **Mellomledd:** bookingplattformer og andre som rapporterer på vegne av overnattingstilbydere.
-- **Systemleverandører:** leverandører av booking-, PMS- og regnskapssystemer som skal støtte automatisk rapportering.
+- **Overnattingstilbydere:** hoteller, campingplasser, hytteutleiere og private utleiere som skal rapportere omsetning som er omfattet av besøksbidrag som ønsker å bruke apiene.
+- **Mellomledd:** bookingplattformer og andre som rapporterer på vegne av overnattingstilbydere som ønsker å bruke apiene.
+- **Systemleverandører:** leverandører av booking-, PMS- og regnskapssystemer som skal støtte automatisk rapportering via apiene.
 
 ### Tilgjengelige grensesnitt
 
 | Grensesnitt | Status | Detaljer |
 |-------------|--------|----------|
 | Register-API | ✅ Tilgjengelig. Kan endres frem til 1. desember | [Swagger / OpenAPI](https://editor-next.swagger.io/?url=https://developers.fiks.ks.no/api/besoksbidrag-register-api-v1.json) |
-| Rapportering via Altinn (skjema) | 🚧 Kommer | Skjema (schema) publiseres via Altinn |
+| Rapportering via Altinn (skjema) | 🚧 Kommer | Skjema publiseres via Altinn |
 | Rapportering via API | 🚧 Kommer | Ikke publisert |
 
 ## Kom i gang
