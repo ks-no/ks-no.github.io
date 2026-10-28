@@ -124,12 +124,6 @@ Errors are returned in the [standard error format](/felles/integrasjoner/#feilme
 
 ---
 
-## Related services
-
-- [Fiks register](/tjenester/register/) (Norwegian) – other register services on the Fiks platform
-
----
-
 ## Get help
 
 {{< get-help email="fiks@ksdigital.no" support_page="/en/felles/support/" >}}

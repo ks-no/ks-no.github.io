@@ -126,12 +126,6 @@ Feil returneres på [standard feilformat]({{% ref "integrasjoner.md" %}}#feilmel
 
 ---
 
-## Relaterte tjenester
-
-- [Fiks register]({{% ref "register/_index.md" %}}) – øvrige registertjenester på Fiks-plattformen
-
----
-
 ## Få hjelp
 
 {{< get-help email="fiks@ksdigital.no" support_page="/felles/support/" >}}
