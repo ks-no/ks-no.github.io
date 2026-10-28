@@ -17,8 +17,6 @@ The service offers:
 
 > **Status:** Currently only the Register API is available. The API may change until 1 December. The reporting schema will be published through Altinn later, and this page will be updated when it is ready.
 
-> The rest of this documentation site is in Norwegian. Links to other pages on this site lead to the Norwegian versions.
-
 ### Who is this for?
 
 - **Accommodation providers:** hotels, campsites, cabin operators and private hosts who must report turnover subject to visitor levy and want to use the APIs.
