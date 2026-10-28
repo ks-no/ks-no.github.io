@@ -21,9 +21,9 @@ The service offers:
 
 ### Who is this for?
 
-- **Accommodation providers:** hotels, campsites, cabin operators and private hosts who must report turnover subject to visitor levy.
-- **Intermediaries:** booking platforms and others who report on behalf of accommodation providers.
-- **System vendors:** vendors of booking, PMS and accounting systems that will support automated reporting.
+- **Accommodation providers:** hotels, campsites, cabin operators and private hosts who must report turnover subject to visitor levy and want to use the APIs.
+- **Intermediaries:** booking platforms and others who report on behalf of accommodation providers who want to use the APIs.
+- **System vendors:** vendors of booking, PMS and accounting systems that will support automated reporting via the APIs.
 
 ### Available interfaces
 
