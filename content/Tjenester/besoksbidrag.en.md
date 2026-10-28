@@ -7,7 +7,7 @@ date: 2026-10-28
 
 **Reporting of visitor levy (besøksbidrag) for accommodation providers and intermediaries.**
 
-KS Besøksbidrag is a national service that helps Norwegian municipalities administer the visitor levy introduced through the Besøksbidragsloven. This page is for accommodation providers, booking platforms and other intermediaries, and for vendors building systems for them. It explains how to find out which municipalities and periods have a visitor levy, and how to report turnover.
+KS Besøksbidrag is a national service that helps Norwegian municipalities administer the visitor levy introduced through the [Besøksbidragsloven](https://lovdata.no/lov/2025-06-20-104). This page is for accommodation providers, booking platforms and other intermediaries, and for vendors building systems for them. It explains how to find out which municipalities and periods have a visitor levy, and how to report turnover.
 
 The service offers:
 
@@ -44,7 +44,7 @@ The Register API is open. It requires no authentication, integration or activati
 
 | Term | Description |
 |------|-------------|
-| Visitor levy (besøksbidrag) | A levy municipalities may collect for overnight stays, based on the Besøksbidragsloven |
+| Visitor levy (besøksbidrag) | A levy municipalities may collect for overnight stays, based on the [Besøksbidragsloven](https://lovdata.no/lov/2025-06-20-104) |
 | Period | Time span (start and end date, both inclusive) in which the municipality collects the levy. May cross new year |
 | Regulation effective date | The date the municipality's visitor levy regulation (forskrift) takes effect. May differ from the periods in which the levy is actually collected |
 | Turnover | Accommodation turnover you report, and from which the municipality calculates the levy |

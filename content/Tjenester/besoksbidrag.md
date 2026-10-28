@@ -8,7 +8,7 @@ aliases: [/tjenester/besoksbidrag]
 
 **Rapportering av besøksbidrag for overnattingstilbydere og mellomledd.**
 
-KS Besøksbidrag er en nasjonal tjeneste som hjelper kommuner med å administrere besøksbidraget som er innført gjennom besøksbidragsloven. Denne siden er for deg som er overnattingstilbyder, bookingplattform eller annet mellomledd, og for leverandører som lager systemer for dem. Her finner du hvordan du finner ut hvilke kommuner og perioder som har besøksbidrag, og hvordan du rapporterer omsetning.
+KS Besøksbidrag er en nasjonal tjeneste som hjelper kommuner med å administrere besøksbidraget som er innført gjennom [besøksbidragsloven](https://lovdata.no/lov/2025-06-20-104). Denne siden er for deg som er overnattingstilbyder, bookingplattform eller annet mellomledd, og for leverandører som lager systemer for dem. Her finner du hvordan du finner ut hvilke kommuner og perioder som har besøksbidrag, og hvordan du rapporterer omsetning.
 
 Tjenesten tilbyr:
 
@@ -46,7 +46,7 @@ Register-API-et er åpent. Det krever ingen autentisering, integrasjon eller akt
 
 | Begrep | Beskrivelse |
 |--------|-------------|
-| Besøksbidrag | Bidrag kommuner kan kreve inn for overnattinger, hjemlet i besøksbidragsloven |
+| Besøksbidrag | Bidrag kommuner kan kreve inn for overnattinger, hjemlet i [besøksbidragsloven](https://lovdata.no/lov/2025-06-20-104) |
 | Periode | Tidsrom (start- og sluttdato, begge inkludert) der kommunen krever inn besøksbidrag. Kan gå over årsskiftet |
 | Forskriftsdato | Datoen kommunens forskrift om besøksbidrag trer i kraft. Kan avvike fra periodene det faktisk kreves inn bidrag |
 | Omsetning | Omsetning fra overnatting som du rapporterer, og som kommunen beregner besøksbidrag av |
