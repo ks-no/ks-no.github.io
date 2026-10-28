@@ -102,7 +102,7 @@ curl https://api.fiks.ks.no/besoksbidrag-register/api/v1/municipalities
 
 ### Rapporterings-API og skjema
 
-Ikke publisert ennå. Skjema (schema) kommer via Altinn, og API-spesifikasjon for automatisert rapportering lenkes her når den er klar.
+Ikke publisert ennå. Skjema kommer via Altinn, og API-spesifikasjon for automatisert rapportering lenkes her når den er klar.
 
 ---
 
