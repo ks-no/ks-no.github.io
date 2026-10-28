@@ -60,7 +60,6 @@ The Register API is open. It requires no authentication, integration or activati
 ### Service-specific rules
 
 - The register contains municipalities with at least one configured period.
-- The list is sorted by municipality number. Municipalities without a number come last, sorted by name.
 - Recurring periods are shown for the current calendar year and the following nine years.
 - The response is cached and may be up to 10 minutes old. Do not poll more often than necessary.
 - `regulationEffectiveDate` may be `null` if the value has not been set by the municipality.

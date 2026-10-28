@@ -62,7 +62,6 @@ Register-API-et er åpent. Det krever ingen autentisering, integrasjon eller akt
 ### Tjenestespesifikke regler
 
 - Registeret inneholder kommuner med minst én konfigurert periode.
-- Listen er sortert på kommunenummer. Kommuner uten kommunenummer ligger sist, sortert på navn.
 - Gjentakende perioder vises for inneværende kalenderår og de ni neste årene.
 - Svaret caches og kan være opptil 10 minutter gammelt. Ikke bruk registeret til å hente oppdateringer oftere enn nødvendig.
 - `regulationEffectiveDate` kan være `null` hvis verdien ikke er satt av kommunen.
