@@ -37,7 +37,8 @@ Tjenesten tilbyr:
 1. Bruk Register-API-et for å finne ut hvilke kommuner som har besøksbidrag, og hvilke perioder som gjelder. Du kan kalle det direkte.
 2. Rapportering: skjema og eventuelt rapporterings-API er ikke publisert ennå. Se [API-referanse](#api-referanse) for status.
 
-Register-API-et er åpent. Det krever ingen autentisering, integrasjon eller aktivering i [Fiks Konfigurasjon](https://forvaltning.fiks.ks.no/fiks-konfigurasjon/tjenester). Kommende rapporterings-API vil sannsynligvis kreve tilgang. Se [Integrasjoner]({{% ref "integrasjoner.md" %}}) for generell veiledning om autentisering på Fiks-plattformen, men vent med å bygge på dette til kravene er publisert.
+Register-API-et er åpent. Det krever ingen autentisering, integrasjon eller aktivering.
+
 
 ## Beskrivelse av tjenesten
 

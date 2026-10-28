@@ -36,7 +36,7 @@ The service offers:
 1. Use the Register API to find out which municipalities have visitor levy, and which periods apply. You can call it directly.
 2. Reporting: the form and any reporting API are not yet published. See [API reference](#api-reference) for status.
 
-The Register API is open. It requires no authentication, integration or activation in [Fiks Konfigurasjon](https://forvaltning.fiks.ks.no/fiks-konfigurasjon/tjenester). The upcoming reporting API will probably require access. See [Integrasjoner](/felles/integrasjoner/) (Norwegian) for general guidance on authentication on the Fiks platform, but wait for the requirements to be published before building on it.
+The Register API is open. It requires no authentication, integration or activation.
 
 ## Description of the service
 
