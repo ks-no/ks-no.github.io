@@ -111,7 +111,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Feilmelding"
+                  "$ref": "#/components/schemas/ErrorMessage"
                 }
               }
             }
@@ -167,7 +167,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Feilmelding"
+                  "$ref": "#/components/schemas/ErrorMessage"
                 }
               }
             }
@@ -177,7 +177,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Feilmelding"
+                  "$ref": "#/components/schemas/ErrorMessage"
                 }
               }
             }
@@ -517,7 +517,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Feilmelding"
+                  "$ref": "#/components/schemas/ErrorMessage"
                 }
               }
             }
@@ -574,7 +574,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Feilmelding"
+                  "$ref": "#/components/schemas/ErrorMessage"
                 }
               }
             }
@@ -584,7 +584,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Feilmelding"
+                  "$ref": "#/components/schemas/ErrorMessage"
                 }
               }
             }
@@ -594,7 +594,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Feilmelding"
+                  "$ref": "#/components/schemas/ErrorMessage"
                 }
               }
             }
@@ -604,7 +604,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Feilmelding"
+                  "$ref": "#/components/schemas/ErrorMessage"
                 }
               }
             }
@@ -900,7 +900,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Feilmelding"
+                  "$ref": "#/components/schemas/ErrorMessage"
                 }
               }
             }
@@ -959,7 +959,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Feilmelding"
+                  "$ref": "#/components/schemas/ErrorMessage"
                 }
               }
             }
@@ -969,7 +969,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Feilmelding"
+                  "$ref": "#/components/schemas/ErrorMessage"
                 }
               }
             }
@@ -979,7 +979,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Feilmelding"
+                  "$ref": "#/components/schemas/ErrorMessage"
                 }
               }
             }
@@ -1503,15 +1503,63 @@
           }
         }
       },
-      "Feilmelding": {
+      "ErrorMessage": {
         "type": "object",
+        "description": "Feilkroppen i tjenestens 4xx- og 5xx-svar. Samme felter som ErrorMessage i fiks-common.json, så feilkroppen er lik på tvers av fiks-tjenestene.",
+        "required": [
+          "status",
+          "error"
+        ],
         "properties": {
-          "melding": {
-            "type": "string"
+          "timestamp": {
+            "type": "integer",
+            "format": "int64",
+            "description": "Tidspunktet feilen oppsto, som millisekunder siden Unix-epoch."
           },
-          "tidspunkt": {
+          "status": {
+            "type": "integer",
+            "format": "int32",
+            "description": "HTTP-status, samme verdi som statuslinjen."
+          },
+          "error": {
             "type": "string",
-            "format": "date-time"
+            "description": "HTTP-statusens reason phrase, for eksempel Not Found."
+          },
+          "errorId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Korrelasjons-id for feilen. Oppgi den til support, som kan slå den opp i loggen."
+          },
+          "path": {
+            "type": "string",
+            "description": "Request-stien feilen oppsto på."
+          },
+          "originalPath": {
+            "type": "string",
+            "nullable": true,
+            "description": "Opprinnelig forespurt sti når forespørselen er videresendt internt. Vanligvis utelatt eller null."
+          },
+          "message": {
+            "type": "string",
+            "nullable": true,
+            "description": "Menneskelesbar melding. Bevisst generisk på 403 («Tilgang nektet») og 500 («En uventet feil oppstod»), fordi de underliggende meldingene kan inneholde orgnr og id-er. VALIDATION_ERROR har feltnivådetaljer på formen «felt: melding», adskilt med komma."
+          },
+          "errorCode": {
+            "type": "string",
+            "nullable": true,
+            "description": "Maskinlesbar årsak. Klienten skal rute på denne, ikke på message. Feil tjenesten lager selv har et symbolsk navn: FORBIDDEN, VALIDATION_ERROR, INTERNAL_SERVER_ERROR og REQUEST_ENTITY_TOO_LARGE. Feil fra unntakene i controller-exceptions har formen SPORSMAL-nnnn, for eksempel SPORSMAL-0001 (ugyldig forespørsel), SPORSMAL-0005 (ikke funnet) og SPORSMAL-0007 (konflikt). Utelatt eller null på feil uten egen kode. Verdimengden er ikke lukket, så den er ikke modellert som enum."
+          },
+          "errorDetails": {
+            "type": "object",
+            "nullable": true,
+            "additionalProperties": true,
+            "description": "Maskinlesbar tilleggsinformasjon om feilen. Strukturen avhenger av errorCode."
+          },
+          "errorJson": {
+            "type": "string",
+            "nullable": true,
+            "deprecated": true,
+            "description": "Utfaset. Bruk errorDetails."
           }
         }
       },
