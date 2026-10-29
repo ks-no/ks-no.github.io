@@ -12,9 +12,9 @@ aliases:
 
 Tilganger gis per protokollkonto: en konto kan gi et annet system tilgang til å sende meldinger til seg.
 
-{{% notice style="note" title="Det skal to til" %}}
+{{% callout style="note" title="Det skal to til" %}}
 Dette steget forutsetter at det finnes et **motpart-system** med en konto i samme protokoll. I eksempelet under skal *Mitt fagsystem* sende meldinger til *Mitt arkiv* — begge systemene må altså være opprettet på forhånd. Eier du bare det ene systemet, må eieren av det andre opprette sitt før dere kan gi tilgang. En mer detaljert oversikt over forvaltning og API finner du under [Tilgangsstyring]({{% ref "/Tjenester/fiksprotokoll/tilgangsstyring.md" %}}).
-{{% /notice %}}
+{{% /callout %}}
 
 ## Steg 1: Velg systemet som skal gi tilgang
 

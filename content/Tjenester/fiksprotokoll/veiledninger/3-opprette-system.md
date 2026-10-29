@@ -43,9 +43,9 @@ Trykk **Neste**.
 
 For å sende og motta meldinger gjennom Fiks Protokoll kreves en integrasjon. Integrasjonen autentiseres via Maskinporten, der et virksomhetssertifikat identifiserer eieren. Virksomhetssertifikatet hører til et organisasjonsnummer som må fylles ut her. I produksjon varierer det om dette er kundeorganisasjonens eller leverandørens virksomhetssertifikat — se [Før du starter]({{% ref "1-huskeliste.md" %}}).
 
-{{% notice style="warning" title="Riktig organisasjonsnummer" %}}
+{{% callout style="warning" title="Riktig organisasjonsnummer" %}}
 Du kan ikke bruke Fiks Protokoll i test uten et virksomhetssertifikat. Organisasjonsnummeret du oppgir her **må** være det samme som i virksomhetssertifikatet og i Maskinporten-klienten. Det er mulig å endre organisasjonsnummeret senere hvis du velger feil. Se [Maskinporten på siden om integrasjoner]({{% ref "Felles/integrasjoner.md#maskinporten" %}}).
-{{% /notice %}}
+{{% /callout %}}
 
 API-konfigurasjon er aktivert som standard, slik at leverandøren kan opprette kontoer og fullføre oppsettet via API i stedet for webgrensesnittet. Vi anbefaler denne fremgangsmåten — se [Konfigurere systemet via API]({{% ref "/Tjenester/fiksprotokoll/konfigurasjon-api.md" %}}).
 
@@ -76,9 +76,9 @@ Trykk **Gå til system**.
 
 Du har nå opprettet et protokollsystem. På landingssiden vises nøkkelinformasjon om systemet.
 
-{{% notice style="note" title="Synlighet" %}}
+{{% callout style="note" title="Synlighet" %}}
 Systemet er foreløpig kun tilgjengelig for andre systemer i din egen organisasjon. Dette kan endres under **Konfigurasjon**.
-{{% /notice %}}
+{{% /callout %}}
 
 ![System opprettet](/images/protokoll-brukerveiledning/2_opprettet.png "System opprettet")
 

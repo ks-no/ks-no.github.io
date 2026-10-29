@@ -5,7 +5,7 @@
 #   ./hugo.sh               - build site
 #   ./hugo.sh <any args>    - passed directly to hugo
 
-HUGO_VERSION="v0.161.1"
+HUGO_VERSION="v0.169.0"
 IMAGE="ghcr.io/gohugoio/hugo:${HUGO_VERSION}"
 
 # Use -it only if running in a terminal
