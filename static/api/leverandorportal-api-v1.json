@@ -154,7 +154,7 @@
             }
           },
           "400": {
-            "description": "Ugyldig kropp. errorCode VALIDATION_ERROR med feltnivådetaljer i message, eller BAD_REQUEST uten.",
+            "description": "Ugyldig kropp. errorCode VALIDATION_ERROR med feltnivådetaljer i message, BAD_REQUEST uten, eller UGYLDIG_JSON når JSON-kroppen er for dypt nøstet eller for lang.",
             "content": {
               "application/json": {
                 "schema": {
@@ -297,7 +297,7 @@
             }
           },
           "400": {
-            "description": "Ugyldig kropp — blankt eller for langt navn, for lang beskrivelse, ugyldig klassifiseringskode, webadresse eller kildeKode som ikke er http(s) eller er over 255 tegn, eller ingen kategori og ingen standardkategori. errorCode VALIDATION_ERROR med feltnivådetaljer i message, eller BAD_REQUEST uten.",
+            "description": "Ugyldig kropp — blankt eller for langt navn, for lang beskrivelse, ugyldig klassifiseringskode, webadresse eller kildeKode som ikke er http(s) eller er over 255 tegn, eller ingen kategori og ingen standardkategori. errorCode VALIDATION_ERROR med feltnivådetaljer i message, BAD_REQUEST uten, eller UGYLDIG_JSON når JSON-kroppen er for dypt nøstet eller for lang.",
             "content": {
               "application/json": {
                 "schema": {
@@ -446,7 +446,7 @@
             }
           },
           "400": {
-            "description": "Ugyldig kropp, samme regler som opprettProdukt. errorCode VALIDATION_ERROR eller BAD_REQUEST.",
+            "description": "Ugyldig kropp, samme regler som opprettProdukt. errorCode VALIDATION_ERROR, BAD_REQUEST eller UGYLDIG_JSON.",
             "content": {
               "application/json": {
                 "schema": {
@@ -538,7 +538,7 @@
             }
           },
           "400": {
-            "description": "Ugyldig kropp — type, navn og verdi er påkrevd. errorCode VALIDATION_ERROR med feltnivådetaljer i message, eller BAD_REQUEST uten.",
+            "description": "Ugyldig kropp — type, navn og verdi er påkrevd, og grensene i KontaktpunktInput gjelder. errorCode VALIDATION_ERROR med feltnivådetaljer i message, BAD_REQUEST uten, eller UGYLDIG_JSON når JSON-kroppen er for dypt nøstet eller for lang.",
             "content": {
               "application/json": {
                 "schema": {
@@ -551,17 +551,10 @@
             "$ref": "#/components/responses/IkkeAutentisert"
           },
           "403": {
-            "description": "Caller eier ikke produktet. errorCode FORBIDDEN.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorMessage"
-                }
-              }
-            }
+            "$ref": "#/components/responses/ManglerTilgang"
           },
           "404": {
-            "description": "Enten finnes ikke produktet (errorCode NOT_FOUND) eller organisasjonen er ikke registrert i Systemkatalogen (errorCode LEVERANDOER_IKKE_REGISTRERT). Produktoppslaget kjører først her, motsatt av oppdaterProdukt, så en uregistrert leverandør med ukjent produktId får NOT_FOUND.",
+            "description": "Enten er organisasjonen ikke registrert i Systemkatalogen (errorCode LEVERANDOER_IKKE_REGISTRERT), eller produktet finnes ikke eller tilhører en annen leverandør (samme errorCode NOT_FOUND for begge). Produktoppslaget kjører først her, motsatt av oppdaterProdukt, så en uregistrert leverandør med ukjent produktId får NOT_FOUND.",
             "content": {
               "application/json": {
                 "schema": {
@@ -726,7 +719,7 @@
             }
           },
           "400": {
-            "description": "Ugyldig kropp — type, navn og verdi er påkrevd. errorCode VALIDATION_ERROR med feltnivådetaljer i message, eller BAD_REQUEST uten.",
+            "description": "Ugyldig kropp — type, navn og verdi er påkrevd, og grensene i KontaktpunktInput gjelder. errorCode VALIDATION_ERROR med feltnivådetaljer i message, BAD_REQUEST uten, eller UGYLDIG_JSON når JSON-kroppen er for dypt nøstet eller for lang.",
             "content": {
               "application/json": {
                 "schema": {
@@ -857,7 +850,7 @@
           },
           "errorCode": {
             "type": "string",
-            "description": "Maskinlesbar årsak. Klienten skal rute på denne, ikke på message. Kjente verdier: UNAUTHORIZED, FORBIDDEN, BAD_REQUEST, VALIDATION_ERROR, NOT_FOUND, LEVERANDOER_IKKE_REGISTRERT, CONFLICT, REQUEST_ENTITY_TOO_LARGE, DOWNSTREAM_REQUEST_ERROR, DOWNSTREAM_ERROR. Uhåndterte JAX-RS-feil bruker statusnavnet, for eksempel NOT_IMPLEMENTED, så verdimengden er ikke lukket og er derfor ikke modellert som enum."
+            "description": "Maskinlesbar årsak. Klienten skal rute på denne, ikke på message. Kjente verdier: UNAUTHORIZED, FORBIDDEN, BAD_REQUEST, VALIDATION_ERROR, NOT_FOUND, LEVERANDOER_IKKE_REGISTRERT, CONFLICT, REQUEST_ENTITY_TOO_LARGE, UGYLDIG_JSON, DOWNSTREAM_REQUEST_ERROR, DOWNSTREAM_ERROR. Uhåndterte JAX-RS-feil bruker statusnavnet, for eksempel NOT_IMPLEMENTED, så verdimengden er ikke lukket og er derfor ikke modellert som enum."
           },
           "message": {
             "type": "string",
@@ -876,10 +869,9 @@
             "description": "Request-stien feilen oppsto på. Null i dagens driftsversjon; settes når feil-envelopen er rullet ut."
           },
           "timestamp": {
-            "type": "string",
-            "format": "date-time",
-            "nullable": true,
-            "description": "Tidspunktet feilen oppsto. Null i dagens driftsversjon; settes når feil-envelopen er rullet ut."
+            "type": "integer",
+            "format": "int64",
+            "description": "Tidspunktet feilen oppsto, som millisekunder siden Unix-epoch."
           }
         }
       },
@@ -1133,12 +1125,12 @@
           "navn": {
             "type": "string",
             "minLength": 1,
-            "maxLength": 320
+            "maxLength": 255
           },
           "verdi": {
             "type": "string",
             "minLength": 1,
-            "maxLength": 320
+            "maxLength": 255
           },
           "beskrivelse": {
             "type": "string",
@@ -1150,6 +1142,7 @@
             "items": {
               "type": "string"
             },
+            "maxItems": 20,
             "description": "Kontaktformål-koder. Valgfri; tom liste hvis utelatt."
           }
         }
