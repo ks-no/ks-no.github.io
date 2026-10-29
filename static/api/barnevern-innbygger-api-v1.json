@@ -36,8 +36,8 @@
         "tags": [
           "Barnevern-innbygger"
         ],
-        "description": "Opprett edialog-skjema",
-        "summary": "Opprett edialog-skjema",
+        "description": "Oppretter eller henter eDialog-skjema tilknyttet gitt `dokumentId` og `edialogType`. Hvis `edialogType` er `POST`, er dokumentet en mappe, og en journalpost for `SVAR`. Dersom et skjema allerede finnes, returneres det med responskode 200. Ellers opprettes et skjema, og det returneres med responskode 201.",
+        "summary": "Opprett nytt eller hent eksisterende eDialog-skjema",
         "operationId": "opprettEdialogskjema",
         "requestBody": {
           "content": {
@@ -51,7 +51,17 @@
         },
         "responses": {
           "200": {
-            "description": "Opprett mottaker",
+            "description": "Skjema hentet",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpprettEdialogSkjemaResponse"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Skjema opprettet",
             "content": {
               "application/json": {
                 "schema": {
@@ -67,7 +77,7 @@
             "$ref": "#/components/responses/Forbidden"
           },
           "404": {
-            "description": "Tilknytning for barnevernskontor og skjematype ikke funnet",
+            "description": "Kunne ikke finne tilknytning for barnevernskontor og skjematype, eller kunne ikke finne mappe",
             "content": {
               "application/json": {
                 "schema": {
@@ -87,7 +97,7 @@
         "tags": [
           "Barnevern-innbygger"
         ],
-        "description": "Oppdater edialog-skjema",
+        "description": "Oppdater eksisterende eDialog-skjema med gitt `skjemaId` for gitt `dokumentId` og `edialogType`. Oppdatering skjer ved at meldingsinnholdet blir erstattet med `melding`.",
         "summary": "Oppdater edialog-skjema",
         "operationId": "oppdaterEdialogskjema",
         "parameters": [
@@ -112,7 +122,7 @@
           "required": true
         },
         "responses": {
-          "201": {
+          "204": {
             "description": "Oppdatert skjema"
           },
           "400": {
@@ -121,43 +131,8 @@
           "403": {
             "$ref": "#/components/responses/Forbidden"
           },
-          "500": {
-            "$ref": "#/components/responses/InternalServerError"
-          }
-        }
-      }
-    },
-    "/minkommune-barnevern-innbygger/api/v1/edialog/{skjemaId}/slett": {
-      "delete": {
-        "tags": [
-          "Barnevern-innbygger"
-        ],
-        "description": "Slett edialog-skjema",
-        "summary": "Slett edialog-skjema",
-        "operationId": "slettEdialogSkjema",
-        "parameters": [
-          {
-            "in": "path",
-            "name": "skjemaId",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          }
-        ],
-        "responses": {
-          "204": {
-            "description": "Slettet skjema"
-          },
-          "400": {
-            "$ref": "#/components/responses/BadRequest"
-          },
-          "403": {
-            "$ref": "#/components/responses/Forbidden"
-          },
           "404": {
-            "description": "Skjema ikke funnet",
+            "description": "Kunne ikke finne mappe med gitt dokumentId eller skjema med gitt skjemaId",
             "content": {
               "application/json": {
                 "schema": {
@@ -165,6 +140,9 @@
                 }
               }
             }
+          },
+          "409": {
+            "$ref": "#/components/responses/AlleredeInnsendt"
           },
           "500": {
             "$ref": "#/components/responses/InternalServerError"
@@ -177,7 +155,7 @@
         "tags": [
           "Barnevern-innbygger"
         ],
-        "description": "Send edialog-skjema",
+        "description": "Send inn edialog-skjema med nåværende innhold. Skjemaet kan ikke endres eller hentes fram igjen med /edialog/{skjemaId} etter at det er sendt. Merk at dersom man forsøker å sende inn samme skjema flere ganger, vil man få en 201-respons, men skjemaet vil ikke bli sendt inn på nytt. Dette skiller seg fra måten oppdatering fungerer, og skyldes oppførsel fra eDialog selv.",
         "summary": "Send edialog-skjema",
         "operationId": "sendEdialogSkjema",
         "parameters": [
@@ -201,6 +179,16 @@
           "403": {
             "$ref": "#/components/responses/Forbidden"
           },
+          "404": {
+            "description": "Kunne ikke finne skjema med gitt skjemaId",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
           "500": {
             "$ref": "#/components/responses/InternalServerError"
           }
@@ -212,6 +200,16 @@
     "responses": {
       "BadRequest": {
         "description": "Ugyldig forespørsel",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorMessage"
+            }
+          }
+        }
+      },
+      "AlleredeInnsendt": {
+        "description": "Skjema er allerede sendt",
         "content": {
           "application/json": {
             "schema": {
@@ -245,25 +243,34 @@
       "EdialogType": {
         "type": "string",
         "description": "Type av edialog",
-        "enum": ["POST", "SVAR"]
+        "enum": [
+          "POST",
+          "SVAR"
+        ]
       },
       "OpprettEdialogSkjemaRequest": {
         "type": "object",
-        "required": ["edialogType", "dokumentId"],
+        "required": [
+          "edialogType",
+          "dokumentId"
+        ],
         "properties": {
           "edialogType": {
             "$ref": "#/components/schemas/EdialogType"
           },
           "dokumentId": {
             "type": "string",
-            "description": "Id til mappen meldingen skal legges i. Obligatorisk ved edialogType=POST"
+            "description": "ID til dokumentet som skjema opprettes for. Dersom edialogType er `POST`, er dokumentet en mappe, og en journalpost når edialogType er `SVAR`. Består av 3 UUID'er.",
+            "example": "b90e4efd-d8d7-4d16-a721-a9eaf50bf9bd_c1ca71e4-0acc-4145-906c-5677a5ed0fc3_8aea2c2d-a269-4d28-8cb6-66b05e4d032b"
           }
         },
         "description": "Request-objekt for å søke etter mottaker med organisasjonsnummer eller fødselsnummer. Må ha med enten organisasjonsnummer eller fødselsnummer. Bør ha med mottakerId for eksisterende mottaker for å hindre at DUPLIKAT-sjekken slår inn"
       },
       "OpprettEdialogSkjemaResponse": {
         "type": "object",
-        "required": ["skjemaId"],
+        "required": [
+          "skjemaId"
+        ],
         "properties": {
           "skjemaId": {
             "type": "string",
