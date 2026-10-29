@@ -2263,6 +2263,72 @@
           }
         }
       }
+    },
+    "/systemkatalog/root/api/v1/produkter/{produktId}/integrasjoner": {
+      "get": {
+        "tags": [
+          "Produkt"
+        ],
+        "summary": "Hente alle integrasjoner for et produkt",
+        "description": "Henter integrasjonene som er registrert på produktet i fiks-konfigurasjon. Resultatet kan filtreres på tjenestekode.",
+        "operationId": "hentIntegrasjonerForProdukt",
+        "parameters": [
+          {
+            "name": "produktId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "tjenestekode",
+            "in": "query",
+            "description": "Begrenser resultatet til integrasjoner med denne tjenestekoden",
+            "required": false,
+            "example": "PROTOKOLL",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Liste over integrasjoner",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/IntegrasjonResponse"
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Manglende tilgang",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Produktet finnes ikke i systemkatalogen, eller tjenestekoden er ukjent i fiks-konfigurasjon",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -3142,6 +3208,125 @@
           "kategoriKode",
           "produkter"
         ]
+      },
+      "TypeTilgang": {
+        "type": "string",
+        "description": "Hvilken type tilgang som er gitt på en tjeneste.",
+        "enum": [
+          "Administrator",
+          "Bruker",
+          "Integrasjon",
+          "Ukjent"
+        ],
+        "example": "Integrasjon"
+      },
+      "TilgangResponse": {
+        "type": "object",
+        "required": [
+          "tjenesteNavn",
+          "tjenesteKode",
+          "typeTilgang",
+          "sti"
+        ],
+        "properties": {
+          "tjenesteNavn": {
+            "type": "string",
+            "description": "Navn på tjenesten integrasjonen har tilgang til.",
+            "example": "TJENESTENAVN"
+          },
+          "tjenesteKode": {
+            "type": "string",
+            "description": "Tjenestekoden til tjenesten integrasjonen har tilgang til.",
+            "example": "TJENESTEN"
+          },
+          "typeTilgang": {
+            "$ref": "#/components/schemas/TypeTilgang"
+          },
+          "sti": {
+            "type": "string",
+            "description": "Sti til ressursen integrasjonen har tilgang til.",
+            "example": "Kommune -> Tjenesten -> App"
+          }
+        }
+      },
+      "IntegrasjonResponse": {
+        "type": "object",
+        "required": [
+          "id",
+          "produktId",
+          "autorisertOrgnr",
+          "navn",
+          "fiksOrgId",
+          "opprettet",
+          "forespurtePrivilegier"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "autorisertOrgnr": {
+            "type": "string"
+          },
+          "navn": {
+            "type": "string"
+          },
+          "beskrivelse": {
+            "type": "string"
+          },
+          "kode": {
+            "type": "string"
+          },
+          "produktId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "tjenesteKode": {
+            "type": "string"
+          },
+          "global": {
+            "type": "boolean"
+          },
+          "forespurtePrivilegier": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "fiksOrgId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "fiksOrgNavn": {
+            "type": "string"
+          },
+          "opprettet": {
+            "type": "string"
+          },
+          "utlopsdato": {
+            "type": "string",
+            "format": "date"
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "tilknyttedeRessurser": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          "tilganger": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TilgangResponse"
+            }
+          }
+        }
       }
     }
   }

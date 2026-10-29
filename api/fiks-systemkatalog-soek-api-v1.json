@@ -14,6 +14,9 @@
   "tags": [
     {
       "name": "ProduktSoek"
+    },
+    {
+      "name": "IntegrasjonSoek"
     }
   ],
   "paths": {
@@ -52,6 +55,105 @@
           }
         }
       }
+    },
+    "/systemkatalog/soek/api/v1/integrasjoner": {
+      "get": {
+        "tags": [
+          "IntegrasjonSoek"
+        ],
+        "parameters": [
+          {
+            "name": "leverandoerId",
+            "in": "query",
+            "description": "Henter integrasjoner for alle produktene til denne leverandøren. Kombinert med produktId begrenser den treffet til produktet, og gir tomt resultat hvis produktet tilhører en annen leverandør.",
+            "required": false,
+            "example": "b1f1e1f4-0f1a-4b4b-9f4a-1c2d3e4f5a6b",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "produktId",
+            "in": "query",
+            "description": "Henter integrasjoner for dette produktet. Kan kombineres med leverandoerId.",
+            "required": false,
+            "example": "6a7b8c9d-0e1f-4a2b-8c3d-4e5f6a7b8c9d",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "tjenestekode",
+            "in": "query",
+            "description": "Begrenser resultatet til integrasjoner med denne tjenestekoden",
+            "required": false,
+            "example": "PROTOKOLL",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "summary": "Søk på integrasjoner for en leverandør og/eller et produkt",
+        "description": "Søker opp integrasjoner knyttet til produktene til en leverandør, eller til et enkelt produkt. Minst én av leverandoerId og produktId må oppgis. Oppgis begge, hentes integrasjonene for produktet, og resultatet blir tomt hvis produktet tilhører en annen leverandør. Resultatet kan filtreres på tjenestekode.",
+        "operationId": "soekIntegrasjoner",
+        "responses": {
+          "200": {
+            "description": "Liste over integrasjoner",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/IntegrasjonResponse"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Verken leverandoerId eller produktId er oppgitt",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Manglende eller ugyldig integrasjonsautentisering",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Manglende tilgang",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Leverandør eller produkt ikke funnet",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -73,16 +175,16 @@
             "type": "string"
           },
           "postadresse": {
-            "$ref": "fiks-systemkatalog-felles-modeller-v1.json#/components/schemas/Adresse"
+            "$ref": "#/components/schemas/Adresse"
           },
           "forretningsadresse": {
-            "$ref": "fiks-systemkatalog-felles-modeller-v1.json#/components/schemas/Adresse"
+            "$ref": "#/components/schemas/Adresse"
           },
           "overordnetEnhet": {
             "type": "string"
           },
           "institusjonellSektorkode": {
-            "$ref": "fiks-systemkatalog-felles-modeller-v1.json#/components/schemas/InstitusjonellSektorkode"
+            "$ref": "#/components/schemas/InstitusjonellSektorkode"
           },
           "fiksOrgType": {
             "type": "string"
@@ -121,12 +223,12 @@
             "format": "uri"
           },
           "produktKategori": {
-            "$ref": "fiks-systemkatalog-felles-modeller-v1.json#/components/schemas/ProduktKategoriResponse"
+            "$ref": "#/components/schemas/ProduktKategoriResponse"
           },
           "kontaktpunkter": {
             "type": "array",
             "items": {
-              "$ref": "fiks-systemkatalog-felles-modeller-v1.json#/components/schemas/KontaktpunktResponse"
+              "$ref": "#/components/schemas/KontaktpunktResponse"
             }
           },
           "tjenesteReferanser": {
@@ -134,6 +236,343 @@
             "items": {
               "type": "string"
             }
+          }
+        }
+      },
+      "Adresse": {
+        "type": "object",
+        "properties": {
+          "adresse": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "postnummer": {
+            "type": "string"
+          },
+          "poststed": {
+            "type": "string"
+          },
+          "land": {
+            "type": "string"
+          },
+          "kommunenummer": {
+            "type": "string"
+          },
+          "adresselinje1": {
+            "type": "string"
+          },
+          "adresselinje2": {
+            "type": "string"
+          },
+          "adresselinje3": {
+            "type": "string"
+          }
+        }
+      },
+      "InstitusjonellSektorkode": {
+        "type": "object",
+        "properties": {
+          "kode": {
+            "type": "string"
+          },
+          "beskrivelse": {
+            "type": "string"
+          }
+        }
+      },
+      "ProduktKategoriResponse": {
+        "type": "object",
+        "required": [
+          "id",
+          "navn",
+          "beskrivelse"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "navn": {
+            "type": "string",
+            "maxLength": 255
+          },
+          "beskrivelse": {
+            "type": "string",
+            "maxLength": 1000
+          }
+        }
+      },
+      "KontaktpunktType": {
+        "type": "string",
+        "enum": [
+          "TELEFON",
+          "EPOST",
+          "ANNET"
+        ]
+      },
+      "KontaktpunktFormaalResponse": {
+        "type": "object",
+        "required": [
+          "id",
+          "kode",
+          "navn"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "kode": {
+            "type": "string",
+            "maxLength": 50
+          },
+          "navn": {
+            "type": "string",
+            "maxLength": 255
+          },
+          "beskrivelse": {
+            "type": "string",
+            "maxLength": 1000
+          }
+        }
+      },
+      "KontaktpunktResponse": {
+        "type": "object",
+        "required": [
+          "id",
+          "type",
+          "navn",
+          "beskrivelse",
+          "verdi",
+          "formaals"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "type": {
+            "$ref": "#/components/schemas/KontaktpunktType"
+          },
+          "navn": {
+            "type": "string"
+          },
+          "beskrivelse": {
+            "type": "string"
+          },
+          "verdi": {
+            "type": "string",
+            "description": "Kontaktverdi. For type TELEFON: 8 sifre eller +47 etterfulgt av 8 sifre. For type EPOST: gyldig e-postadresse."
+          },
+          "formaals": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/KontaktpunktFormaalResponse"
+            }
+          }
+        }
+      },
+      "TypeTilgang": {
+        "type": "string",
+        "description": "Hvilken type tilgang som er gitt på en tjeneste.",
+        "enum": [
+          "Administrator",
+          "Bruker",
+          "Integrasjon",
+          "Ukjent"
+        ],
+        "example": "Integrasjon"
+      },
+      "TilgangResponse": {
+        "type": "object",
+        "required": [
+          "tjenesteNavn",
+          "tjenesteKode",
+          "typeTilgang",
+          "sti"
+        ],
+        "properties": {
+          "tjenesteNavn": {
+            "type": "string",
+            "description": "Navn på tjenesten integrasjonen har tilgang til.",
+            "example": "TJENESTENAVN"
+          },
+          "tjenesteKode": {
+            "type": "string",
+            "description": "Tjenestekoden til tjenesten integrasjonen har tilgang til.",
+            "example": "TJENESTEN"
+          },
+          "typeTilgang": {
+            "$ref": "#/components/schemas/TypeTilgang"
+          },
+          "sti": {
+            "type": "string",
+            "description": "Sti til ressursen integrasjonen har tilgang til.",
+            "example": "Kommune -> Tjenesten -> App"
+          }
+        }
+      },
+      "IntegrasjonResponse": {
+        "type": "object",
+        "required": [
+          "id",
+          "produktId",
+          "autorisertOrgnr",
+          "navn",
+          "fiksOrgId",
+          "opprettet",
+          "forespurtePrivilegier"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "autorisertOrgnr": {
+            "type": "string"
+          },
+          "navn": {
+            "type": "string"
+          },
+          "beskrivelse": {
+            "type": "string"
+          },
+          "kode": {
+            "type": "string"
+          },
+          "produktId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "tjenesteKode": {
+            "type": "string"
+          },
+          "global": {
+            "type": "boolean"
+          },
+          "forespurtePrivilegier": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "fiksOrgId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "fiksOrgNavn": {
+            "type": "string"
+          },
+          "opprettet": {
+            "type": "string"
+          },
+          "utlopsdato": {
+            "type": "string",
+            "format": "date"
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "tilknyttedeRessurser": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          "tilganger": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TilgangResponse"
+            }
+          }
+        }
+      },
+      "ErrorMessage": {
+        "type": "object",
+        "description": "Feilmelding fra Fiks-plattformen",
+        "externalDocs": {
+          "description": "Beskrivelse av feilmeldinger",
+          "url": "https://ks-no.github.io/fiks-plattform/integrasjoner/#feilmeldinger"
+        },
+        "properties": {
+          "timestamp": {
+            "type": "integer",
+            "format": "int64",
+            "description": "Tidspunktet da feilen oppstod, angitt som antall millisekunder siden Unix-epoch.",
+            "example": 1767222000000
+          },
+          "status": {
+            "type": "integer",
+            "format": "int32",
+            "description": "HTTP-statuskode for feilen.",
+            "example": 400
+          },
+          "error": {
+            "type": "string",
+            "description": "Standardtekst for HTTP-statuskoden.",
+            "example": "Bad Request"
+          },
+          "errorId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Unik identifikator for feilen. Kan oppgis ved henvendelser for å spore feilen.",
+            "example": "15a92338-8d98-4b05-a8a6-a879913259fd"
+          },
+          "path": {
+            "type": "string",
+            "description": "Stien i forespørselen som førte til feilen.",
+            "example": "/tjeneste/api/v1/meldinger/40441e83-5120-445d-8c31-63ed2f4e8112"
+          },
+          "originalPath": {
+            "type": "string",
+            "nullable": true,
+            "description": "Opprinnelig forespurt sti før eventuell intern feilhåndtering. Feltet er vanligvis utelatt eller satt til null.",
+            "example": "/tjeneste/api/v1/meldinger/40441e83-5120-445d-8c31-63ed2f4e8112"
+          },
+          "message": {
+            "type": "string",
+            "description": "Menneskeliglesbar melding som beskriver feilen.",
+            "example": "Noe gikk galt"
+          },
+          "errorCode": {
+            "type": "string",
+            "pattern": "^[A-Z]{1,10}-[0-9]{4}$",
+            "description": "Maskinlesbar kode som identifiserer feiltypen. Koden følger formatet <applikasjonsprefiks>-<feilkode>.",
+            "example": "FIKS-0001"
+          },
+          "errorJson": {
+            "type": "string",
+            "deprecated": true,
+            "description": "Felt med ekstra feilinformasjon som en JSON-kodet streng. Strukturen avhenger av errorCode. Nye tjenester skal bruke errorDetails i stedet.",
+            "example": "{\"fiksOrgId\": \"1a5038d7-c1fe-4110-9310-fe3b096a0564\", \"externalReference\": \"a8793ee2-b7b2-40a5-9731-51e018244cf4\"}"
+          },
+          "errorDetails": {
+            "type": "object",
+            "additionalProperties": true,
+            "description": "Maskinlesbar tilleggsinformasjon om feilen. Strukturen avhenger av errorCode.",
+            "example": {
+              "fiksOrgId": "1a5038d7-c1fe-4110-9310-fe3b096a0564",
+              "externalReference": "a8793ee2-b7b2-40a5-9731-51e018244cf4"
+            }
+          }
+        },
+        "example": {
+          "timestamp": 1767222000000,
+          "status": 400,
+          "error": "Bad Request",
+          "errorId": "15a92338-8d98-4b05-a8a6-a879913259fd",
+          "path": "/tjeneste/api/v1/meldinger/40441e83-5120-445d-8c31-63ed2f4e8112",
+          "message": "Ugyldig forespørsel",
+          "errorCode": "FIKS-0001",
+          "errorDetails": {
+            "fiksOrgId": "1a5038d7-c1fe-4110-9310-fe3b096a0564",
+            "externalReference": "a8793ee2-b7b2-40a5-9731-51e018244cf4"
           }
         }
       }
