@@ -8,7 +8,7 @@ aliases: [/tjenester/besoksbidrag]
 
 **Rapportering av besøksbidrag for overnattingstilbydere og mellomledd.**
 
-KS Besøksbidrag er en nasjonal tjeneste som hjelper kommuner med å administrere besøksbidraget som er innført gjennom besøksbidragsloven. Denne siden er for deg som er overnattingstilbyder, bookingplattform eller annet mellomledd, og for leverandører som lager systemer for dem. Her finner du hvordan du finner ut hvilke kommuner og perioder som har besøksbidrag, og hvordan du rapporterer omsetning.
+KS Besøksbidrag er en nasjonal tjeneste som hjelper kommuner med å administrere besøksbidraget som er innført gjennom [besøksbidragsloven](https://lovdata.no/lov/2025-06-20-104). Denne siden er for deg som er overnattingstilbyder, bookingplattform eller annet mellomledd, og for leverandører som lager systemer for dem. Her finner du hvordan du finner ut hvilke kommuner og perioder som har besøksbidrag, og hvordan du rapporterer omsetning.
 
 Tjenesten tilbyr:
 
@@ -37,7 +37,8 @@ Tjenesten tilbyr:
 1. Bruk Register-API-et for å finne ut hvilke kommuner som har besøksbidrag, og hvilke perioder som gjelder. Du kan kalle det direkte.
 2. Rapportering: skjema og eventuelt rapporterings-API er ikke publisert ennå. Se [API-referanse](#api-referanse) for status.
 
-Register-API-et er åpent. Det krever ingen autentisering, integrasjon eller aktivering i [Fiks Konfigurasjon](https://forvaltning.fiks.ks.no/fiks-konfigurasjon/tjenester). Kommende rapporterings-API vil sannsynligvis kreve tilgang. Se [Integrasjoner]({{% ref "integrasjoner.md" %}}) for generell veiledning om autentisering på Fiks-plattformen, men vent med å bygge på dette til kravene er publisert.
+Register-API-et er åpent. Det krever ingen autentisering, integrasjon eller aktivering.
+
 
 ## Beskrivelse av tjenesten
 
@@ -45,7 +46,7 @@ Register-API-et er åpent. Det krever ingen autentisering, integrasjon eller akt
 
 | Begrep | Beskrivelse |
 |--------|-------------|
-| Besøksbidrag | Bidrag kommuner kan kreve inn for overnattinger, hjemlet i besøksbidragsloven |
+| Besøksbidrag | Bidrag kommuner kan kreve inn for overnattinger, hjemlet i [besøksbidragsloven](https://lovdata.no/lov/2025-06-20-104) |
 | Periode | Tidsrom (start- og sluttdato, begge inkludert) der kommunen krever inn besøksbidrag. Kan gå over årsskiftet |
 | Forskriftsdato | Datoen kommunens forskrift om besøksbidrag trer i kraft. Kan avvike fra periodene det faktisk kreves inn bidrag |
 | Omsetning | Omsetning fra overnatting som du rapporterer, og som kommunen beregner besøksbidrag av |
@@ -61,7 +62,6 @@ Register-API-et er åpent. Det krever ingen autentisering, integrasjon eller akt
 ### Tjenestespesifikke regler
 
 - Registeret inneholder kommuner med minst én konfigurert periode.
-- Listen er sortert på kommunenummer. Kommuner uten kommunenummer ligger sist, sortert på navn.
 - Gjentakende perioder vises for inneværende kalenderår og de ni neste årene.
 - Svaret caches og kan være opptil 10 minutter gammelt. Ikke bruk registeret til å hente oppdateringer oftere enn nødvendig.
 - `regulationEffectiveDate` kan være `null` hvis verdien ikke er satt av kommunen.
@@ -124,13 +124,5 @@ Feil returneres på [standard feilformat]({{% ref "integrasjoner.md" %}}#feilmel
 | [v1](https://editor-next.swagger.io/?url=https://developers.fiks.ks.no/api/besoksbidrag-register-api-v1.json) | ✅ Gjeldende | – | Første versjon av Register-API |
 
 ---
-
-## Relaterte tjenester
-
-- [Fiks register]({{% ref "register/_index.md" %}}) – øvrige registertjenester på Fiks-plattformen
-
----
-
-## Få hjelp
 
 {{< get-help email="fiks@ksdigital.no" support_page="/felles/support/" >}}
