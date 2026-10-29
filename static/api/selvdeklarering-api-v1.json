@@ -74,7 +74,7 @@
       },
       "put": {
         "summary": "Oppdater svar (kun UTKAST)",
-        "description": "Svarene valideres mot spørreskjemaet ved hver lagring: ukjent spørsmål eller svaralternativ, flere alternativer på et ENVALG-spørsmål, et eksklusivt alternativ sammen med andre, og egen tekst over 2000 tegn gir 400. Et ufullstendig svarsett er lov i et utkast; det avvises først ved lever-inn. 409 med errorCode UTKAST_ENDRET_AV_ANNEN når lagringsversjon er foreldet.",
+        "description": "Svarene valideres mot spørreskjemaet ved hver lagring: ukjent spørsmål eller svaralternativ, flere alternativer på et ENVALG-spørsmål, et eksklusivt alternativ sammen med andre, og egen tekst over 2000 tegn gir 400. Et svaralternativ som ikke finnes på spørsmålet, også et som hører til et annet spørsmål, gir errorCode UKJENT_SVARALTERNATIV. Et svar på et spørsmål som ikke er med i innleveringens pakker gir errorCode UKJENT_SPORSMAL. Et ufullstendig svarsett er lov i et utkast; det avvises først ved lever-inn. 409 med errorCode UTKAST_ENDRET_AV_ANNEN når lagringsversjon er foreldet.",
         "operationId": "oppdaterInnlevering",
         "tags": [
           "Innlevering"
@@ -954,6 +954,7 @@
     "/selvdeklarering/api/v1/systemkatalog/produkter/{id}": {
       "get": {
         "summary": "Hent produkt fra systemkatalogen",
+        "description": "Gir bare produkter som tilhører virksomheten i tokenet. Et ukjent produkt, et produkt som tilhører en annen virksomhet og kall fra en virksomhet som ikke er registrert i Systemkatalogen gir alle samme 404, slik at svaret ikke avslører om produktet finnes. Tokenet må ha verifisert Altinn-tilgang for nøyaktig én virksomhet, ellers 403.",
         "operationId": "hentProdukt",
         "tags": [
           "Systemkatalog"
@@ -1308,11 +1309,13 @@
         "properties": {
           "listeKilde": {
             "type": "string",
-            "description": "Kilde-liste, f.eks. \"HDIR_VELFERDSTEKNOLOGI\""
+            "description": "Kilde-liste, f.eks. \"HDIR_VELFERDSTEKNOLOGI\"",
+            "maxLength": 100
           },
           "kode": {
             "type": "string",
-            "description": "Klassifiseringskode, f.eks. \"DIGITALT_TILSYN\""
+            "description": "Klassifiseringskode, f.eks. \"DIGITALT_TILSYN\"",
+            "maxLength": 100
           }
         },
         "nullable": true
@@ -2140,6 +2143,7 @@
           "pakkeIder": {
             "type": "array",
             "minItems": 1,
+            "maxItems": 100,
             "items": {
               "type": "string",
               "format": "uuid"
@@ -2242,7 +2246,7 @@
     },
     "responses": {
       "ugyldigParameterverdi": {
-        "description": "Ugyldig input",
+        "description": "Ugyldig input. Har forespørselen en JSON-kropp som er for dypt nøstet eller for lang, er errorCode UGYLDIG_JSON.",
         "content": {
           "application/json": {
             "schema": {
@@ -2253,7 +2257,7 @@
               "error": "Bad Request",
               "message": "Kan ikke levere inn uten svar",
               "path": "/selvdeklarering/api/v1/innleveringer/3fa85f64-5717-4562-b3fc-2c963f66afa6/lever-inn",
-              "errorCode": "0001"
+              "errorCode": "BAD_REQUEST"
             }
           }
         }
@@ -2344,7 +2348,7 @@
         }
       },
       "ufullstendigBesvarelse": {
-        "description": "Innleveringen kan ikke leveres inn. errorCode UBESVARTE_SPORSMAL: ett eller flere spørsmål er ikke besvart. errorCode UFULLSTENDIG_KOMBINASJON: et kombinasjonsspørsmål mangler valg under alternativet som åpner det. Øvrig ugyldig input gir generell kode 0001.",
+        "description": "Innleveringen kan ikke leveres inn. errorCode UBESVARTE_SPORSMAL: ett eller flere spørsmål er ikke besvart. errorCode UFULLSTENDIG_KOMBINASJON: et kombinasjonsspørsmål mangler valg under alternativet som åpner det. errorCode DUPLIKAT_SVAR: samme spørsmål er besvart flere ganger. errorCode DUPLIKAT_SVARALTERNATIV: samme svaralternativ er valgt flere ganger på ett spørsmål. errorCode UKJENT_SVARALTERNATIV: et valgt svaralternativ finnes ikke på spørsmålet. errorCode UKJENT_SPORSMAL: et svar gjelder et spørsmål som ikke er med i innleveringens pakker. Øvrig ugyldig input gir errorCode BAD_REQUEST.",
         "content": {
           "application/json": {
             "schema": {
