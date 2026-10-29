@@ -274,6 +274,4 @@ Se også [samlet oversikt over klientbiblioteker]({{% ref "klientbiblioteker.md"
 
 ---
 
-## Få hjelp
-
 {{< get-help email="fiks@ksdigital.no" support_page="/felles/support/" >}}

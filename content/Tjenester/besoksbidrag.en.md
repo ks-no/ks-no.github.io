@@ -123,6 +123,4 @@ Errors are returned in the [standard error format](/felles/integrasjoner/#feilme
 
 ---
 
-## Get help
-
 {{< get-help email="fiks@ksdigital.no" support_page="/en/felles/support/" >}}
