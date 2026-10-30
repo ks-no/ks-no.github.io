@@ -26,7 +26,7 @@ Tjenestespesifikke forutsetninger:
 1. Dokumentlager administreres gjennom [Fiks Konfigurasjon](https://forvaltning.fiks.ks.no/fiks-konfigurasjon).
 2. Man oppretter én eller flere **Kontoer** i Fiks Konfigurasjon for å organisere sine dokumenter.
 3. Integrasjonen må gis rettighet til å laste opp/slette dokumenter på den/de spesifikke dokumentlager-kontoen(e). Dette gjøres i konfigurasjonsgrensesnittet på kontonivå.
-4. Følg standard [autentiseringsregler]({{% ref "sikkerhet.md" %}}) (Maskinporten) for å kalle API-et.
+4. Følg standard [autentiseringsregler]({{% ref "Felles/sikkerhet.md" %}}) (Maskinporten) for å kalle API-et.
 
 
 ## Beskrivelse av tjenesten
@@ -55,7 +55,7 @@ Alle operasjoner i dokumentlageret utføres på en konto, som er en ressurs som 
 Fiks-organisasjon. Hvordan disse organiseres er opp til hver organisasjon. Man kan ha én konto for alt, eller dele det 
 opp over mange, slik at man for eksempel kan gi forskjellige tilganger for hver konto.
 
-De vanlige [autentiseringsreglene]({{% ref "sikkerhet.md" %}}) for Fiks-plattformen gjelder for denne tjenesten, men i 
+De vanlige [autentiseringsreglene]({{% ref "Felles/sikkerhet.md" %}}) for Fiks-plattformen gjelder for denne tjenesten, men i 
 tillegg må integrasjonen ha rett til å laste opp dokumenter på en dokumentlager konto. Disse tilgangene tildeles som vanlig 
 gjennom konfigurasjonsgrensesnittet, men må gis på kontonivå. Dersom man har flere kontoer, men ønsker å gi en integrasjon 
 tilgang til flere av disse må tilgang gis på hver enkelt konto.

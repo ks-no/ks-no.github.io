@@ -1,10 +1,11 @@
 ---
-title: SvarUt og SvarInn Testmiljø
+title: Testmiljø
+description: "Testmiljø, testbrukere og oppsett for test av SvarUt og SvarInn."
 date: 2025-10-03
-hidden: false
+weight: 50
 ---
 
-For å lage integrasjoner mot SvarUt kan en teste mot vårt testmiljø. Testmiljøet har ingen garantier for oppetid, men vi prøver at det er tilgjengelig
+For å lage integrasjoner mot SvarUt kan du teste mot testmiljøet vårt. Hvordan du får tilgang til API-ene i test, står på [Kom i gang](/tjenester/svarut/kom-i-gang/). Testmiljøet har ingen garantier for oppetid, men vi prøver at det er tilgjengelig
 hele tiden. Testmiljøet inneholder de siste endringene også endringer som ikke er produksjonsatt.
 
 Testmiljøet er tilgjengelig på https://test.svarut.ks.no/
