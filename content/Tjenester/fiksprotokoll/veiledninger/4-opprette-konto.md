@@ -54,9 +54,9 @@ Når du har valgt part, vises hvilke meldinger kontoen kan sende og motta, og hv
 
 Meldinger som sendes over Fiks IO krypteres med et offentlig/privat nøkkelpar. Den offentlige nøkkelen må være et X.509-sertifikat i `.pem`-format. Her laster du opp den offentlige nøkkelen — den private legger du senere inn i Fiks IO-klienten.
 
-{{% notice style="warning" title="Ikke samme som virksomhetssertifikatet" %}}
+{{% callout style="warning" title="Ikke samme som virksomhetssertifikatet" %}}
 Du kan ikke opprette en konto uten offentlig nøkkel. Dette nøkkelparet er **ikke** det samme som virksomhetssertifikatet som ble brukt da systemet ble opprettet. Du oppretter normalt et eget nøkkelpar per konto. I test kan samme nøkkelpar gjenbrukes på flere kontoer.
-{{% /notice %}}
+{{% /callout %}}
 
 ![Last opp offentlig nøkkel](/images/protokoll-brukerveiledning/3_opprett_del4.png "Last opp nøkkel")
 
@@ -74,9 +74,9 @@ For å begynne å sende meldinger må systemet ditt få tilgang til en konto i e
 
 ![Konto opprettet](/images/protokoll-brukerveiledning/3_opprettet_ferdig.png "Konto opprettet")
 
-{{% notice style="note" title="«Konto uten kobling»-advarsel" %}}
+{{% callout style="note" title="«Konto uten kobling»-advarsel" %}}
 Etter at kontoen er opprettet ser du en advarsel om at det finnes kontoer uten kobling. Dette betyr at den nye kontoen ennå ikke har et fagsystem (en klient) som lytter på meldinger — helt naturlig rett etter opprettelse. Advarselen forsvinner når klienten er [koblet til]({{% ref "8-koble-til-klienten.md" %}}). Den dukker opp igjen hvis klienten mister koblingen. Se [Feilsøking]({{% ref "/Tjenester/fiksprotokoll/feilsoking.md" %}}).
-{{% /notice %}}
+{{% /callout %}}
 
 ![Konto opprettet – advarsel](/images/protokoll-brukerveiledning/3_opprettet_ferdig_advarsel.png "Konto opprettet - advarsel")
 
