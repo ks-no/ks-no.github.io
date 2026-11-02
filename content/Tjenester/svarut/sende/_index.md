@@ -18,22 +18,24 @@ Alle kall bruker Maskinporten og Fiks-integrasjon, som beskrevet på [Integrasjo
 
 ## Sende en forsendelse
 
-Det er ett endepunkt per type mottaker. Velg det som passer mottakeren, så får du bare de feltene som gjelder.
+Det er ett endepunkt per type mottaker. Disse har forskjellige krav til hvilken informasjon som må sendes med.
 
-| Mottaker | Endepunkt | Krever |
-|---|---|---|
-| Privatperson | `POST /v3/kontoer/{kontoId}/forsendelser/person` | Gyldig fødsels- eller d-nummer |
-| Virksomhet | `POST /v3/kontoer/{kontoId}/forsendelser/organisasjon` | Organisasjonsnummer som finnes i Enhetsregisteret |
-| Helseaktør i Norsk Helsenett | `POST /v3/kontoer/{kontoId}/forsendelser/nhn` | Fødselsnummer til pasient med fastlege, eller HER-id. Se [Norsk Helsenett](/tjenester/svarut/sende/nhn/) |
-| Rett til print | `POST /v3/kontoer/{kontoId}/forsendelser/print` | Postadresse |
+| Mottaker                     | Endepunkt                                              | Krever                                                                                                   |
+|------------------------------|--------------------------------------------------------|----------------------------------------------------------------------------------------------------------|
+| Privatperson                 | `POST /v3/kontoer/{kontoId}/forsendelser/person`       | Gyldig fødsels- eller d-nummer                                                                           |
+| Virksomhet                   | `POST /v3/kontoer/{kontoId}/forsendelser/organisasjon` | Organisasjonsnummer som finnes i Enhetsregisteret                                                        |
+| Helseaktør i Norsk Helsenett | `POST /v3/kontoer/{kontoId}/forsendelser/nhn`          | Fødselsnummer til pasient med fastlege, eller HER-id. Se [Norsk Helsenett](/tjenester/svarut/sende/nhn/) |
+| Rett til print               | `POST /v3/kontoer/{kontoId}/forsendelser/print`        | Postadresse                                                                                              |
 
 Spesifikasjon: [forsendelse-send-api-v3.json](https://developers.fiks.ks.no/api/forsendelse-send-api-v3.json) ([åpne i Swagger Editor](https://editor-next.swagger.io/?url=https://developers.fiks.ks.no/api/forsendelse-send-api-v3.json))
 
-Forsendelsen sendes som en multipart-request med metadata og dokumenter. Se [Dokumenter og vedlegg](/tjenester/svarut/sende/dokumenter/) for format, størrelser og kryptering.
+Forsendelsen sendes som en multipart-request med metadata og dokumenter. Se [Dokumenter og vedlegg](/tjenester/svarut/sende/dokumenter/) for format, størrelsesbegrensninger og kryptering.
 
-Svaret inneholder `id` til forsendelsen. Ta vare på den. Du trenger den for å hente status og hendelser.
+Svaret inneholder `id` til forsendelsen. Denne kan senere benyttes til sjekking av status, henting av hendelser, osv.
 
-Bruk `/print` bare når mottakeren ikke kan nås digitalt. Papirpost koster mer og er dårligere for miljøet. Sender du til person eller virksomhet, går SvarUt uansett til print hvis det ikke finnes en digital kanal. Se [Kanalvalg](/tjenester/svarut/sende/kanalvalg/).
+Bruk `/print` bare når mottakeren ikke kan nås digitalt. Papirpost koster mer og er dårligere for miljøet. 
+Sender du til person eller virksomhet, går forsendelsen uansett til print hvis det ikke finnes en digital kanal, 
+gitt at man ikke har bedt om kun digital levering. Se [Kanalvalg](/tjenester/svarut/sende/kanalvalg/).
 
 Noen felter er nyttige å kjenne til:
 
@@ -61,7 +63,7 @@ Noen felter er nyttige å kjenne til:
 
 ### Status
 
-Se [Status](/tjenester/svarut/sende/status/) for hva hver status betyr og hvilke som er endelige.
+Utfyllende informasjon om hvilke statuser som eksisterer og hva de betyr finnes [her](/tjenester/svarut/sende/status/).
 
 ## Andre endepunkter
 
@@ -74,7 +76,8 @@ Se [Status](/tjenester/svarut/sende/status/) for hva hver status betyr og hvilke
 
 ## Feilmeldinger
 
-Feil returneres som JSON med `errorCode`, `errorId` og `message`. Ta med `errorId` når du kontakter brukerstøtte. Generell beskrivelse finnes under [Feilmeldinger](/felles/integrasjoner/#feilmeldinger).
+Feilmeldinger returneres som JSON med formatet beskrevet under [Feilmeldinger](/felles/integrasjoner/#feilmeldinger).
+Ved behov for å kontakte brukerstøtte, inkluder `errorId` for å gjøre feilsøking enklere.
 
 ## Klientbibliotek
 

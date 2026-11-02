@@ -39,7 +39,8 @@ Forsendelser til `/forsendelser/print` går rett til printleverandøren. Er kont
 
 ## Når forsendelsen ikke skal printes
 
-Med `kunDigitalLevering: true` blir forsendelsen aldri printet. Kan den ikke leveres digitalt, ender den med status `IKKE_LEVERT`. Avsender får ingen annen beskjed, så følg med på status. Dette er også en setting som bør kun brukes dersom det ikke er viktig at mottaker mottar brevet, for eksempel informasjonsbrev som skal sendes ut. 
+Med `kunDigitalLevering: true` blir forsendelsen aldri printet. Kan den ikke leveres digitalt, ender den med status `IKKE_LEVERT`. Avsender får ingen annen beskjed, så følg med på status. 
+Dette er en innstilling som bør kun brukes dersom det ikke er viktig at mottaker mottar brevet, for eksempel informasjonsbrev som skal sendes ut. 
 
 ## Se hva som skjedde
 

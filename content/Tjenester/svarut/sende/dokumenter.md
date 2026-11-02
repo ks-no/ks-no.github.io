@@ -6,7 +6,8 @@ weight: 10
 aliases: [/tjenester/svarut/sendmeddokumenter/, /tjenester/svarut/send-dokumenter, /tjenester/svarut/api/sendmeddokumenter, /svarut/api/sendmeddokumenter]
 ---
 
-En forsendelse sendes som én multipart-request (`multipart/form-data`). Første del er metadata for forsendelsen. Resten er dokumentene.
+En forsendelse sendes som en multipart-request (`multipart/form-data`). 
+Første part skal inneholde JSON med metadata om forsendelsen, og alle påfølgende parts skal inneholde dokumentene som skal sendes.
 
 ## Oppbygging av requesten
 
@@ -14,9 +15,7 @@ En forsendelse sendes som én multipart-request (`multipart/form-data`). Første
 - Hver av de neste delene er ett dokument, med `Content-Type: application/octet-stream`.
 - Dokumentene må komme i samme rekkefølge som i `dokumenter` i metadata.
 - `filename` på hver del må være lik `filnavn` i metadata. `name` på dokumentdelene blir ikke brukt.
-- Filnavn må være unike i forsendelsen og kan ikke inneholde `* : " \ / < > | ?`.
-
-Til Norsk Helsenett er det en begrensing på at det kun kan sendes PDF, og total filstørrelse må også være under 18 MB. Se [Norsk Helsenett](/tjenester/svarut/sende/nhn/).
+- Filnavn må være unike i forsendelsen og kan ikke inneholde noen av følgende tegn: `* : " \ / < > | ?`.
 
 ## Eksempel
 
@@ -68,9 +67,10 @@ Content-Type: application/octet-stream
 --grense--
 ```
 
-Svaret er `{"id": "<forsendelse-id>"}`.
+Svaret man får tilbake vil være på formatet `{"id": "<forsendelse-id>"}`.
 
-Om forsendelsen skal kun leveres digitalt, trenger man ikke å ha med adressen. Om det derimot ønskes at forsendelsen skal printes og sendes via Posten, må adressen vere med. 
+Om forsendelsen markeres med kun digital levering trenger man ikke å ha med adressen, merk at dette betyr at vi ikke kan garantere leveranse.
+Om det derimot ønskes at forsendelsen skal printes og sendes via Posten, må postadresse inkluderes. 
 
 ## Filtyper
 
@@ -85,17 +85,18 @@ Vil du ha med giroark, setter du `giroarkSide` på dokumentet. Siden printes på
 
 ## Størrelser og grenser
 
-| Grense | Gjelder |
-|---|---|
-| 350 MB totalt | Forsendelser som kan gå til print må ha en total filstørrelse på 350 MB. PDF-ene slås sammen til én fil når de sendes til printleverandøren. Er forsendelsen større, blir den avvist. |
-| Ingen fast grense | Forsendelser med `kunDigitalLevering: true` kan sende dokumenter med hvilken som helst størrelse. Alt må være overført innen tidsgrensen oppgitt under. |
+| Grense                   | Gjelder                                                                                                                                                                                                  |
+|--------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| 350 MB totalt            | Forsendelser som kan gå til print må ha en total filstørrelse på maksimalt 350 MB. PDF-ene slås sammen til én fil når de sendes til printleverandøren. Er forsendelsen større, blir den avvist.          |
+| Ingen fast grense        | Forsendelser med `kunDigitalLevering: true` kan sende dokumenter med hvilken som helst størrelse. Alt må være overført innen tidsgrensen oppgitt under.                                                  |
 | 50 MiB eller 200 vedlegg | Over denne grensen vil brev sendt til digital postkasse få en lenke til dokumentene i stedet for selve filene. Se [Store forsendelser til digital postkasse](#store-forsendelser-til-digital-postkasse). |
-| 18 MB | Forsendelser til Norsk Helsenett kan ha en total filstørrelse på maks 18 MB. Det er kun PDF som er godtatt |
-| 10 MiB | Dokument som skal signeres. Det er kun 1 dokument som kan markeres for signering pr forsendelse. |
+| 18 MB                    | Forsendelser til Norsk Helsenett kan ha en total filstørrelse på maks 18 MB. Det er kun PDF som er godtatt                                                                                               |
+| 10 MiB                   | Dokument som skal signeres. Det er kun 1 dokument som kan markeres for signering pr forsendelse.                                                                                                         |
 
 ### Tidsavbrudd
 
-SvarUt bryter innsendingen etter 16 minutter. Sett lesetimeout i klienten til minst 16 minutter. Bryter klienten først, kan forsendelsen være mottatt uten at du får id-en tilbake.
+SvarUt avbryter innsendingen dersom det går mer enn 16 minutter. Sett lesetimeout i klienten til minst 16 minutter. 
+Avbryter klienten først, kan forsendelsen være mottatt uten at du får id-en tilbake.
 
 ### Store forsendelser til digital postkasse
 
@@ -103,11 +104,12 @@ Er forsendelsen over 50 MiB eller den har mer enn 200 vedlegg, sender ikke SvarU
 
 ## Kryptering
 
-Dere kan kryptere dokumentene før de sendes. Da må `kryptert` være `true`, og filene må være kryptert med CMS og den offentlige nøkkelen til SvarUt. Med `sikkerhetsniva: HOYESTE` må dokumentene være kryptert. Se [Sikkerhet](/tjenester/svarut/sikkerhet/).
+Dere kan kryptere dokumentene før de sendes. Da må `kryptert` være `true`, og filene må være kryptert med CMS og den offentlige nøkkelen til SvarUt. 
+Med `sikkerhetsniva: HOYESTE` må dokumentene krypteres før innsending. For mer informasjon, se [Sikkerhet](/tjenester/svarut/sikkerhet/).
 
 Offentlig nøkkel for SvarUt:
 
 - Test: <https://test.svarut.ks.no/forsendelse/publickey/hent>
 - Produksjon: <https://svarut.ks.no/forsendelse/publickey/hent>
 
-Nøkkelen lastes ned i nettleseren, og du må logge inn med ID-porten.
+Nøkkelen ligger bak ID-porten innlogging.
