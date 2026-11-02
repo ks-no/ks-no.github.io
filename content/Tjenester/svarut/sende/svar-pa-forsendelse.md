@@ -1,7 +1,7 @@
 ---
 title: Svar på forsendelse
 description: "La mottakeren svare digitalt på en forsendelse via eDialog."
-date: 2023-06-29
+date: 2026-11-01
 weight: 60
 aliases: [/tjenester/svarut/edialog/, /svarut/edialog]
 ---

@@ -15,8 +15,8 @@ Et kall til SvarUt må ha tre ting:
 | Hva | Hvor det kommer fra |
 |---|---|
 | Access token fra Maskinporten, med scopet `ks:fiks` | Leverandørens Maskinporten-klient |
-| Integrasjons-id og passord | Fiks-integrasjonen kommunen oppretter i Fiks forvaltning |
-| Tilgang til SvarUt-kontoen | Kommunen gir integrasjonen tilgang i Fiks forvaltning |
+| Integrasjons-id og passord | Kommunen oppretter en Fiks-integrasjon via Fiks konfigurasjon |
+| Tilgang til SvarUt-kontoen | Kommunen gir integrasjonen tilgang i Fiks konfigurasjon |
 
 Dette er felles for hele Fiks-plattformen og er forklart nøye på [Integrasjoner](/felles/integrasjoner/). Les den først.
 
@@ -24,12 +24,12 @@ Dette er felles for hele Fiks-plattformen og er forklart nøye på [Integrasjone
 
 1. **Avtale.** Kommunen eller virksomheten har avtale med KS Digital om SvarUt.
 2. **Maskinporten.** Leverandøren har en Maskinporten-klient med scopet `ks:fiks`, én for test og én for produksjon. Se [Maskinporten](/felles/integrasjoner/#maskinporten).
-3. **Fiks-integrasjon.** Kommunen oppretter en integrasjon i Fiks forvaltning med leverandørens organisasjonsnummer som autorisert organisasjon.
+3. **Fiks-integrasjon.** Kommunen oppretter en integrasjon i Fiks konfigurasjon med leverandørens organisasjonsnummer som autorisert organisasjon. Dette organisasjonsnummeret må være det samme som er registrert i Maskinporten-klienten. Se [Fiks-integrasjon](/felles/integrasjoner/#fiks-integrasjon).
 4. **Tilgang til kontoen.** Kommunen gir integrasjonen tilgang til å sende på SvarUt-kontoen (avsenderen) som skal brukes. Den samme tilgangen gjelder for alle SvarUt-API-ene: sende, status, hendelser, lest, slett, metadata og ekstern referanse.
-5. **Konto-id.** Finn id-en til SvarUt-kontoen i Fiks forvaltning. Den er en UUID og står i URL-en til alle kall: `/api/v3/kontoer/{kontoId}/...`.
-6. **Test.** Send en forsendelse i [testmiljøet](/tjenester/svarut/testmiljo/), og sjekk at den får status `AKSEPTERT` og deretter går videre.
+5. **Konto-id.** Finn id-en til SvarUt-kontoen i Fiks konfigurasjon. Dette er en UUID og skal stå i URL-en til alle kall: `/api/v3/kontoer/{kontoId}/...`.
+6. **Test.** Send en forsendelse i [testmiljøet](/tjenester/svarut/testmiljo/), og sjekk at den får status `AKSEPTERT` og deretter blir rutet videre.
 
-Bruker dere SOAP eller REST v1 i dag, kan dere hoppe over steg 3–5. [Migreringsendepunktet](/tjenester/svarut/migrering/) oppretter integrasjonen og gir den tilgang for dere.
+Bruker dere SOAP eller REST v1 i dag, og har allerede tilgang til en SvarUt-konto, kan dere hoppe over steg 3–5. [Migreringsendepunktet](/tjenester/svarut/migrering/) oppretter integrasjonen og gir den tilgang for dere.
 
 ## Første kall
 
@@ -51,4 +51,5 @@ Så kan du [sende en forsendelse](/tjenester/svarut/sende/).
 
 For Java og andre JVM-språk finnes [fiks-svarut-klient](https://github.com/ks-no/fiks-svarut-klient), som KS Digital selv bruker. Den er bygget på OpenAPI-spesifikasjonene og ligger på [Maven Central](https://central.sonatype.com/artifact/no.ks.fiks/fiks-svarut-klient).
 
-Lager du din egen klient, kan du generere den fra [spesifikasjonene](/tjenester/svarut/api-versjoner/). Unntaket er sende-API-et, som bruker multipart-request. Generatorer får ofte dette feil, så skriv den delen selv. Se [Dokumenter og vedlegg](/tjenester/svarut/sende/dokumenter/).
+Lager du din egen klient, kan du generere den fra [spesifikasjonene](/tjenester/svarut/api-versjoner/). Unntaket er sende-API-et, som bruker multipart-request. 
+Generatorer får ofte dette feil, så vi anbefaler at dere skriver denne delen selv. Se [Dokumenter og vedlegg](/tjenester/svarut/sende/dokumenter/).

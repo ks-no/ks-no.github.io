@@ -18,7 +18,7 @@ Avsender må også finnes i adresseregisteret til NHN og ha en HER-id.
 2. KS Digital får tilgang til å sende på vegne av HER-id-en.
 3. HER-id-en legges inn på SvarUt-kontoen.
 
-Har SvarUt-kontoen ingen gyldig HER-id, blir alle forsendelser til NHN avvist.
+Har SvarUt-kontoen ingen gyldig HER-id, blir alle forsendelser sendt via denne kontoen til NHN avvist.
 
 ## Sende
 
@@ -40,11 +40,11 @@ Påkrevde felter:
 | `pasient` | `fodselsnummer`, `fornavn`, `etternavn` og eventuelt `mellomnavn` |
 | `avsenderKontakt` | `fornavn`, `etternavn` og `telefonnummer` til kontaktpersonen hos avsender |
 
-Forsendelsen kan ha nøyaktig ett dokument. Det må være PDF og kan ikke være større enn 18 MB. Dokumentdelen i requesten må ha `Content-Type: application/pdf`, og filnavnet må slutte på `.pdf`. Det er annerledes enn for andre mottakere, der dokumentdelen har `application/octet-stream`. Se [Dokumenter og vedlegg](/tjenester/svarut/sende/dokumenter/) for hvordan requesten bygges opp.
+Forsendelsen kan ha flere dokumenter, men de må være PDF og total filstørrelse for alle dokumentene kan ikke være større enn 18 MB. Dokumentdelen i requesten må ha `Content-Type: application/pdf`, og filnavnet må slutte på `.pdf`. Dette er annerledes enn for andre mottakere, der dokumentdelen har `application/octet-stream`. Se [Dokumenter og vedlegg](/tjenester/svarut/sende/dokumenter/) for hvordan requesten bygges opp.
 
 ## Status
 
-Forsendelsen får status `SENDT_NHN_MOTTAKER` når den er sendt, og `LEVERT_NHN_MOTTAKER` når mottakeren har bekreftet. Feiler leveringen, går den til print. Se [Kanalvalg](/tjenester/svarut/sende/kanalvalg/#norsk-helsenett).
+Forsendelsen får status `SENDT_NHN_MOTTAKER` når den er sendt, og `LEVERT_NHN_MOTTAKER` når EPJ-systemet til mottakeren har bekreftet å ha mottatt forsendelsen. Feiler leveringen, går den til print. Se [Kanalvalg](/tjenester/svarut/sende/kanalvalg/#norsk-helsenett).
 
 ## Svar fra helseaktører
 

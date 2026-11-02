@@ -9,7 +9,8 @@ aliases: [/tjenester/svarut/api/api-versjoner, /svarut/api/api-versjoner]
 
 ## REST API-er for sending
 
-Ny funksjonalitet kommer bare i REST-API-ene. Endres JSON-strukturen, kommer det en ny versjon av API-et. Klienter må tåle at det kommer nye felt i JSON, og at felt som ikke er påkrevd, kan mangle.
+Ny funksjonalitet kommer bare i REST-API-ene. Endres JSON-strukturen, kommer det en ny versjon av API-et. 
+Det kan komme nye felter i Json-strukturen, så dette er det viktig å ta hensyn til når dere konfigurerer opp egne klienter.
 
 Bruk siste versjon av hvert API. Se [Sende post](/tjenester/svarut/sende/) for hvordan de brukes.
 

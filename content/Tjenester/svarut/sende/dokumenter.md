@@ -16,7 +16,7 @@ En forsendelse sendes som én multipart-request (`multipart/form-data`). Første
 - `filename` på hver del må være lik `filnavn` i metadata. `name` på dokumentdelene blir ikke brukt.
 - Filnavn må være unike i forsendelsen og kan ikke inneholde `* : " \ / < > | ?`.
 
-Til Norsk Helsenett sendes nøyaktig ett dokument, og dokumentdelen må ha `Content-Type: application/pdf`. Se [Norsk Helsenett](/tjenester/svarut/sende/nhn/).
+Til Norsk Helsenett er det en begrensing på at det kun kan sendes PDF, og total filstørrelse må også være under 18 MB. Se [Norsk Helsenett](/tjenester/svarut/sende/nhn/).
 
 ## Eksempel
 
@@ -70,16 +70,16 @@ Content-Type: application/octet-stream
 
 Svaret er `{"id": "<forsendelse-id>"}`.
 
-Ta med adressen til mottakeren selv om du sender digitalt. Uten adresse kan ikke SvarUt sende på papir hvis digital levering feiler.
+Om forsendelsen skal kun leveres digitalt, trenger man ikke å ha med adressen. Om det derimot ønskes at forsendelsen skal printes og sendes via Posten, må adressen vere med. 
 
 ## Filtyper
 
 Bare PDF kan printes. Sender du andre filtyper, for eksempel XML, lyd eller video, må du gjøre ett av disse:
 
 - sette `skalEkskluderesFraUtskrift: true` på hver fil som ikke er PDF, eller
-- sette `kunDigitalLevering: true` på forsendelsen.
+- sette `kunDigitalLevering: true` på forsendelsen. Dette medfører at forsendelsen ikke videresendes til print, og bør kun brukes når det er helt sikkert at mottakeren kan motta forsendelsen digitalt eller at det ikke er nødvendig å ettersende brevet via Post. 
 
-PDF-er kan ikke være passordbeskyttet. Det er en vanlig grunn til at forsendelser blir avvist.
+PDF-er kan ikke være passordbeskyttet om forsendelsene skal gå til print. Om SvarUt ser at filene er passordbeskyttet, vil forsendelsen bli avvist.
 
 Vil du ha med giroark, setter du `giroarkSide` på dokumentet. Siden printes på gult giroark. Første side er 1.
 
@@ -87,19 +87,19 @@ Vil du ha med giroark, setter du `giroarkSide` på dokumentet. Siden printes på
 
 | Grense | Gjelder |
 |---|---|
-| 350 MB totalt | Forsendelser som kan gå til print. PDF-ene slås sammen til én fil hos printleverandøren. Er forsendelsen større, blir den avvist. |
-| Ingen fast grense | Forsendelser med `kunDigitalLevering: true`. Alt må være overført innen tidsgrensen under. |
-| 50 MiB eller 200 vedlegg | Over dette får digital postkasse en lenke til dokumentene i stedet for selve filene. Se [Store forsendelser til digital postkasse](#store-forsendelser-til-digital-postkasse). |
-| 18 MB, ett dokument | Forsendelser til Norsk Helsenett. |
-| 10 MiB | Dokument som skal signeres. |
+| 350 MB totalt | Forsendelser som kan gå til print må ha en total filstørrelse på 350 MB. PDF-ene slås sammen til én fil når de sendes til printleverandøren. Er forsendelsen større, blir den avvist. |
+| Ingen fast grense | Forsendelser med `kunDigitalLevering: true` kan sende dokumenter med hvilken som helst størrelse. Alt må være overført innen tidsgrensen oppgitt under. |
+| 50 MiB eller 200 vedlegg | Over denne grensen vil brev sendt til digital postkasse få en lenke til dokumentene i stedet for selve filene. Se [Store forsendelser til digital postkasse](#store-forsendelser-til-digital-postkasse). |
+| 18 MB | Forsendelser til Norsk Helsenett kan ha en total filstørrelse på maks 18 MB. Det er kun PDF som er godtatt |
+| 10 MiB | Dokument som skal signeres. Det er kun 1 dokument som kan markeres for signering pr forsendelse. |
 
 ### Tidsavbrudd
 
-SvarUt bryter innsendingen etter 15 minutter. Sett lesetimeout i klienten til minst 16 minutter. Bryter klienten først, kan forsendelsen være mottatt uten at du får id-en tilbake.
+SvarUt bryter innsendingen etter 16 minutter. Sett lesetimeout i klienten til minst 16 minutter. Bryter klienten først, kan forsendelsen være mottatt uten at du får id-en tilbake.
 
 ### Store forsendelser til digital postkasse
 
-Er forsendelsen over 50 MiB eller har den mer enn 200 vedlegg, sender ikke SvarUt filene til Digipost eller e-Boks. Mottakeren får i stedet en melding med en lenke til hvert dokument og en lenke til en zip-fil med alle dokumentene. Dokumentene lastes ned fra SvarUt.
+Er forsendelsen over 50 MiB eller den har mer enn 200 vedlegg, sender ikke SvarUt filene til Digipost eller e-Boks. Mottakeren får i stedet en melding med en lenke til hvert dokument og en lenke til en zip-fil med alle dokumentene. Dokumentene lastes ned fra SvarUt.
 
 ## Kryptering
 

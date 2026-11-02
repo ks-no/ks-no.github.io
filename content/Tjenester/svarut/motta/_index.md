@@ -1,7 +1,7 @@
 ---
 title: Motta post (SvarInn)
 description: "Hent post til virksomheten direkte inn i sak- og arkivsystemet."
-date: 2017-01-01
+date: 2026-11-01
 weight: 30
 aliases: [/tjenester/svarut/svarinn-mottakservice/, /tjenester/svarut/svarinn/]
 ---
@@ -20,13 +20,14 @@ SvarInn er laget for å automatisere import av post. Systemet som henter, kalles
 4. Mottakersystemet dekrypterer med sin private nøkkel og importerer.
 5. Mottakersystemet kvitterer. Forsendelsen får status `LEST`, og SvarUt sender den ikke til Altinn eller print.
 
-Kjør steg 2–5 som en jobb hvert 15. minutt.
+Vi anbefaler at dere kjører 2–5 som en automatisk jobb som ikke kjøres for ofte - hvert 15. minutt bør være mer enn nok.
 
-Er en forsendelse ikke kvittert etter to timer, kommer den med i en e-post om manglende import. E-posten sendes tre ganger om dagen til dem som har tilgang til mottakersystemet.
+Er en forsendelse ikke kvittert ut etter to timer, kommer den med i en e-post om manglende import som sendes til epostene som er lagt til mottakersystemet. E-posten sendes tre ganger om dagen til dem som har tilgang til mottakersystemet.
 
 ## Sette opp et mottakersystem
+NB! Vi er i ferd med å endre hvordan man setter opp et mottakersystem. I Testmiljøet kan man nå sette opp og administrere mottakersystemer selv fra start til slutt via forvaltning.fiks.test.ks.no, inntil videre må man følge oppskriften under for prod. 
 
-Oppsettet gjøres i SvarUt-portalen under [Mottakersystem](https://svarut.ks.no/mottaker/). Steg 1 gjøres av KS Digital. Resten gjør dere selv.
+Oppsettet gjøres i SvarUt-portalen under [Mottakersystem](https://svarut.ks.no/mottaker/). Steg 1 gjøres av KS Digital. Resten gjør dere selv. 
 
 1. **Opprette mottakersystem.** KS Digital oppretter mottakersystemet og gir minst én person tilgang med fødselsnummer. Kontakt [fiks@ksdigital.no](mailto:fiks@ksdigital.no).
 2. **Legge til organisasjoner.** Personen med tilgang legger inn organisasjonsnumrene mottakersystemet skal hente post for. SvarUt sjekker i Altinn at personen har tilgang til organisasjonen. Velg også forsendelsestype og sikkerhetsnivå, se [Adressering](/tjenester/svarut/motta/adressering/).

@@ -1,12 +1,13 @@
 ---
-title: SvarUt
+title: Fiks SvarUt
 description: "Digital utsending av post fra kommuner og andre offentlige virksomheter, og mottak av post direkte i sak- og arkivsystemet."
 aliases: [/svarut/]
 ---
 
 {{< svarut-avvikling >}}
 
-SvarUt er KS Digital sin tjeneste for digital utsending av post fra kommuner og andre offentlige virksomheter. Fagsystemet sender én forsendelse til SvarUt, og SvarUt finner den beste kanalen for mottakeren: digital postkasse, Altinn, SvarInn, Norsk Helsenett eller papirpost.
+SvarUt er KS Digital sin tjeneste for digital utsendelse av post fra kommuner og andre offentlige virksomheter. 
+Fagsystemet sender én forsendelse til SvarUt, og SvarUt finner den beste kanalen for mottakeren: digital postkasse, Altinn, SvarInn eller papirpost (og etterhvert: Norsk Helsenett).
 
 SvarInn er motsatt vei. Med SvarInn henter sak- og arkivsystemet post som er sendt til virksomheten, direkte fra SvarUt.
 
@@ -16,10 +17,10 @@ SvarInn er motsatt vei. Med SvarInn henter sak- og arkivsystemet post som er sen
 
 {{< cards >}}
 {{% card title="Komme i gang" href="/tjenester/svarut/kom-i-gang/" %}}
-Avtale, Maskinporten, Fiks-integrasjon og tilganger. Start her om du skal lage en ny integrasjon.
+Avtale, Maskinporten, Fiks-integrasjon og tilganger. Start her om du skal lage en ny integrasjon mot SvarUt.
 {{% /card %}}
 {{% card title="Sende post" href="/tjenester/svarut/sende/" %}}
-Send forsendelser fra et fagsystem med SvarUt REST v3, og følg status til de er levert.
+Send forsendelser fra et fagsystem med SvarUt REST v2/v3, og følg status til de er levert.
 {{% /card %}}
 {{% card title="Motta post" href="/tjenester/svarut/motta/" %}}
 Hent post til virksomheten direkte inn i sak- og arkivsystemet med SvarInn.
@@ -60,6 +61,6 @@ Må dere åpne i brannmuren, ligger SvarUt bak disse adressene:
 
 ## Avtale og konfigurasjon
 
-Kommunen eller virksomheten må ha avtale med KS Digital om bruk av SvarUt. Etter at avtalen er signert, får dere en veiledning i [konfigurasjon av SvarUt](https://ksdigital.no/tjenestene/svarut-tjenesten/svarut-konfigurasjon/). Informasjonen på ksdigital.no er for kommuner og virksomheter som har avtale.
+Kommunen eller virksomheten må ha avtale med KS Digital om bruk av SvarUt. Etter at avtalen er signert, [kan man konfigurere opp SvarUt-kontoer som kan brukes til å sende via](https://ksdigital.no/tjenestene/svarut-tjenesten/svarut-konfigurasjon/). Informasjonen på ksdigital.no er for kommuner og virksomheter som har avtale.
 
 {{< get-help email="fiks@ksdigital.no" support_page="/felles/support/" >}}
