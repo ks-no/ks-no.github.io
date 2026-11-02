@@ -7,9 +7,9 @@ aliases: [/svarut/]
 {{< svarut-avvikling >}}
 
 SvarUt er KS Digital sin tjeneste for digital utsendelse av post fra kommuner og andre offentlige virksomheter. 
-Fagsystemet sender én forsendelse til SvarUt, og SvarUt finner den beste kanalen for mottakeren: digital postkasse, Altinn, SvarInn eller papirpost (og etterhvert: Norsk Helsenett).
+Fagsystemet sender en forsendelse til SvarUt, og tjenesten finner den beste kanalen for levering: digital postkasse (Digipost eller e-Boks), Altinn, SvarInn eller papirpost (og etterhvert: Norsk Helsenett).
 
-SvarInn er motsatt vei. Med SvarInn henter sak- og arkivsystemet post som er sendt til virksomheten, direkte fra SvarUt.
+SvarInn er en undertjeneste av SvarUt som gjør det mulig å hente post til virksomheten direkte inn i sak- og arkivsystemet. 
 
 ![Fagsystemer sender til SvarUt, som leverer til digital postkasse, Altinn, SvarInn, Norsk Helsenett eller printleverandør](/images/svarut/svarut-kanaler.png)
 
@@ -32,21 +32,22 @@ Opprett en ny integrasjon for REST v2/v3 med den tilgangen dere har i dag.
 
 ## Grensesnitt
 
-| Grensesnitt | Brukes til | Autentisering | Dokumentasjon |
-|---|---|---|---|
-| SvarUt REST v2/v3 | Sende forsendelser og hente status | Maskinporten og Fiks-integrasjon | [Sende post](/tjenester/svarut/sende/) |
-| SvarInn v2 | Hente post til et mottakersystem | Mottakersystem-id og servicepassord | [Motta post](/tjenester/svarut/motta/) |
-| Webportal | Sende og følge opp forsendelser manuelt, sette opp mottakersystem | ID-porten | [svarut.ks.no](https://svarut.ks.no/) |
-| SOAP V4–V11 og REST v1 | Avvikles | Brukernavn og passord | [Utgåtte API-er](/tjenester/svarut/utgatt/) |
+| Grensesnitt            | Brukes til                                                        | Autentisering                       | Dokumentasjon                               |
+|------------------------|-------------------------------------------------------------------|-------------------------------------|---------------------------------------------|
+| SvarUt REST v2/v3      | Sende forsendelser og hente status                                | Maskinporten og Fiks-integrasjon    | [Sende post](/tjenester/svarut/sende/)      |
+| SvarInn v2             | Hente post til et mottakersystem                                  | Mottakersystem-id og servicepassord | [Motta post](/tjenester/svarut/motta/)      |
+| Webportal              | Sende og følge opp forsendelser manuelt, sette opp mottakersystem | ID-porten                           | [svarut.ks.no](https://svarut.ks.no/)       |
+| SvarInn v1             | Skal ikke benyttes for nye tjenester                              | Mottakersystem-id og servicepassord | [Utgåtte API-er](/tjenester/svarut/utgatt/) |
+| SOAP V4–V11 og REST v1 | Avvikles                                                          | Brukernavn og passord               | [Utgåtte API-er](/tjenester/svarut/utgatt/) |
 
 Se [versjonsoversikten](/tjenester/svarut/api-versjoner/) for alle versjoner og spesifikasjoner.
 
 ## Miljøer
 
-| Miljø | Webportal og API | Base-URL for API |
-|---|---|---|
-| Test | <https://test.svarut.ks.no/> | `https://test.svarut.ks.no/api` |
-| Produksjon | <https://svarut.ks.no/> | `https://svarut.ks.no/api` |
+| Miljø      | Webportal og API             | Base-URL for API                |
+|------------|------------------------------|---------------------------------|
+| Test       | <https://test.svarut.ks.no/> | `https://test.svarut.ks.no/api` |
+| Produksjon | <https://svarut.ks.no/>      | `https://svarut.ks.no/api`      |
 
 SvarUt har egen vertsadresse. API-et ligger ikke under `api.fiks.ks.no` som de fleste andre Fiks-tjenester. Se [Testmiljø](/tjenester/svarut/testmiljo/) for testbrukere og hvordan dere får tilgang.
 
