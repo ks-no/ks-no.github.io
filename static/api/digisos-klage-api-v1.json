@@ -6,7 +6,7 @@
     "contact": {
       "name": "Fiks brukerstøtte",
       "url": "https://developers.fiks.ks.no/",
-      "email": "fiks@ks.no"
+      "email": "fiks@ksdigital.no"
     },
     "version": "v1"
   },
@@ -71,6 +71,71 @@
           },
           "500": {
             "description": "Intern serverfeil"
+          }
+        }
+      }
+    },
+    "/digisos/klage/api/v1/status": {
+      "get": {
+        "tags": [
+          "KlageController"
+        ],
+        "description": "Henter status for klager for de siste angitte antall dager",
+        "operationId": "getKlageStatuser",
+        "parameters": [
+          {
+            "name": "antallDager",
+            "in": "query",
+            "description": "Antall dager å hente statuser for",
+            "required": true,
+            "schema": {
+              "maximum": 30,
+              "minimum": 1,
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "sporingsId",
+            "in": "query",
+            "description": "SporingsId for request",
+            "required": true,
+            "schema": {
+              "minLength": 1,
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Klager som tilhører søkeren",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/KlageLeveranseStatusListe"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Ugyldig data ble oppgitt",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Du har ikke tilgang til klagene tilhørende angitt fnr",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
           }
         }
       }
@@ -237,6 +302,70 @@
   },
   "components": {
     "schemas": {
+      "DigisosKlageLeveranseStatus": {
+        "type": "object",
+        "properties": {
+          "digisosId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "klageId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "levertFagsystem": {
+            "type": "boolean"
+          }
+        },
+        "description": "LeveranseStatus for klage"
+      },
+      "KlageLeveranseStatusListe": {
+        "type": "object",
+        "properties": {
+          "statusListe": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DigisosKlageLeveranseStatus"
+            }
+          }
+        },
+        "description": "Liste med LeveranseStatus"
+      },
+      "ErrorMessage": {
+        "type": "object",
+        "properties": {
+          "timestamp": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "status": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "error": {
+            "type": "string"
+          },
+          "errorId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "path": {
+            "type": "string"
+          },
+          "originalPath": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          },
+          "errorCode": {
+            "type": "string"
+          },
+          "errorJson": {
+            "type": "string"
+          }
+        }
+      },
       "DokumentInfo": {
         "type": "object",
         "properties": {
@@ -452,41 +581,6 @@
           },
           "sendtKvittering": {
             "$ref": "#/components/schemas/SendtKvittering"
-          }
-        }
-      },
-      "ErrorMessage": {
-        "type": "object",
-        "properties": {
-          "timestamp": {
-            "type": "integer",
-            "format": "int64"
-          },
-          "status": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "error": {
-            "type": "string"
-          },
-          "errorId": {
-            "type": "string",
-            "format": "uuid"
-          },
-          "path": {
-            "type": "string"
-          },
-          "originalPath": {
-            "type": "string"
-          },
-          "message": {
-            "type": "string"
-          },
-          "errorCode": {
-            "type": "string"
-          },
-          "errorJson": {
-            "type": "string"
           }
         }
       }
