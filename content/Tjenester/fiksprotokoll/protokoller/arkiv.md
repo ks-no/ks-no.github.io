@@ -57,7 +57,6 @@ Den ligger [her](https://github.com/ks-no/fiks-arkiv-specification/blob/main/Sch
 |-------------------------------------|------------------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------| 
 | XSD skjema, protokoll spesifikasjon | -                                                                                                                | https://github.com/ks-no/fiks-arkiv-specification               |
 | Modeller basert på XSD skjema       | [`KS.Fiks.Arkiv.Models.V1`](https://www.nuget.org/packages/KS.Fiks.Arkiv.Models.V1/)                             | https://github.com/ks-no/fiks-arkiv-models-dotnet               |
-| Forenklet arkivering                | [`KS.Fiks.Arkiv.Forenklet.Arkivering.V1`](https://www.nuget.org/packages/KS.Fiks.Arkiv.Forenklet.Arkivering.V1/) | https://github.com/ks-no/fiks-arkiv-forenklet-arkivering-dotnet |
 | Fiks-IO klient                      | [`KS.Fiks.IO.Client`](https://www.nuget.org/packages/KS.Fiks.IO.Client/)                                         | https://github.com/ks-no/fiks-io-client-dotnet    |
 | Fiks-IO send klient                 | [`KS.Fiks.IO.Send.Client`](https://www.nuget.org/packages/KS.Fiks.IO.Send.Client/)                               | https://github.com/ks-no/fiks-io-send-client-dotnet    |
 
@@ -65,12 +64,6 @@ Den ligger [her](https://github.com/ks-no/fiks-arkiv-specification/blob/main/Sch
 
 KS har gjort tilgjengelig nuget pakken `KS.Fiks.Arkiv.Models.V1` som inneholder modeller for at man skal enklere kunne bygge meldingene i henhold til spesifikasjon. 
 Modellene er generert av XSD skjema fra github prosjektet [fiks-arkiv-specification](https://github.com/ks-no/fiks-arkiv-specification). XSD skjemane følger også med i pakken. Koden er tilgjengelig på github [her](https://github.com/ks-no/fiks-arkiv-models-dotnet/) og er tilgjengelig for nedlasting og bruk i prosjekter på [nuget.org](https://www.nuget.org/packages/KS.Fiks.Arkiv.Models.V1/).
-
-**Forenklet arkivering**
-
-*Denne pakken er uferdig og vil bli utbedret når V1 av protokollen er ferdig lansert*
-
-Dette er en nuget-pakke for "forenklet arkivering", `KS.Fiks.Arkiv.Forenklet.Arkivering.V1`, som inneholder forenklete metoder for å bygge arkivmelding for diverse brukstilfeller. Denne bruker modellene fra `KS.Fiks.Arkiv.Models.V1` til byggingen av arkivmelding. Koden er tilgjengelig på github [her](https://github.com/ks-no/fiks-arkiv-forenklet-arkivering-dotnet) og er også tilgjengelig for bruk i prosjekter på [nuget.org](https://www.nuget.org/packages/KS.Fiks.Arkiv.Forenklet.Arkivering.V1/)
 
 **Fiks-IO klient**
 
