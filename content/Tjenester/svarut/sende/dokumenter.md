@@ -1,7 +1,7 @@
 ---
 title: Dokumenter og vedlegg
 description: "Multipart-request, filtyper, størrelser, tidsavbrudd og kryptering."
-date: 2026-02-01
+date: 2026-11-01
 weight: 10
 aliases: [/tjenester/svarut/sendmeddokumenter/, /tjenester/svarut/send-dokumenter, /tjenester/svarut/api/sendmeddokumenter, /svarut/api/sendmeddokumenter]
 ---
@@ -89,7 +89,7 @@ Vil du ha med giroark, setter du `giroarkSide` på dokumentet. Siden printes på
 |--------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | 350 MB totalt            | Forsendelser som kan gå til print må ha en total filstørrelse på maksimalt 350 MB. PDF-ene slås sammen til én fil når de sendes til printleverandøren. Er forsendelsen større, blir den avvist.          |
 | Ingen fast grense        | Forsendelser med `kunDigitalLevering: true` kan sende dokumenter med hvilken som helst størrelse. Alt må være overført innen tidsgrensen oppgitt under.                                                  |
-| 50 MiB eller 200 vedlegg | Over denne grensen vil brev sendt til digital postkasse få en lenke til dokumentene i stedet for selve filene. Se [Store forsendelser til digital postkasse](#store-forsendelser-til-digital-postkasse). |
+| 50 MiB eller 200 vedlegg | Er forsendelsen over 50 MiB eller den har mer enn 200 vedlegg, sender ikke SvarUt filene til Digipost eller e-Boks. Mottakeren får i stedet en melding med en lenke til hvert dokument og en lenke til en zip-fil med alle dokumentene. Dokumentene lastes ned fra SvarUt. |
 | 18 MB                    | Forsendelser til Norsk Helsenett kan ha en total filstørrelse på maks 18 MB. Det er kun PDF som er godtatt                                                                                               |
 | 10 MiB                   | Dokument som skal signeres. Det er kun 1 dokument som kan markeres for signering pr forsendelse.                                                                                                         |
 
@@ -97,10 +97,6 @@ Vil du ha med giroark, setter du `giroarkSide` på dokumentet. Siden printes på
 
 SvarUt avbryter innsendingen dersom det går mer enn 16 minutter. Sett lesetimeout i klienten til minst 16 minutter. 
 Avbryter klienten først, kan forsendelsen være mottatt uten at du får id-en tilbake.
-
-### Store forsendelser til digital postkasse
-
-Er forsendelsen over 50 MiB eller den har mer enn 200 vedlegg, sender ikke SvarUt filene til Digipost eller e-Boks. Mottakeren får i stedet en melding med en lenke til hvert dokument og en lenke til en zip-fil med alle dokumentene. Dokumentene lastes ned fra SvarUt.
 
 ## Kryptering
 

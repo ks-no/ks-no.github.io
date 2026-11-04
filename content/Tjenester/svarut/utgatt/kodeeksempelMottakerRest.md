@@ -1,7 +1,7 @@
 ---
 title: Kodeeksempel MottaksserviceV1
 description: "Utgått: Kodeeksempel MottaksserviceV1."
-date: 2017-01-01
+date: 2026-11-01
 aliases: ["/tjenester/svarut/integrasjon/kodeeksempelmottakerrest/", /svarut/integrasjon/kodeeksempelMottakerRest]
 weight: 42
 ---

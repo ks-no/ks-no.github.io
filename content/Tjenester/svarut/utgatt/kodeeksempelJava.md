@@ -1,7 +1,7 @@
 ---
 title: Kodeeksempel Java
 description: "Utgått: Kodeeksempel Java."
-date: 2021-02-22
+date: 2026-11-01
 aliases: ["/tjenester/svarut/integrasjon/kodeeksempeljava/", /svarut/integrasjon/kodeeksempelJava]
 weight: 40
 ---

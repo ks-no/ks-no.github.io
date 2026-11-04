@@ -37,42 +37,9 @@ Bruk `/print` bare når mottakeren ikke kan nås digitalt. Papirpost koster mer 
 Sender du til person eller virksomhet, går forsendelsen uansett til print hvis det ikke finnes en digital kanal, 
 gitt at man ikke har bedt om kun digital levering. Se [Kanalvalg](/tjenester/svarut/sende/kanalvalg/).
 
-Noen felter er nyttige å kjenne til:
-
-| Felt | Brukes til |
-|---|---|
-| `eksternReferanse` | Din egen id for forsendelsen. Kan brukes til å slå opp forsendelsen senere. |
-| `korrelasjonsid` | Grupperer flere forsendelser som hører sammen. |
-| `kunDigitalLevering` | Forsendelsen blir aldri printet. Lykkes ikke digital levering, får du status `IKKE_LEVERT`, men ingen annen beskjed. |
-| `sikkerhetsniva` | `BETYDELIG` (standard, nivå 3) eller `HOYESTE` (nivå 4). Ved `HOYESTE` må dokumentene være kryptert. Se [Sikkerhet](/tjenester/svarut/sikkerhet/). |
-| `svarSendesTil` | Hvor et svar skal sendes. Står også som avsenderadresse på papirbrev. |
-| `kanSvareViaEdialog` | Mottakeren får en lenke til å svare digitalt. Se [Svar på forsendelse](/tjenester/svarut/sende/svar-pa-forsendelse/). |
-| `forsendelsestype` | Bare til virksomheter. Avgjør hvilket SvarInn-mottakersystem som får forsendelsen. Se [Adressering](/tjenester/svarut/motta/adressering/). |
-| `taushetsbelagtPost` | Bare til virksomheter. Forsendelsen går til tjenesten for taushetsbelagt post i Altinn. |
-| `signering` | Bare til privatpersoner. Se [Signering](/tjenester/svarut/sende/signering/). |
-
-## Følge opp forsendelsen
-
-| Hva | Endepunkt | Spesifikasjon |
-|---|---|---|
-| Status for én eller flere forsendelser | `POST /v3/kontoer/{kontoId}/forsendelser/status/sok` | [status v3](https://editor-next.swagger.io/?url=https://developers.fiks.ks.no/api/forsendelse-status-api-v3.json) |
-| Hendelseslogg | `GET /v2/forsendelser/{forsendelseId}/hendelser` | [hendelser v2](https://editor-next.swagger.io/?url=https://developers.fiks.ks.no/api/forsendelse-hendelser-api-v2.json) |
-| Signeringshendelser | `GET /v2/forsendelser/{forsendelseId}/signeringshendelser` | [hendelser v2](https://editor-next.swagger.io/?url=https://developers.fiks.ks.no/api/forsendelse-hendelser-api-v2.json) |
-| Metadata for forsendelsen | `GET /v2/forsendelser/{forsendelseId}/metadata` | [metadata v2](https://editor-next.swagger.io/?url=https://developers.fiks.ks.no/api/forsendelse-metadata-api-v2.json) |
-| Finne forsendelser med ekstern referanse | `GET /v2/kontoer/{kontoId}/forsendelser` og `.../forsendelser/metadata` | [eksternref v2](https://editor-next.swagger.io/?url=https://developers.fiks.ks.no/api/forsendelse-eksternref-api-v2.json) |
-
 ### Status
 
 Utfyllende informasjon om hvilke statuser som eksisterer og hva de betyr finnes [her](/tjenester/svarut/sende/status/).
-
-## Andre endepunkter
-
-| Hva | Endepunkt | Spesifikasjon |
-|---|---|---|
-| Markere som lest, når mottakeren har lest forsendelsen et annet sted | `POST /v2/forsendelser/{forsendelseId}/lest` | [lest v2](https://editor-next.swagger.io/?url=https://developers.fiks.ks.no/api/forsendelse-lest-api-v2.json) |
-| Slette dokumentene til en forsendelse | `DELETE /v2/forsendelser/{forsendelseId}/dokumenter` | [slett v2](https://editor-next.swagger.io/?url=https://developers.fiks.ks.no/api/forsendelse-slett-api-v2.json) |
-| Gyldige forsendelsestyper | `GET /v2/forsendelsestyper` | [typer v2](https://editor-next.swagger.io/?url=https://developers.fiks.ks.no/api/forsendelse-typer-api-v2.json) |
-| Mottakersystem for et organisasjonsnummer | `GET /v2/mottakersystem` | [mottakersystem v2](https://editor-next.swagger.io/?url=https://developers.fiks.ks.no/api/mottakersystem-api-v2.json) |
 
 ## Feilmeldinger
 

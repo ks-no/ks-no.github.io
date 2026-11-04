@@ -25,22 +25,7 @@ I SOAP V6 og nyere heter feltet `svarPaForsendelseLink`.
 
 ## Slik foregår det
 
-```mermaid
-sequenceDiagram
-    participant A as Sak- og arkivsystem
-    participant S as SvarUt
-    participant D as Altinn eller digital postkasse
-    actor I as Mottaker
-    participant E as eDialog
-    A->>S: 1. Sender forsendelse med kanSvareViaEdialog
-    S-->>A: 2. Forsendelse-id
-    S->>D: 3. Melding med lenke til eDialog
-    I->>D: 4. Trykker på lenken
-    I->>E: 5. Fyller ut og sender svaret
-    E-->>I: 6. Kvittering på e-post
-    E->>S: 7. Ny forsendelse med svarPaForsendelse
-    S->>A: 8. Svaret hentes med SvarInn
-```
+![Sak- og arkivsystemet sender forsendelse med kanSvareViaEdialog. Mottakeren trykker på lenken i meldingen, svarer i eDialog og får kvittering. eDialog sender svaret som ny forsendelse via SvarUt, og sak- og arkivsystemet henter det med SvarInn.](/images/svarut/svar-pa-forsendelse.png)
 
 1. Sak- og arkivsystemet sender forsendelsen med `kanSvareViaEdialog: true` og `svarSendesTil`.
 2. Systemet får forsendelse-id-en tilbake.

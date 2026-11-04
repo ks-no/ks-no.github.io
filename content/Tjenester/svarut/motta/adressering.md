@@ -1,7 +1,7 @@
 ---
 title: Adressering
 description: "Hvordan SvarUt velger mottakersystem ut fra organisasjonsnummer, forsendelsestype og nivå."
-date: 2017-01-01
+date: 2026-11-01
 weight: 20
 aliases: [/tjenester/svarut/svarut-svarinn-adressering/]
 ---

@@ -1,10 +1,14 @@
 ---
 title: Norsk Helsenett
 description: "Send brev til fastleger og andre aktører i Norsk Helsenett."
-date: 2026-02-01
+date: 2026-11-01
 weight: 40
 aliases: [/tjenester/svarut/sendenhn/, /tjenester/svarut/send-nhn]
 ---
+
+{{% notice style="warning" title="Under utvikling" %}}
+Sending til Norsk Helsenett er fortsatt under utvikling, og ikke prodsatt ennå. Ta kontakt med oss i KS Digital om dere ønsker å teste mot vårt testmiljø. 
+{{% /notice %}}
 
 Med SvarUt kan saksbehandlere sende brev fra sak-, arkiv- eller fagsystemet til fastleger og andre aktører i Norsk Helsenett (NHN). Brevet havner direkte i pasientjournalsystemet (EPJ) hos mottakeren.
 

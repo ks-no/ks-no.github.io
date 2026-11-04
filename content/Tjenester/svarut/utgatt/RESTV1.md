@@ -1,7 +1,7 @@
 ---
 title: REST V1
 description: "Utgått: REST V1."
-date: 2019-04-11
+date: 2026-11-01
 aliases: ["/tjenester/svarut/integrasjon/restv1/", "/svarut/integrasjon/ForsendelseRestServiceV1", "/svarut/integrasjon/forsendelserestservicev1/", "/tjenester/svarut/integrasjon/forsendelserestservicev1/"]
 weight: 10
 ---

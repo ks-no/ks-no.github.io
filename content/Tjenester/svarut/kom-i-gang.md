@@ -8,7 +8,7 @@ Denne siden er for deg som skal lage en ny integrasjon mot SvarUt REST v2/v3. Sk
 
 ## Slik henger tilgangen sammen
 
-![Fagsystemet henter token fra Maskinporten og kaller SvarUt med token, integrasjons-id og passord. Kommunen setter opp integrasjonen i Fiks forvaltning.](/images/svarut/SvarUt-autentisering-maskinporten.png)
+![Fagsystemet henter token fra Maskinporten og kaller SvarUt med token, integrasjons-id og passord. SvarUt leverer posten til mottakeren.](/images/svarut/SvarUt-autentisering-maskinporten.png)
 
 Forutsetninger for å gjøre et kall mot SvarUt:
 

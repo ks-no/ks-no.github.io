@@ -1,7 +1,7 @@
 ---
 title: SOAP V5
 description: "Utgått: SOAP V5."
-date: 2017-01-01
+date: 2026-11-01
 aliases: ["/tjenester/svarut/integrasjon/soapv5/", /svarut/integrasjon/ForsendelseServiceV5, /tjenester/svarut/integrasjon/forsendelseservicev5/]
 weight: 26
 ---

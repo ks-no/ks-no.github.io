@@ -18,7 +18,7 @@ En forsendelse går gjennom flere statuser fra den blir mottatt til den har nåd
 | `FEILET_UNDER_MOTTAK` | Noe feilet hos SvarUt under mottak. Send forsendelsen på nytt, eller kontakt brukerstøtte om det skjer igjen. | Ja |
 | `KLAR_FOR_MOTTAK` | Forsendelsen ligger klar for henting i et SvarInn-mottakersystem. | Nei |
 | `SENDT_SDP` | Sendt til digital postkasse (Digipost eller e-Boks). | Nei |
-| `LEVERT_SDP` | Digital postkasse har bekreftet levering. | I praksis ja. Kan bli `LEST`. |
+| `LEVERT_SDP` | Digital postkasse har bekreftet levering. | I praksis ja. Kan bli `LEST`. Kan også bli videresendt til Altinn eller Print dersom varsling av mottaker i de digitale postkassene feiler.  |
 | `SENDT_ALTINN` | Sendt til Altinn. | Nei |
 | `LEVERT_ALTINN` | Publisert i Altinn. | Nei |
 | `SENDT_NHN_MOTTAKER` | Sendt til Norsk Helsenett. Mottakeren har ikke bekreftet ennå. | Nei |
@@ -26,7 +26,7 @@ En forsendelse går gjennom flere statuser fra den blir mottatt til den har nåd
 | `SENDT_DIGITALT` | Sendt digitalt med `kunDigitalLevering`, men ikke lest ennå. | I praksis ja. Kan bli `LEST`. |
 | `SENDT_PRINT` | Sendt til printleverandør. | Nei |
 | `PRINTET` | Printleverandøren har bekreftet utskrift. | Ja |
-| `LEST` | Mottakeren har lastet ned eller åpnet forsendelsen, eller SvarInn har kvittert. | Ja |
+| `LEST` | Mottakeren har lastet ned eller åpnet hoveddokumentet (det første dokumentet) i forsendelsen, eller SvarInn-mottakersystemet har kvittert ut mottak av forsendelse. | Ja |
 | `IKKE_LEVERT` | Forsendelsen var `kunDigitalLevering` og kunne ikke leveres digitalt. Dette kan vere fordi mottaker ikke finnes i Kontaktregisteret, har reservert seg mot digital post eller ikke har oppdatert kontaktinformasjonen siste 18 måneder. | Ja |
 | `MANUELT_HANDTERT` | Forsendelsen er håndtert manuelt via SvarUt GUI. Kan skje når som helst. | Ja |
 | `SLETTET` | Filer og metadata som ikke trengs til statistikk og fakturering, er slettet. Kan skje når som helst. | Ja |

@@ -1,7 +1,7 @@
 ---
 title: 'SvarInn V1'
 description: "Utgått: SvarInn V1."
-date: 2017-01-01
+date: 2026-11-01
 aliases: ["/tjenester/svarut/svarinn/svarinnv1/"]
 weight: 30
 ---

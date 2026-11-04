@@ -1,7 +1,7 @@
 ---
 title: Kodeeksempel .Net
 description: "Utgått: Kodeeksempel .Net."
-date: 2021-02-22
+date: 2026-11-01
 aliases: ["/tjenester/svarut/integrasjon/kodeeksempeldotnet/", /svarut/integrasjon/kodeeksempelDotNet]
 weight: 41
 ---
