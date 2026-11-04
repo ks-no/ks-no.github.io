@@ -148,7 +148,7 @@ Det er en egen meldingstype for å arkivere nytt dokumentobjekt, `no.ks.fiks.ark
 
 ### Begrensninger og regler for arkivering
 
-- Det skal sendes en melding pr mappe og/eller journalpost som skal arkiveres. Det vil si at arkivmelding ikke støtter å sende inn arkivmelding med f.eks. en ny saksmappe med tilhørende 1000 journalposter i en og samme melding, men man kan sende en saksmappe med 1 journalpost i en og samme arkivmelding. 
+- Det skal sendes én melding pr mappe og/eller journalpost som skal arkiveres. Det vil si at arkivmelding ikke støtter å sende inn arkivmelding med f.eks. en ny saksmappe med tilhørende 1000 journalposter i en og samme melding, men man kan sende én saksmappe med én journalpost i samme arkivmelding. 
 - Arkivmelding støtter ikke å registrere flere mapper i et hierarki, altså mapper i mapper, i en enkelt arkivmelding. Registrering av ny undermappe må da registreres hver for seg. Mapper kan altså bare referere til eksisterende mappe, som må da ha vært opprettet tidligere.
 - En foreldermappe kan ikke inneholde registreringer. Altså en mappe som inneholder andre mapper skal bare inneholde mapper.
 - En referanseEksternNoekkel skal ikke kunne bli duplikat i arkivet. Når man sender inn flere arkivmeldinger med f.eks. mappe som har samme referanseEksternNoekkel, skal arkivet se at mappen allerede eksisterer og ikke opprette en ny mappe. Man kan da legge til nye journalposter på den eksisterende mappen. Se [Brukstilfelle: ReferanseEksternNoekkel skal ikke kunne bli duplikat i arkivet](Brukstilfelle-ReferanseEksternNoekkel-skal-ikke-kunne-bli-duplikat-i-arkivet) for mer informasjon.
