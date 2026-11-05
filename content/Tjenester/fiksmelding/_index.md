@@ -1,6 +1,6 @@
 ---
-title: Fiks melding 
+title: Fiks Melding 
 date: 2022-07-05
 ---
-Fiks melding er en tjenestegruppe som inneholder flere tjenester. 
+Fiks Melding er en tjenestegruppe som inneholder flere tjenester. 
 

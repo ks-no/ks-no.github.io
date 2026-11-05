@@ -8,7 +8,7 @@ Dersom SvarInn ikke er konfigurert opp for organisasjonsnummeret som mottar meld
 
 ## Beskrivelse
 
-Konfigurasjon av eDialog-mottakere skjer via https://forvaltning.fiks.ks.no under «Fiks melding»-tjenesten og «eDialog».
+Konfigurasjon av eDialog-mottakere skjer via https://forvaltning.fiks.ks.no under «Fiks Melding»-tjenesten og «eDialog».
 Hver mottaker vil ha en SvarUt-konto tilknyttet seg som vil faktureres for alle meldinger som sendes inn.
 
 ### eDialog med predefinert mottaker
