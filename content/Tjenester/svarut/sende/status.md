@@ -6,7 +6,13 @@ weight: 20
 
 En forsendelse går gjennom flere statuser fra den blir mottatt til den har nådd sin endelige status, dette kan for eksempel være at det er lest, printet eller ikke kan leveres til mottakeren. Hent status for en forsendelse med `POST /v3/kontoer/{kontoId}/forsendelser/status/sok` ([spesifikasjon](https://editor-next.swagger.io/?url=https://developers.fiks.ks.no/api/forsendelse-status-api-v3.json)). Du kan spørre om flere forsendelser i samme kall.
 
+**Versjon 1**
+
 ![Statusreisen: alle 18 statuser i REST v3 og overgangene mellom dem](/images/svarut/SvarUt-statusreisen.png)
+
+**Versjon 2**
+
+![Statusreisen med LEST i egen kolonne: KLAR_FOR_MOTTAK, LEVERT_ALTINN, SENDT_DIGITALT og i enkelte tilfeller LEVERT_SDP kan bli LEST](/images/svarut/SvarUt-statusreisen-lest.png)
 
 ## Alle statuser
 
