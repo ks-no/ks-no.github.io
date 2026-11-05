@@ -59,4 +59,4 @@ Kan dere ikke importere forsendelsen:
 | `true` | Forsendelsen går videre til Altinn, og eventuelt til print hvis avsender har slått på ettersending for virksomheter. |
 | `false` | Feilmeldingen havner i hendelsesloggen, men forsendelsen blir liggende klar til neste henting. |
 
-Forsendelser blir liggende i SvarInn til de er kvittert. Er en forsendelse ikke kvittert etter to timer, kommer den med i e-posten om manglende import.
+Forsendelser blir liggende i SvarInn til de er kvittert. Dersom en forsendelse ikke er kvittert etter to timer, kommer den med i e-posten om manglende import.

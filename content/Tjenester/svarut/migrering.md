@@ -69,6 +69,12 @@ Dere kan også knytte integrasjonen til et bestemt system ved å sende med `syst
 Inntil videre er det brukerstøtte som registrerer leverandører og produkter. Send en e-post til [fiks@ksdigital.no](mailto:fiks@ksdigital.no) for å bli registrert, og be om at fag- eller arkivsystemet registreres som produkt hvis dere vil bruke `systemkatalogProduktId`.
 
 ## Fra gamle til nye operasjoner
+Noen ting er annerledes i v3:
+
+- Det er ett send-endepunkt per type mottaker. Feltene er litt ulike for hver type.
+- Statusene er flere og mer presise. Se [Fra status v2 til v3](/tjenester/svarut/sende/status/#fra-status-v2-til-v3).
+- `krevNiva4Innlogging` heter nå `sikkerhetsniva` og har verdiene `BETYDELIG` og `HOYESTE`.
+- `svarPaForsendelseLink` heter nå `kanSvareViaEdialog`.
 
 | SOAP | REST v1 | REST v2/v3 |
 |---|---|---|
@@ -83,12 +89,6 @@ Inntil videre er det brukerstøtte som registrerer leverandører og produkter. S
 | `retreiveForsendelsesTyper` | `GET /forsendelseTyper` | `GET /v2/forsendelsestyper` |
 | `retrieveMottakerSystemForOrgnr` | `GET /mottakersystem/{orgnr}` | `GET /v2/mottakersystem` |
 
-Noen ting er annerledes i v3:
-
-- Det er ett send-endepunkt per type mottaker. Feltene er litt ulike for hver type.
-- Statusene er flere og mer presise. Se [Fra status v2 til v3](/tjenester/svarut/sende/status/#fra-status-v2-til-v3).
-- `krevNiva4Innlogging` heter nå `sikkerhetsniva` og har verdiene `BETYDELIG` og `HOYESTE`.
-- `svarPaForsendelseLink` heter nå `kanSvareViaEdialog`.
 
 ## Få hjelp
 

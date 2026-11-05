@@ -21,8 +21,6 @@ Sett disse feltene når du sender forsendelsen med REST v3:
 
 Når forsendelsen er akseptert og sendt digitalt, får mottakeren en lenke til eDialog i meldingen. Lenken har avsender, mottaker og tittel fylt ut.
 
-I SOAP V6 og nyere heter feltet `svarPaForsendelseLink`.
-
 ## Slik foregår det
 
 ![Sak- og arkivsystemet sender forsendelse med kanSvareViaEdialog. Mottakeren trykker på lenken i meldingen, svarer i eDialog og får kvittering. eDialog sender svaret som ny forsendelse via SvarUt, og sak- og arkivsystemet henter det med SvarInn.](/images/svarut/svar-pa-forsendelse.png)

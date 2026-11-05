@@ -6,7 +6,7 @@ weight: 30
 aliases: [/tjenester/svarut/svarinn-mottakservice/, /tjenester/svarut/svarinn/]
 ---
 
-Med SvarInn henter sak- og arkivsystemet post som er sendt til virksomheten, direkte fra SvarUt. Posten går da ikke til Altinn eller i posten, så lenge mottakersystemet henter og kvitterer for den.
+Med SvarInn henter ett sak- og arkivsystem post som er sendt til virksomheten, direkte fra SvarUt. Så lenge mottakersystemet henter og kvitterer for posten, går den ikke til noen andre kanaler.
 
 SvarInn er laget for å automatisere import av post. Systemet som henter, kalles et *mottakersystem*.
 
@@ -22,7 +22,7 @@ SvarInn er laget for å automatisere import av post. Systemet som henter, kalles
 
 Vi anbefaler at dere kjører 2–5 som en automatisk jobb som ikke kjøres for ofte - hvert 15. minutt bør være mer enn nok.
 
-Er en forsendelse ikke kvittert ut etter to timer, kommer den med i en e-post om manglende import som sendes til epostene som er lagt til mottakersystemet. E-posten sendes tre ganger om dagen til dem som har tilgang til mottakersystemet.
+Dersom en forsendelse ikke er kvittert ut etter to timer, kommer den med i en e-post om manglende import som sendes til epostene som er lagt til mottakersystemet. E-posten sendes tre ganger om dagen til dem som har tilgang til mottakersystemet.
 
 ## Sette opp et mottakersystem
 NB! Vi er i ferd med å endre hvordan man setter opp et mottakersystem. I Testmiljøet kan man nå sette opp og administrere mottakersystemer selv fra start til slutt via forvaltning.fiks.test.ks.no, inntil videre må man følge oppskriften under for prod. 

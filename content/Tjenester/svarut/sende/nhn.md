@@ -1,6 +1,6 @@
 ---
 title: Norsk Helsenett
-description: "Send brev til fastleger og andre aktører i Norsk Helsenett."
+description: "Send post til fastleger og andre aktører i Norsk Helsenett."
 date: 2026-11-01
 weight: 40
 aliases: [/tjenester/svarut/sendenhn/, /tjenester/svarut/send-nhn]
@@ -10,7 +10,7 @@ aliases: [/tjenester/svarut/sendenhn/, /tjenester/svarut/send-nhn]
 Sending til Norsk Helsenett er fortsatt under utvikling, og ikke prodsatt ennå. Ta kontakt med oss i KS Digital om dere ønsker å teste mot vårt testmiljø. 
 {{% /notice %}}
 
-Med SvarUt kan saksbehandlere sende brev fra sak-, arkiv- eller fagsystemet til fastleger og andre aktører i Norsk Helsenett (NHN). Brevet havner direkte i pasientjournalsystemet (EPJ) hos mottakeren.
+Med SvarUt kan saksbehandlere sende post fra sak-, arkiv- eller fagsystemet til fastleger og andre aktører i Norsk Helsenett (NHN). Posten havner direkte i pasientjournalsystemet (EPJ) hos mottakeren.
 
 Mottakeren må finnes i adresseregisteret til NHN, som tjeneste eller person. Se [NHN sin dokumentasjon om CommunicationParty](https://utviklerportal.nhn.no/informasjonstjenester/virksomhetstjenester/adresseregisteret/communicationparty-api/docs/apimd) for hvem som kan adresseres.
 
@@ -37,11 +37,11 @@ Velg mottaker med `mottakertype`:
 
 Påkrevde felter:
 
-| Felt | Innhold |
-|---|---|
-| `tittel` | Tittel på brevet |
-| `mottakertype` | `FASTLEGE` eller `HER_ID` |
-| `pasient` | `fodselsnummer`, `fornavn`, `etternavn` og eventuelt `mellomnavn` |
+| Felt | Innhold                                                                    |
+|---|----------------------------------------------------------------------------|
+| `tittel` | Tittel på forsendelsen                                                     |
+| `mottakertype` | `FASTLEGE` eller `HER_ID`                                                  |
+| `pasient` | `fodselsnummer`, `fornavn`, `etternavn` og eventuelt `mellomnavn`          |
 | `avsenderKontakt` | `fornavn`, `etternavn` og `telefonnummer` til kontaktpersonen hos avsender |
 
 Forsendelsen kan ha flere dokumenter, men de må være PDF og total filstørrelse for alle dokumentene kan ikke være større enn 18 MB. Dokumentdelen i requesten må ha `Content-Type: application/pdf`, og filnavnet må slutte på `.pdf`. Dette er annerledes enn for andre mottakere, der dokumentdelen har `application/octet-stream`. Se [Dokumenter og vedlegg](/tjenester/svarut/sende/dokumenter/) for hvordan requesten bygges opp.
