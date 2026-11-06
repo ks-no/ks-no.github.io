@@ -1,50 +1,91 @@
 {
-  "openapi" : "3.0.1",
-  "info" : {
-    "title" : "KS Fiks: Matrikkel eier service",
-    "description" : "KS Fiks: Matrikkel eier service",
-    "contact" : {
-      "name" : "Fiks brukerstøtte",
-      "url" : "https://ks-no.github.io/",
-      "email" : "fiks@ks.no"
+  "openapi": "3.0.1",
+  "info": {
+    "title": "KS Fiks: Matrikkel eier service",
+    "description": "KS Fiks: Matrikkel eier service",
+    "contact": {
+      "name": "Fiks brukerstøtte",
+      "url": "https://ks-no.github.io/",
+      "email": "fiks@ks.no"
     },
-    "version" : "v1"
+    "version": "v1"
   },
-  "servers" : [ {
-    "url" : "http://matrikkel-eier:8080",
-    "description" : "Cluster internal service URI"
-  } ],
-  "tags" : [ {
-    "name" : "MatrikkelEier",
-    "description" : "API for Eier av matrikkel enhet"
-  } ],
-  "paths" : {
-    "/matrikkel-eier/api/v1/sok" : {
-      "post" : {
-        "tags" : [ "MatrikkelEier" ],
-        "description" : "Finn eiere for matrikkelenheter. Brukes kun til indeksering i til innsyn og krever spesiell tilgang.",
-        "operationId" : "sok",
-        "requestBody" : {
-          "content" : {
-            "application/json" : {
-              "schema" : {
-                "uniqueItems" : true,
-                "type" : "array",
-                "items" : {
-                  "$ref" : "#/components/schemas/MatrikkelnummerApiModel"
+  "servers": [
+    {
+      "url": "http://matrikkel-eier:8080",
+      "description": "Cluster internal service URI"
+    }
+  ],
+  "tags": [
+    {
+      "name": "MatrikkelEier",
+      "description": "API for Eier av matrikkel enhet"
+    }
+  ],
+  "paths": {
+    "/matrikkel-eier/api/v1/sok": {
+      "post": {
+        "tags": [
+          "MatrikkelEier"
+        ],
+        "description": "Finn eiere for matrikkelenheter. Brukes kun til indeksering i til innsyn og krever spesiell tilgang.",
+        "operationId": "sok",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "uniqueItems": true,
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/MatrikkelnummerApiModel"
                 }
               }
             }
           },
-          "required" : true
+          "required": true
         },
-        "responses" : {
-          "default" : {
-            "description" : "default response",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/SokeresultatApiModel"
+        "responses": {
+          "default": {
+            "description": "default response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SokeresultatApiModel"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/matrikkel-eier/api/v1/sok-for-tilgang": {
+      "post": {
+        "tags": [
+          "MatrikkelEier"
+        ],
+        "description": "Finn eiere for tilgang ved indeksering i Innsyn. Kommune, gård og bruk må være like. Feste og seksjon matcher uavhengig når verdiene er like eller minst én side er 0. Hvert forespurte matrikkelnummer returneres med unike eiere fra matchende enheter, også ved tomt resultat. Krever spesiell tilgang.",
+        "operationId": "sokForTilgang",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "uniqueItems": true,
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/MatrikkelnummerApiModel"
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "default": {
+            "description": "default response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SokeresultatApiModel"
                 }
               }
             }
@@ -53,70 +94,81 @@
       }
     }
   },
-  "components" : {
-    "schemas" : {
-      "EierApiModel" : {
-        "type" : "object",
-        "properties" : {
-          "type" : {
-            "type" : "string",
-            "enum" : [ "JURIDISK_PERSON", "FYSISK_PERSON" ]
+  "components": {
+    "schemas": {
+      "EierApiModel": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "JURIDISK_PERSON",
+              "FYSISK_PERSON"
+            ]
           },
-          "verdi" : {
-            "type" : "string"
+          "verdi": {
+            "type": "string"
           }
         }
       },
-      "EnhetResultatApiModel" : {
-        "type" : "object",
-        "properties" : {
-          "matrikkelnummer" : {
-            "$ref" : "#/components/schemas/MatrikkelnummerApiModel"
+      "EnhetResultatApiModel": {
+        "type": "object",
+        "properties": {
+          "matrikkelnummer": {
+            "$ref": "#/components/schemas/MatrikkelnummerApiModel"
           },
-          "eiere" : {
-            "uniqueItems" : true,
-            "type" : "array",
-            "items" : {
-              "$ref" : "#/components/schemas/EierApiModel"
+          "eiere": {
+            "uniqueItems": true,
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/EierApiModel"
             }
           }
         }
       },
-      "MatrikkelnummerApiModel" : {
-        "required" : [ "bruksnummer", "festenummer", "gardsnummer", "kommunenummer", "seksjonsnummer" ],
-        "type" : "object",
-        "properties" : {
-          "kommunenummer" : {
-            "pattern" : "^\\d*$",
-            "type" : "string"
+      "MatrikkelnummerApiModel": {
+        "required": [
+          "bruksnummer",
+          "festenummer",
+          "gardsnummer",
+          "kommunenummer",
+          "seksjonsnummer"
+        ],
+        "type": "object",
+        "properties": {
+          "kommunenummer": {
+            "pattern": "^\\d*$",
+            "type": "string"
           },
-          "gardsnummer" : {
-            "pattern" : "^\\d*$",
-            "type" : "string"
+          "gardsnummer": {
+            "pattern": "^\\d*$",
+            "type": "string"
           },
-          "bruksnummer" : {
-            "pattern" : "^\\d*$",
-            "type" : "string"
+          "bruksnummer": {
+            "pattern": "^\\d*$",
+            "type": "string"
           },
-          "festenummer" : {
-            "pattern" : "^\\d*$",
-            "type" : "string"
+          "festenummer": {
+            "pattern": "^\\d*$",
+            "type": "string"
           },
-          "seksjonsnummer" : {
-            "pattern" : "^\\d*$",
-            "type" : "string"
+          "seksjonsnummer": {
+            "pattern": "^\\d*$",
+            "type": "string"
           }
         }
       },
-      "SokeresultatApiModel" : {
-        "required" : [ "enhetResultater" ],
-        "type" : "object",
-        "properties" : {
-          "enhetResultater" : {
-            "uniqueItems" : true,
-            "type" : "array",
-            "items" : {
-              "$ref" : "#/components/schemas/EnhetResultatApiModel"
+      "SokeresultatApiModel": {
+        "required": [
+          "enhetResultater"
+        ],
+        "type": "object",
+        "properties": {
+          "enhetResultater": {
+            "uniqueItems": true,
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/EnhetResultatApiModel"
             }
           }
         }
