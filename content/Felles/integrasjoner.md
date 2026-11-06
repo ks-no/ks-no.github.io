@@ -123,14 +123,22 @@ Tjenesten som blir kalt, vet da både hvem personen er og hvilken integrasjon ka
 
 Testmiljøet og produksjon er helt adskilt, hos oss og hos Digdir. En integrasjon, et token eller en tilgang i test gjelder ikke i produksjon, og Maskinporten-klienten i test er en annen klient enn den i produksjon. Bruker du virksomhetssertifikat, trenger du ett for test og ett for produksjon. Bruker du egen nøkkel, trenger du én per miljø. Hvilke sertifikater Digdir godtar i hvert miljø, står hos Digdir.
 
-Testmiljøet skal bare inneholde testdata. Produksjonsdata skal ikke inn i testmiljøet: ikke personopplysninger, ikke dokumenter og ikke annet som kommer fra reelle saker. Bruk syntetiske testpersoner. Organisasjoner er som regel deres egne fra Enhetsregisteret, og det er dem testvirksomhetssertifikatet er utstedt til. Se [testmiljø]({{% ref "Felles/testmiljo.md" %}}).
+Testmiljøet skal bare inneholde testdata. Produksjonsdata skal ikke inn i testmiljøet: ikke personopplysninger, ikke dokumenter og ikke annet som kommer fra reelle saker. Bruk syntetiske testpersoner. Se [testmiljø]({{% ref "Felles/testmiljo.md" %}}).
+
+Det er to slags organisasjonsnummer i test, og de følger ulike regler:
+
+- **Organisasjonsnummeret i Maskinporten-tokenet** er deres eget, fra Enhetsregisteret. Det er dette nummeret testvirksomhetssertifikatet eller nøkkelen er utstedt for, og det er dette som er autorisert organisasjon på integrasjonen.
+- **Organisasjonsnummer i testdataene**, for eksempel avsenderen på en SvarUt-konto, må finnes i Brønnøysundregistrenes testmiljø. Der finnes bare syntetiske virksomheter fra [Tenor](https://www.skatteetaten.no/testdata/), ikke ekte organisasjoner.
+
+Integrasjonen bryr seg bare om det første. Organisasjonsnummeret på kundeforholdet og på kontoene i tjenestene har ingenting med tokenet å gjøre.
 
 **Komme i gang i test**
 
 1. Send organisasjonsnummeret til [fiks@ksdigital.no](mailto:fiks@ksdigital.no), så gir vi tilgang til `ks:fiks` i Maskinportens testmiljø. Be samtidig om tilgang til Slack-kanalen vår for support. Der tar vi helst spørsmålene.
 2. Opprett Maskinporten-klienten i Digdirs testmiljø.
 3. Be oss om en testorganisasjon i testmiljøet til Fiks forvaltning, eller bruk den dere har. Opprett integrasjonen der, med organisasjonsnummeret fra Maskinporten-klienten som autorisert organisasjon. Skjemaet kan vise en feilmelding når organisasjonsnummeret ikke finnes i testregisteret, men integrasjonen virker likevel.
-4. Gi integrasjonen tilgang til tjenesten dere tester mot.
+4. Krever en tjeneste et organisasjonsnummer som finnes i testregisteret, som avsenderen på en SvarUt-konto, bruker dere en Tenor-virksomhet der. Autorisert organisasjon på integrasjonen er fortsatt deres eget nummer. Integrasjonen trenger ikke token for Tenor-virksomheten, og heller ikke delegering i Altinn eller `consumer_org`. Hvordan dere finner en Tenor-virksomhet, og hva en SvarUt-konto for digital post krever i tillegg, står på [SvarUt og SvarInn testmiljø]({{% ref "Tjenester/svarut/testmiljo.md" %}}).
+5. Gi integrasjonen tilgang til tjenesten dere tester mot.
 
 Se også [testmiljø]({{% ref "Felles/testmiljo.md" %}}) for testdata.
 
@@ -149,6 +157,7 @@ Se også [testmiljø]({{% ref "Felles/testmiljo.md" %}}) for testdata.
 | Maskinporten gir ikke token | Noe mangler hos Digdir: nøkkel, klient eller scope. Se Digdirs veiledning, eller spør Digdir. |
 | 401 «Klarte ikke å validere access_token» | Tokenet er problemet: utløpt, feil utsteder eller mangler scopet `ks:fiks`. Hent et nytt token rett før kallet. |
 | 401 «Autentisering feilet for integrasjon med id …» | Tokenet er godtatt, men integrasjonen ikke. Enten er organisasjonsnummeret i tokenet ikke den autoriserte organisasjonen, passordet er feil, eller integrasjonen finnes ikke. Fiks sier ikke hvilken. Sjekk `consumer` i tokenet mot integrasjonen i Fiks forvaltning. |
+| «Organisasjonsnummer … eksisterer ikke i enhetsregisteret» når du setter opp en SvarUt-konto i test | Nummeret finnes ikke i Brønnøysundregistrenes testmiljø. Bruk en Tenor-virksomhet på kontoen, se [SvarUt og SvarInn testmiljø]({{% ref "Tjenester/svarut/testmiljo.md" %}}). Integrasjonen og Maskinporten-klienten beholder deres eget nummer. |
 | 403 fra Fiks | Integrasjonen er autentisert, men har ikke tilgang til det den prøver på. Kommunen må gi tilgangen i Fiks forvaltning, på riktig tjeneste eller konto. |
 | Det virker i test, men ikke i produksjon | Alt må settes opp på nytt i produksjon: scope-tilgang til `ks:fiks`, Maskinporten-klient i produksjon med eget virksomhetssertifikat eller egen nøkkel for produksjon, integrasjon og tilganger. Et testsertifikat eller en testnøkkel virker ikke i produksjon. |
 

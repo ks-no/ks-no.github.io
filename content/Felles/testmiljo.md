@@ -8,7 +8,7 @@ Fiks-plattformens testmiljø er for kommuner, fylkeskommuner og leverandører so
 
 Vi bruker testmiljøet til å verifisere endringer før de går i produksjon, så det ligger som regel litt foran produksjon. Vi garanterer ikke oppetid i test, men prøver å holde nedetid kort.
 
-Testmiljøet har ikke samme sikkerhet som produksjon. Testmiljøet skal bare inneholde testdata. Produksjonsdata skal ikke inn i testmiljøet: ikke personopplysninger, ikke dokumenter og ikke annet som kommer fra reelle saker. Bruk syntetiske testpersoner. Organisasjoner er som regel deres egne fra Enhetsregisteret, og det er dem testvirksomhetssertifikatet er utstedt til.
+Vi gir ikke de samme sikkerhetsgarantiene i test som i produksjon. Testmiljøet skal bare inneholde testdata. Produksjonsdata skal ikke inn i testmiljøet: ikke personopplysninger, ikke dokumenter og ikke annet som kommer fra reelle saker. Bruk syntetiske testpersoner. Organisasjonsnummeret i Maskinporten-tokenet er deres eget, fra Enhetsregisteret, og det er dette testvirksomhetssertifikatet er utstedt for. Organisasjonsnummer i testdataene, for eksempel avsenderen på en SvarUt-konto, må finnes i Brønnøysundregistrenes testmiljø, og der finnes bare syntetiske Tenor-virksomheter. Se [Integrasjoner]({{% ref "Felles/integrasjoner.md" %}}#test-og-produksjon).
 
 ## Tilgang til testmiljøet
 
