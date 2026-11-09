@@ -1269,6 +1269,71 @@
           }
         }
       }
+    },
+    "/systemkatalog/katalog/api/v1/leverandoer/organisasjonsnummer/batch": {
+      "post": {
+        "tags": [
+          "Katalog"
+        ],
+        "summary": "Hente flere leverandører på organisasjonsnummer",
+        "description": "Slår opp inntil 200 leverandører i ett kall. Organisasjonsnumre katalogen ikke kjenner, og leverandører som er deaktivert, utelates fra svaret — kallet feiler ikke, og et oppslag uten treff gir 200 med tom liste, ikke 404.\n\n`organisasjonsnummer` kommer fra katalogen og er alltid satt. `enhet` er alltid med, slik enkeltoppslaget `hentLeverandoerByOrganisasjonsnummer` også garanterer — feiler oppslaget mot Enhetsregisteret, fylles den med organisasjonsnummeret alene. `enhet.navn` kan derfor mangle for en leverandør som finnes her, men ikke der, og det gjelder begge endepunktene likt. Det er ikke det samme som et ukjent organisasjonsnummer: raden kommer med, men uten navn.\n\n`produkter` fylles bare når `inkluderProdukter` er satt, og utelates ellers fra svaret. Merk at genererte klienter som initialiserer listefelter vil vise feltet som tom liste framfor fraværende, så «ikke etterspurt» og «ingen produkter» kan ikke skilles på klientsiden.",
+        "operationId": "hentLeverandoererByOrganisasjonsnumre",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LeverandoerBatchRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Leverandørene som ble funnet",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/LeverandoerBatchResponse"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Ugyldig input, for eksempel tom liste eller flere enn 200 organisasjonsnumre",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Manglende eller ugyldig integrasjonsautentisering",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Manglende tilgang",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -1317,6 +1382,57 @@
         "required": [
           "telefonnummer"
         ]
+      },
+      "LeverandoerBatchRequest": {
+        "type": "object",
+        "required": [
+          "organisasjonsnumre"
+        ],
+        "properties": {
+          "organisasjonsnumre": {
+            "type": "array",
+            "description": "Organisasjonsnumrene det skal slås opp på. Duplikater gir én rad.",
+            "minItems": 1,
+            "maxItems": 200,
+            "items": {
+              "type": "string",
+              "pattern": "^\\d{9}$"
+            }
+          },
+          "inkluderProdukter": {
+            "type": "boolean",
+            "description": "Ta med leverandørenes produkter i svaret. Øker svarets størrelse, men ikke antall databasespørringer.",
+            "default": false
+          }
+        }
+      },
+      "LeverandoerBatchResponse": {
+        "type": "object",
+        "required": [
+          "leverandoerId",
+          "organisasjonsnummer",
+          "enhet"
+        ],
+        "properties": {
+          "leverandoerId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "organisasjonsnummer": {
+            "type": "string",
+            "pattern": "^\\d{9}$"
+          },
+          "enhet": {
+            "$ref": "#/components/schemas/Enhet"
+          },
+          "produkter": {
+            "type": "array",
+            "description": "Utelatt med mindre inkluderProdukter var satt i forespørselen.",
+            "items": {
+              "$ref": "#/components/schemas/ProduktResponse"
+            }
+          }
+        }
       },
       "LeverandoerRequest": {
         "type": "object",

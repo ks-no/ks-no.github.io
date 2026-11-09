@@ -38,6 +38,7 @@
           }
         ],
         "summary": "Søk på produkter basert på søkeparametere",
+        "description": "Returnerer produktene som er tagget med tjenestekoden, med leverandør, kontaktpunkter og tjenestereferanser.\n\nKontaktpunkter ligger i to felt: `kontaktpunkter` er produktets egne, `leverandoerKontaktpunkter` er leverandørens. To regler gjelder, på hvert sitt nivå:\n\n1. **Arv gjelder per gruppe, ikke per kontaktpunkt.** For en gitt kombinasjon av type og formål gjelder samtlige av produktets egne kontaktpunkter. Har produktet ingen for den kombinasjonen, gjelder samtlige av leverandørens. Nivåene blandes aldri for samme kombinasjon av type og formål.\n2. **Determinisme gjelder bare der ett svar må velges.** `hentEpostForProdukt` og `hentTelefonForProdukt` i katalog-API-et returnerer én verdi, og velger det eldste (opprettelsestidspunkt, deretter id) blant dem regel 1 utpeker. Begge listene her er sortert på samme nøkkel, så en konsument som trenger nøyaktig den ene verdien tar det første elementet etter å ha anvendt regel 1.",
         "operationId": "soekProdukter",
         "responses": {
           "200": {
@@ -49,6 +50,26 @@
                   "items": {
                     "$ref": "#/components/schemas/ProduktMedLeverandoerResponse"
                   }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Manglende eller ugyldig integrasjonsautentisering",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Manglende tilgang",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage"
                 }
               }
             }
@@ -96,7 +117,7 @@
           }
         ],
         "summary": "Søk på integrasjoner for en leverandør og/eller et produkt",
-        "description": "Søker opp integrasjoner knyttet til produktene til en leverandør, eller til et enkelt produkt. Minst én av leverandoerId og produktId må oppgis. Oppgis begge, hentes integrasjonene for produktet, og resultatet blir tomt hvis produktet tilhører en annen leverandør. Resultatet kan filtreres på tjenestekode.",
+        "description": "Søker opp integrasjoner knyttet til produktene til en leverandør, eller til et enkelt produkt. Minst én av leverandoerId og produktId må oppgis. Oppgis begge, hentes integrasjonene for produktet, og resultatet blir tomt hvis produktet tilhører en annen leverandør. Resultatet kan filtreres på tjenestekode.\n\nSvaret kan være ufullstendig uten at det er synlig: en integrasjon fra fiks-konfigurasjon som mangler et felt denne kontrakten krever, utelates framfor å felle hele kallet. Svaret inneholder ingen indikasjon på at noe er utelatt. Avviket logges på ERROR i systemkatalogen, som er eneste sted det kan oppdages. Dette gjelder likt enten søket går på produkt eller leverandør.",
         "operationId": "soekIntegrasjoner",
         "responses": {
           "200": {
@@ -236,6 +257,13 @@
             "items": {
               "type": "string"
             }
+          },
+          "leverandoerKontaktpunkter": {
+            "type": "array",
+            "description": "Leverandørens kontaktpunkter. Gjelder for de kombinasjonene av type og formål der produktet ikke har egne, jf. regel 1 i beskrivelsen av operasjonen. Sortert eldste først.",
+            "items": {
+              "$ref": "#/components/schemas/KontaktpunktResponse"
+            }
           }
         }
       },
@@ -374,125 +402,6 @@
           }
         }
       },
-      "TypeTilgang": {
-        "type": "string",
-        "description": "Hvilken type tilgang som er gitt på en tjeneste.",
-        "enum": [
-          "Administrator",
-          "Bruker",
-          "Integrasjon",
-          "Ukjent"
-        ],
-        "example": "Integrasjon"
-      },
-      "TilgangResponse": {
-        "type": "object",
-        "required": [
-          "tjenesteNavn",
-          "tjenesteKode",
-          "typeTilgang",
-          "sti"
-        ],
-        "properties": {
-          "tjenesteNavn": {
-            "type": "string",
-            "description": "Navn på tjenesten integrasjonen har tilgang til.",
-            "example": "TJENESTENAVN"
-          },
-          "tjenesteKode": {
-            "type": "string",
-            "description": "Tjenestekoden til tjenesten integrasjonen har tilgang til.",
-            "example": "TJENESTEN"
-          },
-          "typeTilgang": {
-            "$ref": "#/components/schemas/TypeTilgang"
-          },
-          "sti": {
-            "type": "string",
-            "description": "Sti til ressursen integrasjonen har tilgang til.",
-            "example": "Kommune -> Tjenesten -> App"
-          }
-        }
-      },
-      "IntegrasjonResponse": {
-        "type": "object",
-        "required": [
-          "id",
-          "produktId",
-          "autorisertOrgnr",
-          "navn",
-          "fiksOrgId",
-          "opprettet",
-          "forespurtePrivilegier"
-        ],
-        "properties": {
-          "id": {
-            "type": "string",
-            "format": "uuid"
-          },
-          "autorisertOrgnr": {
-            "type": "string"
-          },
-          "navn": {
-            "type": "string"
-          },
-          "beskrivelse": {
-            "type": "string"
-          },
-          "kode": {
-            "type": "string"
-          },
-          "produktId": {
-            "type": "string",
-            "format": "uuid"
-          },
-          "tjenesteKode": {
-            "type": "string"
-          },
-          "global": {
-            "type": "boolean"
-          },
-          "forespurtePrivilegier": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
-          "fiksOrgId": {
-            "type": "string",
-            "format": "uuid"
-          },
-          "fiksOrgNavn": {
-            "type": "string"
-          },
-          "opprettet": {
-            "type": "string"
-          },
-          "utlopsdato": {
-            "type": "string",
-            "format": "date"
-          },
-          "tags": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
-          "tilknyttedeRessurser": {
-            "type": "array",
-            "items": {
-              "type": "string",
-              "format": "uuid"
-            }
-          },
-          "tilganger": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/TilgangResponse"
-            }
-          }
-        }
-      },
       "ErrorMessage": {
         "type": "object",
         "description": "Feilmelding fra Fiks-plattformen",
@@ -573,6 +482,126 @@
           "errorDetails": {
             "fiksOrgId": "1a5038d7-c1fe-4110-9310-fe3b096a0564",
             "externalReference": "a8793ee2-b7b2-40a5-9731-51e018244cf4"
+          }
+        }
+      },
+      "TypeTilgang": {
+        "type": "string",
+        "description": "Hvilken type tilgang som er gitt på en tjeneste.",
+        "enum": [
+          "Administrator",
+          "Bruker",
+          "Integrasjon",
+          "Ukjent"
+        ],
+        "example": "Integrasjon"
+      },
+      "TilgangResponse": {
+        "type": "object",
+        "required": [
+          "tjenesteNavn",
+          "tjenesteKode",
+          "typeTilgang",
+          "sti"
+        ],
+        "properties": {
+          "tjenesteNavn": {
+            "type": "string",
+            "description": "Navn på tjenesten integrasjonen har tilgang til.",
+            "example": "TJENESTENAVN"
+          },
+          "tjenesteKode": {
+            "type": "string",
+            "description": "Tjenestekoden til tjenesten integrasjonen har tilgang til.",
+            "example": "TJENESTEN"
+          },
+          "typeTilgang": {
+            "$ref": "#/components/schemas/TypeTilgang"
+          },
+          "sti": {
+            "type": "string",
+            "description": "Sti til ressursen integrasjonen har tilgang til.",
+            "example": "Kommune -> Tjenesten -> App"
+          }
+        }
+      },
+      "IntegrasjonResponse": {
+        "type": "object",
+        "required": [
+          "id",
+          "produktId",
+          "autorisertOrgnr",
+          "navn",
+          "fiksOrgId",
+          "opprettet",
+          "forespurtePrivilegier"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "autorisertOrgnr": {
+            "type": "string"
+          },
+          "navn": {
+            "type": "string"
+          },
+          "beskrivelse": {
+            "type": "string"
+          },
+          "kode": {
+            "type": "string"
+          },
+          "produktId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "tjenesteKode": {
+            "type": "string"
+          },
+          "global": {
+            "type": "boolean"
+          },
+          "forespurtePrivilegier": {
+            "type": "array",
+            "description": "Privilegiene integrasjonen har bedt om. Tom liste betyr at fiks-konfigurasjon ikke oppga noen, og kan ikke skilles fra at integrasjonen ber om ingen. Skillet ville uansett ikke overlevd klientgenereringen, siden genererte klienter initialiserer listefelter.",
+            "items": {
+              "type": "string"
+            }
+          },
+          "fiksOrgId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "fiksOrgNavn": {
+            "type": "string"
+          },
+          "opprettet": {
+            "type": "string"
+          },
+          "utlopsdato": {
+            "type": "string",
+            "format": "date"
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "tilknyttedeRessurser": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          "tilganger": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TilgangResponse"
+            }
           }
         }
       }
