@@ -14,6 +14,20 @@ En forsendelse går gjennom flere statuser fra den blir mottatt til den har nåd
 
 ![Statusreisen med LEST i egen kolonne: KLAR_FOR_MOTTAK, LEVERT_ALTINN, SENDT_DIGITALT og i enkelte tilfeller LEVERT_SDP kan bli LEST](/images/svarut/SvarUt-statusreisen-lest.png)
 
+## Flyt og status per mottakertype
+
+**Virksomhet**
+
+![Statuser og fallback for post til virksomhet: SvarInn, deretter Altinn, deretter papirpost](/images/svarut/SvarUt-virksomhet.png)
+
+**Person**
+
+![Statuser og fallback for post til person: digital postkasse, deretter Altinn, deretter papirpost](/images/svarut/SvarUt-person.png)
+
+**Norsk Helsenett (Under utvikling)**
+
+![Statuser og fallback for post til Norsk Helsenett: NHN-mottaker, deretter papirpost](/images/svarut/SvarUt-nhn.png)
+
 ## Alle statuser
 
 | Status | Betyr | Endelig? |
