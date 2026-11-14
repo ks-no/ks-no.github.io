@@ -54,9 +54,9 @@ Trykk på **Velg en fil** under **Last opp offentlig nøkkel**, og finn `.pem`-f
 
 Den nye offentlige nøkkelen er nå lastet opp.
 
-{{% notice style="warning" title="Husk å oppdatere klienten" %}}
+{{% callout style="warning" title="Husk å oppdatere klienten" %}}
 Legg den tilsvarende private nøkkelen inn i Fiks IO-klienten, slik at klienten kan dekryptere innkommende meldinger. Glemmer du dette, vil klienten ikke kunne lese meldinger som er kryptert med den nye nøkkelen.
-{{% /notice %}}
+{{% /callout %}}
 
 ![Offentlig nøkkel lastet opp](/images/protokoll-brukerveiledning/pem_ny_nokkel_lastet_opp.png "Offentlig nøkkel endret")
 
