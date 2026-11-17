@@ -244,7 +244,7 @@
     "/selvdeklarering/api/v1/innleveringer/{id}/fremdrift": {
       "get": {
         "summary": "Hent fremdrift for innlevering",
-        "description": "Teller besvarte spørsmål totalt og per pakke med samme regel som lever-inn validerer etter: et spørsmål er besvart når minst ett alternativ er valgt, og et kombinasjonsspørsmål krever i tillegg minst ett valg under alternativet som åpner det. Seksjoner telles ikke. `klarForInnlevering` er true når alle spørsmål er besvart.\n\nI tillegg returneres oppsummeringen frontend tidligere regnet ut selv: `visningsstatus`, tellere og fordeling for minimumskrav og vurderingskriterier, samme tall per kravområde, og evaluering/risiko per spørsmål. Et spørsmål som finnes i både en minimumskrav- og en vurderingspakke telles én gang, som minimumskrav. Risiko følger samme regel som PDF-en: `scoreLabel` avgjør når den er en kjent risikotekst, ellers `evaluering` (GODKJENT med poeng ≥ 5 er LAV, GODKJENT under 5 er MODERAT, DELVIS_GODKJENT er HØY, IKKE_GODKJENT er SVÆRT_HØY). Ved flere valgte alternativer gjelder det svakeste. Pakkens poengoverstyringer brukes.",
+        "description": "Teller besvarte spørsmål totalt og per pakke med samme regel som lever-inn validerer etter: et spørsmål er besvart når minst ett alternativ er valgt, og et kombinasjonsspørsmål krever i tillegg minst ett valg under alternativet som åpner det, og at et valgt undervalg har alternativet som åpner det valgt. Seksjoner telles ikke. `klarForInnlevering` er true når alle spørsmål er besvart.\n\nI tillegg returneres oppsummeringen frontend tidligere regnet ut selv: `visningsstatus`, tellere og fordeling for minimumskrav og vurderingskriterier, samme tall per kravområde, og evaluering/risiko per spørsmål. Et spørsmål som finnes i både en minimumskrav- og en vurderingspakke telles én gang, som minimumskrav. Risiko følger samme regel som PDF-en: `scoreLabel` avgjør når den er en kjent risikotekst, ellers `evaluering` (GODKJENT med poeng ≥ 5 er LAV, GODKJENT under 5 er MODERAT, DELVIS_GODKJENT er HØY, IKKE_GODKJENT er SVÆRT_HØY). Ved flere valgte alternativer gjelder det svakeste. Pakkens poengoverstyringer brukes.",
         "operationId": "hentFremdrift",
         "tags": [
           "Innlevering"
@@ -1977,6 +1977,11 @@
             ],
             "description": "Presentasjonstype for gruppen dette alternativet hører til. Kun satt når spørsmålets svartype er KOMBINASJON — ellers gjelder spørsmålets egen svartype."
           },
+          "forelderId": {
+            "type": "string",
+            "nullable": true,
+            "description": "Id-en til hovedvalget dette alternativet er undervalg av. Null betyr toppnivå. Kun satt når spørsmålets svartype er KOMBINASJON, og peker da på et toppnivåalternativ i samme spørsmål (ett nivå). Kun ett hovedvalg har undervalg. Treet leses fra forelderId; svar levert inn før spørsmålsbanken sendte forelderId mangler feltet, og der utledes treet fra svartype og eksklusiv. Skal erstatte gruppe og svartype per alternativ, som sendes sammen med forelderId i en overgangsperiode."
+          },
           "tillaterEgenTekst": {
             "type": "boolean",
             "default": false,
@@ -2345,7 +2350,7 @@
         }
       },
       "ufullstendigBesvarelse": {
-        "description": "Innleveringen kan ikke leveres inn. errorCode UBESVARTE_SPORSMAL: ett eller flere spørsmål er ikke besvart. errorCode UFULLSTENDIG_KOMBINASJON: et kombinasjonsspørsmål mangler valg under alternativet som åpner det. errorCode DUPLIKAT_SVAR: samme spørsmål er besvart flere ganger. errorCode DUPLIKAT_SVARALTERNATIV: samme svaralternativ er valgt flere ganger på ett spørsmål. errorCode UKJENT_SVARALTERNATIV: et valgt svaralternativ finnes ikke på spørsmålet. errorCode UKJENT_SPORSMAL: et svar gjelder et spørsmål som ikke er med i innleveringens pakker. Øvrig ugyldig input gir errorCode BAD_REQUEST.",
+        "description": "Innleveringen kan ikke leveres inn. errorCode UBESVARTE_SPORSMAL: ett eller flere spørsmål er ikke besvart. errorCode UFULLSTENDIG_KOMBINASJON: et kombinasjonsspørsmål mangler valg under alternativet som åpner det, eller har et undervalg valgt uten alternativet som åpner det. errorCode DUPLIKAT_SVAR: samme spørsmål er besvart flere ganger. errorCode DUPLIKAT_SVARALTERNATIV: samme svaralternativ er valgt flere ganger på ett spørsmål. errorCode UKJENT_SVARALTERNATIV: et valgt svaralternativ finnes ikke på spørsmålet. errorCode UKJENT_SPORSMAL: et svar gjelder et spørsmål som ikke er med i innleveringens pakker. Øvrig ugyldig input gir errorCode BAD_REQUEST.",
         "content": {
           "application/json": {
             "schema": {
