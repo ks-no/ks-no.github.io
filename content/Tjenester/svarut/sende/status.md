@@ -34,7 +34,7 @@ En forsendelse går gjennom flere statuser fra den blir mottatt til den har nåd
 | `SENDT_SDP` | Sendt til digital postkasse (Digipost eller e-Boks). | Nei |
 | `LEVERT_SDP` | Digital postkasse har bekreftet levering. | I praksis ja. Kan bli `LEST`. Kan også bli videresendt til Altinn eller Print dersom varsling av mottaker i de digitale postkassene feiler.  |
 | `SENDT_ALTINN` | Sendt til Altinn. | Nei |
-| `LEVERT_ALTINN` | Publisert i Altinn. | Nei |
+| `LEVERT_ALTINN` | Publisert i Altinn. | Nei. Blir LEST, eller går til print når lesefrist er utløpt. For post til virksomheter der SvarUt-konto har skrudd av automatisk ettersending, blir den stående. |
 | `SENDT_NHN_MOTTAKER` | Sendt til Norsk Helsenett. Mottakeren har ikke bekreftet ennå. | Nei |
 | `LEVERT_NHN_MOTTAKER` | Mottakeren i Norsk Helsenett har bekreftet mottak. | Ja |
 | `SENDT_DIGITALT` | Sendt digitalt med `kunDigitalLevering`, men ikke lest ennå. | I praksis ja. Kan bli `LEST`. |
