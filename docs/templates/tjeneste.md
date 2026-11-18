@@ -12,7 +12,7 @@ aliases: ["/fiks-plattform/tjenester/[tjenestenavn]/"]
     - Meldingsbaserte tjenester via Fiks IO/Protokoll (eks. Bekymringsmelding, Digisos)
     - Innbyggerportal-tjenester (eks. min.kommune.no, Samtykke web)
     - Felleskomponenter (eks. Fiks SMS, Fiks del dokument)
-    - Tjenestegrupper / paraplysider (eks. Fiks melding, Fiks register)
+    - Tjenestegrupper / paraplysider (eks. Fiks Melding, Fiks register)
 
   Bruksanvisning:
     1. Kopier malen til content/Tjenester/[tjenestenavn].md
