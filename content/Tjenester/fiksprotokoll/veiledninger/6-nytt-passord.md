@@ -12,9 +12,9 @@ aliases:
 
 Integrasjonspassordet kan ikke hentes fram igjen etter at systemet er opprettet. Har du mistet det, må du generere et nytt.
 
-{{% notice style="warning" title="Husk å oppdatere klientkonfigurasjonen" %}}
+{{% callout style="warning" title="Husk å oppdatere klientkonfigurasjonen" %}}
 Når du genererer et nytt passord, blir det gamle ugyldig. En klient som allerede er tilkoblet, fortsetter å fungere så lenge tilkoblingen står — men neste gang klienten kobler til på nytt (ved omstart eller etter et tilkoblingsbrudd), vil den feile dersom den fortsatt bruker det gamle passordet. Leverandøren må derfor oppdatere klientkonfigurasjonen med det nye passordet og starte instansen på nytt.
-{{% /notice %}}
+{{% /callout %}}
 
 ## Steg 1: Velg system
 

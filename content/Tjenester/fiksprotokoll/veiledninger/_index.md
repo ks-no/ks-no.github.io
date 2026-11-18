@@ -22,9 +22,9 @@ For å sende og motta meldinger over Fiks Protokoll må du gjennom fem oppsettss
 5. **[Gi og få tilgang]({{% ref "5-gi-tilgang.md" %}})** — la et annet system sende meldinger til kontoen din
 6. **[Koble til klienten]({{% ref "8-koble-til-klienten.md" %}})** — konfigurer Fiks IO-klienten og begynn å utveksle meldinger
 
-{{% notice style="note" title="Det skal to til" %}}
+{{% callout style="note" title="Det skal to til" %}}
 Fiks Protokoll er en topartskommunikasjon. For å faktisk utveksle meldinger må det finnes et **motpart-system** med en konto i samme protokoll — for eksempel et arkiv hvis du setter opp et fagsystem. Du kan gjøre steg 1–4 alene, men steg 5 krever at motparten finnes.
-{{% /notice %}}
+{{% /callout %}}
 
 ## Vedlikehold
 

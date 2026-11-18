@@ -55,9 +55,9 @@ API-et tilbyr batch-endepunkter for brukere og grupper, samt mulighet for å hen
 *   `fiksOrgId`: Kommunens eller organisasjonens unike ID (UUID) på Fiks-plattformen
 *   `maalSystem`: En unik id som identifiserer målsystemet (felles for alle eventuelle instanser av målsystemet)
 
-{{% notice warning %}}
+{{% callout warning %}}
 Endepunktene for brukere og grupper er **ikke** synkronisert med hverandre. Dette betyr at en gruppe kan referere til et medlem som ennå ikke er mottatt via `/brukere`. Klienter må implementere robust logikk for å håndtere slike midlertidige avvik.
-{{% /notice %}}
+{{% /callout %}}
 
 ### Batch-synkronisering (Delta)
 Disse endepunktene brukes for å hente endringer over tid ved bruk av `syncToken`.

@@ -6,7 +6,7 @@ date: 2026-05-20
 ## Kort beskrivelse
 
 Fiks register en en samling av register tjenester. Fiks register inneholder:
-{{% children %}}
+{{% pages display="tree" %}}
 
 ## Revisjoner
 

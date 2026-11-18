@@ -21,9 +21,9 @@ Klienten konfigureres med verdier fra de tidligere stegene:
 | Virksomhetssertifikat | Brukes til Maskinporten-autentisering | Fra [Før du starter]({{% ref "1-huskeliste.md" %}}) |
 | ASiC-E-signeringsnøkkel | Signerer meldingspakkene | Virksomhetssertifikatet eller et eget nøkkelpar |
 
-{{% notice style="warning" title="Nøkkelformat" %}}
+{{% callout style="warning" title="Nøkkelformat" %}}
 Den private nøkkelen må være i **PKCS#8**-format. Java-klienten har et verktøy for å konvertere fra PKCS#1. Se [Feilsøking]({{% ref "/Tjenester/fiksprotokoll/feilsoking.md" %}}) hvis kryptering eller dekryptering feiler.
-{{% /notice %}}
+{{% /callout %}}
 
 ## Velg klient
 
@@ -70,9 +70,9 @@ Se [dokumentasjonen](https://github.com/ks-no/fiks-io-klient-java/blob/main/docs
 - **Sende:** bygg en meldingsforespørsel med avsenderkonto, mottakerkonto og meldingstype, og send den med eventuell payload (fil, strøm eller tekst).
 - **Motta:** abonnér på kontoens kø med en callback. Når en melding kommer inn, håndterer du den og bekrefter den med `ack()`.
 
-{{% notice style="warning" title="Les dette før du tar klienten i bruk" %}}
+{{% callout style="warning" title="Les dette før du tar klienten i bruk" %}}
 Klienten må holde en langtlevende tilkobling og lytte kontinuerlig på køen, og **hver** mottatt melding må bekreftes med `ack()` — også ved feil. Gjør du ikke dette, havner meldinger i dead-letter-køen og går tapt. Se [Beste praksis for meldingshåndtering]({{% ref "/Tjenester/fiksprotokoll/meldingshandtering.md" %}}).
-{{% /notice %}}
+{{% /callout %}}
 
 Fullstendige kodeeksempler ligger i README-en til hvert klient-repo.
 

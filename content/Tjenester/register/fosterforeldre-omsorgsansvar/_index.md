@@ -38,7 +38,7 @@ Se [brukseksemplene]({{% ref "brukseksempler.md" %}}) for valg av operasjon i ty
 
 [OpenAPI-kontrakten på GitHub](https://github.com/ks-no/fiks-register-fosterforeldre-produsent-spec/blob/main/register-fosterforeldre-produsent.json)
 
-{{% children %}}
+{{% pages display="tree" %}}
 
 ## Få hjelp
 

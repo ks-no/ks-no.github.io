@@ -3,4 +3,4 @@ title: SvarInn
 hidden: true
 ---
 
-{{% children type="list" %}}
+{{% pages display="headings" %}}
