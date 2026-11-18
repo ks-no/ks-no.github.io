@@ -16,6 +16,8 @@ Sender du til `/forsendelser/person`, slår SvarUt opp mottakeren i Kontakt- og 
 2. **Altinn.** Har personen ikke valgt digital postkasse, eller feiler leveringen dit, men personen kan nås digitalt (igjen basert på informasjon fra KRR), sendes forsendelsen til Altinn. Status `SENDT_ALTINN`, deretter `LEVERT_ALTINN`.
 3. **Papirpost.** Har personen reservert seg mot digital post, finnes ikke i KRR eller ikke har lest forsendelsen i Altinn innen lesefristen, går den til print. Status `SENDT_PRINT`, deretter `PRINTET`.
 
+Du kan se flyt for en forsendelse til en privatperson, og hvilke statuser som er relevante [her](/tjenester/svarut/sende/status/).
+
 ## Virksomhet
 
 Sender du til `/forsendelser/organisasjon`, er det to digitale kanaler:
@@ -25,11 +27,14 @@ Sender du til `/forsendelser/organisasjon`, er det to digitale kanaler:
 3. **Papirpost.** Leses forsendelsen ikke innen lesefristen, eller avviser Altinn den, går den til print. Avsender kan slå av automatisk ettersending til papirpost for virksomheter i SvarUt-konfigurasjonen. Det er på som standard.
 
 Bruk `GET /v2/mottakersystem` for å se om et organisasjonsnummer har et mottakersystem.
+Du kan se flyt for en forsendelse til en virksomhet, og hvilke statuser som er relevante [her](/tjenester/svarut/sende/status/).
 
 ## Norsk Helsenett (Ikke i prod enda)
 
 Forsendelser til `/forsendelser/nhn` vil gå til Norsk Helsenett. Status vil først være `SENDT_NHN_MOTTAKER`, deretter `LEVERT_NHN_MOTTAKER` når EPJ-systemet til mottakeren har bekreftet å ha mottatt forsendelsen. 
 Om sendingen feiler, vil SvarUt prøve tre ganger til. Dersom det fortsatt feiler, eller om det ikke kommer kvittering innen 3 dager, eller mottakeren avviser forsendelsen, går den til print. Se [Norsk Helsenett](/tjenester/svarut/sende/nhn/).
+
+Du kan se flyt for en forsendelse til helsepersonell, og hvilke statuser som er relevante [her](/tjenester/svarut/sende/status/).
 
 ## Rett til print
 
