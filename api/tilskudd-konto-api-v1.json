@@ -49,7 +49,6 @@
         ],
         "operationId": "mottaPostering",
         "summary": "Mottar en postering og genererer domeneposteringer",
-        "description": "Idempotens håndteres automatisk ved at `Postering.tilskuddskontoId` (UUID) brukes som idempotensnøkkel.   Hvis en postering med samme `tilskuddskontoId` mottas flere ganger, returneres HTTP 409 Conflict.\n",
         "security": [
           {
             "bearerAuth": [
@@ -280,7 +279,7 @@
       "Belop": {
         "type": "string",
         "pattern": "^-?\\d+(\\.\\d{1,2})?$",
-        "description": "Beløp med inntil to desimaler og punktum som desimalskilletegn. Negativt beløp brukes ved reversering. Max 18 tegn",
+        "description": "Beløp med inntil to desimaler og punktum som desimalskilletegn. Negativt beløp brukes bare ved reversering. Max 18 tegn",
         "example": "8200000.00",
         "maxLength": 18
       },
@@ -294,15 +293,18 @@
         "properties": {
           "tilskuddskontoId": {
             "type": "string",
-            "format": "uuid"
+            "format": "uuid",
+            "description": "Unik id for posteringen. Samme id kan sendes på nytt etter en feil."
           },
           "posteringType": {
             "type": "string",
+            "description": "Typen postering. Kjeden går fra INNGAENDE BALANSE via AVSETNING HOVEDKONTO, AVSETNING UNDERKONTO og AVSETNING TILSKUDDSUTLYSING til SOKNADSBELOP (summen søkeren har søkt om), INNVILGET og UTBETALING. REVERSERT POSTERING opphever en tidligere postering.",
             "enum": [
               "INNGAENDE BALANSE",
               "AVSETNING HOVEDKONTO",
               "AVSETNING UNDERKONTO",
               "AVSETNING TILSKUDDSUTLYSING",
+              "SOKNADSBELOP",
               "INNVILGET",
               "UTBETALING",
               "REVERSERT POSTERING"
@@ -317,7 +319,8 @@
             "format": "uuid"
           },
           "kildesystem": {
-            "type": "string"
+            "type": "string",
+            "example": "eApply"
           },
           "tilskuddsregisterId": {
             "type": "string",
@@ -329,26 +332,30 @@
           },
           "fraKontoLopenummer": {
             "type": "string",
+            "example": "46.2.0001",
             "default": "fraKontoDefault",
-            "description": "Løpenummeret til kontoen beløpet trekkes fra. Utelates feltet, bruker tjenesten verdien \"fraKontoDefault\", og posteringen føres da på en felles konto sammen med andre posteringer uten avsenderkonto. Feltet brukes ikke for posteringstypen \"INNGAENDE BALANSE\"."
+            "description": "Løpenummeret til kontoen beløpet trekkes fra. Ikke brukt for INNGAENDE BALANSE."
           },
           "tilKontoLopenummer": {
             "type": "string",
+            "example": "46.2.0001.100001",
             "default": "tilKontoDefault",
-            "description": "Løpenummeret til kontoen beløpet føres til. Utelates feltet, bruker tjenesten verdien \"tilKontoDefault\", og posteringen føres da på en felles konto sammen med andre posteringer uten mottakerkonto."
+            "description": "Løpenummeret til kontoen beløpet føres til."
           },
           "valuta": {
             "type": "string",
+            "example": "NOK",
             "default": "NOK"
           },
           "belop": {
             "$ref": "#/components/schemas/Belop",
-            "description": "Beløp med inntil to desimaler og punktum som desimalskilletegn. Negativt beløp brukes ved reversering.",
+            "description": "Beløp med inntil to desimaler og punktum som desimalskilletegn. Negativt beløp ved reversering.",
             "example": "8200000.00"
           },
           "reversererId": {
             "type": "string",
-            "format": "uuid"
+            "format": "uuid",
+            "description": "Id til posteringen som reverseres. For INNVILGET og UTBETALING kan reverseringene til sammen ikke overstige beløpet på originalen."
           }
         }
       },
@@ -381,6 +388,7 @@
           },
           "valuta": {
             "type": "string",
+            "example": "NOK",
             "default": "NOK"
           }
         }
@@ -411,8 +419,14 @@
             "description": "Innvilget beløp som ennå ikke er utbetalt. Oppgis med to desimaler og punktum som desimalskilletegn.",
             "example": "60000.00"
           },
+          "soktBelop": {
+            "$ref": "#/components/schemas/Belop",
+            "description": "Summen søkeren har søkt om, eller 0.00 uten aktivt søknadsbeløp. Oppgis med to desimaler og punktum som desimalskilletegn.",
+            "example": "400000.00"
+          },
           "valuta": {
             "type": "string",
+            "example": "NOK",
             "default": "NOK"
           },
           "posteringer": {
@@ -428,7 +442,8 @@
         "type": "object",
         "properties": {
           "posteringType": {
-            "type": "string"
+            "type": "string",
+            "example": "INNVILGET"
           },
           "posteringDatoTid": {
             "type": "string",
@@ -441,6 +456,7 @@
           },
           "valuta": {
             "type": "string",
+            "example": "NOK",
             "default": "NOK"
           }
         }
@@ -448,7 +464,7 @@
     },
     "responses": {
       "400BadRequest": {
-        "description": "Ugyldig forespørsel",
+        "description": "Ugyldig forespørsel.\n\n- `TILSKUDD-3001`: posteringen mangler et felt posteringstypen krever\n- `TILSKUDD-3002`: en reversert postering mangler reversererId\n- `TILSKUDD-3003`: ugyldig dato i posteringen\n- `TILSKUDD-3004`: posteringen som reverseres, finnes ikke\n- `TILSKUDD-3005`: posteringstypen kan ikke reverseres\n- `TILSKUDD-3006`: en reversert postering har ikke negativt beløp\n- `TILSKUDD-3007`: reverseringen er større enn posteringen den reverserer\n- `TILSKUDD-3008`: det finnes ingen posteringer å reversere\n- `TILSKUDD-3009`: utbetaling uten registrert innvilgning\n- `TILSKUDD-3010`: innvilgning uten registrert avsetning på utlysingen\n- `TILSKUDD-3011`: utbetalingen overstiger gjenstående innvilget beløp\n- `TILSKUDD-3012`: innvilgningen overstiger gjenstående ramme på utlysingen\n- `TILSKUDD-3013`: reverseringen ville gjort avsetningen mindre enn innvilget beløp\n- `TILSKUDD-3020`: en path-parameter er ikke en gyldig UUID\n- `TILSKUDD-3021`: beløpet kan ikke leses\n- `TILSKUDD-3022`: beløpet er ikke positivt\n- `TILSKUDD-3023`: søknaden hører til en annen utlysing\n- `TILSKUDD-3024`: søknadsbeløpet er alt registrert\n- `TILSKUDD-3025`: søknadsbeløpet overstiger gjenstående ramme på utlysingen\n- `TILSKUDD-3026`: posteringen er ikke det aktive søknadsbeløpet\n- `TILSKUDD-3027`: søknadsbeløpet kan ikke reverseres når søknaden er innvilget\n- `TILSKUDD-3028`: reversering av søknadsbeløpet må gjelde hele beløpet\n- `TILSKUDD-3029`: innvilgning uten aktivt søknadsbeløp\n- `TILSKUDD-3030`: innvilgningen overstiger søkt beløp\n- `TILSKUDD-3033`: posteringen som reverseres, er ikke en innvilgning eller utbetaling på søknaden\n- `TILSKUDD-3034`: reverseringen overstiger det som er igjen på innvilgningen eller utbetalingen\n- `TILSKUDD-3035`: reverseringen ville gjort innvilget beløp på utlysingen negativt",
         "content": {
           "application/json": {
             "schema": {
@@ -478,7 +494,7 @@
         }
       },
       "404NotFound": {
-        "description": "Ikke funnet",
+        "description": "Ikke funnet.\n\n- `TILSKUDD-3018`: det finnes ingen kontooversikt for utlysingen\n- `TILSKUDD-3019`: det finnes ingen kontooversikt for søknaden, eller brukeren har ikke tilgang til søknaden",
         "content": {
           "application/json": {
             "schema": {
@@ -488,7 +504,7 @@
         }
       },
       "409Duplicate": {
-        "description": "Allerede mottatt (Idempotens via `tilskuddskontoId`)",
+        "description": "Allerede mottatt, eller en postering denne avhenger av, er ikke registrert ennå. Den siste kan prøves igjen etter `Retry-After`.\n\n- `TILSKUDD-3014`: avsetningen på utlysingen er ikke registrert ennå\n- `TILSKUDD-3015`: innvilgningen er ikke registrert ennå\n- `TILSKUDD-3016`: posteringen som reverseres, er ikke registrert ennå\n- `TILSKUDD-3017`: posteringen er allerede mottatt (idempotens via `tilskuddskontoId`)\n- `TILSKUDD-3031`: søknadsbeløpet er ikke registrert ennå\n- `TILSKUDD-3032`: søknadsbeløpet er reversert og ikke erstattet",
         "content": {
           "application/json": {
             "schema": {
@@ -498,7 +514,7 @@
         }
       },
       "DefaultError": {
-        "description": "Uventet feil (HTTP 500)",
+        "description": "Uventet feil (HTTP 500), eller HTTP 502 dersom en nedstrømstjeneste er utilgjengelig.\n\n- `TILSKUDD-3036`: en tjeneste vi kaller, svarte ikke (HTTP 502)",
         "content": {
           "application/json": {
             "schema": {

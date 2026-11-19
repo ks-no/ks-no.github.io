@@ -47,7 +47,7 @@
         ],
         "operationId": "soekEtterUtlysing",
         "summary": "Lister ut utlysinger for tilskuddsordninger",
-        "description": "Utgåtte utlysinger utelates som standard; sett inkluderUtgatte for å ta dem med. Uten fritekstsøk sorteres utlysingene på søknadsfrist med kortest frist først. Utlysinger med utløpt søknadsfrist listes til slutt, med den sist utløpte først. Er sok satt, styres rekkefølgen av relevansen til søketreffet.",
+        "description": "Utlysinger der publiseringen ikke har startet, tas aldri med. Utgåtte utlysinger utelates som standard; sett inkluderUtgatte for å ta dem med. Uten fritekstsøk sorteres utlysingene på søknadsfrist med kortest frist først. Utlysinger med utløpt søknadsfrist listes til slutt, med den sist utløpte først. Er sok satt, styres rekkefølgen av relevansen til søketreffet.",
         "parameters": [
           {
             "name": "sidenummer",
@@ -55,6 +55,7 @@
             "required": false,
             "schema": {
               "type": "integer",
+              "example": 1,
               "default": 1
             }
           },
@@ -64,6 +65,7 @@
             "required": false,
             "schema": {
               "type": "integer",
+              "example": 10,
               "default": 10
             }
           },
@@ -72,7 +74,8 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": "string"
+              "type": "string",
+              "example": "kulturminner"
             }
           },
           {
@@ -87,6 +90,7 @@
               "maxItems": 100,
               "items": {
                 "type": "string",
+                "example": "46",
                 "pattern": "^\\d{2}(\\d{2})?$"
               }
             }
@@ -107,10 +111,37 @@
             }
           },
           {
+            "name": "forvalter",
+            "in": "query",
+            "required": false,
+            "style": "form",
+            "explode": true,
+            "description": "Filtrer på forvalterens kode: 00 for statlige forvaltere, ellers fylkesnummer eller kommunenummer. Flere verdier gir ELLER.",
+            "schema": {
+              "type": "array",
+              "maxItems": 500,
+              "items": {
+                "type": "string",
+                "example": "00",
+                "pattern": "^\\d{2}(\\d{2})?$"
+              }
+            }
+          },
+          {
             "name": "inkluderFiltreringsinfo",
             "in": "query",
             "required": false,
             "description": "Når true inkluderes filtreringsinfo i responsen: antall utlysinger som gjelder SPESIFIKT hver mulige filterverdi (søkergruppe, fylke, kommune), pluss antall landsdekkende utlysinger. Tallene beregnes med søket og alle ANDRE dimensjoners filtre anvendt, men verdiens egen dimensjon ekskludert, over hele resultatsettet — de påvirkes ikke av paginering. Antallet for en regionkode teller bare utlysingene som lister koden selv; de landsdekkende kommer alltid i tillegg når man filtrerer på regionen.",
+            "schema": {
+              "type": "boolean",
+              "default": false
+            }
+          },
+          {
+            "name": "inkluderForvalterFilter",
+            "in": "query",
+            "required": false,
+            "description": "Når true tas forvaltere med i filtreringsinfo.",
             "schema": {
               "type": "boolean",
               "default": false
@@ -226,6 +257,9 @@
           },
           "403": {
             "$ref": "#/components/responses/403Forbidden"
+          },
+          "409": {
+            "$ref": "#/components/responses/409Conflict"
           },
           "default": {
             "$ref": "#/components/responses/DefaultError"
@@ -473,11 +507,13 @@
         "properties": {
           "tittel": {
             "type": "string",
+            "example": "Tilskudd til kulturminner 2026",
             "minLength": 1,
             "maxLength": 100
           },
           "kortBeskrivelse": {
             "type": "string",
+            "example": "Tilskudd til istandsetting av verneverdige kulturminner i privat eie.",
             "minLength": 1,
             "maxLength": 300
           },
@@ -510,6 +546,7 @@
           },
           "kildesystem": {
             "type": "string",
+            "example": "eApply",
             "minLength": 1,
             "maxLength": 100,
             "description": "System som er kilde for å generere denne utlysingen"
@@ -521,6 +558,7 @@
         "properties": {
           "stoettetiltaksnummer": {
             "type": "string",
+            "example": "SA.100000",
             "description": "Id for støtteordning i Støtteregisteret"
           },
           "kontaktinfo": {
@@ -537,19 +575,13 @@
           },
           "soknadsbelop": {
             "type": "string",
+            "example": "Inntil 200 000 kr per tiltak",
             "maxLength": 150
           },
           "tilleggsinformasjon": {
             "type": "string",
+            "example": "Ta kontakt med forvalteren før du søker hvis du er usikker på om tiltaket kvalifiserer.",
             "maxLength": 300
-          },
-          "behandlingstidDager": {
-            "type": "integer",
-            "description": "Antatt behandlingstid etter søknadsfrist"
-          },
-          "rapporteringsfristDager": {
-            "type": "integer",
-            "description": "Rapporteringsfrist etter tilsagn"
           },
           "avsnitt": {
             "type": "array",
@@ -574,8 +606,6 @@
           "region",
           "sokergruppe",
           "soknadsfrist",
-          "behandlingstidDager",
-          "rapporteringsfristDager",
           "forvalter",
           "kontaktinfo",
           "publisering",
@@ -646,16 +676,20 @@
             }
           },
           "sidenummer": {
-            "type": "integer"
+            "type": "integer",
+            "example": 1
           },
           "utlysingerPrSide": {
-            "type": "integer"
+            "type": "integer",
+            "example": 10
           },
           "totaltAntallSider": {
-            "type": "integer"
+            "type": "integer",
+            "example": 3
           },
           "totaltAntallUtlysinger": {
-            "type": "integer"
+            "type": "integer",
+            "example": 25
           },
           "filtreringsinfo": {
             "$ref": "#/components/schemas/Filtreringsinfo"
@@ -665,7 +699,7 @@
       "Filtreringsinfo": {
         "type": "object",
         "readOnly": true,
-        "description": "Antall utlysinger som gjelder SPESIFIKT hver mulige filterverdi. Tallene er beregnet med søket og alle ANDRE dimensjoners filtre anvendt, men verdiens egen dimensjon ekskludert, over hele resultatsettet — de påvirkes ikke av paginering. En utlysing som lister både et fylke og en kommune teller på begge, og et fylke teller ikke med utlysingene til kommunene sine. Antallet for en regionkode inkluderer ikke de landsdekkende utlysingene, som alltid kommer i tillegg når man filtrerer på regionen. Verdier uten utlysinger har antallTreff 0.",
+        "description": "Antall utlysinger som gjelder SPESIFIKT hver mulige filterverdi for søkergruppe, fylke, kommune og forvalter. Tallene er beregnet med søket og alle ANDRE dimensjoners filtre anvendt, men verdiens egen dimensjon ekskludert, over hele resultatsettet — de påvirkes ikke av paginering. En utlysing som lister både et fylke og en kommune teller på begge, og et fylke teller ikke med utlysingene til kommunene sine. Antallet for en regionkode inkluderer ikke de landsdekkende utlysingene, som alltid kommer i tillegg når man filtrerer på regionen. Verdier uten utlysinger har antallTreff 0.",
         "required": [
           "sokergrupper",
           "fylker",
@@ -690,6 +724,13 @@
             "type": "integer",
             "description": "Antall utlysinger uten regioner, som gjelder hele landet",
             "example": 1
+          },
+          "forvaltere": {
+            "type": "array",
+            "maxItems": 500,
+            "items": {
+              "$ref": "#/components/schemas/ForvalterMedAntall"
+            }
           }
         }
       },
@@ -768,6 +809,31 @@
           }
         }
       },
+      "ForvalterMedAntall": {
+        "type": "object",
+        "readOnly": true,
+        "required": [
+          "kode",
+          "antallTreff"
+        ],
+        "properties": {
+          "kode": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Forvalterens kode: 00 for statlige forvaltere, ellers fylkesnummer eller kommunenummer",
+            "example": "46"
+          },
+          "navn": {
+            "type": "string",
+            "example": "Vestland"
+          },
+          "antallTreff": {
+            "type": "integer",
+            "description": "Antall utlysinger som forvaltes av forvaltere med koden",
+            "example": 4
+          }
+        }
+      },
       "RegistrerUtlysingRequest": {
         "type": "object",
         "writeOnly": true,
@@ -777,8 +843,6 @@
           "status",
           "sokergruppe",
           "soknadsfrist",
-          "behandlingstidDager",
-          "rapporteringsfristDager",
           "forvalter",
           "kontaktinfo",
           "publisering",
@@ -806,11 +870,13 @@
         "properties": {
           "tittel": {
             "type": "string",
+            "example": "Hvem kan søke",
             "minLength": 1,
             "maxLength": 80
           },
           "innhold": {
             "type": "string",
+            "example": "<p>Private eiere av verneverdige bygg kan søke.</p>",
             "description": "HTML-innhold. Tillatte tagger: `strong`, `b`, `i`, `em`, `p`, `br`, `ul`, `ol`, `li` og `a` (kun `href` med `http` eller `https`). Andre tagger og attributter fjernes ved lagring, mens teksten i dem beholdes. Spesialtegn i tekst lagres som HTML-entiteter (`&lt;`, `&gt;`, `&amp;`).",
             "minLength": 1,
             "maxLength": 10000
@@ -837,6 +903,7 @@
           },
           "dagerMedVarselForFrist": {
             "type": "integer",
+            "example": 14,
             "description": "Felt for å sette hvor mange dager før søknadsfristen man skal markere at søknadsfristen nærmer seg."
           },
           "erLopende": {
@@ -872,6 +939,7 @@
         "properties": {
           "organisasjonsnummer": {
             "type": "string",
+            "example": "123456785",
             "minLength": 9,
             "maxLength": 9,
             "pattern": "^\\d{9}$"
@@ -886,6 +954,7 @@
           },
           "navn": {
             "type": "string",
+            "example": "Eksempel fylkeskommune",
             "readOnly": true
           }
         }
@@ -927,28 +996,35 @@
           },
           "navn": {
             "type": "string",
+            "example": "Ola Nordmann",
             "minLength": 1
           },
           "stillingAvdeling": {
-            "type": "string"
+            "type": "string",
+            "example": "Seniorrådgiver"
           },
           "epost": {
-            "type": "string",
-            "minLength": 1,
-            "pattern": "^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$",
-            "example": "test@test.no"
+            "$ref": "#/components/schemas/Epost"
           },
           "telefon": {
             "type": "string",
+            "example": "+4799999999",
             "minLength": 8,
             "pattern": "^(0047|\\+47)?\\d{8}$"
           }
         }
+      },
+      "Epost": {
+        "type": "string",
+        "format": "email",
+        "maxLength": 254,
+        "pattern": "^[A-Za-z0-9!#$%&'*+/=?^_`{|}~-]+(\\.[A-Za-z0-9!#$%&'*+/=?^_`{|}~-]+)*@((?![Xx][Nn]--)[A-Za-z0-9]([A-Za-z0-9-]{0,61}[A-Za-z0-9])?\\.)+[A-Za-z]{2,63}$",
+        "example": "ola.nordmann@example.com"
       }
     },
     "responses": {
       "400BadRequest": {
-        "description": "Ugyldig forespørsel",
+        "description": "Ugyldig forespørsel.\n\n- `TILSKUDD-1001`: region er ikke et fylkesnummer eller kommunenummer\n- `TILSKUDD-1002`: kontaktinfo har mer enn én virksomhet\n- `TILSKUDD-1003`: en kontaktinfo mangler både telefonnummer og epost\n- `TILSKUDD-1006`: en path-parameter er ikke en gyldig UUID\n- `TILSKUDD-1008`: sidenummer eller utlysingerPrSide er utenfor gyldig område\n- `TILSKUDD-1009`: forvalter er ikke en gyldig kode",
         "content": {
           "application/json": {
             "schema": {
@@ -978,7 +1054,17 @@
         }
       },
       "404NotFound": {
-        "description": "Utlysingen ikke funnet",
+        "description": "Utlysingen ikke funnet.\n\n- `TILSKUDD-1005`: det finnes ingen utlysing med tilskuddsregisterId",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorMessage"
+            }
+          }
+        }
+      },
+      "409Conflict": {
+        "description": "Forespørselen er i konflikt med det som alt er lagret.\n\n- `TILSKUDD-1004`: det finnes alt en utlysing med tilskuddsregisterId",
         "content": {
           "application/json": {
             "schema": {
@@ -988,7 +1074,7 @@
         }
       },
       "DefaultError": {
-        "description": "Uventet feil (HTTP 500), eller HTTP 502 dersom en nedstrømstjeneste er utilgjengelig",
+        "description": "Uventet feil (HTTP 500), eller HTTP 502 dersom en nedstrømstjeneste er utilgjengelig.\n\n- `TILSKUDD-1007`: en tjeneste vi kaller, svarte ikke (HTTP 502)",
         "content": {
           "application/json": {
             "schema": {

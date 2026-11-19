@@ -41,6 +41,10 @@
     {
       "name": "Fagsystemtoken",
       "description": "Endepunkt for å hente et signert token som lar fagsystemet verifisere at søknadsdata kommer fra fiks-tilskuddsoknad"
+    },
+    {
+      "name": "Filnedlasting",
+      "description": "Endepunkt for å laste ned filer som er knyttet til en søknad"
     }
   ],
   "paths": {
@@ -276,6 +280,67 @@
         }
       }
     },
+    "/tilskuddssoknad/api/v1/{soknadsregisterId}/skjema-sist-lagret-av": {
+      "put": {
+        "tags": [
+          "Tilskuddssoknad"
+        ],
+        "operationId": "settSkjemaSistLagretAv",
+        "summary": "Registrerer hvem som sist lagret endringer i søknadsskjemaet",
+        "parameters": [
+          {
+            "name": "soknadsregisterId",
+            "in": "path",
+            "description": "SoknadsregisterId for søknaden",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SkjemaSistLagretAvRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Sist lagret er oppdatert",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SkjemaSistLagret"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/400BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/401Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/403Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/404NotFound"
+          },
+          "409": {
+            "$ref": "#/components/responses/409Conflict"
+          },
+          "default": {
+            "$ref": "#/components/responses/DefaultError"
+          }
+        }
+      }
+    },
     "/tilskuddssoknad/api/v1/{soknadsregisterId}/tilgang": {
       "post": {
         "tags": [
@@ -455,7 +520,7 @@
         ],
         "operationId": "nyMeldingstraad",
         "summary": "Oppretter en ny meldingstråd med den første meldingen på en søknad",
-        "description": "Id-ene kan settes av kallende system via meldingstraadId og meldingId. Dersom meldingstraadId allerede er i bruk, returneres HTTP 409.",
+        "description": "Kan kalles av fagsystemet eller av en person med tilgang til søknaden. En person kan bare sende INNGAAENDE meldinger. Ingen meldinger kan sendes på søknader med status UTKAST eller SLETTET. Id-ene kan settes av kallende system via meldingstraadId og meldingId. Dersom meldingstraadId allerede er i bruk, returneres HTTP 409.",
         "parameters": [
           {
             "name": "soknadsregisterId",
@@ -566,6 +631,156 @@
             "$ref": "#/components/responses/DefaultError"
           }
         }
+      },
+      "put": {
+        "tags": [
+          "Melding"
+        ],
+        "operationId": "oppdaterMeldingstraad",
+        "summary": "Erstatter tittelen og den første meldingen i en meldingstråd med fagsystemets versjon",
+        "parameters": [
+          {
+            "name": "soknadsregisterId",
+            "in": "path",
+            "description": "SoknadsregisterId for søknaden",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "meldingstraadId",
+            "in": "path",
+            "description": "MeldingstraadId for meldingstråden",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OppdaterMeldingstraadRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Meldingstråden er oppdatert",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Meldingstraad"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/400BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/401Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/403Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/404NotFound"
+          },
+          "409": {
+            "$ref": "#/components/responses/409Conflict"
+          },
+          "default": {
+            "$ref": "#/components/responses/DefaultError"
+          }
+        }
+      }
+    },
+    "/tilskuddssoknad/api/v1/{soknadsregisterId}/meldingstraad/{meldingstraadId}/melding/{meldingId}": {
+      "put": {
+        "tags": [
+          "Melding"
+        ],
+        "operationId": "oppdaterMelding",
+        "summary": "Erstatter en melding i en meldingstråd med fagsystemets versjon",
+        "parameters": [
+          {
+            "name": "soknadsregisterId",
+            "in": "path",
+            "description": "SoknadsregisterId for søknaden",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "meldingstraadId",
+            "in": "path",
+            "description": "MeldingstraadId for meldingstråden",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "meldingId",
+            "in": "path",
+            "description": "Id for meldingen som skal erstattes",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OppdaterMeldingRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Meldingen er oppdatert",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Meldingstraad"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/400BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/401Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/403Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/404NotFound"
+          },
+          "409": {
+            "$ref": "#/components/responses/409Conflict"
+          },
+          "default": {
+            "$ref": "#/components/responses/DefaultError"
+          }
+        }
       }
     },
     "/tilskuddssoknad/api/v1/{soknadsregisterId}/meldingstraad/{meldingstraadId}/melding": {
@@ -575,7 +790,7 @@
         ],
         "operationId": "nyMelding",
         "summary": "Legger en ny melding på en eksisterende meldingstråd",
-        "description": "Meldingens id kan settes av kallende system via meldingId. Dersom id-en allerede er i bruk på meldingstråden, returneres HTTP 409.",
+        "description": "Kan kalles av fagsystemet eller av en person med tilgang til søknaden. En person kan bare sende INNGAAENDE meldinger. Ingen meldinger kan sendes på søknader med status UTKAST eller SLETTET. Meldingens id kan settes av kallende system via meldingId. Dersom id-en allerede er i bruk på meldingstråden, returneres HTTP 409.",
         "parameters": [
           {
             "name": "soknadsregisterId",
@@ -949,6 +1164,74 @@
           }
         }
       }
+    },
+    "/tilskuddssoknad/api/v1/{soknadsregisterId}/filnedlasting/{filId}": {
+      "get": {
+        "tags": [
+          "Filnedlasting"
+        ],
+        "operationId": "lastNedFil",
+        "summary": "Laster ned en fil som er knyttet til søknaden, fra fagsystemet",
+        "parameters": [
+          {
+            "name": "soknadsregisterId",
+            "in": "path",
+            "description": "SoknadsregisterId for søknaden",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "filId",
+            "in": "path",
+            "description": "FilId i fagsystemet",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Innholdet i filen, med filens egen mimeType",
+            "headers": {
+              "Content-Disposition": {
+                "description": "`inline` for PDF, ellers `attachment`. Filnavnet er tittelen på filen",
+                "schema": {
+                  "type": "string"
+                },
+                "example": "inline; filename=\"Vedtak.pdf\"; filename*=UTF-8''Vedtak.pdf"
+              }
+            },
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/400BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/401Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/403Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/404NotFound"
+          },
+          "default": {
+            "$ref": "#/components/responses/DefaultError"
+          }
+        }
+      }
     }
   },
   "components": {
@@ -1055,6 +1338,7 @@
           },
           "tittel": {
             "type": "string",
+            "example": "Restaurering av stabbur",
             "maxLength": 100
           },
           "paaVegneAvForetak": {
@@ -1063,6 +1347,7 @@
           },
           "fagsystemReferanse": {
             "type": "string",
+            "example": "46-2026-1001",
             "description": "Referanse for søknad til fagsystem. Kan settes ved opprettelse, men settes normalt av fagsystemet i ettertid via PATCH.",
             "maxLength": 100
           }
@@ -1078,6 +1363,7 @@
           "tilganger",
           "brev",
           "oppgaver",
+          "vedlegg",
           "status",
           "opprettetDatoTid",
           "endretDatoTid",
@@ -1107,9 +1393,26 @@
           {
             "type": "object",
             "properties": {
+              "opprettetAv": {
+                "type": "string",
+                "example": "Per Persen",
+                "description": "Navnet på personen som opprettet søknaden"
+              },
               "innsendtAv": {
-                "$ref": "#/components/schemas/Person",
-                "description": "Personen som sendte inn søknaden. Mangler så lenge søknaden ikke er sendt inn."
+                "type": "string",
+                "example": "Kari Nordmann",
+                "description": "Navnet på personen som sendte inn søknaden. Mangler så lenge søknaden ikke er sendt inn."
+              },
+              "skjemaSistLagretAv": {
+                "type": "string",
+                "example": "Per Persen",
+                "description": "Navnet på personen som sist lagret endringer i søknadsskjemaet"
+              },
+              "skjemaSistLagretDatoTid": {
+                "type": "string",
+                "format": "date-time",
+                "example": "2025-08-27T15:45:30Z",
+                "description": "Tidspunkt for når søknadsskjemaet sist ble lagret"
               },
               "tilganger": {
                 "type": "array",
@@ -1164,6 +1467,12 @@
                 "example": "2025-08-27T15:45:30Z",
                 "description": "Tidspunkt for når status på søknaden sist ble endret. Ved endring fra fagsystemet er det fagsystemets tidspunkt."
               },
+              "gjenaapnetDatoTid": {
+                "type": "string",
+                "format": "date-time",
+                "example": "2025-09-10T08:30:00Z",
+                "description": "Tidspunkt for når søknaden sist ble gjenåpnet i fagsystemet. Mangler hvis søknaden aldri har vært gjenåpnet."
+              },
               "fristForInnsendelseDatoTid": {
                 "type": "string",
                 "format": "date-time",
@@ -1173,6 +1482,14 @@
               "returdokument": {
                 "$ref": "#/components/schemas/Fil",
                 "description": "Filen som er returnert som svar på søknaden. Mangler inntil et returdokument er lagt til via PATCH."
+              },
+              "vedlegg": {
+                "$ref": "#/components/schemas/Vedlegg",
+                "description": "Vedlegg til søknaden"
+              },
+              "merknad": {
+                "$ref": "#/components/schemas/Merknad",
+                "description": "Merknad fra saksbehandler til søkeren"
               }
             }
           }
@@ -1194,21 +1511,8 @@
             "type": "object",
             "properties": {
               "opprettetAv": {
-                "type": "object",
-                "description": "Personen som oppretter søknaden. Blir første tilgang.",
-                "required": [
-                  "navn"
-                ],
-                "properties": {
-                  "navn": {
-                    "type": "string",
-                    "description": "Personens fulle navn"
-                  },
-                  "epost": {
-                    "$ref": "#/components/schemas/Epost",
-                    "description": "Personens epost"
-                  }
-                }
+                "$ref": "#/components/schemas/Navn",
+                "description": "Navnet på personen som oppretter søknaden. Blir første tilgang."
               },
               "tilganger": {
                 "type": "array",
@@ -1234,6 +1538,7 @@
           },
           "navn": {
             "type": "string",
+            "example": "Per Persen",
             "description": "Personens fulle navn"
           },
           "epost": {
@@ -1276,17 +1581,23 @@
           },
           "status": {
             "$ref": "#/components/schemas/SoknadsStatus",
-            "description": "Ny status for søknaden"
+            "description": "Ny status for søknaden. En innsendt søknad kan ikke settes tilbake til UTKAST."
           },
           "tittel": {
             "type": "string",
+            "example": "Restaurering av stabbur",
             "maxLength": 100,
             "description": "Ny tittel for søknaden"
           },
           "fagsystemReferanse": {
             "type": "string",
+            "example": "46-2026-1001",
             "maxLength": 100,
             "description": "Ny fagsystemreferanse for søknaden"
+          },
+          "merknad": {
+            "$ref": "#/components/schemas/OppdatertMerknad",
+            "description": "Ny merknad for søknaden"
           },
           "fristForInnsendelseDatoTid": {
             "type": "string",
@@ -1300,9 +1611,49 @@
             "example": "2026-02-20T10:15:00Z",
             "description": "Tidspunkt for når søknaden ble sendt inn"
           },
+          "innsendtAv": {
+            "$ref": "#/components/schemas/Navn",
+            "description": "Navnet på personen som sendte inn søknaden"
+          },
           "returdokument": {
             "$ref": "#/components/schemas/Fil",
             "description": "Nytt returdokument for søknaden. Erstatter et eventuelt eksisterende returdokument."
+          },
+          "vedlegg": {
+            "$ref": "#/components/schemas/Vedlegg",
+            "description": "Nye vedlegg for søknaden. Erstatter de lagrede vedleggene, og en tom liste fjerner dem."
+          }
+        }
+      },
+      "SkjemaSistLagretAvRequest": {
+        "type": "object",
+        "required": [
+          "skjemaSistLagretAv"
+        ],
+        "properties": {
+          "skjemaSistLagretAv": {
+            "$ref": "#/components/schemas/Navn",
+            "description": "Navnet på personen som lagret endringer i søknadsskjemaet"
+          }
+        }
+      },
+      "SkjemaSistLagret": {
+        "type": "object",
+        "required": [
+          "skjemaSistLagretAv",
+          "skjemaSistLagretDatoTid"
+        ],
+        "properties": {
+          "skjemaSistLagretAv": {
+            "type": "string",
+            "example": "Per Persen",
+            "description": "Navnet på personen som sist lagret endringer i søknadsskjemaet"
+          },
+          "skjemaSistLagretDatoTid": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2025-08-27T15:45:30Z",
+            "description": "Tidspunkt for når søknadsskjemaet sist ble lagret"
           }
         }
       },
@@ -1313,23 +1664,6 @@
         "pattern": "^[A-Za-z0-9!#$%&'*+/=?^_`{|}~-]+(\\.[A-Za-z0-9!#$%&'*+/=?^_`{|}~-]+)*@((?![Xx][Nn]--)[A-Za-z0-9]([A-Za-z0-9-]{0,61}[A-Za-z0-9])?\\.)+[A-Za-z]{2,63}$",
         "example": "ola.nordmann@example.com"
       },
-      "Person": {
-        "type": "object",
-        "required": [
-          "navn",
-          "epost"
-        ],
-        "properties": {
-          "navn": {
-            "type": "string",
-            "description": "Personens fulle navn"
-          },
-          "epost": {
-            "$ref": "#/components/schemas/Epost",
-            "description": "Personens epost"
-          }
-        }
-      },
       "Foretak": {
         "type": "object",
         "required": [
@@ -1338,6 +1672,7 @@
         "properties": {
           "orgNr": {
             "type": "string",
+            "example": "123456785",
             "minLength": 9,
             "maxLength": 9,
             "pattern": "^\\d{9}$",
@@ -1345,6 +1680,7 @@
           },
           "navn": {
             "type": "string",
+            "example": "Eksempel AS",
             "readOnly": true,
             "description": "Navn på foretak"
           }
@@ -1361,6 +1697,7 @@
         "properties": {
           "tittel": {
             "type": "string",
+            "example": "Vedtak om tilskudd",
             "minLength": 1,
             "maxLength": 100,
             "description": "Tittel på filen"
@@ -1380,10 +1717,18 @@
           },
           "url": {
             "type": "string",
+            "example": "https://fillager.example.com/filer/3f2b8c1e-7d4a-4e9b-a6c5-1b2d3e4f5a6b",
             "minLength": 1,
             "maxLength": 500,
-            "description": "URL til filen i dokumentlager"
+            "description": "URL til filen i fillageret til fagsystemet. Den siste delen av URL-en er fil-id-en i fagsystemet"
           }
+        }
+      },
+      "Vedlegg": {
+        "type": "array",
+        "maxItems": 50,
+        "items": {
+          "$ref": "#/components/schemas/Fil"
         }
       },
       "SoknadsStatus": {
@@ -1416,12 +1761,14 @@
           },
           "avsender": {
             "type": "string",
+            "example": "Ola Nordmann",
             "minLength": 1,
             "maxLength": 100,
             "description": "Navn på person som har sendt meldingen"
           },
           "innhold": {
             "type": "string",
+            "example": "Vi trenger et oppdatert budsjett for tiltaket.",
             "minLength": 1,
             "maxLength": 1600,
             "description": "Meldingens innhold. Ren tekst - HTML-tagger fjernes ved lagring"
@@ -1431,6 +1778,10 @@
             "format": "date-time",
             "example": "2025-08-27T15:45:30Z",
             "description": "Tidspunkt for når meldingen ble sendt i fagsystemet"
+          },
+          "vedlegg": {
+            "$ref": "#/components/schemas/Vedlegg",
+            "description": "Vedlegg til meldingen"
           }
         }
       },
@@ -1483,6 +1834,50 @@
               },
               "tittel": {
                 "type": "string",
+                "example": "Spørsmål om budsjett",
+                "minLength": 1,
+                "maxLength": 50,
+                "description": "Tittel på meldingstråden"
+              }
+            }
+          },
+          {
+            "$ref": "#/components/schemas/MeldingBase"
+          }
+        ]
+      },
+      "OppdaterMeldingRequest": {
+        "type": "object",
+        "description": "Fagsystemets versjon av meldingen. Erstatter alle feltene.",
+        "required": [
+          "retning",
+          "avsender",
+          "innhold",
+          "sendtDatoTid"
+        ],
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/MeldingBase"
+          }
+        ]
+      },
+      "OppdaterMeldingstraadRequest": {
+        "type": "object",
+        "description": "Fagsystemets versjon av tittelen og den første meldingen i tråden. Erstatter alle feltene.",
+        "required": [
+          "tittel",
+          "retning",
+          "avsender",
+          "innhold",
+          "sendtDatoTid"
+        ],
+        "allOf": [
+          {
+            "type": "object",
+            "properties": {
+              "tittel": {
+                "type": "string",
+                "example": "Spørsmål om budsjett",
                 "minLength": 1,
                 "maxLength": 50,
                 "description": "Tittel på meldingstråden"
@@ -1502,7 +1897,8 @@
           "retning",
           "avsender",
           "innhold",
-          "sendtDatoTid"
+          "sendtDatoTid",
+          "vedlegg"
         ],
         "allOf": [
           {
@@ -1541,6 +1937,7 @@
           },
           "tittel": {
             "type": "string",
+            "example": "Spørsmål om budsjett",
             "minLength": 1,
             "maxLength": 50,
             "description": "Tittel på meldingstråden"
@@ -1573,6 +1970,7 @@
           },
           "tittel": {
             "type": "string",
+            "example": "Spørsmål om budsjett",
             "minLength": 1,
             "maxLength": 50,
             "description": "Tittel på meldingstråden"
@@ -1594,12 +1992,14 @@
         "properties": {
           "tittel": {
             "type": "string",
+            "example": "Vedtak om tilskudd",
             "minLength": 1,
             "maxLength": 100,
             "description": "Tittel på brevet"
           },
           "avsender": {
             "type": "string",
+            "example": "Ola Nordmann",
             "minLength": 1,
             "maxLength": 100,
             "description": "Navn på person som har sendt brevet"
@@ -1613,6 +2013,10 @@
             "format": "date-time",
             "example": "2025-08-27T15:45:30Z",
             "description": "Tidspunkt for når brevet ble sendt i fagsystemet"
+          },
+          "vedlegg": {
+            "$ref": "#/components/schemas/Vedlegg",
+            "description": "Vedlegg til brevet"
           }
         }
       },
@@ -1648,7 +2052,8 @@
           "tittel",
           "avsender",
           "dokument",
-          "sendtDatoTid"
+          "sendtDatoTid",
+          "vedlegg"
         ],
         "allOf": [
           {
@@ -1670,16 +2075,21 @@
         "properties": {
           "tittel": {
             "type": "string",
+            "example": "Last opp sluttrapport",
             "maxLength": 100,
             "description": "Tittel på oppgaven"
           },
           "merknad": {
-            "$ref": "#/components/schemas/OppgaveMerknad",
+            "$ref": "#/components/schemas/Merknad",
             "description": "Utfyllende merknad til oppgaven"
           },
           "fristDatoTid": {
             "$ref": "#/components/schemas/OppgaveFrist",
             "description": "Frist for oppgaven"
+          },
+          "vedlegg": {
+            "$ref": "#/components/schemas/Vedlegg",
+            "description": "Vedlegg til oppgaven"
           }
         }
       },
@@ -1727,7 +2137,7 @@
             "description": "Tidspunkt for endringen i fagsystemet"
           },
           "merknad": {
-            "$ref": "#/components/schemas/OppgaveMerknad",
+            "$ref": "#/components/schemas/OppdatertMerknad",
             "description": "Ny merknad for oppgaven"
           },
           "fristDatoTid": {
@@ -1744,9 +2154,17 @@
             "example": "2026-02-20T10:15:00Z",
             "description": "Tidspunkt for når oppgaven ble sendt inn"
           },
+          "innsendtAv": {
+            "$ref": "#/components/schemas/Navn",
+            "description": "Navnet på personen som sendte inn oppgaven"
+          },
           "returdokument": {
             "$ref": "#/components/schemas/Fil",
             "description": "Nytt returdokument for oppgaven. Erstatter et eventuelt eksisterende returdokument."
+          },
+          "vedlegg": {
+            "$ref": "#/components/schemas/Vedlegg",
+            "description": "Nye vedlegg for oppgaven. Erstatter de lagrede vedleggene, og en tom liste fjerner dem."
           }
         }
       },
@@ -1757,6 +2175,7 @@
           "oppgaveId",
           "tittel",
           "fristDatoTid",
+          "vedlegg",
           "status",
           "opprettetDatoTid",
           "endretDatoTid"
@@ -1793,11 +2212,28 @@
                 "example": "2025-08-27T15:45:30Z",
                 "description": "Tidspunkt for når oppgaven sist ble endret i fagsystemet"
               },
+              "gjenaapnetDatoTid": {
+                "type": "string",
+                "format": "date-time",
+                "example": "2026-02-25T09:00:00Z",
+                "description": "Tidspunkt for når oppgaven sist ble gjenåpnet i fagsystemet. Mangler hvis oppgaven aldri har vært gjenåpnet."
+              },
+              "opprinneligFristDatoTid": {
+                "type": "string",
+                "format": "date-time",
+                "example": "2026-03-01T23:59:59Z",
+                "description": "Fristen oppgaven hadde da den ble opprettet. Endres ikke når fristen flyttes."
+              },
               "innsendtDatoTid": {
                 "type": "string",
                 "format": "date-time",
                 "example": "2026-02-20T10:15:00Z",
                 "description": "Tidspunkt for når oppgaven ble sendt inn"
+              },
+              "innsendtAv": {
+                "type": "string",
+                "example": "Per Persen",
+                "description": "Navnet på personen som sendte inn oppgaven"
               },
               "returdokument": {
                 "$ref": "#/components/schemas/Fil",
@@ -1819,9 +2255,25 @@
           "IKKE_GODKJENT"
         ]
       },
-      "OppgaveMerknad": {
+      "Merknad": {
         "type": "string",
+        "example": "Husk å legge ved oppdatert budsjett.",
         "maxLength": 250
+      },
+      "OppdatertMerknad": {
+        "type": "string",
+        "example": "Husk å legge ved oppdatert budsjett.",
+        "minLength": 1,
+        "maxLength": 250,
+        "pattern": "^\\s*\\S[\\s\\S]*$"
+      },
+      "Navn": {
+        "type": "string",
+        "example": "Per Persen",
+        "minLength": 1,
+        "maxLength": 200,
+        "pattern": "^\\s*\\S[\\s\\S]*$",
+        "description": "Personens fulle navn"
       },
       "OppgaveFrist": {
         "type": "string",
@@ -1841,6 +2293,7 @@
           },
           "sokerNavn": {
             "type": "string",
+            "example": "Per Persen",
             "description": "Fult navn av person som søker, brukes kun for å informere fagsystem om navnet til søker"
           }
         }
@@ -1859,6 +2312,7 @@
         "properties": {
           "token": {
             "type": "string",
+            "example": "eyJhbGciOiJSUzI1NiJ9.eyJzY29wZSI6InNva25hZCJ9.signatur",
             "maxLength": 8192,
             "description": "Signert JWT på kompakt serialisert form"
           }
@@ -1867,7 +2321,7 @@
     },
     "responses": {
       "400BadRequest": {
-        "description": "Ugyldig forespørsel",
+        "description": "Ugyldig forespørsel.\n\n- `TILSKUDD-2014`: samme epost står flere ganger i tilganger\n- `TILSKUDD-2015`: samme tilgangId står flere ganger i tilganger\n- `TILSKUDD-2016`: det finnes ingen utlysing med tilskuddsregisterId\n- `TILSKUDD-2017`: en path-parameter er ikke en gyldig UUID\n- `TILSKUDD-2021`: oppdateringen av søknaden endrer ingen felt utover endretDatoTid\n- `TILSKUDD-2022`: oppdateringen av oppgaven endrer ingen felt utover endretDatoTid\n- `TILSKUDD-2023`: status SLETTET kan ikke settes ved oppdatering\n- `TILSKUDD-2025`: en person kan bare sende INNGAAENDE",
         "content": {
           "application/json": {
             "schema": {
@@ -1897,7 +2351,7 @@
         }
       },
       "404NotFound": {
-        "description": "Ikke funnet",
+        "description": "Ikke funnet.\n\n- `TILSKUDD-2006`: søknaden finnes ikke, eller brukeren har ikke tilgang til den\n- `TILSKUDD-2007`: tilgangen finnes ikke på søknaden\n- `TILSKUDD-2008`: oppgaven finnes ikke på søknaden\n- `TILSKUDD-2009`: meldingstråden finnes ikke på søknaden\n- `TILSKUDD-2024`: meldingen finnes ikke i tråden\n- `TILSKUDD-2029`: filen finnes ikke på søknaden eller i fagsystemet",
         "content": {
           "application/json": {
             "schema": {
@@ -1907,7 +2361,7 @@
         }
       },
       "409Conflict": {
-        "description": "Forespørselen er i konflikt med det som alt er lagret.\n\n- `TILSKUDD-2001`: eposten har alt tilgang til søknaden\n- `TILSKUDD-2002`: tilgangId finnes alt på søknaden\n- `TILSKUDD-2003`: søknaden har alt 300 tilganger\n- `TILSKUDD-2004`: den siste tilgangen kan ikke fjernes\n- `TILSKUDD-2005`: endretDatoTid er eldre enn forrige endring",
+        "description": "Forespørselen er i konflikt med det som alt er lagret.\n\n- `TILSKUDD-2001`: eposten har alt tilgang til søknaden\n- `TILSKUDD-2002`: tilgangId finnes alt på søknaden\n- `TILSKUDD-2003`: søknaden har alt 300 tilganger\n- `TILSKUDD-2004`: søknaden ville stått uten tilganger med godtatt invitasjon\n- `TILSKUDD-2005`: endretDatoTid er eldre enn forrige endring\n- `TILSKUDD-2010`: brevId finnes alt på søknaden\n- `TILSKUDD-2011`: oppgaveId finnes alt på søknaden\n- `TILSKUDD-2012`: meldingstraadId finnes alt\n- `TILSKUDD-2013`: meldingId finnes alt i tråden\n- `TILSKUDD-2019`: søknaden er slettet og kan ikke endres, heller ikke meldingene\n- `TILSKUDD-2020`: bare utkast kan slettes\n- `TILSKUDD-2026`: det kan ikke sendes meldinger på et utkast\n- `TILSKUDD-2027`: en innsendt søknad kan ikke settes tilbake til UTKAST\n- `TILSKUDD-2028`: bare utkast og gjenåpnede søknadsskjemaer kan lagres",
         "content": {
           "application/json": {
             "schema": {
@@ -1917,7 +2371,7 @@
         }
       },
       "DefaultError": {
-        "description": "Uventet feil (HTTP 500), eller HTTP 502 dersom en nedstrømstjeneste er utilgjengelig",
+        "description": "Uventet feil (HTTP 500), eller HTTP 502 dersom en nedstrømstjeneste er utilgjengelig.\n\n- `TILSKUDD-2018`: en tjeneste vi kaller, svarte ikke (HTTP 502)",
         "content": {
           "application/json": {
             "schema": {
