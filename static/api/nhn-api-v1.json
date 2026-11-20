@@ -1,0 +1,518 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "KS SvarUt: NHN API",
+    "description": "Proxy API for NHN tjenester",
+    "license": {
+      "name": "MIT",
+      "url": "https://opensource.org/licenses/MIT"
+    },
+    "contact": {
+      "name": "Fiks-brukerstøtte",
+      "url": "https://ks-no.github.io/",
+      "email": "fiks@ksdigital.no"
+    },
+    "version": "v1"
+  },
+  "servers": [
+    {
+      "url": "https://test.svarut.ks.no/api",
+      "description": "SvarUt testmiljø"
+    },
+    {
+      "url": "https://svarut.ks.no/api",
+      "description": "SvarUt produksjonsmiljø"
+    }
+  ],
+  "security": [
+    {
+      "bearerAuth": []
+    }
+  ],
+  "tags": [
+    {
+      "name": "Nhn",
+      "description": "API for oppslag i NHN sine registre"
+    }
+  ],
+  "paths": {
+    "/v1/nhn/kontoer/{kontoId}/adresseregister/{herId}": {
+      "get": {
+        "tags": [
+          "Nhn"
+        ],
+        "summary": "Hent adresseregisteroppføring for HER-id",
+        "description": "Henter en communication party fra NHN adresseregister for oppgitt HER-id. Kontoen må være konfigurert med HER-id.",
+        "operationId": "adresseregisterOppslag",
+        "parameters": [
+          {
+            "name": "kontoId",
+            "in": "path",
+            "required": true,
+            "description": "KontoId for kontoen det gjøres oppslag på vegne av. Kontoen må være konfigurert med HER-id.",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "example": "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+          },
+          {
+            "name": "herId",
+            "in": "path",
+            "required": true,
+            "description": "HER-id som skal slås opp i NHN adresseregister.",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "minimum": 1
+            },
+            "example": 12345
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Communication party funnet for oppgitt HER-id",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommunicationParty"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Kontoen har ikke konfigurert HER-id, eller integrasjonen mangler tilgang til kontoen",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Communication party finnes ikke for oppgitt HER-id",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Feil",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    },
+    "schemas": {
+      "CommunicationParty": {
+        "required": [
+          "amqpTransportStatus",
+          "herId",
+          "type"
+        ],
+        "type": "object",
+        "properties": {
+          "herId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "displayName": {
+            "type": "string",
+            "nullable": true
+          },
+          "type": {
+            "$ref": "#/components/schemas/CommunicationPartyType"
+          },
+          "organizationDetails": {
+            "$ref": "#/components/schemas/OrganizationDetails"
+          },
+          "personDetails": {
+            "$ref": "#/components/schemas/PersonDetails"
+          },
+          "serviceDetails": {
+            "$ref": "#/components/schemas/ServiceDetails"
+          },
+          "currentSigningCertificate": {
+            "$ref": "#/components/schemas/CertificateMetadata"
+          },
+          "currentEncryptionCertificate": {
+            "$ref": "#/components/schemas/CertificateMetadata"
+          },
+          "email": {
+            "type": "string",
+            "nullable": true
+          },
+          "homepageUrl": {
+            "type": "string",
+            "nullable": true
+          },
+          "phoneNumber": {
+            "type": "string",
+            "nullable": true
+          },
+          "faxNumber": {
+            "type": "string",
+            "nullable": true
+          },
+          "ediAddress": {
+            "type": "string",
+            "nullable": true
+          },
+          "fhirAddress": {
+            "type": "string",
+            "nullable": true
+          },
+          "postalAddress": {
+            "$ref": "#/components/schemas/PostalAddress"
+          },
+          "amqpTransportStatus": {
+            "$ref": "#/components/schemas/AmqpTransportStatus"
+          },
+          "amqpAddress": {
+            "$ref": "#/components/schemas/AmqpAddress"
+          },
+          "validFrom": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "validTo": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "additionalProperties": false
+      },
+      "ErrorMessage": {
+        "type": "object",
+        "description": "Feilmelding fra Fiks-plattformen",
+        "externalDocs": {
+          "description": "Beskrivelse av feilmeldinger",
+          "url": "https://ks-no.github.io/fiks-plattform/integrasjoner/#feilmeldinger"
+        },
+        "properties": {
+          "timestamp": {
+            "type": "integer",
+            "format": "int64",
+            "description": "Tidspunktet da feilen oppstod, angitt som antall millisekunder siden Unix-epoch.",
+            "example": 1767222000000
+          },
+          "status": {
+            "type": "integer",
+            "format": "int32",
+            "description": "HTTP-statuskode for feilen.",
+            "example": 400
+          },
+          "error": {
+            "type": "string",
+            "description": "Standardtekst for HTTP-statuskoden.",
+            "example": "Bad Request"
+          },
+          "errorId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Unik identifikator for feilen. Kan oppgis ved henvendelser for å spore feilen.",
+            "example": "15a92338-8d98-4b05-a8a6-a879913259fd"
+          },
+          "path": {
+            "type": "string",
+            "description": "Stien i forespørselen som førte til feilen.",
+            "example": "/tjeneste/api/v1/meldinger/40441e83-5120-445d-8c31-63ed2f4e8112"
+          },
+          "originalPath": {
+            "type": "string",
+            "nullable": true,
+            "description": "Opprinnelig forespurt sti før eventuell intern feilhåndtering. Feltet er vanligvis utelatt eller satt til null.",
+            "example": "/tjeneste/api/v1/meldinger/40441e83-5120-445d-8c31-63ed2f4e8112"
+          },
+          "message": {
+            "type": "string",
+            "description": "Menneskeliglesbar melding som beskriver feilen.",
+            "example": "Noe gikk galt"
+          },
+          "errorCode": {
+            "type": "string",
+            "pattern": "^[A-Z]{1,10}-[0-9]{4}$",
+            "description": "Maskinlesbar kode som identifiserer feiltypen. Koden følger formatet <applikasjonsprefiks>-<feilkode>.",
+            "example": "FIKS-0001"
+          },
+          "errorJson": {
+            "type": "string",
+            "deprecated": true,
+            "description": "Felt med ekstra feilinformasjon som en JSON-kodet streng. Strukturen avhenger av errorCode. Nye tjenester skal bruke errorDetails i stedet.",
+            "example": "{\"fiksOrgId\": \"1a5038d7-c1fe-4110-9310-fe3b096a0564\", \"externalReference\": \"a8793ee2-b7b2-40a5-9731-51e018244cf4\"}"
+          },
+          "errorDetails": {
+            "type": "object",
+            "additionalProperties": true,
+            "description": "Maskinlesbar tilleggsinformasjon om feilen. Strukturen avhenger av errorCode.",
+            "example": {
+              "fiksOrgId": "1a5038d7-c1fe-4110-9310-fe3b096a0564",
+              "externalReference": "a8793ee2-b7b2-40a5-9731-51e018244cf4"
+            }
+          }
+        },
+        "example": {
+          "timestamp": 1767222000000,
+          "status": 400,
+          "error": "Bad Request",
+          "errorId": "15a92338-8d98-4b05-a8a6-a879913259fd",
+          "path": "/tjeneste/api/v1/meldinger/40441e83-5120-445d-8c31-63ed2f4e8112",
+          "message": "Ugyldig forespørsel",
+          "errorCode": "FIKS-0001",
+          "errorDetails": {
+            "fiksOrgId": "1a5038d7-c1fe-4110-9310-fe3b096a0564",
+            "externalReference": "a8793ee2-b7b2-40a5-9731-51e018244cf4"
+          }
+        }
+      },
+      "CommunicationPartyType": {
+        "enum": [
+          "Organization",
+          "Person",
+          "Service"
+        ],
+        "type": "string"
+      },
+      "AdministrativeCode": {
+        "required": [
+          "codeListId",
+          "value"
+        ],
+        "type": "object",
+        "properties": {
+          "codeListId": {
+            "type": "string",
+            "nullable": true
+          },
+          "value": {
+            "type": "string",
+            "nullable": true
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "url": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "OrganizationDetails": {
+        "required": [
+          "businessType",
+          "persons",
+          "services"
+        ],
+        "type": "object",
+        "properties": {
+          "organizationNumber": {
+            "type": "string",
+            "nullable": true
+          },
+          "businessType": {
+            "$ref": "#/components/schemas/AdministrativeCode"
+          },
+          "persons": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "nullable": true
+          },
+          "services": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "ParentOrganization": {
+        "required": [
+          "herId",
+          "name"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "herId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "organizationNumber": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "PersonDetails": {
+        "required": [
+          "hprNumber",
+          "parentOrganization"
+        ],
+        "type": "object",
+        "properties": {
+          "hprNumber": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "parentOrganization": {
+            "$ref": "#/components/schemas/ParentOrganization"
+          }
+        },
+        "additionalProperties": false
+      },
+      "InterMunicipalityCoverageArea": {
+        "required": [
+          "municipalityHerIds"
+        ],
+        "type": "object",
+        "properties": {
+          "municipalityHerIds": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "ServiceDetails": {
+        "required": [
+          "parentOrganization",
+          "serviceType"
+        ],
+        "type": "object",
+        "properties": {
+          "serviceType": {
+            "$ref": "#/components/schemas/AdministrativeCode"
+          },
+          "interMunicipalityCoverageArea": {
+            "$ref": "#/components/schemas/InterMunicipalityCoverageArea"
+          },
+          "serviceSpecification": {
+            "type": "string",
+            "nullable": true
+          },
+          "parentOrganization": {
+            "$ref": "#/components/schemas/ParentOrganization"
+          }
+        },
+        "additionalProperties": false
+      },
+      "CertificateMetadata": {
+        "required": [
+          "thumbprint"
+        ],
+        "type": "object",
+        "properties": {
+          "thumbprint": {
+            "type": "string",
+            "nullable": true
+          },
+          "validFrom": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "validTo": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "additionalProperties": false
+      },
+      "PostalAddress": {
+        "required": [
+          "city",
+          "postalCode"
+        ],
+        "type": "object",
+        "properties": {
+          "address": {
+            "type": "string",
+            "nullable": true
+          },
+          "postalBox": {
+            "type": "string",
+            "nullable": true
+          },
+          "postalCode": {
+            "pattern": "^\\d{4}$",
+            "type": "string",
+            "nullable": true
+          },
+          "city": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "AmqpTransportStatus": {
+        "enum": [
+          "Inherited",
+          "Disabled",
+          "Enabled"
+        ],
+        "type": "string"
+      },
+      "AmqpAddress": {
+        "type": "object",
+        "properties": {
+          "amqpSyncQueue": {
+            "type": "string",
+            "nullable": true
+          },
+          "amqpSyncReplyQueue": {
+            "type": "string",
+            "nullable": true
+          },
+          "amqpAsyncQueue": {
+            "type": "string",
+            "nullable": true
+          },
+          "amqpErrorQueue": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  }
+}
