@@ -45,6 +45,10 @@
     {
       "name": "Spørsmål",
       "description": "Leseoppslag på enkeltspørsmål i en skjemaversjon"
+    },
+    {
+      "name": "Import",
+      "description": "Import av pakker og spørsmål til et utkast"
     }
   ],
   "paths": {
@@ -287,6 +291,105 @@
           },
           "409": {
             "description": "Et utkast finnes allerede — kun ett utkast kan eksistere samtidig"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/sporsmalsbank/api/v1/versjoner/{id}/import": {
+      "post": {
+        "summary": "Importer pakker og spørsmål til et utkast",
+        "description": "Oppretter alle pakkene og spørsmålene i filen som nye i skjemaversjonen, i én transaksjon: enten blir alt med, eller ingenting. Endrer aldri eksisterende pakker eller spørsmål. Kun for root-administrator, og kun til en skjemaversjon med status UTKAST. Pakkene peker på spørsmålene med Sporsmal.id, og poengoverstyringene med Sporsmal.id og Svaralternativ.id; tjenesten tildeler nye UUID-er og ignorerer sporsmalUuid og sporsmalVersjonId i filen.",
+        "operationId": "importerTilVersjon",
+        "tags": [
+          "Import"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Skjemaversjonen det importeres til",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SporsmalsbankEksport"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Pakkene og spørsmålene som ble opprettet",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ImportResultat"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Ugyldig fil. errorCode SPORSMAL-0001 for regelbrudd i innholdet, blant annet ukjent format, spørsmål-IDer som går igjen, pakker som peker på spørsmål eller svaralternativer som ikke finnes i filen, spørsmål ingen pakke bruker og ukjent eller inaktiv pakkeType. errorCode VALIDATION_ERROR når kroppen bryter en grense. errorCode UGYLDIG_JSON når JSON-kroppen er for dypt nøstet eller for lang.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Kun root-administrator kan importere",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Skjemaversjonen finnes ikke",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Skjemaversjonen er ikke et utkast, eller et spørsmål med samme id finnes allerede i skjemaversjonen",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Kroppen er større enn tjenesten tar imot",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage"
+                }
+              }
+            }
           }
         },
         "security": [
@@ -1665,6 +1768,103 @@
           "aktiv": {
             "type": "boolean",
             "default": true
+          }
+        }
+      },
+      "SporsmalsbankEksport": {
+        "type": "object",
+        "description": "Pakkene i en skjemaversjon med spørsmålene listet én gang. Samme form eksporteres fra forvaltning og tas imot av POST /versjoner/{id}/import.",
+        "required": [
+          "format",
+          "sporsmal",
+          "pakker"
+        ],
+        "properties": {
+          "format": {
+            "type": "string",
+            "enum": [
+              "sporsmalsbank-eksport/v1"
+            ]
+          },
+          "versjon": {
+            "$ref": "#/components/schemas/EksportVersjon"
+          },
+          "sporsmal": {
+            "type": "array",
+            "maxItems": 2000,
+            "items": {
+              "$ref": "#/components/schemas/Sporsmal"
+            },
+            "description": "Unike på id"
+          },
+          "pakker": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 200,
+            "items": {
+              "$ref": "#/components/schemas/EksportPakke"
+            }
+          }
+        }
+      },
+      "EksportVersjon": {
+        "type": "object",
+        "description": "Skjemaversjonen filen ble eksportert fra. Kun til informasjon; ignoreres ved import.",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "versjon": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "tittel": {
+            "type": "string"
+          },
+          "beskrivelse": {
+            "type": "string"
+          }
+        }
+      },
+      "EksportPakke": {
+        "type": "object",
+        "required": [
+          "tittel",
+          "innhold"
+        ],
+        "properties": {
+          "tittel": {
+            "type": "string",
+            "maxLength": 500
+          },
+          "beskrivelse": {
+            "type": "string",
+            "maxLength": 2000
+          },
+          "pakkeType": {
+            "$ref": "#/components/schemas/PakkeType"
+          },
+          "innhold": {
+            "$ref": "#/components/schemas/PakkeInnhold"
+          }
+        }
+      },
+      "ImportResultat": {
+        "type": "object",
+        "required": [
+          "antallSporsmal",
+          "pakker"
+        ],
+        "properties": {
+          "antallSporsmal": {
+            "type": "integer"
+          },
+          "pakker": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PakkeOversikt"
+            }
           }
         }
       },
