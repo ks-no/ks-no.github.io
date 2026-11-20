@@ -1269,6 +1269,11 @@
             "description": "ID til spørsmålet fra spørreskjemaet",
             "maxLength": 200
           },
+          "sporsmalUuid": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Stabil identitet for spørsmålet på tvers av versjoner (SporsmalRespons.sporsmalUuid). Når den er satt, finnes spørsmålet med den i stedet for sporsmalId, og sporsmalId overskrives med spørsmålets gjeldende id. Ukjent verdi gir 400. Returneres når spørsmålsbanken har en identitet for spørsmålet; svar lagret før feltet fantes får den neste gang de lagres."
+          },
           "valgteSvaralternativIder": {
             "type": "array",
             "items": {
@@ -1279,13 +1284,22 @@
             "description": "IDer til valgte svaralternativer. Håndhevet ved innlevering (400 ved brudd): ENVALG har nøyaktig ett element, KOMBINASJON maks ett per ENVALG-gruppe, og et eksklusivt alternativ må stå alene. FLERVALG kan ellers ha flere. En enkeltverdi tolkes som en liste med ett element.",
             "maxItems": 100
           },
+          "valgteSvaralternativUuider": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "Stabile identiteter for de valgte svaralternativene (SvaralternativRespons.svaralternativUuid). Når listen er satt, vinner den over valgteSvaralternativIder, som overskrives med alternativenes gjeldende id-er i samme rekkefølge. Ukjent verdi gir 400. Returneres i samme rekkefølge som valgteSvaralternativIder når alle valgte alternativer har en identitet.",
+            "maxItems": 100
+          },
           "egneTekster": {
             "type": "object",
             "additionalProperties": {
               "type": "string",
               "maxLength": 2000
             },
-            "description": "Egen tekst per svaralternativ ('Annet: ___'), nøklet på svaralternativId. Kun tillatt for alternativer med tillaterEgenTekst=true som faktisk er valgt — ellers 400. Score-nøytralt: teksten påvirker ikke poengsummen.",
+            "description": "Egen tekst per svaralternativ ('Annet: ___'), nøklet på svaralternativId eller svaralternativUuid. Lagres og returneres alltid nøklet på svaralternativId. Kun tillatt for alternativer med tillaterEgenTekst=true som faktisk er valgt — ellers 400. Score-nøytralt: teksten påvirker ikke poengsummen.",
             "maxProperties": 100
           }
         }
@@ -1924,6 +1938,12 @@
           },
           "rekkefolge": {
             "type": "integer"
+          },
+          "sporsmalUuid": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true,
+            "description": "Stabil identitet for spørsmålet på tvers av versjoner, tildelt av spørsmålsbanken. id er LV-koden, en visningsverdi som kan endres mellom versjoner. Kan være null for spørsmål lagret før feltet fantes."
           }
         }
       },
@@ -1981,6 +2001,12 @@
             "type": "string",
             "nullable": true,
             "description": "Id-en til hovedvalget dette alternativet er undervalg av. Null betyr toppnivå. Kun satt når spørsmålets svartype er KOMBINASJON, og peker da på et toppnivåalternativ i samme spørsmål (ett nivå). Kun ett hovedvalg har undervalg. Treet leses fra forelderId; svar levert inn før spørsmålsbanken sendte forelderId mangler feltet, og der utledes treet fra svartype og eksklusiv. Skal erstatte gruppe og svartype per alternativ, som sendes sammen med forelderId i en overgangsperiode."
+          },
+          "svaralternativUuid": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true,
+            "description": "Stabil identitet for svaralternativet på tvers av versjoner av spørsmålet, tildelt av spørsmålsbanken. id er LV-koden, en visningsverdi som kan endres mellom versjoner. Kan være null for alternativer spørsmålsbanken ikke har gitt en identitet."
           },
           "tillaterEgenTekst": {
             "type": "boolean",
