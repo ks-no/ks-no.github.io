@@ -6,9 +6,10 @@ aliases: [/tjenester/besoksbidrag]
 
 ## Kort beskrivelse
 
-**Rapportering av besøksbidrag for overnattingstilbydere og mellomledd.**
+**Teknisk dokumentasjon for KS Besøksbidrag**
 
-KS Besøksbidrag er en nasjonal tjeneste som hjelper kommuner med å administrere besøksbidraget som er innført gjennom [besøksbidragsloven](https://lovdata.no/lov/2025-06-20-104). Denne siden er for deg som er overnattingstilbyder, bookingplattform eller annet mellomledd, og for leverandører som lager systemer for dem. Her finner du hvordan du finner ut hvilke kommuner og perioder som har besøksbidrag, og hvordan du rapporterer omsetning.
+KS Besøksbidrag er en nasjonal tjeneste som støtter kommunenes administrasjon av besøksbidrag for overnatting.
+Overnattingsavgiften er regulert i [besøksbidragsloven](https://lovdata.no/dokument/NL/lov/2025-06-20-104) og [forskriften om overnattingsavgift](https://lovdata.no/dokument/SF/forskrift/2026-05-22-895).
 
 Tjenesten tilbyr:
 
@@ -20,9 +21,10 @@ Tjenesten tilbyr:
 
 ### Hvem er dette for?
 
-- **Overnattingstilbydere:** hoteller, campingplasser, hytteutleiere og private utleiere som skal rapportere omsetning som er omfattet av besøksbidrag som ønsker å bruke apiene.
-- **Mellomledd:** bookingplattformer og andre som rapporterer på vegne av overnattingstilbydere som ønsker å bruke apiene.
-- **Systemleverandører:** leverandører av booking-, PMS- og regnskapssystemer som skal støtte automatisk rapportering via apiene.
+- **Kommuner:**  tekniske ressurser og leverandører som skal sette seg inn i hvordan KS Besøksbidrag fungerer og vurdere integrasjoner mot kommunens systemer.
+- **Overnattingstilbydere:** virksomheter som skal rapportere omsetning og ønsker å bruke API-ene.
+- **Formidlere:** bookingplattformer og andre som rapporterer på vegne av overnattingstilbydere som ønsker å bruke apiene.
+- **Systemleverandører:** leverandører av booking-, PMS- og regnskapssystemer som skal støtte rapportering og integrasjoner via API-ene.
 
 ### Tilgjengelige grensesnitt
 

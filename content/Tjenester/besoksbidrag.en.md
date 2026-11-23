@@ -5,9 +5,9 @@ date: 2026-10-28
 
 ## Short description
 
-**Reporting of visitor levy (besøksbidrag) for accommodation providers and intermediaries.**
+**Technical documentation for KS Besøksbidrag**
 
-KS Besøksbidrag is a national service that helps Norwegian municipalities administer the visitor levy introduced through the [Besøksbidragsloven](https://lovdata.no/lov/2025-06-20-104). This page is for accommodation providers, booking platforms and other intermediaries, and for vendors building systems for them. It explains how to find out which municipalities and periods have a visitor levy, and how to report turnover.
+KS Besøksbidrag is a national service that supports municipalities in administering the visitor levy for accommodation. The accommodation levy is regulated by the [Visitor Levy Act (besøksbidragsloven)](https://lovdata.no/dokument/NL/lov/2025-06-20-104) and the [Regulations on the accommodation levy (forskriften om overnattingsavgift)](https://lovdata.no/dokument/SF/forskrift/2026-05-22-895).
 
 The service offers:
 
@@ -19,9 +19,10 @@ The service offers:
 
 ### Who is this for?
 
-- **Accommodation providers:** hotels, campsites, cabin operators and private hosts who must report turnover subject to visitor levy and want to use the APIs.
-- **Intermediaries:** booking platforms and others who report on behalf of accommodation providers who want to use the APIs.
-- **System vendors:** vendors of booking, PMS and accounting systems that will support automated reporting via the APIs.
+- **Municipalities:** technical staff and vendors who need to understand how KS Besøksbidrag works and assess integrations with the municipality's systems.
+- **Accommodation providers:** businesses that will report turnover and want to use the APIs.
+- **Intermediaries:** booking platforms and others who report on behalf of accommodation providers and want to use the APIs.
+- **System vendors:** vendors of booking, PMS and accounting systems that will support reporting and integrations via the APIs.
 
 ### Available interfaces
 
