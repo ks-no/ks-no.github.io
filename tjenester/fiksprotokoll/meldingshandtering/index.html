@@ -31,22 +31,22 @@ Fiks Protokoll er asynkron og kø-basert. Den vanligste feilen hos nye integrasj
 Hvem er dette for? Dette er for utviklere av klienter — både fagsystem og arkivsystem. Begge rollene både sender og mottar meldinger: et arkiv mottar forespørsler og sender kvitteringer, et fagsystem sender forespørsler og mottar mottatt-meldinger, kvitteringer og svar. Reglene under gjelder derfor begge.">
     <meta itemprop="datePublished" content="2026-05-21T00:00:00+00:00">
     <meta itemprop="dateModified" content="2026-05-21T00:00:00+00:00">
-    <meta itemprop="wordCount" content="1134">
+    <meta itemprop="wordCount" content="1170">
     <title>Beste praksis for meldingshåndtering :: KS Fiks</title>
-    <link href="/images/favicon.png?1795526869" rel="icon" type="image/png">
-    <link href="/images/favicon.ico?1795526869" rel="icon" type="image/x-icon" sizes="any">
-    <link href="/css/auto-complete/auto-complete.min.css?1795526869" rel="stylesheet">
-    <script src="/js/auto-complete/auto-complete.min.js?1795526869" defer></script>
-    <script src="/js/search-orama.min.js?1795526869" defer></script>
-    <script src="/js/search.min.js?1795526869" defer></script>
+    <link href="/images/favicon.png?1795530394" rel="icon" type="image/png">
+    <link href="/images/favicon.ico?1795530394" rel="icon" type="image/x-icon" sizes="any">
+    <link href="/css/auto-complete/auto-complete.min.css?1795530394" rel="stylesheet">
+    <script src="/js/auto-complete/auto-complete.min.js?1795530394" defer></script>
+    <script src="/js/search-orama.min.js?1795530394" defer></script>
+    <script src="/js/search.min.js?1795530394" defer></script>
     <script>
       window.relearn = window.relearn || {};
-      window.relearn.index_js_url="/searchindex.no.js?1795526869";
+      window.relearn.index_js_url="/searchindex.no.js?1795530394";
     </script>
-    <link href="/fonts/fontawesome/css/all.min.css?1795526869" rel="stylesheet" media="print" onload="this.media='all';this.onload=null;"><noscript><link href="/fonts/fontawesome/css/all.min.css?1795526869" rel="stylesheet"></noscript>
-    <link href="/css/perfect-scrollbar/perfect-scrollbar.min.css?1795526869" rel="stylesheet">
-    <link href="/css/theme.min.css?1795526869" rel="stylesheet">
-    <link href="/css/format-html.min.css?1795526869" rel="stylesheet" id="R-format-style">
+    <link href="/fonts/fontawesome/css/all.min.css?1795530394" rel="stylesheet" media="print" onload="this.media='all';this.onload=null;"><noscript><link href="/fonts/fontawesome/css/all.min.css?1795530394" rel="stylesheet"></noscript>
+    <link href="/css/perfect-scrollbar/perfect-scrollbar.min.css?1795530394" rel="stylesheet">
+    <link href="/css/theme.min.css?1795530394" rel="stylesheet">
+    <link href="/css/format-html.min.css?1795530394" rel="stylesheet" id="R-format-style">
     <script>
       window.relearn = window.relearn || {};
       // configuration
@@ -122,7 +122,7 @@ Hvem er dette for? Dette er for utviklere av klienter — både fagsystem og ark
         <li><a href="#regel-2-bekreft-alltid-med-ack">Regel 2: Bekreft alltid med <code>ack()</code></a></li>
         <li><a href="#regel-3-håndter-feil--ack-og-send-feilmelding">Regel 3: Håndter feil — <code>ack()</code> og send feilmelding</a></li>
         <li><a href="#hva-skjer-hvis-du-ikke-ack-er">Hva skjer hvis du ikke <code>ack()</code>-er?</a></li>
-        <li><a href="#nack-og-nackwithrequeue">Nack og NackWithRequeue</a></li>
+        <li><a href="#nack-og-rejectwithrequeue">Nack og RejectWithRequeue</a></li>
         <li><a href="#følg-protokollens-spesifikasjon">Følg protokollens spesifikasjon</a></li>
         <li><a href="#idempotens-og-retry">Idempotens og retry</a></li>
         <li><a href="#overvåk-tilkoblingen">Overvåk tilkoblingen</a></li>
@@ -198,13 +198,14 @@ Hvem er dette for? Dette er for utviklere av klienter — både fagsystem og ark
 <h3 id="hva-skjer-hvis-du-ikke-ack-er">Hva skjer hvis du ikke <code>ack()</code>-er?<span class="btn cstyle anchor copyanchor scrollanchor link noborder notitle interactive"><button type="button"><i class="fa-fw fas fa-link fa-lg"></i></button></span></h3>
 <p>Uteblir <code>ack()</code>, blir meldingen liggende på køen og levert på nytt. Etter <strong>tre</strong> mislykkede leveringsforsøk havner den i dead-letter-køen (DLQ), og Fiks IO sender <code>no.ks.fiks.kvittering.serverfeil.v1</code> tilbake til avsenderen.</p>
 <p>Resultatet er at avsenderen tror noe er galt, meldinger går tapt, og feilen er vanskelig å spore. Dette er den vanligste nybegynnerfeilen — særlig tidlig i en integrasjon. Sørg for at <code>ack()</code> er på plass før du tar i bruk en konto i produksjon.</p>
-<h3 id="nack-og-nackwithrequeue">Nack og NackWithRequeue<span class="btn cstyle anchor copyanchor scrollanchor link noborder notitle interactive"><button type="button"><i class="fa-fw fas fa-link fa-lg"></i></button></span></h3>
-<p>Klientene støtter også nack (avvis) og <code>NackWithRequeue</code> (avvis og legg tilbake på køen), men disse bør du sjelden bruke:</p>
+<h3 id="nack-og-rejectwithrequeue">Nack og RejectWithRequeue<span class="btn cstyle anchor copyanchor scrollanchor link noborder notitle interactive"><button type="button"><i class="fa-fw fas fa-link fa-lg"></i></button></span></h3>
+<p>Klientene støtter også nack (avvis) og <code>RejectWithRequeue</code> (avvis og legg tilbake på køen), men disse bør du sjelden bruke:</p>
 <ul>
 <li><strong>Nack</strong> avviser meldingen helt, og Fiks IO sender <strong>ingen</strong> feilmelding tilbake til avsender — avsenderen får dermed ingen beskjed om at noe gikk galt. <strong>Ikke bruk nack.</strong> Riktig håndtering av en feil er å sende protokollens feilmelding tilbake og deretter <code>ack()</code>-e meldingen.</li>
-<li><strong><code>NackWithRequeue</code></strong> legger meldingen tilbake på køen, men dette teller som et leveringsforsøk. Gjentatt <code>NackWithRequeue</code> bruker raskt opp de tre forsøkene og sender meldingen mot DLQ.</li>
+<li><strong><code>RejectWithRequeue</code></strong> legger meldingen tilbake på køen, men dette teller som et leveringsforsøk. Gjentatt <code>RejectWithRequeue</code> bruker raskt opp de tre forsøkene og sender meldingen mot DLQ.</li>
 </ul>
 <p>I praksis er riktig mønster nesten alltid: håndtér meldingen, send eventuell feilmelding ved feil, og <code>ack()</code>.</p>
+<p>Klientene støtter også <code>NackWithRequeue</code>, som nå er deprecated i nyere versjoner av klientene. I klientene hvor den er deprecated, så vil den fungere som <code>RejectWithRequeue</code>, men vi anbefaler allikevel å gå over til å bruke <code>RejectWithRequeue</code>.</p>
 <h3 id="følg-protokollens-spesifikasjon">Følg protokollens spesifikasjon<span class="btn cstyle anchor copyanchor scrollanchor link noborder notitle interactive"><button type="button"><i class="fa-fw fas fa-link fa-lg"></i></button></span></h3>
 <p>Hver protokoll definerer sine egne meldingstyper for mottatt-meldinger, kvitteringer og feilmeldinger — for eksempel <code>no.ks.fiks.arkiv.v1.arkivering.arkivmelding.opprett.kvittering</code> og <code>no.ks.fiks.arkiv.v1.feilmelding.serverfeil</code>. Hvilke meldinger du skal sende tilbake, og når, er definert i protokollens spesifikasjon.</p>
 <p>Bruk meldingstypene og rekkefølgen protokollen din beskriver. Se <a href="/tjenester/fiksprotokoll/protokoller/index.html">Protokoller</a> for oversikt og lenker til hver protokolls spesifikasjon.</p>
@@ -459,8 +460,8 @@ Hvem er dette for? Dette er for utviklere av klienter — både fagsystem og ark
 <div id="R-footer" class="default-animation"><p>Built with <a href="https://github.com/McShelby/hugo-theme-relearn" title="love"><i class="fas fa-heart"></i></a> by <a href="https://gohugo.io/">Hugo</a></p></div>
       </div>
     </aside>
-    <script src="/js/perfect-scrollbar/perfect-scrollbar.min.js?1795526869" defer></script>
-    <script src="/js/theme.min.js?1795526869" defer></script>
+    <script src="/js/perfect-scrollbar/perfect-scrollbar.min.js?1795530394" defer></script>
+    <script src="/js/theme.min.js?1795530394" defer></script>
     <div id="toast-container" role="status" aria-live="polite" aria-atomic="false"></div>
   </body>
 </html>
