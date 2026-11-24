@@ -60,7 +60,7 @@ Klientene støtter også nack (avvis) og `RejectWithRequeue` (avvis og legg tilb
 
 I praksis er riktig mønster nesten alltid: håndtér meldingen, send eventuell feilmelding ved feil, og `ack()`.
 
-Klientene støtter også `NackWithRequeue`, som nå er deprecated i nyere versjoner av klientene. I klientene hvor den er deprecated, så vil den fungere som `RejectWithRequeue`. Hvis man er på gammel versjon av klienten så vil `NackWithRequeue` etter oppdatering til RabbitMQ 4.3 gjøre at det **ikke** teller som et leveringsforsøk og man vil som oftest treffe TTL i stedet for maks antall leveringsforsøk. Vi anbefaler at man oppdaterer til siste versjon av klienten.
+Klientene støtter også `NackWithRequeue`, som nå er deprecated i nyere versjoner av klientene. I klientene hvor den er deprecated, så vil den fungere som `RejectWithRequeue`, men vi anbefaler allikevel å gå over til å bruke `RejectWithRequeue`.
 
 ### Følg protokollens spesifikasjon
 
