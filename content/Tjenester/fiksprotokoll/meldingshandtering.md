@@ -51,14 +51,16 @@ Uteblir `ack()`, blir meldingen liggende på køen og levert på nytt. Etter **t
 
 Resultatet er at avsenderen tror noe er galt, meldinger går tapt, og feilen er vanskelig å spore. Dette er den vanligste nybegynnerfeilen — særlig tidlig i en integrasjon. Sørg for at `ack()` er på plass før du tar i bruk en konto i produksjon.
 
-### Nack og NackWithRequeue
+### Nack og RejectWithRequeue
 
-Klientene støtter også nack (avvis) og `NackWithRequeue` (avvis og legg tilbake på køen), men disse bør du sjelden bruke:
+Klientene støtter også nack (avvis) og `RejectWithRequeue` (avvis og legg tilbake på køen), men disse bør du sjelden bruke:
 
 - **Nack** avviser meldingen helt, og Fiks IO sender **ingen** feilmelding tilbake til avsender — avsenderen får dermed ingen beskjed om at noe gikk galt. **Ikke bruk nack.** Riktig håndtering av en feil er å sende protokollens feilmelding tilbake og deretter `ack()`-e meldingen.
-- **`NackWithRequeue`** legger meldingen tilbake på køen, men dette teller som et leveringsforsøk. Gjentatt `NackWithRequeue` bruker raskt opp de tre forsøkene og sender meldingen mot DLQ.
+- **`RejectWithRequeue`** legger meldingen tilbake på køen, men dette teller som et leveringsforsøk. Gjentatt `RejectWithRequeue` bruker raskt opp de tre forsøkene og sender meldingen mot DLQ.
 
 I praksis er riktig mønster nesten alltid: håndtér meldingen, send eventuell feilmelding ved feil, og `ack()`.
+
+Klientene støtter også `NackWithRequeue`, som nå er deprecated i nyere versjoner av klientene. I klientene hvor den er deprecated, så vil den fungere som `RejectWithRequeue`, men vi anbefaler allikevel å gå over til å bruke `RejectWithRequeue`.
 
 ### Følg protokollens spesifikasjon
 
