@@ -32,55 +32,23 @@
   ],
   "paths": {
     "/konsesjon/api/v1/eiendomssalg/egenerklaering/paakrevd": {
-      "get": {
+      "post": {
         "tags": [
           "Megler - Eiendom"
         ],
         "summary": "Sjekk om egenerklæring kreves",
         "description": "Slår opp om en egenerklæring er påkrevd for eiendommen, og om eiendommen har boplikt. Kallet oppretter ingen konsesjonsavklaring og kan brukes før en avklaring startes.",
         "operationId": "hentEgenerklaeringPaakrevdOgBoplikt",
-        "parameters": [
-          {
-            "name": "kommunenummer",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "$ref": "#/components/schemas/Kommunenummer"
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Matrikkelnummer"
+              }
             }
           },
-          {
-            "name": "gaardsnummer",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "$ref": "#/components/schemas/Gaardsnummer"
-            }
-          },
-          {
-            "name": "bruksnummer",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "$ref": "#/components/schemas/Bruksnummer"
-            }
-          },
-          {
-            "name": "festenummer",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "$ref": "#/components/schemas/Festenummer"
-            }
-          },
-          {
-            "name": "seksjonsnummer",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "$ref": "#/components/schemas/Seksjonsnummer"
-            }
-          }
-        ],
+          "required": true
+        },
         "responses": {
           "200": {
             "description": "Krav om egenerklæring og boplikt hentet",
@@ -145,200 +113,13 @@
         }
       }
     },
-    "/konsesjon/api/v1/eiendomssalg/avklaring/start": {
-      "post": {
-        "tags": [
-          "Megler - Konsesjonsavklaring"
-        ],
-        "summary": "Opprett konsesjonsavklaring",
-        "description": "Oppretter en konsesjonsavklaring for én eiendom og returnerer avklaringsId-en som brukes i de videre kallene. Datainnhenting om eiendommen starter i bakgrunnen. Følg med på status til den ikke lenger er INNHENTER_DATA før presjekk kjøres. Erververe oppgis først ved hovedsjekk.",
-        "operationId": "opprettKonsesjonsavklaring",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/KonsesjonsavklaringOpprettelse"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "201": {
-            "description": "Konsesjonsavklaring har blitt opprettet",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/KonsesjonsavklaringReferanse"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Feil input",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorMessage"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Ikke autentisert – bearer token mangler eller er ugyldig",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorMessage"
-                }
-              }
-            }
-          },
-          "403": {
-            "description": "Ikke tilgang – kalleren er ikke en integrasjon med privilegiet KONSESJON.UPDATE",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorMessage"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Ingen treff - Fant ingen kommune i Fiks-konfigurasjon for kommunenummeret i matrikkelnummeret",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorMessage"
-                }
-              }
-            }
-          },
-          "502": {
-            "description": "Feil mot ekstern tjeneste - Landbruksdirektoratet (LDIR) eller Fiks-konfigurasjon er midlertidig utilgjengelig",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorMessage"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/konsesjon/api/v1/eiendomssalg/avklaring/{avklaringsId}/presjekk": {
-      "post": {
-        "tags": [
-          "Megler - Konsesjonsavklaring"
-        ],
-        "summary": "Kjør presjekk",
-        "description": "Vurderer ut fra eiendomsdataene om ervervet krever egenerklæring. Krever at datainnhentingen er ferdig. Ved KREVER_IKKE_EGENERKLAERING er ervervet konsesjonsfritt og avklaringen avsluttet. Ved KREVER_EGENERKLAERING fortsetter avklaringen med hovedsjekk.",
-        "operationId": "presjekkEgenerklaering",
-        "parameters": [
-          {
-            "in": "path",
-            "name": "avklaringsId",
-            "description": "ID-en til konsesjonsavklaringen",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          }
-        ],
-        "requestBody": {
-          "description": "Valgfri. Utelat body, eller send et tomt objekt, når det ikke er manuelt innsendte eiendommer.",
-          "required": false,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/PresjekkRequest"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Presjekk fullført",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/PresjekkResponse"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Feil input",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorMessage"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Ikke autentisert – bearer token mangler eller er ugyldig",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorMessage"
-                }
-              }
-            }
-          },
-          "403": {
-            "description": "Ikke tilgang – kalleren er ikke en integrasjon med privilegiet KONSESJON.UPDATE",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorMessage"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Ingen treff - Fant ikke konsesjonsavklaring som matchet den gitte id-en, eller konsesjonsavklaringen er opprettet av en annen",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorMessage"
-                }
-              }
-            }
-          },
-          "409": {
-            "description": "Konflikt - Datainnhenting pågår fremdeles (status INNHENTER_DATA)",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorMessage"
-                }
-              }
-            }
-          },
-          "502": {
-            "description": "Feil mot ekstern tjeneste - Landbruksdirektoratet (LDIR) er midlertidig utilgjengelig",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorMessage"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
     "/konsesjon/api/v1/eiendomssalg/avklaring/{avklaringsId}/hovedsjekk": {
       "post": {
         "tags": [
           "Megler - Konsesjonsavklaring"
         ],
         "summary": "Kjør hovedsjekk",
-        "description": "Sender inn erververne med eierandeler og kjører hovedsjekk av egenerklæringen. Krever at presjekken ga KREVER_EGENERKLAERING. Svaret inneholder ett resultat per erverver. Ved flere erververe kan hver erverver få sin egen avklaringsId, som brukes i de videre kallene for den erververen. Status FERDIGSTILT_AUTOMATISK_GODKJENT eller FERDIGSTILT_TRENGER_MANUELL_OPPFOELGING betyr at egenerklæringen er klar for bekreftelse.",
+        "description": "Sender inn erververne med eierandeler og kjører hovedsjekk av egenerklæringen. Sender så alle konsesjonsavklaringer til godkjenning. Det opprettes én oppgave i Min Kommune per konsesjonsavklaring, der erververen og eventuelle signaturberettigede personer må godkjenne selv. Megleren godkjenner ikke. Hver konsesjonsavklaring må ha status KLAR_FOR_BEKREFTELSE for at en oppgave skal kunne opprettes.",
         "operationId": "hovedsjekkEgenerklaering",
         "parameters": [
           {
@@ -538,88 +319,13 @@
         }
       }
     },
-    "/konsesjon/api/v1/eiendomssalg/avklaring/send": {
-      "post": {
-        "tags": [
-          "Megler - Konsesjonsavklaring"
-        ],
-        "summary": "Send konsesjonsavklaringer til erververne for signering",
-        "description": "Sender én eller flere konsesjonsavklaringer til signering. Det opprettes én oppgave i Min Kommune per konsesjonsavklaring, der erververen og eventuelle signaturberettigede personer må signere selv. Megleren signerer ikke. Ved flere erververe sendes avklaringsId-ene fra hovedsjekken samlet. Hver konsesjonsavklaring må ha status KLAR_FOR_BEKREFTELSE.",
-        "operationId": "sendEgenerklaering",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/GodkjenningsRequest"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "204": {
-            "description": "Konsesjonsavklaringene er sendt til signering"
-          },
-          "400": {
-            "description": "Feil input",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorMessage"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Ikke autentisert – bearer token mangler eller er ugyldig",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorMessage"
-                }
-              }
-            }
-          },
-          "403": {
-            "description": "Ikke tilgang – kalleren er ikke en integrasjon med privilegiet KONSESJON.UPDATE",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorMessage"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Ingen treff - Fant ikke en eller flere av konsesjonsavklaringene som matchet de gitte id-ene, eller konsesjonsavklaringen er opprettet av en annen",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorMessage"
-                }
-              }
-            }
-          },
-          "409": {
-            "description": "Konflikt - En eller flere av konsesjonsavklaringene er ikke klare for signering",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorMessage"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
     "/konsesjon/api/v1/eiendomssalg/avklaring/{avklaringsId}/oppgavestatus": {
       "get": {
         "tags": [
           "Megler - Konsesjonsavklaring"
         ],
-        "summary": "Hent status på signering",
-        "description": "Returnerer mottakerne av oppgaven i Min Kommune for konsesjonsavklaringen, med status på hver mottakers godkjenning. Mottakerne er erververen når erververen er en person, og de signaturberettigede personene når erververen er en organisasjon. Ved flere erververe har hver erverver sin egen avklaringsId fra hovedsjekken, og status hentes for hver av dem. Kan bare brukes etter at konsesjonsavklaringen er sendt til signering. Er oppgaven i Min Kommune ikke opprettet ennå, returneres de forventede mottakerne med status UNDER_OPPRETTELSE. Har ikke alle mottakerne svart innen en fastsatt tid etter at oppgaven ble opprettet, slettes oppgaven i Min Kommune, og mottakere som ikke har svart, får sluttstatusen UTLOEPT. Mottakere som har svart, beholder statusen sin.",
+        "summary": "Hent status på godkjenning",
+        "description": "Returnerer mottakerne av oppgaven i Min Kommune for konsesjonsavklaringen, med status på hver mottakers godkjenning. Mottakerne er erververen når erververen er en person, og de signaturberettigede personene når erververen er en organisasjon. Ved flere erververe har hver erverver sin egen avklaringsId fra hovedsjekken, og status hentes for hver av dem. Kan bare brukes etter at konsesjonsavklaringen er sendt til godkjenning. Er oppgaven i Min Kommune ikke opprettet ennå, returneres de forventede mottakerne med status UNDER_OPPRETTELSE. Har ikke alle mottakerne svart innen en fastsatt tid etter at oppgaven ble opprettet, slettes oppgaven i Min Kommune, og mottakere som ikke har svart, får sluttstatusen UTLOEPT. Mottakere som har svart, beholder statusen sin.",
         "operationId": "hentOppgavestatus",
         "parameters": [
           {
@@ -635,7 +341,7 @@
         ],
         "responses": {
           "200": {
-            "description": "Status på signering hentet",
+            "description": "Status på godkjenning hentet",
             "content": {
               "application/json": {
                 "schema": {
@@ -688,7 +394,7 @@
             }
           },
           "409": {
-            "description": "Konflikt - Konsesjonsavklaringen er ikke sendt til signering",
+            "description": "Konflikt - Konsesjonsavklaringen er ikke sendt til godkjenning",
             "content": {
               "application/json": {
                 "schema": {
@@ -830,6 +536,10 @@
           },
           "boplikt": {
             "$ref": "#/components/schemas/BopliktResponse"
+          },
+          "avklaringsId": {
+            "type": "string",
+            "format": "uuid"
           }
         }
       },
@@ -1055,17 +765,6 @@
           "TRENGER_SOEKNAD"
         ]
       },
-      "KonsesjonsavklaringOpprettelse": {
-        "type": "object",
-        "required": [
-          "matrikkelnummer"
-        ],
-        "properties": {
-          "matrikkelnummer": {
-            "$ref": "#/components/schemas/Matrikkelnummer"
-          }
-        }
-      },
       "Kommunenummer": {
         "type": "string",
         "description": "Firesifret kommunenummer, f.eks. 0301",
@@ -1101,18 +800,6 @@
         "maximum": 999999,
         "default": 0
       },
-      "KonsesjonsavklaringReferanse": {
-        "type": "object",
-        "required": [
-          "avklaringsId"
-        ],
-        "properties": {
-          "avklaringsId": {
-            "type": "string",
-            "format": "uuid"
-          }
-        }
-      },
       "KonsesjonsavklaringStatus": {
         "type": "string",
         "enum": [
@@ -1128,23 +815,6 @@
           "KREVER_MANUELL_VURDERING",
           "EIENDOM_ER_SEKSJONERT"
         ]
-      },
-      "GodkjenningsRequest": {
-        "type": "object",
-        "required": [
-          "avklaringsId"
-        ],
-        "properties": {
-          "avklaringsId": {
-            "type": "array",
-            "minItems": 1,
-            "items": {
-              "type": "string",
-              "format": "uuid"
-            },
-            "description": "ID-ene til konsesjonsavklaringene som skal sendes til signering"
-          }
-        }
       },
       "OppgaveMottakerStatus": {
         "type": "object",
@@ -1179,7 +849,7 @@
       },
       "OppgaveStatus": {
         "type": "string",
-        "description": "UNDER_OPPRETTELSE: konsesjonsavklaringen er sendt til signering, men oppgaven i Min Kommune er ikke opprettet ennå. Opprettelsen forsøkes på nytt automatisk. OPPRETTET: mottakeren har ikke svart ennå. GODKJENT: mottakeren har godkjent. AVVIST: mottakeren har avvist. UTLOEPT: mottakeren svarte ikke innen fastsatt tid, og oppgaven i Min Kommune er slettet. Sluttstatus, signeringen kan ikke fullføres.",
+        "description": "UNDER_OPPRETTELSE: konsesjonsavklaringen er sendt til godkjenning, men oppgaven i Min Kommune er ikke opprettet ennå. Opprettelsen forsøkes på nytt automatisk. OPPRETTET: mottakeren har ikke svart ennå. GODKJENT: mottakeren har godkjent. AVVIST: mottakeren har avvist. UTLOEPT: mottakeren svarte ikke innen fastsatt tid, og oppgaven i Min Kommune er slettet. Sluttstatus, godkjenningen kan ikke fullføres.",
         "enum": [
           "UNDER_OPPRETTELSE",
           "OPPRETTET",
